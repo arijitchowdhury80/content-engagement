@@ -85,9 +85,17 @@ all of it: **no sampling**, loop one record at a time, deterministic and predict
 - Name an owner for `taxonomy-schema.algolia-com.json`, or the vocabulary rots exactly as the
   ledger's did (it still carries the retired names App Search and DocSearch).
 
-**Still open from prior sessions** — Asana PAT (Gantt/sections/custom fields), VPS SSH (WU-19 →
-WU-20 → criteria 3 and 6), GA/Looker export (WU-06 → WU-10), Sales/SC interviews (WU-09), and
-⚠ resetting the Asana OAuth client secret pasted into chat 2026-08-05.
+**Still open from prior sessions** — GA/Looker export (WU-06 → WU-10), Sales/SC interviews
+(WU-09), an owner for `taxonomy-schema.algolia-com.json`, and ⚠ **two credentials needing
+revocation**: the Asana OAuth client secret pasted into chat 2026-08-05, and the Asana PAT pasted
+2026-08-06.
+
+**Unblocked 2026-08-06** — Asana PAT works (`start_on` persists, so real Gantt is now possible).
+VPS SSH works: `chowmes`, Ubuntu 24.04.4, connect via
+`~/.claude/skills/hostinger-vps-ssh/scripts/ssh-hermes-vps --env "$PWD/.env.vps"`. Caddy runs as a
+Docker container; static sites live at `/data/sites/<name>`, Caddyfile at
+`/home/chowmesadmin/lab-judge/Caddyfile`. `contentengagement.info` is already wired up. WU-19 is
+no longer blocked.
 
 ## Reference files
 

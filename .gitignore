@@ -19,3 +19,6 @@ docs/20-research/agent-studio-inventory.json
 
 # Asana PAT — project-local, never commit
 .env.asana
+
+# VPS connection params — project-local, never commit
+.env.vps
