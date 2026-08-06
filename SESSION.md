@@ -120,7 +120,7 @@ no longer blocked.
 | Index (live) | `Algolia_Prod_Copy_Enhanced` |
 | Rollback | `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805` |
 | GitHub (PUBLIC) | `arijitchowdhury80/content-engagement` @ `e49ca6b` |
-| Demo (other session's lane) | `docs/50-prototype/demo/` — now points at `Algolia_Prod_Copy_Enhanced`, not `SEARCHFIRST_WWW_v1` |
+| Demo (frontend lane — VERIFIED 2026-08-06) | `docs/50-prototype/demo/` — confirmed live in-browser against `Algolia_Prod_Copy_Enhanced`: real queries, facets, snippets, zero console errors. Committed `2a882c3`. |
 
 ## What has NOT been done
 
@@ -132,6 +132,14 @@ no longer blocked.
 - All 25 original work units: untouched by this session.
 - The `audience` axis was deliberately dropped, not built.
 - `records.jsonl` was removed from public git history by the parallel session; it is also gone from disk.
+- **Frontend lane, 2026-08-06:** WU-03, WU-06, WU-07, WU-08, WU-09, WU-10 (the research phase)
+  are still not executed — tonight's frontend work was scope correction (killing the dead
+  crawl, rescoping WU-04/05/15, fixing the demo), not the research deliverables themselves.
+  Recommended next: **WU-04** (unblocks WU-05's mapping exercise and WU-11).
+- **New blocker:** real query-log access to the actual production search app (`1QDAWL72TQ`,
+  `ALGOLIA_WWW_PROD_V2`) — needed to ground WU-05's 3 remaining axes in real behavior instead
+  of guessing. Ask Arijit.
+- **Asana PAT dead again** (401) — needed for REST-level Asana writes; ask Arijit to reissue.
 
 ## Files written this session
 
