@@ -16,3 +16,6 @@ docs/60-enrichment/taxonomy-assignments.jsonl
 # full Agent Studio agent dump — contains complete internal system-prompt text for 51
 # live agents; this repo is public, do not ship internal prompt content by default
 docs/20-research/agent-studio-inventory.json
+
+# Asana PAT — project-local, never commit
+.env.asana

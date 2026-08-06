@@ -2,6 +2,12 @@
 
 Read `SESSION.md` first. It is the resume point.
 
+**Two sessions run in parallel on this repo, intentionally (Arijit, 2026-08-06).**
+Backend session: `docs/60-enrichment/` taxonomy/enrichment pipeline, writes to
+`Algolia_Prod_Copy_Enhanced`. Frontend session: `docs/50-prototype/demo/`, the WU-briefs,
+Asana task state. Each stays in its lane. Before running `git add -A`, check
+`git status` first — the other session may have its own uncommitted work in flight.
+
 ## Where things are
 
 | Thing | Path |
@@ -21,9 +27,15 @@ Read `SESSION.md` first. It is the resume point.
 - **This repo is PUBLIC**: `github.com/arijitchowdhury80/content-engagement`. Arijit's explicit
   decision. Do not add credentials, internal system-prompt text, or anything you would not want
   indexed. `docs/20-research/agent-studio-inventory.json` is gitignored for exactly this reason.
-- **Two indices, do not confuse them.** `SEARCHFIRST_WWW_v1` (4,196 records) is the demo.
-  `Algolia_Prod_Copy_Enhanced` (16,967 records) is the production copy being enriched.
-  `Algolia_Prod_Copy_Vanilla` is off limits — a colleague's live agents query it.
+- **`SEARCHFIRST_WWW_v1` no longer exists.** [Corrected 2026-08-06] It was built from a
+  from-scratch crawl (WU-02/WU-22) that duplicated content already on the account — killed
+  by Arijit, deleted, scrubbed from git history. **The demo now queries
+  `Algolia_Prod_Copy_Enhanced` directly** (16,967 records / 12,114 current, 8 sources,
+  Chapter 1's taxonomy already applied). Do not recreate `SEARCHFIRST_WWW_v1` or re-crawl
+  algolia.com — Enhanced is the source of truth for both the backend enrichment work and
+  the frontend demo.
+  `Algolia_Prod_Copy_Vanilla` is off limits for writes — a colleague's live Agent Studio
+  agents (`www Chat`, `Algolia_*`) query it. Reading it is fine.
 - **Coverage is not correctness.** The taxonomy is applied but unvalidated. Never report a field
   being populated as if it were verified.
 - **No sampling.** Arijit's standing rule for enrichment and validation: process one record at a

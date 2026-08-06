@@ -144,7 +144,7 @@ footer.site{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);f
   <span class="brand">Search-First Algolia.com</span>
   <button id="b1" aria-pressed="true"  onclick="setFrame(1)">Frame 1 · CMO wedge</button>
   <button id="b2" aria-pressed="false" onclick="setFrame(2)">Frame 2 · Search-first north star</button>
-  <span class="note" id="idxnote">live index · SEARCHFIRST_WWW_v1</span>
+  <span class="note" id="idxnote">live index · Algolia_Prod_Copy_Enhanced</span>
 </div>
 
 <header class="site" id="siteheader">
@@ -190,7 +190,7 @@ footer.site{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);f
 
   <div class="disclosure" id="disclosure">
     <strong>Concept demo.</strong> <span id="dcounts">Loading index stats…</span>
-    Neural search is <strong>not</strong> enabled — Algolia requires click/conversion event history to turn it on, and this index has none. Results use standard ranking plus navigational Rules.
+    Querying <code>Algolia_Prod_Copy_Enhanced</code> directly — this project's real, live-maintained content index, not a crawl. Standard ranking (no neural mode on this index); results snippet from short abstracts only, since no full page-body field exists yet. Content, source, and industry facets come from Chapter 1's taxonomy enrichment; intent/audience/next-action facets aren't built yet — pending real query-log evidence, not shown until they land.
     English only; de and fr are out of scope for this demo.
   </div>
 
@@ -217,15 +217,17 @@ footer.site{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);f
 
 <footer class="site"><div class="wrap">
   Concept prototype for internal review — not a live Algolia property.
-  Index <code>SEARCHFIRST_WWW_v1</code>. Every result links to the real algolia.com URL.
+  Index <code>Algolia_Prod_Copy_Enhanced</code> (shared production content copy — see
+  Chapter 1, docs/70-documentation/enrichment/). Every result links to the real algolia.com URL.
 </div></footer>
 
 <script>
-const APP = window.ALGOLIA_APP_ID, KEY = window.ALGOLIA_SEARCH_KEY, INDEX = "SEARCHFIRST_WWW_v1";
+const APP = window.ALGOLIA_APP_ID, KEY = window.ALGOLIA_SEARCH_KEY, INDEX = "Algolia_Prod_Copy_Enhanced";
+// Only axes Chapter 1 actually built. intent/audience/conversion_action are WU-05's
+// remaining 3 axes — not shown until they exist; see WU-05's Asana comment.
 const AXES = [
-  ["capability","Capability"], ["business_context","Industry / context"],
-  ["audience","Audience"], ["content_type","Content type"],
-  ["intent","Intent"], ["conversion_action","Next action"]
+  ["page_type","Content type"], ["source","Source"],
+  ["industry","Industry"], ["feature","Capability"]
 ];
 const JOURNEYS = [
   ["Products","products"],["Solutions","use cases"],["Pricing","pricing"],
@@ -277,6 +279,10 @@ function renderRail(){
       : `<button onclick="go(${JSON.stringify(q).replace(/"/g,'&quot;')})">${esc(label)}</button>`).join('');
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+// Enhanced's `url` is 87.6% relative ("/pricing") and 12.4% absolute (already
+// "https://..." — mostly /doc pages). Resolve to a real, clickable algolia.com URL either way.
+function fullUrl(u){ u=u||''; return u.startsWith('http') ? u : `https://www.algolia.com${u}`; }
+function displayPath(u){ u=u||''; return u.startsWith('http') ? u.replace(/^https?:\/\/[^/]+/,'') : u; }
 
 function go(q){ document.getElementById('q').value=q; filters={}; run(q); return false; }
 
@@ -289,11 +295,13 @@ async function run(q){
     facets: AXES.map(a=>a[0]),
     maxValuesPerFacet: 6,
     facetFilters,
-    attributesToSnippet:["body:32","description:26"],
+    filters: 'environment:"prod20260722" AND language_code:"en" AND NOT is404:true',
+    attributesToSnippet:["abstract:32","description:26"],
     highlightPreTag:"<em>", highlightPostTag:"</em>",
-    // Commercial pages must beat 1454 blog posts + 1549 doc pages. WU-04 finding.
-    optionalFilters:["source:www<score=3>","content_type:product-page<score=2>",
-                     "content_type:solution-page<score=2>","content_type:pricing<score=2>"]
+    // Website (1,202 records) is a small minority against Documentation (4,337) and
+    // Blog (2,800) — same commercial-visibility problem WU-04 found on the old corpus,
+    // recomputed against Enhanced's current counts. Illustrative boost, not yet tuned.
+    optionalFilters:["source:Website<score=2>"]
   };
   const t0 = performance.now();
   let d;
@@ -348,9 +356,9 @@ function render(q,d,ms){
     rest = d.hits.slice(1);
     directEl.innerHTML = `<div class="direct">
       <div class="lab">Direct answer &middot; you asked for a destination</div>
-      <p class="t">${esc(top.title||top.path)}</p>
-      <div class="u">algolia.com${esc(top.path||'')}</div>
-      <div class="cta"><a class="btn primary" href="${esc(top.url)}" target="_blank" rel="noopener">Go to page &#8599;</a></div>
+      <p class="t">${esc(top.title)}</p>
+      <div class="u">${esc(displayPath(top.url))}</div>
+      <div class="cta"><a class="btn primary" href="${esc(fullUrl(top.url))}" target="_blank" rel="noopener">Go to page &#8599;</a></div>
     </div>`;
   } else directEl.innerHTML='';
 
@@ -358,16 +366,16 @@ function render(q,d,ms){
     <span class="ms">for “${esc(q)}” · ${ms}ms round trip · Algolia reported ${d.processingTimeMS}ms</span>`;
 
   hitsEl.innerHTML = rest.map(h=>{
-    const sn = (h._snippetResult?.body?.value)||(h._snippetResult?.description?.value)||'';
+    const sn = (h._snippetResult?.abstract?.value)||(h._snippetResult?.description?.value)||'';
     return `<article class="hit">
-      <p class="t"><a href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.title||h.path)}</a></p>
-      <div class="u">algolia.com${esc(h.path||'')}</div>
+      <p class="t"><a href="${esc(fullUrl(h.url))}" target="_blank" rel="noopener">${esc(h.title)}</a></p>
+      <div class="u">${esc(displayPath(h.url))}</div>
       <p class="s">${sn}</p>
       <div class="badges">
-        <span class="badge src">${esc(h.source==='doc'?'Documentation':'Website')}</span>
-        <span class="badge">${esc(h.content_type||'')}</span>
-        ${(h.capability||[]).filter(x=>x!=='unknown').slice(0,2).map(c=>`<span class="badge">${esc(c)}</span>`).join('')}
-        ${(h.business_context||[]).filter(x=>x!=='unknown').slice(0,1).map(c=>`<span class="badge">${esc(c)}</span>`).join('')}
+        <span class="badge src">${esc(h.source||'')}</span>
+        <span class="badge">${esc(h.page_type||'')}</span>
+        ${(h.feature||[]).filter(x=>x!=='unknown').slice(0,2).map(c=>`<span class="badge">${esc(c)}</span>`).join('')}
+        ${(h.industry||[]).filter(x=>x!=='unknown').slice(0,1).map(c=>`<span class="badge">${esc(c)}</span>`).join('')}
       </div>
     </article>`;
   }).join('');
@@ -405,13 +413,16 @@ document.getElementById('q').addEventListener('keydown',e=>{ if(e.key==='Enter')
     const r = await fetch(`https://${APP}-dsn.algolia.net/1/indexes/${INDEX}/query`,{
       method:'POST',
       headers:{'X-Algolia-API-Key':KEY,'X-Algolia-Application-Id':APP,'Content-Type':'application/json'},
-      body: JSON.stringify({query:"",hitsPerPage:0,facets:["source"]})
+      body: JSON.stringify({query:"",hitsPerPage:0,
+        filters:'environment:"prod20260722" AND language_code:"en" AND NOT is404:true',
+        facets:["source"]})
     });
     const d = await r.json();
     const f = (d.facets||{}).source||{};
+    const bySource = Object.entries(f).sort((a,b)=>b[1]-a[1])
+      .map(([s,n])=>`${n.toLocaleString()} ${s}`).join(', ');
     document.getElementById('dcounts').textContent =
-      `Real Algolia index — ${(d.nbHits||0).toLocaleString()} real algolia.com records `
-      + `(${(f.www||0).toLocaleString()} marketing + ${(f.doc||0).toLocaleString()} documentation).`;
+      `Real Algolia index — ${(d.nbHits||0).toLocaleString()} current, English records (${bySource}).`;
   }catch(e){ document.getElementById('dcounts').textContent = 'Real Algolia index (stats unavailable).'; }
 })();
 
