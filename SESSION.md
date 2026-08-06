@@ -85,8 +85,13 @@ all of it: **no sampling**, loop one record at a time, deterministic and predict
 - Name an owner for `taxonomy-schema.algolia-com.json`, or the vocabulary rots exactly as the
   ledger's did (it still carries the retired names App Search and DocSearch).
 
-**Still open from prior sessions** — GA/Looker export (WU-06 → WU-10), Sales/SC interviews
-(WU-09), and an owner for `taxonomy-schema.algolia-com.json`.
+**Still open from prior sessions** — Sales/SC interviews (WU-09), and an owner for
+`taxonomy-schema.algolia-com.json`.
+
+**Looker report supplied 2026-08-06:**
+https://datastudio.google.com/u/0/reporting/b05b44b9-43bd-436b-8dd3-c92729a93a93/page/p_88bw2x7jxc
+Needs an authenticated Google session — not fetchable with curl/WebFetch. Feeds WU-06; pull
+subtask `[75]` organic entrances by page type first. See memory `looker-analytics-report`.
 
 **Credential exposure — CLOSED by decision (Arijit, 2026-08-06).** The Asana OAuth client secret
 (08-05) and the Asana PAT (08-06) were both pasted into chat transcripts. Arijit's call: not
