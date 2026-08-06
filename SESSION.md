@@ -9,9 +9,21 @@ _Last updated: 2026-08-06 10:20 EDT_
 > The frontend lane owns `docs/50-prototype/demo/`, the WU briefs and Asana state.
 > Run `git status` before any `git add -A` — the other lane may have work in flight.
 
-**Backend:** WU-26 opened and its first sub-task shipped. `Algolia_Prod_Copy_Enhanced`
-(16,967 records) now carries an 8-axis taxonomy, applied live and verified by post-write census.
-Coverage passes on 5 of 8 axes. **Precision is unmeasured — `validate.py` is backend's next job.**
+**Backend:** WU-26 opened; two sub-tasks shipped. `Algolia_Prod_Copy_Enhanced` carries an 8-axis
+taxonomy, applied live and verified by post-write census. Coverage passes on 5 of 8 axes.
+
+**[87] Index deduplication — DONE 2026-08-06, verified live.** The index is now **12,114 records,
+one per distinct URL** (was 16,967). 4,853 duplicates deleted, 224 empty fields rescued. `page_type`
+still 100%, all 329 nonprod-only URLs kept, and the demo's own filtered view is unchanged at 7,979
+before and after. Rollback: `Algolia_Prod_Copy_Enhanced_pre_dedupe_20260806_165255`, and the restore
+path was rehearsed before the delete. Tool: `docs/60-enrichment/dedupe.py` + 40 tests.
+
+⚠ **`distinct: true` / `attributeForDistinct: url` was already configured on this index**, so the
+duplicates were never visible in search — `nbHits` and facet counts were already per-URL. Dedup was
+done for storage, write amplification and analytics, not to fix results. Do not repeat the earlier
+claim that duplicates were inflating facets.
+
+**Precision is still unmeasured — taxonomy conformance + correctness are backend's next jobs.**
 
 **Frontend:** the dead-end crawl (WU-02/WU-22) was found redundant and killed; WU-03/04/05/15
 rescoped to read from Enhanced; the demo repointed and verified live in-browser. The actual
@@ -108,7 +120,8 @@ all of it: **no sampling**, loop one record at a time, deterministic and predict
 - `docs/agents/algolia-com-index-audit.md` §0 claims Website records carry ~2,096-char bodies.
   That is **79 Greenhouse job ads**; the real median is 73 chars. **Eight agent prompts were
   written on that false premise and need review.** Same doc: "12,114 records" is the distinct-URL
-  count; the record count is 16,967.
+  count; the record count was 16,967 and is **12,114 as of the 2026-08-06 dedupe** — the two numbers
+  have converged, one record per distinct URL.
 - **Add a staleness check to `build_schema.py`** (~20 lines). This REPLACES the earlier "name a
   schema owner" ask, which was withdrawn 2026-08-06 as ceremony standing in for a missing check.
   Reasoning: `classify.py` already hard-fails on an unmatched URL and the candidate queue already

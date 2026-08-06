@@ -30,7 +30,9 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 - **`SEARCHFIRST_WWW_v1` no longer exists.** [Corrected 2026-08-06] It was built from a
   from-scratch crawl (WU-02/WU-22) that duplicated content already on the account — killed
   by Arijit, deleted, scrubbed from git history. **The demo now queries
-  `Algolia_Prod_Copy_Enhanced` directly** (16,967 records / 12,114 current, 8 sources,
+  `Algolia_Prod_Copy_Enhanced` directly** (**12,114 records** after the 2026-08-06 dedupe — one per
+  distinct URL, down from 16,967; note `distinct:true` on `url` is set, so search always saw 12,114
+  anyway — 8 sources,
   Chapter 1's taxonomy already applied). Do not recreate `SEARCHFIRST_WWW_v1` or re-crawl
   algolia.com — Enhanced is the source of truth for both the backend enrichment work and
   the frontend demo.
