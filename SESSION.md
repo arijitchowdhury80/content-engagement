@@ -1,120 +1,130 @@
 # SESSION — Search-First Algolia.com
 
-**Date:** 2026-08-05 (evening)
-**Read this first, then `docs/briefs/README.md`.**
+_Last updated: 2026-08-06 00:40 EDT_
 
 ## Status
 
-Working two-frame demo on a real 4196-record Algolia index. 6 of 25 work units done.
-Asana fully built out (96/96 subtask notes). **The artifact exists; the research that
-defends it does not.** Acceptance criteria: 2 met · 2 partial · 3 not met.
+**WU-26 opened and its first sub-task shipped.** `Algolia_Prod_Copy_Enhanced` (16,967 records)
+now carries an 8-axis taxonomy, applied live and verified by post-write census. Coverage passes
+on 5 of 8 axes. **Precision is unmeasured** — that is the next job. The demo track was untouched
+this session; it remains at 6 of 25 work units, acceptance criteria 2 met · 2 partial · 3 not met.
 
 ## Resume action
 
-1. Start the demo: `cd docs/50-prototype/demo && python3 -m http.server 8899` →
-   http://127.0.0.1:8899/index.html
-2. Open Asana: https://app.asana.com/1/15096140849280/project/1217199861767750/list
-3. **Run WU-12.** Read `docs/briefs/WU-12.md`. Start with subtask `[43]` — inspect the
-   `ps_chat_algolia_prospect_intelligence_assistant` (11,750 recs) and
-   `ps_chat_algolia_onboarding_implementation_assistant` (3,738 recs) indices on the Algolia
-   account **before** any desk research. Also read `RAG/Algolia-Central-Spectrum/` — it
-   already solved the "agent returns links instead of answers" failure.
-4. Produce `docs/30-models/agent-studio-capability-verdict.md`. That verdict decides whether
-   WU-18 builds a real agentic layer or ships a labelled designed one.
-5. Post findings to the Asana task, write a vault wiki page, **stop for Arijit's gate.**
+1. Read this file, then `Projects/Search-First-Algolia-com/index.md` in the vault.
+2. **Write `docs/60-enrichment/validate.py`** — taxonomy validation. Scope is already written in
+   `docs/70-documentation/enrichment/chapter-3-enrichment-validation.md`:
+   - Cross-check assignments against the **2,198 URLs that already carry independent labels**
+     (1,263 from `algolia-central_enterprise_ledger`, 1,440 from the six-axis prototype, 900 from
+     both). Agreement → confidence. Disagreement → the review queue.
+   - Measure precision on the **2,262-URL blind set** (Blog 1,265, Resources 554, Website 443).
+   - Run R1–R5 per axis; report the candidate queue.
+   - **Do not sample.** 71.1% of records are URL-deterministic and their rule table is already
+     enumerated (394 patterns, 64 cover 95%).
+3. Resolve the two open R5 failures (see *Remaining work*).
+4. Then, in order: content enrichment → content validation → full-record validation.
 
 ## Where we stopped (exact)
 
-Finished writing notes into all 96 Asana subtasks and verified by readback (0 empty,
-avg 1,463 chars). Then ran /persist. No work was in flight when the session ended.
-Background processes: a `python3 -m http.server 8899` serving the demo — kill it or leave it.
+The last operation was a full live census of `Algolia_Prod_Copy_Enhanced` confirming the write
+landed: 16,967 records, `page_type` 100%, 0 nulls, 0 duplicate array values. Then the Asana
+documentation tree and the four documentation files were written, then the git push was verified
+in sync at `e49ca6b`. Nothing was left half-finished.
 
 ## Decisions locked
 
-- **Artifact-first ordering.** Build the demo, backfill the research. Already applied.
-- **Agentic layer: investigate first, then decide** (Arijit, 2026-08-05). WU-12 `[43]` runs
-  before anything is built.
-- **Multilingual: OUT of scope, but disclosed** (Arijit). de+fr = 5459 URLs, unaddressed.
-  Must be said in WU-21's talk track, not omitted.
-- **Hosting: local + screenshots** for now; VPS tomorrow. Criterion 6 stays unmet.
-- **Four-artifact split.** `05-execution-plan.md` = WHY · `docs/briefs/WU-NN.md` = HOW ·
-  Asana = STATUS · vault = KNOWLEDGE. Brief wins on method, plan wins on reasoning.
-- **One unit per session with a hard human gate.** Never tick the Asana checkbox yourself.
-- **CHALLENGE step before any write-up** (`docs/briefs/README.md`): is this a template
-  artifact? diff source-of-truth vs what I have as a number. what would falsify my claim?
+| Decision | Choice |
+|---|---|
+| Axes | **8** — `product`, `feature`, `solution`, `industry`, `customer`, `language_platform`, `integration_platform`, `page_type` |
+| Dropped axes | `intent` (a pure lookup on `page_type`, adds no information), `audience` (regex guessing — rebuild later, do not inherit) |
+| Cardinality | **One ordered array per tag axis**, element 0 = primary by contract. Not a `primary` + `_all` pair. `page_type` single. |
+| Empty states | **Three** — resolved / not-applicable (field omitted) / undetermined (`"unknown"`) |
+| Applicability | Per axis as a function of `page_type`: **required / opportunistic / not-applicable**, derived from a measured resolution matrix |
+| Signals | URL path → legacy field → locale twin → text match, with provenance recorded per axis |
+| Vocabularies | From algolia.com's own IA; the site wins over the ledger on conflict |
+| Write mode | **Full-record replace** (`updateObject`). `partialUpdateObject` cannot remove an attribute. |
+| Packaging | Schema-as-data + generic engine — a new corpus means a new JSON, not new code |
+| Scope | All 16,967 records, all languages, all environment snapshots, enriched equally |
+| Topology | In-place during build phase. Staging + atomic move was designed and documented, deliberately not used yet. |
+| Docs platform | **Not Mintlify** — its search competes with Algolia's DocSearch and there is no audience. Markdown in the repo; Docusaurus + Algolia DocSearch if a site is ever needed. |
+| Repo visibility | **PUBLIC**, confirmed by Arijit after being flagged |
 
 ## Remaining work
 
-**Ready now, nothing blocking:** WU-12 (highest value) · WU-03 (⚠ Playwright MCP was killed —
-confirm reconnection) · WU-07 (fan-out, ~200k tokens, declare budget first) · WU-08 (premise
-test, 3h cap) · WU-23 · WU-24 · WU-25.
+**Immediate — Chapter 3, taxonomy validation**
 
-**Chained:** WU-11 ← WU-03 · WU-13 ← WU-12 · WU-14 ← WU-11+WU-12 · WU-18 ← WU-12 ·
-WU-20 ← WU-19 · WU-21 ← WU-20+WU-10+WU-25.
+- `validate.py` does not exist. Coverage is proven; correctness is not.
+- **R5 fails on two values.** `industry='ecommerce'` 72.3% and `product='ai-search'` 40.4%. The
+  ecommerce case is *factually correct* — 764 of 773 tags come from Algolia's own authored
+  keywords — but non-discriminating. The rule conflates "wrong" with "useless for narrowing".
+  Decide whether R5 should reject correct-but-broad values.
+- **A ceiling is already measured, so do not chase 90%:** the two independent labellers agree on
+  `product` only **52.2%** of the time (`industry` 79.0%) across 900 shared URLs.
 
-**Blocked on Arijit:**
-- **Asana PAT** → Gantt start dates, phase sections, custom fields.
-  `echo 'ASANA_PAT=2/...' > algolia-com/.env.asana` — **NOT `.env.local`**, that is a symlink
-  into shared `commons/`. He said "done" but nothing landed on disk.
-- **VPS SSH** → WU-19 → WU-20 → criteria 3 and 6
-- **GA/Looker export** → WU-06 → WU-10. If only one report, ask for `[75]` organic entrances
-  by page type.
-- **Sales/SC recruiting** → WU-09
-- **SECURITY: reset the Asana OAuth client secret** pasted into chat 2026-08-05.
+**Then — Chapter 2, content enrichment**
 
-**Demo defects logged, not fixed:**
-- `how do I add search to React` chip returns irrelevant blog posts (OCR, information density)
-- Frame 1 top-nav items fire a search instead of navigating to the real page
-- Zero-result state is coded but has never been visually verified
-- Snippet noise: raw markdown and adroll tracking URLs in some record bodies
+- Three axes short of target and the cause is measured: **no body field**, 419 chars/record.
+- 51.8% of the 12,114 distinct URLs already have a body in other indices in the same app or in
+  local corpus files — **zero fetching**. Gap: 5,838 URLs.
+- Rejected, do not revisit: remapping enterprise_ledger's `/old-docs/` onto `/doc/`.
+
+**Then** — content validation, then combined full-record validation. Arijit's standing rule for
+all of it: **no sampling**, loop one record at a time, deterministic and predictable.
+
+**Corrections owed**
+
+- `docs/agents/algolia-com-index-audit.md` §0 claims Website records carry ~2,096-char bodies.
+  That is **79 Greenhouse job ads**; the real median is 73 chars. **Eight agent prompts were
+  written on that false premise and need review.** Same doc: "12,114 records" is the distinct-URL
+  count; the record count is 16,967.
+- Name an owner for `taxonomy-schema.algolia-com.json`, or the vocabulary rots exactly as the
+  ledger's did (it still carries the retired names App Search and DocSearch).
+
+**Still open from prior sessions** — Asana PAT (Gantt/sections/custom fields), VPS SSH (WU-19 →
+WU-20 → criteria 3 and 6), GA/Looker export (WU-06 → WU-10), Sales/SC interviews (WU-09), and
+⚠ resetting the Asana OAuth client secret pasted into chat 2026-08-05.
 
 ## Reference files
 
-| What | Where |
+| Thing | Path |
 |---|---|
-| Reasoning SSOT | `docs/05-execution-plan.md` |
-| Execution briefs + session protocol | `docs/briefs/README.md`, `docs/briefs/WU-NN.md` (19 files) |
-| Original 1293-line plan | `docs/90-archive/2026-08-05-search-first-algolia-com-plan.md` |
-| Corpus | `docs/50-prototype/corpus/records.jsonl` (2322), `records-doc.jsonl` (1885) |
-| Crawler | `docs/50-prototype/crawl_corpus.py` (resumable, `--resume`) |
-| Index builder | `docs/50-prototype/build_index.py` (idempotent) |
-| Demo | `docs/50-prototype/demo/index.html` + `config.js` (gitignored) |
-| IA findings | `docs/20-research/21-ia-audit.md`, `ia-map.json`, `sitemap-inventory.csv` |
-| Six axes | `docs/20-research/six-axis-classification.jsonl`, `facet-schema.json` |
-| Vault | `Obsidian/Arijit-Second-Brain/Projects/Search-First-Algolia-com/` |
-| Algolia creds | `RAG/Algolia-Central-Spectrum/.env.local` — **never print** |
-
-**Index:** `SEARCHFIRST_WWW_v1` · app has 146 indices · 23 navigational Rules ·
-41–62ms processing.
+| Pipeline | `docs/60-enrichment/{build_schema.py, classify.py, apply_taxonomy.py}` |
+| Schema (the data) | `docs/60-enrichment/taxonomy-schema.algolia-com.json` |
+| Assignments | `docs/60-enrichment/taxonomy-assignments.jsonl` (12,114 rows, gitignored) |
+| Pre-state dump | `docs/60-enrichment/enhanced-pre-taxonomy-20260805.jsonl` (gitignored) |
+| Documentation | `docs/70-documentation/` — Book 1 Enrichment, Ch.1 complete |
+| Asana | WU-26 `1217210533022462` · `[87]` `1217210602718821` · docs tree `1217211372481002` |
+| Index (live) | `Algolia_Prod_Copy_Enhanced` |
+| Rollback | `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805` |
+| GitHub (PUBLIC) | `arijitchowdhury80/content-engagement` @ `e49ca6b` |
+| Demo (untouched) | `docs/50-prototype/demo/` — `python3 -m http.server 8899` |
 
 ## What has NOT been done
 
-- **No Gantt chart.** `start_on` is silently discarded by the Asana MCP. Timeline shows
-  markers, not duration bars. Needs the PAT.
-- **No phase sections** in Asana — all 25 tasks sit in "Untitled section". MCP has no
-  create-section tool.
-- **No custom fields, no milestones, no bug tracking, no resource model.**
-- **19 of 25 parent task descriptions are still plain text**, not `html_notes`. Content is
-  correct; formatting is not.
-- **WU-16 and WU-17 are not formally complete** even though a demo exists — their DoDs
-  (all 8 journeys in one interaction, screenshots of all states) are unverified.
-- **Zero research units run.** WU-03, 06, 07, 08, 09, 10, 11, 12, 13 all untouched.
-- **Criterion 3 unmeasured, criterion 6 unmet, criterion 7 unmet.**
-- **Two archive inventories still untracked:** ~28 metrics, ~76 named outputs. Only the
-  86 tasks and the 10 riskiest assumptions are in Asana.
-- WU-05 owes a hand-verified error rate on a 20-record sample.
-- Nothing committed to git.
+- **Precision has not been measured.** This session proved that fields are *populated*, not that
+  values are *correct*. Do not describe the taxonomy as validated.
+- `validate.py` does not exist.
+- Staging + atomic move is designed and documented but **was not used** — writes went in-place.
+- Content enrichment: not started. No body field exists on the index.
+- The demo, `SEARCHFIRST_WWW_v1`, and all 25 original work units: untouched this session.
+- The `audience` axis was deliberately dropped, not built.
+- `records.jsonl` (55 MB) is in public git history; removing it needs a history rewrite.
 
 ## Files written this session
 
-**Code:** `docs/50-prototype/crawl_corpus.py` (streaming fix) · `build_index.py` ·
-`docs/20-research/build_ia_artifacts.py` · `build_six_axis.py`
-**Data:** `corpus/records-doc.jsonl` (1885) · `corpus/urls-doc.txt` ·
-`20-research/six-axis-classification.jsonl` · `facet-schema.json` · `ia-map.json` ·
-`sitemap-inventory.csv` · `mega-menu.json` · `50-prototype/index-build-report.json`
-**Docs:** `20-research/21-ia-audit.md` · `40-concepts/44-design-thinking.md` ·
-`docs/briefs/README.md` (+ CHALLENGE step) · 19 × `docs/briefs/WU-NN.md`
-**Demo:** `50-prototype/demo/index.html` · `config.js` · `.gitignore`
-**Vault:** `Projects/Search-First-Algolia-com/{index.md,log.md,tasks.md}` ·
-`wiki/{ia-findings.md,coverage-gaps.md}` · `Projects/AI-OS/My-Projects.md` (registered)
-**Memory:** 3 new files + `MEMORY.md` + `session_pointer.md`
+**Code** — `docs/60-enrichment/build_schema.py`, `classify.py`, `apply_taxonomy.py`,
+`taxonomy-schema.algolia-com.json`, `taxonomy-assignments.jsonl`, `candidates.jsonl` (empty),
+`enhanced-pre-taxonomy-20260805.jsonl`
+
+**Documentation** — `docs/70-documentation/README.md`,
+`enrichment/chapter-1-taxonomy-enrichment.md` (226 lines),
+`enrichment/chapter-2-content-enrichment.md`, `enrichment/chapter-3-enrichment-validation.md`
+
+**Vault** — `Projects/Search-First-Algolia-com/{index.md, log.md, tasks.md}`, `wiki/log.md`,
+`wiki/hot.md`
+
+**Asana** — WU-26 + `[87]`; `Create Project Documentation` → `Enrichment documentation` →
+3 chapters + 8 section subtasks under Chapter 1
+
+**Live index** — `Algolia_Prod_Copy_Enhanced` (11 new fields on 16,967 records, facet config),
+snapshot `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805`
