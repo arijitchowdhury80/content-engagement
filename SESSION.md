@@ -9,12 +9,20 @@ _Last updated: 2026-08-06 00:40 EDT_
 > The frontend lane owns `docs/50-prototype/demo/`, the WU briefs and Asana state.
 > Run `git status` before any `git add -A` — the other lane may have work in flight.
 
-**WU-26 opened and its first sub-task shipped.** `Algolia_Prod_Copy_Enhanced` (16,967 records)
-now carries an 8-axis taxonomy, applied live and verified by post-write census. Coverage passes
-on 5 of 8 axes. **Precision is unmeasured** — that is the next job. The demo track was untouched
-this session; it remains at 6 of 25 work units, acceptance criteria 2 met · 2 partial · 3 not met.
+**Backend:** WU-26 opened and its first sub-task shipped. `Algolia_Prod_Copy_Enhanced`
+(16,967 records) now carries an 8-axis taxonomy, applied live and verified by post-write census.
+Coverage passes on 5 of 8 axes. **Precision is unmeasured — `validate.py` is backend's next job.**
+
+**Frontend:** the dead-end crawl (WU-02/WU-22) was found redundant and killed; WU-03/04/05/15
+rescoped to read from Enhanced; the demo repointed and verified live in-browser. The actual
+research phase (WU-03/06/07/08/09/10) has NOT been executed — **WU-04 is frontend's next job.**
 
 ## Resume action
+
+**This file covers two parallel lanes on the same repo. Pick the one you were opened for —
+do not default to backend just because it's listed first.**
+
+### If backend/enrichment lane
 
 1. Read this file, then `Projects/Search-First-Algolia-com/index.md` in the vault.
 2. **Write `docs/60-enrichment/validate.py`** — taxonomy validation. Scope is already written in
@@ -28,6 +36,22 @@ this session; it remains at 6 of 25 work units, acceptance criteria 2 met · 2 p
      enumerated (394 patterns, 64 cover 95%).
 3. Resolve the two open R5 failures (see *Remaining work*).
 4. Then, in order: content enrichment → content validation → full-record validation.
+
+### If frontend/demo lane
+
+1. Read this file, then `Projects/Search-First-Algolia-com/index.md` in the vault, then
+   `docs/briefs/README.md` (session entry protocol) and `docs/briefs/WU-04.md`.
+2. **Run WU-04** — IA taxonomy, intent matrix, page-role classification. Rescoped 2026-08-06 to
+   read from `Algolia_Prod_Copy_Enhanced`, not the deleted crawl. Faster than originally scoped —
+   Chapter 1's taxonomy (backend lane) already covers page_type/product/feature/solution; this
+   unit still owes audience/CTA extraction, the nav-vs-search-source resolution, and the
+   must-preserve URL list.
+3. WU-04 directly unblocks **WU-05** (the nav→search mapping exercise, shrunk to 3 new axes —
+   intent/audience/conversion_action) and **WU-11**. WU-03, WU-07, WU-08 are also ready if
+   preferred — see `Projects/Search-First-Algolia-com/tasks.md` for the full ready list.
+4. The demo itself (`docs/50-prototype/demo/`) needs no further fix right now — verified working
+   2026-08-06 against `Algolia_Prod_Copy_Enhanced`. Revisit only once WU-04/05/14/15 produce new
+   facets or ranking signals to wire in.
 
 ## Where we stopped (exact)
 
