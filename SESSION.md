@@ -86,9 +86,13 @@ all of it: **no sampling**, loop one record at a time, deterministic and predict
   ledger's did (it still carries the retired names App Search and DocSearch).
 
 **Still open from prior sessions** — GA/Looker export (WU-06 → WU-10), Sales/SC interviews
-(WU-09), an owner for `taxonomy-schema.algolia-com.json`, and ⚠ **two credentials needing
-revocation**: the Asana OAuth client secret pasted into chat 2026-08-05, and the Asana PAT pasted
-2026-08-06.
+(WU-09), and an owner for `taxonomy-schema.algolia-com.json`.
+
+**Credential exposure — CLOSED by decision (Arijit, 2026-08-06).** The Asana OAuth client secret
+(08-05) and the Asana PAT (08-06) were both pasted into chat transcripts. Arijit's call: not
+revoking, this is a solo development workspace. Recorded as a decision, not an open action — do
+not re-raise. Both live only in local transcripts and in `.env.asana` (mode 600, gitignored,
+never committed); neither is in the public repo.
 
 **Unblocked 2026-08-06** — Asana PAT works (`start_on` persists, so real Gantt is now possible).
 VPS SSH works: `chowmes`, Ubuntu 24.04.4, connect via
