@@ -1,6 +1,6 @@
 # SESSION — Search-First Algolia.com
 
-_Last updated: 2026-08-06 00:40 EDT_
+_Last updated: 2026-08-06 10:20 EDT_
 
 ## Status
 
@@ -93,8 +93,11 @@ in sync at `e49ca6b`. Nothing was left half-finished.
 **Then — Chapter 2, content enrichment**
 
 - Three axes short of target and the cause is measured: **no body field**, 419 chars/record.
-- 51.8% of the 12,114 distinct URLs already have a body in other indices in the same app or in
-  local corpus files — **zero fetching**. Gap: 5,838 URLs.
+- 51.8% of the 12,114 distinct URLs already have a body in **three live indices in the same
+  Algolia app** — zero fetching, three API reads. Gap: 5,838 URLs.
+  Re-measured 2026-08-06 after the local corpus files were deleted: `SEARCHFIRST_WWW_v1` 3,775 ·
+  `algolia-central_enterprise_ledger` 3,302 · `AC2_WWW_MULTI_NEURAL_body` 3,037 · union 6,274.
+  The deleted local corpora were fully redundant, so coverage is unchanged.
 - Rejected, do not revisit: remapping enterprise_ledger's `/old-docs/` onto `/doc/`.
 
 **Then** — content validation, then combined full-record validation. Arijit's standing rule for
@@ -106,11 +109,18 @@ all of it: **no sampling**, loop one record at a time, deterministic and predict
   That is **79 Greenhouse job ads**; the real median is 73 chars. **Eight agent prompts were
   written on that false premise and need review.** Same doc: "12,114 records" is the distinct-URL
   count; the record count is 16,967.
-- Name an owner for `taxonomy-schema.algolia-com.json`, or the vocabulary rots exactly as the
-  ledger's did (it still carries the retired names App Search and DocSearch).
+- **Add a staleness check to `build_schema.py`** (~20 lines). This REPLACES the earlier "name a
+  schema owner" ask, which was withdrawn 2026-08-06 as ceremony standing in for a missing check.
+  Reasoning: `classify.py` already hard-fails on an unmatched URL and the candidate queue already
+  captures unknown values, so **additions** are covered. Neither catches **retirements** — a
+  vocabulary value still in the schema that no longer exists on the site. That is exactly how the
+  ledger ended up shipping `App Search` and `DocSearch` as current product names. The check
+  re-derives the six URL-derived vocabularies from the live sitemap and fails loudly on any schema
+  value the site no longer has. Runs on every schema build; no schedule, nobody has to remember.
 
-**Still open from prior sessions** — Sales/SC interviews (WU-09), and an owner for
-`taxonomy-schema.algolia-com.json`.
+**Nothing is pending on the backend lane.** Sales/SC interviews (WU-09) belong to the
+**frontend lane** — they feed WU-10's case-against and block nothing in WU-26. The schema-owner
+ask is withdrawn (see the staleness check above).
 
 **Looker report supplied 2026-08-06:**
 https://datastudio.google.com/u/0/reporting/b05b44b9-43bd-436b-8dd3-c92729a93a93/page/p_88bw2x7jxc
@@ -123,7 +133,11 @@ revoking, this is a solo development workspace. Recorded as a decision, not an o
 not re-raise. Both live only in local transcripts and in `.env.asana` (mode 600, gitignored,
 never committed); neither is in the public repo.
 
-**Unblocked 2026-08-06** — Asana PAT works (`start_on` persists, so real Gantt is now possible).
+**Unblocked 2026-08-06** — ⚠ **CORRECTION: the Asana PAT is DEAD again (401 at 10:20).** It
+verified live at 01:14 and stopped working the same day. The *capability finding survives the
+token and is the valuable part*: `start_on` **does** persist via REST — the MCP was silently
+discarding it, which is why this project has never had a Gantt. Reissue at
+app.asana.com/0/my-apps and rewrite `.env.asana` when REST writes are needed.
 VPS SSH works: `chowmes`, Ubuntu 24.04.4, connect via
 `~/.claude/skills/hostinger-vps-ssh/scripts/ssh-hermes-vps --env "$PWD/.env.vps"`. Caddy runs as a
 Docker container; static sites live at `/data/sites/<name>`, Caddyfile at
