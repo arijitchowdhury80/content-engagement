@@ -4,6 +4,11 @@ _Last updated: 2026-08-06 00:40 EDT_
 
 ## Status
 
+> **Two sessions run on this repo in parallel (Arijit, 2026-08-06).** This file is the
+> **backend/enrichment** lane: `docs/60-enrichment/`, writing to `Algolia_Prod_Copy_Enhanced`.
+> The frontend lane owns `docs/50-prototype/demo/`, the WU briefs and Asana state.
+> Run `git status` before any `git add -A` — the other lane may have work in flight.
+
 **WU-26 opened and its first sub-task shipped.** `Algolia_Prod_Copy_Enhanced` (16,967 records)
 now carries an 8-axis taxonomy, applied live and verified by post-write census. Coverage passes
 on 5 of 8 axes. **Precision is unmeasured** — that is the next job. The demo track was untouched
@@ -92,12 +97,13 @@ WU-20 → criteria 3 and 6), GA/Looker export (WU-06 → WU-10), Sales/SC interv
 | Schema (the data) | `docs/60-enrichment/taxonomy-schema.algolia-com.json` |
 | Assignments | `docs/60-enrichment/taxonomy-assignments.jsonl` (12,114 rows, gitignored) |
 | Pre-state dump | `docs/60-enrichment/enhanced-pre-taxonomy-20260805.jsonl` (gitignored) |
+| ⚠ Deleted 2026-08-06 | `docs/50-prototype/corpus/records*.jsonl` — gone from disk and git history. Redundant with the live indices; body coverage is unaffected. |
 | Documentation | `docs/70-documentation/` — Book 1 Enrichment, Ch.1 complete |
 | Asana | WU-26 `1217210533022462` · `[87]` `1217210602718821` · docs tree `1217211372481002` |
 | Index (live) | `Algolia_Prod_Copy_Enhanced` |
 | Rollback | `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805` |
 | GitHub (PUBLIC) | `arijitchowdhury80/content-engagement` @ `e49ca6b` |
-| Demo (untouched) | `docs/50-prototype/demo/` — `python3 -m http.server 8899` |
+| Demo (other session's lane) | `docs/50-prototype/demo/` — now points at `Algolia_Prod_Copy_Enhanced`, not `SEARCHFIRST_WWW_v1` |
 
 ## What has NOT been done
 
@@ -106,9 +112,9 @@ WU-20 → criteria 3 and 6), GA/Looker export (WU-06 → WU-10), Sales/SC interv
 - `validate.py` does not exist.
 - Staging + atomic move is designed and documented but **was not used** — writes went in-place.
 - Content enrichment: not started. No body field exists on the index.
-- The demo, `SEARCHFIRST_WWW_v1`, and all 25 original work units: untouched this session.
+- All 25 original work units: untouched by this session.
 - The `audience` axis was deliberately dropped, not built.
-- `records.jsonl` (55 MB) is in public git history; removing it needs a history rewrite.
+- `records.jsonl` was removed from public git history by the parallel session; it is also gone from disk.
 
 ## Files written this session
 

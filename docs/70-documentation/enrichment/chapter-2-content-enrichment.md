@@ -35,14 +35,24 @@ The measured consequence: `product` resolves at 42.5% against a 70% target, `fea
 
 **51.8% of the index's 12,114 distinct URLs already have a real body** sitting in other indices in the *same Algolia app*, or in local corpus files on disk. Zero fetching required.
 
-| Source | URLs covered |
+**Re-measured 2026-08-06** after the two local corpus files (`records.jsonl`,
+`records-doc.jsonl`) were deleted from disk and scrubbed from git history. They turned out to be
+**fully redundant** with the live indices — total coverage is unchanged.
+
+| Source (all live Algolia indices, same app) | URLs it covers |
 |---|---|
-| `algolia-central_enterprise_ledger` | 2,469 |
-| `SEARCHFIRST_WWW_v1` | 2,138 |
-| `docs/50-prototype/corpus/records.jsonl` | 1,413 |
-| `docs/50-prototype/corpus/records-doc.jsonl` | 226 |
-| `AC2_WWW_MULTI_NEURAL_body` | 30 |
-| **Total distinct** | **6,276 / 12,114 = 51.8%** |
+| `SEARCHFIRST_WWW_v1` | 3,775 |
+| `algolia-central_enterprise_ledger` (excluding `/old-docs/`) | 3,302 |
+| `AC2_WWW_MULTI_NEURAL_body` | 3,037 |
+| **Union, distinct** | **6,274 / 12,114 = 51.8%** |
+
+The three overlap heavily, which is why the union is far below the sum. Nothing needs to be
+crawled to reach 51.8% — it is three API reads.
+
+> **Check before relying on this.** `SEARCHFIRST_WWW_v1` contributes the single largest share.
+> The repo `CLAUDE.md` states it was deleted; the account still showed **4,196 entries** on
+> 2026-08-06. Confirm it exists before planning around it — if it is removed, re-measure, because
+> the ledger and AC2_body do not fully cover what it holds.
 
 Median body over the covered set is 10,039 chars. Index growth roughly +49 MB at a 12,000-char cap.
 
