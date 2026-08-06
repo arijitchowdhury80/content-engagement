@@ -1,0 +1,14 @@
+{
+  "index": "SEARCHFIRST_WWW_v1",
+  "records_indexed": 4196,
+  "www_ok": 2322,
+  "doc_ok": 1885,
+  "six_axis_join_rate": 100.0,
+  "excluded": {
+    "thin_body": 3,
+    "utility": 8
+  },
+  "truncated": 1762,
+  "body_limit_chars": 20000,
+  "neural_search": "rejected-needs-event-history"
+}

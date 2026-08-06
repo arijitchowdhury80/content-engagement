@@ -1,0 +1,101 @@
+{
+  "note": "Source task [18]. Extracted from the rendered algolia.com DOM 2026-08-05. The mega-menu is site chrome, so WU-02 strips it from every corpus record by design — this file is the standalone artifact.",
+  "extracted_from": "https://www.algolia.com/products/ai-search (global nav, identical site-wide)",
+  "menus": {
+    "Products": {
+      "organising_axis": "product capability",
+      "items": [
+        {"label": "Overview", "url": "/products"},
+        {"label": "Search", "url": "/products/ai-search"},
+        {"label": "Recommendations", "url": "/products/ai-recommendations"},
+        {"label": "Browse", "url": "/products/ai-browse"},
+        {"label": "Agent Studio", "url": "/products/ai/agent-studio"},
+        {"label": "Generative Experiences", "url": "/products/ai/generative-experiences"},
+        {"label": "Personalization", "url": "/products/features/personalization"},
+        {"label": "Analytics", "url": "/products/features/analytics"}
+      ]
+    },
+    "Industries": {
+      "organising_axis": "business context / vertical",
+      "items": [
+        {"label": "SEE ALL", "url": "/industries"},
+        {"label": "Auto Parts", "url": "/industries/auto-parts"},
+        {"label": "B2B Commerce", "url": "/industries/b2b-ecommerce"},
+        {"label": "Ecommerce", "url": "/industries/ecommerce"},
+        {"label": "Fashion", "url": "/industries/fashion"},
+        {"label": "Grocery", "url": "/industries/grocery"},
+        {"label": "Higher Education", "url": "/industries/higher-education"},
+        {"label": "Media", "url": "/industries/media"}
+      ]
+    },
+    "Use cases": {
+      "organising_axis": "visitor intent / job to be done",
+      "items": [
+        {"label": "SEE ALL", "url": "/use-cases"},
+        {"label": "Documentation search", "url": "/use-cases/documentation-search"},
+        {"label": "Enterprise search", "url": "/use-cases/enterprise"},
+        {"label": "Headless commerce", "url": "/use-cases/headless-commerce"},
+        {"label": "Image search", "url": "/use-cases/image-search"},
+        {"label": "Retail Media Network", "url": "/use-cases/retail-media-network"},
+        {"label": "Site search", "url": "/use-cases/site-search"},
+        {"label": "Visual search", "url": "/use-cases/visual-search"}
+      ]
+    },
+    "Department": {
+      "organising_axis": "audience / role — maps directly onto WU-05 axis 2",
+      "items": [
+        {"label": "SEE ALL", "url": "/department"},
+        {"label": "Digital Experience", "url": "/department/digital-experience"},
+        {"label": "Ecommerce", "url": "/department/ecommerce"},
+        {"label": "Engineering", "url": "/department/engineering"},
+        {"label": "Merchandising", "url": "/department/merchandisers"},
+        {"label": "Product Management", "url": "/department/product-management"}
+      ]
+    },
+    "Search solutions (platform)": {
+      "organising_axis": "integration / partner platform",
+      "items": [
+        {"label": "Adobe", "url": "/search-solutions/adobe-experience-manager"},
+        {"label": "BigCommerce", "url": "/search-solutions/bigcommerce"},
+        {"label": "Commercetools", "url": "/search-solutions/commercetools"},
+        {"label": "Shopify", "url": "/search-solutions/shopify"},
+        {"label": "Salesforce", "url": "/search-solutions/salesforce-commerce-cloud"}
+      ]
+    },
+    "Developers": {
+      "organising_axis": "implementation surface",
+      "items": [
+        {"label": "Developer Hub", "url": "/developers"},
+        {"label": "Code Exchange", "url": "/developers/code-exchange"},
+        {"label": "UI Components", "url": "/developers/search-ui"},
+        {"label": "Integrations", "url": "/developers/integrations"},
+        {"label": "MCP Server", "url": "/developers/lp-mcp"},
+        {"label": "Supabase", "url": "/developers/lp-supabase"}
+      ]
+    },
+    "Documentation": {
+      "organising_axis": "reference — NOT IN THE WWW CORPUS",
+      "warning": "Lives at /doc with its own sitemap (1885 URLs) that the main sitemap index does not reference. WU-02 did not crawl it.",
+      "items": [
+        {"label": "Documentation", "url": "/doc"},
+        {"label": "Quick Start Guide", "url": "/doc/guides/getting-started/quick-start/"}
+      ]
+    },
+    "Company": {
+      "organising_axis": "trust / corporate",
+      "items": [
+        {"label": "Company", "url": "/about"},
+        {"label": "Newsroom", "url": "/about/news"}
+      ]
+    }
+  },
+  "external_destinations_in_nav": [
+    {"label": "Login", "url": "https://dashboard.algolia.com/users/sign_in", "status": 403, "journey": "Login"},
+    {"label": "Support", "url": "https://support.algolia.com/", "status": 302, "journey": "Support"},
+    {"label": "Algolia Academy", "url": "https://academy.algolia.com", "status": 302, "journey": "Resources"},
+    {"label": "Security & Compliance", "url": "https://trust.algolia.com/", "status": 200, "journey": "Trust"},
+    {"label": "What's New", "url": "https://changelog.algolia.com/", "status": 200, "journey": "Products"},
+    {"label": "API Status", "url": "https://status.algolia.com/", "status": 200, "journey": "Trust"}
+  ],
+  "finding": "The nav organises by SIX different axes at once — capability, vertical, job-to-be-done, role, integration platform, and implementation surface. That is not disorganisation; it is six legitimate entry models competing for one horizontal bar. It is also the strongest structural argument for search-led navigation, because a search box can serve all six axes simultaneously where a menu must pick an order."
+}

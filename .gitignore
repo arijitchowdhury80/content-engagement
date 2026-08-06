@@ -1,0 +1,18 @@
+# credentials — symlink to commons/rendered/*.env, never commit
+.env.local
+.env
+*.env
+
+.DS_Store
+node_modules/
+.playwright-mcp/
+
+# raw crawl / enrichment data payloads — regenerable, too large for git, not "docs"
+docs/50-prototype/corpus/records.jsonl
+docs/50-prototype/corpus/records-doc.jsonl
+docs/60-enrichment/enhanced-pre-taxonomy-*.jsonl
+docs/60-enrichment/taxonomy-assignments.jsonl
+
+# full Agent Studio agent dump — contains complete internal system-prompt text for 51
+# live agents; this repo is public, do not ship internal prompt content by default
+docs/20-research/agent-studio-inventory.json
