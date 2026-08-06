@@ -13,7 +13,13 @@ asana: "Chapter 2 : Content Enrichment (1217211621995392)"
 
 [Chapter 1](./chapter-1-taxonomy-enrichment.md) hit a ceiling that no amount of rule-writing can lift.
 
-`Algolia_Prod_Copy_Enhanced` has **no body field**. Total natural language across the whole index is **7.1M characters over 16,967 records — 419 characters per record.** A title and roughly one sentence.
+`Algolia_Prod_Copy_Enhanced` has **no body field**. Total natural language across the whole index is **6.37M characters over 12,114 records — 526 characters per record.** A title and roughly one sentence.
+
+> **Re-measured 2026-08-06 after deduplication.** Was 7.41M chars over 16,967 records (437/record).
+> Dedup removed 4,853 duplicate records carrying **1.04M characters — 14.0% of the index's text was
+> literally the same text stored again.** Chars-per-record rose only because the denominator shrank;
+> no new content was added and the conclusion is unchanged. If anything it is sharper: 526 characters
+> is still a title and one sentence, and the real body text still does not exist.
 
 Median text by page type:
 
