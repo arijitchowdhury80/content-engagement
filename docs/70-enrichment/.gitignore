@@ -5,3 +5,8 @@ __pycache__/
 # pricing governance, legal boundaries and the threat model, and this repo is
 # PUBLIC. One was pushed on 2026-08-06 and had to be removed.
 reports/asana-backup-*.json
+
+# Rescued body text from SEARCHFIRST_WWW_v1 before it was deleted (2026-08-07).
+# 325 records, 6MB, the only copy of those bodies. Chapter 3 consumes it.
+# Not committed: it is bulk page content, not source.
+body-rescue-*.jsonl

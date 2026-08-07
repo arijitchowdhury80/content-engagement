@@ -39,26 +39,31 @@ The measured consequence: `product` resolves at 42.5% against a 70% target, `fea
 
 ## The opportunity, already measured
 
-**51.8% of the index's 12,114 distinct URLs already have a real body** sitting in other indices in the *same Algolia app*, or in local corpus files on disk. Zero fetching required.
+**6,497 of the index's 12,114 distinct URLs (53.6%) already have a real body** available without
+fetching a single page — three API reads plus one local file.
 
-**Re-measured 2026-08-06** after the two local corpus files (`records.jsonl`,
-`records-doc.jsonl`) were deleted from disk and scrubbed from git history. They turned out to be
-**fully redundant** with the live indices — total coverage is unchanged.
+**Re-measured 2026-08-07**, after `SEARCHFIRST_WWW_v1` was deleted.
 
-| Source (all live Algolia indices, same app) | URLs it covers |
+| Source | URLs it covers |
 |---|---|
-| `SEARCHFIRST_WWW_v1` | 3,775 |
-| `algolia-central_enterprise_ledger` (excluding `/old-docs/`) | 3,302 |
-| `AC2_WWW_MULTI_NEURAL_body` | 3,037 |
-| **Union, distinct** | **6,274 / 12,114 = 51.8%** |
+| `algolia-central_enterprise_ledger` (excluding `/old-docs/`) | live index |
+| `AC2_WWW_MULTI_NEURAL_body` | live index |
+| Union of the two, restricted to Enhanced URLs | **6,172** |
+| `body-rescue-searchfirst-20260806.jsonl` (local, gitignored) | **+325** |
+| **Total distinct** | **6,497 / 12,114 = 53.6%** |
 
-The three overlap heavily, which is why the union is far below the sum. Nothing needs to be
-crawled to reach 51.8% — it is three API reads.
+### Why there is a local file in an otherwise all-API list
 
-> **Check before relying on this.** `SEARCHFIRST_WWW_v1` contributes the single largest share.
-> The repo `CLAUDE.md` states it was deleted; the account still showed **4,196 entries** on
-> 2026-08-06. Confirm it exists before planning around it — if it is removed, re-measure, because
-> the ledger and AC2_body do not fully cover what it holds.
+`SEARCHFIRST_WWW_v1` used to be the largest single contributor. It was **deleted on 2026-08-07**
+(verified 404). Of its 4,196 records, 3,871 duplicated bodies already held by the ledger or
+AC2_body — but **325 did not**. Those 325 were rescued to
+`docs/70-enrichment/body-rescue-searchfirst-20260806.jsonl` immediately before deletion, so
+coverage is unchanged. **That file is the only copy of those 325 bodies.** It is gitignored
+(6MB of page content, not source); if it is lost, those URLs can only be recovered by crawling
+algolia.com.
+
+The remaining **5,617 URLs have no body available anywhere** and are the real gap this chapter has
+to close.
 
 Median body over the covered set is 10,039 chars. Index growth roughly +49 MB at a 12,000-char cap.
 

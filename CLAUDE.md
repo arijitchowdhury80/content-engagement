@@ -27,14 +27,15 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 - **This repo is PUBLIC**: `github.com/arijitchowdhury80/content-engagement`. Arijit's explicit
   decision. Do not add credentials, internal system-prompt text, or anything you would not want
   indexed. `docs/20-research/agent-studio-inventory.json` is gitignored for exactly this reason.
-- **`SEARCHFIRST_WWW_v1` IS ALIVE — 4,196 records.** [Corrected 2026-08-06, verified by live
-  query.] An earlier note here said it "no longer exists"; that was wrong. Only the **local crawl
-  output** (`docs/50-prototype/corpus/*.jsonl`) was deleted and scrubbed from git history. The
-  index itself is on the account and is the single **largest body-text donor** for content
-  enrichment (3,775 of the 6,274 URLs that have a body). Read it; do not delete it; do not
-  re-crawl algolia.com to recreate it.
-  The from-scratch crawl work units (WU-05/WU-10) remain superseded — the content already existed
-  on the account.
+- **`SEARCHFIRST_WWW_v1` is DELETED — 2026-08-07, verified 404.** Do not recreate it and do not
+  re-crawl algolia.com. Read the history here, because it is the interesting part: this file
+  claimed it was deleted on **2026-08-06**, but only the local crawl output was removed that day.
+  The index itself survived a further day, unnoticed, because the claim was checked against the
+  filesystem and never against the account. **Verify a deletion on the surface you deleted from.**
+  Before it went, its **325 unique body records** — URLs whose body text existed in no other index —
+  were rescued to `docs/70-enrichment/body-rescue-searchfirst-20260806.jsonl` (gitignored), so
+  Chapter 3's body coverage is unchanged at 6,497 URLs. The from-scratch crawl work units
+  (WU-05/WU-10) remain superseded.
 - **The demo queries `Algolia_Prod_Copy_Enhanced` directly** — **12,114 records** after the
   2026-08-06 dedupe, one per distinct URL, down from 16,967. `distinct:true` on `url` is set, so
   search always returned 12,114 anyway. 8 sources, Chapter 1's taxonomy applied. Enhanced is the
