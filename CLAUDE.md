@@ -28,7 +28,7 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   decision. Do not add credentials, internal system-prompt text, or anything you would not want
   indexed. `docs/20-research/agent-studio-inventory.json` is gitignored for exactly this reason.
 - **`SEARCHFIRST_WWW_v1` no longer exists.** [Corrected 2026-08-06] It was built from a
-  from-scratch crawl (WU-02/WU-22) that duplicated content already on the account — killed
+  from-scratch crawl (WU-05/WU-10) that duplicated content already on the account — killed
   by Arijit, deleted, scrubbed from git history. **The demo now queries
   `Algolia_Prod_Copy_Enhanced` directly** (**12,114 records** after the 2026-08-06 dedupe — one per
   distinct URL, down from 16,967; note `distinct:true` on `url` is set, so search always saw 12,114
@@ -60,23 +60,45 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 
 ## Asana structure
 
-Restructured 2026-08-06. **One numbering scheme, and the phase lives in a section, not in the name.**
+Restructured 2026-08-06. **One numbering scheme. The number equals the position.**
 
-- **Sections** hold the phases: `P0 — Foundation & governance` … `P6 — Validation & comms`, plus
-  `Documentation`. This is what makes the board ordered and grouped.
-- **Work units**: `WU-01 — <name>`. No phase prefix — it was redundant (WU-01…21 already run in
-  phase order) and it was doing a job sections exist to do.
-- **Subtasks**: `WU-<parent>.<n> — <name>`, numbered 1..n within their parent. The old global
-  `[NN]` scheme is gone; nothing about `[44]` told you it belonged to WU-12.
-- WU-25's risk register keeps its own `[RA-n]`. The documentation tree is unnumbered by design.
+```
+P0 — Foundation & governance   WU-01 .. WU-04
+P1 — Research & data           WU-05 .. WU-11     <- WU-11 is Data enrichment
+P2 — Evidence & critique       WU-12 .. WU-15
+P3 — Models & governance       WU-16 .. WU-18
+P4 — Concept architecture      WU-19
+P5 — Build                     WU-20 .. WU-24
+P6 — Validation & comms        WU-25 .. WU-26
+Documentation                  Create Project Documentation
+```
 
-`docs/60-enrichment/asana-number-map.json` resolves every old `[NN]` to its new label.
-`docs/05-execution-plan.md` is an **archive** and deliberately keeps the original numbers.
+- **Sections** hold the phases. That is what makes the board grouped.
+- **Work units**: `WU-NN — <name>`, no phase prefix. The number is contiguous and ascending
+  across sections, so reading order and numeric order are the same thing.
+- **Subtasks**: `WU-<parent>.<n> — <name>`, numbered 1..n within their parent.
+- WU-04's risk register keeps its own `[RA-n]`. The documentation tree is unnumbered by design.
 
-**Adding a subtask:** next free `.n` under its parent. **Never** renumber siblings to insert in the
-middle — the numbers are cross-referenced inside the task briefs and in `docs/briefs/WU-NN.md`.
+**Adding a work unit:** it goes at the end of its phase, and every later unit shifts. Use the
+script — do not hand-edit, the numbers are cross-referenced in ~830 places including the brief
+filenames.
 
-To re-run or extend the restructure: `docs/60-enrichment/asana_restructure.py --dry-run`. It rewrites
-Asana notes and sweeps the repo and vault in one pass, then re-reads from Asana to verify.
-**Build its rename map from a pre-change snapshot** — running it twice against already-renamed tasks
-produces an empty map and a meaningless "PASS".
+**Adding a subtask:** next free `.n` under its parent. Never renumber siblings to insert in the
+middle.
+
+### The two scripts, and the trap in both
+
+- `docs/60-enrichment/asana_restructure.py` — sections, prefix removal, subtask renumbering
+- `docs/60-enrichment/asana_renumber_units.py` — work-unit renumbering to match phase order
+
+Both rewrite Asana notes, sweep the repo and vault, and re-read from Asana to verify. The unit
+script also `git mv`s `docs/briefs/WU-NN.md` in two phases so a rename cannot collide.
+
+**Substitution must be a single pass with a callback.** Sequential replaces double-apply:
+`04→07`, then that same `07→12`. **And build the rename map from a pre-change snapshot** — run
+either script twice and it derives an empty map, then verifies against it and prints a
+meaningless `PASS`.
+
+Resolvers: `asana-number-map.json` (old `[NN]` → subtask label) and `wu-renumber-map.json`
+(old → new WU number). `docs/05-execution-plan.md` is an **archive** and keeps the original
+numbers by design.

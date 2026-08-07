@@ -2,7 +2,7 @@
 title: "Chapter 2 — Deduplication"
 description: "Collapsing 16,967 records onto 12,114 distinct URLs without losing a single field of content."
 status: complete
-asana: "[WU-26.2] Index deduplication (1217241770015375)"
+asana: "[WU-11.2] Index deduplication (1217241770015375)"
 ---
 
 # Chapter 2 — Deduplication

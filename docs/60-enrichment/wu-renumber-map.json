@@ -1,0 +1,35 @@
+{
+  "generated": "2026-08-06",
+  "note": "work-unit renumber so number == phase position. docs/05-execution-plan.md is an archive and keeps its ORIGINAL WU numbers and [NN] subtask numbers as written; use this map and asana-number-map.json to resolve them.",
+  "old_to_new": {
+    "WU-01": "WU-01",
+    "WU-02": "WU-05",
+    "WU-03": "WU-06",
+    "WU-04": "WU-07",
+    "WU-05": "WU-08",
+    "WU-06": "WU-09",
+    "WU-07": "WU-12",
+    "WU-08": "WU-13",
+    "WU-09": "WU-14",
+    "WU-10": "WU-15",
+    "WU-11": "WU-16",
+    "WU-12": "WU-17",
+    "WU-13": "WU-18",
+    "WU-14": "WU-19",
+    "WU-15": "WU-20",
+    "WU-16": "WU-21",
+    "WU-17": "WU-22",
+    "WU-18": "WU-23",
+    "WU-19": "WU-24",
+    "WU-20": "WU-25",
+    "WU-21": "WU-26",
+    "WU-22": "WU-10",
+    "WU-23": "WU-02",
+    "WU-24": "WU-03",
+    "WU-25": "WU-04",
+    "WU-26": "WU-11"
+  },
+  "excluded_from_sweep": [
+    "docs/05-execution-plan.md"
+  ]
+}

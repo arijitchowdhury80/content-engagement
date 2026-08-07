@@ -9,7 +9,7 @@ _Last updated: 2026-08-06 10:20 EDT_
 > The frontend lane owns `docs/50-prototype/demo/`, the WU briefs and Asana state.
 > Run `git status` before any `git add -A` — the other lane may have work in flight.
 
-**Backend:** WU-26 opened; two sub-tasks shipped. `Algolia_Prod_Copy_Enhanced` carries an 8-axis
+**Backend:** WU-11 opened; two sub-tasks shipped. `Algolia_Prod_Copy_Enhanced` carries an 8-axis
 taxonomy, applied live and verified by post-write census. Coverage passes on 5 of 8 axes.
 
 **[87] Index deduplication — DONE 2026-08-06, verified live.** The index is now **12,114 records,
@@ -26,9 +26,9 @@ claim that duplicates were inflating facets.
 
 **Precision is still unmeasured — taxonomy conformance + correctness are backend's next jobs.**
 
-**Frontend:** the dead-end crawl (WU-02/WU-22) was found redundant and killed; WU-03/04/05/15
+**Frontend:** the dead-end crawl (WU-05/WU-10) was found redundant and killed; WU-06/04/05/15
 rescoped to read from Enhanced; the demo repointed and verified live in-browser. The actual
-research phase (WU-03/06/07/08/09/10) has NOT been executed — **WU-04 is frontend's next job.**
+research phase (WU-06/06/07/08/09/10) has NOT been executed — **WU-07 is frontend's next job.**
 
 ## Resume action
 
@@ -53,17 +53,17 @@ do not default to backend just because it's listed first.**
 ### If frontend/demo lane
 
 1. Read this file, then `Projects/Search-First-Algolia-com/index.md` in the vault, then
-   `docs/briefs/README.md` (session entry protocol) and `docs/briefs/WU-04.md`.
-2. **Run WU-04** — IA taxonomy, intent matrix, page-role classification. Rescoped 2026-08-06 to
+   `docs/briefs/README.md` (session entry protocol) and `docs/briefs/WU-07.md`.
+2. **Run WU-07** — IA taxonomy, intent matrix, page-role classification. Rescoped 2026-08-06 to
    read from `Algolia_Prod_Copy_Enhanced`, not the deleted crawl. Faster than originally scoped —
    Chapter 1's taxonomy (backend lane) already covers page_type/product/feature/solution; this
    unit still owes audience/CTA extraction, the nav-vs-search-source resolution, and the
    must-preserve URL list.
-3. WU-04 directly unblocks **WU-05** (the nav→search mapping exercise, shrunk to 3 new axes —
-   intent/audience/conversion_action) and **WU-11**. WU-03, WU-07, WU-08 are also ready if
+3. WU-07 directly unblocks **WU-08** (the nav→search mapping exercise, shrunk to 3 new axes —
+   intent/audience/conversion_action) and **WU-16**. WU-06, WU-12, WU-13 are also ready if
    preferred — see `Projects/Search-First-Algolia-com/tasks.md` for the full ready list.
 4. The demo itself (`docs/50-prototype/demo/`) needs no further fix right now — verified working
-   2026-08-06 against `Algolia_Prod_Copy_Enhanced`. Revisit only once WU-04/05/14/15 produce new
+   2026-08-06 against `Algolia_Prod_Copy_Enhanced`. Revisit only once WU-07/05/14/15 produce new
    facets or ranking signals to wire in.
 
 ## Where we stopped (exact)
@@ -133,13 +133,13 @@ all of it: **no sampling**, loop one record at a time, deterministic and predict
   re-derives the six URL-derived vocabularies from the live sitemap and fails loudly on any schema
   value the site no longer has. Runs on every schema build; no schedule, nobody has to remember.
 
-**Nothing is pending on the backend lane.** Sales/SC interviews (WU-09) belong to the
-**frontend lane** — they feed WU-10's case-against and block nothing in WU-26. The schema-owner
+**Nothing is pending on the backend lane.** Sales/SC interviews (WU-14) belong to the
+**frontend lane** — they feed WU-15's case-against and block nothing in WU-11. The schema-owner
 ask is withdrawn (see the staleness check above).
 
 **Looker report supplied 2026-08-06:**
 https://datastudio.google.com/u/0/reporting/b05b44b9-43bd-436b-8dd3-c92729a93a93/page/p_88bw2x7jxc
-Needs an authenticated Google session — not fetchable with curl/WebFetch. Feeds WU-06; pull
+Needs an authenticated Google session — not fetchable with curl/WebFetch. Feeds WU-09; pull
 subtask `[75]` organic entrances by page type first. See memory `looker-analytics-report`.
 
 **Credential exposure — CLOSED by decision (Arijit, 2026-08-06).** The Asana OAuth client secret
@@ -157,7 +157,7 @@ why this project has never had a Gantt. MCP also cannot create sections or reord
 VPS SSH works: `chowmes`, Ubuntu 24.04.4, connect via
 `~/.claude/skills/hostinger-vps-ssh/scripts/ssh-hermes-vps --env "$PWD/.env.vps"`. Caddy runs as a
 Docker container; static sites live at `/data/sites/<name>`, Caddyfile at
-`/home/chowmesadmin/lab-judge/Caddyfile`. `contentengagement.info` is already wired up. WU-19 is
+`/home/chowmesadmin/lab-judge/Caddyfile`. `contentengagement.info` is already wired up. WU-24 is
 no longer blocked.
 
 ## Reference files
@@ -170,7 +170,7 @@ no longer blocked.
 | Pre-state dump | `docs/60-enrichment/enhanced-pre-taxonomy-20260805.jsonl` (gitignored) |
 | ⚠ Deleted 2026-08-06 | `docs/50-prototype/corpus/records*.jsonl` — gone from disk and git history. Redundant with the live indices; body coverage is unaffected. |
 | Documentation | `docs/70-documentation/` — Book 1 Enrichment, Ch.1 complete |
-| Asana | WU-26 `1217210533022462` · `[87]` `1217210602718821` · docs tree `1217211372481002` |
+| Asana | WU-11 `1217210533022462` · `[87]` `1217210602718821` · docs tree `1217211372481002` |
 | Index (live) | `Algolia_Prod_Copy_Enhanced` |
 | Rollback | `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805` |
 | GitHub (PUBLIC) | `arijitchowdhury80/content-engagement` @ `e49ca6b` |
@@ -186,12 +186,12 @@ no longer blocked.
 - All 25 original work units: untouched by this session.
 - The `audience` axis was deliberately dropped, not built.
 - `records.jsonl` was removed from public git history by the parallel session; it is also gone from disk.
-- **Frontend lane, 2026-08-06:** WU-03, WU-06, WU-07, WU-08, WU-09, WU-10 (the research phase)
+- **Frontend lane, 2026-08-06:** WU-06, WU-09, WU-12, WU-13, WU-14, WU-15 (the research phase)
   are still not executed — tonight's frontend work was scope correction (killing the dead
-  crawl, rescoping WU-04/05/15, fixing the demo), not the research deliverables themselves.
-  Recommended next: **WU-04** (unblocks WU-05's mapping exercise and WU-11).
+  crawl, rescoping WU-07/05/15, fixing the demo), not the research deliverables themselves.
+  Recommended next: **WU-07** (unblocks WU-08's mapping exercise and WU-16).
 - **New blocker:** real query-log access to the actual production search app (`1QDAWL72TQ`,
-  `ALGOLIA_WWW_PROD_V2`) — needed to ground WU-05's 3 remaining axes in real behavior instead
+  `ALGOLIA_WWW_PROD_V2`) — needed to ground WU-08's 3 remaining axes in real behavior instead
   of guessing. Ask Arijit.
 - ~~Asana PAT dead~~ **RESOLVED 2026-08-06** — never dead; the stored value had a duplicated `2/`
   prefix. Fixed and verified live. REST writes work.
@@ -209,7 +209,7 @@ no longer blocked.
 **Vault** — `Projects/Search-First-Algolia-com/{index.md, log.md, tasks.md}`, `wiki/log.md`,
 `wiki/hot.md`
 
-**Asana** — WU-26 + `[87]`; `Create Project Documentation` → `Enrichment documentation` →
+**Asana** — WU-11 + `[87]`; `Create Project Documentation` → `Enrichment documentation` →
 3 chapters + 8 section subtasks under Chapter 1
 
 **Live index** — `Algolia_Prod_Copy_Enhanced` (11 new fields on 16,967 records, facet config),

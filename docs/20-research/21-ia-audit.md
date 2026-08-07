@@ -1,8 +1,8 @@
-# WU-04 — IA audit, intent matrix, page-role classification
+# WU-07 — IA audit, intent matrix, page-role classification
 
-Unit: WU-04 · Covers `[WU-04.1] [WU-04.2] [WU-04.3] [WU-04.4] [WU-04.5]` (+ `[WU-02.2]` as `mega-menu.json`)
-Date: 2026-08-05 · Source: WU-02 corpus, 2322 records
-Brief: `docs/briefs/WU-04.md` · Asana: `1217199862117010`
+Unit: WU-07 · Covers `[WU-07.1] [WU-07.2] [WU-07.3] [WU-07.4] [WU-07.5]` (+ `[WU-05.2]` as `mega-menu.json`)
+Date: 2026-08-05 · Source: WU-05 corpus, 2322 records
+Brief: `docs/briefs/WU-07.md` · Asana: `1217199862117010`
 
 Derived artifacts in this directory are **generated**, not hand-authored:
 `build_ia_artifacts.py` → `ia-map.json` + `sitemap-inventory.csv`. Re-run it after any
@@ -19,7 +19,7 @@ algolia.com is an SEO content property with a thin conversion layer bolted on.
 That shape decides the concept's risk profile. A search-led homepage changes how people
 *discover* pages; it cannot change the fact that 1454 pages earn their living from Google
 landing directly on them. **The SEO objection is therefore not a side risk — it is the
-main risk**, and `[WU-04.4]`'s numbers are the reason.
+main risk**, and `[WU-07.4]`'s numbers are the reason.
 
 Second finding, unexpected and material: **the documentation is not in the corpus at all.**
 1885 `/doc` URLs live behind a sitemap the main sitemap index never references. Developers/
@@ -27,7 +27,7 @@ Docs is one of the 8 non-negotiable journeys and there is currently no content t
 
 ---
 
-## `[WU-04.4]` Page role — the numbers that matter
+## `[WU-07.4]` Page role — the numbers that matter
 
 | Role | Pages | Share | What it means |
 |---|---|---|---|
@@ -39,7 +39,7 @@ Docs is one of the 8 non-negotiable journeys and there is currently no content t
 
 **`must_preserve` = 2313 of 2322 (99.6%).** Only the 9 utility pages are genuinely disposable.
 
-## `[WU-04.3]` Intent
+## `[WU-07.3]` Intent
 
 | Intent | Pages | Share |
 |---|---|---|
@@ -57,10 +57,10 @@ Vocabularies and the full mapping are in `ia-map.json`.
 **The distribution is lopsided in a way that matters.** 72.8% of the site serves *learn*,
 while *buy*, *compare* and *troubleshoot* — the three intents closest to revenue and
 retention — are served by **17 pages combined.** A search experience tuned on content
-volume will bury the commercial pages under blog posts. WU-05's facet schema and WU-11's
+volume will bury the commercial pages under blog posts. WU-08's facet schema and WU-16's
 ranking model both have to correct for this deliberately; relevance-by-default will not.
 
-## `[WU-04.1]` Taxonomy
+## `[WU-07.1]` Taxonomy
 
 32 page types after re-typing, zero unclassified. Full counts in `ia-map.json`.
 The 57 records the URL classifier could not type resolved to: `playbook` 39,
@@ -87,10 +87,10 @@ demo request, content pages close with a self-serve signup.
 98% of pages point at one of two destinations — `dashboard.algolia.com/users/sign_up`
 (1686 pages) or `/demorequest` (551 pages).
 
-**Consequence for WU-05:** the "conversion action" axis has an honest cardinality of about
+**Consequence for WU-08:** the "conversion action" axis has an honest cardinality of about
 two, not six. Do not invent granularity the site does not have.
 
-## `[WU-04.2]` Repeated IA patterns
+## `[WU-07.2]` Repeated IA patterns
 
 Five templates carry the whole site:
 
@@ -106,7 +106,7 @@ There is no deep hierarchy to flatten — **the site is already shallow. Its pro
 breadth, not depth**, which is the correct framing for the concept: 2322 pages across one
 horizontal nav bar, not a deep tree users get lost in.
 
-## `[WU-04.5]` Nav taxonomy vs search-source taxonomy — the tension, and its resolution
+## `[WU-07.5]` Nav taxonomy vs search-source taxonomy — the tension, and its resolution
 
 **The tension.** The two taxonomies are not different in detail. They are orthogonal.
 
@@ -136,7 +136,7 @@ A buyer does not think *"I want Documentation rather than Resources."* They thin
 
 So: **facet on the nav's buyer axes; demote source to metadata.** Concretely —
 
-- The six nav axes become the six WU-05 facet axes. `Department` is already the audience
+- The six nav axes become the six WU-08 facet axes. `Department` is already the audience
   axis and `Use cases` is already the intent axis; this is not a new invention, it is the
   nav's own model made filterable instead of positional.
 - Source becomes a display badge and a tiebreaker, not a primary filter. Keep it available
@@ -163,7 +163,7 @@ destinations the 8 journeys depend on, verified reachable 2026-08-05:
 | `status.algolia.com` | 200 | Trust |
 
 **Login is not a page — it is an external app on another subdomain.** It cannot be a search
-result. This confirms the WU-11 brief's call that Login and Contact Sales must be persistent
+result. This confirms the WU-16 brief's call that Login and Contact Sales must be persistent
 utility links.
 
 ---
@@ -173,7 +173,7 @@ utility links.
 **BLOCKING-ADJACENT — the docs gap.** 1885 `/doc` URLs are absent from the corpus.
 Developers/Docs is a non-negotiable journey. Three options, and this is a decision for
 Arijit, not for a later unit to quietly pick:
-1. Crawl `/doc/sitemap.xml` as a WU-02 follow-on (~1885 pages, ~13 min at the measured
+1. Crawl `/doc/sitemap.xml` as a WU-05 follow-on (~1885 pages, ~13 min at the measured
    2.39 pages/sec) and index it alongside www. Makes the journey real.
 2. Use the prod subset of `AC2_WWW_MULTI_NEURAL` — but that is only 122 prod records, too
    thin to carry the journey.
@@ -183,17 +183,17 @@ Arijit, not for a later unit to quietly pick:
 **Recommendation: option 1.** It is 13 minutes of crawl for a journey that is 1 of 8, and
 without it acceptance criterion 2 cannot pass.
 
-**To WU-05:** six axes are already named by the nav — capability, vertical, intent,
+**To WU-08:** six axes are already named by the nav — capability, vertical, intent,
 audience, platform, implementation surface. Conversion-action cardinality is ~2, not 6.
 Correct for the 72.8%-learn skew.
 
-**To WU-10 `[WU-10.3]`:** 62.6% seo-acquisition, 1454 pages, is the quantified SEO exposure.
+**To WU-15 `[WU-15.3]`:** 62.6% seo-acquisition, 1454 pages, is the quantified SEO exposure.
 The 6.8% conversion layer is what the redesign actually touches.
 
-**To WU-11:** ranking must deliberately promote the 157 conversion and 17 buy/compare pages
+**To WU-16:** ranking must deliberately promote the 157 conversion and 17 buy/compare pages
 against 1454 content pages. Relevance-by-default will bury them.
 
-**To WU-15:** index www + docs, or state that the Docs journey is scoped down.
+**To WU-20:** index www + docs, or state that the Docs journey is scoped down.
 
 ## Verification
 

@@ -1,6 +1,6 @@
 # Design thinking — both frames
 
-Compressed from the `frontend-builder` 6-question workflow. Inputs came from WU-04/WU-05
+Compressed from the `frontend-builder` 6-question workflow. Inputs came from WU-07/WU-08
 rather than being derived here, so this records decisions, not exploration.
 
 ## 1. Mental model
@@ -13,7 +13,7 @@ engagement surface *in place*.
 
 **Frame 2 (search-first north star):** metaphor is *"Algolia's own product, applied to
 Algolia."* Closer to a command palette than a website. Search IS the navigation.
-**What would confuse them:** losing Login and Contact Sales. WU-04 proved Login is an
+**What would confuse them:** losing Login and Contact Sales. WU-07 proved Login is an
 external 403 app on another subdomain — it can never be a search result. Both frames keep
 them as persistent utility links.
 
@@ -27,7 +27,7 @@ them as persistent utility links.
 | **Supporting** | Source badge · page-type · result count | Same |
 
 **Tier inflation flagged and avoided:** `source` (Documentation/Blog/Website…) is
-Supporting, *not* a primary filter. WU-04 `[WU-04.5]` established it is an infrastructure
+Supporting, *not* a primary filter. WU-07 `[WU-07.5]` established it is an infrastructure
 taxonomy, not a user model. It shows as a badge; the six buyer axes are the facets.
 
 ## 3. Interaction flow
@@ -66,7 +66,7 @@ gets a distinct visual treatment rather than being result #1.
 - *Empty query looks broken.* → pre-query state is designed, not blank.
 
 **Elephants**
-- No real user has seen this. WU-20 is the test; tonight is directional only.
+- No real user has seen this. WU-25 is the test; tonight is directional only.
 - **Neural search is OFF.** Algolia rejects `mode:neuralSearch` on an index with no event
   history. The demo runs standard ranking. This must be said out loud, not implied.
 - The corpus is English-only and ~55% of the real site (www + docs, no de/fr).
