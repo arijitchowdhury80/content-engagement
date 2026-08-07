@@ -43,6 +43,13 @@ def api_get(path, token):
 
 
 def fetch_all(token):
+    """Every task at every depth.
+
+    Recursion matters: the documentation tree is Create Project Documentation ->
+    Enrichment documentation -> Chapter N -> 1.1..1.8, which is three levels
+    down. A one-level walk silently skips 13 tasks and then reports a clean
+    bill of health for tasks it never looked at.
+    """
     tasks, offset = [], None
     while True:
         q = f"/projects/{PROJECT}/tasks?limit=100&opt_fields=name,notes,completed"
@@ -55,11 +62,18 @@ def fetch_all(token):
         offset = (d.get("next_page") or {}).get("offset")
         if not offset:
             break
+
     out = {t["gid"]: t for t in tasks}
-    for t in list(tasks):
-        for s in api_get(f"/tasks/{t['gid']}/subtasks"
+
+    def walk(gid):
+        for s in api_get(f"/tasks/{gid}/subtasks"
                          f"?opt_fields=name,notes,completed", token) or []:
-            out[s["gid"]] = s
+            if s["gid"] not in out:
+                out[s["gid"]] = s
+                walk(s["gid"])
+
+    for t in tasks:
+        walk(t["gid"])
     return out
 
 
