@@ -57,3 +57,18 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 - **No sampling.** Arijit's standing rule for enrichment and validation: process one record at a
   time, verify by full census against the live surface.
 - Do not tick an Asana checkbox yourself. Stop at Arijit's gate.
+
+## Asana numbering
+
+Subtasks carry `[NN]` from **one global sequence across the whole project**, not a per-parent
+counter. Parents are `P<phase> · WU-<nn> — <name>`. WU-25's risk register uses its own `[RA-n]`.
+The documentation tree (`Create Project Documentation` → `Enrichment documentation` → chapters) is
+unnumbered by design.
+
+**Currently 1–88, complete, no gaps and no collisions** (verified live 2026-08-06). Next free is
+`[89]`.
+
+**Never renumber existing tasks to close a gap.** `[43]` was vacant and shifting 44–87 down was
+attempted and reverted: the numbers also live *inside* 61 hand-written task briefs as cross-refs
+("feeds [50] and [51]"), so a title-only shift silently breaks ~90,000 characters of notes. The gap
+was filled with a real task instead. If a gap appears again, fill it — do not shift.
