@@ -510,13 +510,16 @@ def main():
           f"rescues {len(p.rescues)}")
     print(f"  duplicate groups {p.duplicate_group_count} | chunk groups {p.chunk_group_count}")
 
-    report = os.path.join(args.out, f"dedupe-dryrun-{stamp}.md")
+    # Index name in the filename: without it, a second index's dry-run silently
+    # overwrites the first's report on the same day. It did exactly that once.
+    tag = f"{args.index}-{stamp}"
+    report = os.path.join(args.out, f"dedupe-dryrun-{tag}.md")
     write_report(report, c, p)
-    rescue_log = os.path.join(args.out, f"rescue-log-{stamp}.jsonl")
+    rescue_log = os.path.join(args.out, f"rescue-log-{tag}.jsonl")
     with open(rescue_log, "w", encoding="utf-8") as f:
         for r in p.rescues:
             f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
-    delete_list = os.path.join(args.out, f"delete-ids-{stamp}.txt")
+    delete_list = os.path.join(args.out, f"delete-ids-{tag}.txt")
     with open(delete_list, "w", encoding="utf-8") as f:
         f.write("\n".join(p.delete_ids) + "\n")
     print(f"  wrote {report}")
