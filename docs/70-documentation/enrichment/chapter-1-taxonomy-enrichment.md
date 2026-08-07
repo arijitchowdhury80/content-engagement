@@ -5,7 +5,7 @@ status: complete
 applied: 2026-08-06
 index: Algolia_Prod_Copy_Enhanced
 asana: "Chapter 1 : Taxonomy Enrichment (1217211516276070)"
-work_unit: "WU-26 subtask [87] (1217210602718821)"
+work_unit: "WU-26 subtask [WU-26.1] (1217210602718821)"
 ---
 
 # Chapter 1 — Taxonomy Enrichment

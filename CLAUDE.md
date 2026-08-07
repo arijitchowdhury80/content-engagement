@@ -58,17 +58,25 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   time, verify by full census against the live surface.
 - Do not tick an Asana checkbox yourself. Stop at Arijit's gate.
 
-## Asana numbering
+## Asana structure
 
-Subtasks carry `[NN]` from **one global sequence across the whole project**, not a per-parent
-counter. Parents are `P<phase> · WU-<nn> — <name>`. WU-25's risk register uses its own `[RA-n]`.
-The documentation tree (`Create Project Documentation` → `Enrichment documentation` → chapters) is
-unnumbered by design.
+Restructured 2026-08-06. **One numbering scheme, and the phase lives in a section, not in the name.**
 
-**Currently 1–88, complete, no gaps and no collisions** (verified live 2026-08-06). Next free is
-`[89]`.
+- **Sections** hold the phases: `P0 — Foundation & governance` … `P6 — Validation & comms`, plus
+  `Documentation`. This is what makes the board ordered and grouped.
+- **Work units**: `WU-01 — <name>`. No phase prefix — it was redundant (WU-01…21 already run in
+  phase order) and it was doing a job sections exist to do.
+- **Subtasks**: `WU-<parent>.<n> — <name>`, numbered 1..n within their parent. The old global
+  `[NN]` scheme is gone; nothing about `[44]` told you it belonged to WU-12.
+- WU-25's risk register keeps its own `[RA-n]`. The documentation tree is unnumbered by design.
 
-**Never renumber existing tasks to close a gap.** `[43]` was vacant and shifting 44–87 down was
-attempted and reverted: the numbers also live *inside* 61 hand-written task briefs as cross-refs
-("feeds [50] and [51]"), so a title-only shift silently breaks ~90,000 characters of notes. The gap
-was filled with a real task instead. If a gap appears again, fill it — do not shift.
+`docs/60-enrichment/asana-number-map.json` resolves every old `[NN]` to its new label.
+`docs/05-execution-plan.md` is an **archive** and deliberately keeps the original numbers.
+
+**Adding a subtask:** next free `.n` under its parent. **Never** renumber siblings to insert in the
+middle — the numbers are cross-referenced inside the task briefs and in `docs/briefs/WU-NN.md`.
+
+To re-run or extend the restructure: `docs/60-enrichment/asana_restructure.py --dry-run`. It rewrites
+Asana notes and sweeps the repo and vault in one pass, then re-reads from Asana to verify.
+**Build its rename map from a pre-change snapshot** — running it twice against already-renamed tasks
+produces an empty map and a meaningless "PASS".

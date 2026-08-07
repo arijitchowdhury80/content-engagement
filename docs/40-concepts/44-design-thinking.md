@@ -27,7 +27,7 @@ them as persistent utility links.
 | **Supporting** | Source badge · page-type · result count | Same |
 
 **Tier inflation flagged and avoided:** `source` (Documentation/Blog/Website…) is
-Supporting, *not* a primary filter. WU-04 `[17]` established it is an infrastructure
+Supporting, *not* a primary filter. WU-04 `[WU-04.5]` established it is an infrastructure
 taxonomy, not a user model. It shows as a badge; the six buyer axes are the facets.
 
 ## 3. Interaction flow

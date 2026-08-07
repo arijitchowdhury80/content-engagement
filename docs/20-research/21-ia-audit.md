@@ -1,6 +1,6 @@
 # WU-04 — IA audit, intent matrix, page-role classification
 
-Unit: WU-04 · Covers `[13] [14] [15] [16] [17]` (+ `[18]` as `mega-menu.json`)
+Unit: WU-04 · Covers `[WU-04.1] [WU-04.2] [WU-04.3] [WU-04.4] [WU-04.5]` (+ `[WU-02.2]` as `mega-menu.json`)
 Date: 2026-08-05 · Source: WU-02 corpus, 2322 records
 Brief: `docs/briefs/WU-04.md` · Asana: `1217199862117010`
 
@@ -19,7 +19,7 @@ algolia.com is an SEO content property with a thin conversion layer bolted on.
 That shape decides the concept's risk profile. A search-led homepage changes how people
 *discover* pages; it cannot change the fact that 1454 pages earn their living from Google
 landing directly on them. **The SEO objection is therefore not a side risk — it is the
-main risk**, and `[16]`'s numbers are the reason.
+main risk**, and `[WU-04.4]`'s numbers are the reason.
 
 Second finding, unexpected and material: **the documentation is not in the corpus at all.**
 1885 `/doc` URLs live behind a sitemap the main sitemap index never references. Developers/
@@ -27,7 +27,7 @@ Docs is one of the 8 non-negotiable journeys and there is currently no content t
 
 ---
 
-## `[16]` Page role — the numbers that matter
+## `[WU-04.4]` Page role — the numbers that matter
 
 | Role | Pages | Share | What it means |
 |---|---|---|---|
@@ -39,7 +39,7 @@ Docs is one of the 8 non-negotiable journeys and there is currently no content t
 
 **`must_preserve` = 2313 of 2322 (99.6%).** Only the 9 utility pages are genuinely disposable.
 
-## `[15]` Intent
+## `[WU-04.3]` Intent
 
 | Intent | Pages | Share |
 |---|---|---|
@@ -60,7 +60,7 @@ retention — are served by **17 pages combined.** A search experience tuned on 
 volume will bury the commercial pages under blog posts. WU-05's facet schema and WU-11's
 ranking model both have to correct for this deliberately; relevance-by-default will not.
 
-## `[13]` Taxonomy
+## `[WU-04.1]` Taxonomy
 
 32 page types after re-typing, zero unclassified. Full counts in `ia-map.json`.
 The 57 records the URL classifier could not type resolved to: `playbook` 39,
@@ -90,7 +90,7 @@ demo request, content pages close with a self-serve signup.
 **Consequence for WU-05:** the "conversion action" axis has an honest cardinality of about
 two, not six. Do not invent granularity the site does not have.
 
-## `[14]` Repeated IA patterns
+## `[WU-04.2]` Repeated IA patterns
 
 Five templates carry the whole site:
 
@@ -106,7 +106,7 @@ There is no deep hierarchy to flatten — **the site is already shallow. Its pro
 breadth, not depth**, which is the correct framing for the concept: 2322 pages across one
 horizontal nav bar, not a deep tree users get lost in.
 
-## `[17]` Nav taxonomy vs search-source taxonomy — the tension, and its resolution
+## `[WU-04.5]` Nav taxonomy vs search-source taxonomy — the tension, and its resolution
 
 **The tension.** The two taxonomies are not different in detail. They are orthogonal.
 
@@ -187,7 +187,7 @@ without it acceptance criterion 2 cannot pass.
 audience, platform, implementation surface. Conversion-action cardinality is ~2, not 6.
 Correct for the 72.8%-learn skew.
 
-**To WU-10 `[55]`:** 62.6% seo-acquisition, 1454 pages, is the quantified SEO exposure.
+**To WU-10 `[WU-10.3]`:** 62.6% seo-acquisition, 1454 pages, is the quantified SEO exposure.
 The 6.8% conversion layer is what the redesign actually touches.
 
 **To WU-11:** ranking must deliberately promote the 157 conversion and 17 buy/compare pages

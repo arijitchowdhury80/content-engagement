@@ -148,11 +148,12 @@ revoking, this is a solo development workspace. Recorded as a decision, not an o
 not re-raise. Both live only in local transcripts and in `.env.asana` (mode 600, gitignored,
 never committed); neither is in the public repo.
 
-**Unblocked 2026-08-06** — ⚠ **CORRECTION: the Asana PAT is DEAD again (401 at 10:20).** It
-verified live at 01:14 and stopped working the same day. The *capability finding survives the
-token and is the valuable part*: `start_on` **does** persist via REST — the MCP was silently
-discarding it, which is why this project has never had a Gantt. Reissue at
-app.asana.com/0/my-apps and rewrite `.env.asana` when REST writes are needed.
+**Unblocked 2026-08-06** — ✅ **CORRECTION: the Asana PAT was NEVER dead.** Every earlier "401"
+was a **duplicated `2/` prefix** in the stored value (`2/2/<gid>/<hash>` — an Asana PAT has exactly
+three `/`-segments). Asana answers a malformed token with a bare `Not Authorized`, identical to
+revocation. Fixed in `.env.asana` and verified live. **Check the segment count before ever assuming
+a token is revoked.** `start_on` **does** persist via REST — the MCP silently discards it, which is
+why this project has never had a Gantt. MCP also cannot create sections or reorder tasks.
 VPS SSH works: `chowmes`, Ubuntu 24.04.4, connect via
 `~/.claude/skills/hostinger-vps-ssh/scripts/ssh-hermes-vps --env "$PWD/.env.vps"`. Caddy runs as a
 Docker container; static sites live at `/data/sites/<name>`, Caddyfile at
@@ -192,7 +193,8 @@ no longer blocked.
 - **New blocker:** real query-log access to the actual production search app (`1QDAWL72TQ`,
   `ALGOLIA_WWW_PROD_V2`) — needed to ground WU-05's 3 remaining axes in real behavior instead
   of guessing. Ask Arijit.
-- **Asana PAT dead again** (401) — needed for REST-level Asana writes; ask Arijit to reissue.
+- ~~Asana PAT dead~~ **RESOLVED 2026-08-06** — never dead; the stored value had a duplicated `2/`
+  prefix. Fixed and verified live. REST writes work.
 
 ## Files written this session
 

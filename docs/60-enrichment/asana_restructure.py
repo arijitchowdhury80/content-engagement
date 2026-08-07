@@ -68,22 +68,47 @@ NUM_RX = re.compile(r"^\[(\d{1,3})\]\s*")
 REF_RX = re.compile(r"\[(\d{1,3})\]")
 
 
-def api(method, path, payload=None, token=None):
+def api(method, path, payload=None, token=None, tries=4):
     """curl, not urllib: TLS interception in this environment fails urllib with
-    CERTIFICATE_VERIFY_FAILED."""
-    cmd = ["curl", "-sS", "-X", method, f"{API}{path}",
-           "-H", f"Authorization: Bearer {token}",
-           "-H", "Content-Type: application/json"]
-    if payload is not None:
-        cmd += ["--data-binary", json.dumps({"data": payload})]
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    try:
-        out = json.loads(r.stdout)
-    except json.JSONDecodeError:
-        raise RuntimeError(f"{method} {path}: {r.stdout[:300]}")
-    if "errors" in out:
-        raise RuntimeError(f"{method} {path}: {out['errors']}")
-    return out.get("data")
+    CERTIFICATE_VERIFY_FAILED.
+
+    The body ALWAYS goes via a temp file. Task notes run to several KB and
+    passing them inline blows the argv limit, which surfaces as an empty
+    response rather than an error — the same trap apply_taxonomy.py documents.
+    """
+    import tempfile
+    last = None
+    for attempt in range(tries):
+        cmd = ["curl", "-sS", "-X", method, f"{API}{path}",
+               "-H", f"Authorization: Bearer {token}",
+               "-H", "Content-Type: application/json", "-w", "\n%{http_code}"]
+        tmp = None
+        if payload is not None:
+            fd, tmp = tempfile.mkstemp(suffix=".json")
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump({"data": payload}, f, ensure_ascii=False)
+            cmd += ["--data-binary", "@" + tmp]
+        try:
+            r = subprocess.run(cmd, capture_output=True, text=True)
+        finally:
+            if tmp:
+                os.unlink(tmp)
+        body, _, code = r.stdout.rpartition("\n")
+        code = code.strip()
+        if code == "429":                      # rate limited — back off and retry
+            time.sleep(2 * (attempt + 1))
+            last = "429 rate limited"
+            continue
+        try:
+            out = json.loads(body)
+        except json.JSONDecodeError:
+            last = f"HTTP {code} non-JSON: {body[:200]!r} stderr={r.stderr[:200]!r}"
+            time.sleep(1 + attempt)
+            continue
+        if "errors" in out:
+            raise RuntimeError(f"{method} {path}: HTTP {code} {out['errors']}")
+        return out.get("data")
+    raise RuntimeError(f"{method} {path}: gave up after {tries} tries — {last}")
 
 
 def fetch_all(token):
