@@ -38,6 +38,20 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   the frontend demo.
   `Algolia_Prod_Copy_Vanilla` is off limits for writes — a colleague's live Agent Studio
   agents (`www Chat`, `Algolia_*`) query it. Reading it is fine.
+- **NEVER rebuild `Algolia_Prod_Copy_Enhanced` by copying `Algolia_Prod_Copy_Vanilla`.**
+  Enhanced is a copy of Vanilla, but it has since been enriched and deduplicated. Vanilla still
+  holds all **4,853 duplicate records** that were deleted on 2026-08-06, and none of the 8-axis
+  taxonomy. A raw copy restores the duplicates **and wipes the entire taxonomy** — the second loss
+  is much the larger one. The only refresh path is:
+  copy → `classify.py` → `apply_taxonomy.py` → `dedupe.py`, in that order.
+  Nothing currently writes to Enhanced; the risk is a human running a convenience copy.
+  See `docs/70-documentation/enrichment/chapter-2-deduplication.md` §10.
+- **`Algolia_Prod_Copy_Enhanced` has `distinct: true` on `url`.** Search always returns one result
+  per URL, so `nbHits` is the distinct-URL count, not the record count. Read the index settings
+  before diagnosing anything as a duplicate-records problem — this is what made a whole plan's
+  problem statement false on 2026-08-06.
+- **There is no snapshot of the pre-dedupe index.** Both were deleted on Arijit's instruction
+  (2026-08-06). Take a fresh one before any destructive operation.
 - **Coverage is not correctness.** The taxonomy is applied but unvalidated. Never report a field
   being populated as if it were verified.
 - **No sampling.** Arijit's standing rule for enrichment and validation: process one record at a

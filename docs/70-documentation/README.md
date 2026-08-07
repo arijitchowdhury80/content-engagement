@@ -10,11 +10,18 @@ Living software documentation. Written alongside the work, not after it.
 
 Turning `Algolia_Prod_Copy_Enhanced` from a metadata catalogue into a filterable index.
 
+Chapters follow execution order, so Deduplication was inserted as Chapter 2 on 2026-08-06 and the
+two later chapters shifted down.
+
 | Chapter | Status | Doc |
 |---|---|---|
 | 1 — Taxonomy Enrichment | **Complete, live** | [chapter-1-taxonomy-enrichment.md](./enrichment/chapter-1-taxonomy-enrichment.md) |
-| 2 — Content Enrichment | Not started | *to be written* |
-| 3 — Enrichment Validation | Not started — next | *to be written* |
+| 2 — Deduplication | **Complete, live** | [chapter-2-deduplication.md](./enrichment/chapter-2-deduplication.md) |
+| 3 — Content Enrichment | Not started | [chapter-3-content-enrichment.md](./enrichment/chapter-3-content-enrichment.md) |
+| 4 — Enrichment Validation | Not started — next | [chapter-4-enrichment-validation.md](./enrichment/chapter-4-enrichment-validation.md) |
+
+**Index state:** `Algolia_Prod_Copy_Enhanced` holds **12,114 records**, one per distinct URL, as of
+Chapter 2. Never rebuild it by copying `Algolia_Prod_Copy_Vanilla` — see Chapter 2 §10.
 
 ## Rules for this documentation
 

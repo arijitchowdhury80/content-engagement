@@ -15,8 +15,9 @@ taxonomy, applied live and verified by post-write census. Coverage passes on 5 o
 **[87] Index deduplication — DONE 2026-08-06, verified live.** The index is now **12,114 records,
 one per distinct URL** (was 16,967). 4,853 duplicates deleted, 224 empty fields rescued. `page_type`
 still 100%, all 329 nonprod-only URLs kept, and the demo's own filtered view is unchanged at 7,979
-before and after. Rollback: `Algolia_Prod_Copy_Enhanced_pre_dedupe_20260806_165255`, and the restore
-path was rehearsed before the delete. Tool: `docs/60-enrichment/dedupe.py` + 40 tests.
+before and after. The restore path was rehearsed before the delete. **Both snapshots were deleted afterwards on
+Arijit's instruction (2026-08-06) — there is no rollback to the 16,967 state.** Tool:
+`docs/60-enrichment/dedupe.py` + 40 tests. Full write-up: Chapter 2.
 
 ⚠ **`distinct: true` / `attributeForDistinct: url` was already configured on this index**, so the
 duplicates were never visible in search — `nbHits` and facet counts were already per-URL. Dedup was
@@ -38,7 +39,7 @@ do not default to backend just because it's listed first.**
 
 1. Read this file, then `Projects/Search-First-Algolia-com/index.md` in the vault.
 2. **Write `docs/60-enrichment/validate.py`** — taxonomy validation. Scope is already written in
-   `docs/70-documentation/enrichment/chapter-3-enrichment-validation.md`:
+   `docs/70-documentation/enrichment/chapter-4-enrichment-validation.md`:
    - Cross-check assignments against the **2,198 URLs that already carry independent labels**
      (1,263 from `algolia-central_enterprise_ledger`, 1,440 from the six-axis prototype, 900 from
      both). Agreement → confidence. Disagreement → the review queue.
@@ -85,14 +86,14 @@ in sync at `e49ca6b`. Nothing was left half-finished.
 | Vocabularies | From algolia.com's own IA; the site wins over the ledger on conflict |
 | Write mode | **Full-record replace** (`updateObject`). `partialUpdateObject` cannot remove an attribute. |
 | Packaging | Schema-as-data + generic engine — a new corpus means a new JSON, not new code |
-| Scope | All 16,967 records, all languages, all environment snapshots, enriched equally |
+| Scope | All records, all languages, all environment values, enriched equally (16,967 at the time of the taxonomy write; 12,114 after dedupe) |
 | Topology | In-place during build phase. Staging + atomic move was designed and documented, deliberately not used yet. |
 | Docs platform | **Not Mintlify** — its search competes with Algolia's DocSearch and there is no audience. Markdown in the repo; Docusaurus + Algolia DocSearch if a site is ever needed. |
 | Repo visibility | **PUBLIC**, confirmed by Arijit after being flagged |
 
 ## Remaining work
 
-**Immediate — Chapter 3, taxonomy validation**
+**Immediate — Chapter 4, taxonomy validation**
 
 - `validate.py` does not exist. Coverage is proven; correctness is not.
 - **R5 fails on two values.** `industry='ecommerce'` 72.3% and `product='ai-search'` 40.4%. The
@@ -102,9 +103,10 @@ in sync at `e49ca6b`. Nothing was left half-finished.
 - **A ceiling is already measured, so do not chase 90%:** the two independent labellers agree on
   `product` only **52.2%** of the time (`industry` 79.0%) across 900 shared URLs.
 
-**Then — Chapter 2, content enrichment**
+**Then — Chapter 3, content enrichment**
 
-- Three axes short of target and the cause is measured: **no body field**, 419 chars/record.
+- Three axes short of target and the cause is measured: **no body field**, 526 chars/record
+  (re-measured after dedupe; was 437 over 16,967 records).
 - 51.8% of the 12,114 distinct URLs already have a body in **three live indices in the same
   Algolia app** — zero fetching, three API reads. Gap: 5,838 URLs.
   Re-measured 2026-08-06 after the local corpus files were deleted: `SEARCHFIRST_WWW_v1` 3,775 ·
@@ -200,7 +202,7 @@ no longer blocked.
 
 **Documentation** — `docs/70-documentation/README.md`,
 `enrichment/chapter-1-taxonomy-enrichment.md` (226 lines),
-`enrichment/chapter-2-content-enrichment.md`, `enrichment/chapter-3-enrichment-validation.md`
+`enrichment/chapter-3-content-enrichment.md`, `enrichment/chapter-4-enrichment-validation.md`
 
 **Vault** — `Projects/Search-First-Algolia-com/{index.md, log.md, tasks.md}`, `wiki/log.md`,
 `wiki/hot.md`
