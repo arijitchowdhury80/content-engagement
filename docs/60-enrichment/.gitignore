@@ -1,7 +1,0 @@
-__pycache__/
-.pytest_cache/
-
-# Never commit an Asana state dump: task notes carry competitor strategy,
-# pricing governance, legal boundaries and the threat model, and this repo is
-# PUBLIC. One was pushed on 2026-08-06 and had to be removed.
-reports/asana-backup-*.json

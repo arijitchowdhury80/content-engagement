@@ -5,7 +5,7 @@ _Last updated: 2026-08-06 10:20 EDT_
 ## Status
 
 > **Two sessions run on this repo in parallel (Arijit, 2026-08-06).** This file is the
-> **backend/enrichment** lane: `docs/60-enrichment/`, writing to `Algolia_Prod_Copy_Enhanced`.
+> **backend/enrichment** lane: `docs/70-enrichment/`, writing to `Algolia_Prod_Copy_Enhanced`.
 > The frontend lane owns `docs/50-prototype/demo/`, the WU briefs and Asana state.
 > Run `git status` before any `git add -A` — the other lane may have work in flight.
 
@@ -17,7 +17,7 @@ one per distinct URL** (was 16,967). 4,853 duplicates deleted, 224 empty fields 
 still 100%, all 329 nonprod-only URLs kept, and the demo's own filtered view is unchanged at 7,979
 before and after. The restore path was rehearsed before the delete. **Both snapshots were deleted afterwards on
 Arijit's instruction (2026-08-06) — there is no rollback to the 16,967 state.** Tool:
-`docs/60-enrichment/dedupe.py` + 40 tests. Full write-up: Chapter 2.
+`docs/70-enrichment/dedupe.py` + 40 tests. Full write-up: Chapter 2.
 
 ⚠ **`distinct: true` / `attributeForDistinct: url` was already configured on this index**, so the
 duplicates were never visible in search — `nbHits` and facet counts were already per-URL. Dedup was
@@ -38,8 +38,8 @@ do not default to backend just because it's listed first.**
 ### If backend/enrichment lane
 
 1. Read this file, then `Projects/Search-First-Algolia-com/index.md` in the vault.
-2. **Write `docs/60-enrichment/validate.py`** — taxonomy validation. Scope is already written in
-   `docs/70-documentation/enrichment/chapter-4-enrichment-validation.md`:
+2. **Write `docs/70-enrichment/validate.py`** — taxonomy validation. Scope is already written in
+   `docs/80-documentation/enrichment/chapter-4-enrichment-validation.md`:
    - Cross-check assignments against the **2,198 URLs that already carry independent labels**
      (1,263 from `algolia-central_enterprise_ledger`, 1,440 from the six-axis prototype, 900 from
      both). Agreement → confidence. Disagreement → the review queue.
@@ -164,12 +164,12 @@ no longer blocked.
 
 | Thing | Path |
 |---|---|
-| Pipeline | `docs/60-enrichment/{build_schema.py, classify.py, apply_taxonomy.py}` |
-| Schema (the data) | `docs/60-enrichment/taxonomy-schema.algolia-com.json` |
-| Assignments | `docs/60-enrichment/taxonomy-assignments.jsonl` (12,114 rows, gitignored) |
-| Pre-state dump | `docs/60-enrichment/enhanced-pre-taxonomy-20260805.jsonl` (gitignored) |
+| Pipeline | `docs/70-enrichment/{build_schema.py, classify.py, apply_taxonomy.py}` |
+| Schema (the data) | `docs/70-enrichment/taxonomy-schema.algolia-com.json` |
+| Assignments | `docs/70-enrichment/taxonomy-assignments.jsonl` (12,114 rows, gitignored) |
+| Pre-state dump | `docs/70-enrichment/enhanced-pre-taxonomy-20260805.jsonl` (gitignored) |
 | ⚠ Deleted 2026-08-06 | `docs/50-prototype/corpus/records*.jsonl` — gone from disk and git history. Redundant with the live indices; body coverage is unaffected. |
-| Documentation | `docs/70-documentation/` — Book 1 Enrichment, Ch.1 complete |
+| Documentation | `docs/80-documentation/` — Book 1 Enrichment, Ch.1 complete |
 | Asana | WU-11 `1217210533022462` · `[87]` `1217210602718821` · docs tree `1217211372481002` |
 | Index (live) | `Algolia_Prod_Copy_Enhanced` |
 | Rollback | `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805` |
@@ -198,11 +198,11 @@ no longer blocked.
 
 ## Files written this session
 
-**Code** — `docs/60-enrichment/build_schema.py`, `classify.py`, `apply_taxonomy.py`,
+**Code** — `docs/70-enrichment/build_schema.py`, `classify.py`, `apply_taxonomy.py`,
 `taxonomy-schema.algolia-com.json`, `taxonomy-assignments.jsonl`, `candidates.jsonl` (empty),
 `enhanced-pre-taxonomy-20260805.jsonl`
 
-**Documentation** — `docs/70-documentation/README.md`,
+**Documentation** — `docs/80-documentation/README.md`,
 `enrichment/chapter-1-taxonomy-enrichment.md` (226 lines),
 `enrichment/chapter-3-content-enrichment.md`, `enrichment/chapter-4-enrichment-validation.md`
 

@@ -1,0 +1,2831 @@
+{
+  "version": "algolia-com-taxonomy-v1-20260805",
+  "target_index": "Algolia_Prod_Copy_Enhanced",
+  "generated_from": "docs/70-enrichment/enhanced-pre-taxonomy-20260805.jsonl",
+  "record_count": 12114,
+  "owner": null,
+  "revalidate_on": "Algolia product launch or rename",
+  "contract": {
+    "cardinality": "one ordered array per tag axis; element 0 is the primary",
+    "ordering": "URL-derived value first, then legacy-field matches, then text matches by descending evidence",
+    "empty_states": {
+      "resolved": "the value",
+      "not_applicable": "field omitted entirely — never 'unknown'",
+      "undetermined": "'unknown'"
+    },
+    "never": [
+      "null",
+      "None",
+      "",
+      "N/A"
+    ],
+    "slug_form": "lowercase-hyphenated"
+  },
+  "axes": [
+    {
+      "name": "product",
+      "type": "array",
+      "searchable": true,
+      "required_on": [
+        "product-page",
+        "product-hub",
+        "doc-rest-api",
+        "developer",
+        "developer-hub",
+        "pricing",
+        "comparison"
+      ],
+      "opportunistic_on": [
+        "blog-post",
+        "press-release",
+        "support-article",
+        "case-study",
+        "resource",
+        "solution-page",
+        "use-case",
+        "industry-page",
+        "landing-page",
+        "homepage",
+        "academy-training",
+        "event",
+        "webinar",
+        "doc-guide",
+        "doc-integration",
+        "doc-tool",
+        "developer-code-sample",
+        "playbook"
+      ]
+    },
+    {
+      "name": "feature",
+      "type": "array",
+      "searchable": true,
+      "required_on": [
+        "doc-guide",
+        "doc-api-reference",
+        "doc-sdk",
+        "doc-sdk-unified",
+        "doc-rest-api",
+        "doc-tool",
+        "doc-ui-library",
+        "doc-integration",
+        "doc-framework-integration",
+        "support-article",
+        "product-page",
+        "product-hub",
+        "developer-code-sample",
+        "developer",
+        "academy-training"
+      ],
+      "opportunistic_on": [
+        "blog-post",
+        "resource",
+        "press-release",
+        "case-study",
+        "solution-page",
+        "playbook",
+        "webinar",
+        "landing-page",
+        "homepage"
+      ]
+    },
+    {
+      "name": "solution",
+      "type": "array",
+      "searchable": true,
+      "required_on": [
+        "use-case"
+      ],
+      "opportunistic_on": [
+        "solution-page",
+        "industry-page",
+        "blog-post",
+        "resource",
+        "case-study",
+        "comparison",
+        "landing-page",
+        "homepage",
+        "pricing",
+        "press-release",
+        "playbook",
+        "webinar",
+        "event"
+      ]
+    },
+    {
+      "name": "industry",
+      "type": "array",
+      "searchable": true,
+      "required_on": [
+        "industry-page",
+        "department-page"
+      ],
+      "opportunistic_on": [
+        "use-case",
+        "case-study",
+        "blog-post",
+        "resource",
+        "press-release",
+        "solution-page",
+        "comparison",
+        "event",
+        "webinar",
+        "landing-page",
+        "homepage",
+        "playbook"
+      ]
+    },
+    {
+      "name": "customer",
+      "type": "array",
+      "searchable": false,
+      "required_on": [
+        "case-study"
+      ],
+      "opportunistic_on": [
+        "case-study-hub",
+        "blog-post",
+        "press-release",
+        "resource",
+        "webinar",
+        "event"
+      ]
+    },
+    {
+      "name": "language_platform",
+      "type": "array",
+      "searchable": false,
+      "required_on": [
+        "doc-sdk",
+        "doc-framework-integration"
+      ],
+      "opportunistic_on": [
+        "doc-sdk-unified",
+        "doc-api-reference",
+        "doc-guide",
+        "doc-ui-library",
+        "developer",
+        "developer-hub",
+        "developer-code-sample",
+        "blog-post",
+        "support-article",
+        "academy-training"
+      ]
+    },
+    {
+      "name": "integration_platform",
+      "type": "array",
+      "searchable": false,
+      "required_on": [
+        "doc-integration"
+      ],
+      "opportunistic_on": [
+        "solution-page",
+        "support-article",
+        "blog-post",
+        "resource",
+        "case-study",
+        "doc-guide",
+        "product-page",
+        "developer-code-sample",
+        "landing-page",
+        "press-release",
+        "partner"
+      ]
+    },
+    {
+      "name": "page_type",
+      "type": "string",
+      "searchable": false,
+      "required_on": [
+        "*"
+      ]
+    }
+  ],
+  "vocabularies": {
+    "product": {
+      "ai-search": {
+        "label": "AI Search",
+        "aliases": [
+          "ai search",
+          "algolia search"
+        ]
+      },
+      "ai-browse": {
+        "label": "AI Browse",
+        "aliases": [
+          "ai browse"
+        ]
+      },
+      "ai-recommendations": {
+        "label": "AI Recommendations",
+        "aliases": [
+          "ai recommendations",
+          "algolia recommend",
+          "recommend"
+        ]
+      },
+      "agent-studio": {
+        "label": "Agent Studio",
+        "aliases": [
+          "agent studio",
+          "agentic",
+          "ai agent"
+        ]
+      },
+      "ask-ai": {
+        "label": "Ask AI",
+        "aliases": [
+          "ask ai"
+        ]
+      },
+      "generative-experiences": {
+        "label": "Generative Experiences",
+        "aliases": [
+          "generative experiences",
+          "genai experiences"
+        ]
+      },
+      "intelligent-data-kit": {
+        "label": "Intelligent Data Kit",
+        "aliases": [
+          "intelligent data kit"
+        ]
+      }
+    },
+    "feature": {
+      "ab-testing": {
+        "label": "A/B Testing",
+        "aliases": [
+          "a/b testing",
+          "ab testing",
+          "a/b test"
+        ]
+      },
+      "ai-ranking": {
+        "label": "AI Ranking",
+        "aliases": [
+          "ai ranking",
+          "dynamic re-ranking",
+          "dynamic reranking"
+        ]
+      },
+      "ai-synonyms": {
+        "label": "AI Synonyms",
+        "aliases": [
+          "ai synonyms",
+          "synonym",
+          "synonyms"
+        ]
+      },
+      "analytics": {
+        "label": "Analytics",
+        "aliases": [
+          "analytics",
+          "insights"
+        ]
+      },
+      "crawler": {
+        "label": "Crawler",
+        "aliases": [
+          "crawler"
+        ]
+      },
+      "data-enrichment": {
+        "label": "Data Enrichment",
+        "aliases": [
+          "data enrichment",
+          "enrichment"
+        ]
+      },
+      "data-transformation": {
+        "label": "Data Transformation",
+        "aliases": [
+          "data transformation",
+          "transformation",
+          "ingestion"
+        ]
+      },
+      "neuralsearch": {
+        "label": "NeuralSearch",
+        "aliases": [
+          "neuralsearch",
+          "neural search",
+          "semantic search",
+          "vector search"
+        ]
+      },
+      "personalization": {
+        "label": "Personalization",
+        "aliases": [
+          "personalization",
+          "personalisation"
+        ]
+      },
+      "query-categorization": {
+        "label": "Query Categorization",
+        "aliases": [
+          "query categorization",
+          "query categorisation"
+        ]
+      },
+      "search-autocomplete": {
+        "label": "Autocomplete",
+        "aliases": [
+          "autocomplete",
+          "query suggestions"
+        ]
+      },
+      "search-relevance-rules": {
+        "label": "Rules",
+        "aliases": [
+          "relevance rules",
+          "query rule",
+          "merchandising rules"
+        ]
+      },
+      "ui-component-libraries": {
+        "label": "UI Libraries",
+        "aliases": [
+          "instantsearch",
+          "ui library",
+          "ui libraries",
+          "widget"
+        ]
+      },
+      "guides": {
+        "label": "Guides",
+        "aliases": []
+      },
+      "faceting": {
+        "label": "Faceting",
+        "aliases": [
+          "faceting",
+          "facets",
+          "facet"
+        ]
+      },
+      "filtering": {
+        "label": "Filtering",
+        "aliases": [
+          "filtering",
+          "filters"
+        ]
+      },
+      "indexing": {
+        "label": "Indexing",
+        "aliases": [
+          "indexing",
+          "reindex"
+        ]
+      },
+      "pagination": {
+        "label": "Pagination",
+        "aliases": [
+          "pagination",
+          "paginate"
+        ]
+      },
+      "highlighting": {
+        "label": "Highlighting & Snippeting",
+        "aliases": [
+          "highlighting",
+          "snippeting"
+        ]
+      },
+      "geo-search": {
+        "label": "Geo Search",
+        "aliases": [
+          "geo search",
+          "geolocation",
+          "aroundlatlng"
+        ]
+      },
+      "typo-tolerance": {
+        "label": "Typo Tolerance",
+        "aliases": [
+          "typo tolerance",
+          "typo-tolerance",
+          "typos"
+        ]
+      },
+      "custom-ranking": {
+        "label": "Custom Ranking",
+        "aliases": [
+          "custom ranking",
+          "sorting",
+          "sort by"
+        ]
+      },
+      "api-keys": {
+        "label": "API Keys & Security",
+        "aliases": [
+          "api key",
+          "secured api key",
+          "api keys"
+        ]
+      },
+      "monitoring": {
+        "label": "Monitoring",
+        "aliases": [
+          "monitoring",
+          "uptime",
+          "status api"
+        ]
+      },
+      "events": {
+        "label": "Events & Click Tracking",
+        "aliases": [
+          "click event",
+          "conversion event",
+          "event tracking",
+          "insights api"
+        ]
+      },
+      "dictionaries": {
+        "label": "Dictionaries",
+        "aliases": [
+          "dictionary",
+          "dictionaries",
+          "stop word",
+          "stopwords",
+          "plurals"
+        ]
+      },
+      "replicas": {
+        "label": "Replicas & Multi-Index",
+        "aliases": [
+          "replica",
+          "replicas",
+          "multi-index",
+          "virtual replica"
+        ]
+      },
+      "recommend-models": {
+        "label": "Recommend Models",
+        "aliases": [
+          "frequently bought together",
+          "related products",
+          "trending items",
+          "looking similar"
+        ]
+      },
+      "query-suggestions": {
+        "label": "Query Suggestions",
+        "aliases": [
+          "query suggestion"
+        ]
+      },
+      "docsearch": {
+        "label": "DocSearch",
+        "aliases": [
+          "docsearch"
+        ]
+      }
+    },
+    "solution": {
+      "site-search": {
+        "label": "Site Search",
+        "aliases": [
+          "site search"
+        ]
+      },
+      "documentation-search": {
+        "label": "Documentation Search",
+        "aliases": [
+          "documentation search",
+          "docs search"
+        ]
+      },
+      "image-search": {
+        "label": "Image Search",
+        "aliases": [
+          "image search",
+          "image finder"
+        ]
+      },
+      "visual-search": {
+        "label": "Visual Search",
+        "aliases": [
+          "visual search"
+        ]
+      },
+      "voice-search": {
+        "label": "Voice Search",
+        "aliases": [
+          "voice search"
+        ]
+      },
+      "mobile-search": {
+        "label": "Mobile Search",
+        "aliases": [
+          "mobile search",
+          "in-app search"
+        ]
+      },
+      "headless-commerce": {
+        "label": "Headless Commerce",
+        "aliases": [
+          "headless commerce",
+          "headless"
+        ]
+      },
+      "enterprise": {
+        "label": "Enterprise Search",
+        "aliases": [
+          "enterprise search"
+        ]
+      },
+      "retail-media-network": {
+        "label": "Retail Media Network",
+        "aliases": [
+          "retail media network",
+          "retail media"
+        ]
+      },
+      "shopping-assistant": {
+        "label": "Shopping Assistant",
+        "aliases": [
+          "shopping assistant"
+        ]
+      }
+    },
+    "industry": {
+      "ecommerce": {
+        "label": "Ecommerce",
+        "aliases": [
+          "ecommerce",
+          "e-commerce"
+        ]
+      },
+      "b2b-ecommerce": {
+        "label": "B2B Ecommerce",
+        "aliases": [
+          "b2b ecommerce",
+          "b2b commerce",
+          "wholesale",
+          "distributor"
+        ]
+      },
+      "marketplaces": {
+        "label": "Marketplaces",
+        "aliases": [
+          "marketplace",
+          "multi-vendor"
+        ]
+      },
+      "fashion": {
+        "label": "Fashion",
+        "aliases": [
+          "fashion",
+          "apparel",
+          "clothing"
+        ]
+      },
+      "grocery": {
+        "label": "Grocery",
+        "aliases": [
+          "grocery",
+          "grocer",
+          "fresh produce"
+        ]
+      },
+      "media": {
+        "label": "Media",
+        "aliases": [
+          "media",
+          "publisher",
+          "publishing",
+          "editorial"
+        ]
+      },
+      "saas": {
+        "label": "SaaS & Software",
+        "aliases": [
+          "saas",
+          "software company"
+        ]
+      },
+      "auto-parts": {
+        "label": "Auto Parts",
+        "aliases": [
+          "auto parts",
+          "auto-part",
+          "fitment"
+        ]
+      },
+      "higher-education": {
+        "label": "Higher Education",
+        "aliases": [
+          "higher education",
+          "university",
+          "student"
+        ]
+      },
+      "startups": {
+        "label": "Startups",
+        "aliases": [
+          "startup",
+          "startups"
+        ]
+      }
+    },
+    "customer": {
+      "decathlon-singapore": {
+        "label": "Decathlon Singapore",
+        "aliases": [
+          "decathlon singapore",
+          "decathlon-singapore"
+        ]
+      },
+      "walgreens": {
+        "label": "Walgreens",
+        "aliases": [
+          "walgreens"
+        ]
+      },
+      "edx": {
+        "label": "Edx",
+        "aliases": [
+          "edx"
+        ]
+      },
+      "gymshark": {
+        "label": "Gymshark",
+        "aliases": [
+          "gymshark",
+          "gymshark-headless",
+          "gymshark-recommend"
+        ]
+      },
+      "smartbuyglasses": {
+        "label": "Smartbuyglasses",
+        "aliases": [
+          "smartbuyglasses"
+        ]
+      },
+      "huckberry": {
+        "label": "Huckberry",
+        "aliases": [
+          "huckberry"
+        ]
+      },
+      "the-times": {
+        "label": "The Times",
+        "aliases": [
+          "the times",
+          "the-times"
+        ]
+      },
+      "document-360": {
+        "label": "Document 360",
+        "aliases": [
+          "document 360",
+          "document-360"
+        ]
+      },
+      "politico": {
+        "label": "Politico",
+        "aliases": [
+          "politico"
+        ]
+      },
+      "plieger": {
+        "label": "Plieger",
+        "aliases": [
+          "plieger"
+        ]
+      },
+      "studocu": {
+        "label": "Studocu",
+        "aliases": [
+          "studocu"
+        ]
+      },
+      "gofundme": {
+        "label": "Gofundme",
+        "aliases": [
+          "gofundme"
+        ]
+      },
+      "dawnfoods": {
+        "label": "Dawnfoods",
+        "aliases": [
+          "dawnfoods"
+        ]
+      },
+      "apotek1": {
+        "label": "Apotek1",
+        "aliases": [
+          "apotek1"
+        ]
+      },
+      "auto-mercado": {
+        "label": "Auto Mercado",
+        "aliases": [
+          "auto-mercado",
+          "auto mercado"
+        ]
+      },
+      "culture-kings": {
+        "label": "Culture Kings",
+        "aliases": [
+          "culture kings",
+          "culture-kings"
+        ]
+      },
+      "staples": {
+        "label": "Staples",
+        "aliases": [
+          "staples"
+        ]
+      },
+      "vape-superstore": {
+        "label": "Vape Superstore",
+        "aliases": [
+          "vape-superstore",
+          "vape superstore"
+        ]
+      },
+      "flaconi": {
+        "label": "Flaconi",
+        "aliases": [
+          "flaconi"
+        ]
+      },
+      "everlane": {
+        "label": "Everlane",
+        "aliases": [
+          "everlane"
+        ]
+      },
+      "dm-drogerie-markt": {
+        "label": "Dm Drogerie Markt",
+        "aliases": [
+          "dm drogerie markt",
+          "dm-drogerie-markt"
+        ]
+      },
+      "nutscom": {
+        "label": "Nutscom",
+        "aliases": [
+          "nutscom"
+        ]
+      },
+      "mitre-10": {
+        "label": "Mitre 10",
+        "aliases": [
+          "mitre 10",
+          "mitre-10"
+        ]
+      },
+      "beachbody": {
+        "label": "Beachbody",
+        "aliases": [
+          "beachbody"
+        ]
+      },
+      "yoursurprise": {
+        "label": "Yoursurprise",
+        "aliases": [
+          "yoursurprise"
+        ]
+      },
+      "ubisoft": {
+        "label": "Ubisoft",
+        "aliases": [
+          "ubisoft"
+        ]
+      },
+      "shoe-carnival": {
+        "label": "Shoe Carnival",
+        "aliases": [
+          "shoe carnival",
+          "shoe-carnival"
+        ]
+      },
+      "kingarthur": {
+        "label": "Kingarthur",
+        "aliases": [
+          "kingarthur"
+        ]
+      },
+      "crocs": {
+        "label": "Crocs",
+        "aliases": [
+          "crocs"
+        ]
+      },
+      "kiko": {
+        "label": "Kiko",
+        "aliases": [
+          "kiko"
+        ]
+      },
+      "orange": {
+        "label": "Orange",
+        "aliases": [
+          "orange"
+        ]
+      },
+      "end": {
+        "label": "End",
+        "aliases": [
+          "end",
+          "end."
+        ]
+      },
+      "idealist": {
+        "label": "Idealist",
+        "aliases": [
+          "idealist"
+        ]
+      },
+      "flexport": {
+        "label": "Flexport",
+        "aliases": [
+          "flexport"
+        ]
+      },
+      "sary": {
+        "label": "Sary",
+        "aliases": [
+          "sary"
+        ]
+      },
+      "hanos-shop": {
+        "label": "Hanos Shop",
+        "aliases": [
+          "hanos shop",
+          "hanos-shop"
+        ]
+      },
+      "wizbii": {
+        "label": "Wizbii",
+        "aliases": [
+          "wizbii"
+        ]
+      },
+      "ergodyne": {
+        "label": "Ergodyne",
+        "aliases": [
+          "ergodyne"
+        ]
+      },
+      "donorschoose": {
+        "label": "Donorschoose",
+        "aliases": [
+          "donorschoose"
+        ]
+      },
+      "iu-health": {
+        "label": "Iu Health",
+        "aliases": [
+          "iu health",
+          "iu-health-trendyminds"
+        ]
+      },
+      "live-platforms": {
+        "label": "Live Platforms",
+        "aliases": [
+          "live-platforms",
+          "live platforms"
+        ]
+      },
+      "swedol": {
+        "label": "Swedol",
+        "aliases": [
+          "swedol"
+        ]
+      },
+      "hagergroup": {
+        "label": "Hagergroup",
+        "aliases": [
+          "hagergroup"
+        ]
+      },
+      "hershey": {
+        "label": "Hershey",
+        "aliases": [
+          "hershey"
+        ]
+      },
+      "zenni": {
+        "label": "Zenni",
+        "aliases": [
+          "zenni"
+        ]
+      },
+      "bigw": {
+        "label": "Bigw",
+        "aliases": [
+          "bigw"
+        ]
+      },
+      "al-futtaim-group": {
+        "label": "Al Futtaim Group",
+        "aliases": [
+          "al-futtaim-group",
+          "al futtaim group"
+        ]
+      },
+      "lacoste": {
+        "label": "Lacoste",
+        "aliases": [
+          "lacoste"
+        ]
+      },
+      "manomano": {
+        "label": "Manomano",
+        "aliases": [
+          "manomano"
+        ]
+      },
+      "harry-rosen": {
+        "label": "Harry Rosen",
+        "aliases": [
+          "harry-rosen",
+          "harry rosen"
+        ]
+      },
+      "tag-heuer": {
+        "label": "Tag Heuer",
+        "aliases": [
+          "tag heuer",
+          "tag-heuer"
+        ]
+      },
+      "pc-componentes": {
+        "label": "Pc Componentes",
+        "aliases": [
+          "pc componentes",
+          "pc-componentes"
+        ]
+      },
+      "mister-auto": {
+        "label": "Mister Auto",
+        "aliases": [
+          "mister-auto",
+          "mister auto"
+        ]
+      },
+      "rugs-com": {
+        "label": "Rugs Com",
+        "aliases": [
+          "rugs-com",
+          "rugs com"
+        ]
+      },
+      "under-armour": {
+        "label": "Under Armour",
+        "aliases": [
+          "under armour",
+          "under-armour"
+        ]
+      },
+      "revival-animal-health": {
+        "label": "Revival Animal Health",
+        "aliases": [
+          "revival-animal-health",
+          "revival animal health"
+        ]
+      },
+      "teachers-pay-teachers": {
+        "label": "Teachers Pay Teachers",
+        "aliases": [
+          "teachers-pay-teachers",
+          "teachers pay teachers"
+        ]
+      },
+      "co-op": {
+        "label": "Co Op",
+        "aliases": [
+          "co op",
+          "co-op"
+        ]
+      },
+      "zoom": {
+        "label": "Zoom",
+        "aliases": [
+          "zoom"
+        ]
+      },
+      "wework": {
+        "label": "Wework",
+        "aliases": [
+          "wework"
+        ]
+      },
+      "breville-group": {
+        "label": "Breville Group",
+        "aliases": [
+          "breville-group",
+          "breville group"
+        ]
+      },
+      "zeeman": {
+        "label": "Zeeman",
+        "aliases": [
+          "zeeman"
+        ]
+      },
+      "h-e-b-mexico": {
+        "label": "H E B Mexico",
+        "aliases": [
+          "h-e-b-mexico",
+          "h e b mexico"
+        ]
+      },
+      "madeiramadeira": {
+        "label": "Madeiramadeira",
+        "aliases": [
+          "madeiramadeira"
+        ]
+      },
+      "maisons-du-monde": {
+        "label": "Maisons Du Monde",
+        "aliases": [
+          "maisons du monde",
+          "maisons-du-monde"
+        ]
+      },
+      "docmorris": {
+        "label": "Docmorris",
+        "aliases": [
+          "docmorris"
+        ]
+      },
+      "fern": {
+        "label": "Fern",
+        "aliases": [
+          "fern-case-study",
+          "fern"
+        ]
+      },
+      "club-med": {
+        "label": "Club Med",
+        "aliases": [
+          "club med",
+          "club-med"
+        ]
+      },
+      "leroy-merlin-brasil": {
+        "label": "Leroy Merlin Brasil",
+        "aliases": [
+          "leroy-merlin-brasil",
+          "leroy merlin brasil"
+        ]
+      },
+      "petsmart": {
+        "label": "Petsmart",
+        "aliases": [
+          "petsmart"
+        ]
+      },
+      "gemo": {
+        "label": "Gemo",
+        "aliases": [
+          "gemo"
+        ]
+      },
+      "better-world-books": {
+        "label": "Better World Books",
+        "aliases": [
+          "better world books",
+          "better-world-books"
+        ]
+      },
+      "weightwatchers": {
+        "label": "Weightwatchers",
+        "aliases": [
+          "weightwatchers"
+        ]
+      },
+      "crediblemind": {
+        "label": "Crediblemind",
+        "aliases": [
+          "crediblemind"
+        ]
+      },
+      "dunelm": {
+        "label": "Dunelm",
+        "aliases": [
+          "dunelm"
+        ]
+      },
+      "bike-totaal": {
+        "label": "Bike Totaal",
+        "aliases": [
+          "bike-totaal",
+          "bike totaal"
+        ]
+      },
+      "damstahl": {
+        "label": "Damstahl",
+        "aliases": [
+          "damstahl"
+        ]
+      },
+      "bringmeister": {
+        "label": "Bringmeister",
+        "aliases": [
+          "bringmeister"
+        ]
+      },
+      "sellpy": {
+        "label": "Sellpy",
+        "aliases": [
+          "sellpy"
+        ]
+      },
+      "arcteryx": {
+        "label": "Arcteryx",
+        "aliases": [
+          "arcteryx"
+        ]
+      },
+      "hbm": {
+        "label": "Hbm",
+        "aliases": [
+          "hbm"
+        ]
+      },
+      "clarks": {
+        "label": "Clarks",
+        "aliases": [
+          "clarks"
+        ]
+      },
+      "gametime": {
+        "label": "Gametime",
+        "aliases": [
+          "gametime"
+        ]
+      }
+    },
+    "language_platform": {
+      "javascript": {
+        "label": "JavaScript",
+        "aliases": [
+          "javascript",
+          "js",
+          "node.js",
+          "nodejs"
+        ]
+      },
+      "python": {
+        "label": "Python",
+        "aliases": [
+          "python"
+        ]
+      },
+      "php": {
+        "label": "PHP",
+        "aliases": [
+          "php"
+        ]
+      },
+      "ruby": {
+        "label": "Ruby",
+        "aliases": [
+          "ruby"
+        ]
+      },
+      "java": {
+        "label": "Java",
+        "aliases": [
+          "java"
+        ]
+      },
+      "kotlin": {
+        "label": "Kotlin",
+        "aliases": [
+          "kotlin"
+        ]
+      },
+      "swift": {
+        "label": "Swift",
+        "aliases": [
+          "swift"
+        ]
+      },
+      "csharp": {
+        "label": "C#/.NET",
+        "aliases": [
+          "c#",
+          ".net",
+          "csharp",
+          "dotnet"
+        ]
+      },
+      "go": {
+        "label": "Go",
+        "aliases": [
+          "golang"
+        ]
+      },
+      "scala": {
+        "label": "Scala",
+        "aliases": [
+          "scala"
+        ]
+      },
+      "dart": {
+        "label": "Dart",
+        "aliases": [
+          "dart",
+          "flutter"
+        ]
+      },
+      "react": {
+        "label": "React",
+        "aliases": [
+          "react",
+          "react.js"
+        ]
+      },
+      "vue": {
+        "label": "Vue",
+        "aliases": [
+          "vue",
+          "vue.js"
+        ]
+      },
+      "angular": {
+        "label": "Angular",
+        "aliases": [
+          "angular"
+        ]
+      },
+      "android": {
+        "label": "Android",
+        "aliases": [
+          "android"
+        ]
+      },
+      "ios": {
+        "label": "iOS",
+        "aliases": [
+          "ios"
+        ]
+      },
+      "laravel": {
+        "label": "Laravel",
+        "aliases": [
+          "laravel"
+        ]
+      },
+      "symfony": {
+        "label": "Symfony",
+        "aliases": [
+          "symfony"
+        ]
+      },
+      "rails": {
+        "label": "Ruby on Rails",
+        "aliases": [
+          "ruby on rails",
+          "rails"
+        ]
+      },
+      "django": {
+        "label": "Django",
+        "aliases": [
+          "django"
+        ]
+      }
+    },
+    "integration_platform": {
+      "shopify": {
+        "label": "Shopify",
+        "aliases": [
+          "shopify",
+          "hydrogen"
+        ]
+      },
+      "adobe-commerce-magento": {
+        "label": "Adobe Commerce / Magento",
+        "aliases": [
+          "magento",
+          "adobe commerce"
+        ]
+      },
+      "adobe-experience-manager": {
+        "label": "Adobe Experience Manager",
+        "aliases": [
+          "adobe experience manager",
+          "aem"
+        ]
+      },
+      "salesforce-commerce-cloud": {
+        "label": "Salesforce Commerce Cloud",
+        "aliases": [
+          "salesforce commerce cloud",
+          "sfcc",
+          "salesforce b2c"
+        ]
+      },
+      "bigcommerce": {
+        "label": "BigCommerce",
+        "aliases": [
+          "bigcommerce"
+        ]
+      },
+      "commercetools": {
+        "label": "commercetools",
+        "aliases": [
+          "commercetools"
+        ]
+      },
+      "netlify": {
+        "label": "Netlify",
+        "aliases": [
+          "netlify"
+        ]
+      },
+      "aws": {
+        "label": "AWS",
+        "aliases": [
+          "algolia on aws",
+          "amazon web services"
+        ]
+      },
+      "azure": {
+        "label": "Microsoft Azure",
+        "aliases": [
+          "algolia on azure",
+          "microsoft azure"
+        ]
+      },
+      "zendesk": {
+        "label": "Zendesk",
+        "aliases": [
+          "zendesk"
+        ]
+      },
+      "wordpress": {
+        "label": "WordPress",
+        "aliases": [
+          "wordpress"
+        ]
+      }
+    },
+    "page_type": {
+      "homepage": {
+        "label": "Homepage",
+        "aliases": []
+      },
+      "product-page": {
+        "label": "Product Page",
+        "aliases": []
+      },
+      "product-hub": {
+        "label": "Product Hub",
+        "aliases": []
+      },
+      "solution-page": {
+        "label": "Solution Page",
+        "aliases": []
+      },
+      "use-case": {
+        "label": "Use Case",
+        "aliases": []
+      },
+      "industry-page": {
+        "label": "Industry Page",
+        "aliases": []
+      },
+      "department-page": {
+        "label": "Department Page",
+        "aliases": []
+      },
+      "pricing": {
+        "label": "Pricing",
+        "aliases": []
+      },
+      "comparison": {
+        "label": "Comparison",
+        "aliases": []
+      },
+      "contact-sales": {
+        "label": "Contact Sales",
+        "aliases": []
+      },
+      "landing-page": {
+        "label": "Landing Page",
+        "aliases": []
+      },
+      "case-study": {
+        "label": "Case Study",
+        "aliases": []
+      },
+      "case-study-hub": {
+        "label": "Case Study Hub",
+        "aliases": []
+      },
+      "press-release": {
+        "label": "Press Release",
+        "aliases": []
+      },
+      "company": {
+        "label": "Company",
+        "aliases": []
+      },
+      "careers": {
+        "label": "Careers",
+        "aliases": []
+      },
+      "trust": {
+        "label": "Trust",
+        "aliases": []
+      },
+      "policy": {
+        "label": "Policy",
+        "aliases": []
+      },
+      "partner": {
+        "label": "Partner",
+        "aliases": []
+      },
+      "program": {
+        "label": "Program",
+        "aliases": []
+      },
+      "services": {
+        "label": "Services",
+        "aliases": []
+      },
+      "blog-post": {
+        "label": "Blog Post",
+        "aliases": []
+      },
+      "blog-hub": {
+        "label": "Blog Hub",
+        "aliases": []
+      },
+      "author-page": {
+        "label": "Author Page",
+        "aliases": []
+      },
+      "resource": {
+        "label": "Resource",
+        "aliases": []
+      },
+      "resource-hub": {
+        "label": "Resource Hub",
+        "aliases": []
+      },
+      "webinar": {
+        "label": "Webinar",
+        "aliases": []
+      },
+      "event": {
+        "label": "Event",
+        "aliases": []
+      },
+      "playbook": {
+        "label": "Playbook",
+        "aliases": []
+      },
+      "developer": {
+        "label": "Developer",
+        "aliases": []
+      },
+      "developer-hub": {
+        "label": "Developer Hub",
+        "aliases": []
+      },
+      "developer-code-sample": {
+        "label": "Developer Code Sample",
+        "aliases": []
+      },
+      "doc-guide": {
+        "label": "Doc Guide",
+        "aliases": []
+      },
+      "doc-api-reference": {
+        "label": "Doc Api Reference",
+        "aliases": []
+      },
+      "doc-sdk": {
+        "label": "Doc Sdk",
+        "aliases": []
+      },
+      "doc-sdk-unified": {
+        "label": "Doc Sdk Unified",
+        "aliases": []
+      },
+      "doc-rest-api": {
+        "label": "Doc Rest Api",
+        "aliases": []
+      },
+      "doc-integration": {
+        "label": "Doc Integration",
+        "aliases": []
+      },
+      "doc-tool": {
+        "label": "Doc Tool",
+        "aliases": []
+      },
+      "doc-ui-library": {
+        "label": "Doc Ui Library",
+        "aliases": []
+      },
+      "doc-framework-integration": {
+        "label": "Doc Framework Integration",
+        "aliases": []
+      },
+      "doc-changelog": {
+        "label": "Doc Changelog",
+        "aliases": []
+      },
+      "doc-glossary": {
+        "label": "Doc Glossary",
+        "aliases": []
+      },
+      "doc-hub": {
+        "label": "Doc Hub",
+        "aliases": []
+      },
+      "support-article": {
+        "label": "Support Article",
+        "aliases": []
+      },
+      "academy-training": {
+        "label": "Academy Training",
+        "aliases": []
+      },
+      "job-posting": {
+        "label": "Job Posting",
+        "aliases": []
+      },
+      "utility": {
+        "label": "Utility",
+        "aliases": []
+      }
+    }
+  },
+  "url_rules": [
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/sdk(/|$)",
+      "page_type": "doc-sdk-unified"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/search-insights(/|$)",
+      "page_type": "doc-sdk-unified",
+      "feature": [
+        "events"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/search(/|$)",
+      "page_type": "doc-sdk",
+      "product": [
+        "ai-search"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/ingestion(/|$)",
+      "page_type": "doc-sdk",
+      "feature": [
+        "data-transformation"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/analytics(/|$)",
+      "page_type": "doc-sdk",
+      "feature": [
+        "analytics"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/composition(/|$)",
+      "page_type": "doc-sdk",
+      "feature": [
+        "search-relevance-rules"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/monitoring(/|$)",
+      "page_type": "doc-sdk",
+      "feature": [
+        "monitoring"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/abtesting[\\w-]*(/|$)",
+      "page_type": "doc-sdk",
+      "feature": [
+        "ab-testing"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/query-suggestions(/|$)",
+      "page_type": "doc-sdk",
+      "feature": [
+        "query-suggestions"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/recommend(/|$)",
+      "page_type": "doc-sdk",
+      "product": [
+        "ai-recommendations"
+      ],
+      "feature": [
+        "recommend-models"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/personalization(/|$)",
+      "page_type": "doc-sdk",
+      "feature": [
+        "personalization"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/agent-studio(/|$)",
+      "page_type": "doc-sdk",
+      "product": [
+        "agent-studio"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)/[\\w.-]+/methods/insights(/|$)",
+      "page_type": "doc-sdk",
+      "feature": [
+        "events"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/libraries/(?P<language_platform>[\\w-]+)(/|$)",
+      "page_type": "doc-sdk"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/ui-libraries/autocomplete(/|$)",
+      "page_type": "doc-ui-library",
+      "feature": [
+        "search-autocomplete",
+        "ui-component-libraries"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/ui-libraries(/|$)",
+      "page_type": "doc-ui-library",
+      "feature": [
+        "ui-component-libraries"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/framework-integration/(?P<language_platform>[\\w-]+)(/|$)",
+      "page_type": "doc-framework-integration"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/integration/(?P<integration_platform>[\\w-]+)(/|$)",
+      "page_type": "doc-integration"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/api-reference/widgets(/|$)",
+      "page_type": "doc-api-reference",
+      "feature": [
+        "ui-component-libraries"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/api-reference/api-parameters/(?P<feature>[\\w-]+)(/|$)",
+      "page_type": "doc-api-reference"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/api-reference/api-methods/(?P<feature>[\\w-]+)(/|$)",
+      "page_type": "doc-api-reference"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/api-reference(/|$)",
+      "page_type": "doc-api-reference"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/(agent-studio|agents)(/|$)",
+      "page_type": "doc-rest-api",
+      "product": [
+        "agent-studio"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/ingestion(/|$)",
+      "page_type": "doc-rest-api",
+      "feature": [
+        "data-transformation"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/analytics(/|$)",
+      "page_type": "doc-rest-api",
+      "feature": [
+        "analytics"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/crawler(/|$)",
+      "page_type": "doc-rest-api",
+      "feature": [
+        "crawler"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/monitoring(/|$)",
+      "page_type": "doc-rest-api",
+      "feature": [
+        "monitoring"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/recommend(/|$)",
+      "page_type": "doc-rest-api",
+      "product": [
+        "ai-recommendations"
+      ],
+      "feature": [
+        "recommend-models"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/personalization(/|$)",
+      "page_type": "doc-rest-api",
+      "feature": [
+        "personalization"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/abtesting(/|$)",
+      "page_type": "doc-rest-api",
+      "feature": [
+        "ab-testing"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/insights(/|$)",
+      "page_type": "doc-rest-api",
+      "feature": [
+        "events"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/query-suggestions(/|$)",
+      "page_type": "doc-rest-api",
+      "feature": [
+        "query-suggestions"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api/search(/|$)",
+      "page_type": "doc-rest-api",
+      "product": [
+        "ai-search"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/rest-api(/|$)",
+      "page_type": "doc-rest-api"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/api-client(/|$)",
+      "page_type": "doc-sdk"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/building-search-ui(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "ui-component-libraries"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/managing-results(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "search-relevance-rules"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/personalization(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "personalization"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/algolia-ai(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "neuralsearch"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/sending-and-managing-data(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "indexing",
+        "data-transformation"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/sending-events(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "events"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/search-analytics(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "analytics"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/ab-testing(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "ab-testing"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides/security(/|$)",
+      "page_type": "doc-guide",
+      "feature": [
+        "api-keys"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/guides(/|$)",
+      "page_type": "doc-guide"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/tools/crawler(/|$)",
+      "page_type": "doc-tool",
+      "feature": [
+        "crawler"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/tools(/|$)",
+      "page_type": "doc-tool"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/changelog(/|$)",
+      "page_type": "doc-changelog"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/glossary(/|$)",
+      "page_type": "doc-glossary"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc/?$",
+      "page_type": "doc-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/doc(/|$)",
+      "page_type": "doc-guide"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/products/features/(?P<feature>[\\w-]+)(/|$)",
+      "page_type": "product-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/products/features/?$",
+      "page_type": "product-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/products/ai/?$",
+      "page_type": "product-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/products/ai/(?P<product>[\\w-]+)(/|$)",
+      "page_type": "product-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/products/?$",
+      "page_type": "product-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/products/(?P<product>[\\w-]+)(/|$)",
+      "page_type": "product-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/use-cases/?$",
+      "page_type": "solution-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/use-cases/(?P<solution>[\\w-]+)(/|$)",
+      "page_type": "use-case"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/industries/?$",
+      "page_type": "solution-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/industries/(?P<industry>[\\w-]+)(/|$)",
+      "page_type": "industry-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/search-solutions/?$",
+      "page_type": "solution-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/search-solutions/(?P<integration_platform>[\\w-]+)(/|$)",
+      "page_type": "solution-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/department/?$",
+      "page_type": "solution-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/department/[\\w-]+(/|$)",
+      "page_type": "department-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/algolia-resource-center(/|$)",
+      "page_type": "resource-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/ai-search-grader(/|$)",
+      "page_type": "landing-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/ecommerce-merchandising-playbook(/|$)",
+      "page_type": "playbook",
+      "industry": [
+        "ecommerce"
+      ],
+      "feature": [
+        "search-relevance-rules"
+      ]
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/pricing(/|$)",
+      "page_type": "pricing"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/competitors(/|$)",
+      "page_type": "comparison"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/(demorequest|contactus|contact)(/|$)",
+      "page_type": "contact-sales"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/(value-signup|search-audit|welcome|thank-you)(/|$)",
+      "page_type": "landing-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/lp(/|$)",
+      "page_type": "landing-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/customers/(?P<customer>[\\w.-]+)(/|$)",
+      "page_type": "case-study"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/customers/?$",
+      "page_type": "case-study-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/customer-hub(/|$)",
+      "page_type": "case-study-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/blog/author-directory(/|$)",
+      "page_type": "author-page"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/blog/[\\w-]+/[\\w-]+",
+      "page_type": "blog-post"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/blog(/|$)",
+      "page_type": "blog-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/resources/asset(/|$)",
+      "page_type": "resource"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/resources(/|$)",
+      "page_type": "resource-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/webinars(/|$)",
+      "page_type": "webinar"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/(events|devcon|exclusive)(/|$)",
+      "page_type": "event"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/developers/code-exchange(/|$)",
+      "page_type": "developer-code-sample"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/developers/?$",
+      "page_type": "developer-hub"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/developers(/|$)",
+      "page_type": "developer"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/dev(/|$)",
+      "page_type": "developer"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/about/news(/|$)",
+      "page_type": "press-release"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/about(/|$)",
+      "page_type": "company"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/careers(/|$)",
+      "page_type": "careers"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/policies(/|$)",
+      "page_type": "policy"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/(distributed-secure|trust-center|privacy-faqs)(/|$)",
+      "page_type": "trust"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/(partner-program|partners|mach-alliance)(/|$)",
+      "page_type": "partner"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/(for-non-profit|for-open-source|awards|user-research)(/|$)",
+      "page_type": "program"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/professional-services-support(/|$)",
+      "page_type": "services"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/(search|error-404|oauth-result|master-list-for-code-exchnage|blog-podcasts|devcon-retired|test-algolia-get-a-demo|mach-alliance-test)(/|$)",
+      "page_type": "utility"
+    },
+    {
+      "host": "www.algolia.com",
+      "path": "^/?$",
+      "page_type": "homepage"
+    },
+    {
+      "host": "support.algolia.com",
+      "path": ".*",
+      "page_type": "support-article"
+    },
+    {
+      "host": "academy.algolia.com",
+      "path": ".*",
+      "page_type": "academy-training"
+    },
+    {
+      "host": "job-boards.greenhouse.io",
+      "path": ".*",
+      "page_type": "job-posting"
+    }
+  ],
+  "capture_aliases": {
+    "integration_platform": {
+      "magento-2": "adobe-commerce-magento",
+      "salesforce-commerce-cloud-b2c": "salesforce-commerce-cloud",
+      "algolia-on-aws": "aws",
+      "algolia-on-azure": "azure",
+      "embedded-partnerships": null
+    },
+    "language_platform": {
+      "versions": null,
+      "search-insights": null
+    },
+    "product": {
+      "ai": null
+    },
+    "customer": {
+      "gymshark-headless": "gymshark",
+      "YourSurprise": "yoursurprise",
+      "END.": "end",
+      "iu-health-trendyminds": "iu-health",
+      "Zenni": "zenni",
+      "Breville-Group": "breville-group",
+      "gymshark-recommend": "gymshark",
+      "Zeeman": "zeeman",
+      "DocMorris": "docmorris",
+      "fern-case-study": "fern",
+      "PetSmart": "petsmart",
+      "WeightWatchers": "weightwatchers",
+      "CredibleMind": "crediblemind",
+      "Arcteryx": "arcteryx",
+      "Clarks": "clarks"
+    },
+    "feature": {
+      "add-ab-test": null,
+      "add-algolia-agent": null,
+      "add-api-key": "api-keys",
+      "add-strategy": null,
+      "added-to-cart-object-ids": null,
+      "added-to-cart-object-ids-after-search": null,
+      "advancedSyntax": null,
+      "advancedSyntaxFeatures": null,
+      "allowCompressionOfIntegerArray": null,
+      "allowReRankingOnPersonalization": "personalization",
+      "allowTyposOnNumericTokens": "typo-tolerance",
+      "alternativesAsExact": null,
+      "analytics": "analytics",
+      "analyticsTags": "analytics",
+      "aroundLatLng": null,
+      "aroundLatLngViaIP": null,
+      "aroundPrecision": null,
+      "aroundRadius": null,
+      "assign-user-id": null,
+      "attributeCriteriaComputedByMinProximity": null,
+      "attributeForDistinct": null,
+      "attributesForFaceting": "faceting",
+      "attributesToHighlight": null,
+      "attributesToRetrieve": null,
+      "attributesToSnippet": null,
+      "attributesToTransliterate": null,
+      "batch": null,
+      "batch-assign-user-id": null,
+      "batch-rules": null,
+      "browse": null,
+      "camelCaseAttributes": null,
+      "clear-dictionary-entries": "dictionaries",
+      "clear-objects": null,
+      "clear-rules": null,
+      "clear-synonyms": "ai-synonyms",
+      "clickAnalytics": "analytics",
+      "clicked-filters": "filtering",
+      "clicked-object-ids": null,
+      "clicked-object-ids-after-search": null,
+      "configuring-timeouts": null,
+      "converted-filters": "filtering",
+      "converted-object-ids": null,
+      "converted-object-ids-after-search": null,
+      "copy-index": null,
+      "copy-rules": null,
+      "copy-settings": null,
+      "copy-synonyms": "ai-synonyms",
+      "custom-request": null,
+      "customNormalization": null,
+      "customRanking": "custom-ranking",
+      "decompoundQuery": null,
+      "decompoundedAttributes": null,
+      "delete-ab-test": null,
+      "delete-api-key": "api-keys",
+      "delete-by": null,
+      "delete-dictionary-entries": "dictionaries",
+      "delete-index": null,
+      "delete-objects": null,
+      "delete-rule": null,
+      "delete-synonym": "ai-synonyms",
+      "disableExactOnAttributes": null,
+      "disablePrefixOnAttributes": null,
+      "disableTypoToleranceOnAttributes": "typo-tolerance",
+      "disableTypoToleranceOnWords": "typo-tolerance",
+      "distinct": null,
+      "enableABTest": null,
+      "enablePersonalization": "personalization",
+      "enableReRanking": null,
+      "enableRules": null,
+      "exactOnSingleWordQuery": null,
+      "export-rules": null,
+      "export-synonyms": "ai-synonyms",
+      "facetFilters": "faceting",
+      "facetingAfterDistinct": "faceting",
+      "facets": "faceting",
+      "filterPromotes": null,
+      "filters": "filtering",
+      "find-object": null,
+      "generate-secured-api-key": "api-keys",
+      "get-ab-test": null,
+      "get-api-key": "api-keys",
+      "get-authenticated-user-token": null,
+      "get-dictionary-settings": "dictionaries",
+      "get-frequently-bought-together": "recommend-models",
+      "get-logs": null,
+      "get-looking-similar": "recommend-models",
+      "get-object-position": null,
+      "get-objects": null,
+      "get-recommendations": null,
+      "get-related-products": "recommend-models",
+      "get-rule": null,
+      "get-secured-api-key-remaining-validity": "api-keys",
+      "get-settings": null,
+      "get-strategy": null,
+      "get-synonym": "ai-synonyms",
+      "get-top-user-id": null,
+      "get-trending-facets": "faceting",
+      "get-trending-items": "recommend-models",
+      "get-user-id": null,
+      "get-user-token": null,
+      "getRankingInfo": null,
+      "has-pending-mappings": null,
+      "highlightPostTag": null,
+      "highlightPreTag": null,
+      "hitsPerPage": null,
+      "ignorePlurals": "dictionaries",
+      "index-exists": null,
+      "indexLanguages": null,
+      "init": null,
+      "insideBoundingBox": null,
+      "insidePolygon": null,
+      "keepDiacriticsOnCharacters": null,
+      "length": null,
+      "list-ab-tests": null,
+      "list-api-keys": "api-keys",
+      "list-clusters": null,
+      "list-indices": null,
+      "list-user-id": null,
+      "maxFacetHits": "faceting",
+      "maxValuesPerFacet": "faceting",
+      "minProximity": null,
+      "minWordSizefor1Typo": null,
+      "minWordSizefor2Typos": "typo-tolerance",
+      "minimumAroundRadius": null,
+      "mode": null,
+      "move-index": null,
+      "multiple-queries": null,
+      "naturalLanguages": null,
+      "numericAttributesForFiltering": "filtering",
+      "numericFilters": "filtering",
+      "offset": null,
+      "optionalFilters": "filtering",
+      "optionalWords": null,
+      "page": null,
+      "paginationLimitedTo": "pagination",
+      "partial-update-objects": null,
+      "percentileComputation": null,
+      "personalizationImpact": "personalization",
+      "purchased-object-ids": null,
+      "purchased-object-ids-after-search": null,
+      "query": null,
+      "queryLanguages": null,
+      "queryType": null,
+      "ranking": null,
+      "relevancyStrictness": null,
+      "remove-user-id": null,
+      "removeStopWords": null,
+      "removeWordsIfNoResults": null,
+      "renderingContent": null,
+      "replace-all-objects": null,
+      "replace-all-rules": null,
+      "replace-all-synonyms": "ai-synonyms",
+      "replace-dictionary-entries": "dictionaries",
+      "replaceSynonymsInHighlight": "ai-synonyms",
+      "replicas": "replicas",
+      "responseFields": null,
+      "restore-api-key": "api-keys",
+      "restrictHighlightAndSnippetArrays": null,
+      "restrictSearchableAttributes": null,
+      "ruleContexts": null,
+      "save-dictionary-entries": "dictionaries",
+      "save-objects": null,
+      "save-rule": null,
+      "save-synonym": "ai-synonyms",
+      "save-synonyms": "ai-synonyms",
+      "search": null,
+      "search-dictionary-entries": "dictionaries",
+      "search-for-facet-values": "faceting",
+      "search-rules": null,
+      "search-synonyms": "ai-synonyms",
+      "search-user-id": null,
+      "searchableAttributes": null,
+      "send-events": "events",
+      "separatorsToIndex": null,
+      "set-authenticated-user-token": null,
+      "set-dictionary-settings": "dictionaries",
+      "set-extra-header": null,
+      "set-settings": null,
+      "set-user-token": null,
+      "similarQuery": null,
+      "snippetEllipsisText": null,
+      "sortFacetValuesBy": "faceting",
+      "stop-ab-test": null,
+      "sumOrFiltersScores": "filtering",
+      "synonyms": "ai-synonyms",
+      "tagFilters": "filtering",
+      "typoTolerance": "typo-tolerance",
+      "unretrievableAttributes": null,
+      "update-api-key": "api-keys",
+      "userData": null,
+      "userToken": null,
+      "viewed-filters": "filtering",
+      "viewed-object-ids": null,
+      "wait-task": null
+    }
+  },
+  "field_rules": [
+    {
+      "when_source": "Support",
+      "field": "category",
+      "map": {
+        "Managing Results": {
+          "feature": [
+            "search-relevance-rules"
+          ]
+        },
+        "Shopify": {
+          "integration_platform": [
+            "shopify"
+          ]
+        },
+        "Magento": {
+          "integration_platform": [
+            "adobe-commerce-magento"
+          ]
+        },
+        "BigCommerce": {
+          "integration_platform": [
+            "bigcommerce"
+          ]
+        },
+        "Building Search UI": {
+          "feature": [
+            "ui-component-libraries"
+          ]
+        },
+        "DocSearch": {
+          "feature": [
+            "docsearch"
+          ],
+          "solution": [
+            "documentation-search"
+          ]
+        },
+        "Crawler": {
+          "feature": [
+            "crawler"
+          ]
+        },
+        "Sending and Managing Data": {
+          "feature": [
+            "indexing",
+            "data-transformation"
+          ]
+        },
+        "Indexing & Data Ingestion": {
+          "feature": [
+            "indexing",
+            "data-transformation"
+          ]
+        },
+        "Analytics": {
+          "feature": [
+            "analytics"
+          ]
+        },
+        "Security": {
+          "feature": [
+            "api-keys"
+          ]
+        },
+        "Sending Events": {
+          "feature": [
+            "events"
+          ]
+        },
+        "Algolia Recommend": {
+          "product": [
+            "ai-recommendations"
+          ],
+          "feature": [
+            "recommend-models"
+          ]
+        },
+        "Algolia AI": {
+          "feature": [
+            "neuralsearch"
+          ]
+        },
+        "A/B Testing": {
+          "feature": [
+            "ab-testing"
+          ]
+        },
+        "Personalization": {
+          "feature": [
+            "personalization"
+          ]
+        },
+        "Query Suggestions": {
+          "feature": [
+            "query-suggestions"
+          ]
+        },
+        "NeuralSearch": {
+          "feature": [
+            "neuralsearch"
+          ]
+        },
+        "Scaling (Infrastructure)": {
+          "feature": [
+            "replicas",
+            "monitoring"
+          ]
+        },
+        "API Clients and Extensions": {
+          "page_type_hint": "doc-sdk"
+        },
+        "3rd Party Integrations": {},
+        "Account Management": {},
+        "Billing and Plans": {},
+        "Usage, Operations and Costs": {
+          "feature": [
+            "monitoring"
+          ]
+        },
+        "Getting Started": {},
+        "Algolia Support": {}
+      }
+    }
+  ],
+  "list_field_rules": [
+    {
+      "fields": [
+        "tags",
+        "keywords"
+      ],
+      "map": {
+        "e-commerce": {
+          "industry": [
+            "ecommerce"
+          ]
+        },
+        "ecommerce": {
+          "industry": [
+            "ecommerce"
+          ]
+        },
+        "commerce": {
+          "industry": [
+            "ecommerce"
+          ]
+        },
+        "retail": {
+          "industry": [
+            "ecommerce"
+          ]
+        },
+        "b2b": {
+          "industry": [
+            "b2b-ecommerce"
+          ]
+        },
+        "marketplace": {
+          "industry": [
+            "marketplaces"
+          ]
+        },
+        "media": {
+          "industry": [
+            "media"
+          ]
+        },
+        "fashion": {
+          "industry": [
+            "fashion"
+          ]
+        },
+        "grocery": {
+          "industry": [
+            "grocery"
+          ]
+        },
+        "saas": {
+          "industry": [
+            "saas"
+          ]
+        },
+        "education": {
+          "industry": [
+            "higher-education"
+          ]
+        },
+        "algolia recommend": {
+          "product": [
+            "ai-recommendations"
+          ],
+          "feature": [
+            "recommend-models"
+          ]
+        },
+        "recommend": {
+          "product": [
+            "ai-recommendations"
+          ]
+        },
+        "neuralsearch": {
+          "feature": [
+            "neuralsearch"
+          ]
+        },
+        "vector search": {
+          "feature": [
+            "neuralsearch"
+          ]
+        },
+        "semantic search": {
+          "feature": [
+            "neuralsearch"
+          ]
+        },
+        "personalization": {
+          "feature": [
+            "personalization"
+          ]
+        },
+        "a/b testing": {
+          "feature": [
+            "ab-testing"
+          ]
+        },
+        "analytics": {
+          "feature": [
+            "analytics"
+          ]
+        },
+        "indexing": {
+          "feature": [
+            "indexing"
+          ]
+        },
+        "crawler": {
+          "feature": [
+            "crawler"
+          ]
+        },
+        "instantsearch": {
+          "feature": [
+            "ui-component-libraries"
+          ]
+        },
+        "autocomplete": {
+          "feature": [
+            "search-autocomplete"
+          ]
+        },
+        "query suggestions": {
+          "feature": [
+            "query-suggestions"
+          ]
+        },
+        "synonyms": {
+          "feature": [
+            "ai-synonyms"
+          ]
+        },
+        "faceting": {
+          "feature": [
+            "faceting"
+          ]
+        },
+        "merchandising": {
+          "feature": [
+            "search-relevance-rules"
+          ]
+        },
+        "agent studio": {
+          "product": [
+            "agent-studio"
+          ]
+        },
+        "agentic": {
+          "product": [
+            "agent-studio"
+          ]
+        },
+        "shopify": {
+          "integration_platform": [
+            "shopify"
+          ]
+        },
+        "magento": {
+          "integration_platform": [
+            "adobe-commerce-magento"
+          ]
+        },
+        "adobe commerce": {
+          "integration_platform": [
+            "adobe-commerce-magento"
+          ]
+        },
+        "bigcommerce": {
+          "integration_platform": [
+            "bigcommerce"
+          ]
+        },
+        "commercetools": {
+          "integration_platform": [
+            "commercetools"
+          ]
+        },
+        "salesforce": {
+          "integration_platform": [
+            "salesforce-commerce-cloud"
+          ]
+        },
+        "site search": {
+          "solution": [
+            "site-search"
+          ]
+        },
+        "voice search": {
+          "solution": [
+            "voice-search"
+          ]
+        },
+        "visual search": {
+          "solution": [
+            "visual-search"
+          ]
+        },
+        "image search": {
+          "solution": [
+            "image-search"
+          ]
+        },
+        "headless": {
+          "solution": [
+            "headless-commerce"
+          ]
+        },
+        "headless commerce": {
+          "solution": [
+            "headless-commerce"
+          ]
+        },
+        "mobile search": {
+          "solution": [
+            "mobile-search"
+          ]
+        },
+        "documentation search": {
+          "solution": [
+            "documentation-search"
+          ]
+        }
+      }
+    }
+  ],
+  "text_matching": {
+    "fields": [
+      "title",
+      "abstract",
+      "description"
+    ],
+    "generic_terms_url_only": [
+      "search",
+      "index",
+      "api",
+      "data",
+      "ai",
+      "algolia",
+      "guides",
+      "enterprise",
+      "analytics"
+    ],
+    "url_or_field_only": {
+      "customer": [
+        "clarks",
+        "co-op",
+        "crocs",
+        "edx",
+        "end",
+        "gemo",
+        "hbm",
+        "orange",
+        "politico",
+        "sary",
+        "staples",
+        "zoom"
+      ],
+      "industry": [
+        "ecommerce"
+      ]
+    },
+    "min_evidence": 1,
+    "blocklist": {
+      "solution": [
+        "site-search"
+      ]
+    }
+  },
+  "gates": {
+    "max_value_share": 0.4,
+    "min_value_share": 0.001,
+    "per_axis_precision": {
+      "page_type": 0.98,
+      "language_platform": 0.98,
+      "integration_platform": 0.95,
+      "customer": 0.95,
+      "industry": 0.85,
+      "solution": 0.8,
+      "feature": 0.75,
+      "product": 0.7
+    }
+  }
+}

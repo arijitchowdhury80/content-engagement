@@ -3,7 +3,7 @@
 Read `SESSION.md` first. It is the resume point.
 
 **Two sessions run in parallel on this repo, intentionally (Arijit, 2026-08-06).**
-Backend session: `docs/60-enrichment/` taxonomy/enrichment pipeline, writes to
+Backend session: `docs/70-enrichment/` taxonomy/enrichment pipeline, writes to
 `Algolia_Prod_Copy_Enhanced`. Frontend session: `docs/50-prototype/demo/`, the WU-briefs,
 Asana task state. Each stays in its lane. Before running `git add -A`, check
 `git status` first — the other session may have its own uncommitted work in flight.
@@ -16,8 +16,8 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 | Memory | `~/.claude/projects/-Users-arijitchowdhury-Dropbox-AI-Development-algolia-com/memory/` |
 | Vault project (knowledge SSOT) | `~/Dropbox/AI-Development/Obsidian/Arijit-Second-Brain/Projects/Search-First-Algolia-com/` |
 | Status SSOT | Asana project `1217199861767750` |
-| Enrichment pipeline | `docs/60-enrichment/` |
-| Software documentation | `docs/70-documentation/` |
+| Enrichment pipeline | `docs/70-enrichment/` |
+| Software documentation | `docs/80-documentation/` |
 | Execution briefs | `docs/briefs/` |
 
 ## Hard constraints
@@ -45,7 +45,7 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   is much the larger one. The only refresh path is:
   copy → `classify.py` → `apply_taxonomy.py` → `dedupe.py`, in that order.
   Nothing currently writes to Enhanced; the risk is a human running a convenience copy.
-  See `docs/70-documentation/enrichment/chapter-2-deduplication.md` §10.
+  See `docs/80-documentation/enrichment/chapter-2-deduplication.md` §10.
 - **`Algolia_Prod_Copy_Enhanced` has `distinct: true` on `url`.** Search always returns one result
   per URL, so `nbHits` is the distinct-URL count, not the record count. Read the index settings
   before diagnosing anything as a duplicate-records problem — this is what made a whole plan's
@@ -88,8 +88,8 @@ middle.
 
 ### The two scripts, and the trap in both
 
-- `docs/60-enrichment/asana_restructure.py` — sections, prefix removal, subtask renumbering
-- `docs/60-enrichment/asana_renumber_units.py` — work-unit renumbering to match phase order
+- `docs/70-enrichment/asana_restructure.py` — sections, prefix removal, subtask renumbering
+- `docs/70-enrichment/asana_renumber_units.py` — work-unit renumbering to match phase order
 
 Both rewrite Asana notes, sweep the repo and vault, and re-read from Asana to verify. The unit
 script also `git mv`s `docs/briefs/WU-NN.md` in two phases so a rename cannot collide.
