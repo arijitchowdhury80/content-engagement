@@ -38,17 +38,25 @@ do not default to backend just because it's listed first.**
 ### If backend/enrichment lane
 
 1. Read this file, then `Projects/Search-First-Algolia-com/index.md` in the vault.
-2. **Write `docs/70-enrichment/validate.py`** — taxonomy validation. Scope is already written in
-   `docs/80-documentation/enrichment/chapter-4-enrichment-validation.md`:
-   - Cross-check assignments against the **2,198 URLs that already carry independent labels**
-     (1,263 from `algolia-central_enterprise_ledger`, 1,440 from the six-axis prototype, 900 from
-     both). Agreement → confidence. Disagreement → the review queue.
-   - Measure precision on the **2,262-URL blind set** (Blog 1,265, Resources 554, Website 443).
-   - Run R1–R5 per axis; report the candidate queue.
+2. **Next is `WU-11.3 — URL liveness census.`** HTTP status for all 12,114 distinct URLs, one
+   request each, rate-limited and resumable. `is404` cannot answer it — `False` 8,356 · `True` 24 ·
+   **absent 8,587** — and a hand check of 6 URLs found 2 dead. Runs before validation so the
+   taxonomy is not measured against records about to be removed.
+3. **Then taxonomy conformance, then taxonomy correctness.** Scope in
+   `docs/80-documentation/enrichment/chapter-4-enrichment-validation.md`. ⚠ **Re-scope it first —
+   two of its figures are known stale:**
+   - the corpus is **12,114** records, not 16,967 (the 2026-08-06 dedupe)
+   - the blind set is **541**, not 2,262. Of those, ~380 are `doc-sdk`/`doc-api-reference` pages
+     that should earn URL rules rather than human labelling, leaving ~161 needing judgement
+   - `R1`–`R5` were never defined anywhere. The schema's `contract` block is the real
+     specification; number the checks against it and drop the R-names
+   - there is **no `validate.py`** and there should not be one file: conformance (machine, pass/fail
+     on every record) and correctness (corroboration against independent labellers) are different
+     jobs with different outputs
    - **Do not sample.** 71.1% of records are URL-deterministic and their rule table is already
      enumerated (394 patterns, 64 cover 95%).
-3. Resolve the two open R5 failures (see *Remaining work*).
-4. Then, in order: content enrichment → content validation → full-record validation.
+4. Resolve the two open R5 failures (see *Remaining work*).
+5. Then, in order: content enrichment → content validation → full-record validation.
 
 ### If frontend/demo lane
 
@@ -172,7 +180,7 @@ no longer blocked.
 | Documentation | `docs/80-documentation/` — Book 1 Enrichment, Ch.1 complete |
 | Asana | WU-11 `1217210533022462` · `[87]` `1217210602718821` · docs tree `1217211372481002` |
 | Index (live) | `Algolia_Prod_Copy_Enhanced` |
-| Rollback | `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805` |
+| Rollback | **none — both snapshots deleted 2026-08-06 after verification** |
 | GitHub (PUBLIC) | `arijitchowdhury80/content-engagement` @ `e49ca6b` |
 | Demo (frontend lane — VERIFIED 2026-08-06) | `docs/50-prototype/demo/` — confirmed live in-browser against `Algolia_Prod_Copy_Enhanced`: real queries, facets, snippets, zero console errors. Committed `2a882c3`. |
 

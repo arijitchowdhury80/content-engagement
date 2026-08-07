@@ -1,11 +1,11 @@
 ---
-title: "Chapter 2 — Content Enrichment"
+title: "Chapter 3 — Content Enrichment"
 description: "The missing body field, and where the text to fill it already lives."
 status: not-started
-asana: "Chapter 2 : Content Enrichment (1217211621995392)"
+asana: "Chapter 3 : Content Enrichment (1217211621995392)"
 ---
 
-# Chapter 2 — Content Enrichment
+# Chapter 3 — Content Enrichment
 
 > **Status: not started.** Scope defined below; no work performed.
 

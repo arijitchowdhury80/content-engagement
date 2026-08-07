@@ -10,7 +10,7 @@ work_unit: "WU-11 subtask [WU-11.1] (1217210602718821)"
 
 # Chapter 1 — Taxonomy Enrichment
 
-> **Status: complete and live.** Applied to `Algolia_Prod_Copy_Enhanced` on 2026-08-06 and verified against the live index. Rollback available at `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805`.
+> **Status: complete and live.** Applied to `Algolia_Prod_Copy_Enhanced` on 2026-08-06 and verified against the live index. Rollback was `Algolia_Prod_Copy_Enhanced_pre_taxonomy_20260805`. **That snapshot has since been deleted (2026-08-06) — no rollback to the pre-taxonomy state exists.**
 
 ## 1. The problem
 
@@ -102,7 +102,13 @@ Error is not uniform across this corpus, so estimating one error rate by samplin
 |---|---|---|---|
 | URL-deterministic | **12,056 (71.1%)** | Table bugs, not noise | Enumerate the table |
 | Text-dependent, independently labelled | 2,198 URLs | Disagreement | Free cross-validation |
-| Text-dependent, blind | **2,262 URLs** | Genuine unknown | The only place human labelling pays |
+| Text-dependent, blind | **541 URLs** | Genuine unknown | The only place human labelling pays |
+
+> **Corrected 2026-08-06.** This table originally said 2,262 (Blog 1,265 · Resources 554 ·
+> Website 443). Measured live on canonical URLs: 8,235 distinct URLs, 2,784 carrying a
+> text-match value, 2,243 of those corroborated by an independent labeller — leaving **541**
+> genuinely blind. ~380 are `doc-sdk`/`doc-api-reference`/`doc-rest-api`/`doc-tool` pages that
+> should earn URL rules, so the irreducible human queue is roughly **161**.
 
 **394 distinct URL patterns exist. 64 cover 95% of all records; 284 cover 99%.** So the deterministic majority is verified by *reviewing 64 rules exhaustively* — certainty, not an estimate. That review is what surfaced the bugs in §5.
 
@@ -212,11 +218,11 @@ product:agent-studio                               → 252 hits
 - `industry='ecommerce'` at **72.3%**
 - `product='ai-search'` at **40.4%**
 
-The `ecommerce` case is worth stating precisely, because it exposes a flaw in the rule rather than in the data: **764 of those 773 tags come from Algolia's own authored keywords** on blog and resource posts — only 9 from URL paths. The tag is *factually correct*. It simply does not narrow anything. R5 as written conflates "wrong" with "non-discriminating". Resolving that is Chapter 3's job.
+The `ecommerce` case is worth stating precisely, because it exposes a flaw in the rule rather than in the data: **764 of those 773 tags come from Algolia's own authored keywords** on blog and resource posts — only 9 from URL paths. The tag is *factually correct*. It simply does not narrow anything. R5 as written conflates "wrong" with "non-discriminating". Resolving that is Chapter 4's job.
 
-**Three axes below target**, and the cause is measurable: there is no body field. Median text per record runs 117 characters on `doc-rest-api`, 160 on `doc-api-reference`, 203 on `doc-guide`, 370 on `blog-post`. Every URL-derived signal has been mined — 89 rules including SDK method groups and 194 API parameters. The residue needs text that does not exist in the index. That is Chapter 2.
+**Three axes below target**, and the cause is measurable: there is no body field. Median text per record runs 117 characters on `doc-rest-api`, 160 on `doc-api-reference`, 203 on `doc-guide`, 370 on `blog-post`. Every URL-derived signal has been mined — 89 rules including SDK method groups and 194 API parameters. The residue needs text that does not exist in the index. That is Chapter 3.
 
-**Precision is unmeasured.** This chapter proved coverage. It did not prove the values are *correct*. That is Chapter 3.
+**Precision is unmeasured.** This chapter proved coverage. It did not prove the values are *correct*. That is Chapter 4.
 
 ## 8. What makes this repeatable
 
