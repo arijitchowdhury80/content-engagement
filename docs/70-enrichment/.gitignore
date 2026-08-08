@@ -17,8 +17,11 @@ body-rescue-*.jsonl
 snapshots/
 
 # Fetched page markdown and the work queue. Bulk page content, regenerable.
-cache/
-cache2/
+# GLOB, not literal names. `cache/` and `cache2/` were listed literally and a third dir,
+# `cache-fresh50/`, walked straight past them into a commit -- 636KB of page markdown in a
+# PUBLIC repo. Same class as the root rules that pointed at `docs/60-enrichment/` after the
+# rename. Name a PATTERN, never an instance.
+cache*/
 work-queue.jsonl
 fetched/
 

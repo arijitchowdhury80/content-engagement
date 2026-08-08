@@ -19,8 +19,7 @@ docs/70-enrichment/enhanced-pre-taxonomy-*.jsonl
 docs/70-enrichment/taxonomy-assignments.jsonl
 docs/70-enrichment/snapshots/
 docs/70-enrichment/work-queue.jsonl
-docs/70-enrichment/cache/
-docs/70-enrichment/cache2/
+docs/70-enrichment/cache*/
 
 # full Agent Studio agent dump — contains complete internal system-prompt text for 51
 # live agents; this repo is public, do not ship internal prompt content by default
