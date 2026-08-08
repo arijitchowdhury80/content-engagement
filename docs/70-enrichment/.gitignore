@@ -10,3 +10,22 @@ reports/asana-backup-*.json
 # 325 records, 6MB, the only copy of those bodies. Chapter 3 consumes it.
 # Not committed: it is bulk page content, not source.
 body-rescue-*.jsonl
+
+# Index snapshots taken before destructive operations. ~20MB each, every field of every
+# record. These are the rollback path, not source — and there was no snapshot of Enhanced
+# at all until 2026-08-07, which is why they now exist.
+snapshots/
+
+# Fetched page markdown and the work queue. Bulk page content, regenerable.
+cache/
+cache2/
+work-queue.jsonl
+fetched/
+
+# Rules live HERE, not only in the root .gitignore. The root's enrichment rules pointed at
+# `docs/60-enrichment/` for as long as this directory has been called `70-enrichment`, so
+# they silently matched nothing and 23MB of payload was committed to a PUBLIC repo against
+# the rule's own stated intent. A path-scoped rule in the directory it protects cannot be
+# orphaned by renaming that directory.
+enhanced-pre-taxonomy-*.jsonl
+taxonomy-assignments.jsonl
