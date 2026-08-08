@@ -32,6 +32,15 @@ snapshots/
 # for the v1.2 comparison, so I have not removed them. Your call, alongside Open item 5.
 reports/*/
 
+# Full-corpus run artefacts, all regenerable from work-queue.jsonl:
+#   batches/       208 queue manifests
+#   cache-batches/ per-batch fetched page markdown -- the bulk, ~10,198 pages
+#   batches-out/   per-batch results
+# Directory patterns, not names, for the same reason as cache*/ below.
+batches/
+batches-out/
+cache-batches/
+
 # Fetched page markdown and the work queue. Bulk page content, regenerable.
 # GLOB, not literal names. `cache/` and `cache2/` were listed literally and a third dir,
 # `cache-fresh50/`, walked straight past them into a commit -- 636KB of page markdown in a

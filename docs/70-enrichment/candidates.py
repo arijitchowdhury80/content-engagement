@@ -308,8 +308,39 @@ def split_candidates(markdown: str, max_candidates: int = 400,
                     block=canon.block[a2] if canon.block else 0,
                 ))
                 if len(out) >= max_candidates:
-                    return out, canon
-    return out, canon
+                    return _guard_boilerplate(out), canon
+    return _guard_boilerplate(out), canon
+
+
+# A page may exceed this share of its prose being boilerplate only if the boilerplate IS its
+# subject. 0.5 is the measured line: /fr/awards lost 87% of its prose to G8 and went THIN, while
+# a normal page carrying the same footer loses a handful of sentences out of dozens.
+G8_MAX_PROSE_SHARE = 0.5
+
+
+def _guard_boilerplate(cands: list[Candidate]) -> list[Candidate]:
+    """Undo G8 on a page where the boilerplate is the page's own content.
+
+    THE BUG THIS FIXES, measured 2026-08-08 and confirmed by Arijit's review:
+      A sentence can be furniture on ten pages and be the CONTENT on the eleventh -- the page it
+      is actually about. `/fr/awards` is a page about Algolia's awards. Its award sentences also
+      sit in ten other pages' footers, so G8 marked them boilerplate; the page fell from 8 prose
+      candidates to 1 and the model correctly called it THIN. Four records were lost that way and
+      the run scored WORSE than no G8 at all (coherence 4.21 vs 4.62, PASS 20 vs 25).
+
+      G8 was right about the sentences and wrong about the page. The share of a page's prose that
+      the map claims is the signal: a normal page loses a footer, an awards page loses itself.
+    """
+    marked = [c for c in cands if c.kind == KIND_BOILERPLATE]
+    if not marked:
+        return cands
+    prose_if_kept = sum(1 for c in cands if c.kind == KIND_PROSE)
+    total_prose = prose_if_kept + len(marked)
+    if total_prose and len(marked) / total_prose > G8_MAX_PROSE_SHARE:
+        # This page IS the boilerplate's home. Hand its sentences back as ordinary prose.
+        for c in marked:
+            c.kind = KIND_PROSE if c.sentence_complete else KIND_FRAGMENT
+    return cands
 
 
 _LABEL = {
@@ -399,6 +430,21 @@ def resolve_selection(
 
     sel.abstract = take(picked_abstract, "abstract")
     sel.highlights = take(picked_highlights, "highlight")
+
+    # PAGE ORDER, not the order the model happened to return.
+    #
+    # The abstract is joined with spaces and read as one paragraph, so the order is part of the
+    # text. Nothing sorted it: `take` appended in the model's pick order and span_gate joined that
+    # straight through. Arijit caught it on the DevCon record in the first human review -- "the
+    # summary's sentences appear in reverse page order" -- and he was right; the prompt has always
+    # asked for page order and nothing enforced it. Sorting here keeps the stored spans and
+    # `span_offsets` aligned, because both are derived from this list downstream.
+    #
+    # Highlights are sorted too. Each is read alone so it matters less, but a stable page-ordered
+    # list is one fewer thing that varies between two runs of a model that is only 19/50
+    # reproducible.
+    sel.abstract.sort(key=lambda c: c.start)
+    sel.highlights.sort(key=lambda c: c.start)
 
     lo, hi = span_range
     if not (lo <= len(sel.abstract) <= hi):

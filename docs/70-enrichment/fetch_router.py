@@ -380,6 +380,11 @@ def main() -> int:
     ap.add_argument("--verify-families", action="store_true")
     ap.add_argument("--build-queue", action="store_true")
     ap.add_argument("--fetch-pilot", type=int, metavar="N")
+    ap.add_argument("--from-batch", metavar="MANIFEST",
+                    help="fetch exactly the records in a batch manifest from make_batches.py, "
+                         "instead of pilot_sample's stratified pick. This is the path the "
+                         "full-corpus run uses: enrich_run needs a manifest with `markdown` "
+                         "inline, and the queue manifests do not carry it.")
     ap.add_argument("--exclude", default="", metavar="MANIFEST",
                     help="skip objectIDs already present in this manifest (second capture)")
     ap.add_argument("--out", default=str(CACHE_DIR))
@@ -420,6 +425,45 @@ def main() -> int:
         print(f"languages   : {dict(langs)}")
         scout_needed = paths.get("scout", 0)
         print(f"\nScout credits needed: {scout_needed}  (other {len(queue) - scout_needed} cost none)")
+        return 0
+
+    if args.from_batch:
+        batch = pathlib.Path(args.from_batch)
+        if not batch.exists():
+            sys.exit(f"FATAL: {batch} not found. Run make_batches.py first.")
+        sample = json.loads(batch.read_text())
+        out_dir = pathlib.Path(args.out)
+        manifest = out_dir / "pilot-manifest.json"
+        # Resume: a batch already fetched is not re-fetched. Fetching is the slow, rate-limited,
+        # externally-capped part of this pipeline -- re-doing it because a later stage failed
+        # would be the most expensive possible mistake.
+        if manifest.exists():
+            done = {r["objectID"] for r in json.loads(manifest.read_text())}
+            if {r["objectID"] for r in sample} <= done:
+                print(f"batch already fetched ({len(done)} records): {manifest}")
+                return 0
+        out_dir.mkdir(parents=True, exist_ok=True)
+        key = scout_key()
+        results = []
+        print(f"fetching {len(sample)} records from {batch.name}\n")
+        for n, item in enumerate(sample, 1):
+            got = fetch(item, key)
+            got.update({k: item[k] for k in
+                        ("page_type", "family", "language_code", "source", "title", "description")
+                        if k in item})
+            got.setdefault("pilot_reason", f"batch {batch.stem}")
+            results.append(got)
+            state = got["fetch_error"] or f"{len(got['markdown'])} chars"
+            print(f"  {n:2d}/{len(sample)}  {got['fetch_path']:12s} {state:28s} "
+                  f"{got['source_url'][:64]}", flush=True)
+            (out_dir / f"{got['objectID'].replace('/', '_')[:120]}.json").write_text(
+                json.dumps(got, ensure_ascii=False, indent=1))
+        manifest.write_text(json.dumps(results, ensure_ascii=False, indent=1))
+        ok = [r for r in results if not r["fetch_error"]]
+        print(f"\nfetched OK : {len(ok)}/{len(results)}")
+        if len(ok) != len(results):
+            print(f"failed     : {[(r['fetch_path'], r['fetch_error']) for r in results if r['fetch_error']][:5]}")
+        print(f"manifest   : {manifest}")
         return 0
 
     if args.fetch_pilot:

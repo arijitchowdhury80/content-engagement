@@ -33,6 +33,7 @@ import datetime as dt
 import json
 import os
 import pathlib
+import random
 import re
 import subprocess
 import sys
@@ -69,10 +70,19 @@ BOILERPLATE_MAP_PATH = HERE / "boilerplate-map.json"
 # footer of ten other pages, and the page went from 8 prose candidates to 1, then to THIN. Four
 # records were lost that way. G8 was right about the sentences and wrong about the page.
 #
-# The fix is known and not yet built: skip G8 on any page where it would remove most of the prose,
-# because there the block IS the content. Until that exists, the default is OFF -- v1.2 behaviour,
-# which is the best measured result. The post-hoc half (check_template_collision in the run
-# summary) stays ON: it only reports, it cannot cost a record.
+# 2026-08-08, second attempt: the guard is now built (candidates._guard_boilerplate). If the map
+# claims more than half a page's prose, that page IS the boilerplate's home and G8 is undone for
+# it. Verified before re-enabling: /fr/awards 8 prose -> 8 (spared), both infographic pages spared,
+# while content-rich pages still get it -- /fr/customers/walgreens 40 -> 33, /devcon 9 -> 7.
+# MEASURED AGAIN (v1.4) AND IT LOST AGAIN. Off, and this is now a considered verdict, not a pause.
+#   guard works: /fr/awards kept all 8 prose candidates, both infographic pages spared.
+#   result still worse: PASS 23 vs 25, records with an abstract 31 vs 34, coherence 4.52 vs 4.62 --
+#   and v1.4 also carried the span-order fix, which should have HELPED it.
+# So the guard fixed the crash-out case and G8 still does not pay for itself on this corpus. The
+# remaining cost is ordinary pages losing a few genuinely useful sentences to the map.
+# Arijit's own review says the defect is real (record 7: press-release key points contaminated by
+# the promo modules), so this is kept, not deleted -- but it needs a sharper signal than
+# "appears on >20% of paths" before it earns being on. Do not flip this without a measured run.
 G8_ENABLED = False
 BOILERPLATE = g8.load(BOILERPLATE_MAP_PATH) if G8_ENABLED else set()
 
@@ -106,12 +116,23 @@ WRITER_LABEL = "glm-5.2" if WRITER == "glm" else f"claude-{WRITER_MODEL}"
 # ---------------------------------------------------------------------------
 
 def family_instruction(family: str) -> str:
+    """Render the per-family block substituted into {family_instruction}.
+
+    `abstract_must_not_be` is optional and exists because saying what to lead with was not enough
+    for `reference`. That family's instruction already said "lead with what the method/endpoint/
+    parameter does", and the model still opened with HTTPS, response format and API version on all
+    three doc-rest-api records in Arijit's review. Doc pages put transport boilerplate first, so
+    the first plausible sentence IS the boilerplate. A negative is needed, not a clearer positive.
+    """
     spec = FAMILIES[family]
-    return (
+    out = (
         f"This is: {spec['what_it_is']}\n"
         f"  Lead the abstract with: {spec['abstract_must_lead_with']}.\n"
         f"  Highlights here are: {spec['highlights_are']}."
     )
+    if spec.get("abstract_must_not_be"):
+        out += f"\n  NEVER open the abstract with: {spec['abstract_must_not_be']}."
+    return out
 
 
 SELECT_PROMPT = """You are choosing which of a page's own sentences matter. You do NOT write or
@@ -395,6 +416,73 @@ def _inference_env() -> tuple[str, str]:
     return base, key
 
 
+# ---------------------------------------------------------------------------
+# retry layer -- required before any parallel run
+# ---------------------------------------------------------------------------
+#
+# THE GAP THIS CLOSES
+#   Neither model call had a retry, a backoff, or any 429 handling -- only a timeout. A transient
+#   failure returned None and the record was recorded as failed and never revisited. Sequentially,
+#   at one request at a time, that almost never fired. At 8 concurrent workers against ~7,700
+#   Gemini calls it is a certainty, and it would have silently dropped records across the corpus
+#   while every batch reported success. That is the false-green class this project keeps hitting.
+#
+#   Neither call could even SEE an HTTP status: plain `curl -s` prints only the body, so a 429 with
+#   an empty body was indistinguishable from a network blip. The status is now captured explicitly.
+#
+# WHAT IS AND IS NOT RETRIED
+#   Retried: transport failure (curl non-zero), 408/425/429 and 5xx, and a body that is not JSON.
+#   Retried ONCE more generously: a well-formed response whose CONTENT will not parse -- v1.4 hit
+#   one WRITER_UNPARSEABLE, and a reasoning model producing malformed JSON is nondeterministic, so
+#   a retry is worth an attempt.
+#   NOT retried: a 4xx that is not a rate limit. That is a bad request and repeating it just burns
+#   quota and time.
+_RETRYABLE_STATUS = {408, 425, 429, 500, 502, 503, 504}
+_RETRY_ATTEMPTS = 4
+_RETRY_BASE_SECONDS = 2.0
+_HTTP_MARK = "__HTTP_STATUS__"
+
+
+def _curl_json(args: list[str], timeout: int,
+               attempts: int = _RETRY_ATTEMPTS) -> tuple[dict | None, int, str, str]:
+    """Run curl with retries. Returns (parsed_body, http_status, raw_text, note).
+
+    `note` is empty on success and carries the reason on failure, so a giving-up call is
+    diagnosable in the report instead of appearing as an unexplained gap.
+    """
+    # -w appends the status on its own line; the body is everything before it.
+    full = [*args, "-w", f"\n{_HTTP_MARK}%{{http_code}}"]
+    note = ""
+    for attempt in range(1, attempts + 1):
+        proc = subprocess.run([*full, "--max-time", str(timeout)],
+                              capture_output=True, text=True)
+        out = proc.stdout
+        status = 0
+        if _HTTP_MARK in out:
+            out, _, tail = out.rpartition(f"\n{_HTTP_MARK}")
+            status = int(tail.strip() or 0)
+
+        if proc.returncode != 0:
+            note = f"curl exit {proc.returncode}"
+        elif status in _RETRYABLE_STATUS:
+            note = f"HTTP {status}"
+        else:
+            try:
+                return json.loads(out), status, out, ""
+            except json.JSONDecodeError:
+                note = f"non-JSON body (HTTP {status}): {out[:120]}"
+                if status and status not in _RETRYABLE_STATUS and status >= 400:
+                    return None, status, out, note      # a real 4xx; repeating it is pointless
+
+        if attempt < attempts:
+            # exponential backoff with jitter -- 8 workers retrying in lockstep would re-create
+            # the burst that caused the 429 in the first place
+            delay = _RETRY_BASE_SECONDS * (2 ** (attempt - 1)) * (1.0 + random.random())
+            print(f"      retry {attempt}/{attempts - 1} in {delay:.1f}s ({note})", flush=True)
+            time.sleep(delay)
+    return None, 0, "", f"gave up after {attempts} attempts: {note}"
+
+
 def call_writer_glm(prompt: str, timeout: int = 180) -> tuple[dict | None, dict]:
     """LLM #1 via Algolia's inference server (glm-5.2), OpenAI-compatible.
 
@@ -409,16 +497,14 @@ def call_writer_glm(prompt: str, timeout: int = 180) -> tuple[dict | None, dict]
         "messages": [{"role": "system", "content": WRITER_SYSTEM_PROMPT},
                      {"role": "user", "content": prompt}],
     })
-    proc = subprocess.run(
-        ["curl", "-s", "--max-time", str(timeout), f"{base}/chat/completions",
+    data, status, raw, note = _curl_json(
+        ["curl", "-s", f"{base}/chat/completions",
          "-H", "Content-Type: application/json", "-H", f"Authorization: Bearer {key}",
          "-d", body],
-        capture_output=True, text=True,
-    )
-    meta: dict = {"cost_usd": 0.0, "raw": proc.stdout[:400], "writer": "glm-5.2"}
-    try:
-        data = json.loads(proc.stdout)
-    except json.JSONDecodeError:
+        timeout)
+    meta: dict = {"cost_usd": 0.0, "raw": raw[:400], "writer": "glm-5.2", "http_status": status}
+    if data is None:
+        meta["raw"] = note or raw[:400]
         return None, meta
     if "error" in data:
         meta["raw"] = str(data["error"])[:300]
@@ -429,7 +515,24 @@ def call_writer_glm(prompt: str, timeout: int = 180) -> tuple[dict | None, dict]
         return None, meta
     meta["raw"] = text[:400]
     meta["usage"] = data.get("usage")
-    return extract_json(text), meta
+    parsed = extract_json(text)
+    if parsed is None:
+        # A reasoning model emitting malformed JSON is nondeterministic, so one more attempt is
+        # worth it. v1.4 lost a record to exactly this (WRITER_UNPARSEABLE).
+        meta["retried_unparseable"] = True
+        data2, _, raw2, _ = _curl_json(
+            ["curl", "-s", f"{base}/chat/completions",
+             "-H", "Content-Type: application/json", "-H", f"Authorization: Bearer {key}",
+             "-d", body], timeout, attempts=1)
+        if data2:
+            try:
+                text2 = data2["choices"][0]["message"]["content"] or ""
+                parsed = extract_json(text2)
+                if parsed is not None:
+                    meta["raw"] = text2[:400]
+            except (KeyError, IndexError):
+                pass
+    return parsed, meta
 
 
 def call_writer_claude(prompt: str, timeout: int = 300) -> tuple[dict | None, dict]:
@@ -497,16 +600,13 @@ def call_judge(prompt: str, timeout: int = 240) -> tuple[dict | None, str]:
         "generationConfig": {"temperature": 0, "maxOutputTokens": 8192,
                              "responseMimeType": "application/json"},
     })
-    proc = subprocess.run(
-        ["curl", "-s", "--max-time", str(timeout),
+    data, status, raw, note = _curl_json(
+        ["curl", "-s",
          f"https://generativelanguage.googleapis.com/v1beta/models/{JUDGE_MODEL}:generateContent?key={key}",
          "-H", "content-type: application/json", "-d", body],
-        capture_output=True, text=True,
-    )
-    try:
-        data = json.loads(proc.stdout)
-    except json.JSONDecodeError:
-        return None, f"non-JSON response: {proc.stdout[:120]}"
+        timeout)
+    if data is None:
+        return None, note or f"no response (HTTP {status}): {raw[:120]}"
     if "error" in data:
         return None, f"api error: {data['error'].get('message', '')[:140]}"
     candidates = data.get("candidates") or []

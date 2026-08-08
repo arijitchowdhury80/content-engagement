@@ -27,6 +27,7 @@ import pytest  # noqa: E402
 from candidates import (  # noqa: E402
     MAX_CHARS,
     Candidate,
+    norm_key,
     render_menu,
     split_candidates,
 )
@@ -261,6 +262,87 @@ def test_french_initial_does_not_end_a_sentence():
     cands, _ = split_candidates(
         "Le rapport de M. Dupont montre que la recherche améliore nettement la conversion.")
     assert len(cands) == 1, [c.text for c in cands]
+
+
+# ---------------------------------------------------------------------------
+# span ordering — found by Arijit in the first human review of the pipeline
+# ---------------------------------------------------------------------------
+
+def test_abstract_spans_are_stored_in_page_order_not_pick_order():
+    """The abstract is joined and read as a paragraph, so order is part of the text.
+
+    Nothing sorted it: resolve_selection appended in the model's pick order and span_gate joined
+    that straight through. Arijit caught it on the DevCon record -- "the summary's sentences
+    appear in reverse page order". The prompt had always asked for page order; nothing enforced it.
+    """
+    from candidates import resolve_selection
+
+    page = (
+        "Algolia DevCon 2026 is the place to learn how to build world-class search experiences.\n"
+        "Connect with other developers from the community and see what is new from Algolia.\n"
+        "Registration for the virtual conference is free and open to every developer now.\n"
+    )
+    cands, _ = split_candidates(page)
+    assert len(cands) >= 3
+    first, third = cands[0], cands[2]
+
+    # model returns them backwards, which is exactly what happened on the real record
+    sel = resolve_selection([third.index, first.index], [], cands, span_range=(1, 4))
+    assert sel.passed, sel.failures
+    assert [c.index for c in sel.abstract] == [first.index, third.index]
+    assert sel.abstract[0].start < sel.abstract[1].start
+
+
+def test_highlights_are_page_ordered_too():
+    from candidates import resolve_selection
+
+    page = ("Algolia supports up to one thousand queries per second on the standard plan.\n"
+            "Every index may hold as many as ten million records under this configuration.\n"
+            "Search latency stays below fifty milliseconds for the vast majority of queries.\n")
+    cands, _ = split_candidates(page)
+    picks = [c.index for c in cands[:3]][::-1]
+    sel = resolve_selection([cands[0].index], picks[:2], cands, span_range=(1, 4))
+    starts = [c.start for c in sel.highlights]
+    assert starts == sorted(starts), starts
+
+
+# ---------------------------------------------------------------------------
+# G8 guard — the page where the boilerplate IS the content
+# ---------------------------------------------------------------------------
+
+def test_g8_is_undone_on_a_page_that_is_about_the_boilerplate():
+    """/fr/awards: an awards page whose award sentences also live in ten footers.
+
+    G8 stripped 7 of its 8 prose candidates and the page went THIN. Four records died this way
+    and the whole run scored worse than no G8 at all.
+    """
+    awards = (
+        "Algolia is recognized as a leader in the 2026 Gartner Magic Quadrant for search.\n"
+        "IDC recognized Algolia as a leader in general purpose knowledge discovery software.\n"
+        "Algolia won twelve medals across twelve categories at the Enterprise Combine 2025.\n"
+        "This page collects the analyst awards Algolia has received over the past year.\n"
+    )
+    bp = {norm_key(c.text) for c in split_candidates(awards)[0][:3]}
+    cands, _ = split_candidates(awards, boilerplate=bp)
+    kinds = [c.kind for c in cands]
+    assert "boilerplate" not in kinds, kinds
+    assert sum(1 for k in kinds if k == "prose") >= 3, kinds
+
+
+def test_g8_still_fires_on_a_page_that_merely_carries_the_footer():
+    """The normal case must be unaffected: one furniture sentence among many real ones."""
+    page = (
+        "Crocs transformed product discovery across its global sites using Algolia search.\n"
+        "The company reported a significant increase in conversion within thirty days.\n"
+        "Search driven revenue grew across every region measured during the pilot period.\n"
+        "Mobile shoppers saw the largest improvement in both speed and result relevance.\n"
+        "Algolia is recognized as a leader in the 2026 Gartner Magic Quadrant for search.\n"
+    )
+    cands, _ = split_candidates(page)
+    footer = [c for c in cands if "Gartner" in c.text][0]
+    flagged, _ = split_candidates(page, boilerplate={norm_key(footer.text)})
+    assert [c.kind for c in flagged if "Gartner" in c.text] == ["boilerplate"]
+    assert sum(1 for c in flagged if c.kind == "prose") >= 4
 
 
 # ---------------------------------------------------------------------------
