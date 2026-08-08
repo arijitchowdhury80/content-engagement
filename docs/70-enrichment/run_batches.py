@@ -36,6 +36,8 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures as futures
+import contextlib
+import fcntl
 import datetime as dt
 import json
 import pathlib
@@ -56,18 +58,66 @@ def batch_manifests(batch_dir: pathlib.Path, only: str = "") -> list[pathlib.Pat
 
 
 def is_complete(out_dir: pathlib.Path, expected: int) -> bool:
-    """A batch counts as done only if its results file holds one row per input record.
+    """Done means: one row per DISTINCT record, and every row parses.
 
-    Checking for the directory, or for a non-empty file, would let a batch that died at record 30
-    look finished -- and a half-batch is indistinguishable from a whole one once the run is over.
+    Counting LINES was wrong and it bit immediately. Two orchestrator invocations were launched
+    against the same batch; both ran enrich_run against the same --out, and the file ended with
+    97 rows for 50 records -- 37 objectIDs duplicated, some three times. A line count called that
+    "complete" and would have skipped the batch forever, shipping triplicated results that look
+    exactly like finished work. Counting distinct objectIDs makes a corrupted file read as
+    INCOMPLETE, which is the safe direction.
+
+    A row that will not parse also means incomplete: a half-written line from a killed process is
+    not evidence of anything.
     """
     results = out_dir / "results.jsonl"
     if not results.exists():
         return False
+    seen: set[str] = set()
+    rows = 0
     try:
-        return sum(1 for line in results.open() if line.strip()) >= expected
+        for line in results.open():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                seen.add(json.loads(line)["objectID"])
+                rows += 1
+            except (json.JSONDecodeError, KeyError):
+                return False
     except OSError:
         return False
+    if rows != len(seen):
+        # ANY duplicate means corrupt, even if every expected record is present. Two rows for one
+        # objectID come from two different model runs and hold DIFFERENT results -- there is no
+        # way to know which is authoritative, so the file cannot be trusted or deduplicated after
+        # the fact. My first fix counted distinct ids and called this complete; the batch would
+        # then never be re-run and the corruption would ship. Incomplete is the safe answer, and
+        # enrich_run truncates results.jsonl at start, so a re-run repairs it.
+        return False
+    return len(seen) >= expected
+
+
+@contextlib.contextmanager
+def batch_lock(out_dir: pathlib.Path):
+    """Exclusive lock per batch, or skip.
+
+    `--out` is unique per batch, so two batches never collide -- but two invocations of the
+    ORCHESTRATOR on the SAME batch do, and that is what produced the 97-row file. flock is used
+    rather than a lock file with O_EXCL because the kernel releases it when the process dies; a
+    stale lockfile after a crash would block the batch forever and require manual cleanup.
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    handle = (out_dir / ".lock").open("w")
+    try:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            yield False
+            return
+        yield True
+    finally:
+        handle.close()
 
 
 def run_one(manifest: pathlib.Path, out_root: pathlib.Path, cache_root: pathlib.Path,
@@ -115,14 +165,22 @@ def run_one(manifest: pathlib.Path, out_root: pathlib.Path, cache_root: pathlib.
         return {"batch": manifest.stem, "status": "SKIPPED_COMPLETE",
                 "records": expected, "seconds": round(time.time() - started, 1)}
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    proc = subprocess.run(
-        [sys.executable, str(RUNNER), "--pilot",
-         "--manifest", str(fetched), "--out", str(out_dir)],
-        capture_output=True, text=True, timeout=timeout,
-    )
-    done = sum(1 for line in (out_dir / "results.jsonl").open()
-               if line.strip()) if (out_dir / "results.jsonl").exists() else 0
+    with batch_lock(out_dir) as acquired:
+        if not acquired:
+            return {"batch": manifest.stem, "status": "LOCKED_ELSEWHERE", "records": 0,
+                    "expected": expected, "seconds": round(time.time() - started, 1)}
+        # Re-check under the lock: another process may have finished it while we waited.
+        if is_complete(out_dir, expected):
+            return {"batch": manifest.stem, "status": "SKIPPED_COMPLETE",
+                    "records": expected, "seconds": round(time.time() - started, 1)}
+        proc = subprocess.run(
+            [sys.executable, str(RUNNER), "--pilot",
+             "--manifest", str(fetched), "--out", str(out_dir)],
+            capture_output=True, text=True, timeout=timeout,
+        )
+    # DISTINCT ids, not lines -- see is_complete. A line count let a 97-row/50-record file pass.
+    done = len({json.loads(line)["objectID"] for line in (out_dir / "results.jsonl").open()
+                if line.strip()}) if (out_dir / "results.jsonl").exists() else 0
     ok = proc.returncode == 0 and done >= expected
     return {
         "batch": manifest.stem,
