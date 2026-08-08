@@ -574,3 +574,180 @@ fresh. Same false-green class as everything else this session. Fixed.
 | Reproducible | untested | **tested, 8/8** |
 | Whole-corpus sameness (G8) | 0/10 | **8/10** |
 | Complete page data | 7/10 | **9/10** — no truncation |
+
+---
+
+# 2026-08-08 (late) — D-023: the model stops emitting text entirely
+
+## What Arijit rejected, and he was right
+
+My response to GLM inventing a date was to drop the offending span and keep the rest. He rejected it:
+
+> *"No we cannot do this. Just throwing away page because GLM is adding a word or two here or there,
+> which does not solve our problem. That is, again, taking a shortcut and a lipstick on the pig, not
+> solving the root problem... Today, you are only testing 30 records, a handful, but I have 12,000
+> records. I need all 12,000 to be enriched... If we keep dropping, then I'm going to lose data, and
+> that's not acceptable."*
+
+He identified the actual root cause, which I had not: **asking a language model to reproduce text is
+a transcription task, and models are bad at transcription.** Every mitigation I had built —
+canonicalisation folding, punctuation tolerance, drop-and-continue — was compensating for a design
+that should not have existed.
+
+## The fix: numbered candidates
+
+A script splits the page into numbered sentences. The model returns integers. The script resolves
+those integers against its own list.
+
+```
+[12] The Algolia CLI lets you work with Algolia's APIs from your terminal.
+model returns: {"verdict":"REAL","abstract":[12,15],"highlights":[18,22]}
+```
+
+**The model emits no content.** Fabrication is unrepresentable rather than detected: an integer is
+in range or it is not. `docs/70-enrichment/candidates.py`.
+
+Measured on the same 60 pilot records:
+
+```
+                        copy-text design    numbered selection
+fabricated spans              21                    0   (impossible)
+out-of-range picks             -                    0
+crashes                        0                    0
+records with an abstract      30/60                28/60
+median candidates offered      -                   26
+```
+
+Yield is level while the guarantee became absolute. And the whole false-rejection class from D-013
+(curly apostrophes, space-before-comma, wrapped link labels, MDX props mid-sentence, malformed
+source spacing, invisible bidi marks) is now **irrelevant** — nothing is being matched, so nothing
+can fail to match.
+
+## Three bugs in the splitter, all found on real text within minutes
+
+The splitter is now the load-bearing component: selection quality is bounded by what is in the menu.
+
+| Bug | Symptom | Cause |
+|---|---|---|
+| `12. August 2026` cut in half | a German date became two candidates | a digit followed by a period is list numbering or a date, never a sentence end |
+| `Algolia vs. Coveo` cut in half | abbreviation guard did nothing | the lookbehind window ended AFTER the whitespace that triggered the match, so the `$` anchor never matched. Needed `.rstrip()`. |
+| link-heavy pages nearly empty | 5,273-char page offered only 4 candidates, model correctly said THIN | over-long chunks were **discarded**. Now split at word boundaries. Same page: 4 → 11 candidates. |
+
+The third is the one that mattered for Arijit's requirement: silently filtering text out before the
+model can choose it is another way of losing records, just less visible than dropping spans.
+
+## D-024 · Chrome blacklist split into ALWAYS and CTA
+
+Substring matching on the chrome blacklist quarantined **6 legitimate commercial records** because
+`"contact sales"` appears inside real prose — *"...or contact sales for volume pricing"* is a genuine
+fact about how to buy.
+
+Two kinds of chrome, and conflating them was the bug:
+
+- **ALWAYS** — cookie, newsletter, "all rights reserved", "share this". A sentence mentioning these
+  *is* furniture whatever else it says.
+- **CTA** — "contact sales", "book a demo", "sign up for". These only disqualify a span when the
+  phrase *dominates* it, i.e. the span IS the button.
+
+## Where the numbers stand after this change
+
+```
+PASS                 10
+JUDGE_REVISE         18   (has an abstract; the judge wants a better sentence)
+QUARANTINED          17   -> 6 were the chrome false positive, now fixed
+NO_ABSTRACT_THIN      7
+NO_ABSTRACT_DEAD      7   (Academy login walls)
+WRITER_UNPARSEABLE    1
+fabrications          0
+```
+
+Every remaining quarantine is an over-strict rule of mine or a correct rejection (2 mixed-language,
+2 span-spread, 1 reversal), not a model failure. **66 tests pass.**
+
+## Documentation
+
+`chapter-3-content-enrichment.md` rewritten from a scope note into the real chapter, at Arijit's
+reminder that the documentation is meant to grow alongside the work rather than after it. It records
+both rejected designs (generate-then-verify; copy-then-match) with the evidence that killed each,
+because the rejected option is the part that is useful later.
+
+---
+
+# 2026-08-08 (final) — 50 fresh records, run twice, and a corrected claim
+
+Old reports deleted first (`glm-30a/b`, `num-30a/b`, `num-test`, the rejected review pack). Kept
+only three audit artifacts: the Greenhouse deletion manifest, the record of what was written to
+production, and Chapter 2's dedupe evidence.
+
+**50 records the pipeline had never seen**, excluded against both prior manifests. 50/50 fetched,
+0 failures, 0 truncated. Run twice end to end.
+
+## The guarantee, on fresh data
+
+```
+stored sentences checked against their page, BOTH runs : 415
+sentences not from the page                            : 0
+out-of-range picks                                     : 0
+crashes                                                : 0
+```
+
+## D-025 · REPRODUCIBILITY CLAIM RETRACTED
+
+I reported "REPRODUCIBLE — 8/8 identical" on 2026-08-08. **That measured the retired copy-text
+prompt.** Re-tested on the numbered-selection design across 50 records:
+
+```
+identical across the two runs : 19/50
+verdict changed              :  2
+same verdict, different abstract : 21
+same abstract, different highlights : 8
+```
+
+Cause: the numbered menu offers ~26 choices, and at that many degrees of freedom small logit
+differences flip which integers come back — temperature 0 does not make a reasoning model
+deterministic. Every variant is a *valid* selection of real sentences, so **truth is unaffected and
+quality varies**.
+
+The mistake worth recording is not the non-determinism. It is that I carried a measured claim
+forward across a design change without re-measuring it. A claim is only true of the thing it was
+measured on.
+
+Determinism is available if wanted: majority-vote across three runs, or deterministic re-ordering of
+the model's picks. Both trade a little selection quality for a stable result. Chapter 4 must not
+assume byte-identical re-runs.
+
+## Yield improved
+
+`34/50 (68%)` with an abstract, identical in both runs, against ~47% under the copy-text design.
+The gain came from removing truncation and splitting over-long chunks instead of discarding them.
+Extrapolates to roughly **7,000 of 10,340** enrichable records, not the 5,000 previously estimated.
+
+## The new top issue: selection quality
+
+```
+PASS          15      judge accepted
+JUDGE_REVISE  19      has an abstract; judge wants a better sentence
+```
+
+**56% of abstracts draw a REVISE.** The model reliably picks *true* sentences and often not the
+*best* ones. This is now a prompt problem, not a safety problem — the first prompt-quality issue to
+survive all the structural work.
+
+## Twelve-dimension scoring, 2026-08-08
+
+| Dimension | Score |
+|---|---|
+| Zero invention (structural) | 10/10 |
+| Correctness of stored text | 10/10 |
+| Verifiability after the fact | 9/10 |
+| Write-path safety | 9/10 |
+| Documentation & auditability | 9/10 |
+| Robustness across 43 shapes | 8/10 |
+| Coverage / yield | 7/10 |
+| Freshness handling | 6/10 |
+| Slop resistance | 6/10 |
+| **Selection quality** | **5/10** |
+| **Reproducibility** | **3/10** |
+| **Human validation** | **2/10** |
+
+"Can it write something false into the index" — 10/10. "Is what it writes any good" — 5/10, unproven.

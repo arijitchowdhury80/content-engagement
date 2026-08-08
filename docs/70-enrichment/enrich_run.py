@@ -40,7 +40,10 @@ import time
 
 HERE = pathlib.Path(__file__).parent
 sys.path.insert(0, str(HERE))
-from span_gate import canonicalise, locate, prose_chars, run_gates, SpanRejected  # noqa: E402
+from span_gate import (canonicalise, check_blacklists, check_context, check_information_gain,
+                       check_subject_present, locate, prose_chars, run_gates,
+                       SpanRejected)  # noqa: E402
+from candidates import render_menu, resolve_selection, split_candidates  # noqa: E402
 
 CACHE_DIR = HERE / "cache"
 REPORTS = HERE / "reports"
@@ -71,6 +74,58 @@ def family_instruction(family: str) -> str:
         f"  Lead the abstract with: {spec['abstract_must_lead_with']}.\n"
         f"  Highlights here are: {spec['highlights_are']}."
     )
+
+
+SELECT_PROMPT = """You are choosing which of a page's own sentences matter. You do NOT write or
+copy any text. You return ONLY numbers.
+
+PAGE METADATA
+  url            : {url}
+  title          : {title}
+  page_type      : {page_type}
+  shape family   : {family}
+  language       : {language_code}
+
+Below is every sentence on this page, numbered, grouped under its section heading.
+Sentences marked [QUOTED] are inside a blockquote.
+
+STEP 1 - VERDICT
+    REAL  a genuine content page with sentences about a subject
+    DEAD  an error page, "not found", or a sign-in wall
+    THIN  a real page with almost no prose: a link list, a menu, nothing but code
+  If DEAD or THIN, return empty arrays and set insufficient_reason.
+
+STEP 2 - ABSTRACT: pick {span_min} to {span_max} numbers whose sentences together say what this
+page is and what a reader gets from it.
+{family_instruction}
+  - The FIRST number you pick must be a sentence that names its own subject.
+  - Prefer body sentences over hero banners and navigation.
+  - Do NOT pick a [QUOTED] sentence unless the family is evidence: it is someone else speaking.
+  - Do NOT pick from a "Common mistakes", "Troubleshooting", "Deprecated" or "Legacy" section.
+  - Do NOT pick a sentence the page contradicts immediately afterwards.
+  - Do NOT pick a sentence that is only about the page itself ("In this guide we will...").
+
+STEP 3 - HIGHLIGHTS: pick 3 to 8 numbers carrying the page's concrete specifics -- numbers,
+limits, names, versions, named capabilities. Prefer sentences a person would find useful in a
+search result. Do not repeat an abstract number. Fewer is correct when the page has less.
+
+STEP 4 - LANGUAGE: report the language the sentences are actually written in.
+
+OUTPUT - one JSON object, nothing else. NUMBERS ONLY, never text:
+{{"verdict":"REAL|DEAD|THIN","abstract":[12,15],"highlights":[18,22],
+"language_observed":"en","insufficient_reason":null}}
+
+insufficient_reason must be null or exactly one of: ERROR_PAGE, LOGIN_REQUIRED, NO_PROSE,
+LINKS_ONLY, CODE_ONLY, LANGUAGE_MISMATCH, PAYWALL.
+
+Any sentence you want is already in the list. If you find yourself wanting to write words, pick a
+number instead. When unsure, return THIN.
+
+NUMBERED SENTENCES
+==================
+{menu}
+==================
+Return only the JSON object."""
 
 
 WRITER_PROMPT = """You are an extraction tool operating on one web page. You do not write prose.
@@ -429,12 +484,24 @@ def process(rec: dict) -> dict:
         "processed_at": dt.datetime.now(dt.timezone.utc).isoformat(),
     }
 
-    # --- LLM #1 -----------------------------------------------------------
-    prompt = WRITER_PROMPT.format(
-        url=rec["source_url"], title=rec.get("title", ""), source=rec.get("source", ""),
-        page_type=rec["page_type"], family=family, language_code=rec["language_code"],
+    # --- LLM #1: numbers only, no content ---------------------------------
+    #
+    # The model picks from a numbered list the SCRIPT built from this page, and returns integers.
+    # It never emits content, so an invented word has nowhere to appear. This replaced a
+    # copy-the-text design that lost whole records to transcription slips -- GLM wrote
+    # "10. August 2026" where the page said "August 2026" and the record was discarded.
+    cands, canon = split_candidates(markdown)
+    out["candidates"] = len(cands)
+    if not cands:
+        out.update({"status": "NO_CANDIDATES", "verdict": "THIN",
+                    "insufficient_reason": "NO_PROSE"})
+        return out
+
+    prompt = SELECT_PROMPT.format(
+        url=rec["source_url"], title=rec.get("title", ""), page_type=rec["page_type"],
+        family=family, language_code=rec["language_code"],
         span_min=span_min, span_max=span_max,
-        family_instruction=family_instruction(family), markdown=markdown,
+        family_instruction=family_instruction(family), menu=render_menu(cands),
     )
     llm, meta = call_writer(prompt)
     out["writer_cost_usd"] = meta["cost_usd"]
@@ -445,26 +512,43 @@ def process(rec: dict) -> dict:
     out["verdict"] = llm.get("verdict")
     out["insufficient_reason"] = llm.get("insufficient_reason")
 
-    # --- scripted gates: THE guarantee ------------------------------------
-    gate = run_gates(
-        llm_output=llm, page_markdown=markdown,
-        title=rec.get("title", ""), description=rec.get("description", ""),
-        family_span_range=(span_min, span_max), family=family,
-        original_length=rec.get("original_length") or 0,
-    )
-    out["gate_passed"] = gate.passed
-    out["gate_failures"] = gate.failures
-    out["abstract_enriched"] = gate.abstract_enriched
-    out["abstract_spans_stored"] = gate.abstract_spans
-    out["keyhighlights_enriched"] = gate.keyhighlights_enriched
-    out["span_offsets"] = gate.span_offsets
+    if llm.get("verdict") in ("DEAD", "THIN"):
+        out["status"] = f"NO_ABSTRACT_{llm['verdict']}"
+        return out
 
-    if not gate.passed:
+    # --- resolve numbers into OUR OWN sentences ---------------------------
+    sel = resolve_selection(llm.get("abstract"), llm.get("highlights"), cands,
+                            (span_min, span_max))
+    out["out_of_range_picks"] = sel.out_of_range
+    if not sel.passed:
+        out.update({"status": "QUARANTINED_BY_GATE", "gate_failures": sel.failures})
+        return out
+
+    abstract_spans = [c.text for c in sel.abstract]
+    highlight_spans = [c.text for c in sel.highlights if len(c.text) <= 300
+                       and (len(c.text.split()) >= 6 or any(ch.isdigit() for ch in c.text))]
+
+    # --- the remaining gates, on candidates we selected ourselves ---------
+    failures: list[str] = []
+    failures += check_context(sel.abstract, sel.highlights, family,
+                              rec.get("original_length") or 0)
+    failures += check_subject_present(abstract_spans[0], rec.get("title", ""))
+    failures += check_blacklists(abstract_spans + highlight_spans)
+    failures += check_information_gain(" ".join(abstract_spans), rec.get("title", ""),
+                                       rec.get("description", ""))
+    out["gate_failures"] = failures
+    out["gate_passed"] = not failures
+    if failures:
         out["status"] = "QUARANTINED_BY_GATE"
         return out
-    if not gate.abstract_enriched:
-        out["status"] = f"NO_ABSTRACT_{llm.get('verdict')}"
-        return out
+
+    out["abstract_spans_stored"] = abstract_spans
+    out["abstract_enriched"] = " ".join(abstract_spans)
+    out["keyhighlights_enriched"] = highlight_spans
+    out["span_offsets"] = [[c.start, c.end] for c in sel.abstract + sel.highlights]
+    out["dropped_fabrications"] = 0      # structurally impossible now
+    gate = type("G", (), {"abstract_enriched": out["abstract_enriched"],
+                          "keyhighlights_enriched": highlight_spans})()
 
     # --- LLM #2, quality only --------------------------------------------
     judge, judge_error = call_judge(JUDGE_PROMPT.format(
@@ -640,6 +724,8 @@ def replay(prior: list[dict], cache: dict[str, dict], out_dir: pathlib.Path) -> 
                "gate_failures": gate.failures,
                "abstract_enriched": gate.abstract_enriched,
                "abstract_spans_stored": gate.abstract_spans,
+               "dropped_fabrications": gate.dropped_fabrications,
+               "fabricated_spans": gate.fabricated_spans,
                "keyhighlights_enriched": gate.keyhighlights_enriched,
                "span_offsets": gate.span_offsets,
                "prose_chars": prose_chars(markdown)}

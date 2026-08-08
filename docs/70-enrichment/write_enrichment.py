@@ -54,7 +54,7 @@ ALLOWED_FIELDS = {
     "enrichment_fetch_path", "enrichment_content_hash", "enrichment_fetched_at",
     "enrichment_span_offsets", "enrichment_writer_model", "enrichment_judge_model",
     "enrichment_prompt_version", "enrichment_validated_at", "enrichment_truncated",
-    "enrichment_judge_scores",
+    "enrichment_judge_scores", "enrichment_dropped_fabrications",
 }
 PROTECTED = {"abstract", "description", "title", "url", "objectID", "page_type",
              "language_code", "environment", "indexed_at", "source"}
@@ -93,6 +93,9 @@ def build_payload(r: dict) -> dict | None:
         payload["abstract_enriched"] = spans
         payload["keyhighlights_enriched"] = r.get("keyhighlights_enriched") or []
         payload["enrichment_span_offsets"] = [list(o) for o in (r.get("span_offsets") or [])]
+        # Written so the index itself records that the writer invented something on this page and
+        # it was thrown away. Auditable after the fact without re-running anything.
+        payload["enrichment_dropped_fabrications"] = int(r.get("dropped_fabrications") or 0)
         j = r.get("judge") or {}
         payload["enrichment_judge_scores"] = {
             k: j.get(k) for k in ("representativeness", "specificity", "missed_substance",

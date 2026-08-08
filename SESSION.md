@@ -1,6 +1,6 @@
 # SESSION — Search-First Algolia.com
 
-_Last updated: 2026-08-08 03:20 UTC_
+_Last updated: 2026-08-08 06:40 UTC_
 
 ## Resume here
 
@@ -18,21 +18,58 @@ touching the pipeline; it will save you rediscovering twelve bugs.
 
 ## What Chapter 3 does, in one paragraph
 
-An LLM reads a page and says *which of the page's own sentences matter*. A script then **cuts those
-characters out of the page** and stores the slice — the model's own string is thrown away. So an
-invented word has no code path to the index. A second LLM from a different vendor then judges
-whether the *selection* is any good. Two new fields: `abstract_enriched`,
-`keyhighlights_enriched`.
+**REDESIGNED 2026-08-08.** A script splits the page into NUMBERED sentences. The model returns
+**only integers** — `{"abstract":[12,15],"highlights":[18,22]}`. The script looks those numbers up
+in its own list. The model emits no text at all, so invention is **unrepresentable**, not merely
+caught. A second LLM from a different vendor then judges whether the *selection* is any good.
+Fields: `abstract_enriched` (an ARRAY of sentences), `keyhighlights_enriched`.
+
+The previous design had the model *copy* text and string-matched it. Arijit rejected it: copying is
+transcription, models are bad at transcription, and each near-miss cost a whole record —
+*"I need every single record to be enriched."* He was right; the fix was to stop asking for text.
 
 **The guarantee is the script, not the judge.** Drop the judge and zero-invention survives. Drop
 the script and there is no guarantee, only reassurance.
+
+## Confidence, 2026-08-08 — scored on evidence
+
+```
+zero invention (structural)   10/10   415/415 sentences, two runs, 0 out-of-range
+correctness of stored text    10/10   sliced by offset from the source
+verifiability                  9/10   independent re-fetch + re-locate, 151/151
+write-path safety              9/10   snapshot-gated, add-only, read-back
+documentation                  9/10   chapter 346 lines, build log 753
+robustness (43 shapes)         8/10   0 crashes on 50 fresh records
+coverage / yield               7/10   34/50 = 68%, was ~47%
+freshness handling             6/10   hash detects staleness; no re-check cadence
+slop resistance                6/10   G7/G8/G11 floors, then opinion
+SELECTION QUALITY              5/10   judge REVISE on 19 of 34 (56%)
+REPRODUCIBILITY                3/10   19/50 identical -- see below
+HUMAN VALIDATION               2/10   zero records reviewed by Arijit
+```
+
+"Can it write something false into the index" — **10/10**.
+"Is what it writes any good" — **5/10, unproven**.
+
+## ⚠ A claim I retracted — read this before trusting any measurement here
+
+I reported "writer is REPRODUCIBLE, 8/8 identical". **That measured the retired copy-text prompt.**
+On the numbered design: **19/50 identical**. The menu offers ~26 choices and temperature 0 does not
+make a reasoning model deterministic.
+
+Truth is unaffected — every variant is a valid selection of real sentences. Quality varies.
+**Chapter 4 must not assume byte-identical re-runs.** Determinism is available via majority-vote
+across three runs or deterministic re-ordering of the picks, at some cost to selection quality.
+
+The lesson: a claim is only true of the thing it was measured on. I carried this one across a design
+change without re-measuring.
 
 ## State — verified live 2026-08-08
 
 | | |
 |---|---|
 | `Algolia_Prod_Copy_Enhanced` | **12,035 records** (was 12,114; 79 Greenhouse job adverts deleted 2026-08-07, verified) |
-| Enriched so far | **35** — 23 REAL, 2 THIN, 10 DEAD. Verified 151/151 spans on live pages. |
+| Enriched so far | **35** — written by the SUPERSEDED copy-text design. Verified safe (151/151 spans) but a different provenance from the current method. **Re-run them first.** |
 | Snapshot | `docs/70-enrichment/snapshots/Algolia_Prod_Copy_Enhanced-20260808-030323.jsonl` — 12,035 recs, 17.8 MB, sha256 `5fdfccbb…`. **First snapshots of this index ever taken.** |
 | Writer | **glm-5.2** via `ALGOLIA_INFERENCE_BASE_URL` (Algolia's own inference server, already in `.env.local`). Free, 1.6s/record, temperature 0. |
 | Judge | **gemini-2.5-pro**, `GEMINI_API_KEY` in the shell env. Cross-vendor on purpose. |
@@ -60,10 +97,14 @@ python3 docs/70-enrichment/verify_written.py                        # 0 spans no
 
 ## NEXT ACTIONS, in order
 
-1. **Arijit reads `docs/70-enrichment/reports/glm-30b/validation-pack.md`** — 30 records, each with
-   abstract, highlights, source offsets, judge scores, and an `ARIJIT:` line. **His gate. One
-   hallucination stops the run; there are zero.** The real question is whether ~40% yield is
-   acceptable.
+0. **Fix selection quality — the top issue.** 56% of abstracts draw a judge REVISE. The model picks
+   true sentences that are not the best sentences. Prompt work, not safety work. Look at the
+   `missed_substance` scores and the judge's `better_span_available` suggestions in
+   `reports/fresh50-run1/results.jsonl` — they name the sentence it would have preferred.
+1. **Arijit reads `docs/70-enrichment/reports/REVIEW-english.md`** — 30 records, each with
+   11 English records. Every sentence shown INSIDE its page text wrapped in `>>>` markers, no
+   offsets, no German or French. **His gate. Zero hallucinations across 415 sentences.** The real
+   question is whether the *selection* is good enough — the judge says no on 56%.
 2. **Resolve `enterprise_ledger` freshness.** It holds real bodies for **4,462 records**
    (median 1,346 chars) — free, no fetching. But it carries retired product names (App Search,
    Enterprise Search) and stale `/old-docs/`. Needs a freshness rule and a preference order:
@@ -71,7 +112,10 @@ python3 docs/70-enrichment/verify_written.py                        # 0 spans no
    quarter of the fetching.
 3. **Create `WU-11.4`** under WU-11 in Asana + `docs/briefs/WU-11.4.md`. Chapter 3 has no work
    subtask; Chapters 1 and 2 have `WU-11.1`/`WU-11.2`.
-4. **Then the full run.** ~10,340 enrichable records. Free on GLM. Fetch is the bottleneck.
+4. **Re-run the 35 records already in the index** under the numbered design, so the whole index has
+   one provenance.
+5. **Then the full run.** ~10,340 enrichable records, expect ~7,000 enriched at 68%. Free on GLM.
+   Fetch is the bottleneck.
 5. **Sweep 12,114 → 12,035** through `CLAUDE.md` and the chapter docs. Single pass with a callback —
    sequential replaces double-apply.
 6. Rewrite `chapter-3-content-enrichment.md` from `status: not-started` to the real chapter.

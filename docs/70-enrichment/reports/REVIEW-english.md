@@ -1,6 +1,6 @@
 # Review pack — English pages only
 
-**13 records.** Everything below was produced by the pipeline. Nothing here was
+**11 records.** Everything below was produced by the pipeline. Nothing here was
 written by a model: each sentence was *copied out of the live page*.
 
 ## How to check a record in 20 seconds
@@ -20,43 +20,37 @@ Mark each record on its `VERDICT:` line. If any sentence looks invented, write
 
 ---
 
-# 1. developer
+# 1. event
 
-**Page:** <https://www.algolia.com/developers/search-api-scala>
-**Type:** developer · hub family
+**Page:** <https://www.algolia.com/devcon>
+**Type:** event · editorial family
 
 ## Summary it would store
 
-> Algolia Search API client for Scala, v1 Gives API access to all Algolia functionality, settings, advanced features, and ML/AI products
+> Build the best search and discovery experiences Algolia DevCon 2026 is the place to learn how to build world-class search and discover experiences and put your content in motion in new ways. SEE YOU AT DEVCON IN 00 DAYS 00 HOURS 00 MINUTES 00 SECONDS WELCOME TO DevCon '26 Connect with other developers from the community, learn best practices, be inspired, and see what's new from Algolia.
 
 **Where each sentence came from:**
 
-- `Algolia Search API client for Scala, v1`
-  - PAGE: …with our traffic and data size? Suggestions Products & Resources ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack Scala >>> Algolia Search API client for Scala, v1 <<< Sign up Features Gives API access to all Algolia functionality, settings, advanced features, and ML/AI products Maven, snapshots, sonatype, sbt Domain Specific Locator (DSL) Future, JSON as…
+- `Build the best search and discovery experiences Algolia DevCon 2026 is the place to learn how to build world-c`
+  - PAGE: … DEVCON IN 00 DAYS 00 HOURS 00 MINUTES 00 SECONDS WELCOME TO DevCon '26 Connect with other developers from the community, learn best practices, be inspired, and see what's new from Algolia. >>> Build the best search and discovery experiences Algolia DevCon 2026 is the place to learn how to build world-class search and discover experiences and put your content in motion in new ways. <<< REGISTER FOR FREE WATCH THE REPLAYS Connect Hear from and meet developers in the Algolia community. Grow Get inspired by stories from our partners and engineers. Build Learn best practices …
 
-- `Gives API access to all Algolia functionality, settings, advanced features, and ML/AI products`
-  - PAGE: …sources ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack Scala Algolia Search API client for Scala, v1 Sign up Features >>> Gives API access to all Algolia functionality, settings, advanced features, and ML/AI products <<< Maven, snapshots, sonatype, sbt Domain Specific Locator (DSL) Future, JSON as a Case Class Background retry strategy to ensure uptime Batching via iterators to optimize number of network ca…
+- `SEE YOU AT DEVCON IN 00 DAYS 00 HOURS 00 MINUTES 00 SECONDS WELCOME TO DevCon '26 Connect with other developer`
+  - PAGE: …VIRTUAL Building in the era of AI Search CLAIM YOUR SPOT WATCH THE REPLAYS Close Register for DevCon 2026 Thank you! Your request has been submitted successfully. We'll be in touch shortly. >>> SEE YOU AT DEVCON IN 00 DAYS 00 HOURS 00 MINUTES 00 SECONDS WELCOME TO DevCon '26 Connect with other developers from the community, learn best practices, be inspired, and see what's new from Algolia. <<< Build the best search and discovery experiences Algolia DevCon 2026 is the place to learn how to build world-class search and discover experiences and put your content in motion in new ways…
 
-## Key points it would store (4)
+## Key points it would store (2)
 
-**1.** Supports Scala 2.11, 2.12
-  - PAGE: …s Background retry strategy to ensure uptime Batching via iterators to optimize number of network calls Zero downtime reindexing feature Asynchronous methods to target Algolia's API Version >>> Supports Scala 2.11, 2.12 <<< Related Integrations InstantSearch for React, Vue, Angular, vanilla Autocomplete Key links Discord Server Code Exchange Get started INSTALL Copy com.algolia algoliasearch-scala_2.11 [1,) //…
+**1.** Sept 30 - Oct 1, 2026 - VIRTUAL Building in the era of AI Search CLAIM YOUR SPOT WATCH THE REPLAYS Close Register for DevCon 2026 Thank you!
+  - PAGE: >>> Sept 30 - Oct 1, 2026 - VIRTUAL Building in the era of AI Search CLAIM YOUR SPOT WATCH THE REPLAYS Close Register for DevCon 2026 Thank you! <<< Your request has been submitted successfully. We'll be in touch shortly. SEE YOU AT DEVCON IN 00 DAYS 00 HOURS 00 MINUTES 00 SECONDS WELCOME TO DevCon '26 Connect with other developers from…
 
-**2.** Background retry strategy to ensure uptime
-  - PAGE: …res Gives API access to all Algolia functionality, settings, advanced features, and ML/AI products Maven, snapshots, sonatype, sbt Domain Specific Locator (DSL) Future, JSON as a Case Class >>> Background retry strategy to ensure uptime <<< Batching via iterators to optimize number of network calls Zero downtime reindexing feature Asynchronous methods to target Algolia's API Version Supports Scala 2.11, 2.12 Related Integratio…
-
-**3.** Batching via iterators to optimize number of network calls
-  - PAGE: …nality, settings, advanced features, and ML/AI products Maven, snapshots, sonatype, sbt Domain Specific Locator (DSL) Future, JSON as a Case Class Background retry strategy to ensure uptime >>> Batching via iterators to optimize number of network calls <<< Zero downtime reindexing feature Asynchronous methods to target Algolia's API Version Supports Scala 2.11, 2.12 Related Integrations InstantSearch for React, Vue, Angular, vanilla Autocompl…
-
-**4.** Asynchronous methods to target Algolia's API
-  - PAGE: …in Specific Locator (DSL) Future, JSON as a Case Class Background retry strategy to ensure uptime Batching via iterators to optimize number of network calls Zero downtime reindexing feature >>> Asynchronous methods to target Algolia's API <<< Version Supports Scala 2.11, 2.12 Related Integrations InstantSearch for React, Vue, Angular, vanilla Autocomplete Key links Discord Server Code Exchange Get started INSTALL Copy com.algoli…
+**2.** REGISTER FOR FREE WATCH THE REPLAYS Connect Hear from and meet developers in the Algolia community.
+  - PAGE: …uild the best search and discovery experiences Algolia DevCon 2026 is the place to learn how to build world-class search and discover experiences and put your content in motion in new ways. >>> REGISTER FOR FREE WATCH THE REPLAYS Connect Hear from and meet developers in the Algolia community. <<< Grow Get inspired by stories from our partners and engineers. Build Learn best practices and build great experiences for your projects. Meet our Speakers Stephen Lynch Chief Executive Offic…
 
 ## Second opinion (a different AI, from Google, checking quality only)
 
 - Does the summary represent the page? **5 out of 5**
 - Is it specific enough to be useful? **5 out of 5**
-- Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
+- Do the sentences mislead when read together? **1 out of 5** (5 = no, they read honestly)
+- Overall: **wants a better sentence**
 
 ```
 VERDICT:  good / not good / HALLUCINATION
@@ -67,50 +61,47 @@ notes:
 
 # 2. doc-rest-api
 
-**Page:** <https://www.algolia.com/doc/rest-api/search/update-api-key>
+**Page:** <https://www.algolia.com/doc/rest-api/search>
 **Type:** doc-rest-api · reference family
 
 ## Summary it would store
 
-> Replaces the permissions of an existing API key. Any unspecified attribute resets that attribute to its default value. Requires Admin API key
+> Base URLs Base URLs for the Search API: https://{APPLICATION_ID}.algolia.net https://{APPLICATION_ID}-dsn.algolia.net. Parameters Parameters are passed as query parameters for GET and DELETE requests, and in the request body for POST and PUT requests. Version The current version of the Search API is version 1, indicated by the /1/ in each endpoint's URL.
 
 **Where each sentence came from:**
 
-- `Replaces the permissions of an existing API key.`
-  - PAGE: Documentation Index Fetch the complete documentation index at: https://algolia.com/llms.txt Use this file to discover all available pages before exploring further. Update an API key >>> Replaces the permissions of an existing API key. <<< Any unspecified attribute resets that attribute to its default value. Requires Admin API key OpenAPI yaml specs/search.yml put /1/keys/{key} openapi: 3.1.0 info: title: Search API summary: …
+- `Base URLs Base URLs for the Search API: https://{APPLICATION_ID}.algolia.net https://{APPLICATION_ID}-dsn.algo`
+  - PAGE: … and libraries to reliably integrate Algolia's APIs with your apps. The official API clients are covered by Algolia's Service Level Agreement. For more information, see Algolia's ecosystem. >>> Base URLs Base URLs for the Search API: https://{APPLICATION_ID}.algolia.net https://{APPLICATION_ID}-dsn.algolia.net. <<< If your subscription includes a Distributed Search Network, this ensures that requests are sent to servers closest to users. Both URLs provide high availability by distributing requests wit…
 
-- `Any unspecified attribute resets that attribute to its default value.`
-  - PAGE: …cumentation index at: https://algolia.com/llms.txt Use this file to discover all available pages before exploring further. Update an API key Replaces the permissions of an existing API key. >>> Any unspecified attribute resets that attribute to its default value. <<< Requires Admin API key OpenAPI yaml specs/search.yml put /1/keys/{key} openapi: 3.1.0 info: title: Search API summary: >- The Algolia Search API lets you search, configure, and manage your …
+- `Parameters Parameters are passed as query parameters for GET and DELETE requests, and in the request body for `
+  - PAGE: …reference. You can find your application ID and API key in the Algolia dashboard. Request format Depending on the endpoint, request bodies are either JSON objects or arrays of JSON objects. >>> Parameters Parameters are passed as query parameters for GET and DELETE requests, and in the request body for POST and PUT requests. <<< Query parameters must be URL-encoded. Non-ASCII characters must be UTF-8 encoded. Plus characters (+) are interpreted as spaces. Arrays as query parameters must be one of: A comma-separated…
 
-- `Requires Admin API key`
-  - PAGE: …scover all available pages before exploring further. Update an API key Replaces the permissions of an existing API key. Any unspecified attribute resets that attribute to its default value. >>> Requires Admin API key <<< OpenAPI yaml specs/search.yml put /1/keys/{key} openapi: 3.1.0 info: title: Search API summary: >- The Algolia Search API lets you search, configure, and manage your indices and records des…
+- `Version The current version of the Search API is version 1, indicated by the /1/ in each endpoint's URL.`
+  - PAGE: … by searching for those characters. Headers that don't match the expected format are ignored. Don't use the Correlation-ID as a unique key: retried requests may receive the same identifier. >>> Version The current version of the Search API is version 1, indicated by the /1/ in each endpoint's URL. <<<
 
-## Key points it would store (6)
+## Key points it would store (5)
 
-**1.** Duration (in seconds) after which the API key expires.
-  - PAGE: …ed. Don't rely on them to secure your data. For more information, see HTTP referrer restrictions. example: 'algolia.com' default: [] items: type: string validity: type: integer description: >>> Duration (in seconds) after which the API key expires. <<< By default, API keys don't expire. example: 86400 default: 0 required: acl keyString: type: string description: API key. example: 13ad45b4d0a2f6ea65ecbddf6aa260f2 updatedAt: type: string ex…
+**1.** Authentication Add these headers to authenticate requests: x-algolia-application-id.
+  - PAGE: …om These URLs use a different DNS provider than the primary URLs. Randomize this list to ensure an even load across the three servers. All Algolia API clients implement this retry strategy. >>> Authentication Add these headers to authenticate requests: x-algolia-application-id. <<< Your Algolia application ID. x-algolia-api-key. An API key with the necessary permissions to make the request. The required access control list (ACL) to make a request is listed in each end…
 
-**2.** Maximum number of API requests allowed per IP address or user token per hour.
-  - PAGE: …y: type: integer description: Maximum number of results this API key can retrieve in one query. By default, there's no limit. default: 0 maxQueriesPerIPPerHour: type: integer description: > >>> Maximum number of API requests allowed per IP address or user token per hour. <<< If this limit is reached, the API returns an error with status code 429. By default, there's no limit. default: 0 queryParameters: type: string description: > Query parameters to add when m…
+**2.** The required access control list (ACL) to make a request is listed in each endpoint's reference.
+  - PAGE: …tication Add these headers to authenticate requests: x-algolia-application-id. Your Algolia application ID. x-algolia-api-key. An API key with the necessary permissions to make the request. >>> The required access control list (ACL) to make a request is listed in each endpoint's reference. <<< You can find your application ID and API key in the Algolia dashboard. Request format Depending on the endpoint, request bodies are either JSON objects or arrays of JSON objects. Parameters…
 
-**3.** Maximum number of results this API key can retrieve in one query.
-  - PAGE: …indices ending with "_dev" _products_ matches all indices containing "_products_". example: dev_ prod_en_products default: [] items: type: string maxHitsPerQuery: type: integer description: >>> Maximum number of results this API key can retrieve in one query. <<< By default, there's no limit. default: 0 maxQueriesPerIPPerHour: type: integer description: > Maximum number of API requests allowed per IP address or user token per hour. If this limit is …
+**3.** Successful responses return 2xx statuses.
+  - PAGE: …ription%22%D Response status and errors The Search API returns JSON responses. Since JSON doesn't guarantee any specific ordering, don't rely on the order of attributes in the API response. >>> Successful responses return 2xx statuses. <<< Client errors return 4xx statuses. Server errors return 5xx statuses. Error responses have a message property with more information. Request identifiers Every response includes a Correlatio…
 
-**4.** Index names or patterns that this API key can access.
-  - PAGE: …cl' description: type: string description: Description of an API key to help you identify this API key. example: Used for indexing by the CLI default: '' indexes: type: array description: > >>> Index names or patterns that this API key can access. <<< By default, an API key can access all indices in the same application. You can use leading and trailing wildcard characters (): dev_ matches all indices starting with "dev_" _dev matches al…
+**4.** Request identifiers Every response includes a Correlation-ID header that identifies the request in Algolia's logs.
+  - PAGE: … API response. Successful responses return 2xx statuses. Client errors return 4xx statuses. Server errors return 5xx statuses. Error responses have a message property with more information. >>> Request identifiers Every response includes a Correlation-ID header that identifies the request in Algolia's logs. <<< When contacting the Algolia support team about a specific request, include this identifier in your ticket. To tag requests with your own identifier, send a Request-ID header with exactly 11…
 
-**5.** To restrict this API key to specific IP addresses, add the restrictSources parameter.
-  - PAGE: …urns an error with status code 429. By default, there's no limit. default: 0 queryParameters: type: string description: > Query parameters to add when making API requests with this API key. >>> To restrict this API key to specific IP addresses, add the restrictSources parameter. <<< You can only add a single source, but you can provide a range of IP addresses. Creating an API key fails if the request is made from an IP address outside the restricted range. example: typ…
-
-**6.** Allowed HTTP referrers for this API key.
-  - PAGE: …y fails if the request is made from an IP address outside the restricted range. example: typoTolerance=strict&restrictSources=192.168.1.0/24 default: '' referers: type: array description: > >>> Allowed HTTP referrers for this API key. <<< By default, all referrers are allowed. You can use leading and trailing wildcard characters (): https://algolia.com/ allows all referrers starting with "https://algolia.com/".algolia.com al…
+**5.** To tag requests with your own identifier, send a Request-ID header with exactly 11 alphanumeric characters.
+  - PAGE: …se includes a Correlation-ID header that identifies the request in Algolia's logs. When contacting the Algolia support team about a specific request, include this identifier in your ticket. >>> To tag requests with your own identifier, send a Request-ID header with exactly 11 alphanumeric characters. <<< Clusters that support it embed the identifier at the end of the Correlation-ID, so all attempts of a retried operation can be found by searching for those characters. Headers that don't mat…
 
 ## Second opinion (a different AI, from Google, checking quality only)
 
-- Does the summary represent the page? **5 out of 5**
+- Does the summary represent the page? **2 out of 5**
 - Is it specific enough to be useful? **5 out of 5**
 - Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
+- Overall: **wants a better sentence**
 
 ```
 VERDICT:  good / not good / HALLUCINATION
@@ -119,52 +110,46 @@ notes:
 
 ---
 
-# 3. comparison
+# 3. doc-rest-api
 
-**Page:** <https://www.algolia.com/competitors/compare-algolia-vs-coveo>
-**Type:** comparison · commercial family
+**Page:** <https://www.algolia.com/doc/rest-api/recommend>
+**Type:** doc-rest-api · reference family
 
 ## Summary it would store
 
-> Algolia vs Coveo: which solution works for you? In reviews, customers have said Coveo's knowledge solutions have a steep learning curve and complexity. Choose Algolia for flexible AI tools to create lightning-fast search experiences, right out of the box. Algolia's API-first approach lets you work fast to deliver polished and engaging customer journeys.
+> Recommend API The Recommend API lets you retrieve recommendations from one of Algolia's AI recommendation models that you previously trained on your data Client libraries Use Algolia's API clients and libraries to reliably integrate Algolia's APIs with your apps. Version The current version of the Recommend API is version 1, indicated by the /1/ in each endpoint's URL.
 
 **Where each sentence came from:**
 
-- `Algolia vs Coveo: which solution works for you?`
-  - PAGE: …scale with our traffic and data size? Suggestions Products & Resources ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack >>> Algolia vs Coveo: which solution works for you? <<< In reviews, customers have said Coveo's knowledge solutions have a steep learning curve and complexity. Choose Algolia for flexible AI tools to create lightning-fast search experiences, rig…
+- `Recommend API The Recommend API lets you retrieve recommendations from one of Algolia's AI recommendation mode`
+  - PAGE: Documentation Index Fetch the complete documentation index at: https://algolia.com/llms.txt Use this file to discover all available pages before exploring further. >>> Recommend API The Recommend API lets you retrieve recommendations from one of Algolia's AI recommendation models that you previously trained on your data Client libraries Use Algolia's API clients and libraries to reliably integrate Algolia's APIs with your apps. <<< The official API clients are covered by Algolia's Service Level Agreement. For more information, see Algolia's ecosystem. Base URLs Base URLs for the Recommend API: https://{APPLICATION_ID}…
 
-- `In reviews, customers have said Coveo's knowledge solutions have a steep learning curve and complexity. Choose`
-  - PAGE: …s Products & Resources ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack Algolia vs Coveo: which solution works for you? >>> In reviews, customers have said Coveo's knowledge solutions have a steep learning curve and complexity. Choose Algolia for flexible AI tools to create lightning-fast search experiences, right out of the box. <<< Get Started Book a Demo Build better experiences faster, with Algolia Algolia's API-first approach lets you work fast to deliver polished and engaging customer journeys. Whatever your scale…
+- `Version The current version of the Recommend API is version 1, indicated by the /1/ in each endpoint's URL.`
+  - PAGE: … API response. Successful responses return 2xx statuses. Client errors return 4xx statuses. Server errors return 5xx statuses. Error responses have a message property with more information. >>> Version The current version of the Recommend API is version 1, indicated by the /1/ in each endpoint's URL. <<<
 
-- `Algolia's API-first approach lets you work fast to deliver polished and engaging customer journeys.`
-  - PAGE: …and complexity. Choose Algolia for flexible AI tools to create lightning-fast search experiences, right out of the box. Get Started Book a Demo Build better experiences faster, with Algolia >>> Algolia's API-first approach lets you work fast to deliver polished and engaging customer journeys. <<< Whatever your scale or use-case, our pricing and customer support adapts to you. VS. Many users say that while basic search / relevance works fairly well out of the box, getting to more adv…
+## Key points it would store (5)
 
-## Key points it would store (6)
+**1.** Base URLs Base URLs for the Recommend API: https://{APPLICATION_ID}.algolia.net https://{APPLICATION_ID}-dsn.algolia.net.
+  - PAGE: … and libraries to reliably integrate Algolia's APIs with your apps. The official API clients are covered by Algolia's Service Level Agreement. For more information, see Algolia's ecosystem. >>> Base URLs Base URLs for the Recommend API: https://{APPLICATION_ID}.algolia.net https://{APPLICATION_ID}-dsn.algolia.net. <<< If your subscription includes a Distributed Search Network, this ensures that requests are sent to servers closest to users. Both URLs provide high availability by distributing requests wit…
 
-**1.** <20 ms response to most searches
-  - PAGE: …mization and tuning, or understanding how all the parts interact, takes significant effort from developers or specialists. Algolia gives you blazingly fast search, at scale, out of the box. >>> <20 ms response to most searches <<< 30+ billion records indexed 7+ trillion searches every year Try Algolia to see for yourself - or ask one of our experts to show you Get Started Book a Demo What customers are saying about A…
+**2.** Authentication Add these headers to authenticate requests: x-algolia-application-id.
+  - PAGE: …om These URLs use a different DNS provider than the primary URLs. Randomize this list to ensure an even load across the three servers. All Algolia API clients implement this retry strategy. >>> Authentication Add these headers to authenticate requests: x-algolia-application-id. <<< Your Algolia application ID. x-algolia-api-key. An API key with the necessary permissions to make the request. The required access control list (ACL) to make a request is listed in each end…
 
-**2.** 30+ billion records indexed
-  - PAGE: …ding how all the parts interact, takes significant effort from developers or specialists. Algolia gives you blazingly fast search, at scale, out of the box. <20 ms response to most searches >>> 30+ billion records indexed <<< 7+ trillion searches every year Try Algolia to see for yourself - or ask one of our experts to show you Get Started Book a Demo What customers are saying about Algolia " Algolia is a swift …
+**3.** Request format Request bodies must be JSON objects.
+  - PAGE: … to make the request. The required access control list (ACL) to make a request is listed in each endpoint's reference. You can find your application ID and API key in the Algolia dashboard. >>> Request format Request bodies must be JSON objects. <<< Response status and errors The Recommend API returns JSON responses. Since JSON doesn't guarantee any specific ordering, don't rely on the order of attributes in the API response. Successfu…
 
-**3.** 7+ trillion searches every year
-  - PAGE: …act, takes significant effort from developers or specialists. Algolia gives you blazingly fast search, at scale, out of the box. <20 ms response to most searches 30+ billion records indexed >>> 7+ trillion searches every year <<< Try Algolia to see for yourself - or ask one of our experts to show you Get Started Book a Demo What customers are saying about Algolia " Algolia is a swift and easy-to-use search index tha…
+**4.** Successful responses return 2xx statuses.
+  - PAGE: … objects. Response status and errors The Recommend API returns JSON responses. Since JSON doesn't guarantee any specific ordering, don't rely on the order of attributes in the API response. >>> Successful responses return 2xx statuses. <<< Client errors return 4xx statuses. Server errors return 5xx statuses. Error responses have a message property with more information. Version The current version of the Recommend API is vers…
 
-**4.** Algolia's six rich UI libraries give you all the ready-styled components you need to deliver compelling journeys.
-  - PAGE: …tions for any use case - from ecommerce to enterprise search - and fine tune search rankings and results, with simple no-code controls. Contact sales End user-focused Put the end user first >>> Algolia's six rich UI libraries give you all the ready-styled components you need to deliver compelling journeys. <<< And with features like the built-in UI examples, you'll always have visibility on the end product. Contact sales More than 18,000 customers in 150+ countries selected Algolia to grow satisf…
-
-**5.** More than 18,000 customers in 150+ countries selected Algolia to grow satisfaction and sales.
-  - PAGE: …you all the ready-styled components you need to deliver compelling journeys. And with features like the built-in UI examples, you'll always have visibility on the end product. Contact sales >>> More than 18,000 customers in 150+ countries selected Algolia to grow satisfaction and sales. <<< Because when your users feel understood, they click and they come back. Speak to one of our team or create a free account Get a demo Start free Try the AI search that understands Get a demo…
-
-**6.** A Forrester Consulting study found Algolia delivered $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue
-  - PAGE: …ry as the market shifts toward AI-powered, agentic discovery. Read the announcement See Algolia in action Forrester Total Economic Impact™ Increased Operating Profit and Improved Efficiency >>> A Forrester Consulting study found Algolia delivered $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue <<< Download the TEI study IDC MarketScape Named a leader in knowledge discovery IDC recognized Algolia as a leader in general-purpose knowledge discovery software, citing the growing role of s…
+**5.** Error responses have a message property with more information.
+  - PAGE: …specific ordering, don't rely on the order of attributes in the API response. Successful responses return 2xx statuses. Client errors return 4xx statuses. Server errors return 5xx statuses. >>> Error responses have a message property with more information. <<< Version The current version of the Recommend API is version 1, indicated by the /1/ in each endpoint's URL.
 
 ## Second opinion (a different AI, from Google, checking quality only)
 
-- Does the summary represent the page? **5 out of 5**
+- Does the summary represent the page? **1 out of 5**
 - Is it specific enough to be useful? **5 out of 5**
 - Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
+- Overall: **wants a better sentence**
 
 ```
 VERDICT:  good / not good / HALLUCINATION
@@ -173,45 +158,45 @@ notes:
 
 ---
 
-# 4. doc-ui-library
+# 4. product-page
 
-**Page:** <https://www.algolia.com/doc/ui-libraries>
-**Type:** doc-ui-library · reference family
+**Page:** <https://www.algolia.com/products/ai/agent-studio>
+**Type:** product-page · commercial family
 
 ## Summary it would store
 
-> InstantSearch is an open source UI library that lets you build search interfaces in your app using customizable widgets that you can combine to create unique experiences. Algolia for Flutter is an open source library that helps you add search and discovery features to your Flutter apps. Autocomplete is an open source, production-ready JavaScript library for building autocomplete experiences.
+> Built on Algolia's search, retrieval, and MCP foundation, Agent Studio turns your trusted data into branded onsite agents that guide shoppers to confident product decisions. Launch native agentic experiences faster Use Agent Studio templates and the SDK to launch AI Mode, product page questions, and guided discovery flows directly in your onsite experience. 0 Agent Studio is a platform for building and launching intelligent agents grounded in live Algolia search data.
 
 **Where each sentence came from:**
 
-- `InstantSearch is an open source UI library that lets you build search interfaces in your app using customizabl`
-  - PAGE: …this file to discover all available pages before exploring further. UI libraries Explore Algolia's UI libraries for building fast and engaging search and discovery interfaces. InstantSearch >>> InstantSearch is an open source UI library that lets you build search interfaces in your app using customizable widgets that you can combine to create unique experiences. <<< InstantSearch Android InstantSearch iOS InstantSearch.js React InstantSearch Vue InstantSearch Algolia for Flutter Algolia for Flutter is an open source library that helps you add search an…
+- `Built on Algolia's search, retrieval, and MCP foundation, Agent Studio turns your trusted data into branded on`
+  - PAGE: … needs, customers work harder to find the right product. Agent Studio turns that friction into guided answers and clearer next steps, creating opportunities to convert high-intent shoppers. >>> Built on Algolia's search, retrieval, and MCP foundation, Agent Studio turns your trusted data into branded onsite agents that guide shoppers to confident product decisions. <<< Launch native agentic experiences faster Use Agent Studio templates and the SDK to launch AI Mode, product page questions, and guided discovery flows directly in your onsite experience. Age…
 
-- `Algolia for Flutter is an open source library that helps you add search and discovery features to your Flutter`
-  - PAGE: …ng customizable widgets that you can combine to create unique experiences. InstantSearch Android InstantSearch iOS InstantSearch.js React InstantSearch Vue InstantSearch Algolia for Flutter >>> Algolia for Flutter is an open source library that helps you add search and discovery features to your Flutter apps. <<< The Algolia Flutter Helper focuses on business logic and helper components that you can combine into a custom search interface. It's part of the InstantSearch family, but provides only the …
+- `Launch native agentic experiences faster Use Agent Studio templates and the SDK to launch AI Mode, product pag`
+  - PAGE: …ntent shoppers. Built on Algolia's search, retrieval, and MCP foundation, Agent Studio turns your trusted data into branded onsite agents that guide shoppers to confident product decisions. >>> Launch native agentic experiences faster Use Agent Studio templates and the SDK to launch AI Mode, product page questions, and guided discovery flows directly in your onsite experience. <<< Agentic search bar Let customers type natural product questions into the search bar and move from traditional search into guided discovery. Product page questions Add clickable, suggested q…
 
-- `Autocomplete is an open source, production-ready JavaScript library for building autocomplete experiences.`
-  - PAGE: …elevant results out of the box, powered by Algolia. Easily integrate it into your site, customize the design, and give users an intuitive way to explore your content. DocSearch Autocomplete >>> Autocomplete is an open source, production-ready JavaScript library for building autocomplete experiences. <<< As users type into an input, it suggests relevant terms or results to complete their query. It works seamlessly with Algolia, but can also be used with other data sources. Autocomplete
+- `0 Agent Studio is a platform for building and launching intelligent agents grounded in live Algolia search dat`
+  - PAGE: …Designing responsible and adaptive genAI systems Technical White Papers Re-evaluating LLM encoders for semantic search Technical White Papers Algolia Agent Studio FAQs What is Agent Studio? >>> 0 Agent Studio is a platform for building and launching intelligent agents grounded in live Algolia search data. <<< It enables agentic experiences that are accurate, brand-safe, governed, and scalable by building directly on top of Algolia's AI Retrieval Platform. How is Agent Studio different from gener…
 
 ## Key points it would store (6)
 
-**1.** The Algolia Flutter Helper focuses on business logic and helper components that you can combine into a custom search interface.
-  - PAGE: …stantSearch.js React InstantSearch Vue InstantSearch Algolia for Flutter Algolia for Flutter is an open source library that helps you add search and discovery features to your Flutter apps. >>> The Algolia Flutter Helper focuses on business logic and helper components that you can combine into a custom search interface. <<< It's part of the InstantSearch family, but provides only the core functionalities. Algolia for Flutter DocSearch DocSearch is a ready-to-use search UI for documentation websites. It deliver…
+**1.** Ground AI in the data you trust Build on your Algolia index, product data, reviews, content, business rules, relevance signals, and shopper context so AI can retrieve the right products and answers instead of guessing.
+  - PAGE: …an choose with confidence. Product answers beyond the page Answer product, shipping, returns, warranty, and compatibility questions using trusted content from the right sources and indices. >>> Ground AI in the data you trust Build on your Algolia index, product data, reviews, content, business rules, relevance signals, and shopper context so AI can retrieve the right products and answers instead of guessing. <<< Built for teams that need control Keep guidance focused 0 Define what the experience should and should not respond to, so the agent stays aligned to your catalog, policies, use case, and br…
 
-**2.** It's part of the InstantSearch family, but provides only the core functionalities.
-  - PAGE: …s you add search and discovery features to your Flutter apps. The Algolia Flutter Helper focuses on business logic and helper components that you can combine into a custom search interface. >>> It's part of the InstantSearch family, but provides only the core functionalities. <<< Algolia for Flutter DocSearch DocSearch is a ready-to-use search UI for documentation websites. It delivers fast, accessible, and relevant results out of the box, powered by Algolia. Easily…
+**2.** Cost controls before launch 0 Manage cost and scale with token usage visibility, caching, rate limiting, and configuration options designed to reduce unnecessary LLM calls.
+  - PAGE: …, and brand. Choose how business rules shape results 0 Use Algolia relevance settings, business rules, and merchandising priorities to influence what gets retrieved, recommended, and shown. >>> Cost controls before launch 0 Manage cost and scale with token usage visibility, caching, rate limiting, and configuration options designed to reduce unnecessary LLM calls. <<< Maintain brand trust 0 Define tone, approved sources, and response boundaries so the experience feels consistent, useful, and appropriate for your customers. Transform customer uncertainty …
 
-**3.** DocSearch is a ready-to-use search UI for documentation websites.
-  - PAGE: …c and helper components that you can combine into a custom search interface. It's part of the InstantSearch family, but provides only the core functionalities. Algolia for Flutter DocSearch >>> DocSearch is a ready-to-use search UI for documentation websites. <<< It delivers fast, accessible, and relevant results out of the box, powered by Algolia. Easily integrate it into your site, customize the design, and give users an intuitive way to explore y…
+**3.** With the SDK, templates, and connectors, developers can embed guided experiences into the places customers already make decisions.
+  - PAGE: …periences lead to conversion, revenue, and ROI. Developer-ready by design Agent Studio gives developers the building blocks to make agentic discovery feel native to the customer experience. >>> With the SDK, templates, and connectors, developers can embed guided experiences into the places customers already make decisions. <<< Start building Read the docs Your browser does not support the video tag. The right model for every experience AI models are changing fast, and the right choice can shift as quality, latenc…
 
-**4.** It delivers fast, accessible, and relevant results out of the box, powered by Algolia.
-  - PAGE: …interface. It's part of the InstantSearch family, but provides only the core functionalities. Algolia for Flutter DocSearch DocSearch is a ready-to-use search UI for documentation websites. >>> It delivers fast, accessible, and relevant results out of the box, powered by Algolia. <<< Easily integrate it into your site, customize the design, and give users an intuitive way to explore your content. DocSearch Autocomplete Autocomplete is an open source, production-ready Ja…
+**4.** Agent Studio is designed for production from day one with a built-in retrieval layer, visual configuration, templates, and enterprise-scale infrastructure.
+  - PAGE: …ain, OpenAI agent builders, etc.? 0 Many agent frameworks are designed for experimentation and require teams to assemble retrieval, orchestration, governance, and infrastructure themselves. >>> Agent Studio is designed for production from day one with a built-in retrieval layer, visual configuration, templates, and enterprise-scale infrastructure. <<< Customers can still use external frameworks if they choose, and Algolia can act as the retrieval and control layer even when other frameworks are used. Some customers prefer LangChain for a…
 
-**5.** As users type into an input, it suggests relevant terms or results to complete their query.
-  - PAGE: …n, and give users an intuitive way to explore your content. DocSearch Autocomplete Autocomplete is an open source, production-ready JavaScript library for building autocomplete experiences. >>> As users type into an input, it suggests relevant terms or results to complete their query. <<< It works seamlessly with Algolia, but can also be used with other data sources. Autocomplete
+**5.** 0 Agent Studio lets you use your preferred large language model (LLM) provider, with support for Anthropic, OpenAI, Azure OpenAI, Google Gemini, and OpenAI-compatible models.
+  - PAGE: … every industry-from SaaS and media to enterprise search and beyond-making it adaptable to virtually any AI agent need. What types of Large Language Models (LLMs) does Agent Studio support? >>> 0 Agent Studio lets you use your preferred large language model (LLM) provider, with support for Anthropic, OpenAI, Azure OpenAI, Google Gemini, and OpenAI-compatible models. <<< View the full list of supported models. Choose a model based on your requirements like relevance, speed, and cost. Use the LLM Leaderboard to compare options and find what fits your use cas…
 
-**6.** It works seamlessly with Algolia, but can also be used with other data sources.
-  - PAGE: …ete is an open source, production-ready JavaScript library for building autocomplete experiences. As users type into an input, it suggests relevant terms or results to complete their query. >>> It works seamlessly with Algolia, but can also be used with other data sources. <<< Autocomplete
+**6.** Unlike those solutions, Algolia's Agent Studio has a built-in memory function.
+  - PAGE: …a indexed in Algolia, including help docs, guides, and more. What is "user memory" in the dashboard? 0 Many LLMs and agentic solutions lack memory from session to session or query to query. >>> Unlike those solutions, Algolia's Agent Studio has a built-in memory function. <<< User memory is an optional setting that lets an agent remember user preferences and past outcomes so responses can stay consistent across interactions. Our customers can use this feature to…
 
 ## Second opinion (a different AI, from Google, checking quality only)
 
@@ -229,184 +214,43 @@ notes:
 
 # 5. doc-tool
 
-**Page:** <https://www.algolia.com/doc/tools/cli/get-started>
+**Page:** <https://www.algolia.com/doc/tools/cli/authentication>
 **Type:** doc-tool · reference family
 
 ## Summary it would store
 
-> The Algolia CLI lets you work with Algolia's APIs from your terminal. It's great for interactive commands, scripts, and continuous integration workflows.
+> Every CLI command that communicates with Algolia requires authentication. We recommend signing in with OAuth, which stores your credentials automatically. Alternatively, provide your Algolia application ID and API key with environment variables or command-line flags.
 
 **Where each sentence came from:**
 
-- `The Algolia CLI lets you work with Algolia's APIs from your terminal.`
-  - PAGE: …//algolia.com/llms.txt Use this file to discover all available pages before exploring further. Get started with the Algolia CLI Manage your Algolia resources directly from the command line. >>> The Algolia CLI lets you work with Algolia's APIs from your terminal. <<< It's great for interactive commands, scripts, and continuous integration workflows. Before you begin You'll need an Algolia account. If you don't have one yet, create one from the CLI while…
+- `Every CLI command that communicates with Algolia requires authentication.`
+  - PAGE: …pages before exploring further. Authenticate CLI commands Sign in to the Algolia CLI with OAuth, or provide your application ID and API key with environment variables or command-line flags. >>> Every CLI command that communicates with Algolia requires authentication. <<< We recommend signing in with OAuth, which stores your credentials automatically. Alternatively, provide your Algolia application ID and API key with environment variables or command-line fl…
 
-- `It's great for interactive commands, scripts, and continuous integration workflows.`
-  - PAGE: …efore exploring further. Get started with the Algolia CLI Manage your Algolia resources directly from the command line. The Algolia CLI lets you work with Algolia's APIs from your terminal. >>> It's great for interactive commands, scripts, and continuous integration workflows. <<< Before you begin You'll need an Algolia account. If you don't have one yet, create one from the CLI while you sign in. Install the Algolia CLI You can install the CLI with your favorite pac…
+- `We recommend signing in with OAuth, which stores your credentials automatically.`
+  - PAGE: …lgolia CLI with OAuth, or provide your application ID and API key with environment variables or command-line flags. Every CLI command that communicates with Algolia requires authentication. >>> We recommend signing in with OAuth, which stores your credentials automatically. <<< Alternatively, provide your Algolia application ID and API key with environment variables or command-line flags. In general, use an API key with minimal permissions, just enough to run the …
 
-## Key points it would store (5)
-
-**1.** The CLI runs on macOS, Linux, and Windows, on both AMD64 and ARM64 platforms.
-  - PAGE: …one from the CLI while you sign in. Install the Algolia CLI You can install the CLI with your favorite package manager, or download binaries from the Releases page in the GitHub repository. >>> The CLI runs on macOS, Linux, and Windows, on both AMD64 and ARM64 platforms. <<< If you have Node.js installed, you can run the CLI with npx - no installation required: sh icon=square-terminal theme={"system"} npx @algolia/cli --help Or install it globally with npm: sh …
-
-**2.** If you're running the CLI in an environment without a browser, such as an SSH session or container, run algolia auth login --no-browser.
-  - PAGE: …inux. Sign in Authenticate the CLI with your Algolia account. This opens your browser so you can sign in or create a new account: sh icon=square-terminal theme={"system"} algolia auth login >>> If you're running the CLI in an environment without a browser, such as an SSH session or container, run algolia auth login --no-browser. <<< The CLI prints an authorization URL and waits for you to complete the sign-in process. To check your authentication status, run algolia auth status. Select an application Set the applicatio…
-
-**3.** algolia application select creates a local profile and an API key for the application if needed, so you don't have to pass --application-id or --api-key with every command.
-  - PAGE: …the application for your commands: sh icon=square-terminal theme={"system"} algolia application list # list your applications algolia application select # pick the current one interactively >>> algolia application select creates a local profile and an API key for the application if needed, so you don't have to pass --application-id or --api-key with every command. <<< Index and search your first records With an application selected, import some records and search them: sh icon=square-terminal theme={"system"} algolia objects import MOVIES -F movies.ndjso…
-
-**4.** Add --help to any command to get more information about it and its options.
-  - PAGE: …IES -F movies.ndjson # import newline-delimited JSON records algolia search MOVIES --query "toy story" # search the index Explore other commands Type algolia to list the available commands. >>> Add --help to any command to get more information about it and its options. <<< For example, to list all indices in your Algolia application, run: sh icon=square-terminal theme={"system"} algolia indices list If you're running the CLI in a CI pipeline or script, or if …
-
-**5.** If you're running the CLI in a CI pipeline or script, or if you prefer to manage credentials yourself, use the --application-id and --api-key options or environment variables instead of signing in.
-  - PAGE: …ny command to get more information about it and its options. For example, to list all indices in your Algolia application, run: sh icon=square-terminal theme={"system"} algolia indices list >>> If you're running the CLI in a CI pipeline or script, or if you prefer to manage credentials yourself, use the --application-id and --api-key options or environment variables instead of signing in. <<< For more information, see Authentication. Next steps Set up command completion. Enable shell completion for Bash, Zsh, Fish, or PowerShell. Authenticate CLI commands. Sign in with OAuth, or…
-
-## Second opinion (a different AI, from Google, checking quality only)
-
-- Does the summary represent the page? **5 out of 5**
-- Is it specific enough to be useful? **5 out of 5**
-- Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
-
-```
-VERDICT:  good / not good / HALLUCINATION
-notes:
-```
-
----
-
-# 6. blog-post
-
-**Page:** <https://www.algolia.com/blog/product/dynamic-facets>
-**Type:** blog-post · editorial family
-
-## Summary it would store
-
-> That's the gap Dynamic Facets closes. Rather than showing the same fixed set of filters to everyone, it reorders them in real time based on what people are searching for and how they behave. In beta testing, the results were consistent: users clicked earlier and more often.
-
-**Where each sentence came from:**
-
-- `That's the gap Dynamic Facets closes. Rather than showing the same fixed set of filters to everyone, it reorde`
-  - PAGE: … learns from real search behaviour across that query and reorders accordingly - so the filter panel reflects how people actually shop, not how the catalogue was organised at implementation. >>> That's the gap Dynamic Facets closes. Rather than showing the same fixed set of filters to everyone, it reorders them in real time based on what people are searching for and how they behave. <<< In beta testing, the results were consistent: users clicked earlier and more often. In the strongest cases, clickthrough rate on specific filters improved by 10 to 15 percentage points, wit…
-
-- `In beta testing, the results were consistent: users clicked earlier and more often.`
-  - PAGE: …hat's the gap Dynamic Facets closes. Rather than showing the same fixed set of filters to everyone, it reorders them in real time based on what people are searching for and how they behave. >>> In beta testing, the results were consistent: users clicked earlier and more often. <<< In the strongest cases, clickthrough rate on specific filters improved by 10 to 15 percentage points, with users reaching results sitting two to three positions higher up the page. It's the…
-
-## Key points it would store (4)
-
-**1.** In the strongest cases, clickthrough rate on specific filters improved by 10 to 15 percentage points, with users reaching results sitting two to three positions higher up the page.
-  - PAGE: …rs to everyone, it reorders them in real time based on what people are searching for and how they behave. In beta testing, the results were consistent: users clicked earlier and more often. >>> In the strongest cases, clickthrough rate on specific filters improved by 10 to 15 percentage points, with users reaching results sitting two to three positions higher up the page. <<< It's the friction that it helps with. A small but persistent drag on engagement, in a place most teams haven't thought to look. There's an operational side to this too. Keeping facet orders…
-
-**2.** The system learns from real search behaviour across that query and reorders accordingly - so the filter panel reflects how people actually shop, not how the catalogue was organised at implementation.
-  - PAGE: …is about License: Star Wars, Marvel, Disney, The Lion King. With Dynamic Facets enabled, that's what would surface first, because that's what users searching "loungefly" actually reach for. >>> The system learns from real search behaviour across that query and reorders accordingly - so the filter panel reflects how people actually shop, not how the catalogue was organised at implementation. <<< That's the gap Dynamic Facets closes. Rather than showing the same fixed set of filters to everyone, it reorders them in real time based on what people are searching for and how they behave…
-
-**3.** A/B testing Dynamic Facets allows you to see where it produced large gains.
-  - PAGE: … - new inventory, seasonal demand, changing search behaviour - is the kind of maintenance that's easy to deprioritise, so it helps with the manual upkeep. A useful side effect also emerged: >>> A/B testing Dynamic Facets allows you to see where it produced large gains. <<< Perhaps it was a specific category that may need looking at. Standard analytics don't surface that, but a live A/B test does. Dynamic Facets is available now. If your filter panel hasn't be…
-
-**4.** Loungefly is a licensed character brand, and the decision people are trying to make is about License: Star Wars, Marvel, Disney, The Lion King.
-  - PAGE: …arches for "loungefly" on an ecommerce site. The static panel gives her Gender, Colour, and Clearance - not wrong exactly, just not what anyone searching for Loungefly actually cares about. >>> Loungefly is a licensed character brand, and the decision people are trying to make is about License: Star Wars, Marvel, Disney, The Lion King. <<< With Dynamic Facets enabled, that's what would surface first, because that's what users searching "loungefly" actually reach for. The system learns from real search behaviour across that qu…
-
-## Second opinion (a different AI, from Google, checking quality only)
-
-- Does the summary represent the page? **5 out of 5**
-- Is it specific enough to be useful? **5 out of 5**
-- Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
-
-```
-VERDICT:  good / not good / HALLUCINATION
-notes:
-```
-
----
-
-# 7. blog-post
-
-**Page:** <https://www.algolia.com/blog/ai/evaluate-quality-non-deterministic-agents>
-**Type:** blog-post · editorial family
-
-## Summary it would store
-
-> If exact match testing doesn't cut it, how can we actually evaluate the quality of non-deterministic agents? The answer: understand what makes a test case meaningful, generate a whole dataset of cases from our product catalog, and pull insights from those results with statistics. Non-deterministic agents do not require lower standards; they just require better definitions of quality. By evaluating outcomes instead of exact wording, generating cases from the data your agent actually uses, and comparing performance across a meaningful sample, you can replace subjective demos with repeatable evidence.
-
-**Where each sentence came from:**
-
-- `If exact match testing doesn't cut it, how can we actually evaluate the quality of non-deterministic agents? T`
-  - PAGE: …ly useful. Exact match testing obscures the agent's performance since it confuses consistency with quality, rewarding sameness instead of usefulness. This brings up an interesting question. >>> If exact match testing doesn't cut it, how can we actually evaluate the quality of non-deterministic agents? The answer: understand what makes a test case meaningful, generate a whole dataset of cases from our product catalog, and pull insights from those results with statistics. <<< Let's break each of these down. Define cases around outcomes, not exact answers A useful agent evaluation starts by defining a case, or what exactly we're testing. A case includes three com…
-
-- `Non-deterministic agents do not require lower standards; they just require better definitions of quality. By e`
-  - PAGE: …gainst the same search indexes. The goal is not to find one perfect response, just to establish a repeatable way to make each version measurably better than the last. Measuring what matters >>> Non-deterministic agents do not require lower standards; they just require better definitions of quality. By evaluating outcomes instead of exact wording, generating cases from the data your agent actually uses, and comparing performance across a meaningful sample, you can replace subjective demos with repeatable evidence. <<< The result is not a test that proves an agent will always produce the same answer. Instead, you'll have a system for determining whether the agent is reliably useful and improving across it…
+- `Alternatively, provide your Algolia application ID and API key with environment variables or command-line flag`
+  - PAGE: …t variables or command-line flags. Every CLI command that communicates with Algolia requires authentication. We recommend signing in with OAuth, which stores your credentials automatically. >>> Alternatively, provide your Algolia application ID and API key with environment variables or command-line flags. <<< In general, use an API key with minimal permissions, just enough to run the commands you want to run. For more information, see API keys. Sign in with OAuth Signing in with OAuth is the qui…
 
 ## Key points it would store (6)
 
-**1.** LLMs are non-deterministic, meaning they can produce different results for the same input.
-  - PAGE: …ew they worked and continued working because our test suite ran them regularly and flagged any outputs that deviated from expectations. But in the agentic era, those assumptions break down. >>> LLMs are non-deterministic, meaning they can produce different results for the same input. <<< For example, a shopper might ask the search agent on your site, "Show me tropical shorts for vacation". One response might recommend linen shorts with palm prints, while another might recom…
+**1.** After you sign in, the CLI stores your credentials in your system keychain.
+  - PAGE: …n't need to copy or manage API keys. sh icon=square-terminal theme={"system"} algolia auth login This opens the Algolia dashboard in your browser so you can sign in or create a new account. >>> After you sign in, the CLI stores your credentials in your system keychain. <<< To directly create a new account, use algolia auth signup. If you're running the CLI in an environment without a browser, such as an SSH session or container, add --no-browser. The CLI prin…
 
-**2.** Good success criteria are specific enough to catch failures, but flexible enough to allow valid variation.
-  - PAGE: …ed outcome nor the evaluation focus contain a rigid transcript of the perfect answer. They just describe what success looks like and how we'll know the agent produced a successful response. >>> Good success criteria are specific enough to catch failures, but flexible enough to allow valid variation. <<< Some examples: Use case Bad success criterion Good success criterion Account troubleshooting The answer must include the phrase "reset password." The answer should explain the appropriate p…
+**2.** If you're running the CLI in an environment without a browser, such as an SSH session or container, add --no-browser.
+  - PAGE: …ur browser so you can sign in or create a new account. After you sign in, the CLI stores your credentials in your system keychain. To directly create a new account, use algolia auth signup. >>> If you're running the CLI in an environment without a browser, such as an SSH session or container, add --no-browser. <<< The CLI prints an authorization URL and waits for you to complete the sign-in process. After signing in, select the application for your commands: sh icon=square-terminal theme={"system"} a…
 
-**3.** Instead of starting with a query and trying to guess the right answer, start with content where the expected answer is already implied.
-  - PAGE: …across all of those situations? Generating and testing the case dataset You already have a dataset of all the things your agent needs to know; why not use that to generate evaluation cases? >>> Instead of starting with a query and trying to guess the right answer, start with content where the expected answer is already implied. <<< Then, generate the kinds of questions users might ask to reach that answer. This is a much more scalable approach than defining them all manually. For example, for each product in the produ…
+**3.** Environment variables Set these environment variables: ALGOLIA_APPLICATION_ID ALGOLIA_API_KEY Environment variables take precedence over command-line options and profiles.
+  - PAGE: …rectly For CI pipelines, scripts, or if you prefer to manage credentials yourself, provide your application ID and API key instead of signing in. You can find both in the Algolia dashboard. >>> Environment variables Set these environment variables: ALGOLIA_APPLICATION_ID ALGOLIA_API_KEY Environment variables take precedence over command-line options and profiles. <<< That means you can't switch profiles while using environment variables. Command-line options Provide these options when running commands: --application-id --api-key Command-line options tak…
 
-**4.** here at Algolia, we use Agent Studio. Setting up each model as its own provider abstracts away the complexity of managing API keys and provider-specific data structures.
-  - PAGE: …sing and assess its responses to the same cases, and repeat for as many models as you'd like to test. It can be very helpful here to have some framework for switching models efficiently, so >>> here at Algolia, we use Agent Studio. Setting up each model as its own provider abstracts away the complexity of managing API keys and provider-specific data structures. <<< With Agent Studio, one set of credentials and one clearly-documented API lets you send prompts to an agent that already has the ability to search through the indexes you've granted it acces…
+**4.** Command-line options Provide these options when running commands: --application-id --api-key Command-line options take precedence over profiles.
+  - PAGE: … ALGOLIA_APPLICATION_ID ALGOLIA_API_KEY Environment variables take precedence over command-line options and profiles. That means you can't switch profiles while using environment variables. >>> Command-line options Provide these options when running commands: --application-id --api-key Command-line options take precedence over profiles. <<< These options are supported on macOS, Linux, and Windows Subsystem for Linux (WSL). They're ignored in the native Windows build of the Algolia CLI. Profiles Profiles store an application ID…
 
-**5.** For non-deterministic agents, meaning is the unit of quality.
-  - PAGE: …on focus we defined earlier. Instead of matching by specific wording or arbitrary requirements, we wrote those evaluation metrics to judge whether response _satisfies the intended meaning_. >>> For non-deterministic agents, meaning is the unit of quality. <<< Compare versions statistically, then improve the system Once we've judged each model's responses semantically, we can aggregate those judgments to actually compare them. Non-deterministic s…
+**5.** They're ignored in the native Windows build of the Algolia CLI.
+  - PAGE: …ons when running commands: --application-id --api-key Command-line options take precedence over profiles. These options are supported on macOS, Linux, and Windows Subsystem for Linux (WSL). >>> They're ignored in the native Windows build of the Algolia CLI. <<< Profiles Profiles store an application ID and API key under a friendly name in /.config/algolia/config.toml. The --profile flag is deprecated. Sign in with algolia auth login and select an …
 
-**6.** A sufficiently large sample can reveal patterns that individual examples cannot, so trust the distribution over a demo.
-  - PAGE: …sponse in isolation doesn't tell you much about the underlying model. Before drawing conclusions, ask: How often, and under what conditions, does this version produce a successful response? >>> A sufficiently large sample can reveal patterns that individual examples cannot, so trust the distribution over a demo. <<< Because we're balancing several dimensions of quality, both the overall score and the breakdowns are meaningful. If a model's overall score rose, we'd still want to know whether it: improve…
-
-## Second opinion (a different AI, from Google, checking quality only)
-
-- Does the summary represent the page? **5 out of 5**
-- Is it specific enough to be useful? **5 out of 5**
-- Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
-
-```
-VERDICT:  good / not good / HALLUCINATION
-notes:
-```
-
----
-
-# 8. comparison
-
-**Page:** <https://www.algolia.com/competitors/compare-algolia-vs-bloomreach>
-**Type:** comparison · commercial family
-
-## Summary it would store
-
-> The Bloomreach DXP includes search features, but Algolia's dedicated search platform gives you more power and versatility to understand your users and show them what they need. Algolia's API-first solutions bring you the fastest enterprise AI search we know of. The Bloomreach DXP is a broad ecommerce solution that isn't dedicated to search in the same way, and their black-box AI can be difficult to optimize without support.
-
-**Where each sentence came from:**
-
-- `The Bloomreach DXP includes search features, but Algolia's dedicated search platform gives you more power and `
-  - PAGE: …ducts & Resources ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack Algolia vs Bloomreach: which solution works for you? >>> The Bloomreach DXP includes search features, but Algolia's dedicated search platform gives you more power and versatility to understand your users and show them what they need. <<< Get Started Book a Demo Build better experiences faster, with Algolia Algolia's API-first solutions bring you the fastest enterprise AI search we know of. Our products integrate easily with…
-
-- `Algolia's API-first solutions bring you the fastest enterprise AI search we know of.`
-  - PAGE: …s dedicated search platform gives you more power and versatility to understand your users and show them what they need. Get Started Book a Demo Build better experiences faster, with Algolia >>> Algolia's API-first solutions bring you the fastest enterprise AI search we know of. <<< Our products integrate easily with a wide range of platforms across diverse use-cases. VS. The Bloomreach DXP is a broad ecommerce solution that isn't dedicated to search in the same way, a…
-
-- `The Bloomreach DXP is a broad ecommerce solution that isn't dedicated to search in the same way, and their bla`
-  - PAGE: … with Algolia Algolia's API-first solutions bring you the fastest enterprise AI search we know of. Our products integrate easily with a wide range of platforms across diverse use-cases. VS. >>> The Bloomreach DXP is a broad ecommerce solution that isn't dedicated to search in the same way, and their black-box AI can be difficult to optimize without support. <<< Algolia's enterprise reliability and easy-to-tune dashboard give you everything you need to build search that makes your users click and come back. <20 ms response to most searches 30+ bill…
-
-## Key points it would store (5)
-
-**1.** Our MACH Alliance-certified headless architecture and APIs allow you to deploy quickly and efficiently on your own terms - whatever the application.
-  - PAGE: …uild intelligent search experiences with easy-to-use tools and support you can rely on. Speed & ease at scale Get state-of-the-art, API-first search that integrates easily with any platform >>> Our MACH Alliance-certified headless architecture and APIs allow you to deploy quickly and efficiently on your own terms - whatever the application. <<< It's easy for your developers to customize the search algorithm, and our 6 UI libraries help you build great experiences for your users and get to market faster. Contact sales Configure & t…
-
-**2.** Algolia's proprietary AI powers the whole search and browse experience, from query categorization to recommendations and personalization.
-  - PAGE: …ch algorithm, and our 6 UI libraries help you build great experiences for your users and get to market faster. Contact sales Configure & tune Optimize every element with industry-leading AI >>> Algolia's proprietary AI powers the whole search and browse experience, from query categorization to recommendations and personalization. <<< We continuously maintain and optimize to make sure it keeps delivering for you. Contact sales End user-focused Deploy fast and tune easily, letting business teams take control Algolia's too…
-
-**3.** Algolia's tools are easy to configure, with a no-code solution that allows business users to fine-tune personalization strategies - no developer time or external support needed.
-  - PAGE: …sonalization. We continuously maintain and optimize to make sure it keeps delivering for you. Contact sales End user-focused Deploy fast and tune easily, letting business teams take control >>> Algolia's tools are easy to configure, with a no-code solution that allows business users to fine-tune personalization strategies - no developer time or external support needed. <<< Contact sales More than 18,000 customers in 150+ countries selected Algolia to grow satisfaction and sales. Because when your users feel understood, they click and they come back. Speak to …
-
-**4.** More than 18,000 customers in 150+ countries selected Algolia to grow satisfaction and sales.
-  - PAGE: …golia's tools are easy to configure, with a no-code solution that allows business users to fine-tune personalization strategies - no developer time or external support needed. Contact sales >>> More than 18,000 customers in 150+ countries selected Algolia to grow satisfaction and sales. <<< Because when your users feel understood, they click and they come back. Speak to one of our team or create a free account Get a demo Start free Try the AI search that understands Get a demo…
-
-**5.** A Forrester Consulting study found Algolia delivered $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue
-  - PAGE: …ry as the market shifts toward AI-powered, agentic discovery. Read the announcement See Algolia in action Forrester Total Economic Impact™ Increased Operating Profit and Improved Efficiency >>> A Forrester Consulting study found Algolia delivered $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue <<< Download the TEI study IDC MarketScape Named a leader in knowledge discovery IDC recognized Algolia as a leader in general-purpose knowledge discovery software, citing the growing role of s…
+**6.** Crawler environment variables Export your Crawler user ID and Crawler API key as environment variables: ALGOLIA_CRAWLER_USER_ID and ALGOLIA_CRAWLER_API_KEY.
+  - PAGE: … crawler This fetches your Crawler API key for the current application and stores it securely in your operating system's keychain. You don't need to copy the key from the Algolia dashboard. >>> Crawler environment variables Export your Crawler user ID and Crawler API key as environment variables: ALGOLIA_CRAWLER_USER_ID and ALGOLIA_CRAWLER_API_KEY. <<< You can find both in the Algolia dashboard: Go to the Algolia dashboard and select your Algolia application. On the left sidebar, select Data sources. Select Crawler and go to the Settings …
 
 ## Second opinion (a different AI, from Google, checking quality only)
 
@@ -422,27 +266,177 @@ notes:
 
 ---
 
-# 9. doc-rest-api
+# 6. doc-rest-api
 
-**Page:** <https://www.algolia.com/doc/rest-api/search/set-dictionary-settings>
+**Page:** <https://www.algolia.com/doc/rest-api/query-suggestions>
 **Type:** doc-rest-api · reference family
 
 ## Summary it would store
 
-> Turn on or off the built-in Algolia stop words for a specific language. Key-value pairs of supported language ISO codes and boolean values.
+> Query Suggestions API The Query Suggestions API lets you manage your Query Suggestions configurations Query Suggestions add new indices to your Algolia application with popular search queries, external suggestions, or facet values. In your user interface, you can query the Query Suggestions indices like regular indices and add suggested searches to guide users and speed up their search.
 
 **Where each sentence came from:**
 
-- `Turn on or off the built-in Algolia stop words for a specific language.`
-  - PAGE: …ge. operationId: setDictionarySettings requestBody: required: true content: application/json: schema: title: dictionarySettingsParams type: object additionalProperties: false description: > >>> Turn on or off the built-in Algolia stop words for a specific language. <<< required: disableStandardEntries properties: disableStandardEntries: $ref: '#/components/schemas/standardEntries' responses: '200': $ref: '#/components/responses/UpdatedAt' '400': $ref: '#/…
+- `Query Suggestions API The Query Suggestions API lets you manage your Query Suggestions configurations Query Su`
+  - PAGE: Documentation Index Fetch the complete documentation index at: https://algolia.com/llms.txt Use this file to discover all available pages before exploring further. >>> Query Suggestions API The Query Suggestions API lets you manage your Query Suggestions configurations Query Suggestions add new indices to your Algolia application with popular search queries, external suggestions, or facet values. <<< In your user interface, you can query the Query Suggestions indices like regular indices and add suggested searches to guide users and speed up their search. Base URLs Base URLs for the Que…
 
-- `Key-value pairs of supported language ISO codes and boolean values.`
-  - PAGE: … { "disableStandardEntries": { "plurals": { "fr": false }, "stopwords": { "fr": false }, "compounds": { "fr": false } } } ' components: schemas: standardEntries: type: object description: > >>> Key-value pairs of supported language ISO codes and boolean values. <<< additionalProperties: false properties: compounds: $ref: '#/components/schemas/standardEntry' plurals: $ref: '#/components/schemas/standardEntry' stopwords: $ref: '#/components/schemas/stan…
+- `In your user interface, you can query the Query Suggestions indices like regular indices and add suggested sea`
+  - PAGE: …s API lets you manage your Query Suggestions configurations Query Suggestions add new indices to your Algolia application with popular search queries, external suggestions, or facet values. >>> In your user interface, you can query the Query Suggestions indices like regular indices and add suggested searches to guide users and speed up their search. <<< Base URLs Base URLs for the Query Suggestions API: https://query-suggestions.us.algolia.com https://query-suggestions.eu.algolia.com Use the URL that matches your analytics region. All requ…
+
+## Key points it would store (5)
+
+**1.** Base URLs Base URLs for the Query Suggestions API: https://query-suggestions.us.algolia.com https://query-suggestions.eu.algolia.com Use the URL that matches your analytics region.
+  - PAGE: …l suggestions, or facet values. In your user interface, you can query the Query Suggestions indices like regular indices and add suggested searches to guide users and speed up their search. >>> Base URLs Base URLs for the Query Suggestions API: https://query-suggestions.us.algolia.com https://query-suggestions.eu.algolia.com Use the URL that matches your analytics region. <<< All requests must use HTTPS. Authentication Add these headers to authenticate requests: x-algolia-application-id. Your Algolia application ID. x-algolia-api-key. An API key with the necessa…
+
+**2.** Authentication Add these headers to authenticate requests: x-algolia-application-id.
+  - PAGE: …for the Query Suggestions API: https://query-suggestions.us.algolia.com https://query-suggestions.eu.algolia.com Use the URL that matches your analytics region. All requests must use HTTPS. >>> Authentication Add these headers to authenticate requests: x-algolia-application-id. <<< Your Algolia application ID. x-algolia-api-key. An API key with the necessary permissions to make the request. The required access control list (ACL) to make a request is listed in each end…
+
+**3.** Request format Request bodies must be JSON objects.
+  - PAGE: … to make the request. The required access control list (ACL) to make a request is listed in each endpoint's reference. You can find your application ID and API key in the Algolia dashboard. >>> Request format Request bodies must be JSON objects. <<< Response status and errors Response bodies are JSON objects. Deleting a user token returns an empty response body with rate-limiting information as headers. Successful responses return 2xx …
+
+**4.** Successful responses return 2xx statuses.
+  - PAGE: …est bodies must be JSON objects. Response status and errors Response bodies are JSON objects. Deleting a user token returns an empty response body with rate-limiting information as headers. >>> Successful responses return 2xx statuses. <<< Client errors return 4xx statuses. Server errors return 5xx statuses. Error responses have a message property with more information. Version The current version of the Query Suggestions API…
+
+**5.** Version The current version of the Query Suggestions API is version 1, indicated by the /1/ in each endpoint's URL.
+  - PAGE: …on as headers. Successful responses return 2xx statuses. Client errors return 4xx statuses. Server errors return 5xx statuses. Error responses have a message property with more information. >>> Version The current version of the Query Suggestions API is version 1, indicated by the /1/ in each endpoint's URL. <<<
+
+## Second opinion (a different AI, from Google, checking quality only)
+
+- Does the summary represent the page? **5 out of 5**
+- Is it specific enough to be useful? **5 out of 5**
+- Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
+- Overall: **looks good**
+
+```
+VERDICT:  good / not good / HALLUCINATION
+notes:
+```
+
+---
+
+# 7. resource
+
+**Page:** <https://www.algolia.com/resources/asset/white-paper-search-box-to-workflow-copilot>
+**Type:** resource · editorial family
+
+## Summary it would store
+
+> Suggestions Products & Resources ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack whitepaper Search box to workflow copilot Download PDF Back to all resources Search box to workflow copilot Summary This paper describes how Algolia's retrieval and ranking layer powers an enterprise intent router. The platform supplies the indexed tool catalog, ranks candidates under policy constraints, and stays fast enough that the orchestration layer above can turn natural language into safe, auditable action without leaving the critical path.
+
+**Where each sentence came from:**
+
+- `Suggestions Products & Resources ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Fil`
+  - PAGE: …e and conversions? ✨ How do I integrate Algolia search into my app? ✨ Can Algolia help shoppers find products faster and increase sales? ✨ Will Algolia scale with our traffic and data size? >>> Suggestions Products & Resources ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack whitepaper Search box to workflow copilot Download PDF Back to all resources Search box to workflow copilot Summary This paper describes how Algolia's retrieval and ranking layer powers an enterprise intent router. <<< The platform supplies the indexed tool catalog, ranks candidates under policy constraints, and stays fast enough that the orchestration layer above can turn natural language into safe, audi…
+
+- `The platform supplies the indexed tool catalog, ranks candidates under policy constraints, and stays fast enou`
+  - PAGE: …workflow copilot Download PDF Back to all resources Search box to workflow copilot Summary This paper describes how Algolia's retrieval and ranking layer powers an enterprise intent router. >>> The platform supplies the indexed tool catalog, ranks candidates under policy constraints, and stays fast enough that the orchestration layer above can turn natural language into safe, auditable action without leaving the critical path. <<< Recommended Content Powered by Algolia AI Recommendations Enable anyone to build great Search & Discovery Get a demo Start Free Analyst recognition Agentic intelligence layer powering comme…
 
 ## Key points it would store (1)
 
-**1.** Date and time when the object was updated, in RFC 3339 format.
-  - PAGE: …ed to a queue. It might not run immediately. You can check the task's progress with the task operation and this task ID. updatedAt: type: string example: '2023-07-04T12:49:15Z' description: >>> Date and time when the object was updated, in RFC 3339 format. <<< responses: UpdatedAt: description: OK content: application/json: schema: $ref: '#/components/schemas/updatedAtResponse' BadRequest: description: Bad request or request arguments. content: a…
+**1.** Evaluate Algolia Gartner 2026 Magic Quadrant for Search and Product Discovery A leader for the third consecutive year Algolia is recognized as a Leader in the 2026 Gartner® Magic Quadrant™ for Search and Product Discovery as the market shifts toward AI-powered, agentic discovery.
+  - PAGE: …intelligence layer powering commerce discovery Recognized by IDC, Gartner, Forrester, and Paradigm B2B, Algolia helps enterprises turn search into a growth engine for AI-native experiences. >>> Evaluate Algolia Gartner 2026 Magic Quadrant for Search and Product Discovery A leader for the third consecutive year Algolia is recognized as a Leader in the 2026 Gartner® Magic Quadrant™ for Search and Product Discovery as the market shifts toward AI-powered, agentic discovery. <<< Read the announcement See Algolia in action Forrester Total Economic Impact™ Increased Operating Profit and Improved Efficiency A Forrester Consulting study found Algolia delivered $3.1M NP…
+
+## Second opinion (a different AI, from Google, checking quality only)
+
+- Does the summary represent the page? **1 out of 5**
+- Is it specific enough to be useful? **1 out of 5**
+- Do the sentences mislead when read together? **1 out of 5** (5 = no, they read honestly)
+- Overall: **wants a better sentence**
+
+```
+VERDICT:  good / not good / HALLUCINATION
+notes:
+```
+
+---
+
+# 8. press-release
+
+**Page:** <https://www.algolia.com/about/news/algolia-brings-agentic-commerce-to-the-modern-storefront>
+**Type:** press-release · editorial family
+
+## Summary it would store
+
+> controls, and bring guided discovery into high-intent shopper journeys SAN FRANCISCO, CA - July 28, 2026 - Algolia, the AI Search and Retrieval platform orchestrating more than 1.75 trillion queries each year, trusted by over 18,000 businesses and used by millions of developers worldwide, today announced significant enhancements to Agent Studio, its application for accelerating the creation and Algolia's Agent Studio closes this gap by acting as the intelligent layer for agentic commerce, connecting AI-powered shopping experiences to multiple, different data including blog content, customer reviews, shoppers' context, business rules, merchandising logic, and relevance signals retailers depend on. The enhanced Agent Studio capabilities are available to Algolia customers with Guardrails and Cost Controls available today.
+
+**Where each sentence came from:**
+
+- `controls, and bring guided discovery into high-intent shopper journeys SAN FRANCISCO, CA - July 28, 2026 - Alg`
+  - PAGE: … Giving Retailers AI Shopping Experiences Built on Trusted Product Data New Agent Studio capabilities help commerce teams ground AI agents in trusted product data, apply guardrails and cost >>> controls, and bring guided discovery into high-intent shopper journeys SAN FRANCISCO, CA - July 28, 2026 - Algolia, the AI Search and Retrieval platform orchestrating more than 1.75 trillion queries each year, trusted by over 18,000 businesses and used by millions of developers worldwide, today announced significant enhancements to Agent Studio, its application for accelerating the creation and <<< optimization of AI agents and onsite agentic commerce experiences. AI is transforming how consumers shop. Instead of navigating filters and product grids, shoppers increasingly expect to be…
+
+- `Algolia's Agent Studio closes this gap by acting as the intelligent layer for agentic commerce, connecting AI-`
+  - PAGE: …d the pace of change of catalogs, inventory, pricing, merchandising logic, compatibility requirements, or the business rules that determine what should be shown, recommended, or suppressed. >>> Algolia's Agent Studio closes this gap by acting as the intelligent layer for agentic commerce, connecting AI-powered shopping experiences to multiple, different data including blog content, customer reviews, shoppers' context, business rules, merchandising logic, and relevance signals retailers depend on. <<< Rather than treating AI as a standalone assistant, Agent Studio enables retailers to deploy governed AI conversational experiences that consistently guide shoppers toward the right products…
+
+- `The enhanced Agent Studio capabilities are available to Algolia customers with Guardrails and Cost Controls av`
+  - PAGE: …y already have in Algolia, rather than starting from scratch, helping teams launch more quickly while keeping AI experiences aligned with their catalog, brand standards, and business goals. >>> The enhanced Agent Studio capabilities are available to Algolia customers with Guardrails and Cost Controls available today. <<< Teams can configure the new capabilities in Agent Studio and use Algolia's implementation path to embed agentic discovery experiences into their ecommerce sites. About Algolia Algolia is th…
+
+## Key points it would store (5)
+
+**1.** Production AI for live retail environments Agent Studio gives retailers confidence in how AI agents behave in live shopping environments, with guardrails, cost controls, and governance settings that can be configured for each agent.
+  - PAGE: …atest Agent Studio enhancements focus on three priorities for retailers bringing agentic commerce to the storefront: Production-ready AI Better shopping experiences A faster path to launch. >>> Production AI for live retail environments Agent Studio gives retailers confidence in how AI agents behave in live shopping environments, with guardrails, cost controls, and governance settings that can be configured for each agent. <<< These capabilities help retailers protect against unsafe inputs, unsafe outputs, misuse, and runaway LLM costs, while setting clear boundaries for where and how agents operate. Custom guard…
+
+**2.** Custom guardrails allow teams to define disallowed content categories, apply them to shopper inputs, agent outputs, or both, and configure fallback messages when content is blocked.
+  - PAGE: … each agent. These capabilities help retailers protect against unsafe inputs, unsafe outputs, misuse, and runaway LLM costs, while setting clear boundaries for where and how agents operate. >>> Custom guardrails allow teams to define disallowed content categories, apply them to shopper inputs, agent outputs, or both, and configure fallback messages when content is blocked. <<< Input guardrails evaluate shopper messages before they reach the LLM, while output guardrails review generated responses before they are shown to the shopper. Retailers can also configure g…
+
+**3.** Retailers can also configure global request limits, per-IP limits, maximum tokens per response, conversation-depth limits, maximum steps per completion for tool-using agents, and approved domains.
+  - PAGE: …sages when content is blocked. Input guardrails evaluate shopper messages before they reach the LLM, while output guardrails review generated responses before they are shown to the shopper. >>> Retailers can also configure global request limits, per-IP limits, maximum tokens per response, conversation-depth limits, maximum steps per completion for tool-using agents, and approved domains. <<< Together, these controls help commerce teams manage cost, reduce abuse, and bring greater discipline to AI deployments before agents are exposed to shoppers. Heather Hershey, Senior Researc…
+
+**4.** Retailers can embed conversational AI across search, autocomplete, chat, and mobile, making it easier for shoppers to move seamlessly from keyword search to AI-guided discovery.
+  - PAGE: …cross the customer journey Agent Studio brings AI-powered product discovery directly into the shopping experiences customers are familiar with, beyond a chatbot they may be hesitant to use. >>> Retailers can embed conversational AI across search, autocomplete, chat, and mobile, making it easier for shoppers to move seamlessly from keyword search to AI-guided discovery. <<< Prompt suggestions help shoppers ask better questions and explore products more effectively, reducing friction at the start of the journey. Retailers can configure the underlying prompt, nu…
+
+**5.** About Algolia Algolia is the leading AI Search and Retrieval platform, powering 1.75 trillion searches a year for more than 18,000 businesses.
+  - PAGE: …t Controls available today. Teams can configure the new capabilities in Agent Studio and use Algolia's implementation path to embed agentic discovery experiences into their ecommerce sites. >>> About Algolia Algolia is the leading AI Search and Retrieval platform, powering 1.75 trillion searches a year for more than 18,000 businesses. <<< With a unified keyword and vector search and retrieval engine, Algolia delivers the world's fastest and most scalable search and discovery technology. Companies rely on Algolia to build age…
+
+## Second opinion (a different AI, from Google, checking quality only)
+
+- Does the summary represent the page? **1 out of 5**
+- Is it specific enough to be useful? **1 out of 5**
+- Do the sentences mislead when read together? **1 out of 5** (5 = no, they read honestly)
+- Overall: **wants a better sentence**
+
+```
+VERDICT:  good / not good / HALLUCINATION
+notes:
+```
+
+---
+
+# 9. blog-post
+
+**Page:** <https://www.algolia.com/blog/ai/language-model-training>
+**Type:** blog-post · editorial family
+
+## Summary it would store
+
+> Estimated time to read: 2 minutes Algolia's language models now continuously improve through a training process that learns from anonymized patterns across our network of customers. By doing this, NeuralSearch can deliver more relevant results out of the box, without requiring you to fine-tune models or maintain your own machine learning pipelines.
+
+**Where each sentence came from:**
+
+- `Estimated time to read: 2 minutes Algolia's language models now continuously improve through a training proces`
+  - PAGE: … Algolia trains language models Table of Contents Get a customized demo from our search experts Get a demo Listen to this blog as a podcast: Your browser does not support the audio element. >>> Estimated time to read: 2 minutes Algolia's language models now continuously improve through a training process that learns from anonymized patterns across our network of customers. <<< By doing this, NeuralSearch can deliver more relevant results out of the box, without requiring you to fine-tune models or maintain your own machine learning pipelines. What data is used Ne…
+
+- `By doing this, NeuralSearch can deliver more relevant results out of the box, without requiring you to fine-tu`
+  - PAGE: …lement. Estimated time to read: 2 minutes Algolia's language models now continuously improve through a training process that learns from anonymized patterns across our network of customers. >>> By doing this, NeuralSearch can deliver more relevant results out of the box, without requiring you to fine-tune models or maintain your own machine learning pipelines. <<< What data is used NeuralSearch's model training only uses information that helps to improve search relevance: Historic search queries - the words and phrases users type into the search expe…
+
+## Key points it would store (6)
+
+**1.** Sensitive or identifiable fields, like company name, emails, user tokens, or IP addresses, are not used in the training process.
+  - PAGE: …iptions, and categories. Relevance signals - statistical indicators of whether a retrieved record was useful to the user. Application IDs - used only to manage training consent preferences. >>> Sensitive or identifiable fields, like company name, emails, user tokens, or IP addresses, are not used in the training process. <<< How the data is processed Before training, all data is anonymized and aggregated. Identifiers are removed, and the data is blended across customers so the model learns from broad statistica…
+
+**2.** The data aggregation process in the model training pipeline uses a 90-day data retention period.
+  - PAGE: …l catalogs. For example, the model might learn that a "sofa" may also be referred to as a "couch." But it does not know which user submitted the query or which customer provided the record. >>> The data aggregation process in the model training pipeline uses a 90-day data retention period. <<< Before each new training run, the data used previously is automatically purged, ensuring that models are up-to-date with evolving search behavior, while upholding strict privacy and complia…
+
+**3.** All data processing happens within two defined regions, the EU or the US, based on where your Algolia infrastructure was originally provisioned.
+  - PAGE: …training run, the data used previously is automatically purged, ensuring that models are up-to-date with evolving search behavior, while upholding strict privacy and compliance regulations. >>> All data processing happens within two defined regions, the EU or the US, based on where your Algolia infrastructure was originally provisioned. <<< Your data never leaves the regional boundaries. At this stage, model training includes anonymized data from customers on the Elevate pricing plan. Data from other plans isn't included, and …
+
+**4.** At this stage, model training includes anonymized data from customers on the Elevate pricing plan.
+  - PAGE: … data processing happens within two defined regions, the EU or the US, based on where your Algolia infrastructure was originally provisioned. Your data never leaves the regional boundaries. >>> At this stage, model training includes anonymized data from customers on the Elevate pricing plan. <<< Data from other plans isn't included, and customers using Algolia's HIPAA-enabled features are automatically excluded. How encoder models work NeuralSearch utilizes encoder models, which co…
+
+**5.** How encoder models work NeuralSearch utilizes encoder models, which convert queries and records into vector embeddings, numerical representations that capture meaning and context.
+  - PAGE: …g includes anonymized data from customers on the Elevate pricing plan. Data from other plans isn't included, and customers using Algolia's HIPAA-enabled features are automatically excluded. >>> How encoder models work NeuralSearch utilizes encoder models, which convert queries and records into vector embeddings, numerical representations that capture meaning and context. <<< These embeddings allow the system to measure similarity between queries and records. For example, "sofa" and "couch" end up close together in vector space because they are often used interc…
+
+**6.** We measure relevance metrics, like nDCG and recall, which evaluate how effectively the results are ranked and how many relevant results the model retrieves.
+  - PAGE: …intent and match queries with the right records. Testing and transparency Every NeuralSearch model is rigorously tested before release to validate that the new version outperforms the last. >>> We measure relevance metrics, like nDCG and recall, which evaluate how effectively the results are ranked and how many relevant results the model retrieves. <<< This ensures that the most useful products appear first and that fewer relevant options are missed. We also create model cards to provide transparency into how each model performs and where…
 
 ## Second opinion (a different AI, from Google, checking quality only)
 
@@ -460,95 +454,41 @@ notes:
 
 # 10. case-study
 
-**Page:** <https://www.algolia.com/customers/walgreens>
+**Page:** <https://www.algolia.com/customers/crocs>
 **Type:** case-study · evidence family
 
 ## Summary it would store
 
-> When the popular nationwide chain decided to improve the digital customer journey, it found its existing search provider to lack the robustness and feature set needed. It turned to Algolia, implementing Search & Discovery, but also Personalization, AI Reranking, and other features to improve customer experience, increase conversions and revenue, and meet the growing demand for BOPIS (buy online, pickup in store) capabilities. As a result of improving the customer journey through search, Walgreens has seen significant improvements in several key performance indicators, including increases in search conversion, revenue from search, and click-through rate. The solution was implemented quickly - approximately 16 weeks - creating a fast time to value and return on investment.
+> With Algolia's AI-powered search and merchandising capabilities, Crocs transformed product discovery across its global sites, driving stronger engagement, generating incremental revenue, and increasing conversions by up to 175% in some areas. Results: From Immediate Gains to Advanced AI Adoption 81% reduction in PLP response time Conversion improvements across multiple regions, including a 33% uplift in the U.S. from InstantSearch and a 175% boost in Browse conversions in Korea Increased click-through rates, improved click position, and higher add-to-cart and purchase rates with Dynamic Re-ranking Within just 30 days of go-live, Crocs
 
 **Where each sentence came from:**
 
-- `When the popular nationwide chain decided to improve the digital customer journey, it found its existing searc`
-  - PAGE: …p Director of Digital Experience @ Walgreens Download PDF Summary As one of the biggest names in pharmacy and retail, Walgreens is renowned for its focus on customers and their communities. >>> When the popular nationwide chain decided to improve the digital customer journey, it found its existing search provider to lack the robustness and feature set needed. It turned to Algolia, implementing Search & Discovery, but also Personalization, AI Reranking, and other features to improve customer experience, increase conversions and revenue, and meet the growing demand for BOPIS (buy online, pickup in store) capabilities. <<< Back to all customer stories Algolia Helps Walgreens Improve the Digital Customer Journey through Better Search Table of Contents Get a customized demo from our search experts Get a demo US…
+- `With Algolia's AI-powered search and merchandising capabilities, Crocs transformed product discovery across it`
+  - PAGE: … millions of customers across brands and regions. To help shoppers easily find the right products at scale, the company needed a search platform that could deliver both speed and relevance. >>> With Algolia's AI-powered search and merchandising capabilities, Crocs transformed product discovery across its global sites, driving stronger engagement, generating incremental revenue, and increasing conversions by up to 175% in some areas. <<< These early results, combined with improved performance and scalability, led Crocs to upgrade to Algolia's Elevate plan to further expand its AI-driven discovery strategy. Back to all custo…
 
-- `As a result of improving the customer journey through search, Walgreens has seen significant improvements in s`
-  - PAGE: …he adds. "Additionally, we're using custom rules to apply marketing banners and visual filtering to help our customers reduce clicks, find what they are looking for faster, and find value." >>> As a result of improving the customer journey through search, Walgreens has seen significant improvements in several key performance indicators, including increases in search conversion, revenue from search, and click-through rate. <<< The retail pharmacy has also seen a decrease in click position, indicating that customers are finding what they are looking for in fewer steps. The collaboration between Walgreens and Algol…
-
-- `The solution was implemented quickly - approximately 16 weeks - creating a fast time to value and return on in`
-  - PAGE: …tion, time to market, data security and privacy, and a dashboard that was intuitive for the business users - giving us the power to iterate without development always being the bottleneck." >>> The solution was implemented quickly - approximately 16 weeks - creating a fast time to value and return on investment. <<< During this time, the digital experience team focused mainly on migration efforts and defining operational processes; however, it was a highly cross-functional implementation. Sharp says th…
-
-## Key points it would store (5)
-
-**1.** shoppers can make their purchases online and pickup at their local Walgreens in as little as 30 minutes.
-  - PAGE: …tomers can now use online and mobile searches to find products specifically available in their local stores - important given the growing trend toward BOPIS. Thanks to the Algolia platform, >>> shoppers can make their purchases online and pickup at their local Walgreens in as little as 30 minutes. <<< This is helping convert more clicks into purchases, while offering the customer greater convenience. Algolia's dashboard has given the digital experience team the capabilities it needs to e…
-
-**2.** now boasts more than 9,000 conveniently located stores across the US, Puerto Rico, and the US Virgin Islands
-  - PAGE: …matically over the past 120 years to become one of the largest and most popular in the U.S. Fueled by a dedication to its customers and the health and wellness of the communities it serves, >>> now boasts more than 9,000 conveniently located stores across the US, Puerto Rico, and the US Virgin Islands <<<. Today, the chain is headquartered in Deerfield, Illinois, and downtown Chicago, and acts as the primary health destination for about eight million people a day. " Our team is passionate an…
-
-**3.** In addition to adopting Algolia Search for its website and mobile app, Walgreens has implemented Rules, Analytics, A/B Testing, AI Synonyms, AI Reranking, and Personalization.
-  - PAGE: …lity for Walgreens customers to find products and services but is also helping the company better connect those consumers to specific products and services that fit their needs, Sharp says. >>> In addition to adopting Algolia Search for its website and mobile app, Walgreens has implemented Rules, Analytics, A/B Testing, AI Synonyms, AI Reranking, and Personalization. <<< And, the team is now in the process of rolling out additional features. Driving better customer experiences "For us, search and discovery have to be tailored locally. Our partnership with A…
-
-**4.** The retail pharmacy has also seen a decrease in click position, indicating that customers are finding what they are looking for in fewer steps.
-  - PAGE: …ney through search, Walgreens has seen significant improvements in several key performance indicators, including increases in search conversion, revenue from search, and click-through rate. >>> The retail pharmacy has also seen a decrease in click position, indicating that customers are finding what they are looking for in fewer steps. <<< The collaboration between Walgreens and Algolia continues to grow steadily, as do the performance improvements. The Walgreens digital experience team meets with its Algolia customer success…
-
-**5.** CUSTOMER SINCE since 2021
-  - PAGE: …ve the Digital Customer Journey through Better Search Table of Contents Get a customized demo from our search experts Get a demo USE CASE, Ecommerce INDUSTRY, Health & Wellness REGION, AMER >>> CUSTOMER SINCE since 2021 <<< FEATURES, A/B Testing, Analytics, Browse, Dynamic Re-Ranking, Dynamic Synonyms, Personalization, Query Suggestion, Rules, Visual Editor KEY RESULTS Improved digital customer journey Support…
-
-## Second opinion (a different AI, from Google, checking quality only)
-
-- Does the summary represent the page? **5 out of 5**
-- Is it specific enough to be useful? **5 out of 5**
-- Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
-
-```
-VERDICT:  good / not good / HALLUCINATION
-notes:
-```
-
----
-
-# 11. comparison
-
-**Page:** <https://www.algolia.com/competitors/compare-algolia-vs-vertex-ai>
-**Type:** comparison · commercial family
-
-## Summary it would store
-
-> AI Commerce Search (formerly Vertex AI) is Google's latest name for their retail search product, with AI features added recently. Choose Algolia for industry-leading AI search developed over 10+ years and relied on by 17k+ customers. Algolia's focus is understanding your users and showing them what they need - fast, at scale and across multiple use cases.
-
-**Where each sentence came from:**
-
-- `AI Commerce Search (formerly Vertex AI) is Google's latest name for their retail search product, with AI featu`
-  - PAGE: …urces ✨ Algolia Assist New chat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack Algolia vs Google AI Commerce: which solution should you choose? >>> AI Commerce Search (formerly Vertex AI) is Google's latest name for their retail search product, with AI features added recently. <<< Choose Algolia for industry-leading AI search developed over 10+ years and relied on by 17k+ customers. Get Started Book a Demo Get the fastest enterprise AI search we know of - tried and t…
-
-- `Choose Algolia for industry-leading AI search developed over 10+ years and relied on by 17k+ customers.`
-  - PAGE: …ia vs Google AI Commerce: which solution should you choose? AI Commerce Search (formerly Vertex AI) is Google's latest name for their retail search product, with AI features added recently. >>> Choose Algolia for industry-leading AI search developed over 10+ years and relied on by 17k+ customers. <<< Get Started Book a Demo Get the fastest enterprise AI search we know of - tried and trusted at every scale. Algolia's focus is understanding your users and showing them what they need - fas…
-
-- `Algolia's focus is understanding your users and showing them what they need - fast, at scale and across multip`
-  - PAGE: …ustry-leading AI search developed over 10+ years and relied on by 17k+ customers. Get Started Book a Demo Get the fastest enterprise AI search we know of - tried and trusted at every scale. >>> Algolia's focus is understanding your users and showing them what they need - fast, at scale and across multiple use cases. <<< Our tools integrate easily across a range of platforms, and business users can tune ranking and personalization with our no-code dashboard. VS. AI Commerce Search makes you use the Google C…
+- `Results: From Immediate Gains to Advanced AI Adoption 81% reduction in PLP response time Conversion improvemen`
+  - PAGE: …ause of this strong cross-functional partnership and the results achieved at launch, Crocs was well positioned to expand its use of Algolia and explore more advanced capabilities over time. >>> Results: From Immediate Gains to Advanced AI Adoption 81% reduction in PLP response time Conversion improvements across multiple regions, including a 33% uplift in the U.S. from InstantSearch and a 175% boost in Browse conversions in Korea Increased click-through rates, improved click position, and higher add-to-cart and purchase rates with Dynamic Re-ranking Within just 30 days of go-live, Crocs <<< saw global impact from its new Algolia-powered search and discovery experience, delivering gains in key markets. Conversion improvements were consistent across experiences. InstantSearch dr…
 
 ## Key points it would store (4)
 
-**1.** Algolia's architecture optimizes for every customer, so you can serve results in <20ms even with catalogs of 90 million+ SKUs.
-  - PAGE: … fast and efficient search experiences, on a platform that keeps growing with you Speed & ease at scale Build on proven architecture, designed for scale and speed - whatever the application >>> Algolia's architecture optimizes for every customer, so you can serve results in <20ms even with catalogs of 90 million+ SKUs. <<< Contact sales Configure & tune Set up easily and integrate with any platform, working in the way that suits you Algolia works with all public cloud environments and ecommerce platforms, and…
+**1.** Crocs deployed Algolia for search, browse and autocomplete across its two brands and more than a dozen regions and sites worldwide.
+  - PAGE: …y Merchandising Studio was a key advantage, giving regional merchandising teams greater visibility, control and the ability to easily configure the online shopping experience.," Feliz says. >>> Crocs deployed Algolia for search, browse and autocomplete across its two brands and more than a dozen regions and sites worldwide. <<< The team also implemented Dynamic Re-ranking (DRR) to improve relevance based on customer behavior. Crocs initially planned to implement Algolia for Search alone but quickly expanded the sc…
 
-**2.** Algolia works with all public cloud environments and ecommerce platforms, and delivers federated search as standard - so you can deploy in minutes, however suits you best.
-  - PAGE: …er, so you can serve results in <20ms even with catalogs of 90 million+ SKUs. Contact sales Configure & tune Set up easily and integrate with any platform, working in the way that suits you >>> Algolia works with all public cloud environments and ecommerce platforms, and delivers federated search as standard - so you can deploy in minutes, however suits you best. <<< Contact sales Built for end users Harness a more developed suite of products, trusted by developers, merchandisers and business users. Over 10+ years of investment and development, Algolia …
+**2.** InstantSearch drove notable uplifts, with gains of 33%, 42%, and 79% in the U.S., Canada, and Australia, respectively.
+  - PAGE: …f go-live, Crocs saw global impact from its new Algolia-powered search and discovery experience, delivering gains in key markets. Conversion improvements were consistent across experiences. >>> InstantSearch drove notable uplifts, with gains of 33%, 42%, and 79% in the U.S., Canada, and Australia, respectively. <<< Browse also played a critical role, with conversions in Korea increasing by more than 175%, while markets including Germany and Australia saw strong improvements in core Search conversion r…
 
-**3.** More than 18,000 customers in 150+ countries selected Algolia to grow satisfaction and sales.
-  - PAGE: … of tools like the Merchandising Studio to build personalized experiences - or the Dashboard, which lets business teams create rules and pin results without developer support. Contact sales >>> More than 18,000 customers in 150+ countries selected Algolia to grow satisfaction and sales. <<< Because when your users feel understood, they click and they come back. Speak to one of our team or create a free account Get a demo Start free Try the AI search that understands Get a demo…
+**3.** Browse also played a critical role, with conversions in Korea increasing by more than 175%, while markets including Germany and Australia saw strong improvements in core Search conversion rates, ranging from the low 20s to the mid-40s.
+  - PAGE: …y markets. Conversion improvements were consistent across experiences. InstantSearch drove notable uplifts, with gains of 33%, 42%, and 79% in the U.S., Canada, and Australia, respectively. >>> Browse also played a critical role, with conversions in Korea increasing by more than 175%, while markets including Germany and Australia saw strong improvements in core Search conversion rates, ranging from the low 20s to the mid-40s. <<< At the same time, performance improvements significantly enhanced the user experience. Crocs achieved an 81% reduction in PLP response times, enabling faster, smoother shopping journeys tha…
 
-**4.** A Forrester Consulting study found Algolia delivered $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue
-  - PAGE: …ry as the market shifts toward AI-powered, agentic discovery. Read the announcement See Algolia in action Forrester Total Economic Impact™ Increased Operating Profit and Improved Efficiency >>> A Forrester Consulting study found Algolia delivered $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue <<< Download the TEI study IDC MarketScape Named a leader in knowledge discovery IDC recognized Algolia as a leader in general-purpose knowledge discovery software, citing the growing role of s…
+**4.** With Elevate, the team now has access to advanced capabilities, including NeuralSearch, AI Collections, Smart Groups and real-time personalization, which they are actively exploring to further optimize product discovery, automate merchandising and deliver more tailored customer experiences at scale.
+  - PAGE: …h Algolia's teams, Crocs quickly standardized on Algolia across all regions and merchandising teams and subsequently upgraded to Algolia's Elevate plan to unlock more advanced capabilities. >>> With Elevate, the team now has access to advanced capabilities, including NeuralSearch, AI Collections, Smart Groups and real-time personalization, which they are actively exploring to further optimize product discovery, automate merchandising and deliver more tailored customer experiences at scale. <<< Get a customized demo from our search experts Get a demo Recommended Content Powered by Algolia AI Recommendations Algolia experts can help you take your site experience to the next level G…
 
 ## Second opinion (a different AI, from Google, checking quality only)
 
 - Does the summary represent the page? **5 out of 5**
 - Is it specific enough to be useful? **5 out of 5**
 - Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
+- Overall: **wants a better sentence**
 
 ```
 VERDICT:  good / not good / HALLUCINATION
@@ -557,87 +497,33 @@ notes:
 
 ---
 
-# 12. program
+# 11. blog-post
 
-**Page:** <https://www.algolia.com/awards>
-**Type:** program · corporate family
-
-## Summary it would store
-
-> Recognized by IDC, Gartner, Forrester, and Paradigm B2B, Algolia helps enterprises turn search into a growth engine for AI-native experiences. Algolia is recognized as a Leader in the 2026 Gartner® Magic Quadrant™ for Search and Product Discovery as the market shifts toward AI-powered, agentic discovery.
-
-**Where each sentence came from:**
-
-- `Recognized by IDC, Gartner, Forrester, and Paradigm B2B, Algolia helps enterprises turn search into a growth e`
-  - PAGE: …Computing Awarded by: Cloud Awards Shortlist Enable anyone to build great Search & Discovery Get a demo Start Free Analyst recognition Agentic intelligence layer powering commerce discovery >>> Recognized by IDC, Gartner, Forrester, and Paradigm B2B, Algolia helps enterprises turn search into a growth engine for AI-native experiences. <<< Evaluate Algolia Gartner 2026 Magic Quadrant for Search and Product Discovery A leader for the third consecutive year Algolia is recognized as a Leader in the 2026 Gartner® Magic Quadrant™ …
-
-- `Algolia is recognized as a Leader in the 2026 Gartner® Magic Quadrant™ for Search and Product Discovery as the`
-  - PAGE: …enterprises turn search into a growth engine for AI-native experiences. Evaluate Algolia Gartner 2026 Magic Quadrant for Search and Product Discovery A leader for the third consecutive year >>> Algolia is recognized as a Leader in the 2026 Gartner® Magic Quadrant™ for Search and Product Discovery as the market shifts toward AI-powered, agentic discovery. <<< Read the announcement See Algolia in action Forrester Total Economic Impact™ Increased Operating Profit and Improved Efficiency A Forrester Consulting study found Algolia delivered $3.1M NP…
-
-## Key points it would store (6)
-
-**1.** Algolia Named a Leader in 2025 Gartner® Magic Quadrant™ for Search and Product Discovery
-  - PAGE: … private companies Awarded by: Inc Magazine 5000 list Tech Cares Award for Championing Employee-Driven Impact Awarded by: TrustRadius Algolia Named a Leader in 2025 Gartner® Magic Quadrant™ >>> Algolia Named a Leader in 2025 Gartner® Magic Quadrant™ for Search and Product Discovery <<< Best Use of Artificial Intelligence in Cloud Computing Awarded by: Cloud Awards Shortlist Adobe Digital Experience Content Supply Chain Technology Partner of the Year Award Awarded by: Adob…
-
-**2.** A Forrester Consulting study found Algolia delivered $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue
-  - PAGE: …ry as the market shifts toward AI-powered, agentic discovery. Read the announcement See Algolia in action Forrester Total Economic Impact™ Increased Operating Profit and Improved Efficiency >>> A Forrester Consulting study found Algolia delivered $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue <<< Download the TEI study IDC MarketScape Named a leader in knowledge discovery IDC recognized Algolia as a leader in general-purpose knowledge discovery software, citing the growing role of s…
-
-**3.** Algolia earned 12 medals across 12 categories in Paradigm B2B's 2025 Enterprise Combine for Search and Discovery, with customers praising speed, transparency, analytics, and ease of use
-  - PAGE: … software, citing the growing role of search in AI-powered workflows and enterprise knowledge experiences Read the IDC announcement PARADIGM B2B COMBINE Top scores across every B2B category >>> Algolia earned 12 medals across 12 categories in Paradigm B2B's 2025 Enterprise Combine for Search and Discovery, with customers praising speed, transparency, analytics, and ease of use <<< Learn more Hi there 👋 Need assistance? Click here;) to allow functional cookies to launch our chat agent.
-
-**4.** IDC recognized Algolia as a leader in general-purpose knowledge discovery software, citing the growing role of search in AI-powered workflows and enterprise knowledge experiences
-  - PAGE: …d $3.1M NPV over three years, helping commerce teams improve relevance, automate merchandising, and grow revenue Download the TEI study IDC MarketScape Named a leader in knowledge discovery >>> IDC recognized Algolia as a leader in general-purpose knowledge discovery software, citing the growing role of search in AI-powered workflows and enterprise knowledge experiences <<< Read the IDC announcement PARADIGM B2B COMBINE Top scores across every B2B category Algolia earned 12 medals across 12 categories in Paradigm B2B's 2025 Enterprise Combine for Search and Di…
-
-**5.** 20-Time Champion: Ranked a Leader in G2's Enterprise Grid®
-  - PAGE: …tal Experience Content Supply Chain Technology Partner of the Year Award Awarded by: Adobe Awarded Easiest to do business with Awarded by: G2 Awarded top 50 commerce products Awarded by: G2 >>> 20-Time Champion: Ranked a Leader in G2's Enterprise Grid® <<< Awarded by: G2 Commercetools 2025 Partner Award for ISV Partner of the Year Awarded by: Elevate Best Overall AI Search Platform Awarded by: Tech Breakthrough Best Use of Artificial Intellig…
-
-**6.** Award Coveted AWS Retail Competency Status
-  - PAGE: … Leader in 2025 Gartner® Magic Quadrant™ Algolia Named a Leader in 2025 Gartner® Magic Quadrant™ for Search and Product Discovery Award for Search and Marketing Tool Category Awarded by: K5 >>> Award Coveted AWS Retail Competency Status <<< Awarded by: AWS Best Use of Artificial Intelligence in Cloud Computing Awarded by: KM World Inc. 5000 fastest growing private companies Awarded by: Inc Magazine 5000 list Named a Leader in …
-
-## Second opinion (a different AI, from Google, checking quality only)
-
-- Does the summary represent the page? **5 out of 5**
-- Is it specific enough to be useful? **5 out of 5**
-- Do the sentences mislead when read together? **5 out of 5** (5 = no, they read honestly)
-- Overall: **looks good**
-
-```
-VERDICT:  good / not good / HALLUCINATION
-notes:
-```
-
----
-
-# 13. press-release
-
-**Page:** <https://www.algolia.com/about/news/algolia-launches-dynamic-facets-to-make-product-discovery-faster-smarter-and-more-relevant>
-**Type:** press-release · editorial family
+**Page:** <https://www.algolia.com/blog/algolia/spain-won-the-world-cup-and-search>
+**Type:** blog-post · editorial family
 
 ## Summary it would store
 
-> Algolia, the AI Search and Retrieval platform powering more than 1.75 trillion queries each year for over 18,000 businesses worldwide, today announced the availability of Dynamic Facets, a new capability that automatically surfaces the most relevant filters based on what a shopper is actively searching for. Algolia's Dynamic Facets addresses this challenge by intelligently adapting the filtering experience to each search.
+> The final whistle has blown, but the World Cup is still teaching retailers an important lesson: cultural moments can change shopping behavior in an instant. Across Algolia's AI Search platform, which powers nearly 2 trillion searches annually for more than 18,000 companies, fans searched for teams, players and merchandise as the tournament unfolded.
 
 **Where each sentence came from:**
 
-- `Algolia, the AI Search and Retrieval platform powering more than 1.75 trillion queries each year for over 18,0`
-  - PAGE: … to automatically prioritize the most relevant filters for every search, helping retailers improve conversion while reducing manual merchandising work SAN FRANCISCO, Calif., July 21, 2026 - >>> Algolia, the AI Search and Retrieval platform powering more than 1.75 trillion queries each year for over 18,000 businesses worldwide, today announced the availability of Dynamic Facets, a new capability that automatically surfaces the most relevant filters based on what a shopper is actively searching for. <<< Rather than presenting the same fixed refinement options for every query, Dynamic Facets adapts in real time to search context and user behaviour, helping shoppers find what they need faste…
+- `The final whistle has blown, but the World Cup is still teaching retailers an important lesson: cultural momen`
+  - PAGE: …Spain won the World Cup. It also won search. Table of Contents Get a customized demo from our search experts Get a demo Listen to the brief: Your browser does not support the audio element. >>> The final whistle has blown, but the World Cup is still teaching retailers an important lesson: cultural moments can change shopping behavior in an instant. <<< Across Algolia's AI Search platform, which powers nearly 2 trillion searches annually for more than 18,000 companies, fans searched for teams, players and merchandise as the tournament unfo…
 
-- `Algolia's Dynamic Facets addresses this challenge by intelligently adapting the filtering experience to each s`
-  - PAGE: … to reflect how the business organizes its catalogue rather than how shoppers search. The result is more scrolling, fewer refinements, slower discovery, and missed opportunities to convert. >>> Algolia's Dynamic Facets addresses this challenge by intelligently adapting the filtering experience to each search. <<< Facets, the attributes shoppers use to narrow results such as size, color, brand, or format, are automatically prioritized based on what is most relevant in the context. Egil Grønn, Search …
+- `Across Algolia's AI Search platform, which powers nearly 2 trillion searches annually for more than 18,000 com`
+  - PAGE: …s not support the audio element. The final whistle has blown, but the World Cup is still teaching retailers an important lesson: cultural moments can change shopping behavior in an instant. >>> Across Algolia's AI Search platform, which powers nearly 2 trillion searches annually for more than 18,000 companies, fans searched for teams, players and merchandise as the tournament unfolded. <<< The final weekend, by the numbers From July 17-19, consumers across the U.S. and Europe generated: 160,000 searches for soccer kits, jerseys, football shirts and related terms 139,000 searc…
 
-## Key points it would store (4)
+## Key points it would store (3)
 
-**1.** New capability uses shopper behavior to automatically prioritize the most relevant filters for every search, helping retailers improve conversion while reducing manual merchandising work
-  - PAGE: …hat Back to results AI powered by Algolia Clear All Filters) Brand guidelines Download logo pack Algolia Launches Dynamic Facets to Make Product Discovery Faster, Smarter, and More Relevant >>> New capability uses shopper behavior to automatically prioritize the most relevant filters for every search, helping retailers improve conversion while reducing manual merchandising work <<< SAN FRANCISCO, Calif., July 21, 2026 - Algolia, the AI Search and Retrieval platform powering more than 1.75 trillion queries each year for over 18,000 businesses worldwide, today announced…
+**1.** Strong uptime, fast results and the ability to withstand sudden traffic peaks are essential when shoppers are acting in real time.
+  - PAGE: …tural moments rather than following a predictable path. Retailers cannot anticipate every breakout star or viral play. They can ensure their search infrastructure is ready when one arrives. >>> Strong uptime, fast results and the ability to withstand sudden traffic peaks are essential when shoppers are acting in real time. <<< Shoppers rarely use the same words One fan may search for a "football shirt." Another may type "soccer kit," "Spain jersey" or simply a player's name. AI-powered search must understand the …
 
-**2.** In the strongest-performing markets, clickthrough rates on specific filters improved by 10 to 15 percent, with shoppers clicking results that appeared two to three positions higher on the page.
-  - PAGE: …attribute, it should automatically rise to the top." Early usage of Dynamic Facets shows that when the most relevant filters are surfaced sooner, shoppers engage faster and more frequently. >>> In the strongest-performing markets, clickthrough rates on specific filters improved by 10 to 15 percent, with shoppers clicking results that appeared two to three positions higher on the page. <<< By reducing the distance between search intent and the right result, Dynamic Facets helps retailers create faster, more effective discovery experiences that move shoppers closer to purchase…
+**2.** A reliable search and retrieval layer can help retailers surface relevant products both on their own sites and through external AI-powered shopping tools.
+  - PAGE: … ChatGPT, Perplexity or Claude where to buy a Spain jersey before visiting a retailer directly. Product data must therefore be accurate, structured and accessible wherever discovery begins. >>> A reliable search and retrieval layer can help retailers surface relevant products both on their own sites and through external AI-powered shopping tools. <<< The next spike is already approaching The World Cup may be over, but the U.S. Open and American football season are approaching. LA28 will be here in the blink of an eye. Each event will pr…
 
-**3.** Dynamic Facets also surfaces data on which filter values are seeing the most interaction, for example which brand, size, color, or attribute users are actually clicking on.
-  - PAGE: …y reducing the distance between search intent and the right result, Dynamic Facets helps retailers create faster, more effective discovery experiences that move shoppers closer to purchase. >>> Dynamic Facets also surfaces data on which filter values are seeing the most interaction, for example which brand, size, color, or attribute users are actually clicking on. <<< Algolia exposes this as a data layer that teams can build on. A practical example: pulling the top five filter values for a given query and surfacing them as quick-filter chips directly on …
-
-**4.** Dynamic Facets builds on Algolia's existing faceting suite, including searchable facets, which let users search within long filter lists without scrolling.
-  - PAGE: …, and make merchandising operations more scalable. Context-aware faceting is especially important as discovery moves from static navigation toward AI-enabled, behaviour-driven experiences." >>> Dynamic Facets builds on Algolia's existing faceting suite, including searchable facets, which let users search within long filter lists without scrolling. <<< Together, they give teams the flexibility to choose how much to configure manually and how much to automate. Dynamic Facets is available now for Algolia customers-see more details here: htt…
+**3.** They need an AI strategy that can: Understand intent across different search terms Maintain performance during traffic peaks Surface timely merchandise immediately Support discovery across websites and AI tools Moments move quickly.
+  - PAGE: …28 will be here in the blink of an eye. Each event will produce unexpected stars, viral moments and limited-time demand. Retailers do not need to know exactly what shoppers will search for. >>> They need an AI strategy that can: Understand intent across different search terms Maintain performance during traffic peaks Surface timely merchandise immediately Support discovery across websites and AI tools Moments move quickly. <<< Retail search needs to move faster. To learn how Algolia helps retailers deliver fast and intuitive search, generative, and agentic experiences during major sports moments, connect with our…
 
 ## Second opinion (a different AI, from Google, checking quality only)
 

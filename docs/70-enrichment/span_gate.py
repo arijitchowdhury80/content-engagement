@@ -315,6 +315,10 @@ _MAX_SPAN_SPREAD = 20_000
 # 5+ still blocks. Same reasoning: loosen to what the data supports, do not remove.
 _MAX_SPAN_SECTIONS = 4
 
+# How many invented/edited spans a single record may lose before the whole record is quarantined.
+# One slip is a slip. Two or more means the model was not reading this page.
+MAX_FABRICATIONS = 1
+
 # A blockquote is only SOMEONE ELSE'S words if it is punctuated as speech or carries an
 # attribution. algolia.com blockquotes the page's OWN one-line summary right under the H1:
 #     # Usage API
@@ -451,11 +455,22 @@ def check_no_fabricated_tokens(stored_values: list[str], source: Canon) -> list[
 # G3 / G4 / G6 / G7
 # ---------------------------------------------------------------------------
 
-_CHROME = [
-    "cookie", "consent", "newsletter", "subscribe to", "related article",
-    "share this", "follow us", "all rights reserved", "privacy policy",
-    "terms of service", "sign up for", "book a demo", "contact sales",
+# Two kinds of chrome, and conflating them cost 6 good records.
+#
+# ALWAYS: a sentence mentioning these IS site furniture whatever else it says. A cookie banner is
+# a cookie banner.
+_CHROME_ALWAYS = [
+    "cookie", "consent banner", "newsletter", "share this", "follow us",
+    "all rights reserved", "privacy policy", "terms of service",
 ]
+# CTA: these appear inside perfectly good prose -- "...or contact sales for volume pricing" is a
+# real fact about how to buy. They only disqualify a span when the span IS the button, i.e. the
+# phrase dominates it. Substring matching here rejected 6 legitimate commercial records.
+_CHROME_CTA = [
+    "contact sales", "book a demo", "sign up for", "subscribe to", "related article",
+    "get started for free", "start free trial",
+]
+_CHROME = _CHROME_ALWAYS + _CHROME_CTA
 _SELF_REF = [
     "in this guide", "in this article", "in this post", "this page",
     "this article will", "this guide will", "read on to", "we'll show you",
@@ -521,12 +536,22 @@ def check_subject_present(first_span: str, title: str) -> list[str]:
 
 
 def check_blacklists(values: list[str]) -> list[str]:
+    """A chrome phrase only disqualifies a span when the span IS chrome, not when it mentions it.
+
+    Substring matching rejected 6 legitimate records because "contact sales" appears inside real
+    sentences on commercial pages ("...or contact sales for volume pricing"). A call-to-action
+    button is a SHORT span that is mostly the phrase; a sentence that happens to contain it is not.
+    So: only fire when the phrase dominates the span.
+    """
     errs: list[str] = []
     for v in values:
         low = v.lower()
-        for phrase in _CHROME:
+        for phrase in _CHROME_ALWAYS:
             if phrase in low:
-                errs.append(f"chrome phrase {phrase!r} in span")
+                errs.append(f"chrome phrase {phrase!r} in span: {v[:50]!r}")
+        for phrase in _CHROME_CTA:
+            if phrase in low and (len(low) < len(phrase) * 3 or len(low.split()) <= 6):
+                errs.append(f"call-to-action {phrase!r} dominates span: {v[:50]!r}")
         for phrase in _SELF_REF:
             if phrase in low:
                 errs.append(f"self-reference {phrase!r} in span")
@@ -685,6 +710,10 @@ class GateResult:
     failures: list[str] = field(default_factory=list)
     content_hash: str = ""
     dropped_highlights: int = 0  # over-long spans removed, not a record failure
+    # Spans REJECTED BY G1 -- i.e. the model invented or edited them. Counted, never written.
+    # A per-record fabrication rate is a quality signal about the model and about the page.
+    dropped_fabrications: int = 0
+    fabricated_spans: list[str] = field(default_factory=list)
     # The component spans of the abstract, BEFORE they are joined by a space.
     # Stored because re-deriving them from the joined string is fragile and has now caused two
     # separate bugs: the verifier declared "THE GUARANTEE IS BROKEN" over 9 good records, and the
@@ -754,23 +783,70 @@ def run_gates(
         return res
 
     # ---- G1: locate every span, slice from source -------------------------
+    # G1 per span, NOT all-or-nothing.
+    #
+    # This used to abort the whole record on the first rejected span. That is safe but wasteful:
+    # GLM-5.2 was caught inventing a date ("10. August 2026" where the page says "August 2026")
+    # inside ONE highlight, and the record's perfectly good abstract and six other highlights went
+    # in the bin with it. A fabrication should cost the SPAN, not the page.
+    #
+    # Dropping is safe because the fabrication never enters the output either way -- only text
+    # sliced from the source is ever stored. What changes is that we stop discarding the honest
+    # spans alongside the dishonest one.
+    #
+    # Two limits keep this from becoming a loophole:
+    #   * the abstract must still meet its family's minimum span count from SURVIVING spans
+    #   * more than MAX_FABRICATIONS rejects means the model was confused about this page as a
+    #     whole, not slipping on one sentence -- quarantine the record and let a human look
     located_abstract: list[Located] = []
     located_high: list[Located] = []
-    try:
-        for span in llm_output.get("abstract_spans", []):
+
+    for span in llm_output.get("abstract_spans", []):
+        try:
             located_abstract.append(locate(span, source))
-        for span in llm_output.get("keyhighlights_spans", []):
+        except SpanRejected as exc:
+            res.dropped_fabrications += 1
+            res.fabricated_spans.append(span[:160])
+            res.failures.append(f"G1 dropped abstract span ({exc.reason}): {exc.span[:60]!r}")
+    for span in llm_output.get("keyhighlights_spans", []):
+        try:
             located_high.append(locate(span, source))
-        ev = llm_output.get("verdict_evidence") or ""
-        if ev:
+        except SpanRejected as exc:
+            res.dropped_fabrications += 1
+            res.fabricated_spans.append(span[:160])
+            res.failures.append(f"G1 dropped highlight span ({exc.reason}): {exc.span[:60]!r}")
+    ev = llm_output.get("verdict_evidence") or ""
+    if ev:
+        try:
             locate(ev, source)
-    except SpanRejected as exc:
-        res.failures.append(f"G1 {exc.reason}: {exc.span[:70]!r}")
+        except SpanRejected as exc:
+            # The evidence for the verdict itself being invented is a different kind of problem:
+            # the model was not reading this page. Hard fail.
+            res.failures.append(f"G1 verdict_evidence not on page: {exc.span[:60]!r}")
+            return res
+
+    if res.dropped_fabrications > MAX_FABRICATIONS:
+        res.failures.append(
+            f"G1 {res.dropped_fabrications} fabricated spans (limit {MAX_FABRICATIONS}) -- "
+            f"the model was not reading this page reliably; quarantined for review"
+        )
+        return res
+
+    if len(located_abstract) < family_span_range[0]:
+        res.failures.append(
+            f"G1 only {len(located_abstract)} of "
+            f"{len(llm_output.get('abstract_spans', []))} abstract spans survived; "
+            f"family needs {family_span_range[0]}"
+        )
         return res
 
     if not located_abstract:
         res.failures.append("G1 REAL verdict with no abstract spans")
         return res
+
+    # The failures logged above are DROPS, not record failures. Clear them so the record can pass
+    # on its surviving spans; the counts and the offending text are preserved on the result.
+    res.failures = [f for f in res.failures if not f.startswith("G1 dropped")]
 
     abstract_values = [l.stored_text for l in located_abstract]
 

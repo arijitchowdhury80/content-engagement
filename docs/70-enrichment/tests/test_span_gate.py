@@ -705,3 +705,98 @@ def test_g11_keeps_a_short_highlight_that_carries_a_number():
         page_markdown=page, title="Limits", description="Indexing limits.",
         family_span_range=(1, 3), family="reference")
     assert "1,000" in " ".join(r.keyhighlights_enriched) or r.dropped_highlights == 0
+
+
+# ---------------------------------------------------------------------------
+# G1 drop-and-continue. GLM-5.2 invented "10. August 2026" inside ONE highlight and
+# the whole record was discarded. A fabrication should cost the span, not the page.
+# ---------------------------------------------------------------------------
+
+FAB_PAGE = ("# Events\n\nAlgolia runs developer events across the year in several cities.\n"
+            "Registration for each event opens roughly eight weeks beforehand.\n\n"
+            "eTail Boston 2026 Boston, MA August 2026 - 12. August 2026\n"
+            "Groceryshop 2026 Las Vegas, NV September 2026\n")
+
+
+def test_one_fabricated_highlight_does_not_lose_the_record():
+    r = run_gates(
+        llm_output={"verdict": "REAL",
+                    "verdict_evidence": "Groceryshop 2026 Las Vegas, NV September 2026",
+                    "abstract_spans": [
+                        "Algolia runs developer events across the year in several cities.",
+                        "Registration for each event opens roughly eight weeks beforehand."],
+                    # the invented date GLM actually produced
+                    "keyhighlights_spans": ["eTail Boston 2026 Boston, MA 10. August 2026 - 12. August 2026",
+                                            "Groceryshop 2026 Las Vegas, NV September 2026"],
+                    "language_observed": "en", "insufficient_reason": None},
+        page_markdown=FAB_PAGE, title="Events", description="Algolia event calendar.",
+        family_span_range=(2, 4), family="editorial")
+    assert r.passed, r.failures
+    assert r.dropped_fabrications == 1
+    assert any("10. August" in s for s in r.fabricated_spans)
+    # the invented text is nowhere in the output
+    assert "10. August" not in " ".join(r.keyhighlights_enriched)
+    assert "10. August" not in " ".join(r.abstract_spans)
+
+
+def test_two_fabrications_quarantine_the_whole_record():
+    r = run_gates(
+        llm_output={"verdict": "REAL",
+                    "verdict_evidence": "Groceryshop 2026 Las Vegas, NV September 2026",
+                    "abstract_spans": [
+                        "Algolia runs developer events across the year in several cities.",
+                        "Registration for each event opens roughly eight weeks beforehand."],
+                    "keyhighlights_spans": ["eTail Boston 2026 Boston, MA 10. August 2026 - 12. August 2026",
+                                            "Groceryshop 2026 Las Vegas, NV 4. September 2026"],
+                    "language_observed": "en", "insufficient_reason": None},
+        page_markdown=FAB_PAGE, title="Events", description="Algolia event calendar.",
+        family_span_range=(2, 4), family="editorial")
+    assert not r.passed
+    assert r.dropped_fabrications == 2
+    assert any("not reading this page" in f for f in r.failures)
+
+
+def test_fabricated_abstract_span_below_family_minimum_fails():
+    r = run_gates(
+        llm_output={"verdict": "REAL",
+                    "verdict_evidence": "Groceryshop 2026 Las Vegas, NV September 2026",
+                    "abstract_spans": [
+                        "Algolia runs developer events across the year in several cities.",
+                        "Algolia hosted 42 developer events in 2026 across four continents."],
+                    "keyhighlights_spans": [], "language_observed": "en",
+                    "insufficient_reason": None},
+        page_markdown=FAB_PAGE, title="Events", description="Algolia event calendar.",
+        family_span_range=(2, 4), family="editorial")
+    assert not r.passed
+    assert any("survived" in f for f in r.failures)
+
+
+def test_invented_verdict_evidence_is_a_hard_fail():
+    """If the evidence for the verdict itself is invented, the model was not reading the page."""
+    r = run_gates(
+        llm_output={"verdict": "REAL",
+                    "verdict_evidence": "Algolia runs 500 events every single year worldwide.",
+                    "abstract_spans": [
+                        "Algolia runs developer events across the year in several cities.",
+                        "Registration for each event opens roughly eight weeks beforehand."],
+                    "keyhighlights_spans": [], "language_observed": "en",
+                    "insufficient_reason": None},
+        page_markdown=FAB_PAGE, title="Events", description="Algolia event calendar.",
+        family_span_range=(2, 4), family="editorial")
+    assert not r.passed
+    assert any("verdict_evidence not on page" in f for f in r.failures)
+
+
+def test_chrome_phrase_inside_a_real_sentence_is_allowed():
+    """Substring matching rejected 6 legitimate records: "contact sales" appears inside real
+    prose on commercial pages. A CTA is a short span that IS the phrase."""
+    from span_gate import check_blacklists
+    assert check_blacklists([
+        "Algolia offers usage-based pricing on the Grow plan, or contact sales for volume discounts."
+    ]) == []
+
+
+def test_a_bare_cta_is_still_rejected():
+    from span_gate import check_blacklists
+    assert check_blacklists(["Contact sales"])
+    assert check_blacklists(["Book a demo today"])
