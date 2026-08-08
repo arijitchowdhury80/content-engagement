@@ -41,13 +41,40 @@ import time
 HERE = pathlib.Path(__file__).parent
 sys.path.insert(0, str(HERE))
 from span_gate import (canonicalise, check_blacklists, check_context, check_information_gain,
-                       check_subject_present, locate, prose_chars, run_gates,
-                       SpanRejected)  # noqa: E402
+                       check_subject_present, check_template_collision, locate, prose_chars,
+                       run_gates, SpanRejected)  # noqa: E402
 from candidates import render_menu, resolve_selection, split_candidates  # noqa: E402
+import boilerplate as g8  # noqa: E402
 
 CACHE_DIR = HERE / "cache"
 REPORTS = HERE / "reports"
 FAMILIES = json.loads((HERE / "prompts" / "shape-families.json").read_text())["families"]
+
+# G8 -- corpus-wide boilerplate. Built by boilerplate.py from the fetched pages, loaded once.
+# A missing file yields an empty set and G8 simply does not apply; it never breaks the run.
+# Rebuild it whenever the fetched set grows:
+#   python3 docs/70-enrichment/boilerplate.py --cache <cache dir> --out docs/70-enrichment/boilerplate-map.json
+BOILERPLATE_MAP_PATH = HERE / "boilerplate-map.json"
+
+# G8 PREVENTION IS OFF BY DEFAULT. It was built on 2026-08-08, measured, and made things WORSE.
+#
+#                     run1   run2   v1.2 (no G8)   v1.3 (G8 on)
+#   coherence         2.88   2.85       4.62           4.21
+#   PASS               15     15         25             20
+#   NO_ABSTRACT_THIN    6      4          3              8
+#
+# The flaw is structural, not a threshold to tune: **a sentence can be furniture on ten pages and
+# be the content on the eleventh -- the page it is actually about.** /fr/awards is a page ABOUT
+# Algolia's awards. G8 marked its award sentences as boilerplate because they also appear in the
+# footer of ten other pages, and the page went from 8 prose candidates to 1, then to THIN. Four
+# records were lost that way. G8 was right about the sentences and wrong about the page.
+#
+# The fix is known and not yet built: skip G8 on any page where it would remove most of the prose,
+# because there the block IS the content. Until that exists, the default is OFF -- v1.2 behaviour,
+# which is the best measured result. The post-hoc half (check_template_collision in the run
+# summary) stays ON: it only reports, it cannot cost a record.
+G8_ENABLED = False
+BOILERPLATE = g8.load(BOILERPLATE_MAP_PATH) if G8_ENABLED else set()
 
 # Writer default switched to Algolia's own inference server, 2026-08-07 (Arijit).
 #   claude -p : ~$0.16/record (37,571 tokens of built-in tool schema per call), ~30s, and NO
@@ -60,7 +87,18 @@ WRITER = "glm"                           # "glm" | "claude"
 WRITER_MODEL = "sonnet"                  # used only when WRITER == "claude"
 GLM_MODEL = "large"                      # resolves to glm-5.2 on the Algolia endpoint
 JUDGE_MODEL = "gemini-2.5-pro"           # cross-vendor; escalated tier, it is the quality gate
-PROMPT_VERSION = "abstract_enrichment_v1.1"
+# Reflects what actually ran, not what the file version is. Same discipline as WRITER_LABEL below:
+# a report headed "v1.3" when G8 was off would misattribute v1.2 results to a design that lost.
+PROMPT_VERSION = "abstract_enrichment_v1.3" if G8_ENABLED else "abstract_enrichment_v1.3-g8off"
+
+# ONE source of truth for what to call the writer in a report.
+#
+# There were five. The per-record field (below, and correct) derived it from WRITER, while four
+# report headers hardcoded f"claude-{WRITER_MODEL}". So both fresh50 summaries are headed
+# "writer `claude-sonnet`" while every row inside them says `glm-5.2`. Nobody was misled yet only
+# because the rows were read instead of the header -- a report that exists to be trusted was
+# stating a false provenance, and provenance is the whole argument for this pipeline.
+WRITER_LABEL = "glm-5.2" if WRITER == "glm" else f"claude-{WRITER_MODEL}"
 
 
 # ---------------------------------------------------------------------------
@@ -87,7 +125,26 @@ PAGE METADATA
   language       : {language_code}
 
 Below is every sentence on this page, numbered, grouped under its section heading.
-Sentences marked [QUOTED] are inside a blockquote.
+
+HOW THE LIST IS MARKED
+  Unmarked      a complete sentence of the page's own body text. These are what you want.
+  [QUOTED]      inside a blockquote - someone else speaking, not the page.
+  [UI]          button, nav label, banner or countdown text. Not a sentence.
+  [HEADING]     a section heading, not a statement.
+  [FRAGMENT]    a piece of a sentence. It does not start or end where a sentence does.
+  [NONPROSE]    markup, code or configuration data that survived into the text.
+  [BOILERPLATE] a well-formed sentence that appears on MANY other pages of this site - an award
+                or analyst mention, a chat prompt, a cookie notice. It reads perfectly well and
+                it says nothing about THIS page. You cannot tell from the sentence alone; we
+                counted the other pages for you.
+
+  Picking a marked entry for the abstract produces something unreadable. A previous version of
+  this list was unmarked, and the abstracts that came back welded a "Book a demo" button to a
+  subheading, and a countdown timer to a headline. That is what the marks are for.
+
+  [BOILERPLATE] is the one you must trust us on: those sentences look like exactly what you want.
+  An earlier version of this list did not mark them and four pages came back described entirely in
+  terms of Algolia's analyst awards, with the page's actual subject never mentioned.
 
 STEP 1 - VERDICT
     REAL  a genuine content page with sentences about a subject
@@ -98,8 +155,13 @@ STEP 1 - VERDICT
 STEP 2 - ABSTRACT: pick {span_min} to {span_max} numbers whose sentences together say what this
 page is and what a reader gets from it.
 {family_instruction}
+  - Use UNMARKED entries only. Never [UI], [HEADING], [FRAGMENT], [NONPROSE] or [BOILERPLATE].
   - The FIRST number you pick must be a sentence that names its own subject.
-  - Prefer body sentences over hero banners and navigation.
+  - Read the whole list before choosing, then ask: is there ONE sentence that already summarises
+    this page? Pages usually contain one. If it exists, pick it and stop -- {span_min} is a
+    complete answer and a single clear sentence beats three that merely touch the topic.
+  - The sentences you pick will be joined together and read as one paragraph. Read your choice
+    back in order before answering. If it does not read as connected prose, change it.
   - Do NOT pick a [QUOTED] sentence unless the family is evidence: it is someone else speaking.
   - Do NOT pick from a "Common mistakes", "Troubleshooting", "Deprecated" or "Legacy" section.
   - Do NOT pick a sentence the page contradicts immediately afterwards.
@@ -108,6 +170,10 @@ page is and what a reader gets from it.
 STEP 3 - HIGHLIGHTS: pick 3 to 8 numbers carrying the page's concrete specifics -- numbers,
 limits, names, versions, named capabilities. Prefer sentences a person would find useful in a
 search result. Do not repeat an abstract number. Fewer is correct when the page has less.
+  - Each highlight is read ALONE in a search result, so each must stand on its own.
+  - Unmarked entries only here too. A [HEADING] is not a highlight; the sentence under it is.
+  - A [BOILERPLATE] award or analyst mention is never a highlight for this page. It belongs to
+    every page, so it distinguishes none of them.
 
 STEP 4 - LANGUAGE: report the language the sentences are actually written in.
 
@@ -478,7 +544,7 @@ def process(rec: dict) -> dict:
         "content_hash": rec["content_hash"],
         "truncated": rec.get("truncated", False),
         "prose_chars": prose_chars(markdown),
-        "writer_model": ("glm-5.2" if WRITER == "glm" else f"claude-{WRITER_MODEL}"),
+        "writer_model": WRITER_LABEL,
         "judge_model": JUDGE_MODEL,
         "prompt_version": PROMPT_VERSION,
         "processed_at": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -490,8 +556,9 @@ def process(rec: dict) -> dict:
     # It never emits content, so an invented word has nowhere to appear. This replaced a
     # copy-the-text design that lost whole records to transcription slips -- GLM wrote
     # "10. August 2026" where the page said "August 2026" and the record was discarded.
-    cands, canon = split_candidates(markdown)
+    cands, canon = split_candidates(markdown, boilerplate=BOILERPLATE)
     out["candidates"] = len(cands)
+    out["boilerplate_candidates"] = sum(1 for c in cands if c.kind == "boilerplate")
     if not cands:
         out.update({"status": "NO_CANDIDATES", "verdict": "THIN",
                     "insufficient_reason": "NO_PROSE"})
@@ -585,7 +652,7 @@ def write_validation_pack(results: list[dict], out_dir: pathlib.Path) -> pathlib
         "# Pilot validation pack — 30 records",
         "",
         f"_Generated {dt.datetime.now().strftime('%Y-%m-%d %H:%M')} · "
-        f"writer `claude-{WRITER_MODEL}` · judge `{JUDGE_MODEL}` (cross-vendor) · "
+        f"writer `{WRITER_LABEL}` · judge `{JUDGE_MODEL}` (cross-vendor) · "
         f"prompt `{PROMPT_VERSION}`_",
         "",
         "**How to read this.** For each record: the abstract and highlights the pipeline would",
@@ -662,7 +729,7 @@ def write_summary(results: list[dict], out_dir: pathlib.Path) -> pathlib.Path:
 
     lines = [
         "# Pilot summary", "",
-        f"_writer `claude-{WRITER_MODEL}` · judge `{JUDGE_MODEL}` · prompt `{PROMPT_VERSION}` · "
+        f"_writer `{WRITER_LABEL}` · judge `{JUDGE_MODEL}` · prompt `{PROMPT_VERSION}` · "
         f"{dt.datetime.now().strftime('%Y-%m-%d %H:%M')}_", "",
         f"- records processed: **{len(results)}**",
         f"- writer cost: **${cost:.2f}** (${cost/max(len(results),1):.3f}/record)",
@@ -673,6 +740,17 @@ def write_summary(results: list[dict], out_dir: pathlib.Path) -> pathlib.Path:
         *[f"- `{k}`: {v}" for k, v in verdicts.most_common()],
         "", "## Gate failures by gate", "",
         *([f"- `{k}`: {v}" for k, v in gate_fail_kinds.most_common()] or ["- none"]),
+        # G8, the post-hoc half. The prevention half marks boilerplate in the menu before the model
+        # sees it; this catches anything that got through anyway, by looking at the run's OUTPUT.
+        # A run can only be judged on sameness after it exists, so this cannot move earlier.
+        "", "## G8 template collision (stored abstracts)", "",
+        *([f"- **{c}x** `{p[:80]}`" for p, c in sorted(
+            check_template_collision([r.get("abstract_enriched", "") for r in results],
+                                     threshold=max(2, len(results) // 10)).items(),
+            key=lambda kv: -kv[1])]
+          or [f"- none (threshold >{max(2, len(results) // 10)} identical 8-token prefixes)"]),
+        "", f"- boilerplate map: **{len(BOILERPLATE)}** sentences loaded"
+        f"{' — MAP MISSING, G8 PREVENTION NOT APPLIED' if not BOILERPLATE else ''}",
         "", "## Judge means (records that reached the judge)", "",
         f"- reached judge: {len(judged)}",
         f"- representativeness: {mean('representativeness')}",
@@ -794,7 +872,7 @@ def main() -> int:
         print(f"\nvalidation pack: {pack}\nsummary        : {summary}")
         return 0
 
-    print(f"pilot: {len(records)} records | writer claude-{WRITER_MODEL} | judge {JUDGE_MODEL}")
+    print(f"pilot: {len(records)} records | writer {WRITER_LABEL} | judge {JUDGE_MODEL}")
     print("NOTHING is written to Algolia in pilot mode.\n")
 
     # Truncate first. This file is opened in append mode per record (deliberate: a crash must not

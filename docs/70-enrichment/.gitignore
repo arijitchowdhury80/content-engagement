@@ -16,6 +16,22 @@ body-rescue-*.jsonl
 # at all until 2026-08-07, which is why they now exist.
 snapshots/
 
+# Generated pilot/run output. One directory per run, each holding results.jsonl and a
+# validation pack full of page-text excerpts -- bulk content, regenerable, and it grows one
+# directory per experiment.
+#
+# PATTERN, not instances, and this is the THIRD time that distinction has cost something here:
+# the root rules named `docs/60-enrichment/` after the rename (23MB committed), then `cache/`
+# and `cache2/` were named literally and `cache-fresh50/` walked past them (636KB committed).
+# Structural rule that cannot rot: run output is always a SUBDIRECTORY of reports/, while
+# reviewed deliverables (REVIEW-english.md) are FILES at its root.
+#
+# NOTE for Arijit: `reports/fresh50-run1/` and `fresh50-run2/` are ALREADY TRACKED and this rule
+# does not retroactively untrack them -- gitignore does not apply to files already in the index.
+# SESSION.md calls the reports "(gitignored)"; that was not true. They are the baseline control
+# for the v1.2 comparison, so I have not removed them. Your call, alongside Open item 5.
+reports/*/
+
 # Fetched page markdown and the work queue. Bulk page content, regenerable.
 # GLOB, not literal names. `cache/` and `cache2/` were listed literally and a third dir,
 # `cache-fresh50/`, walked straight past them into a commit -- 636KB of page markdown in a

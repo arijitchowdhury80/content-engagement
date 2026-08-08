@@ -94,6 +94,29 @@ _TAG = re.compile(r"</?[A-Za-z!][^<>\n]{0,300}>")
 # markdown stacks furniture, e.g. blockquoted headings and nested list bullets.
 _LINE_LEAD = re.compile(r"[ \t]*(?:#{1,6}|>+|[-+*]|\d+\.|\|)[ \t]*")
 
+# Block-boundary detection, used only to fill Canon.block.
+#
+# The ONE case where a source newline does NOT end a block is a hard-wrapped paragraph, and real
+# markdown on algolia.com is full of them ("for qualifying Algolia\ncustomers."). A wrapped line is
+# long by construction -- it ran out of width. A nav label, a CTA, an all-caps banner and a
+# "00 TAGE" timer segment are short and unpunctuated. So: no terminal punctuation AND at least
+# _WRAP_MIN characters means the sentence continues; anything else ends the block.
+#
+# Getting this backwards is the expensive direction: a false SOFT wrap re-merges a timer with the
+# headline after it (judge REVISE #4), while a false HARD break only splits one sentence in two and
+# both halves are then labelled sentence_complete=False rather than being sold as prose.
+_WRAP_MIN = 60
+_TERMINAL_PUNCT = frozenset(".!?:;")
+_TRAILING_CLOSERS = "\"'’”)]»"
+
+
+def _ends_a_sentence(emitted: list[str]) -> bool:
+    """Did the line just ended finish a sentence? Ignores trailing quotes and brackets."""
+    k = len(emitted) - 1
+    while k >= 0 and emitted[k] in _TRAILING_CLOSERS:
+        k -= 1
+    return k >= 0 and emitted[k] in _TERMINAL_PUNCT
+
 
 def _consume_line_lead(text: str, i: int) -> int:
     """Skip every stacked line-leading marker at i. Returns the new offset."""
@@ -142,6 +165,14 @@ class Canon:
     section: list[int] = field(default_factory=list)
     quoted: list[bool] = field(default_factory=list)
     sections: list[str] = field(default_factory=list)
+    # block[i] is the id of the source BLOCK canonical char i came from. Same reason as the two
+    # arrays above, and the one that cost the most: canonicalisation collapses every newline to a
+    # space, so a nav bar, a countdown timer and an all-caps banner arrive at the splitter as one
+    # unbroken string. Having no punctuation, they were never cut -- they merged into a single
+    # chunk and were then chopped at MAX_CHARS on an arbitrary word boundary. Measured 2026-08-08:
+    # 31.6% of all candidates were mid-sentence fragments, and the judge's top complaint was
+    # coherence at 2.88/5. A block id restores the boundary without touching `text` by one byte.
+    block: list[int] = field(default_factory=list)
 
     def slice_original(self, c_start: int, c_end: int) -> tuple[str, int, int]:
         """Given canonical [start, end), return the original substring and its offsets."""
@@ -168,9 +199,13 @@ def canonicalise(text: str) -> Canon:
     origin: list[int] = []
     sect: list[int] = []
     quoted: list[bool] = []
+    blk: list[int] = []
     sections: list[str] = [""]  # index 0 = before any heading
     cur_section = 0
     cur_quoted = False
+    cur_block = 0
+    line_emitted = 0
+    prev_heading = False
     i = 0
     n = len(text)
     at_line_start = True
@@ -200,6 +235,27 @@ def canonicalise(text: str) -> Canon:
                 sections.append(text[j:line_end].strip())
                 cur_section = len(sections) - 1
             cur_quoted = is_quote
+
+            # Decide the block boundary HERE, while the markers and the previous line's shape are
+            # both still visible. One line later, canonicalisation has erased both.
+            if out:
+                soft_wrap = (
+                    not is_heading                  # a heading always OPENS a block...
+                    and not prev_heading            # ...and always CLOSES the one before it
+                    and j == i                      # no list/quote/table marker on this line
+                    and line_emitted >= _WRAP_MIN
+                    and not _ends_a_sentence(out)
+                )
+                if not soft_wrap:
+                    cur_block += 1
+            # prev_heading is not redundant with is_heading. The decision is taken at the START of
+            # the FOLLOWING line, where `is_heading` describes that following line -- so without
+            # remembering it, "the line I just left was a heading" is unknowable. A long unpunctuated
+            # heading then looked exactly like a hard-wrapped paragraph and was merged with the prose
+            # under it: '## Entwickeln Sie mit Algolia erstklassige...' + 'Algolia bietet Ihnen...'
+            # arrived as ONE candidate and was scored coherence 1. My own bug, from this same change.
+            prev_heading = is_heading
+            line_emitted = 0
 
             at_line_start = False
             if j > i:
@@ -245,11 +301,15 @@ def canonicalise(text: str) -> Canon:
                                 origin.append(i + 1 + k)
                                 sect.append(cur_section)
                                 quoted.append(cur_quoted)
+                                blk.append(cur_block)
+                                line_emitted += 1
                             pending_space = False
                         out.append(lch)
                         origin.append(i + 1 + k)
                         sect.append(cur_section)
                         quoted.append(cur_quoted)
+                        blk.append(cur_block)
+                        line_emitted += 1
                     i = end_paren + 1
                     continue
 
@@ -276,12 +336,16 @@ def canonicalise(text: str) -> Canon:
                 origin.append(i)
                 sect.append(cur_section)
                 quoted.append(cur_quoted)
+                blk.append(cur_block)
+                line_emitted += 1
             pending_space = False
 
         out.append(ch)
         origin.append(i)
         sect.append(cur_section)
         quoted.append(cur_quoted)
+        blk.append(cur_block)
+        line_emitted += 1
         i += 1
 
     return Canon(
@@ -291,6 +355,7 @@ def canonicalise(text: str) -> Canon:
         section=sect,
         quoted=quoted,
         sections=sections,
+        block=blk,
     )
 
 

@@ -40,10 +40,13 @@ verifiability                  9/10   independent re-fetch + re-locate, 151/151
 write-path safety              9/10   snapshot-gated, add-only, read-back
 documentation                  9/10   chapter 346 lines, build log 753
 robustness (43 shapes)         8/10   0 crashes on 50 fresh records
-coverage / yield               7/10   34/50 = 68%, was ~47%
+coverage / yield               8/10   PASS 25/50, was 15/50 (v1.2, 2026-08-08)
 freshness handling             6/10   hash detects staleness; no re-check cadence
-slop resistance                6/10   G7/G8/G11 floors, then opinion
-SELECTION QUALITY              5/10   judge REVISE on 19 of 34 (56%)
+slop resistance                6/10   G7/G11 floors, then opinion. G8 STILL NOT BUILT -- and it is
+                                      now the top selection issue, 4 of 9 remaining REVISE
+SELECTION QUALITY              8/10   judge REVISE on 9 of 34 (26%), was 19 of 34 (56%).
+                                      coherence 4.62/5, was 2.88. v1.2, measured vs 2 baselines
+INDEX DATA QUALITY             4/10   NEW FINDING: 19 records carry another customer's title
 REPRODUCIBILITY                3/10   19/50 identical -- see below
 HUMAN VALIDATION               2/10   zero records reviewed by Arijit
 ```
@@ -74,7 +77,7 @@ change without re-measuring.
 | Writer | **glm-5.2** via `ALGOLIA_INFERENCE_BASE_URL` (Algolia's own inference server, already in `.env.local`). Free, 1.6s/record, temperature 0. |
 | Judge | **gemini-2.5-pro**, `GEMINI_API_KEY` in the shell env. Cross-vendor on purpose. |
 | Support | **1,695 records excluded** by Arijit. Not enriched, not fetched, untouched. |
-| Tests | `python3 -m pytest docs/70-enrichment/tests/test_span_gate.py -q` → **58 passed** |
+| Tests | `python3 -m pytest docs/70-enrichment/tests/ -q` → **125 passed, 1 xfailed** (was 66; `test_candidates.py` added 2026-08-08, fixtures copied from real cached pages) |
 
 ## The pipeline
 
@@ -97,14 +100,70 @@ python3 docs/70-enrichment/verify_written.py                        # 0 spans no
 
 ## NEXT ACTIONS, in order
 
-0. **Fix selection quality — the top issue.** 56% of abstracts draw a judge REVISE. The model picks
-   true sentences that are not the best sentences. Prompt work, not safety work. Look at the
-   `missed_substance` scores and the judge's `better_span_available` suggestions in
-   `reports/fresh50-run1/results.jsonl` — they name the sentence it would have preferred.
-1. **Arijit reads `docs/70-enrichment/reports/REVIEW-english.md`** — 30 records, each with
-   11 English records. Every sentence shown INSIDE its page text wrapped in `>>>` markers, no
-   offsets, no German or French. **His gate. Zero hallucinations across 415 sentences.** The real
-   question is whether the *selection* is good enough — the judge says no on 56%.
+0. ~~**Fix selection quality**~~ — **DONE 2026-08-08, measured. See
+   `docs/70-enrichment/LIGHT-2026-08-08-selection-quality.md`.**
+
+   My framing above was wrong on both halves: it was **script** work, not prompt work, and part of
+   it was a safety issue. Root cause was one thing — `canonicalise()` collapses every newline to a
+   space, so `candidates.py` got each page as one flat string and could cut only at sentence
+   punctuation. Nav bars, CTAs and countdown timers have none, so they never got cut: they merged
+   into one chunk which then hit `MAX_CHARS=400` and was chopped at an arbitrary word boundary.
+   **715 of 2,264 candidates (31.6%) were mid-sentence fragments**, indistinguishable to the model
+   from a thesis sentence. Coherence 2.88 was a polluted menu, not a model picking badly.
+
+   Fix: `Canon.block` (additive, like the existing `section`/`quoted` arrays — `canon.text` byte-
+   identical, so the span-gate tests could not move), block-aware splitting, 5-way candidate
+   classification surfaced as `[UI]`/`[FRAGMENT]`/`[NONPROSE]`/`[HEADING]` in the menu, and
+   lead-sentence preference. Prompt is now `abstract_enrichment_v1.2`.
+
+   | | baseline (2 runs) | v1.2 |
+   |---|---|---|
+   | coherence | 2.88 / 2.85 | **4.62** |
+   | missed_substance | 3.21 / 3.00 | **4.53** |
+   | PASS | 15 / 15 | **25** |
+   | JUDGE_REVISE | 19 / 19 | **9** |
+   | prose candidates fragment-shaped | 31.6% | **1.15%** |
+   | tests | 66 | **125 + 1 xfail** |
+
+   **Yield went UP, not down** — the trade I expected did not exist. So the hard `[FRAGMENT]`/`[UI]`
+   rejection gate is **not** proposed; labelling already did it. `reports/fresh50-v12/`.
+
+0a. ~~**G8 is the top selection issue and costs no yield**~~ — **BUILT, MEASURED, IT LOST. OFF.**
+
+   I predicted "costs no yield". Wrong. `G8_ENABLED = False` in `enrich_run.py`; default is v1.2.
+
+   | | v1.2 (no G8) | v1.3 (G8 on) |
+   |---|---|---|
+   | coherence | **4.62** | 4.21 |
+   | PASS | **25** | 20 |
+   | NO_ABSTRACT_THIN | **3** | 8 |
+
+   **The flaw is structural, not a threshold.** A sentence can be furniture on ten pages and be
+   the content on the eleventh — the page it is *about*. `/fr/awards` is a page about Algolia's
+   awards; G8 marked its award sentences as boilerplate because they also sit in ten footers, and
+   the page fell from 8 prose candidates to 1, then to THIN. Four records lost that way.
+   **Known fix, not built:** skip G8 on any page where it would remove most of the prose. The
+   post-hoc half (`check_template_collision`) stays ON — it only reports, it cannot cost a record.
+
+   `boilerplate.py` + 11 tests are kept and correct in isolation; the map for the 50 pages holds
+   20 genuine furniture sentences with no false positives. It is the *application* that is wrong.
+
+0b. **Labels are advisory and the model sometimes ignores them.** `/fr/customers/walgreens` fell
+   PASS→REVISE because the model picked a candidate correctly labelled `[FRAGMENT]`, after being
+   told not to in three places. In Part 1 I concluded labelling made a hard gate unnecessary; too
+   strong — it made it *usually* unnecessary. A hard gate on `[FRAGMENT]` alone is worth measuring.
+
+0b. **19 live records carry another customer's title.** NOT an enrichment bug — a data defect in
+   `Algolia_Prod_Copy_Enhanced`, degrading demo relevance today. One title leaked onto 9 different
+   `/customers/` slugs; `crocs` is titled "BIG W". 208 true case studies exist, so ~9% are
+   mislabelled. Measured offline from the snapshot; detection is "one title across different
+   slugs", which is unambiguous. It also causes 3 of the 9 remaining REVISE. Needs a title source
+   and a decision on where the correction is written — Chapter 1/2, not Chapter 3.
+1. **Arijit reads the validation pack** — **his gate, still not done.** ⚠ `REVIEW-english.md` was
+   built from the SUPERSEDED v1.1 output, so its selections are the ones the judge rejected on 56%.
+   **Regenerate it from `reports/fresh50-v12/` before reading**, or the gate reviews retired work.
+   Zero hallucinations across 415 sentences still holds — that claim was about the guarantee, which
+   did not change. The selection question is now judge-REVISE on 9 of 34, not 19 of 34.
 2. **Resolve `enterprise_ledger` freshness.** It holds real bodies for **4,462 records**
    (median 1,346 chars) — free, no fetching. But it carries retired product names (App Search,
    Enterprise Search) and stale `/old-docs/`. Needs a freshness rule and a preference order:
@@ -177,6 +236,13 @@ python3 docs/70-enrichment/verify_written.py                        # 0 spans no
 - The full run. 35 of ~10,340.
 - `enterprise_ledger` / `AC2_body` as a body source — measured (4,462 records) but not wired in.
 - G5 language check and G8 corpus-wide template collision are specified but not in the runner.
+  **G8 is no longer a nice-to-have** — it is the single largest remaining selection defect (4 of 9
+  REVISE) and it costs no yield. See NEXT ACTION 0a.
+- **`reports/fresh50-run1|2/` are TRACKED IN GIT, not gitignored** — this file said otherwise below
+  and was wrong. ~400KB of results + page-text excerpts are in the PUBLIC repo. Not a credential
+  leak (public marketing copy) but against the repo's own stated rule. `reports/*/` now ignores
+  future run dirs; gitignore does not untrack what is already indexed, so the existing two are
+  Arijit's call alongside Open item 5. **Third recurrence of instance-vs-pattern ignore rules.**
 - Chapter 3's own doc still says `status: not-started`.
 - WU-11.4 does not exist in Asana.
 - Chapter 1's classifier has NOT been re-run on the new text — that is the actual payoff and it is
