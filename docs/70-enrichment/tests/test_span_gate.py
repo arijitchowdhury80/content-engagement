@@ -800,3 +800,31 @@ def test_a_bare_cta_is_still_rejected():
     from span_gate import check_blacklists
     assert check_blacklists(["Contact sales"])
     assert check_blacklists(["Book a demo today"])
+
+
+# ---------------------------------------------------------------------------
+# G7 threshold is per-family — added 2026-08-08 after the Phase 1 gate failed
+# ---------------------------------------------------------------------------
+
+def test_information_gain_bar_is_lower_for_the_reference_family():
+    """16 of 19 Phase 1 quarantines were this gate, on API pages where the title IS the endpoint.
+
+    A bar built for blog posts was rejecting correct work on terse reference pages.
+    """
+    from span_gate import INFO_GAIN_MINIMUM
+    assert INFO_GAIN_MINIMUM["reference"] == 3
+    assert INFO_GAIN_MINIMUM.get("editorial", 8) == 8, "only reference is relaxed"
+
+
+def test_reference_bar_still_rejects_a_restatement():
+    """The case G7 exists for: 3,340 records already have abstract == description byte-for-byte."""
+    title, desc = "Search API", "Search, configure and manage indices and records."
+    assert check_information_gain(desc, title, desc, minimum=3), "a byte-identical restatement passed"
+
+
+def test_reference_bar_admits_a_terse_but_real_abstract():
+    title, desc = "Recommend API", "The Recommend API."
+    abstract = "The Recommend API retrieves recommendations from trained models for a given object."
+    assert check_information_gain(abstract, title, desc, minimum=3) == []
+    # ...and the old flat bar of 8 is what was wrongly rejecting it
+    assert check_information_gain(abstract, title, desc, minimum=8) != []

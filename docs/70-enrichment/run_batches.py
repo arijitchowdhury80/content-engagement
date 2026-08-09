@@ -194,6 +194,31 @@ def run_one(manifest: pathlib.Path, out_root: pathlib.Path, cache_root: pathlib.
     }
 
 
+def summarize_run(results: list[dict], fetch_only: bool, elapsed_seconds: float) -> dict:
+    """Summarize a run without letting fetch-only success look like enrichment success."""
+    ok_statuses = {"FETCHED"} if fetch_only else {"OK", "SKIPPED_COMPLETE"}
+    ok = [r for r in results if r.get("status") in ok_statuses]
+    bad = [r for r in results if r.get("status") not in ok_statuses]
+    status_counts: dict[str, int] = {}
+    for r in results:
+        status = r.get("status", "UNKNOWN")
+        status_counts[status] = status_counts.get(status, 0) + 1
+    fetched_records = sum(r.get("records", 0) for r in ok) if fetch_only else 0
+    enriched_records = sum(r.get("records", 0) for r in ok) if not fetch_only else 0
+    return {
+        "finished_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "mode": "fetch-only" if fetch_only else "enrich",
+        "batches": len(results),
+        "ok": len(ok),
+        "failed": len(bad),
+        "status_counts": status_counts,
+        "fetched_records": fetched_records,
+        "enriched_records": enriched_records,
+        "elapsed_seconds": round(elapsed_seconds, 1),
+        "failures": bad,
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -268,24 +293,18 @@ def main() -> int:
                   f" {res.get('records', 0):3}rec {res.get('seconds', 0):6.0f}s  ETA {eta}{flag}",
                   flush=True)
 
-    ok = [r for r in results if r["status"] in ("OK", "SKIPPED_COMPLETE", "FETCHED")]
-    bad = [r for r in results if r not in ok]
-    summary = {
-        "finished_at": dt.datetime.now(dt.timezone.utc).isoformat(),
-        "batches": len(results), "ok": len(ok), "failed": len(bad),
-        "records": sum(r.get("records", 0) for r in results),
-        "elapsed_seconds": round(time.time() - started, 1),
-        "failures": bad,
-    }
+    summary = summarize_run(results, args.fetch_only, time.time() - started)
     (out_root / "run-summary.json").write_text(json.dumps(summary, indent=1))
 
-    print(f"\nbatches OK {len(ok)}/{len(results)}   records {summary['records']}"
+    record_label = "fetched" if args.fetch_only else "enriched"
+    record_count = summary["fetched_records"] if args.fetch_only else summary["enriched_records"]
+    print(f"\nbatches OK {summary['ok']}/{len(results)}   {record_label} records {record_count}"
           f"   elapsed {dt.timedelta(seconds=int(summary['elapsed_seconds']))}")
-    if bad:
-        print(f"\n{len(bad)} FAILED -- re-run this same command, completed batches are skipped:")
-        for r in bad[:10]:
+    if summary["failed"]:
+        print(f"\n{summary['failed']} FAILED -- re-run this same command, completed batches are skipped:")
+        for r in summary["failures"][:10]:
             print(f"  {r['batch']}: {r.get('stderr_tail') or r.get('error', '')[:200]}")
-    return 1 if bad else 0
+    return 1 if summary["failed"] else 0
 
 
 if __name__ == "__main__":

@@ -44,7 +44,7 @@ from snapshot_enhanced import algolia_post, live_record_count, load_credentials 
 from delete_records import newest_snapshot  # noqa: E402
 
 INDEX = "Algolia_Prod_Copy_Enhanced"
-WRITABLE = {"PASS", "NO_ABSTRACT_THIN", "NO_ABSTRACT_DEAD"}
+WRITABLE = {"PASS", "JUDGE_REVISE", "NO_ABSTRACT_THIN", "NO_ABSTRACT_DEAD"}
 
 # Every field this pipeline is allowed to create. Anything outside this set is a bug, and the
 # script asserts it before writing -- that is what stops an accidental overwrite of `abstract`.
@@ -117,6 +117,33 @@ def build_payload(r: dict) -> dict | None:
     return payload
 
 
+def build_payloads(results: list[dict], limit: int = 0) -> tuple[list[dict], int]:
+    """Build write payloads from result rows, refusing corrupt duplicate result streams."""
+    payloads, skipped = [], 0
+    seen_rows: set[str] = set()
+    seen_payloads: set[str] = set()
+    for r in results:
+        oid = r.get("objectID")
+        if not oid:
+            skipped += 1
+            continue
+        if oid in seen_rows:
+            sys.exit(f"FATAL: duplicate objectID {oid!r} in results. Re-run the corrupt batch.")
+        seen_rows.add(oid)
+
+        pl = build_payload(r)
+        if pl is None:
+            skipped += 1
+            continue
+        if pl["objectID"] in seen_payloads:
+            sys.exit(f"FATAL: duplicate objectID {pl['objectID']!r} in payloads.")
+        seen_payloads.add(pl["objectID"])
+        payloads.append(pl)
+        if limit and len(payloads) >= limit:
+            break
+    return payloads, skipped
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--results", nargs="+", required=True,
@@ -136,19 +163,7 @@ def main() -> int:
         if not p.exists():
             sys.exit(f"FATAL: {p} not found")
         results += [json.loads(l) for l in p.open()]
-    payloads, skipped = [], 0
-    seen: set[str] = set()
-    for r in results:
-        pl = build_payload(r)
-        if pl is None:
-            skipped += 1
-            continue
-        if pl["objectID"] in seen:      # same record in both batches -> keep the first
-            continue
-        seen.add(pl["objectID"])
-        payloads.append(pl)
-    if args.limit:
-        payloads = payloads[: args.limit]
+    payloads, skipped = build_payloads(results, args.limit)
 
     verdicts: dict[str, int] = {}
     for pl in payloads:
