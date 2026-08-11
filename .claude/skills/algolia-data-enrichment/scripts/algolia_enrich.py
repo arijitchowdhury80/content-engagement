@@ -429,6 +429,25 @@ def cmd_enrich(ctx: Ctx) -> int:
     return 0
 
 
+REPAIRABLE_STATUSES = {"QUARANTINED_BY_GATE", "WRITER_UNPARSEABLE", "JUDGE_UNAVAILABLE"}
+
+
+def merge_repair_results(prior: list[dict], latest: list[dict]) -> list[dict]:
+    """Keep the best known repair result for each record.
+
+    Writer selection is non-deterministic. A later failed retry is evidence about that retry, not
+    grounds for erasing a prior grounded PASS. This makes the repair artifact monotonic: a PASS
+    can only be replaced by another PASS.
+    """
+    merged = {row["objectID"]: row for row in prior}
+    for row in latest:
+        existing = merged.get(row["objectID"])
+        if existing and existing.get("status") == "PASS" and row.get("status") != "PASS":
+            continue
+        merged[row["objectID"]] = row
+    return list(merged.values())
+
+
 def cmd_repair(ctx: Ctx) -> int:
     """Re-run the selection ladder for rows a gate refused.
 
@@ -443,8 +462,11 @@ def cmd_repair(ctx: Ctx) -> int:
     state = ctx.state()
     state.require("enrich", "DONE", "PARTIAL")
     base = _read_jsonl(ctx.run_dir / "outputs" / "base" / "results.jsonl")
-    targets = [r for r in base if r.get("status") in
-               {"QUARANTINED_BY_GATE", "WRITER_UNPARSEABLE", "JUDGE_UNAVAILABLE"}]
+    prior = _read_jsonl(ctx.run_dir / "outputs" / "repair" / "results.jsonl")
+    effective = {row["objectID"]: row for row in base}
+    effective.update({row["objectID"]: row for row in prior})
+    targets = [effective[row["objectID"]] for row in base
+               if effective[row["objectID"]].get("status") in REPAIRABLE_STATUSES]
     if not targets and not ctx.args.allow_empty:
         raise ZeroWorkError(
             "repair found zero repairable rows. If that is the true state, pass --allow-empty; "
@@ -475,7 +497,8 @@ def cmd_repair(ctx: Ctx) -> int:
         ledger.append(row["objectID"], "repair",
                       (res or {}).get("status", "ERROR") if not exc else "ERROR")
 
-    results = [r for r in run_concurrent(targets, one, ctx.args.concurrency, report) if r]
+    latest = [r for r in run_concurrent(targets, one, ctx.args.concurrency, report) if r]
+    results = merge_repair_results(prior, latest)
     ctx.emit_jsonl("outputs/repair/results.jsonl", results, "repair")
     state.set("repair", "DONE")
     state.save(ctx.run_dir)

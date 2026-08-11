@@ -161,7 +161,10 @@ def evaluate_selection(llm: dict, pool: list, unfiltered: list, canon, record: d
         return Attempt(ok=True, sel=sel, abstract_spans=abstract_spans,
                        highlight_spans=highlight_spans, repair_trace=trace)
 
-    ban, why = retry_constraints(failures, sel, pool, record.get("title", ""), ineligible)
+    ban, why = retry_constraints(
+        failures, sel, pool, record.get("title", ""), ineligible,
+        max_span_distance=profile.max_span_distance,
+    )
     return Attempt(ok=False, sel=sel, failures=failures, ban_hint=ban, reason=why,
                    repair_trace=trace)
 

@@ -33,3 +33,7 @@ docs/20-research/agent-studio-inventory.json
 
 # python bytecode from the WU-06 research scripts
 __pycache__/
+
+# Skill build residue — pattern, not instances (see docs/70-enrichment/.gitignore for why)
+.claude/skills/*/scripts/**/__pycache__/
+.claude/skills/*/.pytest_cache/

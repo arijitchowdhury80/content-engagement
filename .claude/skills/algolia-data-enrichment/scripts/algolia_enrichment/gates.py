@@ -569,11 +569,9 @@ def apply_pool_gates(cands: list, canon, title: str, unfiltered: list | None = N
 
 # --- the retry ladder's half: failures -> what to change about the pool --------------------
 
-_SPREAD_LIMIT = 20_000
-
-
 def retry_constraints(failures: list[str], sel, cands: list, title: str,
-                      ineligible: set[int]) -> tuple[set[int], str]:
+                      ineligible: set[int],
+                      max_span_distance: int | None = None) -> tuple[set[int], str]:
     """(indices to ban on the retry, a human reason) -- empty set means retry cannot help.
 
     A gate failure names WHICH sentence was wrong, and that is enough to narrow the menu and ask
@@ -595,9 +593,13 @@ def retry_constraints(failures: list[str], sel, cands: list, title: str,
     if any("characters of the original page" in f for f in failures):
         if sel.abstract:
             anchor = min(c.start for c in sel.abstract)
-            far = {c.index for c in cands if abs(c.start - anchor) > _SPREAD_LIMIT // 2}
+            limit = max_span_distance or _MAX_SPAN_SPREAD
+            # Keep the retry inside one forward page interval. An absolute-distance window is
+            # wrong: it permits one candidate before the anchor and another after it, whose
+            # combined spread exceeds the profile limit even though each is individually close.
+            far = {c.index for c in cands if c.start < anchor or c.start > anchor + limit}
             ban |= far
-            reasons.append(f"{len(far)} candidates outside a {_SPREAD_LIMIT // 2}-char window "
+            reasons.append(f"{len(far)} candidates outside the profile's {limit}-char window "
                            f"around offset {anchor} banned")
 
     if any("mixes languages" in f for f in failures):
