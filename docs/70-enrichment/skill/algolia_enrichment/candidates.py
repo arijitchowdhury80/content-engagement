@@ -101,6 +101,27 @@ _LEADING_URL = re.compile(r"^\s*(?:https?://|https?//|www\.)", re.I)
 
 # The blockquote directly under the page's H1 -- where a page states what it is.
 _PAGE_LEDE_QUOTE = re.compile(r"^#[ \t]+\S.*\n+((?:[ \t]*>.*(?:\n|$))+)", re.M)
+_H1 = re.compile(r"^#[ \t]+\S")
+
+
+def main_content_start(markdown: str) -> int:
+    """Original offset where the page's first real H1 begins, or zero if absent.
+
+    Scout deliberately returns the complete page. On Algolia.com that includes global shell text
+    before the document heading; treating it as selectable prose produced Ask-AI overlay text as
+    Blog and case-study highlights. Scope candidates after the first Markdown H1, while retaining
+    the complete original body and its offsets for grounding. Fenced code is ignored because a
+    ``# comment`` inside a code example is not a page heading.
+    """
+    offset = 0
+    fenced = False
+    for line in markdown.splitlines(keepends=True):
+        if re.match(r"^\s*(```|~~~)", line):
+            fenced = not fenced
+        elif not fenced and _H1.match(line):
+            return offset
+        offset += len(line)
+    return 0
 
 
 def page_lede_quote_range(markdown: str) -> tuple[int, int] | None:
@@ -307,7 +328,8 @@ def classify(text: str, complete: bool, section_title: str,
 
 def split_candidates(markdown: str, max_candidates: int = 400,
                      boilerplate: set[str] | None = None,
-                     already_indexed: str | None = None) -> tuple[list[Candidate], Canon]:
+                     already_indexed: str | None = None,
+                     content_start: int = 0) -> tuple[list[Candidate], Canon]:
     """Every selectable unit of the page, numbered. Offsets map back to the original markdown.
 
     Order: BLOCK -> sentence -> MAX_CHARS piece. The block step is what stops a timer merging
@@ -371,6 +393,8 @@ def split_candidates(markdown: str, max_candidates: int = 400,
                 try:
                     original, o_start, o_end = canon.slice_original(a2, b2)
                 except (ValueError, IndexError):
+                    continue
+                if o_start < content_start:
                     continue
                 # A chop is a fragment by construction: only the first piece begins where a
                 # sentence began, only the last ends where one ended, the middle does neither.

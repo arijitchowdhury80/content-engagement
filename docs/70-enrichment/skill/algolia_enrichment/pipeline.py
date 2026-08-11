@@ -30,7 +30,7 @@ import datetime as dt
 from dataclasses import dataclass, field
 
 from . import strategies
-from .candidates import render_menu, resolve_selection, split_candidates
+from .candidates import main_content_start, render_menu, resolve_selection, split_candidates
 from .canonical import canonicalise, prose_chars
 from .dispatch import route
 from .filters import filter_pool
@@ -229,8 +229,11 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
                                       f"like {method['sniffed']!r}. Not written."})
         return out
 
+    content_start = main_content_start(markdown)
+    out["content_start"] = content_start
     cands, canon = split_candidates(markdown, boilerplate=boilerplate,
-                                    already_indexed=record.get("description", ""))
+                                    already_indexed=record.get("description", ""),
+                                    content_start=content_start)
     out["candidates"] = len(cands)
     out["already_indexed_candidates"] = sum(1 for c in cands if c.is_already_indexed)
     if not cands:

@@ -14,7 +14,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from conftest import FakeAlgolia, FakeInference, TARGET_INDEX, body_for, make_records
+from conftest import FakeAlgolia, FakeInference, FakeScout, TARGET_INDEX, body_for, make_records
 
 from algolia_enrichment import human_review
 from algolia_enrichment.bodysource import IngestPayload, RunCache, ScoutRefetch
@@ -319,6 +319,35 @@ def test_profile_forbidden_patterns_ban_the_candidate_not_the_record():
         extra_patterns=press.compiled_forbidden)
     assert counts.get("PROFILE_FORBIDDEN") == 1
     assert len(kept) == 1, "banning the pattern must cost a candidate, never the record"
+
+
+def test_cli_enrich_never_offers_pre_h1_site_shell(run_cli, wire, workspace):
+    """The real GoFundMe fetch has a global overlay before the case-study H1.
+
+    Scout correctly returns the complete page. The enrichment pipeline, not Scout, must make
+    only the page's content region eligible for model selection. Driving the CLI is intentional:
+    a helper-only test would repeat the historical dead-gate mistake.
+    """
+    shell = "How will Algolia improve our search experience and conversions?"
+    md = (f"{shell} How do I integrate Algolia search into my app?\n"
+          "Suggestions\nAlgolia Assist\n\n"
+          "# Acme customer story\n\n" + body_for(0))
+    records = make_records(1)
+
+    def writer(prompt):
+        assert shell not in prompt, "pre-H1 site shell reached the live model menu"
+        return {"verdict": "THIN", "abstract": [], "highlights": [],
+                "language_observed": "en"}
+
+    state = wire(algolia=FakeAlgolia(records), scout_client=FakeScout({"rec-0": md}),
+                 inference=FakeInference({"large": writer}))
+    run = "20260811-cs-case-study-a02"
+    sl = ["--source", "Customer Stories", "--page-type", "case-study"]
+    assert run_cli("plan-slice", "--run-id", run, *sl) == 0
+    assert run_cli("fetch", "--run-id", run, *sl) == 0
+    assert run_cli("enrich", "--run-id", run, *sl) == 0
+    assert any(tier == "large" for tier, _ in state["inference"].calls), (
+        "the test must reach the writer; otherwise it proves no candidate-menu behaviour")
 
 
 def test_overlap_uses_containment_not_just_jaccard():
