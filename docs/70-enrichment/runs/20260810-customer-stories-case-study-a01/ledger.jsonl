@@ -1,0 +1,20 @@
+{"chars": 15626, "objectID": "de_b1e338c8-834b-4bde-b0ad-49573cab2069", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14919, "objectID": "de_aa29a6cd-cdeb-42f9-ac76-de7f714d9921", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14082, "objectID": "de_1d91e31e-3201-433e-91e1-579bde4b345c_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12768, "objectID": "de_351f8d88-abeb-487b-b96c-cc159fe37de1", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10843, "objectID": "en_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13777, "objectID": "en_24570e7d-f174-489e-b2a8-01409bf61c7e_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11077, "objectID": "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14582, "objectID": "fr_2343e356-ea15-4555-a0f8-d8d0caf3981f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 19897, "objectID": "fr_7ee94215-25f0-4fba-a760-27f9634b520f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10410, "objectID": "fr_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7", "outcome": "FETCHED", "stage": "fetch"}
+{"objectID": "de_351f8d88-abeb-487b-b96c-cc159fe37de1", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_b1e338c8-834b-4bde-b0ad-49573cab2069", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_aa29a6cd-cdeb-42f9-ac76-de7f714d9921", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_24570e7d-f174-489e-b2a8-01409bf61c7e_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_1d91e31e-3201-433e-91e1-579bde4b345c_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_2343e356-ea15-4555-a0f8-d8d0caf3981f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_7ee94215-25f0-4fba-a760-27f9634b520f", "outcome": "PASS", "stage": "enrich"}

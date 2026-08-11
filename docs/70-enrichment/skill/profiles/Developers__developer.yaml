@@ -1,0 +1,10 @@
+# Developers/developer -- developer hub and reference prose. Not covered by the code-sample
+# profile: these pages are prose about tooling, not code listings.
+strategy: editorial
+abstract_shape: editorial_summary
+language_policy: must_match_record
+min_body_chars: 500
+abstract_span_count: [1, 3]
+highlight_count: [3, 5]
+information_gain_minimum: 5
+coverage_target_pct: 0.75

@@ -1,0 +1,75 @@
+{
+  "excluded": {
+    "Support/support-article": {
+      "reason": "1,695 records, 14.2% of the corpus. Excluded by Arijit 2026-08-07: support articles are authored answers from the technical support team -- definitive rulings we do not get to reword. Measured, the whole article is 202-604 characters of prose and the index already stores ~450 of it, so enrichment buys ~85 characters and risks putting our words on a support ruling. Stays excluded until explicitly reopened; this is a decision for Arijit, not a gap.",
+      "records": 1695
+    }
+  },
+  "live_page_types": 44,
+  "ok": true,
+  "slices": {
+    "Blog/blog-post": {
+      "coverage": {
+        "all_accounted_for": true,
+        "coverage_target_pct": 0.95,
+        "human_review_open": 0,
+        "human_review_pct": 0.0,
+        "max_human_review_open_pct": 0.05,
+        "meets_coverage": true,
+        "outcome_coverage_pct": 1.0,
+        "planned_target_count": 10,
+        "target_written": 10,
+        "terminal_unwritable": 0,
+        "unattempted": 0,
+        "within_human_review_cap": true,
+        "writable_coverage_pct": 1.0
+      },
+      "last_run_id": "20260810-blog-blog-post-a01",
+      "page_type": "blog-post",
+      "planned_target_count": 10,
+      "profile_version": "blog-post:2946b4b57a45",
+      "reconciles": true,
+      "runs": [
+        "20260810-blog-blog-post-a01"
+      ],
+      "source": "Blog",
+      "target_written_live": 10
+    },
+    "Customer Stories/case-study": {
+      "coverage": {
+        "all_accounted_for": true,
+        "coverage_target_pct": 0.85,
+        "human_review_open": 0,
+        "human_review_pct": 0.0,
+        "max_human_review_open_pct": 0.05,
+        "meets_coverage": true,
+        "outcome_coverage_pct": 1.0,
+        "planned_target_count": 10,
+        "target_written": 10,
+        "terminal_unwritable": 0,
+        "unattempted": 0,
+        "within_human_review_cap": true,
+        "writable_coverage_pct": 1.0
+      },
+      "last_run_id": "20260810-customer-stories-case-study-a01",
+      "page_type": "case-study",
+      "planned_target_count": 10,
+      "profile_version": "case-study:a491e7de8230",
+      "reconciles": true,
+      "runs": [
+        "20260810-customer-stories-case-study-a01"
+      ],
+      "source": "Customer Stories",
+      "target_written_live": 10
+    }
+  },
+  "source_index": "Algolia_Prod_Copy_Enhanced",
+  "target_enriched_records": 20,
+  "target_index": "Algolia_Prod_Copy_Enhanced_Parallel",
+  "target_index_exists": true,
+  "target_records": 20,
+  "total_live_records": 11928,
+  "unprofiled_page_types": [],
+  "unreconciled_slices": [],
+  "updated_at": "2026-08-11T00:45:35.121134+00:00"
+}

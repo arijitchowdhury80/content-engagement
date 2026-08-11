@@ -1,0 +1,88 @@
+{
+  "body_source": "ScoutRefetch",
+  "entries": {
+    "de_1d91e31e-3201-433e-91e1-579bde4b345c_3_0": {
+      "chars": 14082,
+      "content_hash": "7d2b92ee0eb37af7b91c5946ed3f51e725d5873c2e2c4e8c7bb6e285da642aff",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/staples"
+    },
+    "de_351f8d88-abeb-487b-b96c-cc159fe37de1": {
+      "chars": 12768,
+      "content_hash": "62a485581833139dbfa96da2939bed677799af90bbad8e82860285be0555e8aa",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/club-med"
+    },
+    "de_aa29a6cd-cdeb-42f9-ac76-de7f714d9921": {
+      "chars": 14919,
+      "content_hash": "6589c5143cea7e4d1d4b94f7a9b9ec100ef0302ff28e1e1a6dd81d1e1c094055",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/gofundme"
+    },
+    "de_b1e338c8-834b-4bde-b0ad-49573cab2069": {
+      "chars": 15626,
+      "content_hash": "3cb94504321a02cb03ce070d6385dca7d50e91cd7bc67ef4fed216c378079d80",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/bike-totaal"
+    },
+    "en_24570e7d-f174-489e-b2a8-01409bf61c7e_4_0": {
+      "chars": 13777,
+      "content_hash": "5bca4a17ce7a9a3e6f42704a0071675583e0375a6b52d8222d6249e98c1831aa",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/hershey"
+    },
+    "en_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2_4_0": {
+      "chars": 10843,
+      "content_hash": "e31b2b47493af041bcb33efcf4118eb0d3029047fbb5046f297e22944f7378ac",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/bigw"
+    },
+    "fr_2343e356-ea15-4555-a0f8-d8d0caf3981f": {
+      "chars": 14582,
+      "content_hash": "2a4ba39173d6590e0a93b151c7f094c704b031b3722e6e81fdc9b514c428ea91",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/fern-case-study"
+    },
+    "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe": {
+      "chars": 11077,
+      "content_hash": "b6b81e12752297c80f71f995f31e0eaca36fb27a3bc3fe19e0b67da5d0162f3e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/maisons-du-monde"
+    },
+    "fr_7ee94215-25f0-4fba-a760-27f9634b520f": {
+      "chars": 19897,
+      "content_hash": "b96f710964e1f58956ff87cf6f0d5eb337c5211d660fccb777f3a1cfb3447b4a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/kiko"
+    },
+    "fr_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7": {
+      "chars": 10410,
+      "content_hash": "4ec57e08dcdf2d7acce15e2b092139c9d7b1a27fb9051229baa8a463126dcf93",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/teachers-pay-teachers"
+    }
+  },
+  "fetched": 10,
+  "planned": 10,
+  "run_id": "20260810-customer-stories-case-study-a01"
+}

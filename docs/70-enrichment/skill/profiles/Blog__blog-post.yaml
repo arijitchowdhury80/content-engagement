@@ -1,0 +1,13 @@
+# Blog/blog-post -- 2,694 records, already enriched by the historical pipeline.
+# Carried so the write-path smoke test and any re-run have a real profile to load.
+strategy: editorial
+abstract_shape: editorial_summary
+# BLOG ONLY. /de/blog/ and /fr/blog/ serve the English article -- probed live, byte-identical
+# with and without an Accept-Language header. There is no German body to prefer, so an English
+# abstract is the true description of an English page. Do not copy this line to another profile.
+language_policy: allow_known_english_body
+min_body_chars: 1200
+abstract_span_count: [1, 3]
+highlight_count: [3, 8]
+coverage_target_pct: 0.95
+minimum_review_sample: 20

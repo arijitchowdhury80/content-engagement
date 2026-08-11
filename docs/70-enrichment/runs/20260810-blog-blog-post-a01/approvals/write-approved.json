@@ -1,0 +1,13 @@
+{
+  "approved_by": "Arijit",
+  "approved_at": "2026-08-10T20:00:00Z",
+  "authority": "PROMPT-build-and-eval-skill.md, Gate 3: 'target-index write-path smoke, 10 Blog records: prepare-target-index -> dry-run-write -> apply-write -> verify-live'. Authorises writes to the PARALLEL target index only.",
+  "command": "apply-write",
+  "run_id": "20260810-blog-blog-post-a01",
+  "source": "Blog",
+  "page_type": "blog-post",
+  "expected_target_count": 10,
+  "expected_write_count": 10,
+  "source_index": "Algolia_Prod_Copy_Enhanced",
+  "target_index": "Algolia_Prod_Copy_Enhanced_Parallel"
+}

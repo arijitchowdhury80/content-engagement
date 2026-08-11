@@ -1,0 +1,13 @@
+# Developers/developer-code-sample -- code-heavy. Explanatory code comments are allowed here and
+# nowhere else; a comment is often the only prose on the page.
+strategy: developer_code
+abstract_shape: api_facts
+language_policy: must_match_record
+min_body_chars: 250
+abstract_span_count: [1, 2]
+highlight_count: [3, 5]
+allowed_code_comments: true
+information_gain_minimum: 3
+coverage_target_pct: 0.70
+forbidden_patterns:
+  - "^(npm|yarn|pnpm|pip|composer) (install|add) "

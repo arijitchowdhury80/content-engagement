@@ -1,0 +1,12 @@
+# Website/product-page -- buyer/product value. Nav and CTA loops are the dominant chrome.
+strategy: editorial
+abstract_shape: product_summary
+language_policy: must_match_record
+min_body_chars: 700
+abstract_span_count: [1, 3]
+highlight_count: [3, 6]
+coverage_target_pct: 0.80
+forbidden_patterns:
+  - "^(Start|Try) (free|now|today)"
+  - "^Talk to (an expert|sales)"
+  - "^See it in action"

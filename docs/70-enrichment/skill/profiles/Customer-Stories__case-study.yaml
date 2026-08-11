@@ -1,0 +1,31 @@
+# Customer Stories/case-study -- 237 records, verified live. 154 of them (65%) are de/fr.
+#
+# THE FAILURE MODE HERE IS INFORMATION GAIN, NOT GROUNDING. The lede on a case study is almost
+# always a compressed restatement of the meta description; that pattern already cost the
+# reference family 49 of 49 pages. Without `duplicate_description_policy: ban` you get 237
+# grounded, faithful, useless abstracts and every gate passes.
+strategy: case_study
+abstract_shape: case_study_summary
+language_policy: must_match_record     # the de/fr-serves-English ruling is Blog-ONLY
+min_body_chars: 900
+abstract_span_count: [2, 3]
+highlight_count: [4, 6]
+max_span_distance: 8000
+duplicate_description_policy: ban
+judge_required: true
+coverage_target_pct: 0.85
+max_human_review_open_pct: 0.05
+human_review_after_attempts: 2
+minimum_review_sample: 20
+# Customer pull-quotes are the most quotable text on the page and the most likely to lose their
+# attribution during canonicalisation. Banned rather than captured-with-speaker: capturing the
+# attribution reliably needs structure canonicalisation has already destroyed.
+allow_quotes: false
+forbidden_patterns:
+  - "^(Read|Download) the (full )?(case study|story)"
+  - "^Ready to (get started|see|talk)"
+  - "^About Algolia"                    # the boilerplate block, banned as a CANDIDATE not a record
+  - "^\\d+%$"                           # a bare stat tile with no sentence around it
+  - "^\\d+([.,]\\d+)?x (faster|more|higher)$"
+dead_page_markers: ["Page not found", "customer story is no longer available", "Page introuvable", "Seite nicht gefunden"]
+shell_markers: ["Loading customer story", "customer-story-skeleton"]

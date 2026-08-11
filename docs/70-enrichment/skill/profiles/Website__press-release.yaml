@@ -1,0 +1,24 @@
+# Website/press-release -- count confirmed by plan-slice at run time, never assumed.
+#
+# "About Algolia" is the highest-scoring editorial-looking prose on the page and would be
+# selected as the abstract on every record unless banned. Banned AT THE CANDIDATE LAYER: a
+# record-level gate here would kill the whole slice the way a record-level gate nearly killed
+# 589 Blog records.
+strategy: press_release
+abstract_shape: announcement_summary
+language_policy: must_match_record
+min_body_chars: 700
+abstract_span_count: [2, 3]
+highlight_count: [3, 5]
+max_span_distance: 6000
+duplicate_description_policy: ban
+coverage_target_pct: 0.85
+minimum_review_sample: 20
+allow_quotes: false
+forbidden_patterns:
+  - "^About Algolia"
+  - "^(Media|Press) (Contact|Inquiries)"
+  - "^Forward[- ]looking statements"
+  - "^[A-Z][A-Z .]+, [A-Z][a-z]+ \\d{1,2}, \\d{4}\\s*[—–-]"   # the dateline
+  - "^SOURCE Algolia"
+dead_page_markers: ["Press release not found", "Page not found"]
