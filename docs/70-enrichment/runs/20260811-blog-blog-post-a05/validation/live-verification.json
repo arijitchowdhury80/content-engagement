@@ -1,0 +1,59 @@
+{
+  "proof_of_life": {
+    "ok": true,
+    "probes": [
+      {
+        "found_self": true,
+        "nbHits": 1,
+        "objectID": "de_26746102-cac6-4164-b199-30fc997b5ff9_0_1",
+        "query": "sake of this article, we'll implement"
+      },
+      {
+        "found_self": true,
+        "nbHits": 1,
+        "objectID": "de_467583b5-39fb-42f2-86c1-fec3bf2777f5",
+        "query": "these key practices, you will equip"
+      },
+      {
+        "found_self": true,
+        "nbHits": 2,
+        "objectID": "de_7363423d-4e77-4c6f-b9db-36659526c42d",
+        "query": "exponentially improve the user experience on"
+      },
+      {
+        "found_self": true,
+        "nbHits": 1,
+        "objectID": "de_a623936c-6517-439d-92d0-6feb53dbbe71",
+        "query": "the popular saying, \"software is eating"
+      },
+      {
+        "found_self": true,
+        "nbHits": 1,
+        "objectID": "de_a7d58669-7426-4e7d-90eb-25eda68c6cb6",
+        "query": "important connection between search engine optimization"
+      }
+    ],
+    "queries_with_hits": 5
+  },
+  "source_index": {
+    "expected_records": 11928,
+    "index": "Algolia_Prod_Copy_Enhanced",
+    "ok": true,
+    "records": 11928,
+    "records_unchanged": true,
+    "settings_changed": []
+  },
+  "verification": {
+    "exact": 20,
+    "expected": 20,
+    "extra_count": 0,
+    "extra_records_in_target": [],
+    "forbidden_metadata": [],
+    "index": "Algolia_Prod_Copy_Enhanced_Parallel",
+    "mismatched": [],
+    "missing": [],
+    "ok": true,
+    "spans_compared": 151
+  },
+  "verified_at": "2026-08-11T05:05:36.240297+00:00"
+}

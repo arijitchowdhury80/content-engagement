@@ -55,6 +55,13 @@ def build_status(client, source_index: str, target_index: str, runs_dir: Path,
     _, target_records = client.record_count(target_index) if target_exists else (0, 0)
 
     slices: dict[str, dict] = {}
+    # A slice can have multiple attempts (a01, a02, ... a retry or a re-methodology run). They
+    # are re-tries of ONE slice, not independent slices, so "live for this slice" has to be the
+    # union of every attempt's planned objectIDs intersected with the target index -- not just
+    # the last-processed attempt's. Keying target_written_live off a single manifest silently
+    # drops an earlier attempt's real, verified write the moment a later attempt (even an
+    # incomplete one) sorts after it.
+    planned_by_key: dict[str, set[str]] = {}
     for manifest_path in sorted(Path(runs_dir).glob("*/manifest.json")):
         run_dir = manifest_path.parent
         manifest = json.loads(manifest_path.read_text())
@@ -62,21 +69,25 @@ def build_status(client, source_index: str, target_index: str, runs_dir: Path,
         cov_path = run_dir / "validation" / "coverage.json"
         coverage = json.loads(cov_path.read_text()) if cov_path.exists() else {}
         planned_ids = set(manifest.get("objectIDs") or [])
+        planned_by_key.setdefault(key, set()).update(planned_ids)
         entry = slices.setdefault(key, {
             "source": manifest["source"], "page_type": manifest["page_type"],
-            "runs": [], "planned_target_count": 0, "target_written_live": 0,
+            "runs": [], "planned_target_count": 0,
         })
         entry["runs"].append(manifest["run_id"])
         entry["planned_target_count"] = max(entry["planned_target_count"], len(planned_ids))
-        entry["target_written_live"] = len(planned_ids & written_ids)
         entry["last_run_id"] = manifest["run_id"]
         entry["profile_version"] = manifest.get("profile_version")
         if coverage:
             entry["coverage"] = coverage
+
+    for key, entry in slices.items():
+        entry["target_written_live"] = len(planned_by_key[key] & written_ids)
+        if "coverage" in entry:
             # RECONCILIATION, not restatement. The run artifact's claim and the live index's
             # count are two independent sources; if they disagree, one of them is wrong and the
             # status is red rather than whichever number is nicer.
-            entry["reconciles"] = coverage.get("target_written") == entry["target_written_live"]
+            entry["reconciles"] = entry["coverage"].get("target_written") == entry["target_written_live"]
 
     unreconciled = [k for k, v in slices.items() if v.get("reconciles") is False]
     return {

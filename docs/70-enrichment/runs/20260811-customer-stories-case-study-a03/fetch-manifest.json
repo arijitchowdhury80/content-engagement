@@ -1,0 +1,1904 @@
+{
+  "body_source": "ScoutRefetch",
+  "entries": {
+    "de_003ce534-f7ab-446e-aa3b-056fd03c6b3c": {
+      "chars": 16910,
+      "content_hash": "74b28fc0a9e65304a4796161c430c4482c050bb33915959df38e4190629649ea",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/Breville-Group"
+    },
+    "de_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0": {
+      "chars": 14029,
+      "content_hash": "d6b7a83c31e902df0c16f46838df9049ca3c751054778f22a07f640395fe0b4f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/wework"
+    },
+    "de_0f6e04dd-b969-4f68-9249-df35828ee2e3": {
+      "chars": 13181,
+      "content_hash": "1058a379627153e8d267bde70b993a2f83ac73f4165b46b1b433a2f156e82ab6",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/ergodyne"
+    },
+    "de_12c0a9e8-6859-437f-8122-317531b2f0ff": {
+      "chars": 11929,
+      "content_hash": "6c5348dad6eebafeb126130d2ff51d7188c4da84350caedfe87bf083618b32f7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/pc-componentes"
+    },
+    "de_145cbd99-e030-4dc9-914d-2ce01a8ef80d": {
+      "chars": 13451,
+      "content_hash": "80c43c50d3d4034a138b7fdd2bd7e50f9f76834cded2ac765fa75afe7de519ae",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/rugs-com"
+    },
+    "de_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0": {
+      "chars": 12646,
+      "content_hash": "d2de4af4cf5f7f65471f1f26b5eb71ef07ed2ec0325c428615c9e80ad9db7d07",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/auto-mercado"
+    },
+    "de_1d5a6102-739f-469a-964b-42d5a6b1c67d": {
+      "chars": 9713,
+      "content_hash": "0b80dc0cdc85b0c93caec9998bd51e4cb583954b9a659c4496c6d16612a9fb31",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/lacoste"
+    },
+    "de_1d91e31e-3201-433e-91e1-579bde4b345c_3_0": {
+      "chars": 14168,
+      "content_hash": "8e062c30d1da41005eb6b52b61304fe809acdd308c3de07797146b864e948384",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/staples"
+    },
+    "de_1e12af9e-c458-4825-85a7-5b3e94258763": {
+      "chars": 15364,
+      "content_hash": "8a551611ad071cbe29eb549178d81cb1326a9c7e342a500c6cb0d6853b3fd79e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/crocs"
+    },
+    "de_22d49010-f07b-44d6-9391-d18fb8780b96": {
+      "chars": 12731,
+      "content_hash": "21bbf913c5b393adc5db2420820bdc7bfc7a7491b01214e1dfecb3b49b741d73",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/decathlon-singapore"
+    },
+    "de_2343e356-ea15-4555-a0f8-d8d0caf3981f": {
+      "chars": 14176,
+      "content_hash": "b5f8efb0e6b7a42dd290abaef50d92c627efee952f1febe2c4fb00ed0a11801e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/fern-case-study"
+    },
+    "de_24570e7d-f174-489e-b2a8-01409bf61c7e": {
+      "chars": 16113,
+      "content_hash": "670257e48dc5dd9748164a485e84ec8c5368424ffa28ae8adbcc2c5b3edad88d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/hershey"
+    },
+    "de_256c2a5e-f0e2-4126-94ed-fdf7c99245c3": {
+      "chars": 12901,
+      "content_hash": "135a20d361c63130ed3d5105a86475123a4bddbde00e40abb419eec6703e9a91",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/document-360"
+    },
+    "de_29428872-6288-432d-a72d-01b083eee84f": {
+      "chars": 15868,
+      "content_hash": "22433a08d4decb61ae5d76ac7c5e0369a0dc682f7a5b227443563bc77f9846e1",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/Zeeman"
+    },
+    "de_2ba9965a-542d-4d31-889b-c447ad60e202": {
+      "chars": 15120,
+      "content_hash": "3a0697a61a7004ca3b7e5077e5be16754d6257a95cb6291401c5fc2da9060860",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/studocu"
+    },
+    "de_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13": {
+      "chars": 13298,
+      "content_hash": "b3e63d4739de848324f0135bda09ffa853666bb0ec4f0cbed1cd1347f975cd0d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/ubisoft"
+    },
+    "de_2f84bc0e-3fed-48c1-88e9-48aff3f6654e": {
+      "chars": 15711,
+      "content_hash": "0455dc0eb71e0930aa393bbe42c1ef480249321d61f2161aef5aed2f0bd71acc",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/CredibleMind"
+    },
+    "de_2f9f4f3a-90f2-465d-9514-2f3ff24259a5": {
+      "chars": 12917,
+      "content_hash": "5bc32df263686e3c7eaee8763486aa1d5229a37445c507762bcc8a629d33f2ed",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/madeiramadeira"
+    },
+    "de_34a73e6c-a20a-491c-9144-10384494a2da": {
+      "chars": 13260,
+      "content_hash": "05a3bb40e3654247bedc21cb57f64dae95b533b3e95228bd1809e2ccbbb46fcc",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/hanos-shop"
+    },
+    "de_351f8d88-abeb-487b-b96c-cc159fe37de1": {
+      "chars": 12682,
+      "content_hash": "5f74026ac8d92efe9aa156663f3d143ff3fe136516994d56160e2f591e2fe07d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/club-med"
+    },
+    "de_359d8099-0033-4685-97de-ea8e00813679": {
+      "chars": 13865,
+      "content_hash": "58b6cf14b84891c679fa9de2ff14b87d38d80d5ac18cfc7cb8a06a3fd26c20ef",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/everlane"
+    },
+    "de_383018e1-30ba-4140-8b71-27b429ceed2d": {
+      "chars": 14431,
+      "content_hash": "74ddd72c72f605a2e5a8a8d949e32b8ddabe71fa1684acb7b0afecb1cfe679be",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/vape-superstore"
+    },
+    "de_38a4bb1b-037e-422d-9716-21a0d1d37a3b": {
+      "chars": 14222,
+      "content_hash": "f0e3edd2163273c2e670e68daed55ae7525500edbe3afdf05a9bf79e81f561f9",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/mitre-10"
+    },
+    "de_3e911e64-945a-48c0-a8bb-82402e447990_3_0": {
+      "chars": 12362,
+      "content_hash": "e450e9ee3b66f931e280d5935111b6d020348890689968dd80a9bf8775e03abc",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/swedol"
+    },
+    "de_48242ec9-4d61-47b1-a3a1-1869e3a36bd7": {
+      "chars": 12708,
+      "content_hash": "51d4a56a9dd1967efca5c90b73bce14f330a905ba63a897109d15ed2c440a556",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/END."
+    },
+    "de_4b49b086-f35c-48c9-a072-8d1d6681d737_5_0": {
+      "chars": 13394,
+      "content_hash": "b1155e6e773a79c2ebed8a8688321a7128e6d327cbc08f3afcb1efd65af25ae8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/hagergroup"
+    },
+    "de_4d1663e7-981e-44a4-8733-4d15b6edfb14": {
+      "chars": 12893,
+      "content_hash": "67ce6bc4df1275e3b15741b0b0d1b578fe07adf02cd7a67350795ed94b3ecd98",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/apotek1"
+    },
+    "de_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad": {
+      "chars": 15292,
+      "content_hash": "8886f35c671d3a3a91b11c38c6c9554c1476c7acd44d25cfaaebf124291fa869",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/revival-animal-health"
+    },
+    "de_5e5305c6-69ca-4d08-af0c-95f4d0759217": {
+      "chars": 14436,
+      "content_hash": "232a843058c0e856ac8997fb93d365ee9618da8e31bf69a52927e3c742e35783",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/tag-heuer"
+    },
+    "de_6a023867-407d-40fe-ac36-d0cfef9097b8": {
+      "chars": 14538,
+      "content_hash": "511083a00d657874e2750c16abc91223ae30ad822f2265f99601a95ec0e3b0c6",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/gemo"
+    },
+    "de_6dd6663b-b802-4dec-a8ec-53535dd97810": {
+      "chars": 14381,
+      "content_hash": "46e779614b17f09c70cc03c9510afa338318ef921d4847e7d7d3b9bfac2246e4",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/flaconi"
+    },
+    "de_77275ca8-76e6-4b80-9420-c00297fdc62f": {
+      "chars": 12984,
+      "content_hash": "c56b6a2b63fde4da59cfeaa914d98499afeca12d0a3a4d6f3738e52632691157",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/nutscom"
+    },
+    "de_78986fd0-7d33-454c-b243-45b66f9ca4c5": {
+      "chars": 18751,
+      "content_hash": "4b655373572d69dac0884e94544cdc06107874d5e43f32e4b0824a9256042309",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/politico"
+    },
+    "de_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a": {
+      "chars": 16440,
+      "content_hash": "5d8d837d3bfb75ddc7e9caecb28621810d5770ef0864fd6e1b8973772bdc0ce2",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/harry-rosen"
+    },
+    "de_7e543149-b0ab-4a08-b35c-ba343512dbbe": {
+      "chars": 10925,
+      "content_hash": "ee61f54e4ba86625ed9c060ce7496a2f7a363a374beb412a4c3d79f1b45b939d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/maisons-du-monde"
+    },
+    "de_7ec2610c-3ed8-485c-addb-f3039005802a_4_0": {
+      "chars": 8250,
+      "content_hash": "ff7ae6d4cbcca859763797eee88bcef41c941479686f5e5557c99d5efcf76c92",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/kingarthur"
+    },
+    "de_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503": {
+      "chars": 15806,
+      "content_hash": "ab4e5b6698b32e381c3b657cf5f1861814ab65917d109227705f8d6f0df78b2a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/walgreens"
+    },
+    "de_7ee94215-25f0-4fba-a760-27f9634b520f": {
+      "chars": 19813,
+      "content_hash": "c0035956d301c3f73410055ee960394bd5cc1d011c451624a37561b81acad7b2",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/kiko"
+    },
+    "de_84daa182-b423-4ddc-9e33-18b6a5ae6127": {
+      "chars": 8364,
+      "content_hash": "51a24fa9a332450670bf434c7364f9bc89ea6a4985f38baab7b9a258fe64199d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/flexport"
+    },
+    "de_87da78ad-1820-4765-862d-3196c5729145_4_0": {
+      "chars": 15932,
+      "content_hash": "7ab2ab7e505fad902a7b119e87dfcb7d141aec6271ffb16bb267742cc5cdfa85",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/dm-drogerie-markt"
+    },
+    "de_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7": {
+      "chars": 10306,
+      "content_hash": "27e929db23202e79512c786277d10bdb85ef6446e904f36dade70a488b353d5c",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/teachers-pay-teachers"
+    },
+    "de_9011f3d1-31dd-4480-ad26-1ee447b8a274": {
+      "chars": 13323,
+      "content_hash": "6752e1834f6e13931e12160aa114f27f42e9da59c0a7032a286afe917dec3a33",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/sary"
+    },
+    "de_96759fb1-e0b6-407d-abf3-9f966262ec8d": {
+      "chars": 13303,
+      "content_hash": "efc859c4b0ad572814bd574e2896c5bde4b3ec34aa4840d624e135f30338b49e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/smartbuyglasses"
+    },
+    "de_99298a76-2283-4946-afa8-a8110c3e078a": {
+      "chars": 18723,
+      "content_hash": "494c78910a71c114c1f6abf499191d826220f36c44503a32c9dc90e2d25aa465",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/dawnfoods"
+    },
+    "de_9a1f8335-3451-40ac-9e56-162d5721916c_4_0": {
+      "chars": 12270,
+      "content_hash": "0b24d2f7c986ee235d0df70ca77b009bf2b175de49a5e65c6c3e1ff5bc92c27f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/wizbii"
+    },
+    "de_9edae2fd-c919-4b57-ab98-56f6174d4847": {
+      "chars": 16363,
+      "content_hash": "45074387c2830b5d89544b111214ee18ada33d9caf6b31d593d0a1c1e80c7b75",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/leroy-merlin-brasil"
+    },
+    "de_a09ea35d-462c-4376-b33b-0c1d519cad76": {
+      "chars": 9719,
+      "content_hash": "4cab6c041cd29e2160bead1d515b6de0ab36fd87d9d6637d9e13071154fe0eb4",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/iu-health-trendyminds"
+    },
+    "de_a1ab6edb-ece3-473f-a934-269b816db624": {
+      "chars": 14239,
+      "content_hash": "53b5af759eacad99db21db864551f6e2ce943a854e9635c7044ba2469eb95b06",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/huckberry"
+    },
+    "de_a2892dee-4f74-416a-957c-8e920cabd0aa": {
+      "chars": 12364,
+      "content_hash": "3aa350b01e40847520633a23a12c57c460ff6a3713abf23b616da5dcd4663e95",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/zoom"
+    },
+    "de_a92f12bd-cae6-4245-9138-4437c477f526": {
+      "chars": 13908,
+      "content_hash": "83952558a4102b2344a4cfa5d51b391c9c43bc4829ceac41cdd4eaaf308d0aa1",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/Zenni"
+    },
+    "de_aa29a6cd-cdeb-42f9-ac76-de7f714d9921": {
+      "chars": 14919,
+      "content_hash": "6589c5143cea7e4d1d4b94f7a9b9ec100ef0302ff28e1e1a6dd81d1e1c094055",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/gofundme"
+    },
+    "de_aa7ef1a7-cae9-4096-8d1f-08763268af54": {
+      "chars": 16243,
+      "content_hash": "8b09d9f7ebd5f6b3401dbb772e60936ca27ad40f52a3e5983923a452559da115",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/the-times"
+    },
+    "de_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0": {
+      "chars": 14320,
+      "content_hash": "ede95c4428531b9f5483885a55af59052566b1c33b532589be7a5cc03a16a39e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/co-op"
+    },
+    "de_b1e338c8-834b-4bde-b0ad-49573cab2069": {
+      "chars": 15626,
+      "content_hash": "3cb94504321a02cb03ce070d6385dca7d50e91cd7bc67ef4fed216c378079d80",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/bike-totaal"
+    },
+    "de_b9503457-db5d-4dae-af1b-3bb21a125a99": {
+      "chars": 13282,
+      "content_hash": "4317087482dd82b02329e4a8ed48c73d08ae6bd6f93eb2e8ec045541168867ab",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/YourSurprise"
+    },
+    "de_b9b8e76d-87a8-4194-af5c-9925e48fa774": {
+      "chars": 14939,
+      "content_hash": "aacaa2cdd056f513aefe8ee9890852991f622e4033bb752b91ab31e9cfb2c5b7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/al-futtaim-group"
+    },
+    "de_bc4d8a99-ec83-404a-b6d3-03fd591c61f6": {
+      "chars": 21066,
+      "content_hash": "4a2452151de153ab8f902b4f6d962f445f7ead03599540520213ce1b84025cdb",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/orange"
+    },
+    "de_bc69733d-47e0-4583-bb38-79654a8cdf7f": {
+      "chars": 8880,
+      "content_hash": "89dd9ade392ce692da679131f30b83eb4d8f9853a3322d3c807bb6ccfe9facec",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/better-world-books"
+    },
+    "de_c7700c1c-b36f-4868-9dd8-327f033787ed": {
+      "chars": 11749,
+      "content_hash": "80af244c118dd77980d0555ca65ef375a6a4e7798aa19770e1de1cfd139b9006",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/mister-auto"
+    },
+    "de_c9ee8103-5114-4af6-becc-252a0c94c1dc": {
+      "chars": 205,
+      "content_hash": "0354812216f9cf614781a724fb272453ef119f000dcac04cca783204993bc120",
+      "fetch_error": "",
+      "http_status": 404,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/dunelm"
+    },
+    "de_cdf26e3c-e470-4fb5-b306-92c942705380": {
+      "chars": 15370,
+      "content_hash": "4b7102d0ec04feb3b5c2b2f9bd10592fc300531515527416abbc811ddd1d0e64",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/culture-kings"
+    },
+    "de_ced2f4d6-586d-49c4-9ff3-af230007904c": {
+      "chars": 205,
+      "content_hash": "0354812216f9cf614781a724fb272453ef119f000dcac04cca783204993bc120",
+      "fetch_error": "",
+      "http_status": 404,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/WeightWatchers"
+    },
+    "de_cf058e1a-76ff-463a-ab45-08e937f6ec35": {
+      "chars": 14679,
+      "content_hash": "b894502b3bd9f0ba569bbc93da3a4fcf00fbfd12ec74fabaee9d80916ef5b8d7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/live-platforms"
+    },
+    "de_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext": {
+      "chars": 13147,
+      "content_hash": "d5584db7fb212dfdd8fac7d9a59b88ff1efc158ecefd324c2c773514c0185b37",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/edx"
+    },
+    "de_e098d8dc-17f2-4927-aa77-c4f768fa223d": {
+      "chars": 13701,
+      "content_hash": "1e7863dfc1bb91d964886c37dea3919d1bc15c6f6c6372a1d632bea2a4d888aa",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/beachbody"
+    },
+    "de_e393be62-de5f-4673-8d56-b4682bbc9ebb_4_0": {
+      "chars": 205,
+      "content_hash": "0354812216f9cf614781a724fb272453ef119f000dcac04cca783204993bc120",
+      "fetch_error": "",
+      "http_status": 404,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/damstahl"
+    },
+    "de_e6deb45c-7ecf-479c-9b42-3a03841e4068": {
+      "chars": 13801,
+      "content_hash": "ef448eef2bd0436aa4eaf2c8b60e190d30707017db4d9ff1bc8213e7b23beee7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/plieger"
+    },
+    "de_e844f3fa-657d-4776-8a4b-3599a83ee7e9": {
+      "chars": 19780,
+      "content_hash": "a4b1483bb0e6f03876f5185b0f12ed588bad4bb649989d56e71a26da87f520da",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/donorschoose"
+    },
+    "de_ea16ae71-e155-4a81-9284-84e00d7dc90a": {
+      "chars": 10252,
+      "content_hash": "679c31b7874d5127bee99ca9a17a8489067b30fecc58ba366390429e7817f590",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/under-armour"
+    },
+    "de_eab4c0ef-e5ad-4301-baee-4da7c5d6f802": {
+      "chars": 15194,
+      "content_hash": "630855aad67628cf0c01c4cd06eac740972f5f0f5150c92aca74d8057ff75cf1",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/h-e-b-mexico"
+    },
+    "de_eca3c014-5834-4a67-8c25-43a17d819f2b": {
+      "chars": 15189,
+      "content_hash": "232190b48859c35e59cd0e59847d36335a41b6449c4bbc38e5a4893286fb2ab4",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/DocMorris"
+    },
+    "de_efd0db31-e3cf-4b4f-ac28-1403f01f2d16": {
+      "chars": 13781,
+      "content_hash": "cac3b5d2725ad20f1a4cb8d67ef4c54c3a87130ed94b6968f6aeebe797e7645e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/gymshark-recommend"
+    },
+    "de_efdf6501-867d-40f6-b24d-cb60ba32fa62": {
+      "chars": 13400,
+      "content_hash": "2e9d7d4b9592658fab83d59c9b48826c4afff446079f2a02a0997da0f15366f9",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/PetSmart"
+    },
+    "de_f2db43f6-1a47-48e7-8dbb-64225262c8bc": {
+      "chars": 17495,
+      "content_hash": "a1b8340a54be868eec85fc71a05766d79b62b7cb538401c2945460fe377a4e4f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/gymshark-headless"
+    },
+    "de_f3ea09ef-2a78-4188-8a1f-72f330496179": {
+      "chars": 8322,
+      "content_hash": "64cd2c2c46d587e246db2ee3429c7e3d5241b4522ff0362a4bcf397930226481",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/idealist"
+    },
+    "de_f51b1318-21fa-41cc-ae25-c0c350c5c83e": {
+      "chars": 8712,
+      "content_hash": "575d6c3da2f3b24d0a45edd64761739badaf8aa474b7dcf240c409c7314d0e5a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/manomano"
+    },
+    "de_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2": {
+      "chars": 12951,
+      "content_hash": "3b6220d87dd237befa647f7a1e4b8a408a01630d8b002a04b545d28ddf121752",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/bigw"
+    },
+    "de_fe2981e6-5a8f-4d0d-a47e-9683a129ec92": {
+      "chars": 17935,
+      "content_hash": "e37818b65e702dfc18da7f63db22c3c3e90b2557e76df983a8b561c80bcd9858",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/shoe-carnival"
+    },
+    "en_003ce534-f7ab-446e-aa3b-056fd03c6b3c_4_0": {
+      "chars": 14611,
+      "content_hash": "c97b03093a890a4aea3b6b2e9310e7adee730ee961c920063c05a3b48c8cda55",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/Breville-Group"
+    },
+    "en_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0": {
+      "chars": 12236,
+      "content_hash": "fdf6bfd96b7541fe635fe3defab56e919b6f102c87823cdc74f955423ef738f0",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/wework"
+    },
+    "en_0f6e04dd-b969-4f68-9249-df35828ee2e3_4_0": {
+      "chars": 11229,
+      "content_hash": "2f251cac6d0821e833f79f9c99dddbeb3725f23a241ff344a0d6c1f668df815e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/ergodyne"
+    },
+    "en_12c0a9e8-6859-437f-8122-317531b2f0ff": {
+      "chars": 10154,
+      "content_hash": "b0a109a4d06a3345ec1b3ae2e2bfa0cb1593c2553254f166ead836b3ec2401b3",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/pc-componentes"
+    },
+    "en_13aaa810-eba0-4f71-9794-ad404b7ed359_3_0": {
+      "chars": 13375,
+      "content_hash": "41f6e1ad5aeb61454dc19c526b0182c6df150df78f024b0bcfa6c4a30cf3919f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/Clarks"
+    },
+    "en_145cbd99-e030-4dc9-914d-2ce01a8ef80d_3_0": {
+      "chars": 11298,
+      "content_hash": "34e0c8d5049c172d9d607d971199f62144728c2758895ccc59de541f99b9c5ca",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/rugs-com"
+    },
+    "en_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0": {
+      "chars": 10730,
+      "content_hash": "3c5b5e6b70ad90ca71615493bd62b3cc288acdd5dcc07b3ff8a6e53f5fa6735d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/auto-mercado"
+    },
+    "en_1d5a6102-739f-469a-964b-42d5a6b1c67d": {
+      "chars": 8100,
+      "content_hash": "b487193d0fd23539696e0a40e5457d63cbfde9d0ad4efe95cc7d66e34ce48538",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/lacoste"
+    },
+    "en_1d91e31e-3201-433e-91e1-579bde4b345c_3_0": {
+      "chars": 12008,
+      "content_hash": "d4126edb7877069489a6ddf0f8de157015e9e42c7059cc26d051a0568960a9da",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/staples"
+    },
+    "en_1e12af9e-c458-4825-85a7-5b3e94258763_3_0": {
+      "chars": 12259,
+      "content_hash": "329c485e65eab53ec868a8632d7d47a4f3ad0e8d716732413ee570bbeb166395",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/crocs"
+    },
+    "en_22d49010-f07b-44d6-9391-d18fb8780b96_4_0": {
+      "chars": 10939,
+      "content_hash": "e23f5f26ef8ec01b4ba81baa3827ec67f35435cad05d25f2903b5e27abed4b7d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/decathlon-singapore"
+    },
+    "en_2343e356-ea15-4555-a0f8-d8d0caf3981f_3_0": {
+      "chars": 11777,
+      "content_hash": "1328fc539e98e0730327b48ea8b2f419f5fce11e0434a4e9cb39fe7bac48bbb5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/fern-case-study"
+    },
+    "en_24570e7d-f174-489e-b2a8-01409bf61c7e_4_0": {
+      "chars": 13863,
+      "content_hash": "30163fe344096aa1f663eb9a1dc19bdc184520b7dbe92ea9ca5ab07dea6e7aa5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/hershey"
+    },
+    "en_256c2a5e-f0e2-4126-94ed-fdf7c99245c3_4_0": {
+      "chars": 10897,
+      "content_hash": "89ceef907f42ad0dbc922f1bb0e71f00bdaa4f28c3b524ee4c145b7c3be7f552",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/document-360"
+    },
+    "en_27cd61c1-68d9-49ec-96ef-dd0c51e345cd_3_0": {
+      "chars": 11052,
+      "content_hash": "af58156c66b2aeaaae69ee899d7f7c11b7929f6228960068c193a5fb4f68470f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/Arcteryx"
+    },
+    "en_29428872-6288-432d-a72d-01b083eee84f_4_0": {
+      "chars": 13440,
+      "content_hash": "bed612f9fdbff74c5887ea31ac421d5e3e76107573ac262ad64af30bf3e11544",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/Zeeman"
+    },
+    "en_2ba9965a-542d-4d31-889b-c447ad60e202_4_0": {
+      "chars": 12449,
+      "content_hash": "f4e730cde9f1a49dd5a8da423215891519dca993ec1033bcdc071db4d62e42cd",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/studocu"
+    },
+    "en_2d11146a-88a1-4c0a-90d2-e53bd636c815_3_0": {
+      "chars": 10646,
+      "content_hash": "d6846ba115de342d5db72e2e18b0fcf11ebc0172576e100b21dcd700cbfa53d1",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/gametime"
+    },
+    "en_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13_5_0": {
+      "chars": 11223,
+      "content_hash": "b786d798b92992c81f61e12c7c52b097a9708dfa3cf817edde5e5dd58dbd3f39",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/ubisoft"
+    },
+    "en_2f84bc0e-3fed-48c1-88e9-48aff3f6654e_3_0": {
+      "chars": 13063,
+      "content_hash": "6bf5ee10cd76a3144264086060751a03cb0abd3b04497d1fa5094118aedffb66",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/CredibleMind"
+    },
+    "en_2f9f4f3a-90f2-465d-9514-2f3ff24259a5_3_0": {
+      "chars": 10708,
+      "content_hash": "edd8a71f01a17c685e563b27eb3a679f1b29e8895bf2739da4de9b0f62c33d88",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/madeiramadeira"
+    },
+    "en_34a73e6c-a20a-491c-9144-10384494a2da_4_0": {
+      "chars": 11339,
+      "content_hash": "f443e6a5fbd824f43593868bcf52f8bf1c34522d4517a3c083910484aa2086d7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/hanos-shop"
+    },
+    "en_351f8d88-abeb-487b-b96c-cc159fe37de1_3_0": {
+      "chars": 10669,
+      "content_hash": "29c1fc3d27ccc001173d82c30144ec81f5b176a83dc2f5107f1ac0dcac310375",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/club-med"
+    },
+    "en_359d8099-0033-4685-97de-ea8e00813679_4_0": {
+      "chars": 11790,
+      "content_hash": "149c6cce96ff1fa840f22892d4869ee1d942037ea4ee7c7dfeee2436845dfda5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/everlane"
+    },
+    "en_383018e1-30ba-4140-8b71-27b429ceed2d_4_0": {
+      "chars": 12412,
+      "content_hash": "475b31c9ce96b0dec5a590ecb267cf93e80cd87b6e8d30e2bf7ad85e57db07a1",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/vape-superstore"
+    },
+    "en_38a4bb1b-037e-422d-9716-21a0d1d37a3b_5_0": {
+      "chars": 12331,
+      "content_hash": "0d492ea634f65982d9be30cbe2368205f02c4795c323b5cbec2cc38f3b1aef58",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/mitre-10"
+    },
+    "en_3e911e64-945a-48c0-a8bb-82402e447990": {
+      "chars": 10573,
+      "content_hash": "c70b7ff3cf26a3cdf76d7b0484db88a0d2e860a6387d6aa9c04318a5345da8f0",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/swedol"
+    },
+    "en_48242ec9-4d61-47b1-a3a1-1869e3a36bd7_3_0": {
+      "chars": 10693,
+      "content_hash": "87b8741bc0e6ea69faffd29acb152af86e8a105fbb273c5c031f278449489688",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/END."
+    },
+    "en_4b49b086-f35c-48c9-a072-8d1d6681d737": {
+      "chars": 11399,
+      "content_hash": "33017018bbb390aa7c9339cf49d4729475f875f2ef30cc17f78c20195b30b403",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/hagergroup"
+    },
+    "en_4d1663e7-981e-44a4-8733-4d15b6edfb14_4_0": {
+      "chars": 11023,
+      "content_hash": "b80c6af79651ee51d70a0b1857607c8c9520133cde7e924b7b008981773003af",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/apotek1"
+    },
+    "en_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad_5_0": {
+      "chars": 12940,
+      "content_hash": "d11887cb292352b3a87315dfe73248fe7c0eb56b323ceeaed65de6c0eee50f09",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/revival-animal-health"
+    },
+    "en_545928cd-188f-4b67-9823-fb89342b426e": {
+      "chars": 3807,
+      "content_hash": "8d43a9e8f34300d18334b5b9a3075343d77fb714e3099be405418847299a30d9",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/customers/bringmeister"
+    },
+    "en_5e5305c6-69ca-4d08-af0c-95f4d0759217_4_0": {
+      "chars": 12208,
+      "content_hash": "a642439be547568a8a357556403e1ef2ce13312fb1a834f722f2f9ba0b011011",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/tag-heuer"
+    },
+    "en_6a023867-407d-40fe-ac36-d0cfef9097b8_3_0": {
+      "chars": 11748,
+      "content_hash": "708a62b1b623d4bb6d25ac8e0d3e7dc545b1ab73a89cb29792d7529e4b00106e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/gemo"
+    },
+    "en_6c291d72-1d33-41e0-8e4d-3918dfe978d4_4_0": {
+      "chars": 11725,
+      "content_hash": "2139e19a47a10e5a111bde0ff0cfb594042a3e37288032d6fc5b8ea06368399e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/sellpy"
+    },
+    "en_6dd6663b-b802-4dec-a8ec-53535dd97810_3_0": {
+      "chars": 12080,
+      "content_hash": "99d8aaaeb2952a6fdd2336c469c5d8a073b96f4418c300ebf7760b08a171c503",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/flaconi"
+    },
+    "en_77275ca8-76e6-4b80-9420-c00297fdc62f_3_0": {
+      "chars": 10761,
+      "content_hash": "48e8dfa194daf60b691167f9d3dc6079e1ee3fb2c7e09f682dbae80cd0b18f71",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/nutscom"
+    },
+    "en_78986fd0-7d33-454c-b243-45b66f9ca4c5_4_0": {
+      "chars": 15833,
+      "content_hash": "9c041ccfefd5c3f5e44d8f18736dab711c6f196698d9c0a5c4a483aa21f2d53d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/politico"
+    },
+    "en_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a_4_0": {
+      "chars": 13830,
+      "content_hash": "ecbb8c2b087334b73952025ed37a53d0ef932876ec8b93db8792ecdcdff360cc",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/harry-rosen"
+    },
+    "en_7e543149-b0ab-4a08-b35c-ba343512dbbe": {
+      "chars": 9477,
+      "content_hash": "7c066114a1b5a52970a5b0219dba2e9de4fb318ddc896dff04af899e44ebe6df",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/maisons-du-monde"
+    },
+    "en_7ec2610c-3ed8-485c-addb-f3039005802a": {
+      "chars": 8336,
+      "content_hash": "f57d92d7210fd78f70115758b78a9c9b3d6e7ca3d781235ce72d3905a436c764",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/customers/kingarthur"
+    },
+    "en_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503_3_0": {
+      "chars": 13530,
+      "content_hash": "a0f5086b42355bd705714ef74645f2ca15c54045c7ee6aa4255e9ee6c450f065",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/walgreens"
+    },
+    "en_7ee94215-25f0-4fba-a760-27f9634b520f_3_0": {
+      "chars": 16206,
+      "content_hash": "2aed95d0dc7f81a7d07959bf9235bc703e33ccedf543c708236cd4aa1d33e898",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/kiko"
+    },
+    "en_84daa182-b423-4ddc-9e33-18b6a5ae6127": {
+      "chars": 7151,
+      "content_hash": "5e70114043dd44e25c8ebe86ce91e700745df014a6477a2bce49d4d143b70472",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/flexport"
+    },
+    "en_87da78ad-1820-4765-862d-3196c5729145_4_0": {
+      "chars": 13666,
+      "content_hash": "efce715b60324467574f2f83bdaa55bf28ebca18f523981135f3ce8904238de3",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/dm-drogerie-markt"
+    },
+    "en_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7": {
+      "chars": 8751,
+      "content_hash": "1c7d8bba4b1777373adf4d4c3352670d8d658cfa2e444f0835e06ab0cb8a236b",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/teachers-pay-teachers"
+    },
+    "en_9011f3d1-31dd-4480-ad26-1ee447b8a274_4_0": {
+      "chars": 11379,
+      "content_hash": "2e97bddfe7d9a3ba0018b3cc95cf2a1afab4652dddcb93d7db779accece94904",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/sary"
+    },
+    "en_96759fb1-e0b6-407d-abf3-9f966262ec8d_4_0": {
+      "chars": 11270,
+      "content_hash": "88708bb807ed0bda322b9150cbd567678360dfaa77719fbd3158f5e951dacad5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/smartbuyglasses"
+    },
+    "en_99298a76-2283-4946-afa8-a8110c3e078a_4_0": {
+      "chars": 16017,
+      "content_hash": "e0d127aff6e7a1fd867069cb5896b3468d39ab363db5e15814082c77a88e00e4",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/dawnfoods"
+    },
+    "en_9a1f8335-3451-40ac-9e56-162d5721916c": {
+      "chars": 10480,
+      "content_hash": "8597f442a8ad3f3296f2d4c1a3a2f8e6766da1ff1ffc630cdf9cbf6fbdf78a1c",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/wizbii"
+    },
+    "en_9edae2fd-c919-4b57-ab98-56f6174d4847_3_0": {
+      "chars": 13761,
+      "content_hash": "b52c5e5d2d74aa06ac6d1c13414421e2856ac5def3ee35099c496a4a5c93e674",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/leroy-merlin-brasil"
+    },
+    "en_a09ea35d-462c-4376-b33b-0c1d519cad76": {
+      "chars": 8223,
+      "content_hash": "545633d370c7be14d87a2540abc8edfe732b3e69ca69ecbcd3a96c0b0c3e2156",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/iu-health-trendyminds"
+    },
+    "en_a1ab6edb-ece3-473f-a934-269b816db624_4_0": {
+      "chars": 12143,
+      "content_hash": "7acaeae23d7c15895215bffbf395cfc9ccca2df199ece15dd3cf6abc2be874f2",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/huckberry"
+    },
+    "en_a2892dee-4f74-416a-957c-8e920cabd0aa": {
+      "chars": 10395,
+      "content_hash": "fa5c463ce2b22b92fbe7438e9893717f026d02e83e783981f6d4ca293264f666",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/zoom"
+    },
+    "en_a92f12bd-cae6-4245-9138-4437c477f526_4_0": {
+      "chars": 11634,
+      "content_hash": "08b7d7aa4a4956bf3e9c96a8f02051011f6a40412506f79894fef4d326d9b446",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/Zenni"
+    },
+    "en_aa29a6cd-cdeb-42f9-ac76-de7f714d9921_5_0": {
+      "chars": 12717,
+      "content_hash": "88892294a9280a1457d694674eb76572cc3a620dd17af2d2971f0a9d4496410d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/gofundme"
+    },
+    "en_aa7ef1a7-cae9-4096-8d1f-08763268af54_3_0": {
+      "chars": 13619,
+      "content_hash": "412ba1724cdfc7fbee0a15895e833b474a50ee7300bc517f2b3858449ccdd1f8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/the-times"
+    },
+    "en_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0": {
+      "chars": 11846,
+      "content_hash": "b49d6f85c2109861ed272a4441495d16f57a3e49427960dfc094e77b2a344897",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/co-op"
+    },
+    "en_b1e338c8-834b-4bde-b0ad-49573cab2069_3_0": {
+      "chars": 13135,
+      "content_hash": "8ac7accf31bed6558022a7725fd4aca1f4072c129117f070a7254c03534319fb",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/bike-totaal"
+    },
+    "en_b9503457-db5d-4dae-af1b-3bb21a125a99_3_0": {
+      "chars": 11385,
+      "content_hash": "637b365f67dddffc12b4485ee18cb064eb1734109b3c88c35f258a9850f6d13f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/YourSurprise"
+    },
+    "en_b9b8e76d-87a8-4194-af5c-9925e48fa774_4_0": {
+      "chars": 12736,
+      "content_hash": "2a884ca13b894718ab6e5d6c8437a910bec6ac20045cc91858c950b165557f96",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/al-futtaim-group"
+    },
+    "en_bc4d8a99-ec83-404a-b6d3-03fd591c61f6_3_0": {
+      "chars": 17240,
+      "content_hash": "5a7698e808cebe96ef488fad07e7b8aec6a15fbb66b053ecda1a147693f5ba32",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/orange"
+    },
+    "en_bc69733d-47e0-4583-bb38-79654a8cdf7f": {
+      "chars": 7845,
+      "content_hash": "e5c604a1b08349d2097f3398f86d67c3a56070350e2f7403101d234bc0193e5e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/better-world-books"
+    },
+    "en_c7700c1c-b36f-4868-9dd8-327f033787ed": {
+      "chars": 10033,
+      "content_hash": "907d4a6726b5549e8292956167b2889b4e70720fc74e6ea3c9a87e050e048152",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/mister-auto"
+    },
+    "en_c9ee8103-5114-4af6-becc-252a0c94c1dc": {
+      "chars": 205,
+      "content_hash": "0354812216f9cf614781a724fb272453ef119f000dcac04cca783204993bc120",
+      "fetch_error": "",
+      "http_status": 404,
+      "redirect_mismatch": false,
+      "served_url": "/customers/dunelm"
+    },
+    "en_cdf26e3c-e470-4fb5-b306-92c942705380_3_0": {
+      "chars": 13026,
+      "content_hash": "5ec10d228e0219f750a90f20d180bdcb38339cd707e0cf09938ded6ec8dde1a8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/culture-kings"
+    },
+    "en_ced2f4d6-586d-49c4-9ff3-af230007904c": {
+      "chars": 205,
+      "content_hash": "0354812216f9cf614781a724fb272453ef119f000dcac04cca783204993bc120",
+      "fetch_error": "",
+      "http_status": 404,
+      "redirect_mismatch": false,
+      "served_url": "/customers/WeightWatchers"
+    },
+    "en_cf058e1a-76ff-463a-ab45-08e937f6ec35_4_0": {
+      "chars": 12473,
+      "content_hash": "112c341f2a3cc0adc4f78308f69f98ccf4b0eb19b8eca8ebaf5acf3aaa63c759",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/live-platforms"
+    },
+    "en_d0625c3b-d12a-4547-9bf0-0e72a160ece8_3_0": {
+      "chars": 13625,
+      "content_hash": "188ca986ea91618ae2f8daf5214de094da15a480d2998451b274e0a395b6fd13",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/hbm"
+    },
+    "en_d851224c-922e-4f33-8f0b-b92995bc8682": {
+      "chars": 11545,
+      "content_hash": "c4b616d582fee4f6ce5d12188abf63ea894b3462a60273fe7857299f950fbf19",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/edx"
+    },
+    "en_e098d8dc-17f2-4927-aa77-c4f768fa223d_3_0": {
+      "chars": 12044,
+      "content_hash": "0abe7f35e7bee5bee4adcc957b1a26454526e7a4704029b155167fabeaf7c8d5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/beachbody"
+    },
+    "en_e6deb45c-7ecf-479c-9b42-3a03841e4068_4_0": {
+      "chars": 11962,
+      "content_hash": "303d4264f918ca0d0848edc0261befac971aa9bb75232b283001f063726b3346",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/plieger"
+    },
+    "en_e844f3fa-657d-4776-8a4b-3599a83ee7e9_6_0": {
+      "chars": 16478,
+      "content_hash": "3af6df44d061de96f21d67fdae9c14998b7bd06ae4918cc59bb83cb506d0dd5b",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/donorschoose"
+    },
+    "en_ea16ae71-e155-4a81-9284-84e00d7dc90a": {
+      "chars": 8831,
+      "content_hash": "e7270fd1796d717ec7a1570ae78b70e7db3a2d73e0e2a2d38779d6ef711200bd",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/under-armour"
+    },
+    "en_eab4c0ef-e5ad-4301-baee-4da7c5d6f802_3_0": {
+      "chars": 12758,
+      "content_hash": "c4ed420e80ebe3e7c69ea365df0f2628c5ad7021039a27ff4563c8eea8a307e9",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/h-e-b-mexico"
+    },
+    "en_eca3c014-5834-4a67-8c25-43a17d819f2b_3_0": {
+      "chars": 12618,
+      "content_hash": "0913f33669ae892a33dae35da91d76bc3f8cb56b2632abaafd3b90545e0fc2ef",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/DocMorris"
+    },
+    "en_efd0db31-e3cf-4b4f-ac28-1403f01f2d16": {
+      "chars": 11865,
+      "content_hash": "b25aa4990f83f6f5a72df4e99d57654a4c5b9498514515d913503f5f3dfdc7ae",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/gymshark-recommend"
+    },
+    "en_efdf6501-867d-40f6-b24d-cb60ba32fa62_5_0": {
+      "chars": 11411,
+      "content_hash": "23317dbdef96e41e15dca4b8e2c76d5e9a64485ad91e09c8ffe9f8149c447c45",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/PetSmart"
+    },
+    "en_f2db43f6-1a47-48e7-8dbb-64225262c8bc_3_0": {
+      "chars": 14738,
+      "content_hash": "e8750993763d39991501332e678781162ad5f4fee6a2502621c7225e89917716",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/gymshark-headless"
+    },
+    "en_f3ea09ef-2a78-4188-8a1f-72f330496179": {
+      "chars": 7052,
+      "content_hash": "79b9741d190f8b65ca4b5957c23b2365bc601e3a52a8c90505cca2a51522c618",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/idealist"
+    },
+    "en_f51b1318-21fa-41cc-ae25-c0c350c5c83e": {
+      "chars": 7375,
+      "content_hash": "44281bb6c06b2f55f04c5c2f060e91c1008af6dca8b941f2cd3930a7130545ba",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/manomano"
+    },
+    "en_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2_4_0": {
+      "chars": 10929,
+      "content_hash": "2243bf764a61f9ce04aef83254100c3550df89116dc7e2582593b4d9ddcbc392",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/bigw"
+    },
+    "en_fe2981e6-5a8f-4d0d-a47e-9683a129ec92_4_0": {
+      "chars": 14886,
+      "content_hash": "3b42533121774bd02c75429bacbb463eca6d5a90a9d348797ff210b7efb14d06",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/shoe-carnival"
+    },
+    "fr_003ce534-f7ab-446e-aa3b-056fd03c6b3c": {
+      "chars": 17210,
+      "content_hash": "435304142b3c802f0b67e4ff7975a9ee767ff9879b425198e847e98691145ae4",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/Breville-Group"
+    },
+    "fr_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0": {
+      "chars": 14189,
+      "content_hash": "1074c8aee4a0a872d12a06085abc02d16d705d8b222b5c8e9e84825880856057",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/wework"
+    },
+    "fr_0f6e04dd-b969-4f68-9249-df35828ee2e3": {
+      "chars": 13706,
+      "content_hash": "dde038cf033128e0b29ad2afa701dbf58c17a53b028c2d5f59b4b84ad59b1c1f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/ergodyne"
+    },
+    "fr_12c0a9e8-6859-437f-8122-317531b2f0ff": {
+      "chars": 12052,
+      "content_hash": "d23d9742d700c30635de9af6a6cdcc1f6b9112ce2ea45f3f27176c41fff90637",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/pc-componentes"
+    },
+    "fr_145cbd99-e030-4dc9-914d-2ce01a8ef80d": {
+      "chars": 13746,
+      "content_hash": "ef29e8b9543a4e02db2e89328f9137dead93c66fcf29d58689cb436215fc112a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/rugs-com"
+    },
+    "fr_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0": {
+      "chars": 13082,
+      "content_hash": "e669e418c51b75fb0016a647b910dfd02c8df7263be80b8a4edaabca762059c9",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/auto-mercado"
+    },
+    "fr_1d5a6102-739f-469a-964b-42d5a6b1c67d": {
+      "chars": 9787,
+      "content_hash": "d6ce413607fa7c7738bf51fd991832d0850ff226c0a36de2cc13a411ed819883",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/lacoste"
+    },
+    "fr_1d91e31e-3201-433e-91e1-579bde4b345c_3_0": {
+      "chars": 14089,
+      "content_hash": "977a176c2cf31989da88fcf597b396cb407bda4f6250ee17e5a60ac9367acf5b",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/staples"
+    },
+    "fr_1e12af9e-c458-4825-85a7-5b3e94258763": {
+      "chars": 15182,
+      "content_hash": "b1985443f61626deee5b470b3d9c99d7e7ccbb2b457d404417aa3a80bb44b22b",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/crocs"
+    },
+    "fr_22d49010-f07b-44d6-9391-d18fb8780b96_4_0": {
+      "chars": 12839,
+      "content_hash": "55d1653366dacf2c0e123adff96ca2da3c92af8af7ceaa85e4d06787c60df8b4",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/decathlon-singapore"
+    },
+    "fr_2343e356-ea15-4555-a0f8-d8d0caf3981f": {
+      "chars": 14656,
+      "content_hash": "9fb1d5fa90b8db4c2097770124b872ddac879ead49b70925f0c06b39dd328708",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/fern-case-study"
+    },
+    "fr_24570e7d-f174-489e-b2a8-01409bf61c7e": {
+      "chars": 16531,
+      "content_hash": "58997d53ab2e37019f385adf19c3a472b4a22329592f629fb8b04318a3cfa8f5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/hershey"
+    },
+    "fr_256c2a5e-f0e2-4126-94ed-fdf7c99245c3": {
+      "chars": 12996,
+      "content_hash": "31261957eea27e2f8b78a4a9bbf17c35358a9a84ea883d298dbd368a2d1180a9",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/document-360"
+    },
+    "fr_29428872-6288-432d-a72d-01b083eee84f": {
+      "chars": 16039,
+      "content_hash": "27450528ddf0795539fb0567ecd4972a2fc6a187d26b1df6c501129bf049bcd4",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/Zeeman"
+    },
+    "fr_2ba9965a-542d-4d31-889b-c447ad60e202": {
+      "chars": 15196,
+      "content_hash": "02301802506519391f7065f08352e1072075a77b44b0ecccfdc3132c7d35ce0d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/studocu"
+    },
+    "fr_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13": {
+      "chars": 13300,
+      "content_hash": "32486535aa7106c5f6f62a5b8d6d7751a265674e56a1e45aefcc1a2eafcb6ab8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/ubisoft"
+    },
+    "fr_2f84bc0e-3fed-48c1-88e9-48aff3f6654e": {
+      "chars": 15499,
+      "content_hash": "ca533356fde0795d10f516e3ccac5c3185ace12c1048399b9f2f33281d8e265d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/CredibleMind"
+    },
+    "fr_2f9f4f3a-90f2-465d-9514-2f3ff24259a5": {
+      "chars": 12861,
+      "content_hash": "74d0505ce6202b403ea8a5d2c123ef407cd5a484ea81bee7553eff8275b544b1",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/madeiramadeira"
+    },
+    "fr_34a73e6c-a20a-491c-9144-10384494a2da": {
+      "chars": 13483,
+      "content_hash": "88a73be3a9011c9b96e0fa9dc022adf5637485d00a397b0c8c8cf04a4e641aab",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/hanos-shop"
+    },
+    "fr_351f8d88-abeb-487b-b96c-cc159fe37de1": {
+      "chars": 13171,
+      "content_hash": "e39addec6bdfc066bef9bf4ac3c67bc863efbfe03b6a26e87af07e7a90e4f895",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/club-med"
+    },
+    "fr_359d8099-0033-4685-97de-ea8e00813679": {
+      "chars": 14000,
+      "content_hash": "80efdd0ae647448baa7df87fda610fa7d0e3a9cc6319ee7b3ad5a407ffa26732",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/everlane"
+    },
+    "fr_383018e1-30ba-4140-8b71-27b429ceed2d": {
+      "chars": 14880,
+      "content_hash": "613860e3ce63f1eb24ef6eb8d29ab3b16a5f138390d56b577aac0587ec45a3d0",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/vape-superstore"
+    },
+    "fr_38a4bb1b-037e-422d-9716-21a0d1d37a3b": {
+      "chars": 14432,
+      "content_hash": "727b0a57d7b23037ca6bffb6857a401d99ea642b2834a05253d3cf217a083c45",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/mitre-10"
+    },
+    "fr_3e911e64-945a-48c0-a8bb-82402e447990": {
+      "chars": 12518,
+      "content_hash": "79f845c5daa6a21b65f3d47b091797afc59889979e2709ac5c6b5d03c3d7a62f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/swedol"
+    },
+    "fr_48242ec9-4d61-47b1-a3a1-1869e3a36bd7": {
+      "chars": 13167,
+      "content_hash": "c790b9c9be0d7b97bb9aae1528cfe464af52f15e724e1b3b7f332e5b06c6fdbe",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/END."
+    },
+    "fr_4b49b086-f35c-48c9-a072-8d1d6681d737": {
+      "chars": 13581,
+      "content_hash": "91371d3f25289881bd9954403d4f159fb90c1481722b2e343d5d71bf287341e7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/hagergroup"
+    },
+    "fr_4d1663e7-981e-44a4-8733-4d15b6edfb14": {
+      "chars": 13258,
+      "content_hash": "70a496759b2055d1a396138cc9f3eb71920443336b85dc6b61d842486d1242cb",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/apotek1"
+    },
+    "fr_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad": {
+      "chars": 15575,
+      "content_hash": "eaa999a2e6acc3cb43e774a9d4f865c4dd3b290f7b86809e464012a99ad44163",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/revival-animal-health"
+    },
+    "fr_5e5305c6-69ca-4d08-af0c-95f4d0759217": {
+      "chars": 14439,
+      "content_hash": "78e065cc22da3c5201e078c7c8a8c158588847070a576de721ff44be86a12df2",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/tag-heuer"
+    },
+    "fr_6a023867-407d-40fe-ac36-d0cfef9097b8": {
+      "chars": 14458,
+      "content_hash": "b17da1d77de19f8cee39b5c0156116b5e7e82e5d5ffde82566407405bc5e9688",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/gemo"
+    },
+    "fr_6dd6663b-b802-4dec-a8ec-53535dd97810": {
+      "chars": 14663,
+      "content_hash": "cd0b230574e084b203c4920f144e83101296da9e539df283e4cf5a179f83c935",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/flaconi"
+    },
+    "fr_77275ca8-76e6-4b80-9420-c00297fdc62f": {
+      "chars": 12668,
+      "content_hash": "2810424e26085df8b2f342a3fb645e31c730c6411640068aa8ef78a1b1d300b8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/nutscom"
+    },
+    "fr_78986fd0-7d33-454c-b243-45b66f9ca4c5": {
+      "chars": 18985,
+      "content_hash": "17366d919b270af3dfa498ab5f70784c1666725117e661dfc6d8cd35bd50e24d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/politico"
+    },
+    "fr_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a": {
+      "chars": 16720,
+      "content_hash": "b88d16808f3c23ef32c6b57fb5c17925b7810478cae4c9c1736057e2b1d17a93",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/harry-rosen"
+    },
+    "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe": {
+      "chars": 11168,
+      "content_hash": "cd1d0e956e5485c9f7a87dc09dd1d9b3fa7b717b677690d8beeba2599a3fc7d1",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/maisons-du-monde"
+    },
+    "fr_7ec2610c-3ed8-485c-addb-f3039005802a_4_0": {
+      "chars": 8250,
+      "content_hash": "ff7ae6d4cbcca859763797eee88bcef41c941479686f5e5557c99d5efcf76c92",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/kingarthur"
+    },
+    "fr_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503": {
+      "chars": 16421,
+      "content_hash": "74cf076abe39466df00ce4e72b4e4023dc9e765e474679d56af4f8f2ffba7a1a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/walgreens"
+    },
+    "fr_7ee94215-25f0-4fba-a760-27f9634b520f": {
+      "chars": 19897,
+      "content_hash": "b96f710964e1f58956ff87cf6f0d5eb337c5211d660fccb777f3a1cfb3447b4a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/kiko"
+    },
+    "fr_84daa182-b423-4ddc-9e33-18b6a5ae6127": {
+      "chars": 8217,
+      "content_hash": "2b242acbab1758dd94b00910c4ae6bb19b9ad556a1561c4d7ec8fdf43cbed9bd",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/flexport"
+    },
+    "fr_87da78ad-1820-4765-862d-3196c5729145": {
+      "chars": 16496,
+      "content_hash": "fda9e7a226a97eaa82a7d38a9591a3437b5dd5993959b4f44294a4642cc59080",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/dm-drogerie-markt"
+    },
+    "fr_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7": {
+      "chars": 10410,
+      "content_hash": "4ec57e08dcdf2d7acce15e2b092139c9d7b1a27fb9051229baa8a463126dcf93",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/teachers-pay-teachers"
+    },
+    "fr_9011f3d1-31dd-4480-ad26-1ee447b8a274": {
+      "chars": 13752,
+      "content_hash": "1d22b357b665b40b7a542f51b8a7c995ce0bbd3039f2db2a467e1d9968469e87",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/sary"
+    },
+    "fr_96759fb1-e0b6-407d-abf3-9f966262ec8d": {
+      "chars": 13553,
+      "content_hash": "6ffb64205e54086e755b6dc21e351a3d5ff4a399696a446469405a33eac4a627",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/smartbuyglasses"
+    },
+    "fr_99298a76-2283-4946-afa8-a8110c3e078a": {
+      "chars": 18847,
+      "content_hash": "a2c2645820476ef4efe1867cdc826c0e477b0fcddcdbbb1b52c8630fb30a8ddc",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/dawnfoods"
+    },
+    "fr_9a1f8335-3451-40ac-9e56-162d5721916c_4_0": {
+      "chars": 12160,
+      "content_hash": "88032d90b6dea4250af58d8be19543772cb337cc0dd42c2f0a40e76cd32aa006",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/wizbii"
+    },
+    "fr_9edae2fd-c919-4b57-ab98-56f6174d4847": {
+      "chars": 17015,
+      "content_hash": "1dd71e002ffa4f63757b4ed7d9420fe1c582e5f4c7fde46254d5f04f27d1fae0",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/leroy-merlin-brasil"
+    },
+    "fr_a09ea35d-462c-4376-b33b-0c1d519cad76": {
+      "chars": 9506,
+      "content_hash": "e5ea927a883b13611dc629e6a24227270feb676095382a1f57e512962dcbb6b5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/iu-health-trendyminds"
+    },
+    "fr_a1ab6edb-ece3-473f-a934-269b816db624": {
+      "chars": 14456,
+      "content_hash": "f17f04ae0c7eed67f5b77024713c6e0325adc8b530c6a99d14bedb60762449f4",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/huckberry"
+    },
+    "fr_a2892dee-4f74-416a-957c-8e920cabd0aa": {
+      "chars": 12687,
+      "content_hash": "87efb25236491689fda820705aeb9309e48f89424b7f3f877137f74870322551",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/zoom"
+    },
+    "fr_a92f12bd-cae6-4245-9138-4437c477f526": {
+      "chars": 13990,
+      "content_hash": "f23a8db1954076d3a1c7bee8b8b41c93ec484f640f0434cc8294ca77b50aae36",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/Zenni"
+    },
+    "fr_aa29a6cd-cdeb-42f9-ac76-de7f714d9921": {
+      "chars": 15126,
+      "content_hash": "219c6ff85caf84f12523fd1d7bfcc2885aecfd4a59813f78ad48847e5450caf7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/gofundme"
+    },
+    "fr_aa7ef1a7-cae9-4096-8d1f-08763268af54": {
+      "chars": 15776,
+      "content_hash": "dbeb994a553917e344044e2cc0f621dcb6e328a3769b30f093c4fbc7c00430f0",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/the-times"
+    },
+    "fr_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0": {
+      "chars": 14526,
+      "content_hash": "bb384b0aa80043f7a041aff63ba7197a1859d89cccb6d51c13a18e9b680b7c7a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/co-op"
+    },
+    "fr_b9503457-db5d-4dae-af1b-3bb21a125a99": {
+      "chars": 13502,
+      "content_hash": "ea89866531fd84114518a9663ac73f4e482bb2486ad37b14ad9989b4aa809f32",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/YourSurprise"
+    },
+    "fr_b9b8e76d-87a8-4194-af5c-9925e48fa774_2_wotext": {
+      "chars": 15222,
+      "content_hash": "d0e9f69ffd68739fd4ae27bd71f0144e788150420725cecd730e8904a0908851",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/al-futtaim-group"
+    },
+    "fr_bc4d8a99-ec83-404a-b6d3-03fd591c61f6": {
+      "chars": 20785,
+      "content_hash": "c279cafe4c22ac5171473025a59d7c8a48aebc928129a7be91f68381115f7cc8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/orange"
+    },
+    "fr_bc69733d-47e0-4583-bb38-79654a8cdf7f": {
+      "chars": 9355,
+      "content_hash": "ac9236618808a27b00eb183d50f029da438f7f8b20052bec91737b0044c54a4d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/better-world-books"
+    },
+    "fr_c7700c1c-b36f-4868-9dd8-327f033787ed_4_0": {
+      "chars": 12001,
+      "content_hash": "17e8d51a975dba9fa6ce9fc824a580c7c4c06751a70138a7ed9aeaaf5ace0a61",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/mister-auto"
+    },
+    "fr_c9ee8103-5114-4af6-becc-252a0c94c1dc": {
+      "chars": 205,
+      "content_hash": "0354812216f9cf614781a724fb272453ef119f000dcac04cca783204993bc120",
+      "fetch_error": "",
+      "http_status": 404,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/dunelm"
+    },
+    "fr_cdf26e3c-e470-4fb5-b306-92c942705380": {
+      "chars": 15460,
+      "content_hash": "60ceb65ea700b54e86f1e369885c048393374901199602ec999e6f8ce67eb5f0",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/culture-kings"
+    },
+    "fr_ced2f4d6-586d-49c4-9ff3-af230007904c": {
+      "chars": 205,
+      "content_hash": "0354812216f9cf614781a724fb272453ef119f000dcac04cca783204993bc120",
+      "fetch_error": "",
+      "http_status": 404,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/WeightWatchers"
+    },
+    "fr_cf058e1a-76ff-463a-ab45-08e937f6ec35": {
+      "chars": 14950,
+      "content_hash": "329cb0b57fe020ecc1c20329b9325d08c4890f94c5ac721ff2d8fc0cc61ea540",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/live-platforms"
+    },
+    "fr_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext": {
+      "chars": 13332,
+      "content_hash": "4367d0260ba9d0246fc8a1b3782edd73d90201e3b2187c5c007ad92220ae2f56",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/edx"
+    },
+    "fr_e098d8dc-17f2-4927-aa77-c4f768fa223d": {
+      "chars": 13830,
+      "content_hash": "e3a3f4b866290b1ad62af7ed3dd453584174af0e42bc20a77bc04aea98db702a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/beachbody"
+    },
+    "fr_e6deb45c-7ecf-479c-9b42-3a03841e4068": {
+      "chars": 14364,
+      "content_hash": "b4d63a1e79a567cc6663e53f52b2d8b65e90433541ef560e7c1f470aa13b463e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/plieger"
+    },
+    "fr_e844f3fa-657d-4776-8a4b-3599a83ee7e9": {
+      "chars": 20166,
+      "content_hash": "f28c1786292968407aa26dbd09371c2a1f86e9889a0b71890db15835e60ccd39",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/donorschoose"
+    },
+    "fr_ea16ae71-e155-4a81-9284-84e00d7dc90a": {
+      "chars": 10316,
+      "content_hash": "a941a763cbd92b9350f8d749bf81e215f995c948907e3b5533c20ba0ce4920bc",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/under-armour"
+    },
+    "fr_eab4c0ef-e5ad-4301-baee-4da7c5d6f802": {
+      "chars": 15462,
+      "content_hash": "7b548145145d53d92d05db63d30003b04ae59d212a926b3cd3aad35c46415c95",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/h-e-b-mexico"
+    },
+    "fr_eca3c014-5834-4a67-8c25-43a17d819f2b": {
+      "chars": 15264,
+      "content_hash": "2d65609ff0351a00f9780508322777d69c31f95bb25f72a3bc500b3c2d0ec964",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/DocMorris"
+    },
+    "fr_efd0db31-e3cf-4b4f-ac28-1403f01f2d16_4_0": {
+      "chars": 14097,
+      "content_hash": "b903997af98c95a0105bd85bfa8c14ffdd48031409e6197d116d3f838d96c778",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/gymshark-recommend"
+    },
+    "fr_efdf6501-867d-40f6-b24d-cb60ba32fa62": {
+      "chars": 13844,
+      "content_hash": "632a7a737d4611f27a27b46acc0a647c4fb7a89de063377bd06df238c605e522",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/PetSmart"
+    },
+    "fr_f2db43f6-1a47-48e7-8dbb-64225262c8bc_3_0": {
+      "chars": 18127,
+      "content_hash": "7eff6b496db73dc070f1e139e36d52659853af93d37857acb11eeb2a62169b38",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/gymshark-headless"
+    },
+    "fr_f3ea09ef-2a78-4188-8a1f-72f330496179": {
+      "chars": 8182,
+      "content_hash": "1dc3dcc73367fbdd9b5a1ce62c28fdea96788f0687b2cce100ba929f709f92e6",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/idealist"
+    },
+    "fr_f51b1318-21fa-41cc-ae25-c0c350c5c83e": {
+      "chars": 8696,
+      "content_hash": "38301c67c3ae1b89e339fdceff03c721264280411a85b0aa028dba1b00f25b06",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/manomano"
+    },
+    "fr_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2": {
+      "chars": 13104,
+      "content_hash": "56025820eff0ad38c0a4ad166feb4172b37fffc803cc57e21409be6bfcbdbd30",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/bigw"
+    },
+    "fr_fe2981e6-5a8f-4d0d-a47e-9683a129ec92": {
+      "chars": 17912,
+      "content_hash": "0620b034926d9fef8ef9e9edb70b319d911ead60953b838526f5470139188063",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/shoe-carnival"
+    }
+  },
+  "fetched": 237,
+  "planned": 237,
+  "run_id": "20260811-customer-stories-case-study-a03"
+}

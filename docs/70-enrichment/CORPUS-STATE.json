@@ -6,7 +6,7 @@
     }
   },
   "live_page_types": 44,
-  "ok": true,
+  "ok": false,
   "slices": {
     "Blog/blog-post": {
       "coverage": {
@@ -17,59 +17,72 @@
         "max_human_review_open_pct": 0.05,
         "meets_coverage": true,
         "outcome_coverage_pct": 1.0,
-        "planned_target_count": 10,
-        "target_written": 10,
+        "planned_target_count": 20,
+        "target_written": 20,
         "terminal_unwritable": 0,
         "unattempted": 0,
         "within_human_review_cap": true,
         "writable_coverage_pct": 1.0
       },
-      "last_run_id": "20260810-blog-blog-post-a01",
+      "last_run_id": "20260811-blog-blog-post-a10",
       "page_type": "blog-post",
-      "planned_target_count": 10,
+      "planned_target_count": 50,
       "profile_version": "blog-post:2946b4b57a45",
-      "reconciles": true,
+      "reconciles": false,
       "runs": [
-        "20260810-blog-blog-post-a01"
+        "20260810-blog-blog-post-a01",
+        "20260810-blog-blog-post-a02",
+        "20260811-blog-blog-post-a03",
+        "20260811-blog-blog-post-a04",
+        "20260811-blog-blog-post-a05",
+        "20260811-blog-blog-post-a06",
+        "20260811-blog-blog-post-a07",
+        "20260811-blog-blog-post-a08",
+        "20260811-blog-blog-post-a09",
+        "20260811-blog-blog-post-a10"
       ],
       "source": "Blog",
-      "target_written_live": 10
+      "target_written_live": 30
     },
     "Customer Stories/case-study": {
       "coverage": {
         "all_accounted_for": true,
         "coverage_target_pct": 0.85,
-        "human_review_open": 0,
-        "human_review_pct": 0.0,
+        "human_review_open": 3,
+        "human_review_pct": 0.0127,
         "max_human_review_open_pct": 0.05,
         "meets_coverage": true,
         "outcome_coverage_pct": 1.0,
-        "planned_target_count": 10,
-        "target_written": 10,
-        "terminal_unwritable": 0,
+        "planned_target_count": 237,
+        "target_written": 225,
+        "terminal_unwritable": 9,
         "unattempted": 0,
         "within_human_review_cap": true,
-        "writable_coverage_pct": 1.0
+        "writable_coverage_pct": 0.9494
       },
-      "last_run_id": "20260810-customer-stories-case-study-a01",
+      "last_run_id": "20260811-customer-stories-case-study-a03",
       "page_type": "case-study",
-      "planned_target_count": 10,
+      "planned_target_count": 237,
       "profile_version": "case-study:a491e7de8230",
       "reconciles": true,
       "runs": [
-        "20260810-customer-stories-case-study-a01"
+        "20260810-customer-stories-case-study-a01",
+        "20260811-customer-stories-case-study-a02",
+        "20260811-customer-stories-case-study-a03"
       ],
       "source": "Customer Stories",
-      "target_written_live": 10
+      "target_written_live": 225
     }
   },
   "source_index": "Algolia_Prod_Copy_Enhanced",
-  "target_enriched_records": 20,
+  "target_enriched_records": 255,
   "target_index": "Algolia_Prod_Copy_Enhanced_Parallel",
   "target_index_exists": true,
-  "target_records": 20,
+  "target_records": 255,
   "total_live_records": 11928,
   "unprofiled_page_types": [],
-  "unreconciled_slices": [],
-  "updated_at": "2026-08-11T00:45:35.121134+00:00"
+  "unreconciled_slices": [
+    "Blog/blog-post"
+  ],
+  "updated_at": "2026-08-11T05:05:53.443079+00:00"
 }

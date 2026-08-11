@@ -1,0 +1,41 @@
+{
+  "apply-write": [
+    "validation/write-applied.json",
+    "validation/source-index-unchanged.json"
+  ],
+  "build-final": [
+    "final/results.jsonl",
+    "final/payloads.jsonl",
+    "final/human-review-queue.jsonl",
+    "validation/coverage.json"
+  ],
+  "dry-run-write": [
+    "validation/write-dry-run.json"
+  ],
+  "enrich": [
+    "outputs/base/results.jsonl"
+  ],
+  "fetch": [
+    "cache-scout/",
+    "fetch-manifest.json"
+  ],
+  "health-scout": [
+    "scout-health.json"
+  ],
+  "plan-slice": [
+    "manifest.json"
+  ],
+  "repair": [
+    "outputs/repair/results.jsonl"
+  ],
+  "review-pack": [
+    "reports/review-pack.md"
+  ],
+  "validate": [
+    "validation/artifact-validation.json",
+    "validation/method-check.json"
+  ],
+  "verify-live": [
+    "validation/live-verification.json"
+  ]
+}
