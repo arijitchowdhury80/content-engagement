@@ -16,7 +16,8 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 | Memory | `~/.claude/projects/-Users-arijitchowdhury-Dropbox-AI-Development-algolia-com/memory/` |
 | Vault project (knowledge SSOT) | `~/Dropbox/AI-Development/Obsidian/Arijit-Second-Brain/Projects/Search-First-Algolia-com/` |
 | Status SSOT | Asana project `1217199861767750` |
-| Enrichment pipeline | `docs/70-enrichment/` |
+| **Enrichment skill (USE THIS)** | `.claude/skills/algolia-data-enrichment/` |
+| Enrichment run output + history | `docs/70-enrichment/` |
 | Software documentation | `docs/80-documentation/` |
 | Execution briefs | `docs/briefs/` |
 
@@ -41,8 +42,8 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   search always returned 12,114 anyway. 8 sources, Chapter 1's taxonomy applied. Enhanced is the
   source of truth for both the backend enrichment work and the frontend demo. Do not re-crawl
   algolia.com.
-  `Algolia_Prod_Copy_Vanilla` is off limits for writes — a colleague's live Agent Studio
-  agents (`www Chat`, `Algolia_*`) query it. Reading it is fine.
+  `Algolia_Prod_Copy_Vanilla` is off limits for writes — it is the raw upstream copy. Reading it
+  is fine, but live `www Chat` and `Algolia_*` answering agents now query Enhanced.
 - **NEVER rebuild `Algolia_Prod_Copy_Enhanced` by copying `Algolia_Prod_Copy_Vanilla`.**
   Enhanced is a copy of Vanilla, but it has since been enriched and deduplicated. Vanilla still
   holds all **4,853 duplicate records** that were deleted on 2026-08-06, and none of the 8-axis
@@ -61,6 +62,28 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   being populated as if it were verified.
 - **No sampling.** Arijit's standing rule for enrichment and validation: process one record at a
   time, verify by full census against the live surface.
+- **Enriched fields are NOT searchable yet.** `abstract_enriched` and `keyhighlights_enriched` are
+  absent from `searchableAttributes`, so every enriched record changes **zero** search results until
+  that setting lands. Demonstrated 2026-08-10: queries for text stored verbatim in live records
+  return 0 hits. Do not report enrichment as delivering search value before this changes.
+- **Judge model: `small` (gemma-4-26b) on the Algolia inference server. Gemini is banned
+  (Arijit, 2026-08-10).** Never point the judge at `large` or `xlarge` — both serve **glm-5.2,
+  which is the writer**, so either would be the model grading its own output.
+- **Repair before quarantine.** A span that is cut mid-sentence or ends in a colon is a bad CUT,
+  not a bad page. Extend it over the page's own following words (`span_repair.py`). Never add
+  punctuation — that is fabrication.
+- **Run enrichment through the skill, never the loose scripts.**
+  `python3 .claude/skills/algolia-data-enrichment/scripts/algolia_enrich.py <command> --workspace .`
+  25 of the 40 `docs/70-enrichment/*.py` files do not belong in the pipeline at all, and two of
+  the ones that do contain gate paths the runner never reached. The skill carries 15 of them,
+  split rather than copied. 166 tests.
+- **`span_gate.run_gates()` is NOT in the skill, deliberately.** It is the function the historical
+  runner never called and that was "fixed" inside twice while every unit test passed. The skill
+  has one live path — `pipeline.evaluate_selection` — and `test_gate_wiring.py` proves a gate is
+  reached by driving the CLI and reading the run's own output, not by importing the gate.
+- **Two runs are parked at the approval gate** (`case-study a03` 225 payloads, `blog a02` 50).
+  `corpus-status` is RED until they are resolved, and the skill's own rule blocks a new slice on
+  red. Nobody but Arijit writes an approval file.
 - Do not tick an Asana checkbox yourself. Stop at Arijit's gate.
 
 ## Asana structure

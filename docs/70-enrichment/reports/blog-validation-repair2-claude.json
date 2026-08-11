@@ -1,0 +1,64 @@
+{
+  "result_root": "batches-out-blog-repair2",
+  "cache_roots": [
+    "cache-scout/blog-repair2-batches"
+  ],
+  "complete_only": false,
+  "batches": {
+    "blog-repair2-001": {
+      "rows": 1,
+      "expected": 1,
+      "complete": true,
+      "duplicates": 0
+    },
+    "blog-repair2-002": {
+      "rows": 1,
+      "expected": 1,
+      "complete": true,
+      "duplicates": 0
+    },
+    "blog-repair2-003": {
+      "rows": 1,
+      "expected": 1,
+      "complete": true,
+      "duplicates": 0
+    },
+    "blog-repair2-004": {
+      "rows": 1,
+      "expected": 1,
+      "complete": true,
+      "duplicates": 0
+    },
+    "blog-repair2-005": {
+      "rows": 1,
+      "expected": 1,
+      "complete": true,
+      "duplicates": 0
+    }
+  },
+  "validation": {
+    "rows": 5,
+    "distinct_ids": 5,
+    "duplicate_ids": [],
+    "status": {
+      "JUDGE_REVISE": 5
+    },
+    "verdict": {
+      "REAL": 5
+    },
+    "writable_rows": 5,
+    "language_mismatch": 4,
+    "missing_source": [],
+    "non_blog": [],
+    "artifact_joined_abstract": 5,
+    "spans_checked": 42,
+    "spans_exact_found": 18,
+    "spans_canonical_found": 42,
+    "spans_visible_markdown_found": 42,
+    "spans_offset_supported": 42,
+    "offset_mismatches": [],
+    "grounding_failures": [],
+    "leakage_failures": [],
+    "dead_writable": []
+  }
+}

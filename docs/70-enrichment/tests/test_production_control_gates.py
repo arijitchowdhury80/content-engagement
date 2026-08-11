@@ -42,8 +42,24 @@ def test_judge_revise_real_records_are_writable():
     payload = write_enrichment.build_payload(real_result(status="JUDGE_REVISE"))
 
     assert payload is not None
-    assert payload["enrichment_verdict"] == "REAL"
     assert payload["abstract_enriched"] == ["The Search API lets you search an index."]
+    assert payload["keyhighlights_enriched"] == ["Search requests support query parameters."]
+    assert set(payload) == {"objectID", "abstract_enriched", "keyhighlights_enriched"}
+    assert not any(k.startswith("enrichment_") for k in payload)
+
+
+@pytest.mark.parametrize("status,verdict", [
+    ("NO_ABSTRACT_THIN", "THIN"),
+    ("NO_ABSTRACT_DEAD", "DEAD"),
+    ("LOGIN_REQUIRED", "LOGIN_REQUIRED"),
+    ("FETCH_FAILED", "FETCH_FAILED"),
+    ("REDIRECT_CANONICAL", "REDIRECT_CANONICAL"),
+])
+def test_non_enrichment_outcomes_write_nothing_to_algolia(status, verdict):
+    row = real_result(status=status)
+    row["verdict"] = verdict
+
+    assert write_enrichment.build_payload(row) is None
 
 
 def test_duplicate_result_rows_are_a_fatal_corruption_signal():
@@ -82,3 +98,59 @@ def test_enrichment_summary_treats_fetched_status_as_failure():
     assert summary["failed"] == 1
     assert summary["enriched_records"] == 0
     assert summary["failures"][0]["status"] == "FETCHED"
+
+
+# ---------------------------------------------------------------------------
+# LEAN RECORD POLICY — Arijit, 2026-08-09.
+# "Live Algolia records should stay lean." Only abstract_enriched and keyhighlights_enriched.
+# All provenance, offsets, hashes, verdicts, reasons, served URLs, canonical IDs, model IDs,
+# prompts and verification evidence live in external run artifacts.
+#
+# Full census the same day: 35 live records still carry enrichment_* metadata from the retired
+# design, 12 of them carrying only a reason and no abstract. Those predate this policy and can
+# only be removed by full-record replace -- partialUpdate stores a literal null instead of
+# removing, which put 96,039 nulls in this index once already.
+
+BANNED_ON_RECORD = (
+    "enrichment_verdict", "enrichment_reason", "enrichment_requested_url",
+    "enrichment_served_url", "enrichment_canonical_objectID", "enrichment_source_url",
+    "enrichment_fetch_path", "enrichment_content_hash", "enrichment_span_offsets",
+    "enrichment_writer_model", "enrichment_judge_model", "enrichment_prompt_version",
+    "enrichment_validated_at", "enrichment_fetched_at", "enrichment_judge_scores",
+    "enrichment_truncated",
+)
+
+
+def test_the_writer_allows_exactly_two_fields():
+    assert write_enrichment.ALLOWED_FIELDS == {"abstract_enriched", "keyhighlights_enriched"}
+
+
+@pytest.mark.parametrize("field", BANNED_ON_RECORD)
+def test_no_banned_metadata_field_can_reach_a_record(field):
+    """Named one by one so a failure says WHICH field leaked, not just that something did."""
+    row = real_result(status="PASS")
+    row[field] = "should never be written"
+    payload = write_enrichment.build_payload(row)
+    assert payload is not None
+    assert field not in payload
+    assert set(payload) == {"objectID", "abstract_enriched", "keyhighlights_enriched"}
+
+
+@pytest.mark.parametrize("status", [
+    "REDIRECT_UNINDEXED", "EXCLUDED", "EXCLUDED_SUPPORT",
+    "NO_CANDIDATES", "NO_CANDIDATES_AFTER_FILTER", "QUARANTINED_BY_GATE",
+    "WRITER_UNPARSEABLE", "JUDGE_UNAVAILABLE",
+])
+def test_every_other_non_enrichment_status_also_writes_nothing(status):
+    """The parametrised list above this one predates the new verdicts. A status that is neither
+    writable nor listed would silently fall through to `None` today and to a payload tomorrow."""
+    row = real_result(status=status)
+    row["verdict"] = status
+    assert write_enrichment.build_payload(row) is None
+
+
+def test_a_verdict_that_is_not_REAL_is_never_written_even_if_status_looks_writable():
+    """Belt and braces: status and verdict must agree before anything reaches the index."""
+    row = real_result(status="PASS")
+    row["verdict"] = "THIN"
+    assert write_enrichment.build_payload(row) is None

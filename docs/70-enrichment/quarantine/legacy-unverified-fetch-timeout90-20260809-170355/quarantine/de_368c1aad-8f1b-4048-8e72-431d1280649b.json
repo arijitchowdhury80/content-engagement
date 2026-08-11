@@ -1,0 +1,22 @@
+{
+ "objectID": "de_368c1aad-8f1b-4048-8e72-431d1280649b",
+ "url": "/de/awards",
+ "source_url": "https://www.algolia.com/de/awards",
+ "fetch_path": "scout",
+ "fetched_at": "2026-08-09T20:54:02.585493+00:00",
+ "served_url": "",
+ "redirect_mismatch": false,
+ "markdown": "",
+ "content_hash": "",
+ "http_status": 0,
+ "truncated": false,
+ "original_length": 0,
+ "fetch_error": "scout job job_c69cc0c8a8824f4f did not finish in 90s",
+ "page_type": "program",
+ "family": "corporate",
+ "language_code": "de",
+ "source": "Website",
+ "title": "Algolia Awards | Algolia",
+ "description": "\nWir sind stolz darauf, von unseren Kunden, Analysten und Branchenkollegen f&uuml;r unsere preisgekr&ouml;nten Produkte, unsere Unternehmenskultur und unseren Kundenservice anerkannt zu werden.\n\n",
+ "pilot_reason": "batch legacy-unverified-001"
+}

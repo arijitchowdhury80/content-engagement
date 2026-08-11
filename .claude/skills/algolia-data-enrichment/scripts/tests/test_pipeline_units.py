@@ -26,7 +26,7 @@ from algolia_enrichment.dispatch import route, sniff
 from algolia_enrichment.errors import EnrichmentError, StateError, ZeroWorkError
 from algolia_enrichment.filters import build_map, drop_reason, filter_pool, overlap
 from algolia_enrichment.gates import retry_constraints
-from algolia_enrichment.model_io import assert_model_separation
+from algolia_enrichment.model_io import JUDGE_PROMPT, assert_model_separation
 from algolia_enrichment.profiles import load_profile
 from algolia_enrichment.repair import incomplete_reason, repair_span
 from algolia_enrichment.state import RunState
@@ -75,6 +75,12 @@ def test_repair_output_keeps_the_best_prior_result_not_the_last_random_attempt()
 PROFILES = Path(__file__).resolve().parents[1] / "profiles"
 CASE_STUDY = load_profile(PROFILES, "Customer Stories", "case-study")
 REFERENCE = load_profile(PROFILES, "Documentation", "doc-sdk")
+
+
+def test_judge_prompt_requires_literal_page_evidence_not_a_rationale():
+    """The cited-quality gate is only meaningful when citations are real source excerpts."""
+    assert "contiguous excerpt copied character-for-character" in JUDGE_PROMPT
+    assert "must not be an explanation of your score" in JUDGE_PROMPT
 
 
 # ---------------------------------------------------------------------------

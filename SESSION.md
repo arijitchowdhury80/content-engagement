@@ -1,203 +1,122 @@
 # SESSION — Search-First Algolia.com
 
-_Last updated: 2026-08-08 night_
+_Last updated: 2026-08-11, 00:30._
 
 ## Status
 
-**HALTED AND UNDER EXTERNAL REVIEW.** Arijit sent the work to an independent reviewer because he no
-longer trusts this session's judgement on it. **Do not resume the run until he rules.**
-
-Chapter 3 enrichment is built and its *safety* is proven — machine-verified and, for the first time,
-human-verified at 0 hallucinations. Its *quality* is not: the Phase 1 calibration gate failed at 42%
-against a 60% bar. Nothing has been written to the live index.
-
-## Why it is halted — read this before touching anything
-
-With the gate red at 42%, Arijit said "continue" and I started Phase 2, a bulk fetch of thousands of
-external pages. That is the largest irreversible-in-time step in the plan and my own gate was
-blocking it. He stopped it. ~3,400 `.md` pages reached local cache; all deletable, nothing written
-to Algolia.
-
-**The plan never named who authorises a phase transition.** I wrote that plan. Fix that before
-resuming: every phase needs a named human go/no-go.
-
-**The review request is `docs/70-enrichment/EXTERNAL-REVIEW-PROMPT.md`** — it states what was
-planned, observed, passed, failed, rectified, what still does not work, the open questions, and a
-nine-item account of where the day was wasted.
+**The enrichment method is a skill now, and the first full slice is parked one step from the
+index.** `.claude/skills/algolia-data-enrichment/` — one CLI, 17 commands, 26 modules, 13
+profiles, **166 tests**, four eval gates green in two iterations. The full 237-record case-study
+slice ran end to end and **stopped at the approval gate with nothing written**, which is the
+design working, not a fault. Nothing is running.
 
 ## Resume action
 
-**0. DO NOT RUN THE PIPELINE.** Wait for Arijit's ruling on the external review. Everything below
-is what happens *after* he reopens it.
-
-1. Read `docs/70-enrichment/EXTERNAL-REVIEW-PROMPT.md`, then the plan at
-   `~/.claude/plans/then-what-the-hell-zippy-squid.md`.
-2. **Add a named human authorisation gate to every phase of the plan.** Its absence is what let
-   Phase 2 start with the gate red. Do this before anything else.
-3. **Re-run the Phase 1 gate to completion** (nothing else running — `pgrep -f enrich_run` empty):
+1. **Resolve the two parked runs before anything else.** `corpus-status` exits 2 (RED) and the
+   skill's own rule blocks a new slice on red.
+   ```bash
+   python3 .claude/skills/algolia-data-enrichment/scripts/algolia_enrich.py review-pack \
+     --workspace $PWD --run-id 20260811-customer-stories-case-study-a03 \
+     --source "Customer Stories" --page-type case-study
    ```
-   D=~/Dropbox/AI-Development/algolia-com/docs/70-enrichment
-   python3 "$D/run_batches.py" --batches "$D/batches" --out "$D/batches-out" \
-           --cache "$D/cache-batches" --only doc-md-twin-reference-001 --workers 1
-   ```
-   **≥60% gate-pass or stop.** That family is 4,392 records and Arijit's review marked 3 of 3 bad.
-4. If it fails, fix the `reference` prompt against the 3 records in
-   `reports/review-pack-verdicts-filled2.md`. Do not re-measure your way past it.
-5. Phase 2 only on Arijit's explicit go. Not on "continue". Not on a blocker being removed.
-
-**USE ABSOLUTE PATHS IN EVERY COMMAND.** Three failures this session came from chaining `cd` into a
-command whose cwd had already moved. One made the calibration run silently never start; only a
-zero-byte log revealed it.
+   Read `runs/<id>/reports/review-pack.md`, put it to Arijit, and let him decide: approve and
+   ship, or close out. **Do not write an approval file yourself.** Same for
+   `20260810-blog-blog-post-a02`.
+2. Re-run `corpus-status` and confirm it is green.
+3. Then run the next slice from `docs/70-enrichment/PROMPT-press-release-slice.md`.
 
 ## Where we stopped (exact)
 
-- Phase 0 complete and committed: `41e1926` (batching, retry, orchestrator), `bcfdff0` (lock +
-  completion fix). **167 tests pass**, 1 xfailed.
-- **NOT MY WORK, found during persist and verified passing:** `JUDGE_REVISE` added to
-  `write_enrichment.py`'s `WRITABLE`, a `build_payloads()` that hard-fails on duplicate objectIDs,
-  and `tests/test_production_control_gates.py` (84 lines). Consistent with the day's decisions.
-- **G7 information-gain threshold is now per-family** (`span_gate.py:INFO_GAIN_MINIMUM`,
-  `reference: 3`, others 8). 16 of the 19 gate quarantines were this. **Disputed on purpose** —
-  it changes the measure after seeing the measurement, and is flagged to the external reviewer.
-- **~3,400 `.md` pages sit in `cache-batches/`** from the aborted Phase 2. Deletable.
-- **Phase 1 gate: PROVISIONAL FAIL — 42% gate-pass against a 60% bar.**
-  `doc-md-twin-reference-001`, 50 records: 19 QUARANTINED_BY_GATE, 11 JUDGE_REVISE, 10 PASS,
-  10 NO_ABSTRACT_THIN. Only 21 of 50 produced an abstract at all.
-  **Provisional because the results file is contaminated** — 59 rows for 50 records. A pre-lock
-  process was still writing while a locked one ran, so the numbers above are a dedupe-by-last-row
-  read, not a clean measurement. **Re-run it clean first** (nothing else running):
-  ```
-  D=~/Dropbox/AI-Development/algolia-com/docs/70-enrichment
-  pgrep -f enrich_run   # must be empty
-  python3 "$D/run_batches.py" --batches "$D/batches" --out "$D/batches-out" \
-          --cache "$D/cache-batches" --only doc-md-twin-reference-001 --workers 1
-  ```
-  `is_complete` now treats any duplicate as incomplete, so the re-run will redo it properly.
-  **But 42% vs a 60% bar is too wide a gap to be contamination alone.** Expect the reference
-  family to genuinely fail and plan to fix the prompt, not to re-measure your way past it.
-  The `abstract_must_not_be` constraint added this session is in play and clearly not sufficient.
-- Fresh snapshot `snapshots/Algolia_Prod_Copy_Enhanced-20260808-125143.jsonl` — **12,036 records**,
-  verified against live. This is the rollback floor and it makes the write gate pass.
+```
+runs/20260811-customer-stories-case-study-a03   fetch DONE · enrich DONE · repair DONE
+                                                final BUILT · validate PASSED · write NONE
+                                                237/237 accounted · 225 payloads
+runs/20260810-blog-blog-post-a02                validate PASSED · write NONE · 50 planned
+```
 
-## What changed this session
+`case-study a03` outcome split: 225 PASS · 7 DEAD_PAGE · 2 NO_ABSTRACT_THIN · 2 LANGUAGE_MISMATCH
+· 1 QUARANTINED_BY_GATE. Repair recovered 13 of the 14 records a gate had quarantined.
 
-**Selection quality — fixed at the candidate layer, not the prompt.** The previous diagnosis in
-this file said "prompt work, not safety work." Both halves were wrong. `canonicalise()` collapses
-every newline to a space, so `candidates.py` received each page as one flat string and could only
-cut at sentence-ending punctuation. Nav bars, CTA rows and countdown timers contain none — they
-merged into one chunk, hit `MAX_CHARS=400`, and were chopped at an arbitrary word boundary.
-**715 of 2,264 candidates (31.6%) were mid-sentence fragments.**
+Target index `Algolia_Prod_Copy_Enhanced_Parallel` holds **20 records** — the Gate 3 and Gate 4
+smoke sets only. Source index `Algolia_Prod_Copy_Enhanced` is **11,928**, settings unchanged,
+asserted before and after every write this session.
 
-| | baseline | now |
-|---|---|---|
-| judge coherence | 2.88 / 2.85 | **4.62** |
-| PASS | 15/50 | **25/50** |
-| prose candidates fragment-shaped | 31.6% | **1.15%** |
-| abstract spans out of page order | 7/34 | **0/33** |
-| tests | 66 | **167** |
+## Decisions locked
 
-**Arijit's first human review — the gate that had been open for three days.** 10 English records:
-**5 good, 5 not good, 0 hallucinations.** The zero-invention guarantee held under human inspection.
-His review found four things the LLM judge did not, listed under Remaining work.
-
-**G8 corpus-wide boilerplate: built, measured twice, OFF.** Lost both times (coherence 4.21 then
-4.52 vs 4.62). The flaw is structural, not a threshold — a sentence can be furniture on ten pages
-and be the content on the eleventh. `/fr/awards` is a page *about* Algolia's awards and G8 stripped
-7 of its 8 prose candidates. `boilerplate.py` and its 11 tests are kept because Arijit's review
-confirms the defect is real. **Do not flip `G8_ENABLED` without a measured run.**
-
-**Full-corpus Phase 0 built:** `make_batches.py` (208 batches, partition asserted exhaustive),
-a retry/backoff/429 layer (neither model call had *any* retry, and neither could even see an HTTP
-status — at 8 workers that would have dropped records silently while every batch reported success),
-`run_batches.py` (parallel, flock per batch, batch-level resume), and `fetch_router.py --from-batch`.
-
-## Decisions locked (Arijit, this session)
-
-- **Judge every record**, in parallel. ~4h rather than ~40h sequential.
-- **Write everything gate-passed**, not just judge-ACCEPT. Add `JUDGE_REVISE` to `WRITABLE` in
-  `write_enrichment.py` — those records have valid zero-invention abstracts; the judge only said a
-  better sentence existed. Takes yield from 56% to 76%.
-- **Calibration batch before the full launch.**
-- **`searchableAttributes` order** (approved, with one change I argued for and he accepted the
-  reasoning on): `title / abstract_enriched / description / keyhighlights_enriched / abstract / …`
-  **Apply AFTER the corpus run** — partial enrichment makes enriched records outrank unenriched
-  ones for the same query. Note it also swaps `abstract` and `description` from the live order,
-  which affects all 12,036 records and is a separate decision.
+- **The skill lives at `.claude/skills/algolia-data-enrichment/`.** Commit `bb526bf`, 62 renames
+  so history follows. `docs/70-enrichment/skill/` is gone.
+- **`span_gate.run_gates()` is not ported.** It is the function the runner never called and that
+  was "fixed" inside twice with every test green. `pipeline.evaluate_selection` is the single
+  live path.
+- **`canonicalise()` is its own module.** Four stages share it; both prior grounding failures
+  were two code paths normalising the same characters differently.
+- **`enrich` takes a run folder, never a cache path.** It refuses unless that run's own `fetch`
+  sealed the cache with matching hashes.
+- **Only `PASS` is writable.** A judge verdict that does not change writability is not a gate —
+  the old judge changed the outcome for zero of 3,069 rows.
+- **Next slice is `Website/press-release` (690)**, chosen over `doc-sdk` (2,203). Press-release is
+  the better *test*; doc-sdk is the better *value* and comes after.
+- **Run output stays under `docs/70-enrichment/runs/`.** It belongs with the corpus work, not the
+  tool.
 
 ## Remaining work
 
-**Quality gaps Arijit's review found, unfixed:**
-- **`reference` family leads with protocol boilerplate** — 3 of 3 bad, and it is 4,392 records
-  (43% of enrichable). A negative constraint was added to `shape-families.json`; **unvalidated**.
-  The Phase 1 gate measures it.
-- **Non-sentence facts are unreachable.** The DevCon date (`Sept 30 - Oct 1, 2026 - VIRTUAL`) never
-  reaches the output *because it is not a sentence*. Candidates are sentence-based with a 25-char
-  floor, so dates, prices and specs are structurally invisible. This needs a design change, not a
-  prompt tweak.
+**Needs Arijit, do not do unasked**
+1. Approve or close `case-study a03` (225 payloads) and `blog a02` (50).
+2. Push 3 local-only commits — branch `skill/algolia-corpus-enrichment` is **not on GitHub**
+   (`c7dcb15`, `ab45f7d`, `bb526bf`). The auto-mode classifier blocks the agent from `git push`.
+   ```bash
+   git push -u origin skill/algolia-corpus-enrichment
+   ```
+3. Carried from Blog: `abstract_enriched` into production `searchableAttributes`; and whether the
+   judge should gate.
 
-**The run:** Phase 2 fetch (10,125 pages) → Phase 3 parallel enrich → Phase 4 write → Phase 5 triple
-verify → Phase 6 settings. Detail in the plan file.
-
-## Open — need Arijit
-
-| # | Item |
-|---|---|
-| 1 | **`HOSTED_JOB_QUEUE_WORKERS=2`** on the shared Scout container. Caps the 10,125-page fetch near 7h, and fetch now gates everything. **The critical path.** |
-| 2 | **A junk record is in the live index** — `{"hitsPerPage":1,"objectID":"7825fa8b-…"}`, a search query body stored as a document, written today by something outside this pipeline (all runs were `--pilot`). Delete it? And what wrote it? |
-| 3 | `searchableAttributes` change — approved in principle, sequenced after the run |
-| 4 | Rotate credentials: Resend SMTP password, both Scout keys |
-| 5 | `reports/fresh50-run1|2/` are tracked in git (~400KB of page-text excerpts in a PUBLIC repo). `reports/*/` now ignores future runs; the existing two are your call |
-| 6 | Two payload files untracked via `git rm --cached` but still in git history — rewrite or leave? |
+**Then**
+4. Run the press-release slice (690) per the written prompt.
+5. Sync the `arijit-skills` published copy — it lacks the span-distance fix and this layout.
+6. `doc-sdk` (2,203) after that; `docs_api` has still never executed, and it needs a 25-record
+   probe first.
+7. Fix the Dropbox-corrupted git ref in `Personal/arijit-skills/.git/refs/heads/` — `git fetch`
+   dies with `bad object`.
 
 ## What has NOT been done
 
-- **The corpus run.** 0 of 10,198 records. 35 records in the index are from the retired copy-text design.
-- Phase 1 gate result — running at persist time.
-- `JUDGE_REVISE` is **not yet** in `write_enrichment.py`'s `WRITABLE` set (decision made, not coded).
-- G5 language check still not in the runner.
-- `enterprise_ledger` as a body source: measured (4,462 records) but unwired.
-- Chapter 1's classifier has **not** been re-run on enriched text — the actual payoff, untouched.
-- The 19 records carrying another customer's title (`crocs` titled "BIG W") — sized, not fixed.
+- **Nothing new reached the production index this session.** 20 records exist in the parallel
+  target; that is smoke data. Production search results are **unchanged**.
+- **Selection quality is unmeasured.** Every gate answers "is this on the page and correctly
+  shaped". None answers "is this the sentence a reader needed". Blog's record was a 56%
+  judge-revise rate against flawless grounding. The review packs exist; nobody has read them.
+- **`docs_api` has never executed** on a real doc page — only in a dispatch unit test.
+- The 237 case-study payloads are **built, not written**.
+- `arijit-skills` on GitHub is stale relative to this repo.
 
 ## Reference files
 
-```
-~/.claude/plans/then-what-the-hell-zippy-squid.md   THE PLAN — read first
-docs/70-enrichment/LIGHT-2026-08-08-selection-quality.md   full diagnosis + every measurement
-docs/70-enrichment/reports/review-pack-verdicts-filled1.md, filled2.md   Arijit's review
-docs/70-enrichment/reports/REVIEW-v12-english.md    current review pack
-docs/80-documentation/enrichment/chapter-3-build-log.md   the 12 earlier bugs
-```
+| what | where |
+|---|---|
+| the skill | `.claude/skills/algolia-data-enrichment/` |
+| next slice prompt | `docs/70-enrichment/PROMPT-press-release-slice.md` |
+| how it was built, incl. 4 failures | `.claude/skills/algolia-data-enrichment/docs/source/EVAL-LOG.md` |
+| the spec it was built from | `.claude/skills/algolia-data-enrichment/docs/source/PLAN-skill-algolia-corpus-enrichment.md` |
+| runbook | `.claude/skills/algolia-data-enrichment/docs/OPERATIONS.md` |
+| why anything looks odd | `.claude/skills/algolia-data-enrichment/docs/DESIGN-DECISIONS.md` |
+| parked runs | `docs/70-enrichment/runs/20260811-customer-stories-case-study-a03/`, `.../20260810-blog-blog-post-a02/` |
 
-## Constraints that will bite you
+## Two traps that cost the most, so they are not repeated
 
-- **Absolute paths.** See Resume action.
-- **`certifi` cannot reach the Algolia API from this machine** (corporate TLS interception). Every
-  script uses curl via subprocess. `urllib`/`requests` dies at record 1.
-- **A filter on a non-faceted attribute returns EMPTY, not an error.** Browse and filter client-side.
-- **glm-5.2 charges reasoning tokens against `max_tokens`.** Keep ≥4000. Same trap on gemini-2.5-pro.
-- **`abstract_enriched` is several spans joined by a space** — verify via `enrichment_span_offsets`,
-  never by locating the joined string.
-- **The eval's noise floor is ±2 PASS records.** Measured from two same-config runs. Do not report a
-  smaller delta as a finding — four such reports this session were noise, and two decisions were
-  reversed on them.
-- **A page changed since enrichment is STALE, not failed.**
-- **No sampling. Full census.** Do not tick an Asana checkbox. Repo is **PUBLIC**.
+**A fallback can make an assertion vacuous.** Model pinning ended `served or alias`. Had the API
+field been renamed, every tier would have resolved to its own alias and the check would have
+compared `"large" == "large"` — passing while proving nothing about which model graded the
+corpus. Prefer *absent* over *defaulted*.
+
+**`git add` on a shared repo sweeps the other session's work.** The first staging for the
+relocation caught 476 files and 220k insertions, including the parallel session's uncommitted
+changes. Reset and re-staged to 74. `CLAUDE.md` warns about exactly this.
 
 ## Files written this session
 
-```
-docs/70-enrichment/  candidates.py  span_gate.py  enrich_run.py  fetch_router.py
-                     boilerplate.py  make_batches.py  run_batches.py  .gitignore
-                     prompts/shape-families.json  boilerplate-map.json
-                     tests/  test_candidates.py  test_boilerplate.py  test_batching_and_retry.py
-                     LIGHT-2026-08-08-selection-quality.md
-                     snapshots/Algolia_Prod_Copy_Enhanced-20260808-125143.jsonl
-                     reports/REVIEW-v12-english.md  (REVIEW-english.md deleted — superseded)
-vault  Projects/Search-First-Algolia-com/{index,log,tasks}.md · wiki/hot.md · wiki/log.md
-       Projects/AI-OS/My-Projects.md
-memory 4 new: fifty-record-ab-is-below-the-noise-floor · structure-destroyed-upstream-cannot-be-
-       fixed-downstream · monolingual-regex-on-multilingual-corpus · unknown-writer-on-the-live-index
-       · enrichment-field-not-in-searchable-attributes  + MEMORY.md + session_pointer.md
-commits e8c6379 · 41e1926 · bcfdff0
-```
+- `.claude/skills/algolia-data-enrichment/**` — 78 files (skill, docs, references, source materials)
+- `docs/70-enrichment/PROMPT-press-release-slice.md`
+- `docs/70-enrichment/runs/20260810-skillbuild-a01/` — eval log + the Gate 2 independent checker
+- Commits: `c7dcb15` (build), `ab45f7d` (H1 content-start fix), `bb526bf` (relocation)
+- `arijit-skills`: PR #7 merged as `f664dbc`

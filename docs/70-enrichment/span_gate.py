@@ -288,13 +288,31 @@ def canonicalise(text: str) -> Canon:
                 end_paren = text.find(")", close + 2)
                 if label_ok and end_paren != -1 and "\n" not in text[close:end_paren]:
                     label = text[i + 1 : close]
-                    for k, lch in enumerate(label):
+                    for k, raw_lch in enumerate(label):
+                        # FOLD HERE TOO. This loop emitted the label's characters raw while the
+                        # main loop below folds them, which made canonicalise() non-idempotent:
+                        # `don’t` inside a link label survived as U+2019 in the canonical BODY,
+                        # while the same words canonicalised as a standalone SPAN became U+0027.
+                        # `canon_contains` folds both sides and they took different paths, so a
+                        # span sliced verbatim out of the page reported as ungrounded -- 3 records
+                        # in the 2026-08-10 repair run, all on one article, all genuinely faithful.
+                        # The fold is 1:1, so origin[] stays exact.
+                        lch = _FOLD.get(raw_lch, raw_lch)
                         if lch.isspace():
                             pending_space = True
                             continue
                         if lch in _DROP_CHARS:
                             continue
-                        # same clear-unconditionally rule as the main loop below
+                        # same clear-unconditionally rule as the main loop below, AND the same
+                        # space-before-closing-punctuation rule. Any divergence between this loop
+                        # and the main one makes canonicalise() non-idempotent, which breaks the
+                        # only guarantee that matters: a span sliced from the page must be findable
+                        # in the page. Both known divergences -- the fold and this -- produced
+                        # false "not grounded" verdicts on genuinely faithful spans.
+                        nxt_l = label[k + 1] if k + 1 < len(label) else ""
+                        closing_l = (lch in _SPACE_BEFORE_PUNCT and not nxt_l.isalnum())
+                        if pending_space and closing_l:
+                            pending_space = False
                         if pending_space:
                             if out:
                                 out.append(" ")
@@ -329,9 +347,22 @@ def canonicalise(text: str) -> Canon:
         # Every /doc page opens with the llms.txt banner, so this would have corrupted
         # the first span of thousands of records.
         if pending_space:
-            # ...unless the next character is closing punctuation. `points , with` and
+            # ...unless the next character is CLOSING punctuation. `points , with` and
             # `points, with` must canonicalise identically; models fix that typo silently.
-            if out and ch not in _SPACE_BEFORE_PUNCT:
+            #
+            # "Closing" is load-bearing and was missing. The test was `ch in ",.;:!?"`, which also
+            # fired on a LEADING dot: `Algolia has a .NET API Client` canonicalised to
+            # `a.NET`. Inside a markdown link label the collapse did not happen -- that branch
+            # has its own loop -- so the same words canonicalised two different ways and a span
+            # sliced verbatim from the page could not be found in it. Two blog records,
+            # 2026-08-10, same root as the `_FOLD` asymmetry above.
+            #
+            # A closing mark is followed by a space, another mark, or the end of the text. A mark
+            # followed immediately by a letter or digit is opening something -- `.NET`, `:8080`,
+            # `?q=1` -- and the space in front of it is real.
+            closing_punct = (ch in _SPACE_BEFORE_PUNCT
+                             and not (i + 1 < n and text[i + 1].isalnum()))
+            if out and not closing_punct:
                 out.append(" ")
                 origin.append(i)
                 sect.append(cur_section)
@@ -396,6 +427,25 @@ MAX_FABRICATIONS = 1
 # anyway, and the section deny-list still catches "What customers tell us" headings.
 _SPEECH_MARK = re.compile(r'["“”„«»]')
 _ATTRIBUTION = re.compile(r"[—–]\s*[A-Z]")
+
+
+def is_speech(*texts: str) -> bool:
+    """Is this someone else talking, rather than the page in its own voice?
+
+    THE ONE DEFINITION. G10 below decides whether to quarantine a span with it, and
+    candidates.render_menu decides whether to show the model a [QUOTED] label with it. Those two
+    used to disagree: G10 already exempted blockquoted ledes -- "A blockquoted lede is the page's
+    own voice" -- while the menu labelled every blockquote [QUOTED] and the prompt says never to
+    pick one. So the gate accepted the sentence the menu had forbidden, and on `doc-md-twin` pages
+    that sentence is the page's own description. Two opinions about one word cost the reference
+    family its lede on 49 of 50 calibration pages.
+
+    Pass every string that might carry the evidence -- typically original_text AND stored_text,
+    because locate() may strip wrapping quotation marks via _TRIM when retrying a match, which
+    erases the very proof the span is speech.
+    """
+    blob = " ".join(t for t in texts if t)
+    return bool(_SPEECH_MARK.search(blob) or _ATTRIBUTION.search(blob))
 
 # Stopword counting, deliberately crude: enough to FLAG a mixed-language abstract for
 # quarantine, not to adjudicate language. Added because the pilot produced a German record whose
@@ -549,7 +599,22 @@ _STOP = set(
 )
 
 
-def check_integrity(abstract: list[str], highlights: list[str], span_range: tuple[int, int]) -> list[str]:
+# Families whose abstract spans must end a sentence.
+#
+# `reference` is EXCLUDED, and that exclusion is load-bearing. An API page's lede -- its one-line
+# statement of what the endpoint does -- carries no full stop, and banning it cost the reference
+# family 18 of its 50 calibration pages: the family instruction asks the abstract to lead with
+# exactly that sentence, the prompt forbids picking marked entries, so the model had nothing legal
+# to choose and returned THIN. Unbanning it is what made that family workable.
+#
+# Editorial prose has no such lede. Its period-less spans are cuts, not ledes -- 20 of them in the
+# blog run, every one a run-on. So the rule is applied where it is true and withheld where it is
+# not, per the 2026-08-09 finding that a source-specific ruling must not be generalised.
+_ABSTRACT_MUST_TERMINATE = frozenset({"editorial", "commercial", "corporate", "instructional"})
+
+
+def check_integrity(abstract: list[str], highlights: list[str], span_range: tuple[int, int],
+                    family: str = "") -> list[str]:
     errs: list[str] = []
     lo, hi = span_range
     if not (lo <= len(abstract) <= hi):
@@ -574,6 +639,31 @@ def check_integrity(abstract: list[str], highlights: list[str], span_range: tupl
         for j, b in enumerate(allv):
             if i != j and a.strip() and a.strip() in b.strip() and a.strip() != b.strip():
                 errs.append(f"span nested inside another: {a[:40]!r}")
+
+    # ABSTRACT SPANS ONLY. The abstract is CONCATENATED into one paragraph, so a span with no
+    # full stop runs into the next one and asserts a link neither span makes:
+    #
+    #   "...believe it's imperative to be able to do real-time course correcting"
+    #   "Algolia, for example, is a search provider that offers near real-time analytics..."
+    #
+    # Highlights are deliberately exempt: they render as a list, and a bullet without a full stop
+    # is normal prose, not a defect. Measured on the blog run -- 350 period-less highlight spans
+    # were fine, while 20 period-less abstract spans were run-ons. Applying one rule to both
+    # fields would have quarantined 304 good records to fix 20 bad ones.
+    #
+    # A trailing colon fails everywhere, abstract or highlight: it promises a list that the span
+    # does not contain.
+    for v in (abstract if family in _ABSTRACT_MUST_TERMINATE else []):
+        t = v.rstrip()
+        while t and t[-1] in _TRAILING_CLOSERS:
+            t = t[:-1]
+        if t and t[-1] not in ".!?":
+            errs.append(f"abstract span does not end a sentence, so it runs into the next: "
+                        f"...{v.rstrip()[-48:]!r}")
+    for v in allv:
+        if v.rstrip().endswith(":"):
+            errs.append(f"span ends in a colon, promising a list it does not contain: "
+                        f"{v.strip()[:48]!r}")
     return errs
 
 
@@ -628,6 +718,7 @@ def check_context(
     highlights: list[Located],
     family: str,
     original_length: int = 0,
+    seen_length: int = 0,
 ) -> list[str]:
     """
     G10 -- misleading selection. This is the gate that catches IMAGINATION, which is a
@@ -655,9 +746,8 @@ def check_context(
         # Test against original_text, not stored_text: locate() may strip wrapping quotation
         # marks via _TRIM when retrying a match, which would erase the very evidence that this
         # span is speech. original_text is sliced from the page and keeps them.
-        quote_evidence = f"{loc.original_text} {loc.stored_text}"
         if (loc.is_quoted and family != "evidence"
-                and (_SPEECH_MARK.search(quote_evidence) or _ATTRIBUTION.search(quote_evidence))):
+                and is_speech(loc.original_text, loc.stored_text)):
             errs.append(
                 f"G10 {where} span is a quotation attributed to someone else "
                 f"under {loc.section!r}: {loc.stored_text[:60]!r}"
@@ -702,11 +792,22 @@ def check_context(
                 f"text and the spans are not consistent with each other"
             )
         # Measured against the ORIGINAL page, not the string handed to the model. When a page was
-        # truncated, offsets live in the truncated text and the true distance is larger -- so this
-        # check understated the gap and the removed middle was invisible. Scale it back up.
+        # truncated, offsets live in the truncated text and the true distance is larger, so the
+        # gap is scaled back up.
+        #
+        # THE DENOMINATOR MUST BE HOW MUCH TEXT THE MODEL SAW. It used to be
+        # `max(l.end for l in abstract)` -- the position of the LAST SELECTED SPAN -- which has
+        # nothing to do with truncation and inverted the whole check: the tighter and higher up the
+        # page a selection sat, the smaller the denominator and the bigger the multiplier.
+        # /doc/rest-api/search/set-settings picked three CONSECUTIVE sentences 204 characters apart
+        # on an 81,887-character page and was rejected for spanning "~37708 characters":
+        # 204 * (81887 / 443). Run D lost 11 of 50 records to this, its single largest failure
+        # bucket, every one of them a well-formed adjacent pick -- while a genuinely scattered
+        # selection taken from the bottom of a page had a denominator so large it sailed through.
+        #
+        # No seen_length means no scaling. Silence must not invent a multiplier.
         spread = max(l.end for l in abstract) - min(l.start for l in abstract)
-        seen_length = max((l.end for l in abstract), default=1)
-        if original_length and original_length > seen_length:
+        if original_length and seen_length and original_length > seen_length:
             spread = int(spread * (original_length / seen_length))
         if spread > _MAX_SPAN_SPREAD:
             errs.append(
@@ -967,7 +1068,8 @@ def run_gates(
     abstract_text = " ".join(abstract_values)
 
     # ---- G3, G4, G6, G7, G2 ----------------------------------------------
-    res.failures += check_integrity(abstract_values, highlight_values, family_span_range)
+    res.failures += check_integrity(abstract_values, highlight_values, family_span_range,
+                                    family=family)
     res.failures += check_context(located_abstract, located_high, family, original_length)
     res.failures += check_subject_present(abstract_values[0], title)
     res.failures += check_blacklists(abstract_values + highlight_values)

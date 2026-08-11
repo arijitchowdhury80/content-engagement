@@ -42,7 +42,10 @@ BATCH_SIZE = 50
 
 # Fetch paths that are not enrichable. Named, not inferred, so a new path added upstream shows up
 # as an unexpected group in the summary instead of being silently swept into a batch.
-EXCLUDED_PATHS = {"excluded-support", "auth-wall"}
+# 2026-08-09: `auth-wall` was renamed `login-required` when the router became Scout-only and the
+# Academy curl fetcher was deleted. `excluded` is greenhouse. All three are never fetched and take
+# a counted verdict from verdicts.py instead.
+EXCLUDED_PATHS = {"excluded-support", "login-required", "excluded"}
 
 
 def load_queue(path: pathlib.Path = QUEUE_PATH) -> list[dict]:
@@ -53,6 +56,39 @@ def load_queue(path: pathlib.Path = QUEUE_PATH) -> list[dict]:
 
 def group_key(rec: dict) -> str:
     return f"{rec.get('fetch_path')}/{rec.get('family')}"
+
+
+def filter_queue(queue: list[dict], source: str = "", page_type: str = "",
+                 skip_ids: set[str] | None = None) -> list[dict]:
+    """Narrow the queue by source and/or page_type before grouping.
+
+    WHY `--only` IS NOT ENOUGH
+      `--only` selects a `fetch_path/family` group. Blog lives in `scout/editorial`, and so do
+      press-release, resource, webinar and event. That group is 4,363 records; Blog is 2,800.
+      A "blog-only" run driven by `--only scout/editorial` silently enriches 1,563 non-blog
+      records and reports success, because every count it checks is derived from the same group.
+
+    WHY AN UNKNOWN VALUE IS FATAL
+      Returning an empty list for a typo'd source is the silent-skip failure mode: the run writes
+      zero batches, prints a tidy TOTAL of 0, and exits clean. Fail loudly at the point the typo
+      is still visible.
+    """
+    out = list(queue)
+    if source:
+        known = {r.get("source") for r in queue}
+        if source not in known:
+            sys.exit(f"FATAL: no records with source {source!r}. "
+                     f"Known: {sorted(s for s in known if s)}")
+        out = [r for r in out if r.get("source") == source]
+    if page_type:
+        known_pt = {r.get("page_type") for r in queue}
+        if page_type not in known_pt:
+            sys.exit(f"FATAL: no records with page_type {page_type!r}. "
+                     f"Known: {sorted(p for p in known_pt if p)}")
+        out = [r for r in out if r.get("page_type") == page_type]
+    if skip_ids:
+        out = [r for r in out if r.get("objectID") not in skip_ids]
+    return out
 
 
 def make_batches(queue: list[dict], size: int = BATCH_SIZE) -> dict[str, list[list[dict]]]:
@@ -90,10 +126,29 @@ def main() -> int:
     ap.add_argument("--size", type=int, default=BATCH_SIZE)
     ap.add_argument("--only", default="", metavar="fetch_path/family",
                     help="write only this group -- used by the calibration gate")
+    ap.add_argument("--only-source", default="", metavar="SOURCE",
+                    help="narrow to one source, e.g. Blog. NOT the same as --only "
+                         "scout/editorial, which is 4,363 records against Blog's 2,800")
+    ap.add_argument("--only-page-type", default="", metavar="PAGE_TYPE",
+                    help="narrow to one page_type, e.g. blog-post")
+    ap.add_argument("--skip-ids", default="", metavar="FILE",
+                    help="JSON array of objectIDs to exclude, e.g. records already enriched "
+                         "and verified. The skipped count is printed, never silent")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
     queue = load_queue()
+    queue_total = len(queue)
+
+    skip_ids: set[str] = set()
+    if args.skip_ids:
+        skip_ids = set(json.loads(pathlib.Path(args.skip_ids).read_text()))
+
+    narrowed = args.only_source or args.only_page_type or skip_ids
+    if narrowed:
+        queue = filter_queue(queue, source=args.only_source,
+                             page_type=args.only_page_type, skip_ids=skip_ids)
+
     batches = make_batches(queue, args.size)
 
     if args.only:
@@ -105,7 +160,17 @@ def main() -> int:
         r.get("fetch_path") for r in queue if r.get("fetch_path") in EXCLUDED_PATHS)
     enrichable = sum(len(c) for chunks in batches.values() for c in chunks)
 
-    print(f"queue            {len(queue):6}")
+    print(f"queue            {queue_total:6}")
+    if narrowed:
+        # Printed as subtractions so the narrowed number reconciles against the full corpus.
+        # A bare "2,714" tells you nothing about what the other 9,321 records were.
+        if args.only_source:
+            print(f"  --only-source  {args.only_source}")
+        if args.only_page_type:
+            print(f"  --only-page-type {args.only_page_type}")
+        if skip_ids:
+            print(f"  --skip-ids     {len(skip_ids):6}  excluded by objectID")
+        print(f"after narrowing  {len(queue):6}")
     for path, n in sorted(excluded.items()):
         print(f"  excluded       {n:6}  {path}")
     print(f"enrichable       {enrichable:6}")

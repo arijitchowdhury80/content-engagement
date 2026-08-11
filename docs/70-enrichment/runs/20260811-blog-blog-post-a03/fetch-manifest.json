@@ -1,0 +1,168 @@
+{
+  "body_source": "ScoutRefetch",
+  "entries": {
+    "de_26746102-cac6-4164-b199-30fc997b5ff9_0_1": {
+      "chars": 15521,
+      "content_hash": "0ef6298eae615da20fc45064c4dfd9cfa1e6200e34704bb1ab0e075894ad3ffb",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/blog/engineering/making-a-for-you-page"
+    },
+    "de_467583b5-39fb-42f2-86c1-fec3bf2777f5": {
+      "chars": 14029,
+      "content_hash": "d7ee010b715202dd502eb9b8698209d74b963281311d41ca7c637c29fffdcafc",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/blog/product/learn-about-site-search-best-practices"
+    },
+    "de_7363423d-4e77-4c6f-b9db-36659526c42d": {
+      "chars": 13870,
+      "content_hash": "862c8bdffcf959380ecb34a8ff65461bcd7f9daf33ac062f4d8b073d58e224b1",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/blog/ux/ai-improve-user-experience"
+    },
+    "de_a623936c-6517-439d-92d0-6feb53dbbe71": {
+      "chars": 13544,
+      "content_hash": "2ce5678597aed589b23cd33ad403c7e5a2030663a6aa202d4518d128ec2c4f4c",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/blog/ai/ai-eats-ecommerce"
+    },
+    "de_a7d58669-7426-4e7d-90eb-25eda68c6cb6": {
+      "chars": 15694,
+      "content_hash": "1da74ad7c967773a4f85e9de9e5dcc49b05ad7146e18998af0a23f6f51bc4ede",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/blog/product/site-search-and-seo"
+    },
+    "de_a85669e8-f9ae-468b-8ddd-aaaf76b1aa3b": {
+      "chars": 11557,
+      "content_hash": "cb961aa2d8d7a73e4164f7a4bf2464944089e280f599e8d83066464c49bf99a9",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/blog/ai/edge-ai-local-relevance-retrieval-engine"
+    },
+    "de_cf6ffef5-5755-4f23-ae2c-e482e57ad0db": {
+      "chars": 9880,
+      "content_hash": "863662d177cd2cca5175ffc089ce0bc605042d6131d1905121cc1a37ff72862d",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/blog/ai/the-fellowship-of-ai"
+    },
+    "en_05ca9a29-d81b-42a1-b1ba-e6844c4ce150_0_1": {
+      "chars": 13022,
+      "content_hash": "bf4c2d5ab61914b80b6da4345f4bc867d5f7f666dd48b4628e2050931a6aa674",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/blog/ux/site-search-content-discovery"
+    },
+    "en_0b2eaaee-9e3a-4dad-afee-d61f9862e480_0_1": {
+      "chars": 13241,
+      "content_hash": "783b77eb288e7bf90078808c340dc0c5f736c547bcd887decd89bf3489802695",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/blog/ecommerce/what-are-product-detail-pages-and-why-are-they-critical-for-ecommerce-success"
+    },
+    "en_4908c829-2725-4f6b-9cc7-1cb747eb0292_0_2": {
+      "chars": 16165,
+      "content_hash": "fe8b7ffc410a78f9b7d2bf88ddc1bbcdde3bb1518d6f3bd9fa73dc3180d02ab7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/blog/product/a-guide-for-publishers-how-to-get-your-story-in-front-of-the-right-audience"
+    },
+    "en_4c0ad660-5b0f-49f2-8f07-f17d20aacef3_0_1": {
+      "chars": 16403,
+      "content_hash": "c242f6ac960be2a8f35636adb21802e6645f0a58b8bda9de03e94a273fdf9152",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/blog/ai/what-is-conversational-ai-and-how-does-it-work"
+    },
+    "en_571f74eb-6604-4019-9d0e-aa070ca291bb": {
+      "chars": 7965,
+      "content_hash": "ade65df13ff6a7a96a9951b84f2753f75a9dbed048421366ad76804584c6e4a5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/blog/product/boosting-conversions-with-new-ai-powered-query-categorization"
+    },
+    "en_7ed8f0e3-6c0d-45ad-8c36-ee215bc41dbe_0_99": {
+      "chars": 17878,
+      "content_hash": "c6827cf8dae188788319fe911620041d9040735bf11b4b455b170bfdc1f2b455",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/blog/ecommerce/modernizing-adobe-commerce-search-partner-blog"
+    },
+    "en_b8b613f0-4858-4de8-a55b-2a12d3ab3849_0_9": {
+      "chars": 13653,
+      "content_hash": "683f60f1fc87aed3e6d4c446e05de00d4654706049ff5ee2a4b12d409d34539a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/blog/ecommerce/what-is-online-retail-merchandising-an-introduction"
+    },
+    "fr_18168a7f-7378-4346-9a9e-39fddf2203ac": {
+      "chars": 17507,
+      "content_hash": "5fd0ce078fe92f8290afa95f91aa9ae94167d13581a6055aa28508dcc83117ee",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/fr/blog/ux/what-is-intent-data-and-how-can-you-use-it-to-predict-user-intent-and-increase-roi"
+    },
+    "fr_595c7b31-b22e-4374-9e4b-47a031e7e6ca": {
+      "chars": 26844,
+      "content_hash": "d6d63fa22f365dc84b72d76a32f7d88c79659438797d2600291a74ca235b8a05",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/fr/blog/ux/semantic-search-returns-knowledge-and-answers-your-questions"
+    },
+    "fr_ac4ea7fd-45ca-45eb-b2fd-742d7a09f9a7_0_2": {
+      "chars": 23531,
+      "content_hash": "8b5deba9a8da08bf6f2bbfcccfc638eaf8a38ccac792a17a1745ba82074c4721",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/fr/blog/engineering/building-and-enriching-your-search-index-with-algolia-fetch"
+    },
+    "fr_b0d45919-fc59-4341-9c7b-0cc59e50e4db": {
+      "chars": 20909,
+      "content_hash": "845645e19975bceca6ab859e286361aeb6e31d17649a58ed9afc10a4358eff77",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/fr/blog/engineering/recommendations-for-developers-the-complete-how-to-what-to-and-where-to-guide"
+    },
+    "fr_bb47b3b7-0e3d-46af-8b93-9e0af590043f": {
+      "chars": 23064,
+      "content_hash": "ae0f657ef1b829212609995315c3d3312fd66070cf4e03d8c3d6b9a96d65f8b5",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/fr/blog/ecommerce/monolithic-headless-or-composable-architecture-what-to-choose-and-why-in-1"
+    },
+    "fr_ee363676-d3c0-4cac-b935-436014798570": {
+      "chars": 7538,
+      "content_hash": "bdc40a3cac3c4559527916a100d982eec7b178517c863df7867007928a5ba4b0",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/fr/blog/ecommerce/leveraging-advanced-search-and-discovery-with-b2b-composable-commerce"
+    }
+  },
+  "fetched": 20,
+  "planned": 20,
+  "run_id": "20260811-blog-blog-post-a03"
+}

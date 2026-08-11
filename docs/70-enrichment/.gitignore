@@ -36,9 +36,18 @@ reports/*/
 #   batches/       208 queue manifests
 #   cache-batches/ per-batch fetched page markdown -- the bulk, ~10,198 pages
 #   batches-out/   per-batch results
-# Directory patterns, not names, for the same reason as cache*/ below.
-batches/
-batches-out/
+#
+# THE COMMENT HERE USED TO CLAIM "Directory patterns, not names" AND THEN LIST THREE NAMES.
+# 2026-08-09: the blog run created `batches-blog/` (36MB of scraped page bodies) and
+# `batches-blog-refetch/`, and `git check-ignore` said both WOULD BE COMMITTED to this PUBLIC
+# repo. `batches-scout/`, `batches-out-scout/` and `batches-legacy-fix/` were in the same
+# position. That is the fourth instance of this exact class in this file's history -- a rule that
+# names an instance, a new instance appearing, and the rule silently matching nothing while its
+# own comment says otherwise.
+#
+# So: a glob, and it is the glob that is load-bearing. `batches*/` covers batches-out*/ too.
+# Verify with `git check-ignore -v <path>` before believing any new directory is ignored.
+batches*/
 cache-batches/
 
 # Fetched page markdown and the work queue. Bulk page content, regenerable.

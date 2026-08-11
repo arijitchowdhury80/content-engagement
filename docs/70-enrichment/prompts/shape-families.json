@@ -1,148 +1,148 @@
 {
- "_doc": "page_type -> shape family. Family decides which extraction instruction the LLM receives and which script gate thresholds apply. Counts are from a full census of Algolia_Prod_Copy_Enhanced on 2026-08-07 (12,114 records, 43 page_type values, no sampling). Regenerate counts, never hand-edit the mapping without recording why in chapter-3-build-log.md.",
- "_census_date": "2026-08-07",
- "_census_records": 12114,
- "families": {
-  "reference": {
-   "what_it_is": "API/SDK surface. Terse. Signatures, parameter tables, code. Prose is often one sentence.",
-   "abstract_must_lead_with": "what the method/endpoint/parameter DOES -- the job it performs for the caller, in the page's own words",
-   "highlights_are": "parameter names, method names, required-vs-optional, return shape",
-   "min_prose_chars": 80,
-   "expected_span_count": [
-    1,
-    3
-   ],
-   "page_types": [
-    "doc-rest-api",
-    "doc-api-reference",
-    "doc-sdk",
-    "doc-sdk-unified",
-    "doc-tool",
-    "doc-ui-library",
-    "doc-glossary",
-    "developer-code-sample"
-   ],
-   "record_count": 4392,
-   "abstract_must_not_be": "transport, protocol or plumbing facts -- HTTPS requirements, request/response format, JSON encoding, API version numbers, base URLs, authentication headers, ACL names, or how parameters are passed. Every API page states these and they distinguish none of them. They are HIGHLIGHTS, never the abstract. If the only sentences you can find are of that kind, the page is THIN -- say so rather than opening with plumbing"
-  },
-  "instructional": {
-   "what_it_is": "Procedures. Steps, prerequisites, troubleshooting. Longest bodies in the corpus.",
-   "abstract_must_lead_with": "the task the reader can accomplish",
-   "highlights_are": "prerequisites, the ordered steps, the constraint or gotcha",
-   "min_prose_chars": 200,
-   "expected_span_count": [
-    2,
-    4
-   ],
-   "page_types": [
-    "doc-guide",
-    "doc-integration",
-    "doc-framework-integration",
-    "academy-training",
-    "support-article",
-    "doc-changelog"
-   ],
-   "record_count": 2586
-  },
-  "editorial": {
-   "what_it_is": "Narrative. Blog, press, gated assets. Marketing voice, buried thesis.",
-   "abstract_must_lead_with": "the claim or news the piece actually makes",
-   "highlights_are": "the thesis, named entities, any cited figure",
-   "min_prose_chars": 300,
-   "expected_span_count": [
-    2,
-    4
-   ],
-   "page_types": [
-    "blog-post",
-    "press-release",
-    "resource",
-    "webinar",
-    "event"
-   ],
-   "record_count": 4363
-  },
-  "commercial": {
-   "what_it_is": "Product, solution, pricing, competitor pages. Highest hallucination risk: the model wants to sell.",
-   "abstract_must_lead_with": "the capability as the page states it, never a benefit the page implies",
-   "highlights_are": "named capabilities, named tiers or limits, named integrations",
-   "min_prose_chars": 150,
-   "expected_span_count": [
-    2,
-    4
-   ],
-   "page_types": [
-    "product-page",
-    "solution-page",
-    "industry-page",
-    "pricing",
-    "comparison",
-    "use-case",
-    "landing-page",
-    "contact-sales"
-   ],
-   "record_count": 223
-  },
-  "evidence": {
-   "what_it_is": "Customer stories. Contains named customers and hard metrics. Numbers must never be paraphrased.",
-   "abstract_must_lead_with": "the named customer and what they achieved",
-   "highlights_are": "customer name, the metric verbatim with its unit, the product used",
-   "min_prose_chars": 200,
-   "expected_span_count": [
-    2,
-    4
-   ],
-   "page_types": [
-    "case-study"
-   ],
-   "record_count": 237
-  },
-  "hub": {
-   "what_it_is": "Index and listing pages. Mostly links, little prose. The slop trap: nothing to say, so the model invents.",
-   "abstract_must_lead_with": "what the hub collects, only if the page states it in prose",
-   "highlights_are": "the named sections it links to, verbatim",
-   "min_prose_chars": 120,
-   "expected_span_count": [
-    1,
-    2
-   ],
-   "page_types": [
-    "blog-hub",
-    "resource-hub",
-    "product-hub",
-    "doc-hub",
-    "developer-hub",
-    "developer"
-   ],
-   "record_count": 149
-  },
-  "corporate": {
-   "what_it_is": "Company, trust, careers, partner, department. Thin and boilerplate-heavy.",
-   "abstract_must_lead_with": "the stated fact about the company or programme",
-   "highlights_are": "named commitments, certifications, programme terms",
-   "min_prose_chars": 120,
-   "expected_span_count": [
-    1,
-    3
-   ],
-   "page_types": [
-    "company",
-    "careers",
-    "trust",
-    "department-page",
-    "partner",
-    "program",
-    "services",
-    "utility"
-   ],
-   "record_count": 85
-  },
-  "excluded": {
-   "what_it_is": "Not enriched. Job adverts, deleted per Arijit 2026-08-07.",
-   "page_types": [
-    "job-posting"
-   ],
-   "record_count": 79
+  "_doc": "page_type -> shape family. Family decides which extraction instruction the LLM receives and which script gate thresholds apply. Counts are from a full census of Algolia_Prod_Copy_Enhanced on 2026-08-07 (12,114 records, 43 page_type values, no sampling). Regenerate counts, never hand-edit the mapping without recording why in chapter-3-build-log.md.",
+  "_census_date": "2026-08-07",
+  "_census_records": 12114,
+  "families": {
+    "reference": {
+      "what_it_is": "API/SDK surface. Terse. Signatures, parameter tables, code. Prose is often one sentence.",
+      "abstract_must_lead_with": "a fact about this endpoint's BEHAVIOUR that a caller could not guess from its name -- what it changes, what it returns, what it leaves untouched, what it requires, its limits, its rate caps, its plan gating, its defaults. The page's one-line summary is ALREADY STORED as this record's description and is marked [ALREADY INDEXED] in the list; repeating it enriches nothing and the gate rejects it for adding no new content",
+      "highlights_are": "parameter names, method names, required-vs-optional, return shape",
+      "min_prose_chars": 80,
+      "expected_span_count": [
+        1,
+        3
+      ],
+      "page_types": [
+        "doc-rest-api",
+        "doc-api-reference",
+        "doc-sdk",
+        "doc-sdk-unified",
+        "doc-tool",
+        "doc-ui-library",
+        "doc-glossary",
+        "developer-code-sample"
+      ],
+      "record_count": 4392,
+      "abstract_must_not_be": "transport, protocol or plumbing facts -- HTTPS requirements, request/response format, JSON encoding, API version numbers, base URLs, authentication headers, ACL names, or how parameters are passed. Every API page states these and they distinguish none of them. They are HIGHLIGHTS, never the abstract. If the only sentences you can find are of that kind, the page is THIN -- say so rather than opening with plumbing"
+    },
+    "instructional": {
+      "what_it_is": "Procedures. Steps, prerequisites, troubleshooting. Longest bodies in the corpus.",
+      "abstract_must_lead_with": "the task the reader can accomplish",
+      "highlights_are": "prerequisites, the ordered steps, the constraint or gotcha",
+      "min_prose_chars": 200,
+      "expected_span_count": [
+        2,
+        4
+      ],
+      "page_types": [
+        "doc-guide",
+        "doc-integration",
+        "doc-framework-integration",
+        "academy-training",
+        "support-article",
+        "doc-changelog"
+      ],
+      "record_count": 2586
+    },
+    "editorial": {
+      "what_it_is": "Narrative. Blog, press, gated assets. Marketing voice, buried thesis.",
+      "abstract_must_lead_with": "the claim or news the piece actually makes",
+      "highlights_are": "the thesis, named entities, any cited figure",
+      "min_prose_chars": 300,
+      "expected_span_count": [
+        2,
+        4
+      ],
+      "page_types": [
+        "blog-post",
+        "press-release",
+        "resource",
+        "webinar",
+        "event"
+      ],
+      "record_count": 4363
+    },
+    "commercial": {
+      "what_it_is": "Product, solution, pricing, competitor pages. Highest hallucination risk: the model wants to sell.",
+      "abstract_must_lead_with": "the capability as the page states it, never a benefit the page implies",
+      "highlights_are": "named capabilities, named tiers or limits, named integrations",
+      "min_prose_chars": 150,
+      "expected_span_count": [
+        2,
+        4
+      ],
+      "page_types": [
+        "product-page",
+        "solution-page",
+        "industry-page",
+        "pricing",
+        "comparison",
+        "use-case",
+        "landing-page",
+        "contact-sales"
+      ],
+      "record_count": 223
+    },
+    "evidence": {
+      "what_it_is": "Customer stories. Contains named customers and hard metrics. Numbers must never be paraphrased.",
+      "abstract_must_lead_with": "the named customer and what they achieved",
+      "highlights_are": "customer name, the metric verbatim with its unit, the product used",
+      "min_prose_chars": 200,
+      "expected_span_count": [
+        2,
+        4
+      ],
+      "page_types": [
+        "case-study"
+      ],
+      "record_count": 237
+    },
+    "hub": {
+      "what_it_is": "Index and listing pages. Mostly links, little prose. The slop trap: nothing to say, so the model invents.",
+      "abstract_must_lead_with": "what the hub collects, only if the page states it in prose",
+      "highlights_are": "the named sections it links to, verbatim",
+      "min_prose_chars": 120,
+      "expected_span_count": [
+        1,
+        2
+      ],
+      "page_types": [
+        "blog-hub",
+        "resource-hub",
+        "product-hub",
+        "doc-hub",
+        "developer-hub",
+        "developer"
+      ],
+      "record_count": 149
+    },
+    "corporate": {
+      "what_it_is": "Company, trust, careers, partner, department. Thin and boilerplate-heavy.",
+      "abstract_must_lead_with": "the stated fact about the company or programme",
+      "highlights_are": "named commitments, certifications, programme terms",
+      "min_prose_chars": 120,
+      "expected_span_count": [
+        1,
+        3
+      ],
+      "page_types": [
+        "company",
+        "careers",
+        "trust",
+        "department-page",
+        "partner",
+        "program",
+        "services",
+        "utility"
+      ],
+      "record_count": 85
+    },
+    "excluded": {
+      "what_it_is": "Not enriched. Job adverts, deleted per Arijit 2026-08-07.",
+      "page_types": [
+        "job-posting"
+      ],
+      "record_count": 79
+    }
   }
- }
 }

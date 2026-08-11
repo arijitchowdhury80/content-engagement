@@ -140,7 +140,20 @@ def run_one(manifest: pathlib.Path, out_root: pathlib.Path, cache_root: pathlib.
                 "records": expected, "seconds": 0.0}
 
     # ---- fetch (resumable; fetch_router returns immediately if the batch is already cached) ----
-    if not fetched.exists():
+    #
+    # "Manifest exists" is NOT "batch fetched". The 2026-08-09 rate-limit storm wrote 96 manifests
+    # in which every row carried a fetch_error, and this guard then refused to call the fetcher
+    # ever again -- so the per-record resume inside fetch_router was unreachable and 4,123 records
+    # would have stayed permanently failed. Re-enter whenever any row failed and let fetch_router
+    # decide what to retry; it carries successes forward and returns immediately if none are left.
+    needs_fetch = not fetched.exists()
+    if fetched.exists():
+        try:
+            needs_fetch = any(r.get("fetch_error")
+                              for r in json.loads(fetched.read_text()))
+        except (json.JSONDecodeError, OSError):
+            needs_fetch = True          # unreadable manifest is not evidence of success
+    if needs_fetch:
         fproc = subprocess.run(
             [sys.executable, str(FETCHER), "--from-batch", str(manifest), "--out", str(cache_dir)],
             capture_output=True, text=True, timeout=timeout,

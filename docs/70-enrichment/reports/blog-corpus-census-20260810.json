@@ -1,0 +1,47 @@
+{
+  "results_roots": [
+    "batches-out-blog",
+    "batches-out-blog-r2",
+    "batches-out-blog-repair",
+    "batches-out-blog-repair2",
+    "batches-out-blog-legacy",
+    "batches-out-blog-repair3",
+    "batches-out-blog-repair4"
+  ],
+  "effective_records": 2800,
+  "status": {
+    "PASS": 2352,
+    "JUDGE_REVISE": 341,
+    "DEAD_PAGE": 104,
+    "QUARANTINED_BY_GATE": 1,
+    "NO_ABSTRACT_THIN": 2
+  },
+  "enriched_records": 2693,
+  "not_enriched": {
+    "DEAD_PAGE": 104,
+    "QUARANTINED_BY_GATE": 1,
+    "NO_ABSTRACT_THIN": 2
+  },
+  "provenance_of_enriched": {
+    "batches-out-blog": 1506,
+    "batches-out-blog-repair3": 588,
+    "batches-out-blog-repair": 304,
+    "batches-out-blog-repair4": 12,
+    "batches-out-blog-repair2": 5,
+    "batches-out-blog-r2": 199,
+    "batches-out-blog-legacy": 79
+  },
+  "spans_checked": 21780,
+  "grounding_modes": {
+    "exact": 9588,
+    "canonical": 12192
+  },
+  "grounding_failures": [],
+  "leakage_failures": [],
+  "quality_defects_by_class": {},
+  "quality_defect_records": [],
+  "records_missing_cached_body": [],
+  "enriched_rows_with_no_abstract": [],
+  "elapsed_seconds": 16.1,
+  "all_clean": true
+}

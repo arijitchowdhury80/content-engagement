@@ -16,9 +16,9 @@ Moved here from `RAG/Algolia-Central-Spectrum` on 2026-08-05. That repo is the *
 | `Algolia_Judge_Referee` | `30f60755-adb6-41fc-899d-b5418f41867b` | Blind-panel scorer. | n/a |
 | `Algolia_Judge_Skeptic` | `6dfd4a1e-8549-4771-998c-5a8ac233c3ae` | Blind-panel scorer. | n/a |
 
-All 7 live in Agent Studio app `0EXRPAXB56` — the same app that hosts Adobe Spectrum's `ACS-*` agents and Sajid's `www Chat` panel. Shared app, disjoint `Algolia_*` name prefix. Answering agents query index `Algolia_Prod_Copy_Vanilla`, environment `prod20260722`, language `en`, `hitsPerPage: 15`.
+All 7 live in Agent Studio app `0EXRPAXB56` — the same app that hosts Adobe Spectrum's `ACS-*` agents and Sajid's `www Chat` panel. Shared app, disjoint `Algolia_*` name prefix. Answering agents query index `Algolia_Prod_Copy_Enhanced`, environment `prod20260722`, language `en`, `hitsPerPage: 15`.
 
-**Sajid's `www Chat` agents also query `Algolia_Prod_Copy_Vanilla`.** Index-level settings changes there hit his live agents too. Config fixes went to `Algolia_Prod_Copy_Enhanced` instead; `Vanilla` settings are unchanged pending coordination with him.
+**The `www Chat` agents with search tools also query `Algolia_Prod_Copy_Enhanced`.** Index-level settings changes on Enhanced affect both the `Algolia_*` answering agents and the `www Chat` answering agents. Agents without an `algolia_search_index` tool have no index to switch.
 
 ## Files
 

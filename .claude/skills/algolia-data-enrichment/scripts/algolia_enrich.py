@@ -31,12 +31,14 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from algolia_enrichment import approvals, corpus, human_review, profile_lint, strategies, write
+from algolia_enrichment import (approvals, corpus, human_review, profile_lint, selection_registry,
+                                strategies, write)
 from algolia_enrichment.api import AlgoliaClient
 from algolia_enrichment.artifacts import RunFolder
 from algolia_enrichment.batching import (DEFAULT_MODEL_CONCURRENCY, DEFAULT_SCOUT_CONCURRENCY,
                                          project_runtime, run_concurrent)
-from algolia_enrichment.bodysource import IngestPayload, RunCache, ScoutRefetch
+from algolia_enrichment.bodysource import (SEALED_SCOUT_REPLAY, IngestPayload, RunCache,
+                                           ScoutRefetch)
 from algolia_enrichment.canonical import canonical_version
 from algolia_enrichment.config import env_values, load_config
 from algolia_enrichment.errors import (ApprovalError, EnrichmentError, LockError, ProfileError,
@@ -233,7 +235,30 @@ def cmd_plan_slice(ctx: Ctx) -> int:
             f"scan found {len(records)} records for {profile.key} but the census says "
             f"{live_count}. The two must agree before a slice is planned.")
 
-    if ctx.args.limit:
+    replay_of = ""
+    if ctx.args.replay_run:
+        # A stability experiment must re-run the SAME records, while reading their current source
+        # fields afresh. Reusing the previous manifest rows would silently reuse stale metadata;
+        # re-planning with --limit would sample different objectIDs because the run id changes.
+        prior_path = ctx.enrichment_dir / "runs" / ctx.args.replay_run / "manifest.json"
+        if not prior_path.exists():
+            raise EnrichmentError(f"replay manifest not found: {prior_path}")
+        prior = json.loads(prior_path.read_text())
+        if prior.get("source") != profile.source or prior.get("page_type") != profile.page_type:
+            raise EnrichmentError(
+                f"replay slice is {prior.get('source')!r}/{prior.get('page_type')!r}, not "
+                f"{profile.source!r}/{profile.page_type!r}")
+        wanted = list(prior.get("objectIDs") or [])
+        if not wanted:
+            raise ZeroWorkError("replay manifest names zero records")
+        current = {r["objectID"]: r for r in records}
+        missing = [oid for oid in wanted if oid not in current]
+        if missing:
+            raise EnrichmentError(
+                f"{len(missing)} replay records no longer belong to {profile.key}: {missing[:5]}")
+        records = [current[oid] for oid in wanted]
+        replay_of = ctx.args.replay_run
+    elif ctx.args.limit:
         # A bounded smoke slice. Deterministically sampled, and the manifest says so -- an
         # unlabelled subset reported as a slice is how a partial run reads as a complete one.
         if ctx.args.languages:
@@ -278,6 +303,7 @@ def cmd_plan_slice(ctx: Ctx) -> int:
         "live_slice_count": live_count,
         "planned_count": len(ids),
         "is_bounded_subset": bool(ctx.args.limit),
+        "replay_of": replay_of or None,
         "language_split": dict(sorted(langs.items())),
         "objectIDs": ids,
         "records": records,
@@ -331,16 +357,33 @@ def cmd_fetch(ctx: Ctx) -> int:
     state = ctx.state()
     metrics = Metrics(ctx.run_dir, "fetch")
     ledger = Ledger(ctx.run_dir)
-    _echo_config(ctx, profile, ctx.cfg.judge_tier if profile.judge_required else None,
-                 "ScoutRefetch")
-
-    source = ScoutRefetch(ctx.scout(), ctx.cfg.site)
     cache = RunCache(ctx.run_dir, ctx.run_id)
     records = manifest["records"]
     done = {"ok": 0, "failed": 0}
+    source_name = ScoutRefetch.name
+    replay_bodies: dict[str, dict] = {}
+    if ctx.args.replay_bodies_run:
+        donor_dir = ctx.enrichment_dir / "runs" / ctx.args.replay_bodies_run
+        donor_manifest_path = donor_dir / "manifest.json"
+        if not donor_manifest_path.exists():
+            raise EnrichmentError(f"sealed-body replay manifest not found: {donor_manifest_path}")
+        donor_manifest = json.loads(donor_manifest_path.read_text())
+        expected = [r["objectID"] for r in records]
+        if donor_manifest.get("objectIDs") != expected:
+            raise EnrichmentError("sealed-body replay refuses a different objectID sequence")
+        replay_bodies = RunCache(donor_dir, ctx.args.replay_bodies_run).load()
+        if set(replay_bodies) != set(expected):
+            raise EnrichmentError("sealed-body replay donor does not contain exactly this slice")
+        source_name = SEALED_SCOUT_REPLAY
+
+    _echo_config(ctx, profile, ctx.cfg.judge_tier if profile.judge_required else None, source_name)
+
+    source = None if replay_bodies else ScoutRefetch(ctx.scout(), ctx.cfg.site)
 
     def one(rec: dict) -> dict:
-        body = source.body_for(rec)
+        body = dict(replay_bodies[rec["objectID"]]) if replay_bodies else source.body_for(rec)
+        if replay_bodies:
+            body["replayed_from_run"] = ctx.args.replay_bodies_run
         cache.store(body)
         return body
 
@@ -352,12 +395,17 @@ def cmd_fetch(ctx: Ctx) -> int:
             print(f"  FAIL {rec['objectID']}: {reason[:120]}")
         else:
             done["ok"] += 1
-            ledger.append(rec["objectID"], "fetch", "FETCHED", chars=len(res["markdown"]))
+            ledger.append(rec["objectID"], "fetch", "REPLAYED" if replay_bodies else "FETCHED",
+                          chars=len(res["markdown"]))
             if done["ok"] % 10 == 0:
                 print(f"  ... {done['ok']} fetched")
 
     run_concurrent(records, one, ctx.args.concurrency, report)
-    fetch_manifest = cache.seal([r["objectID"] for r in records], source.name)
+    fetch_manifest = cache.seal([r["objectID"] for r in records], source_name)
+    if replay_bodies:
+        fetch_manifest["replayed_from_run"] = ctx.args.replay_bodies_run
+        (ctx.run_dir / "fetch-manifest.json").write_text(json.dumps(fetch_manifest, indent=2,
+                                                                       sort_keys=True))
     ctx.rf.record(f"{RunCache(ctx.run_dir, ctx.run_id).cache_dir.name}/", "fetch")
     ctx.rf.record("fetch-manifest.json", "fetch")
     metrics.flush(len(records))
@@ -390,6 +438,11 @@ def cmd_enrich(ctx: Ctx) -> int:
     # produced -- there is no argument for it.
     bodies = RunCache(ctx.run_dir, ctx.run_id).load()
     canon_map = canonical_index(manifest["records"])
+    registry_path = ctx.workspace / selection_registry.REGISTRY_RELATIVE_PATH
+    selection_cache = {} if ctx.args.ignore_selection_registry else selection_registry.load(registry_path)
+    print(f"[selection-registry] {len(selection_cache)} frozen content contracts"
+          + (" (intentionally bypassed for stability evaluation)"
+             if ctx.args.ignore_selection_registry else ""))
 
     work = []
     for rec in manifest["records"]:
@@ -404,7 +457,8 @@ def cmd_enrich(ctx: Ctx) -> int:
 
     def one(rec: dict) -> dict:
         return process_record(rec, profile, inference, writer_tier=ctx.cfg.writer_tier,
-                              judge_tier=judge_tier, canonical_map=canon_map)
+                              judge_tier=judge_tier, canonical_map=canon_map,
+                              selection_cache=selection_cache)
 
     counts: dict[str, int] = {}
 
@@ -478,13 +532,16 @@ def cmd_repair(ctx: Ctx) -> int:
     inference = ctx.inference()
     assert_model_separation(inference, ctx.cfg)
     canon_map = canonical_index(manifest["records"])
+    selection_cache = selection_registry.load(
+        ctx.workspace / selection_registry.REGISTRY_RELATIVE_PATH)
     ledger = Ledger(ctx.run_dir)
 
     def one(row: dict) -> dict:
         rec = dict(by_id[row["objectID"]])
         rec.update({k: v for k, v in bodies[row["objectID"]].items() if k != "url"})
         out = process_record(rec, profile, inference, writer_tier=ctx.cfg.writer_tier,
-                             judge_tier=judge_tier, canonical_map=canon_map)
+                             judge_tier=judge_tier, canonical_map=canon_map,
+                             selection_cache=selection_cache)
         out["repair_attempt"] = True
         return out
 
@@ -694,6 +751,22 @@ def cmd_review_pack(ctx: Ctx) -> int:
     ctx.emit("reports/review-pack.md", "\n".join(lines), "review-pack")
     print(f"review pack: {sum(len(v) for v in sample.values())} records across "
           f"{len(sample)} strata")
+    return 0
+
+
+def cmd_freeze_selections(ctx: Ctx) -> int:
+    """Promote validated candidate IDs to the content-addressed reproducibility registry."""
+    ctx.banner("freeze-selections")
+    state = ctx.state()
+    state.require("validate", "PASSED")
+    rows = _read_jsonl(ctx.run_dir / "final" / "results.jsonl")
+    if not rows:
+        raise ZeroWorkError("freeze-selections has no final rows")
+    path = ctx.workspace / selection_registry.REGISTRY_RELATIVE_PATH
+    report = selection_registry.freeze(path, rows, run_id=ctx.run_id)
+    ctx.emit("validation/selection-freeze.json", report, "freeze-selections")
+    print(json.dumps(report, sort_keys=True))
+    print("PASS: validated selections are frozen by content hash, profile and prompt version.")
     return 0
 
 
@@ -963,6 +1036,7 @@ COMMANDS = {
     "build-final": (cmd_build_final, True),
     "validate": (cmd_validate, True),
     "review-pack": (cmd_review_pack, True),
+    "freeze-selections": (cmd_freeze_selections, True),
     "prepare-target-index": (cmd_prepare_target_index, True),
     "dry-run-write": (cmd_dry_run_write, True),
     "apply-write": (cmd_apply_write, True),
@@ -984,6 +1058,12 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--page-type", default="")
     ap.add_argument("--limit", type=int, default=0,
                     help="bound the slice; the manifest records that it is a subset")
+    ap.add_argument("--replay-run", default="",
+                    help="plan the exact objectIDs from another run's manifest using fresh source records")
+    ap.add_argument("--replay-bodies-run", default="",
+                    help="reuse only a prior run's sealed Scout bodies; never calls Scout")
+    ap.add_argument("--ignore-selection-registry", action="store_true",
+                    help="evaluation only: force a fresh model selection from sealed bodies")
     ap.add_argument("--languages", default="",
                     help="stratified subset, e.g. 'de:4,fr:4,en:2'")
     ap.add_argument("--concurrency", type=int, default=DEFAULT_SCOUT_CONCURRENCY)

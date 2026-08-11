@@ -1,0 +1,182 @@
+{
+  "pre-query": [
+    {
+      "n": 1,
+      "box": [
+        28,
+        153,
+        183,
+        308
+      ],
+      "caption": "Source filter rail \u2014 8 facets with counts. An infrastructure taxonomy: 4 labels name a system, 3 a content type, 1 is leftovers."
+    },
+    {
+      "n": 2,
+      "box": [
+        904,
+        39,
+        104,
+        29
+      ],
+      "caption": "AI mode toggle."
+    },
+    {
+      "n": 3,
+      "box": [
+        248,
+        128,
+        748,
+        164
+      ],
+      "caption": "Prompt chips \u2014 all four are vendor-voiced sales questions, not visitor questions."
+    },
+    {
+      "n": 4,
+      "box": [
+        248,
+        357,
+        748,
+        160
+      ],
+      "caption": "Suggestions \u2014 generic in the empty state. No recent or popular searches, no personalisation."
+    },
+    {
+      "n": 5,
+      "box": [
+        248,
+        590,
+        748,
+        204
+      ],
+      "caption": "Default hits. hitsPerPage is 3."
+    }
+  ],
+  "autocomplete": [
+    {
+      "n": 1,
+      "box": [
+        248,
+        590,
+        748,
+        204
+      ],
+      "caption": "Query-as-you-type results, still 3."
+    },
+    {
+      "n": 2,
+      "box": [
+        28,
+        153,
+        183,
+        269
+      ],
+      "caption": "Facet counts recompute per keystroke. At 'ecom' this reads Support 1,695 and Academy 142 \u2014 every record in both sources."
+    },
+    {
+      "n": 3,
+      "box": [
+        248,
+        357,
+        748,
+        160
+      ],
+      "caption": "Suggestions switch from generic to query-derived."
+    }
+  ],
+  "post-query": [
+    {
+      "n": 1,
+      "box": [
+        248,
+        393,
+        748,
+        204
+      ],
+      "caption": "Hit card: thumbnail, title, 'Source \u2022 category', 'Learn more \u2192'. No breadcrumb, no snippet, no date, no highlighting."
+    },
+    {
+      "n": 2,
+      "box": [
+        28,
+        153,
+        183,
+        308
+      ],
+      "caption": "Facets recomputed for the query \u2014 sums to the stated result count."
+    }
+  ],
+  "ai-mode": [
+    {
+      "n": 1,
+      "box": [
+        8,
+        671,
+        1008,
+        1259
+      ],
+      "caption": "Algolia Assist, triggered by Enter \u2014 no AI-mode click needed. The answer is generative and carries no citations, and never links to the results retrieved directly above it."
+    },
+    {
+      "n": 2,
+      "box": [
+        248,
+        393,
+        748,
+        204
+      ],
+      "caption": "Retrieved results stay on screen, above the answer, unconnected to it."
+    },
+    {
+      "n": 3,
+      "box": [
+        28,
+        153,
+        183,
+        308
+      ],
+      "caption": "Filter rail still live behind the chat."
+    }
+  ],
+  "zero-result": [
+    {
+      "n": 1,
+      "box": [
+        939,
+        357,
+        57,
+        24
+      ],
+      "caption": "'No results'. No did-you-mean, no spelling correction, no query relaxation \u2014 the keyword-search recovery affordances are absent."
+    },
+    {
+      "n": 2,
+      "box": [
+        8,
+        99,
+        220,
+        334
+      ],
+      "caption": "The filter rail EMPTIES \u2014 0 facet items. The left column goes blank."
+    },
+    {
+      "n": 3,
+      "box": [
+        248,
+        160,
+        748,
+        160
+      ],
+      "caption": "Suggestions revert to the generic four, unrelated to what was typed."
+    },
+    {
+      "n": 4,
+      "box": [
+        8,
+        449,
+        1008,
+        585
+      ],
+      "caption": "But it is not a dead end: pressing Enter auto-engages Algolia Assist, which answers the failed query with a structured recovery menu. The AI is the fallback."
+    }
+  ]
+}

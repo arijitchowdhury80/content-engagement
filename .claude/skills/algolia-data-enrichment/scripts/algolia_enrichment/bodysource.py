@@ -40,6 +40,7 @@ from .scout import ScoutClient, assert_scout_provenance
 
 CACHE_DIRNAME = "cache-scout"
 FETCH_MANIFEST = "fetch-manifest.json"
+SEALED_SCOUT_REPLAY = "SealedScoutReplay"
 
 
 class BodySource(Protocol):
@@ -191,7 +192,7 @@ class RunCache:
         # manifest is written by `fetch` and is the independent statement of what produced this
         # cache.
         declared = manifest.get("body_source")
-        if declared == ScoutRefetch.name:
+        if declared in (ScoutRefetch.name, SEALED_SCOUT_REPLAY):
             problems = assert_scout_provenance(list(bodies.values()))
         else:
             problems = [f"{oid}: manifest declares body_source={declared!r} but this body says "

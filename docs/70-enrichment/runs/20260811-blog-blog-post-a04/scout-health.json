@@ -1,0 +1,9 @@
+{
+  "chars": 7070,
+  "elapsed_s": 10.58,
+  "fetch_error": "",
+  "http_status": 200,
+  "ok": true,
+  "probe_url": "/blog/product/dynamic-facets",
+  "served_url": "/blog/product/dynamic-facets"
+}

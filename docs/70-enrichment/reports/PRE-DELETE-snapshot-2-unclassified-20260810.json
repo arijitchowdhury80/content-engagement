@@ -1,0 +1,29 @@
+{
+  "index": "Algolia_Prod_Copy_Enhanced",
+  "taken_at": "2026-08-10",
+  "reason": "about to quarantine + delete on Arijit's explicit instruction",
+  "records": [
+    {
+      "hitsPerPage": 1,
+      "objectID": "7825fa8b-7dd1-48d3-81ff-82f09c8832dd"
+    },
+    {
+      "algoliaDisabled": "false",
+      "title": "Search Grader",
+      "thumbnail": "https://production-algolia.cloud.jahia.com/files/default/sites/www/files/search-grader-hero.png",
+      "url": "https://www.algolia.com/ai-search-grader",
+      "description": "Use our Search Grader to evaluate your current product discovery functionality and get a customized, actionable report on how to improve customer experience on your website.",
+      "abstract": "Use our Search Grader to evaluate your current product discovery functionality and get a customized, actionable report on how to improve customer experience on your website.",
+      "language_code": "en",
+      "page_type": "landing-page",
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "objectID": "116204c4832786_dashboard_generated_id"
+    }
+  ]
+}

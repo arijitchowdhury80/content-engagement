@@ -49,6 +49,7 @@ from urllib.parse import urlparse
 HERE = pathlib.Path(__file__).parent
 sys.path.insert(0, str(HERE))
 from snapshot_enhanced import browse_all, load_credentials  # noqa: E402
+from curl_secret import curl as secret_curl  # noqa: E402
 
 FAMILIES_PATH = HERE / "prompts" / "shape-families.json"
 QUEUE_PATH = HERE / "work-queue.jsonl"
@@ -78,11 +79,15 @@ HEAD_CHARS = 300_000
 TAIL_CHARS = 100_000
 TRUNCATION_MARKER = "\n\n[... text removed by the enrichment pipeline ...]\n\n"
 
-UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
-
 SCOUT_BASE = "https://scout.chowmes.com"
-ZENDESK_ARTICLE = re.compile(r"/articles/(\d+)")
+# Every algolia.com page carries this anchor, written by the document that actually rendered.
+_SKIP_LINK = re.compile(r"\[Skip to main content\]\((https?://[^)#]+)")
+
+
+def served_url_from(markdown: str) -> str:
+    """The URL the served page claims for itself, or "". Positive evidence only."""
+    m = _SKIP_LINK.search(markdown or "")
+    return m.group(1) if m else ""
 
 
 # ---------------------------------------------------------------------------
@@ -126,12 +131,15 @@ def fetch_path_for(url: str) -> str:
         # without approval.
         return "excluded-support"
     if host == "academy.algolia.com":
-        return "auth-wall"
+        # NOT fetched. Academy redirects to a dashboard sign-in, so the only thing a fetch can
+        # return is the sign-in page -- and fetching it would be a direct non-Scout curl, which
+        # HARD RULE 11 forbids. 142 records take an honest counted LOGIN_REQUIRED verdict instead.
+        return "login-required"
     if host == "job-boards.greenhouse.io":
         return "excluded"          # deleted 2026-08-07; here so a stray record is not enriched
-    path = urlparse(absolute).path
-    if host in ("www.algolia.com", "algolia.com") and path.startswith("/doc"):
-        return "doc-md-twin"
+    # SCOUT-ONLY, 2026-08-09. `/doc/*` used to route to `doc-md-twin` (GET <url>.md). Arijit's
+    # directive makes Scout the single production fetch source, so the branch is gone rather than
+    # disabled -- there is no flag to leave in the wrong position.
     return "scout"
 
 
@@ -148,6 +156,10 @@ def load_families() -> tuple[dict[str, str], dict[str, dict]]:
 # the four fetchers. Each returns the SAME dict shape or raises FetchFailed.
 # ---------------------------------------------------------------------------
 
+class ScoutRateLimited(Exception):
+    """Transient. The caller backs off and retries; it is never a verdict about the record."""
+
+
 class FetchFailed(Exception):
     def __init__(self, reason: str, status: int = 0):
         super().__init__(reason)
@@ -155,73 +167,39 @@ class FetchFailed(Exception):
         self.status = status
 
 
-def _curl(url: str, timeout: int = 60) -> tuple[int, str]:
-    proc = subprocess.run(
-        ["curl", "-s", "-L", "-A", UA, "--max-time", str(timeout),
-         "-w", "\n%{http_code}", url],
-        capture_output=True, text=True,
-    )
-    body, _, code = proc.stdout.rpartition("\n")
-    try:
-        return int(code.strip()), body
-    except ValueError:
-        raise FetchFailed(f"curl gave no status code: {proc.stderr[:120]}")
-
-
-def fetch_doc_md_twin(absolute: str) -> tuple[str, int]:
-    """GET <url>.md — authored markdown, no browser, no credit."""
-    status, body = _curl(absolute.rstrip("/") + ".md")
-    if status != 200 or not body.strip():
-        raise FetchFailed(f"md twin returned {status}", status)
-    return body, status
-
-
-def fetch_zendesk(absolute: str) -> tuple[str, int]:
-    """Zendesk Help Center API. Keyless, official, returns the article body as HTML.
-
-    support.algolia.com 403s a plain page fetch (bot wall) but the API answers fine.
-    """
-    match = ZENDESK_ARTICLE.search(absolute)
-    if not match:
-        raise FetchFailed("no Zendesk article id in URL")
-    api = f"https://support.algolia.com/api/v2/help_center/articles/{match.group(1)}.json"
-    status, body = _curl(api)
-    if status != 200:
-        raise FetchFailed(f"zendesk api returned {status}", status)
-    try:
-        article = json.loads(body)["article"]
-    except (json.JSONDecodeError, KeyError):
-        raise FetchFailed("zendesk api payload not an article")
-    html = article.get("body") or ""
-    title = article.get("title") or ""
-    # Minimal HTML -> text. span_gate.canonicalise strips residual tags, and we must NOT
-    # pre-clean aggressively: the gate slices from exactly the bytes the model saw.
-    text = re.sub(r"<br\s*/?>", "\n", html)
-    text = re.sub(r"</(p|div|li|h[1-6])>", "\n\n", text)
-    return f"# {title}\n\n{text}", status
-
-
-def fetch_scout(absolute: str, key: str, poll_seconds: int = 90) -> tuple[str, int]:
+def fetch_scout(absolute: str, key: str, poll_seconds: int = 90) -> tuple[str, int, str]:
     """Hosted Scout on the VPS. Async: POST returns a job id, then poll."""
     body = json.dumps({"url": absolute, "formats": ["markdown"]})
-    proc = subprocess.run(
-        ["curl", "-s", "--max-time", "60", "-X", "POST", f"{SCOUT_BASE}/v1/hosted/scrape",
-         "-H", "Content-Type: application/json", "-H", f"Authorization: Bearer {key}",
-         "-d", body],
-        capture_output=True, text=True,
+    # The bearer token goes through curl's stdin config, never argv. See curl_secret.
+    proc = secret_curl(
+        ["-s", "--max-time", "60", "-X", "POST", f"{SCOUT_BASE}/v1/hosted/scrape",
+         "-H", "Content-Type: application/json", "-d", body],
+        {"Authorization": f"Bearer {key}"},
     )
     try:
-        job = json.loads(proc.stdout)["job_id"]
+        queued = json.loads(proc.stdout)
+        job = queued["job_id"]
     except (json.JSONDecodeError, KeyError):
+        # A rate-limit rejection is TRANSIENT and must not become a permanent FETCH_FAILED verdict
+        # on a good record. The hosted plan allows 5 concurrent runs; anything that makes a sixth
+        # call -- another tool, a verification pass, a retry storm -- gets
+        # {"detail":"Hosted API rate limit exceeded."} and the record would be written off.
+        # Measured 2026-08-09 by running a verification pass alongside a 5-worker corpus fetch.
+        if "rate limit" in proc.stdout.lower() or "429" in proc.stdout:
+            raise ScoutRateLimited(proc.stdout[:160])
         raise FetchFailed(f"scout did not queue a job: {proc.stdout[:160]}")
 
+    # Scout states its own pacing in the queue response: `retry_after_seconds`, currently 10.
+    # We polled every 6s -- 40% faster than asked -- and with 5 workers that request rate tripped
+    # "Hosted API rate limit exceeded" on 4,123 of 4,779 pages on 2026-08-09. Ask the server how
+    # fast to go instead of guessing.
+    interval = float(queued.get("retry_after_seconds") or 10)
     deadline = time.time() + poll_seconds
     while time.time() < deadline:
-        time.sleep(6)
-        poll = subprocess.run(
-            ["curl", "-s", "--max-time", "30", f"{SCOUT_BASE}/v1/hosted/jobs/{job}",
-             "-H", f"Authorization: Bearer {key}"],
-            capture_output=True, text=True,
+        time.sleep(interval)
+        poll = secret_curl(
+            ["-s", "--max-time", "30", f"{SCOUT_BASE}/v1/hosted/jobs/{job}"],
+            {"Authorization": f"Bearer {key}"},
         )
         try:
             data = json.loads(poll.stdout)
@@ -233,19 +211,13 @@ def fetch_scout(absolute: str, key: str, poll_seconds: int = 90) -> tuple[str, i
             status = int(scrape.get("status_code") or 0)
             if not markdown.strip():
                 raise FetchFailed(f"scout returned empty markdown (http {status})", status)
-            return markdown, status
+            # The URL Scout's own result reports, when it reports one. Redirects are why this
+            # matters: 14 of 23 /doc/libraries pages served a different document than requested.
+            served = (scrape.get("url") or scrape.get("final_url") or "")
+            return markdown, status, served
         if data.get("status") in ("failed", "error"):
             raise FetchFailed(f"scout job failed: {str(data)[:160]}")
     raise FetchFailed(f"scout job {job} did not finish in {poll_seconds}s")
-
-
-def fetch_auth_wall(absolute: str) -> tuple[str, int]:
-    """Academy. Attempt anyway and report what comes back, so the block is evidenced rather
-    than assumed. The sign-in page IS the evidence, and the LLM will verdict it LOGIN_REQUIRED."""
-    status, body = _curl(absolute)
-    if not body.strip():
-        raise FetchFailed(f"auth wall returned {status} with no body", status)
-    return body, status
 
 
 # ---------------------------------------------------------------------------
@@ -259,7 +231,27 @@ def truncate(markdown: str) -> tuple[str, bool, int]:
     return markdown[:HEAD_CHARS] + TRUNCATION_MARKER + markdown[-TAIL_CHARS:], True, original
 
 
-def fetch(record: dict, key: str | None = None) -> dict:
+_RATE_LIMIT_ATTEMPTS = 5
+_RATE_LIMIT_BASE_SECONDS = 4.0
+
+
+def _scout_with_backoff(absolute: str, key: str, poll_seconds: int = 90) -> tuple[str, int, str]:
+    """Scout, retrying ONLY a rate-limit rejection. Everything else fails immediately.
+
+    Exponential, 4s to 64s, five attempts. Deliberately narrow: retrying a 404 or an empty body
+    would turn a real finding about the corpus into a slow one.
+    """
+    for attempt in range(1, _RATE_LIMIT_ATTEMPTS + 1):
+        try:
+            return fetch_scout(absolute, key, poll_seconds=poll_seconds)
+        except ScoutRateLimited as exc:
+            if attempt == _RATE_LIMIT_ATTEMPTS:
+                raise FetchFailed(f"scout rate limit after {attempt} attempts: {exc}")
+            time.sleep(_RATE_LIMIT_BASE_SECONDS * (2 ** (attempt - 1)))
+    raise FetchFailed("unreachable")
+
+
+def fetch(record: dict, key: str | None = None, scout_timeout: int = 90) -> dict:
     """THE standard shape. Every path returns exactly this; nothing downstream knows which ran."""
     absolute = absolute_url(record.get("url", ""))
     path = fetch_path_for(record.get("url", ""))
@@ -269,6 +261,8 @@ def fetch(record: dict, key: str | None = None) -> dict:
         "source_url": absolute,
         "fetch_path": path,
         "fetched_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "served_url": "",          # the page the server actually rendered; "" when unknown
+        "redirect_mismatch": False,  # served_url names a DIFFERENT document than `url`
         "markdown": "",
         "content_hash": "",
         "http_status": 0,
@@ -277,23 +271,27 @@ def fetch(record: dict, key: str | None = None) -> dict:
         "fetch_error": "",
     }
     try:
-        if path == "doc-md-twin":
-            markdown, status = fetch_doc_md_twin(absolute)
-        elif path == "zendesk-api":
-            markdown, status = fetch_zendesk(absolute)
-        elif path == "auth-wall":
-            markdown, status = fetch_auth_wall(absolute)
-        elif path == "scout":
-            markdown, status = fetch_scout(absolute, key or scout_key())
-        else:
-            raise FetchFailed(f"fetch path {path!r} is not enrichable")
+        if path != "scout":
+            # login-required / excluded-support / excluded take an honest verdict upstream and are
+            # never fetched. There is exactly ONE fetcher in this module now.
+            raise FetchFailed(f"fetch path {path!r} is not fetched (honest verdict, not a failure)")
+        markdown, status, served = _scout_with_backoff(
+            absolute, key or scout_key(), poll_seconds=scout_timeout)
     except FetchFailed as exc:
         out["fetch_error"] = exc.reason
         out["http_status"] = exc.status
         return out
 
     markdown, truncated, original = truncate(markdown)
+    # IDENTITY, not status. Scout reported 308 on the /doc/libraries redirects, but a fetcher that
+    # follows a redirect reports 200 and serves the wrong page just the same. The page's own
+    # skip-link anchor is written by whichever document rendered, so it survives the redirect.
+    served = served or served_url_from(markdown)
+    requested = urlparse(absolute).path.rstrip("/")
+    served_path = urlparse(served).path.rstrip("/") if served else ""
     out.update({
+        "served_url": served_path,
+        "redirect_mismatch": bool(served_path) and served_path != requested,
         "markdown": markdown,
         # Hash the TRUNCATED text -- it is what the model sees and what the gate slices from.
         "content_hash": hashlib.sha256(markdown.encode("utf-8")).hexdigest(),
@@ -317,7 +315,7 @@ def build_queue(index: str) -> list[dict]:
         page_type = rec.get("page_type") or ""
         family = page_type_to_family.get(page_type)
         if family is None:
-            unmapped[page_type] += 1
+            unmapped[page_type if (page_type or rec.get("url")) else ""] += 1
             continue
         queue.append({
             "objectID": rec["objectID"],
@@ -332,9 +330,17 @@ def build_queue(index: str) -> list[dict]:
             "description": rec.get("description") or "",
             "is404": rec.get("is404"),
         })
+    # A record with NO page_type AND no url is not an unmapped page type -- it is not a page at
+    # all. One appeared in the live index on 2026-08-09 carrying nothing but a UUID objectID
+    # (`7825fa8b-...`), which is the unknown-writer signature from HARD RULE 8. It is counted and
+    # reported, never silently dropped, and never enriched.
+    malformed = unmapped.pop("", 0)
     if unmapped:
         sys.exit(f"FATAL: page_type values not in shape-families.json: {dict(unmapped)}\n"
                  f"Every record must map to a family. Add them, do not skip records.")
+    if malformed:
+        print(f"WARNING: {malformed} record(s) with no page_type and no url -- foreign to this "
+              f"corpus, counted as EXCLUDED_MALFORMED, not enriched. See HARD RULE 8.")
     return queue
 
 
@@ -388,6 +394,9 @@ def main() -> int:
     ap.add_argument("--exclude", default="", metavar="MANIFEST",
                     help="skip objectIDs already present in this manifest (second capture)")
     ap.add_argument("--out", default=str(CACHE_DIR))
+    ap.add_argument("--scout-timeout", type=int, default=90,
+                    help="seconds to wait for each hosted Scout job. Default 90; use a larger "
+                         "value only for targeted retries of pages known to be slow.")
     args = ap.parse_args()
 
     if args.verify_families:
@@ -437,26 +446,48 @@ def main() -> int:
         # Resume: a batch already fetched is not re-fetched. Fetching is the slow, rate-limited,
         # externally-capped part of this pipeline -- re-doing it because a later stage failed
         # would be the most expensive possible mistake.
+        prior = []
         if manifest.exists():
-            done = {r["objectID"] for r in json.loads(manifest.read_text())}
+            # A record with a fetch_error is NOT done. The old check counted every row in the
+            # manifest, failures included, so a batch that rate-limited every page was marked
+            # complete and would never be retried -- 4,123 records would have carried a permanent
+            # FETCH_FAILED verdict caused by our own request rate. Resume on SUCCESS only.
+            prior = json.loads(manifest.read_text())
+            done = {r["objectID"] for r in prior if not r.get("fetch_error")}
+            failed = [r for r in prior if r.get("fetch_error")]
             if {r["objectID"] for r in sample} <= done:
                 print(f"batch already fetched ({len(done)} records): {manifest}")
                 return 0
+            if failed:
+                print(f"retrying {len(failed)} previously-failed record(s) in {batch.name}")
         out_dir.mkdir(parents=True, exist_ok=True)
         key = scout_key()
-        results = []
-        print(f"fetching {len(sample)} records from {batch.name}\n")
-        for n, item in enumerate(sample, 1):
-            got = fetch(item, key)
+        # PER-RECORD resume. Carry forward every prior SUCCESS and re-fetch only what failed.
+        # Without this, one failed page in a batch of 50 re-buys the other 49 -- and after the
+        # 2026-08-09 rate-limit storm that would have meant re-purchasing 659 good pages.
+        prior_ok = {r["objectID"]: r for r in (prior if manifest.exists() else [])
+                    if not r.get("fetch_error")}
+        todo = [i for i in sample if i["objectID"] not in prior_ok]
+        results = [prior_ok[i["objectID"]] for i in sample if i["objectID"] in prior_ok]
+        if prior_ok:
+            print(f"carrying forward {len(prior_ok)} already-fetched record(s)")
+        print(f"fetching {len(todo)} of {len(sample)} records from {batch.name}\n")
+        for n, item in enumerate(todo, 1):
+            got = fetch(item, key, scout_timeout=args.scout_timeout)
             got.update({k: item[k] for k in
                         ("page_type", "family", "language_code", "source", "title", "description")
                         if k in item})
             got.setdefault("pilot_reason", f"batch {batch.stem}")
             results.append(got)
             state = got["fetch_error"] or f"{len(got['markdown'])} chars"
-            print(f"  {n:2d}/{len(sample)}  {got['fetch_path']:12s} {state:28s} "
+            print(f"  {n:2d}/{len(todo)}  {got['fetch_path']:12s} {state:28s} "
                   f"{got['source_url'][:64]}", flush=True)
-            (out_dir / f"{got['objectID'].replace('/', '_')[:120]}.json").write_text(
+            # A failure is NOT a page body. Writing it beside real bodies makes the whole cache
+            # fail its own provenance gate, and makes "files in the cache" a lie about coverage --
+            # which is exactly how a 86%-failed fetch looked healthy on 2026-08-09.
+            target = out_dir if not got["fetch_error"] else (out_dir / "quarantine")
+            target.mkdir(parents=True, exist_ok=True)
+            (target / f"{got['objectID'].replace('/', '_')[:120]}.json").write_text(
                 json.dumps(got, ensure_ascii=False, indent=1))
         manifest.write_text(json.dumps(results, ensure_ascii=False, indent=1))
         ok = [r for r in results if not r["fetch_error"]]
@@ -482,7 +513,7 @@ def main() -> int:
         results = []
         print(f"fetching {len(sample)} pilot records\n")
         for n, item in enumerate(sample, 1):
-            got = fetch(item, key)
+            got = fetch(item, key, scout_timeout=args.scout_timeout)
             got.update({k: item[k] for k in
                         ("page_type", "family", "language_code", "source", "title",
                          "description", "pilot_reason")})

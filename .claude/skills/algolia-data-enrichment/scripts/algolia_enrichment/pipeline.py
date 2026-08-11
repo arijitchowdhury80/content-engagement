@@ -27,6 +27,7 @@ THE ORDER, AND WHY EACH STEP IS WHERE IT IS
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 from dataclasses import dataclass, field
 
 from . import strategies
@@ -38,9 +39,12 @@ from .gates import (apply_pool_gates, check_blacklists, check_context, check_inf
                     check_integrity, check_subject_present, retry_constraints)
 from .model_io import JUDGE_PROMPT, PROMPT_VERSION, SELECT_PROMPT, WRITER_SYSTEM_PROMPT
 from .repair import incomplete_reason, repair_or_drop_highlights, repair_span
+from .selection_registry import key_of
 from .verdicts import classify as classify_verdict, language_mismatch
 
 MAX_SELECTION_ATTEMPTS = 3
+JUDGE_CRITERIA = ("representativeness", "specificity", "information_gain", "coherence",
+                  "juxtaposition")
 
 # The gate ids the runner loads. Echoed into effective-config.json so the run's own output says
 # which gates ran -- reading the source proves nothing about what the runner reached.
@@ -182,9 +186,29 @@ def _prompt(record: dict, profile, menu: str) -> str:
         menu=menu)
 
 
+def judge_quality_failures(judge: dict, canon) -> list[str]:
+    """A quality approval must show page-grounded evidence for every scored criterion."""
+    evidence = judge.get("evidence") if isinstance(judge, dict) else None
+    if not isinstance(evidence, dict):
+        return ["judge supplied no per-criterion evidence"]
+    failures = []
+    for criterion in JUDGE_CRITERIA:
+        score, quote = judge.get(criterion), evidence.get(criterion)
+        if not isinstance(score, int) or not 1 <= score <= 5:
+            failures.append(f"judge {criterion} score is not an integer 1-5")
+        elif score < 4:
+            failures.append(f"judge {criterion} score {score} is below approval floor 4")
+        if not isinstance(quote, str) or not quote.strip():
+            failures.append(f"judge {criterion} has no evidence quote")
+        elif canonicalise(quote).text not in canon.text:
+            failures.append(f"judge {criterion} evidence is not on the page")
+    return failures
+
+
 def process_record(record: dict, profile, inference, *, writer_tier: str,
                    judge_tier: str | None, canonical_map: dict[str, str] | None = None,
-                   boilerplate: set[str] | None = None) -> dict:
+                   boilerplate: set[str] | None = None,
+                   selection_cache: dict[tuple[str, str, str], dict] | None = None) -> dict:
     """One record, from a fetched body to a result row. `record` carries the body under
     `markdown`, which `bodysource.RunCache` is the only supplier of."""
     markdown = record.get("markdown") or ""
@@ -234,6 +258,10 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
 
     content_start = main_content_start(markdown)
     out["content_start"] = content_start
+    # The selection contract is the cleaned main content the model may actually see. Keep the
+    # raw Scout hash separately for fetch provenance; it is deliberately not a selection key.
+    out["selection_content_hash"] = hashlib.sha256(
+        canonicalise(markdown[content_start:]).text.encode("utf-8")).hexdigest()
     cands, canon = split_candidates(markdown, boilerplate=boilerplate,
                                     already_indexed=record.get("description", ""),
                                     content_start=content_start)
@@ -273,9 +301,21 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
                     "candidates_before_filter": len(unfiltered)})
         return out
 
-    llm, meta = inference.complete(writer_tier, _prompt(record, profile,
-                                                        render_menu(cands, no_open=ineligible)),
-                                   system=WRITER_SYSTEM_PROMPT)
+    cache_key = key_of({"selection_content_hash": out["selection_content_hash"],
+                        "profile_version": profile.version, "prompt_version": PROMPT_VERSION})
+    frozen = (selection_cache or {}).get(cache_key)
+    if frozen:
+        ids = frozen["selected_candidate_ids"]
+        llm, meta = ({"verdict": "REAL", "abstract": ids["abstract"],
+                      "highlights": ids["highlights"],
+                      "language_observed": record.get("language_code") or ""}, {})
+        out["selection_origin"] = "registry"
+        out["selection_frozen_from_run"] = frozen.get("frozen_from_run")
+    else:
+        llm, meta = inference.complete(writer_tier, _prompt(record, profile,
+                                                            render_menu(cands, no_open=ineligible)),
+                                       system=WRITER_SYSTEM_PROMPT)
+        out["selection_origin"] = "model"
     out["writer_usage"] = (meta or {}).get("usage")
     if llm is None:
         out.update({"status": "WRITER_UNPARSEABLE", "writer_raw": meta.get("raw", "")})
@@ -323,6 +363,12 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
             out.update({"status": "WRITER_FREE_TEXT", "gate_failures": att.failures,
                         "selection_attempts": attempt_log})
             return out
+        if frozen:
+            # A frozen selection that no longer clears the current deterministic gates is a
+            # contract mismatch. Do not silently ask the model for a different answer; that
+            # would turn reproducibility into a best-effort suggestion.
+            attempt_log.append("frozen selection failed a live gate; registry entry not replaced")
+            break
         fresh = {i for i in att.ban_hint if i not in banned}
         if not fresh or attempt_no == MAX_SELECTION_ATTEMPTS:
             break
@@ -360,6 +406,13 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
     out["abstract_spans_stored"] = att.abstract_spans
     out["abstract_enriched"] = " ".join(att.abstract_spans)
     out["keyhighlights_enriched"] = att.highlight_spans
+    # Artifact-only provenance for deterministic replay. These are never payload fields and
+    # therefore can never pollute the Algolia record. The numbers address this run's numbered
+    # page menu, not model-generated prose.
+    out["selected_candidate_ids"] = {
+        "abstract": [c.index for c in sel.abstract],
+        "highlights": [c.index for c in sel.highlights],
+    }
     out["span_offsets"] = [[c.start, c.end] for c in sel.abstract + sel.highlights]
 
     # --- the judge: quality only, and it may not write prose ---------------
@@ -390,7 +443,11 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
         return out
     out["judge"] = judge
     verdict = judge.get("verdict")
-    if verdict == "PASS":
+    quality_failures = judge_quality_failures(judge, canon)
+    if quality_failures:
+        out.update({"status": "JUDGE_HUMAN_REVIEW", "judge_failures": quality_failures,
+                    "verdict_reason": "judge evidence or score failed the quality gate"})
+    elif verdict == "PASS":
         out["status"] = "PASS"
     elif verdict == "DROP_HIGHLIGHT":
         out["status"] = "PASS"

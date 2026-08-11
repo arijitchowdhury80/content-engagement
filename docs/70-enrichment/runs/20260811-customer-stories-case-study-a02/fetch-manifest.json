@@ -1,0 +1,88 @@
+{
+  "body_source": "ScoutRefetch",
+  "entries": {
+    "de_2f84bc0e-3fed-48c1-88e9-48aff3f6654e": {
+      "chars": 15711,
+      "content_hash": "0455dc0eb71e0930aa393bbe42c1ef480249321d61f2161aef5aed2f0bd71acc",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/CredibleMind"
+    },
+    "de_3e911e64-945a-48c0-a8bb-82402e447990_3_0": {
+      "chars": 12275,
+      "content_hash": "1abee100809324687e33181e420b54bc6bf55057c8a67a8daacc1464d8872cce",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/swedol"
+    },
+    "de_cf058e1a-76ff-463a-ab45-08e937f6ec35": {
+      "chars": 14592,
+      "content_hash": "530232ddb9ec548479313b6aedb77ea8476a5a41882e5ca1cc0261554982f8ec",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/live-platforms"
+    },
+    "de_e6deb45c-7ecf-479c-9b42-3a03841e4068": {
+      "chars": 13887,
+      "content_hash": "1b9f218755a3a74349baaeaa877805f009da548be82078cd61a60dc2adcd50d7",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/plieger"
+    },
+    "en_2d11146a-88a1-4c0a-90d2-e53bd636c815_3_0": {
+      "chars": 10560,
+      "content_hash": "592e8b751df3c666edd493771e33ba37157113e4a48db7f11994bacf373038c8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/gametime"
+    },
+    "en_cf058e1a-76ff-463a-ab45-08e937f6ec35_4_0": {
+      "chars": 12559,
+      "content_hash": "17c2db71d807cde31318c12618589b3974189c35e70ec8da253a501f41136e99",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/live-platforms"
+    },
+    "fr_2f84bc0e-3fed-48c1-88e9-48aff3f6654e": {
+      "chars": 15414,
+      "content_hash": "85dd40bd0651f036af064a1505cf8cf7f119dbc6d4aa291c68785e72f6fde89f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/CredibleMind"
+    },
+    "fr_351f8d88-abeb-487b-b96c-cc159fe37de1": {
+      "chars": 13171,
+      "content_hash": "e39addec6bdfc066bef9bf4ac3c67bc863efbfe03b6a26e87af07e7a90e4f895",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/club-med"
+    },
+    "fr_7ec2610c-3ed8-485c-addb-f3039005802a_4_0": {
+      "chars": 8250,
+      "content_hash": "ff7ae6d4cbcca859763797eee88bcef41c941479686f5e5557c99d5efcf76c92",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/kingarthur"
+    },
+    "fr_a2892dee-4f74-416a-957c-8e920cabd0aa": {
+      "chars": 12687,
+      "content_hash": "87efb25236491689fda820705aeb9309e48f89424b7f3f877137f74870322551",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/zoom"
+    }
+  },
+  "fetched": 10,
+  "planned": 10,
+  "run_id": "20260811-customer-stories-case-study-a02"
+}

@@ -1,0 +1,71 @@
+{
+  "A_zero_result_clean_context": {
+    "facet_items": 0,
+    "facet_rail_present": true,
+    "hits": 0,
+    "stats": "No results",
+    "suggestions": [
+      "Algolia API integration",
+      "Algolia search benefits",
+      "Algolia scalability",
+      "AI search for ecommerce"
+    ],
+    "ai_prompts": 0,
+    "show_more": false,
+    "search_view_visible": true,
+    "chat_view_visible": true,
+    "assist_transcript": true
+  },
+  "A_control_query_with_results": {
+    "facet_items": 2,
+    "facet_rail_present": true,
+    "hits": 2,
+    "stats": "2 results",
+    "suggestions": [
+      "Algolia API integration",
+      "Algolia search benefits",
+      "Algolia scalability",
+      "AI search for ecommerce"
+    ],
+    "ai_prompts": 0,
+    "show_more": false,
+    "search_view_visible": true,
+    "chat_view_visible": true,
+    "assist_transcript": true
+  },
+  "B_before_reload": {
+    "facet_items": 8,
+    "facet_rail_present": true,
+    "hits": 3,
+    "stats": "373 results",
+    "suggestions": [
+      "ecommerce search solutions",
+      "ecommerce search ai enabled personalization",
+      "ecommerce search",
+      "ai trends in b2b ecommerce search 2026"
+    ],
+    "ai_prompts": 0,
+    "show_more": true,
+    "search_view_visible": true,
+    "chat_view_visible": true,
+    "assist_transcript": true
+  },
+  "B_storage_key_written": "present",
+  "B_after_reload_same_context": {
+    "facet_items": 8,
+    "facet_rail_present": true,
+    "hits": 3,
+    "stats": null,
+    "suggestions": [
+      "Algolia API integration",
+      "Algolia search benefits",
+      "Algolia scalability",
+      "AI search for ecommerce"
+    ],
+    "ai_prompts": 4,
+    "show_more": true,
+    "search_view_visible": true,
+    "chat_view_visible": false,
+    "assist_transcript": false
+  }
+}

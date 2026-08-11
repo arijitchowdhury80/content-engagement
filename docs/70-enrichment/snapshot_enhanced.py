@@ -36,6 +36,8 @@ import hashlib
 import json
 import os
 import subprocess
+
+from curl_secret import curl as secret_curl
 import sys
 from pathlib import Path
 
@@ -73,16 +75,16 @@ def load_credentials() -> tuple[str, str]:
 
 def algolia_post(app: str, key: str, path: str, body: dict) -> dict:
     """POST to the Algolia REST API via curl. Credentials go in headers, not the URL."""
-    proc = subprocess.run(
+    # The ADMIN key never enters argv. `write_enrichment.py` posts through this function, so a
+    # credential here is the one that can change the live index -- see curl_secret.
+    proc = secret_curl(
         [
-            "curl", "-s", "--max-time", "120", "-X", "POST",
+            "-s", "--max-time", "120", "-X", "POST",
             f"https://{app}-dsn.algolia.net{path}",
-            "-H", f"X-Algolia-Application-Id: {app}",
-            "-H", f"X-Algolia-API-Key: {key}",
             "-H", "Content-Type: application/json",
             "-d", json.dumps(body),
         ],
-        capture_output=True, text=True,
+        {"X-Algolia-Application-Id": app, "X-Algolia-API-Key": key},
     )
     if proc.returncode != 0:
         sys.exit(f"FATAL: curl failed ({proc.returncode}) on {path}: {proc.stderr[:300]}")

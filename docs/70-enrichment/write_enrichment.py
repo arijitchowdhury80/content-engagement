@@ -8,7 +8,8 @@ SAFETY, in the order the checks run
   1. --dry-run is the DEFAULT. --apply also requires --yes.
   2. A snapshot must exist AND match the live record count. A snapshot taken before some other
      change is not a rollback for this one.
-  3. Every record must carry a full provenance block or it is not written. No partial writes.
+  3. Only successfully enriched records are written. Honest non-enrichment verdicts remain in
+     external run artifacts, not on Algolia records.
   4. partialUpdateObjectNoCreate, never addObject: if an objectID has vanished the write fails
      loudly instead of silently creating a stub record.
   5. Writes ADD fields only. Nothing existing is overwritten -- `abstract` and `description` are
@@ -19,11 +20,12 @@ SAFETY, in the order the checks run
      Verified on the surface the change was made to, never inferred from a 200 response.
 
 WHAT GETS WRITTEN
-  verdict REAL  -> abstract_enriched + keyhighlights_enriched + provenance
-  verdict THIN  -> provenance + verdict + reason, NO abstract. A gap that is recorded is
-                   countable; a gap that is absent is invisible.
-  verdict DEAD  -> same. Never deleted -- a 404 today can be a deploy blip.
-  quarantined   -> nothing at all.
+  verdict REAL  -> abstract_enriched + keyhighlights_enriched
+  THIN / DEAD / LOGIN / FETCH_FAILED / REDIRECT_* / EXCLUDED -> nothing on the record.
+
+  Provenance, offsets, hashes, verdicts, redirect reasons, model IDs and verification evidence live
+  in external run artifacts. Arijit, 2026-08-09: the live records stay lean and should not be polluted
+  with audit metadata.
 
   python3 docs/70-enrichment/write_enrichment.py --results <dir> [<dir> ...]
   python3 docs/70-enrichment/write_enrichment.py --results <dir> --apply --yes
@@ -44,17 +46,12 @@ from snapshot_enhanced import algolia_post, live_record_count, load_credentials 
 from delete_records import newest_snapshot  # noqa: E402
 
 INDEX = "Algolia_Prod_Copy_Enhanced"
-WRITABLE = {"PASS", "JUDGE_REVISE", "NO_ABSTRACT_THIN", "NO_ABSTRACT_DEAD"}
+WRITABLE = {"PASS", "JUDGE_REVISE"}
 
 # Every field this pipeline is allowed to create. Anything outside this set is a bug, and the
 # script asserts it before writing -- that is what stops an accidental overwrite of `abstract`.
 ALLOWED_FIELDS = {
     "abstract_enriched", "keyhighlights_enriched",
-    "enrichment_verdict", "enrichment_reason", "enrichment_source_url",
-    "enrichment_fetch_path", "enrichment_content_hash", "enrichment_fetched_at",
-    "enrichment_span_offsets", "enrichment_writer_model", "enrichment_judge_model",
-    "enrichment_prompt_version", "enrichment_validated_at", "enrichment_truncated",
-    "enrichment_judge_scores", "enrichment_dropped_fabrications",
 }
 PROTECTED = {"abstract", "description", "title", "url", "objectID", "page_type",
              "language_code", "environment", "indexed_at", "source"}
@@ -64,50 +61,24 @@ def build_payload(r: dict) -> dict | None:
     """Turn one pipeline result into an Algolia partial-update payload, or None if unwritable."""
     if r.get("status") not in WRITABLE:
         return None
-    verdict = r.get("verdict")
-    if verdict not in {"REAL", "THIN", "DEAD"}:
+    if r.get("verdict") != "REAL":
         return None
+
+    if not r.get("abstract_enriched"):
+        return None
+    # ARRAY, not a joined paragraph. See note above: a pre-joined string bakes a false adjacency
+    # into the index. Algolia indexes string arrays natively, so searchable attributes and snippets
+    # work unchanged.
+    spans = r.get("abstract_spans_stored") or []
+    if not spans:
+        return None          # refuse to fall back to the joined string
 
     payload: dict = {
         "objectID": r["objectID"],
-        "enrichment_verdict": verdict,
-        "enrichment_source_url": r.get("source_url"),
-        "enrichment_fetch_path": r.get("fetch_path"),
-        "enrichment_content_hash": r.get("content_hash"),
-        "enrichment_fetched_at": r.get("processed_at"),
-        "enrichment_writer_model": r.get("writer_model"),
-        "enrichment_judge_model": r.get("judge_model"),
-        "enrichment_prompt_version": r.get("prompt_version"),
-        "enrichment_truncated": bool(r.get("truncated")),
-        "enrichment_validated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "abstract_enriched": spans,
+        "keyhighlights_enriched": r.get("keyhighlights_enriched") or [],
     }
-    if verdict == "REAL":
-        if not r.get("abstract_enriched"):
-            return None
-        # ARRAY, not a joined paragraph. See note above: a pre-joined string bakes a false
-        # adjacency into the index. Algolia indexes string arrays natively, so searchable
-        # attributes and snippets work unchanged.
-        spans = r.get("abstract_spans_stored") or []
-        if not spans:
-            return None          # refuse to fall back to the joined string
-        payload["abstract_enriched"] = spans
-        payload["keyhighlights_enriched"] = r.get("keyhighlights_enriched") or []
-        payload["enrichment_span_offsets"] = [list(o) for o in (r.get("span_offsets") or [])]
-        # Written so the index itself records that the writer invented something on this page and
-        # it was thrown away. Auditable after the fact without re-running anything.
-        payload["enrichment_dropped_fabrications"] = int(r.get("dropped_fabrications") or 0)
-        j = r.get("judge") or {}
-        payload["enrichment_judge_scores"] = {
-            k: j.get(k) for k in ("representativeness", "specificity", "missed_substance",
-                                  "coherence", "juxtaposition", "verdict") if j.get(k) is not None
-        }
-    else:
-        payload["enrichment_reason"] = r.get("insufficient_reason")
-
-    # provenance completeness (G9) -- no half-written records
-    required = ["enrichment_verdict", "enrichment_source_url", "enrichment_content_hash",
-                "enrichment_fetched_at", "enrichment_writer_model", "enrichment_prompt_version"]
-    if any(not payload.get(k) for k in required):
+    if not payload["abstract_enriched"]:
         return None
     stray = set(payload) - ALLOWED_FIELDS - {"objectID"}
     if stray:
@@ -117,15 +88,32 @@ def build_payload(r: dict) -> dict | None:
     return payload
 
 
-def build_payloads(results: list[dict], limit: int = 0) -> tuple[list[dict], int]:
-    """Build write payloads from result rows, refusing corrupt duplicate result streams."""
+def build_payloads(results: list[dict], limit: int = 0,
+                   skip_ids: set[str] | None = None) -> tuple[list[dict], int, list[str]]:
+    """Build write payloads from result rows, refusing corrupt duplicate result streams.
+
+    `skip_ids` are objectIDs that must NOT be written even when the row is perfectly writable --
+    records that already carry a verified `abstract_enriched`. 86 blog records were enriched and
+    span-verified on 2026-08-09; `partialUpdateObjectNoCreate` would overwrite each of them with a
+    fresh abstract cut from a re-fetched candidate pool, silently discarding verified work.
+    Arijit's ruling: skip them.
+
+    Returns the skipped IDs, not just a count, because a silent skip and a silent overwrite fail
+    the same way -- the total looks right either way and nobody looks again.
+    """
+    skip_ids = skip_ids or set()
     payloads, skipped = [], 0
+    skipped_ids: list[str] = []
     seen_rows: set[str] = set()
     seen_payloads: set[str] = set()
     for r in results:
         oid = r.get("objectID")
         if not oid:
             skipped += 1
+            continue
+        if oid in skip_ids:
+            skipped += 1
+            skipped_ids.append(oid)
             continue
         if oid in seen_rows:
             sys.exit(f"FATAL: duplicate objectID {oid!r} in results. Re-run the corrupt batch.")
@@ -141,7 +129,7 @@ def build_payloads(results: list[dict], limit: int = 0) -> tuple[list[dict], int
         payloads.append(pl)
         if limit and len(payloads) >= limit:
             break
-    return payloads, skipped
+    return payloads, skipped, skipped_ids
 
 
 def main() -> int:
@@ -152,6 +140,9 @@ def main() -> int:
     ap.add_argument("--yes", action="store_true")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--index", default=INDEX)
+    ap.add_argument("--skip-ids", default="", metavar="FILE",
+                    help="JSON array of objectIDs that must not be written -- records already "
+                         "carrying a verified abstract_enriched. The list is printed, not silent")
     args = ap.parse_args()
 
     app, key = load_credentials()
@@ -163,14 +154,23 @@ def main() -> int:
         if not p.exists():
             sys.exit(f"FATAL: {p} not found")
         results += [json.loads(l) for l in p.open()]
-    payloads, skipped = build_payloads(results, args.limit)
+    skip_ids: set[str] = set()
+    if args.skip_ids:
+        skip_ids = set(json.loads(pathlib.Path(args.skip_ids).read_text()))
+    payloads, skipped, skipped_ids = build_payloads(results, args.limit, skip_ids=skip_ids)
 
-    verdicts: dict[str, int] = {}
+    statuses: dict[str, int] = {}
     for pl in payloads:
-        verdicts[pl["enrichment_verdict"]] = verdicts.get(pl["enrichment_verdict"], 0) + 1
+        statuses["REAL"] = statuses.get("REAL", 0) + 1
     print(f"results loaded : {len(results)}")
-    print(f"writable       : {len(payloads)}   {verdicts}")
-    print(f"skipped        : {skipped} (quarantined, judge-revise, or incomplete provenance)")
+    print(f"writable       : {len(payloads)}   {statuses}")
+    if skip_ids:
+        print(f"skipped by --skip-ids : {len(skipped_ids)} of {len(skip_ids)} listed")
+        for oid in skipped_ids[:10]:
+            print(f"    {oid}")
+        if len(skipped_ids) > 10:
+            print(f"    ... and {len(skipped_ids) - 10} more")
+    print(f"skipped        : {skipped} (non-enrichment verdicts, quarantined, or incomplete REAL rows)")
 
     # ---- snapshot gate ----------------------------------------------------
     _, live = live_record_count(app, key, args.index)
@@ -225,9 +225,6 @@ def main() -> int:
             missing += 1
             continue
         bad = [k for k, v in pl.items() if k != "objectID" and rec.get(k) != v]
-        # judge_scores/offsets round-trip through JSON; compare loosely on those two
-        bad = [k for k in bad if k not in ("enrichment_judge_scores", "enrichment_span_offsets")
-               or json.dumps(rec.get(k), sort_keys=True) != json.dumps(pl[k], sort_keys=True)]
         if bad:
             mismatch += 1
             if mismatch <= 3:

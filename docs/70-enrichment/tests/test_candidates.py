@@ -422,13 +422,10 @@ def test_prose_yield_on_the_real_corpus():
 
 
 @pytest.mark.skipif(not os.path.isdir(CACHE), reason="cache-fresh50 is gitignored")
-def test_fragment_share_across_the_real_corpus_is_under_five_percent():
-    """Baseline measured 2026-08-08 before the fix: 715/2264 = 31.6% fragment-shaped."""
+def _real_corpus_prose():
     import glob
     import json
-    import re
 
-    total = bad = 0
     for path in sorted(glob.glob(os.path.join(CACHE, "*.json"))):
         with open(path) as fh:
             rec = json.load(fh)
@@ -438,10 +435,48 @@ def test_fragment_share_across_the_real_corpus_is_under_five_percent():
         if len(md) < 200:
             continue
         cands, _ = split_candidates(md)
-        for c in prose_only(cands):
+        yield cands, list(prose_only(cands))
+
+
+def test_mid_sentence_chops_stay_out_of_the_prose_pool():
+    """Baseline measured 2026-08-08 before the chop fix: 715/2264 = 31.6% fragment-shaped.
+
+    THIS TEST WAS REWRITTEN 2026-08-08 AND THAT IS A MEASURE CHANGE — recorded here rather than
+    quietly applied. The old version failed a candidate for `islower() OR no terminal punctuation`
+    and demanded the pair stay under 5%. The second half of that OR encoded the exact assumption
+    the lede fix disproved: a markdown lede is a whole sentence with no full stop, and banning it
+    cost the `reference` family 18 of its 50 calibration pages.
+
+    So the OR is split. The half that genuinely detects a mid-sentence cut — a lowercase first
+    character — is kept and TIGHTENED from 5% to 2%, and it did not move across the fix
+    (17/1653 before, 17/1831 after). The half that merely detected missing punctuation is replaced
+    by the structural invariant it should always have been, at zero tolerance, below.
+    """
+    total = bad = 0
+    for _cands, prose in _real_corpus_prose():
+        for c in prose:
             total += 1
-            if c.text[:1].islower() or not re.search(r"[.!?:][\"')\]]?$", c.text):
+            if c.text[:1].islower():
                 bad += 1
     assert total, "no pages read"
     share = bad / total
-    assert share < 0.05, f"{bad}/{total} = {share:.1%} of PROSE candidates are fragment-shaped"
+    assert share < 0.02, f"{bad}/{total} = {share:.1%} of PROSE candidates start mid-sentence"
+
+
+def test_every_periodless_prose_candidate_is_a_whole_block():
+    """Zero tolerance. A prose candidate may lack terminal punctuation ONLY by being the entire
+    block — which shows up here as being the sole candidate carrying its block index. A chopped
+    block or a multi-sentence block yields two or more, so this is checked against the emitted
+    list rather than against the flag the classifier set, and cannot pass vacuously."""
+    import collections
+    import re
+
+    offenders = []
+    for cands, prose in _real_corpus_prose():
+        per_block = collections.Counter(c.block for c in cands)
+        for c in prose:
+            if re.search(r"[.!?:][\"')\]]?$", c.text):
+                continue
+            if per_block[c.block] != 1:
+                offenders.append(c.text[:90])
+    assert not offenders, f"{len(offenders)} period-less prose candidates share a block: {offenders[:5]}"

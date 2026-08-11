@@ -2,8 +2,13 @@
 
 ## THE GOAL
 
-**Every enrichable record in `Algolia_Prod_Copy_Enhanced` carries a verified abstract, live, and
-Arijit has signed it off.**
+**Every enrichable record in `Algolia_Prod_Copy_Enhanced` carries a verified enrichment outcome,
+live, and Arijit has signed it off.**
+
+An enrichment outcome is either:
+- a verified `abstract_enriched` with optional `keyhighlights_enriched`, or
+- an honest, counted `THIN` / `DEAD` / `LOGIN_REQUIRED` style verdict explaining why no abstract can
+  be written.
 
 Not "the pipeline is built." Not "the pilot looks good." Not "we're ready to run." Those have all
 been claimed already and none of them is this.
@@ -12,12 +17,12 @@ been claimed already and none of them is this.
 
 | # | Condition | How it is proved |
 |---|---|---|
-| 1 | **All 10,198 enrichable records attempted.** Every one has either an abstract or an honest THIN/DEAD verdict. Arijit: *"I need every single record to be enriched."* | count rows across `batches-out/*/results.jsonl` == 10,198 distinct objectIDs |
-| 2 | **Written to the live index**, add-only, record count unchanged | `write_enrichment.py --apply --yes` post-write read-back passes |
-| 3 | **Zero invention at scale** | `verify_written.py` re-fetches every page, re-locates every span → **0 not found** |
-| 4 | **`abstract_enriched` in `searchableAttributes`** — without this the whole run changes zero search results | read settings live, confirm the field is present, run a query that matches only enriched text |
-| 5 | **Arijit signs off a review pack from the REAL run**, stratified across families, not English-only, not a pilot | his verdicts recorded in a file |
-| 6 | **Committed**, with the live index named as the verified surface | commit hash + a live query quoted in the report |
+| 1 | **All current enrichable records attempted.** Do not trust stale `10,198`; recompute from the live snapshot before launch. Every one has either an abstract or an honest THIN/DEAD/LOGIN verdict. Arijit: *"I need every single record to be enriched."* | fresh queue count == distinct objectIDs across `batches-out/*/results.jsonl`; no duplicate objectIDs; no missing queue IDs |
+| 2 | **Written to the live index**, add-only, record count unchanged | `write_enrichment.py --apply --yes` post-write read-back passes; live count before == after |
+| 3 | **Zero invention at scale** | `verify_written.py` re-fetches every page, re-locates every stored span → **0 not found**, with stale-page exceptions listed separately |
+| 4 | **`abstract_enriched` in `searchableAttributes`** — without this the whole run changes zero search results | read settings live, confirm the field is present in the approved order, run a query that matches only enriched text |
+| 5 | **Arijit signs off a review pack from the REAL run**, stratified across families, not English-only, not a pilot | his verdicts recorded in a file; any hallucination or systematic bad family reopens the fix loop |
+| 6 | **Committed**, with the live index named as the verified surface | commit hash + final report quoting live counts, live settings, and one live query result |
 
 **Any of 1–6 unmet ⇒ not done. Keep going.**
 
@@ -41,15 +46,32 @@ been claimed already and none of them is this.
 6. **Nothing is done because a subagent said so.** Check the artefact.
 7. **Do not relax a gate to make a number pass** without saying out loud that you are changing the
    measure after seeing the measurement, and getting a yes.
+8. **Production index ownership must be explicit before any write.** The unknown writer that inserted
+   a search-query body record must be identified, disabled, or the write must move to a fresh clone.
+   A matching snapshot is necessary but not sufficient.
+9. **No stale summaries as evidence.** A run summary is valid only if the underlying
+   `results.jsonl` files parse, contain one row per expected distinct objectID, and match the current
+   queue. Fetch-only success is not enrichment success.
+10. **Writer policy and code must match.** If `JUDGE_REVISE` is approved as writable, the writer,
+    tests, dry-run count, and report must all include it. If not approved, expected yield must be
+    recalculated without it.
+11. **Scout is the only approved fetch source.** Do not use direct web fetches or `.md` twins as
+    authoritative corpus evidence. Existing `doc-md-twin` caches may be used only as diagnostic
+    clues, never as calibration proof, phase-gate proof, write input, or final verification input.
+    If a page body is needed for a gate, fetch it through Scout into a clearly separate
+    Scout-sourced cache.
 
 ## STATE AT HANDOFF
 
 - **HALTED. Under external review.** Arijit does not trust the last session's judgement. **Do not
   start until he rules.**
 - Nothing written to the live index this session. 35 records exist from a retired design.
-- **167 tests pass.** Commits `e8c6379`, `41e1926`, `bcfdff0`, `81215de`.
-- Phase 1 gate **FAILED at 42%**. A threshold fix is in place and **unverified** — the re-run was killed.
-- ~3,400 `.md` pages cached from the aborted Phase 2.
+- **232 tests pass, 1 xfailed in the last check on 2026-08-09.** Re-run before claiming.
+  Commits on disk may lag local changes; inspect `git status`.
+- Phase 1 gate **has no approvable result under Rule 11.** Earlier doc-md-twin gates are diagnostic
+  only; the next approvable artefact is the Scout-only Phase 1 plan.
+- ~3,400 `.md` pages cached from the aborted Phase 2 are **quarantined diagnostic material**. Do not
+  delete them; see `docs/70-enrichment/QUARANTINE.md`.
 - Snapshot `Algolia_Prod_Copy_Enhanced-20260808-125143.jsonl`, 12,036 records — the rollback floor.
 
 ## THE LOOP
@@ -58,11 +80,12 @@ been claimed already and none of them is this.
 until DONE:
     1. Read SESSION.md and this file.
     2. Is there an unresolved question for Arijit? Ask it. Wait. Do not guess.
-    3. Is the Phase 1 gate green (>=60%, clean file, no duplicates)?
+    3. Is the Phase 1 gate green (>=60%, clean file, exactly expected distinct IDs, no duplicates)?
          no  -> diagnose the largest failure bucket, fix the CAUSE, re-run the gate. Loop.
          yes -> ask Arijit for explicit go on the next phase.
-    4. Run the next phase. One phase per turn. Report the real number.
-    5. Re-check the six done conditions. Any unmet -> loop.
+    4. Before Phase 4 write, prove index ownership/freeze and run dry-run count.
+    5. Run the next phase. One phase per turn. Report the real number from artifacts, not summaries.
+    6. Re-check the six done conditions. Any unmet -> loop.
 ```
 
 **Stop conditions that are NOT done:** tests pass · a pilot scores well · the plan is written ·
@@ -79,6 +102,10 @@ three times, in which case stop and say so rather than trying a fourth.
   are sentences with a 25-char floor. Needs a design change.
 - **Gemini 429s at 8 workers.** The retry layer exists but has never run under real concurrency.
 - **An unknown writer is touching the live index.** It can collide with a 7,750-record write.
+- **The first batch artifact may be partial.** If interrupted, quarantine/re-run the batch; never treat
+  a partial `results.jsonl` plus old `pilot-summary.md` as a complete gate.
+- **Most current reference evidence is from `doc-md-twin`, not Scout.** That evidence can explain
+  failures, but it cannot pass a gate under the Scout-only rule.
 
 ## FILES
 
@@ -86,8 +113,10 @@ three times, in which case stop and say so rather than trying a fourth.
 plan      ~/.claude/plans/then-what-the-hell-zippy-squid.md
 review    docs/70-enrichment/EXTERNAL-REVIEW-PROMPT.md
 state     SESSION.md
-gate      docs/70-enrichment/batches-out/doc-md-twin-reference-001/results.jsonl
-baselines docs/70-enrichment/reports/fresh50-run1|run2 (noise floor), fresh50-v12 (best)
+gate      NONE APPROVABLE — doc-md-twin gate files are quarantined diagnostic-only under Rule 11
+next      docs/70-enrichment/PLAN-scout-only-phase1-calibration.md
+baselines DIAGNOSTIC until provenance-checked under Rule 11:
+          docs/70-enrichment/reports/fresh50-run1|run2 (noise floor), fresh50-v12 (best)
 human     docs/70-enrichment/reports/review-pack-verdicts-filled1|2.md
 code      docs/70-enrichment/{candidates,span_gate,enrich_run,fetch_router,make_batches,run_batches,write_enrichment,verify_written}.py
 tests     cd <repo> && python3 -m pytest docs/70-enrichment/tests/ -q

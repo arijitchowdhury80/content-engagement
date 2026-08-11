@@ -97,7 +97,9 @@ body, body_chars, chrome_removed_chars, search_overlay_present`.
 **algolia.com facts:**
 - Behind Cloudflare but returns 200 to plain curl. No WAF challenge. Stealth path not needed.
 - **No `<main>`, no `<nav>`, no breadcrumb markup anywhere.** Content in bare divs.
-- The search overlay renders into the DOM of **1738 of 2322 pages (75%)** — already global.
+- ~~The search overlay renders into the DOM of 1738 of 2322 pages (75%)~~ — **RETIRED
+  2026-08-07 (Arijit).** Source file deleted with the WU-05 crawl; unprovable, and it
+  conflated design intent with actual usage. Do not cite. See `WU-06.md` § Inputs.
 - robots.txt disallows only `/policies/*`.
 - English sitemap: `https://www.algolia.com/sitemap-lang.xml`, 2819 URLs, of which
   468 are `/blogaauthorcontainer/author*` CMS artifacts.

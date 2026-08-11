@@ -45,7 +45,9 @@ import collections
 import json
 import os
 import re
-import subprocess
+import subprocess  # noqa: F401  (kept for CalledProcessError users)
+
+from curl_secret import curl as secret_curl
 import sys
 import tempfile
 import time
@@ -291,10 +293,10 @@ def plan(records):
 def curl(method, url, key, app, payload=None):
     """Shared with apply_taxonomy.py. Body goes via a temp file because full
     record batches exceed the argv limit (OSError 7)."""
-    cmd = ["curl", "-s", "-X", method, url,
-           "-H", f"X-Algolia-API-Key: {key}",
-           "-H", f"X-Algolia-Application-Id: {app}",
-           "-H", "Content-Type: application/json"]
+    # Credentials go through curl's stdin config, never argv: `ps` is readable by any local
+    # process and this is the ADMIN key. See curl_secret.
+    cmd = ["-s", "-X", method, url, "-H", "Content-Type: application/json"]
+    secret = {"X-Algolia-API-Key": key, "X-Algolia-Application-Id": app}
     tmp = None
     if payload is not None:
         fd, tmp = tempfile.mkstemp(suffix=".json")
@@ -302,7 +304,7 @@ def curl(method, url, key, app, payload=None):
             json.dump(payload, f, ensure_ascii=False)
         cmd += ["--data-binary", "@" + tmp]
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True)
+        r = secret_curl(cmd, secret)
     finally:
         if tmp:
             os.unlink(tmp)

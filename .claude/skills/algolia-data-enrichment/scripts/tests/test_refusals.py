@@ -143,6 +143,21 @@ def test_plan_slice_refuses_an_empty_target_set(run_cli, wire, workspace):
     assert run_cli("plan-slice", "--run-id", RUN, *SLICE) == 2
 
 
+def test_plan_slice_replays_exact_objectids_but_reads_current_source_records(run_cli, wire, workspace):
+    records = make_records(4, source="Blog", page_type="blog-post")
+    prior = Path(workspace) / "docs" / "70-enrichment" / "runs" / "prior" / "manifest.json"
+    prior.parent.mkdir(parents=True)
+    prior.write_text(json.dumps({"source": "Blog", "page_type": "blog-post",
+                                 "objectIDs": ["rec-3", "rec-1"]}))
+    wire(algolia=FakeAlgolia(records))
+    assert run_cli("plan-slice", "--run-id", RUN, "--source", "Blog",
+                   "--page-type", "blog-post", "--replay-run", "prior") == 0
+    manifest = json.loads((_run_dir(workspace) / "manifest.json").read_text())
+    assert manifest["objectIDs"] == ["rec-3", "rec-1"]
+    assert manifest["replay_of"] == "prior"
+    assert "abstract_enriched" not in manifest["records"][0]
+
+
 # ---------------------------------------------------------------------------
 # 5. fetch
 # ---------------------------------------------------------------------------
@@ -197,6 +212,27 @@ def test_enrich_refuses_free_written_model_output(run_cli, wire, workspace):
     assert all(r["status"] == "WRITER_FREE_TEXT" for r in rows), \
         f"free text was parsed around instead of refused: {[r['status'] for r in rows]}"
     assert all(not r.get("abstract_spans_stored") for r in rows)
+
+
+def test_freeze_selections_reaches_validated_cli_output(run_cli, wire, workspace):
+    # This command consumes an already validated artifact. Use that contract directly rather
+    # than a generic fixture whose fake body cannot meet the Case Study cohesion threshold.
+    run = _run_dir(workspace)
+    (run / "final").mkdir(parents=True)
+    (run / "state.json").write_text(json.dumps({
+        "run_id": RUN, "source": "Customer Stories", "page_type": "case-study",
+        "target_index": TARGET_INDEX, "closed": False, "failed_reason": None,
+        "tracks": {"fetch": "DONE", "enrich": "DONE", "repair": "NONE",
+                   "final": "BUILT", "validate": "PASSED", "write": "NONE"},
+    }))
+    (run / "final" / "results.jsonl").write_text(json.dumps({
+        "objectID": "rec-1", "status": "PASS", "selection_content_hash": "a" * 64,
+        "profile_version": "case-study:v1", "prompt_version": "select_by_id_v2.0",
+        "selected_candidate_ids": {"abstract": [1, 2], "highlights": [3, 4, 5]},
+    }) + "\n")
+    assert run_cli("freeze-selections", "--run-id", RUN, *SLICE) == 0
+    registry = Path(workspace) / "docs" / "70-enrichment" / "selection-registry.jsonl"
+    assert registry.exists() and registry.read_text().strip()
 
 
 def test_enrich_refuses_a_judge_that_is_the_writer(run_cli, wire, workspace):
