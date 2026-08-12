@@ -118,6 +118,34 @@ Customers still cannot reliably answer these practical questions:
 The value is not another dashboard for its own sake. It is one clear line from a visible answer to
 the search and model work behind it.
 
+### Why this is an R&D enhancement, not an answer-quality feature
+
+This proposal does not change retrieval quality, grounding, or the answer a visitor receives. Agent
+Studio already performs that work and already records useful aggregate analytics. The value is
+operational: it lets a customer and Algolia understand the units that drive future capacity and cost
+estimates without confusing them with one another.
+
+For example, a customer can currently see that an agent made Search-tool calls. The proposed
+Conversation drill-down would explain which turn made them and whether the number represents a tool
+invocation, a planned query, an observed API request, or a contract-billable request. The proposed
+LLM extension would add the pricing basis and model provenance needed to turn token totals into an
+honest sizing estimate.
+
+The product recommendation is deliberately phased:
+
+1. **Useful dashboard enhancement:** extend existing Conversations and Analytics with a per-turn
+   Search-tool and token breakdown, precise labels, and an estimated-cost basis where the resolved
+   model and price registry are known. This is the immediate value for capacity planning, agent
+   optimization, and customer conversations.
+2. **Execution and billing reconciliation:** add server-side Search API request, cache, retry, and
+   contract-aware billing fields only where Agent Studio can authoritatively provide them. This is a
+   later operational and enterprise-accounting capability; it must remain unavailable rather than
+   estimated when the platform cannot assign it safely to one turn.
+
+Neither phase requires a widget-owned telemetry collector. The widget spike can validate the
+existing Conversation join and provide product evidence, but Agent Studio remains the system of
+record.
+
 ## The measurement model
 
 The product must label each unit plainly. It must never turn one into another just because they are
