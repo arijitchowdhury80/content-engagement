@@ -48,7 +48,11 @@ Runtime evidence:
 
 - The bundled chat runtime reads `canonical-base-url` into `canonicalBaseUrl`.
 - Runtime source extraction resolves relative record URLs with `new URL(relativeUrl, canonicalBaseUrl)`.
-- This protects rendered source-card/fallback links, but it does not rewrite URLs inside model-authored Markdown before the answer is generated.
+- The Markdown renderer also resolves relative Markdown hrefs before rendering anchors:
+  - absolute `https://...` hrefs pass through unchanged;
+  - relative `/...` hrefs are resolved through `canonicalBaseUrl`.
+- This explains why browser-click behavior could appear correct even when the raw Agent Studio answer or retrieved records contained relative paths.
+- It does not change the underlying retrieval contract: Agent Studio still passes mixed raw `url` values to the model, and non-browser consumers still see the mixed shapes.
 
 Repo contradiction found:
 
@@ -57,7 +61,7 @@ Repo contradiction found:
 
 ## Root Cause
 
-The public-answer contract requires live Algolia-owned URLs, but the retrieval record contract gives the model relative paths for most records. The prompt was asked to compensate for that mismatch.
+The public-answer contract requires live Algolia-owned URLs, but the retrieval record contract gives the model relative paths for most records. The browser runtime masks this for rendered links by resolving relative paths at display time. The prompt was later asked to compensate for the same mismatch, which put the responsibility in the wrong layer.
 
 ## Correct Fix Direction
 
@@ -69,7 +73,7 @@ Fix URL shape at the data/tool boundary:
    - If `url` starts with `/`, resolve it against `https://www.algolia.com`.
    - Preserve locale paths such as `/de/...` and `/fr/...`.
 3. Configure Agent Studio to retrieve the absolute field if a field mapping is supported. If not, normalize `url` in the dev index.
-4. Keep runtime `canonicalBaseUrl` as defense-in-depth for rendered source cards.
+4. Keep runtime `canonicalBaseUrl` as defense-in-depth for rendered source cards and Markdown anchors.
 5. Remove the mechanical prompt rewrite rule after the data/tool layer is fixed. The prompt should only say to link retrieved evidence inline using retrieved public URLs.
 
 ## Do Not Do
