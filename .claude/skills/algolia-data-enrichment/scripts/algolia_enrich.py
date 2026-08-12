@@ -32,7 +32,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 from algolia_enrichment import (approvals, corpus, human_review, live_corpus, profile_lint,
-                                promote, selection_registry, strategies, taxonomy, write)
+                                promote, selection_registry, strategies, taxonomy,
+                                taxonomy_correctness, write)
 from algolia_enrichment.api import AlgoliaClient
 from algolia_enrichment.artifacts import RunFolder
 from algolia_enrichment.batching import (DEFAULT_MODEL_CONCURRENCY, DEFAULT_SCOUT_CONCURRENCY,
@@ -1266,6 +1267,43 @@ def cmd_promote_to_source(ctx: Ctx) -> int:
     return 0
 
 
+def cmd_taxonomy_correctness(ctx: Ctx) -> int:
+    """Is the stored taxonomy value the RIGHT value, for everything a url_rule decides?
+
+    Distinct from `taxonomy-preflight`, which proves the CONTRACT and never reads a URL. This
+    re-runs the schema's own url_rules table against each record and compares. Deterministic.
+    """
+    ctx.banner("taxonomy-correctness")
+    schema = taxonomy.load_schema(TAXONOMY_SCHEMA)
+    records = list(ctx.algolia().browse(ctx.cfg.source_index, attributes=RECORD_ATTRIBUTES))
+    report = taxonomy_correctness.check_records(records, schema)
+    report.update({"source_index": ctx.cfg.source_index, "schema_version": schema["version"],
+                   "checked_at": _now()})
+    if ctx.rf:
+        ctx.emit("validation/taxonomy-correctness.json", report, "taxonomy-correctness")
+
+    print(f"records   : {report['records']}  with a url_rule: {report['records_with_a_rule']}")
+    print(f"{'axis':22s}{'checked':>9s}{'agree':>8s}{'mismatch':>10s}{'missing':>9s}")
+    for axis, a in sorted(report["per_axis"].items()):
+        print(f"{axis:22s}{a['checked']:9d}{a['agree']:8d}{a['mismatch']:10d}{a['missing']:9d}")
+    print(f"{'TOTAL':22s}{report['checked']:9d}{report['agree']:8d}"
+          f"{report['mismatch']:10d}{report['missing']:9d}")
+    contradictions = report["rule_contradicts_applicability"]
+    if contradictions:
+        axes_hit = sorted({c["axis"] + "/" + c["page_type"] for c in contradictions})
+        print(f"schema    : {len(contradictions)} records where a url_rule names a value for an "
+              f"axis the applicability model says does not apply -- {axes_hit[:4]}")
+        print(f"            (NOT a data defect: the record is right to omit it. Dead rule config.)")
+    print(f"note      : {report['unverifiable_note']}")
+
+    if not report["ok"]:
+        raise EnrichmentError(
+            f"TAXONOMY CORRECTNESS FAILED: {report['mismatch']} stored values disagree with the "
+            f"url_rule that predicts them, {report['missing']} records missing a predicted value.")
+    print(f"PASS: all {report['checked']} rule-predicted taxonomy values match what is stored.")
+    return 0
+
+
 def cmd_verify_corpus(ctx: Ctx) -> int:
     """TIER 1: is what is IN THE INDEX right now correct? Deterministic, no LLM.
 
@@ -1335,6 +1373,7 @@ COMMANDS = {
     "census": (cmd_census, False),
     "profile-lint": (cmd_profile_lint, False),
     "taxonomy-preflight": (cmd_taxonomy_preflight, True),
+    "taxonomy-correctness": (cmd_taxonomy_correctness, False),
     "audit-documentation": (cmd_audit_documentation, True),
     "prepare-documentation-copy": (cmd_prepare_documentation_copy, True),
     "health-scout": (cmd_health_scout, False),

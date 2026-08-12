@@ -80,6 +80,53 @@ Grounding is a guarantee; selection quality is a judgement. These records are pr
 **faithful** — every span is on the page it claims. Nothing here proves a span was the **best**
 sentence to choose. That remains the judge's job, and the judge floor is unresolved.
 
+## 0b. Taxonomy correctness: measured for every rule-derived value — 2026-08-12
+
+This chapter was created to answer *"are the taxonomy values correct?"*, deferred here by
+Chapter 1 §7. Half of that question is now answered, deterministically.
+
+**Conformance** (`taxonomy-preflight`) proves the contract on all 11,928 records:
+`violation_count: 0`. But `taxonomy.py`'s own docstring says it "verifies conformance, not
+semantic correctness", and it never reads a URL or a page — so it cannot distinguish a page about
+NeuralSearch tagged `product: recommend` from a correct one.
+
+**Correctness** (`taxonomy-correctness`, new) re-runs the schema's own `url_rules` table against
+each record's URL and compares to what is stored. No model, no sampling:
+
+| Axis | Checked | Correct | **Wrong** |
+|---|---:|---:|---:|
+| `page_type` | 11,928 | 11,928 | **0** |
+| `feature` | 2,423 | 2,423 | **0** |
+| `product` (where applicable) | 155 | 155 | **0** |
+| **Total** | **14,506** | **14,506** | **0** |
+
+### The population this does not reach
+
+**5,519 text-matched** and **2,778 legacy-field** assignments. No rule predicts them, so nothing
+deterministic can confirm them. Measured provenance across the index: `page_type` is 100%
+URL-derived; of ~15,400 non-`page_type` assignments only ~35% are URL-derived. **That minority is
+the entire residual risk surface — and it is a risk surface, not a measured error rate. No
+taxonomy error has been found anywhere.**
+
+### A schema inconsistency this surfaced
+
+`url_rules` names `product: ["ai-search"]` on `/doc/libraries/{lang}/{ver}/methods/search` paths,
+while the axes model puts `doc-sdk` in neither `required_on` nor `opportunistic_on` for `product`.
+Applicability wins, so the 726 affected records are right to omit it and there is **no data
+defect** — but those rule entries are dead configuration. Reported separately by the command as
+`rule_contradicts_applicability` rather than folded into the defect count, because conflating a
+schema bug with a data bug is how 726 false defects get reported.
+
+### Two traps, both hit before the number above was trustworthy
+
+1. `url_rules` carry a `host`. Ignoring it matched `academy.algolia.com` against
+   `www.algolia.com` rules — **142 phantom `page_type` mismatches**.
+2. Treating "rule predicts a value, record has none" as a defect without consulting the
+   applicability model — **726 false defects**.
+
+Both are now pinned by tests, and the checker refuses to report a pass when no rule predicted
+anything at all.
+
 ## The distinction this chapter exists to make
 
 [Chapter 1](./chapter-1-taxonomy-enrichment.md) proved **coverage** — the fields are populated. It did **not** prove **precision** — that the values are correct.

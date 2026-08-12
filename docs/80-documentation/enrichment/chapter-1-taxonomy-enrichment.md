@@ -5,7 +5,7 @@ status: complete
 applied: 2026-08-06
 index: Algolia_Prod_Copy_Enhanced
 asana: "Chapter 1 : Taxonomy Enrichment (1217211516276070)"
-work_unit: "WU-11 subtask [WU-11.1] (1217210602718821)"
+work_unit: "WS5 subtask [WS5.1] (1217210602718821)"
 ---
 
 # Chapter 1 — Taxonomy Enrichment
@@ -222,7 +222,30 @@ The `ecommerce` case is worth stating precisely, because it exposes a flaw in th
 
 **Three axes below target**, and the cause is measurable: there is no body field. Median text per record runs 117 characters on `doc-rest-api`, 160 on `doc-api-reference`, 203 on `doc-guide`, 370 on `blog-post`. Every URL-derived signal has been mined — 89 rules including SDK method groups and 194 API parameters. The residue needs text that does not exist in the index. That is Chapter 3.
 
-**Precision is unmeasured.** This chapter proved coverage. It did not prove the values are *correct*. That is Chapter 4.
+**Precision is measured for every rule-derived value, as of 2026-08-12 — and it is perfect.**
+
+This entry previously read *"Precision is unmeasured. This chapter proved coverage. It did not prove the values are correct."* That was true when written and is now only half true, because it treated precision as one question when it is two.
+
+For values a **URL rule** decides, correctness is mechanically decidable and needs no model: the schema carries the 100-rule `url_rules` table that produced them, so re-running the table against each record's own URL and comparing to what is stored answers *"is this the right value"* outright. Measured across all 11,928 records:
+
+| Axis | Checked | Correct | **Wrong** |
+|---|---:|---:|---:|
+| `page_type` | 11,928 | 11,928 | **0** |
+| `feature` | 2,423 | 2,423 | **0** |
+| `product` (where the axis applies) | 155 | 155 | **0** |
+| **Total** | **14,506** | **14,506** | **0** |
+
+Not one stored value disagrees with the rule that produced it. Re-runnable as
+`algolia_enrich.py taxonomy-correctness`.
+
+**Two traps, both hit on the first attempt, both worth knowing before re-deriving this:**
+
+1. `url_rules` entries carry a `host`. Ignoring it matched `academy.algolia.com` URLs against `www.algolia.com` rules and produced **142 phantom `page_type` mismatches**.
+2. 726 records looked like *"the rule predicts a `product`, the record has none"*. They are **correct**: `doc-sdk` is in neither `required_on` nor `opportunistic_on` for `product`, so under §3.2's ternary model the axis does not apply and must be omitted. A checker that does not know that reports 726 false defects.
+
+Trap 2 did surface a real, if harmless, finding: `url_rules` names `product: ["ai-search"]` on `/doc/libraries/{lang}/{ver}/methods/search` paths, while the axes model says `product` is absent on `doc-sdk`. Applicability wins, so there is no data defect — but those rule entries are **dead configuration** and should be removed or the applicability widened.
+
+**What is still genuinely unmeasured** is the other half: the **5,519 text-matched** and **2,778 legacy-field** assignments. No rule predicts them, so nothing deterministic can confirm them. That population — not the taxonomy as a whole — is what the "sampled review required" note in `taxonomy-conformance.json` is about. Note also that that string is a **hardcoded literal** at `algolia_enrich.py:235`, written on every run regardless of what was checked; it is a standing disclaimer, not the output of a measurement, and must not be quoted as evidence.
 
 ## 8. What makes this repeatable
 
