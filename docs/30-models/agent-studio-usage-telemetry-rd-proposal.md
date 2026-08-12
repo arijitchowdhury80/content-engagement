@@ -1,325 +1,265 @@
 ---
 title: "Agent Studio Usage Telemetry"
-description: "R&D proposal for measuring agent retrieval, model usage, and cost by turn, conversation, and tenant"
+description: "R&D proposal to extend Agent Studio Analytics with turn-level search usage, LLM economics, and traceability"
 status: proposal
 date: 2026-08-12
-scope: "Algolia.com chat widget spike; product proposal for Agent Studio R&D"
+scope: "Agent Studio product proposal, informed by the Algolia.com chat widget spike"
 related_asana: "2.2 Algolia Query Metering; 2.3 Token & Cost Economics; 2.4 End-to-End Turn Observability & Traceability"
 asana_task_2_2_2: "https://app.asana.com/0/0/1217389911594494/f"
 ---
 
 # Agent Studio Usage Telemetry
 
-## The proposal in one sentence
+## Proposal in one sentence
 
-Agent Studio should have its own usage telemetry pipeline and usage-insights surface. It should
-show what an agent did for one visitor and also give the customer a correct total across every
-visitor, conversation, agent, search request, model call, and cost.
+Extend the Agent Studio Analytics and Conversations features that already exist. Let customers see
+the search work, LLM token use, estimated cost, and trace for each conversation and turn, then
+roll the same facts up by agent, tenant, and date.
 
-This applies to every Agent Studio use case: a shopping assistant, content assistant,
-conversational search, internal knowledge assistant, or custom workflow. It is not a chat-widget
-feature. The current public [Agent Studio Analytics
-documentation](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/analytics) says
-that the dashboard provides aggregate conversations, input tokens, output tokens, and Search-tool
-calls. This is now verified in the Flagship - Accelerator Program account by screenshots captured
-on 2026-08-12. The live screen also shows average input/output token usage, total input/output
-tokens, median time to first byte, median time to last token, daily usage charts, conversation-depth
-distribution, feedback, input/output block rates and reasons, and a per-agent breakdown.
-
-For the displayed 30-day period, the account reports 4,090 conversations, 113,745,676 input tokens,
-2,440,436 output tokens, and 2,203 Search-tool calls. The `www Chat - Orchestrator` row alone
-reports 794 conversations, 32,145,523 tokens used, and 1,149 Search-tool calls. Judge agents are
-also present in the same table, with their own token use and zero Search-tool calls. This confirms
-that Agent Studio already collects cross-agent, server-side aggregate usage data.
-
-Whether that existing aggregate view is available to this account or not, it does not replace the
-usage-insights layer proposed here: a clear, evidence-backed explanation of the work, cost, and
-search usage behind each turn and conversation. Today, a customer cannot clearly answer these basic
-questions:
-
-- How many Algolia retrieval operations did this turn make?
-- Which agent, tool, and index made them?
-- How many input and output tokens did the agent use?
-- What did that turn cost, and what has the whole conversation cost?
-- Can the number in the user interface be checked against real requests and provider usage?
-
-The proposed name is **Agent Studio Usage Telemetry**.
+This is not a new chat-widget backend. It applies to every Agent Studio use case: a shopping
+assistant, content assistant, conversational search, internal knowledge assistant, or custom
+workflow. The chat widget is a useful product spike, not the system of record.
 
 The first delivery track is [Asana 2.2.2: Instrument, display, and reconcile Algolia
-operations](https://app.asana.com/0/0/1217389911594494/f). The proposal also defines the product
-foundation for 2.3 token and cost economics, and 2.4 end-to-end traceability.
+operations](https://app.asana.com/0/0/1217389911594494/f). This proposal is also the shared product
+direction for 2.3 token and cost economics and 2.4 end-to-end traceability.
 
-## Why a parallel pipeline
+## What exists today
 
-Algolia already has a proven event model. The [Insights API](https://www.algolia.com/doc/rest-api/insights/push-events)
-accepts batches of user interaction events. Its supported event types are [click, conversion, and
-view](https://www.algolia.com/doc/guides/sending-events/concepts/event-types). It is the right
-place for those events.
+Agent Studio already has the hard part: a server-side, multi-user conversation and analytics
+foundation. The current [Analytics documentation](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/analytics)
+describes aggregate conversations, input tokens, output tokens, and Search-tool calls.
 
-It is not the right place to pretend that an LLM token or agent retrieval is a click. That would
-make the data wrong, pollute search analytics, and bind a new product need to the wrong contract.
+The live Analytics screen in the Flagship - Accelerator Program account confirms that foundation.
+It shows totals and daily charts for conversations, input and output tokens, Search calls, feedback,
+block rates, latency, conversation depth, and an agent-by-agent breakdown. The Conversations screen
+already shows one conversation's token totals, Search queries, transcript, feedback, and JSON export.
 
-Agent Studio Usage Telemetry uses the same good ideas, in a separate pipeline:
+A read-only check of a real stored conversation confirmed that Agent Studio persists:
 
-- stable pseudonymous user identity;
-- small batched events with an event ID for safe retries;
-- request and correlation IDs for joining facts together;
-- tenant and index boundaries on every event; and
-- append-only raw events plus fast rollups.
+| Stored fact | What it gives us |
+|---|---|
+| Conversation totals and timestamps | A durable conversation summary |
+| Per-message input and output tokens | Turn-level token measurement |
+| Cached-input and reasoning-token details | A better token breakdown when the provider supplies it |
+| Tool-call and tool-result parts | A trace of which tools the agent used |
+| Search-tool arguments and resolved search parameters | A way to explain the agent's search plan without copying the prompt into analytics |
 
-The existing `userToken` pattern is a useful model because it identifies a user without sending
-personal data to analytics. See [user tokens](https://www.algolia.com/doc/guides/sending-events/concepts/usertoken).
+In the checked conversation, the agent made three total tool calls: two built-in Algolia Search-tool
+calls and one non-search tool call. The conversation screen reports two Search queries, which matches
+the two Search-tool calls. Those two tool calls contained four logical query-plan items in total.
 
-## What it measures
+That is an important result: a visitor turn, a Search-tool call, a logical query-plan item, a Search
+API request, and a billed search request are not automatically the same number.
 
-The first release measures two things. They stay separate, then appear together in the same view.
+## The problem to solve
 
-| Measure | Meaning | Unit of truth |
+Today's aggregate Analytics page answers, "How much did this agent use?" The Conversations page
+answers, "What did this person and agent say?"
+
+Customers still cannot reliably answer these practical questions:
+
+- What happened in this one turn?
+- How many times did the agent choose the Search tool?
+- How many logical searches did it plan, and how many requests reached the Search API?
+- What did the model use in input, output, cached, and reasoning tokens?
+- What did that work cost, and is that number reported or estimated?
+- Can the conversation detail, Analytics total, and billing record be reconciled?
+
+The value is not another dashboard for its own sake. It is one clear line from a visible answer to
+the search and model work behind it.
+
+## The measurement model
+
+The product must label each unit plainly. It must never turn one into another just because they are
+close.
+
+| Unit | Meaning | Why it matters |
 |---|---|---|
-| Algolia usage | Search-tool calls, actual Search API requests when observable, and billed search requests when reconciled | The relevant level is labelled; never infer from source pills |
-| LLM usage and cost | Tokens reported by the provider, or a clearly marked estimate | Provider usage frame or versioned estimator |
+| Visitor turn | One submitted natural-language message or proactive action | Explains what the visitor did |
+| Search-tool call | One time the agent invokes its built-in Algolia Search tool | This is the current Agent Studio Analytics Search calls measure |
+| Logical query-plan item | One query object inside a Search-tool call | Explains what the tool planned to search |
+| Search API request | One request that actually reaches Algolia Search | Explains technical retrieval traffic |
+| Billed search request | The unit counted under the customer's contract | Explains possible Algolia cost |
+| LLM usage | Provider-reported token use, or a documented estimate | Explains model use and cost |
 
-The system does **not** infer a search count from source pills. Source pills are display metadata
-from results that already came back. They should not cause another query. The spike must prove this
-with browser-network evidence.
+The [Agent Studio Search tool](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/tools/algolia-search)
+can search several indices in parallel or in sequence. It may also make more than one tool call in a
+single turn. Therefore, one visitor message is not automatically one retrieval or one billed
+request.
 
-Suggested follow-up questions get the same treatment. If Agent Studio creates them from the
-current model response, there is no new Algolia retrieval. If it retrieves before creating them,
-that real retrieval is counted.
+Search-as-you-type is different. It can send a request for each debounced text change. An Agent
+Studio visitor normally sends one finished natural-language turn. The agent may then choose to make
+zero, one, or several Search-tool calls. The act of typing is not an Agent Studio retrieval.
 
-### The four units we must not confuse
+Source pills do not count as retrievals. They are display metadata from results already returned.
+The spike must prove with browser-network evidence that opening or rendering a source pill does not
+send another Algolia request. Suggested follow-up questions are counted only when they cause a real
+Search-tool call or request.
 
-The current draft used "retrieval," "request," and "billable operation" too loosely. They mean
-different things and must be shown separately.
+## What we know and what is missing
 
-| Unit | What it is | Can one visitor turn create more than one? | What it answers |
-|---|---|---|---|
-| Visitor turn | One submitted natural-language message or proactive action | Not applicable | What the visitor did |
-| Agent Studio Search-tool call | One time the agent decides to use its Algolia Search tool | Yes | How often the agent needed search |
-| Search API request | One request that reaches the Algolia Search API, including a multi-query request when used | Yes | What was technically sent to search |
-| Billed search request | The request unit Algolia counts under the customer's current plan | Yes, but not necessarily one-for-one with indices or API work | What may affect the bill |
+The existing conversation record is a strong base, but it is not yet a complete economics trace.
 
-An Agent Studio completion is therefore **not** automatically one retrieval or one billed request.
-The agent can answer from context without searching, call search several times in a tool loop, retry
-after a failure, or call tools in parallel. Agent Studio can [search up to 10 indices in parallel or
-in sequence](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/tools/algolia-search).
-Its existing [analytics](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/analytics)
-call this a "search call": the number of times an agent used the Algolia Search tool.
+| Question | Available now | Needed enhancement |
+|---|---|---|
+| Token totals by conversation and message | Yes | Keep the current fields and expose them in a stable usage object |
+| Cached and reasoning tokens | Present when supplied | Preserve the source and availability for each value |
+| Search-tool calls | Yes | Name this exact unit clearly in the API and UI |
+| Logical query-plan items | Derivable from stored tool arguments | Store a normalized count so exports do not require callers to parse tool parts |
+| Actual Search API requests | Not present in the checked conversation record | Add request-level IDs, outcome, cache state, and request count from the server-side tool execution |
+| Billed search requests | Not assignable to a conversation today | Reconcile against contract-aware usage data; do not invent a per-turn billable count |
+| Exact provider model and cost | Not complete | Persist the resolved provider and exact model version used for each completion, then apply a versioned price registry |
+| Analytics for one conversation via API | Conversation data is available | Add a supported Analytics API filtered by conversation and turn |
 
-The [Agent Studio documentation](https://www.algolia.com/doc/guides/algolia-ai/agent-studio) says
-that each search made by an agent counts toward search usage and may incur charges. The current
-[public pricing page](https://www.algolia.com/pricing) also says that a federated search over three
-active indices counts as **one search request**, not three operations. Therefore the telemetry must
-record observed search-tool calls and observed API requests, but it must call a number
-`billedSearchRequests` only after the account's billing rule or Usage API confirms it. It must not
-invent a per-index billable count. An app-level Usage API total cannot assign billing to a single
-event by itself; it reconciles an aggregate time window unless a future Agent Studio API returns a
-request-level billing identifier.
+The checked assistant message had token totals but no resolved model value. The agent configuration
+uses a provider and the friendly model alias medium; the provider-model API returns the aliases
+medium and small, not an exact billed model and price. A customer-facing cost cannot honestly be
+called reported until the resolved model and provider usage are persisted. Until then it must be
+called estimated and show the price-registry version used.
 
-This also answers the search-as-you-type comparison. Search-as-you-type normally sends a search
-request for each debounced keystroke or query change, and each request is metered under the plan.
-In Agent Studio, the visitor normally submits one completed natural-language turn. That creates one
-completion request, which can create zero, one, or many internal search-tool calls. The visitor's
-typing itself is not an Agent Studio retrieval.
+The [Usage API](https://www.algolia.com/doc/rest-api/usage) is useful for app-level reconciliation.
+It reports totals such as search requests and search operations over a time window. It cannot, by
+itself, assign billed usage to a particular conversation or turn. Current public pricing also says
+that a federated search across three active indices counts as one search request, which is another
+reason not to multiply a cost by the number of indices or result chunks.
 
-## The product shape
+## Product shape
 
-There are two views of one event stream.
+Use the two surfaces customers already understand. Do not create a third telemetry application.
 
-```mermaid
+~~~mermaid
 flowchart LR
-  W["Chat widget"] --> L["24-hour local session ledger"]
-  W --> B["Batched usage events"]
-  B --> C["Agent Studio Usage Telemetry collector"]
-  C --> R["Raw immutable event log"]
-  R --> A["Tenant and session rollups"]
-  L --> D["Visitor telemetry drawer"]
-  A --> O["Customer and operator reporting"]
-  C --> J["Conversation and request joins"]
-```
+  C["Agent Studio conversation"] --> S["Compact usage summary"]
+  S --> A["Agent Studio Analytics: conversation drill-down"]
+  E["Agent execution"] --> R["Conversation record and trace"]
+  R --> S
+  R --> A
+  A --> X["JSON export and supported Analytics API"]
+  A --> U["Tenant and agent rollups"]
+  U --> B["Contract-aware usage reconciliation"]
+~~~
 
-### Visitor telemetry drawer
+### 1. Conversation view: the short receipt
 
-The chat stays clean by default. A visitor can open a slide-in telemetry drawer when the product
-chooses to expose it. The drawer is a personal receipt for the active session.
+Keep the current conversation page focused on the actual conversation. Add a small **Usage** summary
+next to the existing token and Search-query information:
 
-For each turn it shows:
+- Search-tool calls
+- Logical query-plan items
+- Search API requests, when the server recorded them
+- Input, output, cached, and reasoning tokens
+- LLM cost with a clear reported or estimated label
+- A **View telemetry** link
 
-- turn time and status;
-- agent Search-tool calls, observed Search API requests, and reconciled billed search requests as
-  three separate values;
-- the agent, tool, phase, and index involved;
-- input, output, cached, and reasoning tokens when supplied;
-- a clear `reported` or `estimated` label for every token and cost value;
-- estimated LLM cost and the stated Algolia pricing assumption; and
-- running session and conversation totals.
+The link opens Agent Studio Analytics already filtered to the agent and conversation. It does not
+open a separate product and it does not require the visitor to opt in before the system records
+usage.
 
-The local ledger may remain open for 24 hours, so a person who returns to the same session keeps
-the same running total.
+### 2. Analytics: the full explanation
 
-### Customer and operator reporting
+Add a conversation drill-down to the existing Analytics area. The default Analytics overview stays
+as it is. When a practitioner selects an agent and conversation, show:
 
-The server receives usage events for every client on approved product surfaces. Capture is not
-controlled by whether the visitor opens the drawer. A customer or operator view uses the same data
-to answer different questions:
+- one row for every turn, in time order;
+- the agent, tool, phase, status, duration, and retry outcome;
+- token and cost breakdown by completion;
+- Search-tool calls, query-plan items, actual API requests, and reconciled billing data as separate
+  columns;
+- request and correlation IDs when available; and
+- rollups for the selected conversation, agent, and date range.
 
-- totals by tenant, day, model, agent, index, and tool;
-- a single conversation or turn, reconstructed in order;
-- failures, retries, cancellations, and cache outcomes;
-- cost trends and outliers; and
-- reconciliation against platform and provider evidence.
+This makes the conversation page a good starting point and Analytics the right place to investigate.
+It also keeps the existing aggregate charts and agent breakdown useful for operators.
 
-The visitor sees only their own session. The customer sees only their tenant. Algolia operators see
-only the access their role allows.
+### 3. JSON and APIs: the same facts for customers and practitioners
 
-## The event contract
+The current [Get conversation API](https://www.algolia.com/doc/rest-api/agent-studio/conversations/get-conversation)
+returns a conversation record. The [Export conversations API](https://www.algolia.com/doc/rest-api/agent-studio/conversations/export-conversations)
+provides an export for operators with the required logs ACL. These are the right starting points,
+but callers should not have to reverse-engineer usage by parsing tool parts.
 
-The collector accepts a versioned batch endpoint, shaped like the familiar event API but separate
-from Insights:
+Add a stable usage and trace object to each exported conversation and message. It should contain
+only measurements and identifiers, not a second copy of the prompt or response text.
 
-`POST /1/agent-usage/events`
+~~~json
+{
+  "usage": {
+    "inputTokens": 33204,
+    "outputTokens": 1139,
+    "cachedInputTokens": 0,
+    "reasoningTokens": 0,
+    "cost": {
+      "amount": 0.00,
+      "currency": "USD",
+      "basis": "estimated",
+      "priceRegistryVersion": "2026-08-12"
+    }
+  },
+  "trace": {
+    "searchToolCalls": 2,
+    "logicalQueryPlanItems": 4,
+    "observedSearchApiRequests": null,
+    "reconciledBilledSearchRequests": null
+  }
+}
+~~~
 
-One request carries 1 to 1,000 events. Each event has a unique `eventId`. The collector accepts a
-safe repeat of the same event and stores it once.
+The numbers above illustrate the shape only. Null means the value was not measured or cannot yet
+be assigned safely. It must not be replaced with zero.
 
-Every event carries these common fields:
+Add a first-class Agent Studio Analytics API for the dashboard's current metrics and the drill-down.
+This is a proposed API, not an existing endpoint. It should support filters for agent ID,
+conversation ID, turn ID, and date range, then return the same definitions used by the web UI and
+JSON export.
 
-| Field | Why it exists |
-|---|---|
-| `schemaVersion`, `eventId`, `eventType`, `occurredAt` | Makes the contract durable and retry-safe |
-| `appId`, `tenantId`, `indexName` | Keeps the data inside the right customer boundary |
-| `userToken`, `visitorSessionId` | Separates a pseudonymous visitor from a 24-hour browser session |
-| `conversationId`, `turnId`, `responseId`, `runId` | Joins the event to Agent Studio history and a visible answer |
-| `parentEventId`, `attempt` | Explains retries and child work without double-counting |
-| `agentKey`, `toolName`, `phase` | Says who did the work and why |
-| `status`, `durationMs`, `errorCode` | Makes failures and latency visible |
-| `privacyVersion`, `inputHash`, `outputHash` | Links work without copying raw conversation text |
+For end users, conversation access remains user-scoped through a secure user JWT with the required
+search ACL. For internal practitioners and customer operators, the logs ACL permits broader
+conversation access and export. A logs key must remain server-side. This is the existing security
+model described in the [Conversations guide](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/conversations),
+not a new browser-side admin channel.
 
-The initial event types are:
+## Data ownership and privacy
 
-| Event type | When it is sent |
-|---|---|
-| `agent_turn_started` | A visitor or proactive workflow starts a turn |
-| `algolia_retrieval_observed` | A real agent retrieval request starts or completes |
-| `algolia_api_request_observed` | A non-retrieval Algolia call needs separate accounting |
-| `llm_completion_observed` | A model completion starts or completes |
-| `llm_usage_reported` | The provider returns actual token usage |
-| `llm_usage_estimated` | The system calculates a documented estimate instead |
-| `agent_turn_completed` | The user-visible result finishes, fails, or is cancelled |
-| `telemetry_delivery_failed` | The client cannot deliver a batch after retries |
+Agent Studio should remain the server-side system of record for Agent Studio work. It already sees
+the execution, conversation, tokens, and Search-tool calls across every customer and user.
 
-Retrieval events include the measurement level (`search_tool_call` or `search_api_request`), request
-ID, correlation ID, query ID where present, index list, request-shape hash, result count, cache
-state, retry relationship, and outcome. A later reconciliation record can add the separately named
-`billedSearchRequests` value, its billing-period source, and its confidence. Algolia's Search API
-documents both a response `Correlation-ID` and an optional client-supplied `Request-ID`; those
-identifiers make later reconciliation practical. See the [Search API
-reference](https://www.algolia.com/doc/rest-api/search).
+The chat widget can later show a personal usage drawer for the current session. That drawer is a
+presentation feature. It can add browser-only facts such as rendering time, but it must not become
+the authority for retrieval counts, token totals, or billing.
 
-LLM events include provider, model, model version, input/output/cached/reasoning tokens, pricing
-registry version, currency, and cost. A value is always labelled `reported` or `estimated`; the UI
-never makes an estimate look like a provider invoice.
+The telemetry record should avoid raw prompt text, answer text, IP address, email address, and user
+profile data by default. Use existing conversation, agent, tenant, user-token, turn, and request
+identifiers for joins. Any decision to retain readable text in a shared reporting system needs its
+own privacy and retention review.
 
-## Client behavior
+## R&D deliverables
 
-The client has three jobs:
+1. Document the current definitions and data source for every Agent Studio Analytics metric.
+2. Persist normalized per-turn usage and trace fields from the server-side execution path.
+3. Add the compact Usage summary and deep link to the Conversation view.
+4. Add the filtered conversation drill-down inside Analytics.
+5. Extend JSON export and provide a supported Analytics API with the same definitions.
+6. Add a versioned price registry and label every cost as reported or estimated.
+7. Reconcile aggregate search usage against account-level Usage API and contract data without
+   claiming unsupported per-turn billing precision.
 
-1. Observe the work it starts and the usage frames it receives from Agent Studio.
-2. Update the local 24-hour session ledger immediately, so the drawer is useful before a network
-   round trip completes.
-3. Send redacted, retry-safe batches at turn completion, at a short interval, and when the page is
-   hidden. It uses a background-safe delivery method in the last case.
+## Spike proof points
 
-The client must not use the IP address as the session key. IP addresses change, may be shared by
-many people, and create unnecessary privacy risk. A randomly generated `visitorSessionId`, held in
-the browser for 24 hours, is the right session boundary. A stable pseudonymous `userToken` can link
-sessions when the product legitimately has one.
+The Algolia.com spike should prove the proposal without pretending that it is already a global
+telemetry service:
 
-## Server behavior
-
-The server is the system of record. It validates the schema, authenticates the tenant, removes
-duplicates by `eventId`, stores raw events, and builds rollups.
-
-The raw log is needed for investigation and replay. Rollups make normal reporting fast. At minimum,
-the collector maintains totals by tenant/day, visitor session/conversation, turn, agent/tool/phase,
-index/model, status/retry/cache, and price-registry version.
-
-The collector links to Agent Studio conversation history by ID. It does not become a second copy of
-the conversation transcript. The transcript remains where Agent Studio already owns it; the usage
-system stores identifiers, hashes, and measurements.
-
-## Pricing and reconciliation
-
-Measured use and price assumptions are deliberately separate.
-
-- Model prices live in a versioned registry with effective dates and source links.
-- Algolia pricing assumptions live in a separate versioned registry. They can be absent when a
-  customer contract makes a per-operation price unknowable.
-- A retry is a real extra attempt and is shown as one; it is never silently folded away.
-- Cached work, cancelled work, and failed work are retained with their actual outcome.
-- Reporting compares telemetry totals with available search and provider records. Algolia's
-  [Usage API](https://www.algolia.com/doc/rest-api/usage) reports both total search operations and
-  total search requests, including the billed-search-request definition. It is an app-level
-  reconciliation source, not the event collector or a substitute for the customer's contract and
-  invoice.
-
-## Privacy, access, and retention
-
-This is usage telemetry, not a second surveillance product.
-
-- No raw prompt, answer, IP address, email address, or user profile goes to the shared collector by
-  default.
-- The drawer can render the current visitor's own readable turn data from its local ledger.
-- Server-side joins use IDs and hashes. Storing text later needs a separate retention and consent
-  decision.
-- Tenant boundaries, role-based access, retention windows, deletion behavior, and audit access are
-  product requirements, not deployment details.
-
-## What the Algolia.com spike proves
-
-The spike is the first working proof of this product proposal. It proves the event contract and the
-two user experiences without pretending that a prototype is already a global telemetry service.
-
-It must prove, with tests and browser/network evidence, that:
-
-- the calculation and backend source of each existing Agent Studio Analytics metric is documented,
-  including the precise definitions of Search-tool calls, time to first byte, and time to last token;
-- source pills do not make another Algolia request;
-- follow-up suggestions are counted only when they really retrieve;
-- a visitor turn, Search-tool call, Search API request, and billed search request remain separate
-  throughout the drawer, raw event log, and rollups;
-- primary, Person, specialist, and judge work can be distinguished;
-- parallel work, retries, cache hits, failures, cancellations, resets, and long conversations
-  reconcile without double-counting;
-- provider token values are preserved when available and estimates are visibly labelled when not;
-- the drawer's turn totals equal the collector's turn totals; and
-- collector aggregates can be checked against request and provider evidence.
-
-This is the shared foundation for Asana 2.2, 2.3, and 2.4. Grounding judges are deliberately not
-part of the first implementation slice, but the event contract already has the fields needed to
-measure them when that work begins.
-
-## Decisions made in this proposal
-
-1. Build a separate Agent Studio Usage Telemetry pipeline; do not send fabricated usage events to
-   the existing Insights endpoint.
-2. Capture usage for every client on approved product surfaces, whether or not the visitor opens
-   the telemetry drawer.
-3. Use a client ledger plus a server collector. The local ledger is for the visitor; the server is
-   for durable tenant-wide accounting.
-4. Use a 24-hour pseudonymous browser session, not an IP address, as the session boundary.
-5. Send continuously in small retry-safe batches. Do not wait until the end of 24 hours and risk
-   losing the data.
-6. Treat direct provider usage as the best value; label estimates clearly and retain the price
-   registry version that created each cost.
-7. Keep raw conversation text out of the shared usage pipeline by default.
+- Source pills make no extra Algolia request.
+- Follow-up suggestions are metered only when they actually retrieve.
+- A visitor turn, Search-tool call, query-plan item, API request, and billed request stay separate.
+- Primary, specialist, and judge agent work can be distinguished.
+- Retries, cache hits, failures, cancellations, resets, and long conversations do not double-count.
+- Provider-reported tokens are preserved; estimates are visibly labeled.
+- The Conversation summary, Analytics drill-down, export, and aggregate rollups agree.
 
 ## R&D ask
 
-Treat Agent Studio Usage Telemetry as a platform capability, not a widget-only feature. The
-Algolia.com spike can supply a live reference implementation, concrete event examples, a telemetry
-drawer, reconciliation tests, and evidence of the customer questions it answers.
-
-The product decision for R&D is whether to make this a first-class Agent Studio API and reporting
-surface, so every Agent Studio customer can understand the retrieval and model economics behind
-every answer.
+Treat Agent Studio Usage Telemetry as an enhancement to Agent Studio Analytics and Conversations,
+not a widget-only feature and not a duplicate collector. The product already has the right
+foundation. R&D should add the missing trace, economics, definitions, drill-down, and API so every
+Agent Studio customer can understand the retrieval and model work behind every answer.
