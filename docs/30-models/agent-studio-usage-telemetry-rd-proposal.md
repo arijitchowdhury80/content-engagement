@@ -5,18 +5,23 @@ status: proposal
 date: 2026-08-12
 scope: "Algolia.com chat widget spike; product proposal for Agent Studio R&D"
 related_asana: "2.2 Algolia Query Metering; 2.3 Token & Cost Economics; 2.4 End-to-End Turn Observability & Traceability"
+asana_task_2_2_2: "https://app.asana.com/0/0/1217389911594494/f"
 ---
 
 # Agent Studio Usage Telemetry
 
 ## The proposal in one sentence
 
-Agent Studio should have its own usage telemetry pipeline. It should show what an agent did for
-one visitor and also give the customer a correct total across every visitor, conversation, agent,
-search request, model call, and cost.
+Agent Studio should have its own usage telemetry pipeline and usage-insights surface. It should
+show what an agent did for one visitor and also give the customer a correct total across every
+visitor, conversation, agent, search request, model call, and cost.
 
-This is not just a chat-widget feature. It is a product gap. Today, a customer can see the
-conversation. They cannot clearly answer these basic questions:
+This applies to every Agent Studio use case: a shopping assistant, content assistant,
+conversational search, internal knowledge assistant, or custom workflow. It is not a chat-widget
+feature. Agent Studio already provides aggregate conversation, token, and search-call metrics. This
+proposal adds the missing usage-insights layer: a clear, evidence-backed explanation of the work,
+cost, and search usage behind each turn and conversation. Today, a customer cannot clearly answer
+these basic questions:
 
 - How many Algolia retrieval operations did this turn make?
 - Which agent, tool, and index made them?
@@ -25,6 +30,10 @@ conversation. They cannot clearly answer these basic questions:
 - Can the number in the user interface be checked against real requests and provider usage?
 
 The proposed name is **Agent Studio Usage Telemetry**.
+
+The first delivery track is [Asana 2.2.2: Instrument, display, and reconcile Algolia
+operations](https://app.asana.com/0/0/1217389911594494/f). The proposal also defines the product
+foundation for 2.3 token and cost economics, and 2.4 end-to-end traceability.
 
 ## Why a parallel pipeline
 
@@ -53,7 +62,7 @@ The first release measures two things. They stay separate, then appear together 
 
 | Measure | Meaning | Unit of truth |
 |---|---|---|
-| Algolia retrieval usage | Every real request made to retrieve information for an agent turn | An observed request, not the number of source pills |
+| Algolia usage | Search-tool calls, actual Search API requests when observable, and billed search requests when reconciled | The relevant level is labelled; never infer from source pills |
 | LLM usage and cost | Tokens reported by the provider, or a clearly marked estimate | Provider usage frame or versioned estimator |
 
 The system does **not** infer a search count from source pills. Source pills are display metadata
@@ -63,6 +72,41 @@ with browser-network evidence.
 Suggested follow-up questions get the same treatment. If Agent Studio creates them from the
 current model response, there is no new Algolia retrieval. If it retrieves before creating them,
 that real retrieval is counted.
+
+### The four units we must not confuse
+
+The current draft used "retrieval," "request," and "billable operation" too loosely. They mean
+different things and must be shown separately.
+
+| Unit | What it is | Can one visitor turn create more than one? | What it answers |
+|---|---|---|---|
+| Visitor turn | One submitted natural-language message or proactive action | Not applicable | What the visitor did |
+| Agent Studio Search-tool call | One time the agent decides to use its Algolia Search tool | Yes | How often the agent needed search |
+| Search API request | One request that reaches the Algolia Search API, including a multi-query request when used | Yes | What was technically sent to search |
+| Billed search request | The request unit Algolia counts under the customer's current plan | Yes, but not necessarily one-for-one with indices or API work | What may affect the bill |
+
+An Agent Studio completion is therefore **not** automatically one retrieval or one billed request.
+The agent can answer from context without searching, call search several times in a tool loop, retry
+after a failure, or call tools in parallel. Agent Studio can [search up to 10 indices in parallel or
+in sequence](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/tools/algolia-search).
+Its existing [analytics](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/analytics)
+call this a "search call": the number of times an agent used the Algolia Search tool.
+
+The [Agent Studio documentation](https://www.algolia.com/doc/guides/algolia-ai/agent-studio) says
+that each search made by an agent counts toward search usage and may incur charges. The current
+[public pricing page](https://www.algolia.com/pricing) also says that a federated search over three
+active indices counts as **one search request**, not three operations. Therefore the telemetry must
+record observed search-tool calls and observed API requests, but it must call a number
+`billedSearchRequests` only after the account's billing rule or Usage API confirms it. It must not
+invent a per-index billable count. An app-level Usage API total cannot assign billing to a single
+event by itself; it reconciles an aggregate time window unless a future Agent Studio API returns a
+request-level billing identifier.
+
+This also answers the search-as-you-type comparison. Search-as-you-type normally sends a search
+request for each debounced keystroke or query change, and each request is metered under the plan.
+In Agent Studio, the visitor normally submits one completed natural-language turn. That creates one
+completion request, which can create zero, one, or many internal search-tool calls. The visitor's
+typing itself is not an Agent Studio retrieval.
 
 ## The product shape
 
@@ -88,7 +132,8 @@ chooses to expose it. The drawer is a personal receipt for the active session.
 For each turn it shows:
 
 - turn time and status;
-- retrieval requests and billable operations, where that value is available;
+- agent Search-tool calls, observed Search API requests, and reconciled billed search requests as
+  three separate values;
 - the agent, tool, phase, and index involved;
 - input, output, cached, and reasoning tokens when supplied;
 - a clear `reported` or `estimated` label for every token and cost value;
@@ -149,11 +194,13 @@ The initial event types are:
 | `agent_turn_completed` | The user-visible result finishes, fails, or is cancelled |
 | `telemetry_delivery_failed` | The client cannot deliver a batch after retries |
 
-Retrieval events include request ID, correlation ID, query ID where present, index, request-shape
-hash, result count, cache state, retry relationship, outcome, and billable-operation count when the
-platform exposes it. Algolia's Search API documents both a response `Correlation-ID` and an
-optional client-supplied `Request-ID`; those identifiers make later reconciliation practical. See
-the [Search API reference](https://www.algolia.com/doc/rest-api/search).
+Retrieval events include the measurement level (`search_tool_call` or `search_api_request`), request
+ID, correlation ID, query ID where present, index list, request-shape hash, result count, cache
+state, retry relationship, and outcome. A later reconciliation record can add the separately named
+`billedSearchRequests` value, its billing-period source, and its confidence. Algolia's Search API
+documents both a response `Correlation-ID` and an optional client-supplied `Request-ID`; those
+identifiers make later reconciliation practical. See the [Search API
+reference](https://www.algolia.com/doc/rest-api/search).
 
 LLM events include provider, model, model version, input/output/cached/reasoning tokens, pricing
 registry version, currency, and cost. A value is always labelled `reported` or `estimated`; the UI
@@ -197,8 +244,10 @@ Measured use and price assumptions are deliberately separate.
 - A retry is a real extra attempt and is shown as one; it is never silently folded away.
 - Cached work, cancelled work, and failed work are retained with their actual outcome.
 - Reporting compares telemetry totals with available search and provider records. Algolia's
-  [Usage API](https://www.algolia.com/doc/rest-api/usage) is useful for app-level reconciliation,
-  but it is a reporting source, not the event collector.
+  [Usage API](https://www.algolia.com/doc/rest-api/usage) reports both total search operations and
+  total search requests, including the billed-search-request definition. It is an app-level
+  reconciliation source, not the event collector or a substitute for the customer's contract and
+  invoice.
 
 ## Privacy, access, and retention
 
@@ -221,6 +270,8 @@ It must prove, with tests and browser/network evidence, that:
 
 - source pills do not make another Algolia request;
 - follow-up suggestions are counted only when they really retrieve;
+- a visitor turn, Search-tool call, Search API request, and billed search request remain separate
+  throughout the drawer, raw event log, and rollups;
 - primary, Person, specialist, and judge work can be distinguished;
 - parallel work, retries, cache hits, failures, cancellations, resets, and long conversations
   reconcile without double-counting;
