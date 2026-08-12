@@ -15,7 +15,8 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 | Session state | `./SESSION.md` |
 | Memory | `~/.claude/projects/-Users-arijitchowdhury-Dropbox-AI-Development-algolia-com/memory/` |
 | Vault project (knowledge SSOT) | `~/Dropbox/AI-Development/Obsidian/Arijit-Second-Brain/Projects/Search-First-Algolia-com/` |
-| Status SSOT | Asana project `1217199861767750` |
+| Status SSOT — **enrichment** | Asana project `algolia.com` = `1217323957361215`, section "Workstream 5 — algolia.com Target Surface" |
+| Status SSOT — search-first redesign | Asana project `Search-First Algolia.com` = `1217199861767750` |
 | **Enrichment skill (USE THIS)** | `.claude/skills/algolia-data-enrichment/` |
 | Enrichment run output + history | `docs/70-enrichment/` |
 | Software documentation | `docs/80-documentation/` |
@@ -62,10 +63,25 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   being populated as if it were verified.
 - **No sampling.** Arijit's standing rule for enrichment and validation: process one record at a
   time, verify by full census against the live surface.
-- **Enriched fields are NOT searchable yet.** `abstract_enriched` and `keyhighlights_enriched` are
-  absent from `searchableAttributes`, so every enriched record changes **zero** search results until
-  that setting lands. Demonstrated 2026-08-10: queries for text stored verbatim in live records
-  return 0 hits. Do not report enrichment as delivering search value before this changes.
+- **Enriched fields ARE searchable — corrected 2026-08-11, proven by query.** This entry
+  previously said the opposite, and that stale claim was repeated to Arijit twice in one session
+  before anyone re-checked the account. `searchableAttributes` on `Algolia_Prod_Copy_Enhanced` is
+  `['title', 'unordered(description)', 'unordered(abstract_enriched)',
+  'unordered(keyhighlights_enriched)', 'unordered(abstract)', 'unordered(tags)',
+  'unordered(keywords)', 'unordered(category)', 'unordered(url)']`. Verified the way this project
+  requires — by QUERY, not by reading settings: a phrase present only in one record's
+  `abstract_enriched`, and absent from its title and description, returns that record. The 2,694
+  enriched Blog records do deliver search value today. **The lesson is the one already written
+  down for index deletion: check the account, not the note.**
+- **Two indices, because the architecture changed mid-project. Know which one you mean.**
+  `Algolia_Prod_Copy_Enhanced` is the real corpus — 11,928 full records, queried by the demo and
+  the live answering agents. Blog's 2,694 enriched records are here, written directly by the OLD
+  pre-skill pipeline. `Algolia_Prod_Copy_Enhanced_Parallel` is a **payload holding pen, not a
+  corpus**: 255 records carrying exactly three fields each — `objectID`, `abstract_enriched`,
+  `keyhighlights_enriched`. No title, url, source or page_type. The skill writes there on purpose
+  so a bad run cannot damage the real index. 225 case-study + 30 blog payloads are parked there,
+  validated and byte-verified, and **invisible to every consumer** until promoted. That is why a
+  census of Enhanced reports case-study as 1/237 while the work is actually done. See WS5.20.
 - **Judge model: `small` (gemma-4-26b) on the Algolia inference server. Gemini is banned
   (Arijit, 2026-08-10).** Never point the judge at `large` or `xlarge` — both serve **glm-5.2,
   which is the writer**, so either would be the model grading its own output.
@@ -88,11 +104,33 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 
 ## Asana structure
 
+### Enrichment lives in `algolia.com` now — renamed to the Workstream scheme (2026-08-11, Arijit)
+
+`WU-11 — Data enrichment` and its 12 subtasks moved to the **`algolia.com`** project
+(`1217323957361215`), section "Workstream 5 — algolia.com Target Surface", and were **renamed
+`WU-11` → `WS5`, `WU-11.n` → `WS5.n`**. `Enrichment documentation` (5 chapters) moved with them
+and is now a top-level task there rather than a child of `Create Project Documentation`.
+
+Measured before the rename, not assumed: **55 occurrences in 15 files**, no `docs/briefs/WU-11.md`
+to `git mv`. 40 were rewritten in one pass; 15 were left alone on purpose (below). Asana GIDs are
+unchanged by a move or a rename, so every `asana:` frontmatter pointer in the chapter files still
+resolves.
+
+**Three files keep `WU-11` deliberately** — they are history, and rewriting them would corrupt the
+record they exist to preserve: `docs/05-execution-plan.md` (the archived plan),
+`docs/70-enrichment/wu-renumber-map.json` and `asana-number-map.json` (the resolvers for the
+EARLIER renumber). Do not "finish the job" by sweeping these.
+
+**The phase table below still says `WU-11`, and that is correct.** It describes the historical
+`Search-First Algolia.com` numbering, where WU-11 occupied that slot. That project now runs
+WU-01..WU-26 **with WU-11 vacant** — the numbers were NOT closed up, because renumbering 15 work
+units to reclaim one slot would rewrite every brief filename for no gain.
+
 Restructured 2026-08-06. **One numbering scheme. The number equals the position.**
 
 ```
 P0 — Foundation & governance   WU-01 .. WU-04
-P1 — Research & data           WU-05 .. WU-11     <- WU-11 is Data enrichment
+P1 — Research & data           WU-05 .. WU-11   <- WU-11 VACATED, now WS5 in algolia.com
 P2 — Evidence & critique       WU-12 .. WU-15
 P3 — Models & governance       WU-16 .. WU-18
 P4 — Concept architecture      WU-19

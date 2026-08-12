@@ -31,14 +31,14 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from algolia_enrichment import (approvals, corpus, human_review, profile_lint, selection_registry,
-                                strategies, write)
+from algolia_enrichment import (approvals, corpus, human_review, live_corpus, profile_lint,
+                                promote, selection_registry, strategies, taxonomy, write)
 from algolia_enrichment.api import AlgoliaClient
 from algolia_enrichment.artifacts import RunFolder
 from algolia_enrichment.batching import (DEFAULT_MODEL_CONCURRENCY, DEFAULT_SCOUT_CONCURRENCY,
                                          project_runtime, run_concurrent)
-from algolia_enrichment.bodysource import (SEALED_SCOUT_REPLAY, IngestPayload, RunCache,
-                                           ScoutRefetch)
+from algolia_enrichment.bodysource import (FETCH_MANIFEST, SEALED_SCOUT_REPLAY, IngestPayload,
+                                           RunCache, ScoutRefetch)
 from algolia_enrichment.canonical import canonical_version
 from algolia_enrichment.config import env_values, load_config
 from algolia_enrichment.errors import (ApprovalError, EnrichmentError, LockError, ProfileError,
@@ -46,7 +46,7 @@ from algolia_enrichment.errors import (ApprovalError, EnrichmentError, LockError
 from algolia_enrichment.ledger import Ledger, Metrics, read_effective_config, write_effective_config
 from algolia_enrichment.lock import run_lock
 from algolia_enrichment.model_io import (InferenceClient, PROMPT_VERSION, assert_model_separation)
-from algolia_enrichment.pipeline import GATES_LOADED, process_record
+from algolia_enrichment.pipeline import GATES_LOADED, process_record, selection_input_lock_key
 from algolia_enrichment.profiles import load_profile
 from algolia_enrichment.scout import ScoutClient
 from algolia_enrichment.state import RunState
@@ -54,7 +54,10 @@ from algolia_enrichment.validate import GATE_REGISTRY, grounding, live as live_v
 from algolia_enrichment.verdicts import canonical_index
 
 RECORD_ATTRIBUTES = ["objectID", "url", "title", "description", "source", "page_type",
-                     "language_code"]
+                     "language_code", "product", "feature", "solution", "industry", "customer",
+                     "language_platform", "integration_platform", "taxonomy_version",
+                     "taxonomy_provenance", "taxonomy_confidence"]
+TAXONOMY_SCHEMA = HERE.parent / "references" / "taxonomy-schema.algolia-com.json"
 
 # Measured on one real Scout job, queue wait included. Used only to PROJECT a runtime, never to
 # claim one.
@@ -153,6 +156,22 @@ def _echo_config(ctx: Ctx, profile, judge_tier: str | None, body_source: str) ->
     return cfg
 
 
+def _sealed_body_source(ctx: Ctx) -> str:
+    """Return the body-source provenance that this run's sealed fetch declared.
+
+    `enrich` must report the same source that `fetch` sealed. Replays are Scout-derived,
+    but they are not fresh Scout requests; collapsing the two would make the evidence lie.
+    RunCache.load() independently verifies the bodies against this declaration.
+    """
+    path = ctx.run_dir / FETCH_MANIFEST
+    if not path.exists():
+        raise EnrichmentError(f"no {FETCH_MANIFEST}. Run fetch before enrich.")
+    source = json.loads(path.read_text()).get("body_source")
+    if not isinstance(source, str) or not source:
+        raise EnrichmentError(f"{FETCH_MANIFEST} has no body_source")
+    return source
+
+
 # ---------------------------------------------------------------------------
 # read-only commands
 # ---------------------------------------------------------------------------
@@ -206,6 +225,147 @@ def cmd_profile_lint(ctx: Ctx) -> int:
     return 0
 
 
+def _taxonomy_preflight(ctx: Ctx) -> dict:
+    schema = taxonomy.load_schema(TAXONOMY_SCHEMA)
+    records = list(ctx.algolia().browse(ctx.cfg.source_index, attributes=RECORD_ATTRIBUTES))
+    if not records:
+        raise ZeroWorkError("taxonomy preflight found zero records. Zero work is not a preflight.")
+    report = taxonomy.validate_records(records, schema)
+    report.update({"source_index": ctx.cfg.source_index, "schema_version": schema["version"],
+                   "semantic_correctness": "not_proven_by_conformance; sampled review required"})
+    return report
+
+
+def cmd_taxonomy_preflight(ctx: Ctx) -> int:
+    """Hard-check the 8-axis taxonomy contract before any enrichment work."""
+    ctx.banner("taxonomy-preflight")
+    report = _taxonomy_preflight(ctx)
+    ctx.emit("validation/taxonomy-conformance.json", report, "taxonomy-preflight")
+    print(f"taxonomy records={report['records']} page_types={len(report['page_type_counts'])} "
+          f"violations={report['violation_count']}")
+    if not report["ok"]:
+        raise EnrichmentError(f"taxonomy conformance failed for {report['violation_count']} records")
+    print("PASS: all records conform to the 8-axis taxonomy contract. Semantic review remains required.")
+    return 0
+
+
+DOCUMENTATION_REQUIRED_FIELDS = ("objectID", "url", "title", "description", "source",
+                                 "page_type", "language_code")
+
+
+def _documentation_inventory(ctx: Ctx) -> tuple[list[dict], dict]:
+    """Read and classify Documentation metadata without calling any content system."""
+    records = [record for record in ctx.algolia().browse(
+        ctx.cfg.source_index,
+        attributes=[*DOCUMENTATION_REQUIRED_FIELDS, "abstract_enriched", "keyhighlights_enriched"])
+        if record.get("source") == "Documentation"]
+    if not records:
+        raise ZeroWorkError("Documentation audit found zero records. Zero work is not an audit.")
+
+    missing: list[dict] = []
+    invalid_language: list[dict] = []
+    page_type_counts: dict[str, int] = {}
+    legacy_enriched: list[str] = []
+    not_no_abstract: list[dict] = []
+    for record in records:
+        fields = [field for field in DOCUMENTATION_REQUIRED_FIELDS
+                  if not str(record.get(field) or "").strip()]
+        if fields:
+            missing.append({"objectID": record.get("objectID", ""), "missing": fields,
+                            "url": record.get("url"), "title": record.get("title"),
+                            "page_type": record.get("page_type")})
+        if str(record.get("language_code") or "").strip() != "en":
+            invalid_language.append({"objectID": record.get("objectID", ""),
+                                     "language_code": record.get("language_code")})
+        page_type = str(record.get("page_type") or "")
+        page_type_counts[page_type] = page_type_counts.get(page_type, 0) + 1
+        try:
+            profile = load_profile(ctx.profiles_dir, "Documentation", page_type)
+            if profile.strategy != "no_abstract":
+                not_no_abstract.append({"page_type": page_type, "strategy": profile.strategy})
+        except ProfileError as exc:
+            not_no_abstract.append({"page_type": page_type, "error": str(exc)})
+        if record.get("abstract_enriched") or record.get("keyhighlights_enriched"):
+            legacy_enriched.append(record["objectID"])
+
+    report = {
+        "source_index": ctx.cfg.source_index,
+        "source": "Documentation",
+        "records": len(records),
+        "page_type_counts": dict(sorted(page_type_counts.items())),
+        "missing_required_fields": missing,
+        "invalid_language": invalid_language,
+        "profiles_not_no_abstract": not_no_abstract,
+        "legacy_enriched_count": len(legacy_enriched),
+        "legacy_enriched_objectIDs": legacy_enriched,
+        "writer_or_judge_called": False,
+    }
+    return records, report
+
+
+def cmd_audit_documentation(ctx: Ctx) -> int:
+    """Validate Documentation taxonomy and required index fields without fetching or writing."""
+    ctx.banner("audit-documentation")
+    _, report = _documentation_inventory(ctx)
+    ctx.emit("validation/documentation-metadata-audit.json", report, "audit-documentation")
+    print(f"documentation records={report['records']} page_types={len(report['page_type_counts'])} "
+          f"missing={len(report['missing_required_fields'])} "
+          f"language_mismatch={len(report['invalid_language'])} "
+          f"legacy_enriched={report['legacy_enriched_count']}")
+    if (report["missing_required_fields"] or report["invalid_language"] or
+            report["profiles_not_no_abstract"]):
+        raise EnrichmentError(
+            f"Documentation metadata audit failed: missing={len(report['missing_required_fields'])}, "
+            f"language_mismatch={len(report['invalid_language'])}, "
+            f"profiles_not_no_abstract={len(report['profiles_not_no_abstract'])}")
+    print("PASS: Documentation taxonomy and required metadata are complete; no LLM enrichment is allowed.")
+    return 0
+
+
+def cmd_prepare_documentation_copy(ctx: Ctx) -> int:
+    """Prepare `description -> abstract_enriched` Documentation payloads, with no LLM call."""
+    ctx.banner("prepare-documentation-copy")
+    records, audit = _documentation_inventory(ctx)
+    if audit["profiles_not_no_abstract"]:
+        raise EnrichmentError("Documentation copy refused: a Documentation profile permits enrichment")
+
+    missing_by_id = {row["objectID"]: row["missing"]
+                     for row in audit["missing_required_fields"]}
+    bad_language = {row["objectID"] for row in audit["invalid_language"]}
+    payloads: list[dict] = []
+    review: list[dict] = []
+    for record in records:
+        oid = record["objectID"]
+        if oid in missing_by_id or oid in bad_language:
+            fields = missing_by_id.get(oid, [])
+            review.append({
+                "objectID": oid, "url": record.get("url"), "title": record.get("title"),
+                "page_type": record.get("page_type"),
+                "reason": (f"missing required metadata: {', '.join(fields)}" if fields else
+                           f"language_code is {record.get('language_code')!r}, expected 'en'"),
+                "suggested_action": "supply_description" if fields == ["description"]
+                                    else "fix_documentation_metadata",
+                "review_status": "OPEN",
+            })
+            continue
+        item = {"objectID": oid, "abstract_enriched": [record["description"]]}
+        payload.assert_payload(item)
+        payloads.append(item)
+
+    if not payloads:
+        raise ZeroWorkError("Documentation copy produced zero payloads. Nothing is ready to write.")
+    report = {**audit, "copy_ready": len(payloads),
+              "needs_metadata_remediation": len(review),
+              "payload_fields": ["objectID", "abstract_enriched"],
+              "writer_or_judge_called": False}
+    ctx.emit_jsonl("documentation-copy/payloads.jsonl", payloads, "prepare-documentation-copy")
+    ctx.emit_jsonl("documentation-copy/human-review-queue.jsonl", review,
+                   "prepare-documentation-copy")
+    ctx.emit("documentation-copy/report.json", report, "prepare-documentation-copy")
+    print(f"copy-ready={len(payloads)} metadata-review={len(review)} writer-or-judge-called=false")
+    return 0
+
+
 def cmd_health_scout(ctx: Ctx) -> int:
     ctx.banner("health-scout")
     report = ctx.scout().health(ctx.args.probe_url, ctx.cfg.site)
@@ -234,6 +394,16 @@ def cmd_plan_slice(ctx: Ctx) -> int:
         raise EnrichmentError(
             f"scan found {len(records)} records for {profile.key} but the census says "
             f"{live_count}. The two must agree before a slice is planned.")
+
+    # Establish slice stability before spending a full scan on taxonomy. This ordering makes an
+    # index that changes between the slice scan and census fail for that reason, rather than
+    # letting a separate preflight accidentally consume the snapshot the comparison needs.
+    taxonomy_report = _taxonomy_preflight(ctx)
+    ctx.emit("validation/taxonomy-conformance.json", taxonomy_report, "plan-slice")
+    if not taxonomy_report["ok"]:
+        raise EnrichmentError(
+            f"plan-slice refused: taxonomy conformance failed for "
+            f"{taxonomy_report['violation_count']} records")
 
     replay_of = ""
     if ctx.args.replay_run:
@@ -428,11 +598,18 @@ def cmd_enrich(ctx: Ctx) -> int:
     metrics = Metrics(ctx.run_dir, "enrich")
     ledger = Ledger(ctx.run_dir)
 
+    no_enrichment = profile.strategy == "no_abstract"
     judge_tier = ctx.cfg.judge_tier if (profile.judge_required and ctx.cfg.judge_enabled) else None
-    inference = ctx.inference()
-    pinned = assert_model_separation(inference, ctx.cfg)
-    print(f"[models] {json.dumps(pinned['tiers'], sort_keys=True)}")
-    _echo_config(ctx, profile, judge_tier, "ScoutRefetch")
+    inference = None
+    writer_tier = ""
+    if no_enrichment:
+        print("[models] skipped: profile strategy is no_abstract")
+    else:
+        inference = ctx.inference()
+        pinned = assert_model_separation(inference, ctx.cfg)
+        print(f"[models] {json.dumps(pinned['tiers'], sort_keys=True)}")
+        writer_tier = ctx.cfg.writer_tier
+    _echo_config(ctx, profile, judge_tier, _sealed_body_source(ctx))
 
     # THE JOIN. `enrich` cannot be pointed at any cache other than the one this run's own fetch
     # produced -- there is no argument for it.
@@ -440,6 +617,7 @@ def cmd_enrich(ctx: Ctx) -> int:
     canon_map = canonical_index(manifest["records"])
     registry_path = ctx.workspace / selection_registry.REGISTRY_RELATIVE_PATH
     selection_cache = {} if ctx.args.ignore_selection_registry else selection_registry.load(registry_path)
+    selection_coordinator = selection_registry.RunSelectionCoordinator(selection_cache)
     print(f"[selection-registry] {len(selection_cache)} frozen content contracts"
           + (" (intentionally bypassed for stability evaluation)"
              if ctx.args.ignore_selection_registry else ""))
@@ -456,9 +634,14 @@ def cmd_enrich(ctx: Ctx) -> int:
         raise ZeroWorkError("enrich found zero fetched bodies for the planned records.")
 
     def one(rec: dict) -> dict:
-        return process_record(rec, profile, inference, writer_tier=ctx.cfg.writer_tier,
-                              judge_tier=judge_tier, canonical_map=canon_map,
-                              selection_cache=selection_cache)
+        # Keep exactly matching prompt input single-flight while allowing unrelated pages to use
+        # all requested workers. A later final validation is still required before durable freeze.
+        with selection_coordinator.hold(selection_input_lock_key(rec, profile)):
+            result = process_record(rec, profile, inference, writer_tier=writer_tier,
+                                    judge_tier=judge_tier, canonical_map=canon_map,
+                                    selection_cache=selection_cache)
+            selection_coordinator.publish(result, run_id=ctx.run_id)
+            return result
 
     counts: dict[str, int] = {}
 
@@ -660,6 +843,10 @@ def cmd_validate(ctx: Ctx) -> int:
     payloads = _read_jsonl(ctx.run_dir / "final" / "payloads.jsonl")
     p = payload.check_payloads(payloads, expected_target_ids=set(manifest["objectIDs"]))
     census = quality.quality_census(rows)
+    coverage_path = ctx.run_dir / "validation" / "coverage.json"
+    if not coverage_path.exists():
+        raise EnrichmentError("build-final did not produce coverage.json; coverage cannot be assumed")
+    coverage = json.loads(coverage_path.read_text())
 
     disagreements = [r["objectID"] for r in rows if r.get("status") == "METHOD_DISAGREEMENT"]
     method_rate = len(disagreements) / max(1, len(rows))
@@ -668,6 +855,7 @@ def cmd_validate(ctx: Ctx) -> int:
         "run_id": ctx.run_id, "validated_at": _now(),
         "profile_version": profile.version,
         "grounding": g, "quality": q, "payload": p,
+        "coverage": coverage,
         "language_census": census,
         "method_check": {"disagreements": len(disagreements),
                          "rate": round(method_rate, 4),
@@ -683,6 +871,9 @@ def cmd_validate(ctx: Ctx) -> int:
           f"incomplete={len(q['incomplete_spans'])} "
           f"duplicate-description={len(q['duplicate_description'])}")
     print(f"payload   : {p['payloads']} payloads, fields={p['fields']}")
+    print(f"coverage  : writable={coverage['writable_coverage_pct']:.1%} "
+          f"(target {coverage['coverage_target_pct']:.1%}), open-review="
+          f"{coverage['human_review_pct']:.1%} (cap {coverage['max_human_review_open_pct']:.1%})")
     print("language census:")
     for lang, s in census.items():
         print(f"  {lang}: records={s['records']} candidates={s['candidates']} "
@@ -697,6 +888,12 @@ def cmd_validate(ctx: Ctx) -> int:
     if not report["method_check"]["ok"]:
         fatal.append(f"method disagreement {method_rate:.1%} over "
                      f"{profile.max_method_disagreement_pct:.1%}")
+    if not coverage.get("meets_coverage"):
+        fatal.append(f"writable coverage {coverage.get('writable_coverage_pct', 0):.1%} below "
+                     f"profile target {coverage.get('coverage_target_pct', 0):.1%}")
+    if not coverage.get("within_human_review_cap"):
+        fatal.append(f"open human review {coverage.get('human_review_pct', 0):.1%} over "
+                     f"profile cap {coverage.get('max_human_review_open_pct', 0):.1%}")
     if fatal:
         state.set("validate", "FAILED"); state.save(ctx.run_dir)
         raise EnrichmentError("VALIDATION FAILED: " + "; ".join(fatal))
@@ -1024,9 +1221,122 @@ def _read_jsonl(path: Path) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 # command -> (handler, needs a run folder + lock)
+def cmd_promote_to_source(ctx: Ctx) -> int:
+    """Promote a run's validated payloads from the proving ground into the SOURCE index.
+
+    Deliberately harder to invoke than `apply-write`: it needs a snapshot to exist AND an
+    approval file naming the index and the exact count. See `promote.py` for why.
+    """
+    ctx.banner("promote-to-source")
+    client = ctx.algolia()
+    index = ctx.cfg.source_index
+    payloads = _read_jsonl(ctx.run_dir / "final" / "payloads.jsonl")
+    promote.assert_payloads_sane(payloads)
+
+    snapshot = promote.assert_snapshot_exists(client, index)
+    print(f"[snapshot] {snapshot}")
+    approval = promote.read_approval(ctx.run_dir, target_index=index,
+                                     expected_count=len(payloads))
+    print(f"[approval] {promote.APPROVAL_FILENAME} by {approval['approved_by']}")
+
+    _, before = client.record_count(index)
+    result = write.apply_write_to_index(client, index, payloads)
+    _, after = client.record_count(index)
+    if after != before:
+        raise EnrichmentError(
+            f"{index} record count changed {before} -> {after}. A promotion adds two fields to "
+            f"existing records and must never change the count. Snapshot: {snapshot}")
+
+    check = promote.verify_after_write(client, index, payloads)
+    report = {"index": index, "snapshot": snapshot, "approved_by": approval["approved_by"],
+              "payloads": len(payloads), "record_count_before": before,
+              "record_count_after": after, "write": result, "verification": check,
+              "promoted_at": _now()}
+    ctx.emit("validation/promotion.json", report, "promote-to-source")
+
+    print(f"records   : {index} {before} -> {after} (unchanged, as required)")
+    print(f"written   : {len(payloads)} payloads")
+    print(f"verified  : {check['found']}/{check['checked']} read back, "
+          f"{len(check['missing'])} missing, {len(check['mismatched'])} mismatched")
+    if not check["ok"]:
+        raise EnrichmentError(
+            f"PROMOTION VERIFICATION FAILED: {len(check['missing'])} records missing, "
+            f"{len(check['mismatched'])} byte-mismatched. Snapshot for rollback: {snapshot}")
+    print(f"PASS: {len(payloads)} records promoted into {index} and read back byte-exact.")
+    return 0
+
+
+def cmd_verify_corpus(ctx: Ctx) -> int:
+    """TIER 1: is what is IN THE INDEX right now correct? Deterministic, no LLM.
+
+    Distinct from `verify-live`, which proves a RUN's payloads landed. This proves the live
+    corpus itself, without the run that produced it -- runs get cleaned up, code changes
+    underneath them, and a two-day-old report is not evidence about today's index.
+    """
+    ctx.banner("verify-corpus")
+    if not ctx.args.source or not ctx.args.page_type:
+        raise EnrichmentError("this command needs --source and --page-type")
+    source, page_type = ctx.args.source, ctx.args.page_type
+    client = ctx.algolia()
+
+    # --verify-index lets this point at the parallel holding pen, whose records carry only
+    # objectID + the two enriched fields; identity is then joined from the full-record index.
+    verify_index = getattr(ctx.args, "verify_index", None) or ctx.cfg.source_index
+    identity_index = ctx.cfg.source_index if verify_index != ctx.cfg.source_index else None
+
+    report = live_corpus.verify_corpus(
+        client, verify_index, source, page_type, ctx.workspace, identity_index=identity_index)
+    identity = live_corpus.slice_map(client, identity_index) if identity_index else None
+    rows = live_corpus.rows_from_index(client, verify_index, source, page_type, identity=identity)
+    per_record = live_corpus.per_record_rows(report, rows)
+
+    report["taken_at"] = _now()
+    ctx.emit("corpus-verification.json", report, "verify-corpus")
+    ctx.emit_jsonl("corpus-verification-per-record.jsonl", per_record, "verify-corpus")
+
+    cov, g, q = report["coverage"], report["grounding"], report["quality"]
+    print(f"corpus    : {report['corpus']}  in {report['index']}")
+    print(f"records   : {cov['records_in_index']} enriched, "
+          f"{cov['records_with_cached_body']} with a cached body, "
+          f"{cov['records_without_cached_body']} without")
+    idem = report["canonicalise_idempotent"]
+    print(f"idempotent: canonicalise stable on "
+          f"{idem['checked'] - len(idem['offenders'])}/{idem['checked']} bodies "
+          f"({len(idem['offenders'])} carry HTML-in-code-fence)")
+    t = report["grounding_triage"]
+    print(f"grounding : {g['located']}/{g['spans_checked']} spans located, modes={g['modes']}")
+    print(f"  triage  : {t['reported']} reported misses -> "
+          f"{len(t['canonicalisation_artifacts'])} verifier artifacts, "
+          f"{len(t['genuine_absences'])} GENUINELY absent")
+    print(f"quality   : leakage={len(q['leakage'])} chrome={len(q['chrome'])} "
+          f"incomplete={len(q['incomplete_spans'])} "
+          f"duplicate-description={len(q['duplicate_description'])} "
+          f"templates={len(q['template_collisions'])}")
+    print(f"provenance: {len(report['fetch_provenance']['defects'])} defects, "
+          f"{len(report['fetch_provenance']['missing_body'])} missing body")
+    print(f"drift     : {len(report['content_drift']['drifted'])} of "
+          f"{report['content_drift']['compared']} pages changed since enrichment")
+
+    if not report["ok"]:
+        raise EnrichmentError(
+            f"CORPUS VERIFICATION FAILED for {report['corpus']}: "
+            f"{len(t['genuine_absences'])} spans genuinely not on their page, "
+            f"{len(g['missing_body'])} rows with no cached body, "
+            f"{len(report['fetch_provenance']['defects'])} fetch-provenance defects. "
+            f"Per-record detail in corpus-verification-per-record.jsonl.")
+    print(f"PASS: every one of {g['spans_checked']} spans across {cov['records_in_index']} "
+          f"records is present on its own page.")
+    return 0
+
+
 COMMANDS = {
+    "verify-corpus": (cmd_verify_corpus, True),
+    "promote-to-source": (cmd_promote_to_source, True),
     "census": (cmd_census, False),
     "profile-lint": (cmd_profile_lint, False),
+    "taxonomy-preflight": (cmd_taxonomy_preflight, True),
+    "audit-documentation": (cmd_audit_documentation, True),
+    "prepare-documentation-copy": (cmd_prepare_documentation_copy, True),
     "health-scout": (cmd_health_scout, False),
     "corpus-status": (cmd_corpus_status, False),
     "plan-slice": (cmd_plan_slice, True),
@@ -1068,6 +1378,10 @@ def build_parser() -> argparse.ArgumentParser:
                     help="stratified subset, e.g. 'de:4,fr:4,en:2'")
     ap.add_argument("--concurrency", type=int, default=DEFAULT_SCOUT_CONCURRENCY)
     ap.add_argument("--probe-url", default="")
+    ap.add_argument("--verify-index", default="",
+                    help="verify-corpus: which index to verify. Defaults to the source index. "
+                         "Point it at the parallel target to verify payloads parked there; "
+                         "identity fields are joined from the source index automatically.")
     ap.add_argument("--allow-empty", action="store_true")
     ap.add_argument("--allow-empty-index", action="store_true")
     ap.add_argument("--delete", action="store_true")

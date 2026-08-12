@@ -101,27 +101,140 @@ _LEADING_URL = re.compile(r"^\s*(?:https?://|https?//|www\.)", re.I)
 
 # The blockquote directly under the page's H1 -- where a page states what it is.
 _PAGE_LEDE_QUOTE = re.compile(r"^#[ \t]+\S.*\n+((?:[ \t]*>.*(?:\n|$))+)", re.M)
-_H1 = re.compile(r"^#[ \t]+\S")
+
+# The page headline. H1 OR H2, and it must actually SAY something.
+#
+# Two measured defects, one detector. It was `^#[ \t]+\S`:
+#   * Only H1. The Website/press-release family heads its pages with an H2, so the detector found
+#     no heading and returned 0 on 754 of 780 cached pages -- and 0 means "no scoping at all", so
+#     the nav, the cookie banner, the logo-pack links and the Ask-AI overlay were all inside the
+#     candidate menu. 34 records of the 690-record run stored the overlay's own sample questions
+#     ("How will Algolia improve our search experience and conversions?") as enrichment. That is
+#     precisely the leak this function exists to prevent, silently switched off for a whole family.
+#   * `\S` accepts `# # #` -- the traditional END-OF-RELEASE marker. On 12 pages it was the first
+#     thing matching, and it sits AFTER the article, so the entire body was excluded and the only
+#     prose left in the menu was the boilerplate. Requiring one word character refutes it.
+#
+# Measured across every cached page of every run before changing it: blog (426) and
+# customer-stories (278) are bit-for-bit unchanged, doc-sdk gains scoping on all 60, and NO page
+# in any family scopes later than it does today -- so no page can lose article body to this.
+_HEADING = re.compile(r"^\s{0,3}#{1,2}[ \t]+(?P<title>\S.*)$")
+_FENCE = re.compile(r"^\s*(```|~~~)")
+_HAS_WORD = re.compile(r"[^\W_]")
 
 
 def main_content_start(markdown: str) -> int:
-    """Original offset where the page's first real H1 begins, or zero if absent.
+    """Original offset where the page's headline begins, or zero if absent.
 
     Scout deliberately returns the complete page. On Algolia.com that includes global shell text
     before the document heading; treating it as selectable prose produced Ask-AI overlay text as
-    Blog and case-study highlights. Scope candidates after the first Markdown H1, while retaining
-    the complete original body and its offsets for grounding. Fenced code is ignored because a
+    Blog and case-study highlights. Scope candidates after the headline, while retaining the
+    complete original body and its offsets for grounding. Fenced code is ignored because a
     ``# comment`` inside a code example is not a page heading.
     """
     offset = 0
     fenced = False
     for line in markdown.splitlines(keepends=True):
-        if re.match(r"^\s*(```|~~~)", line):
+        if _FENCE.match(line):
             fenced = not fenced
-        elif not fenced and _H1.match(line):
-            return offset
+        elif not fenced:
+            m = _HEADING.match(line)
+            if m and _HAS_WORD.search(m.group("title")):
+                return offset
         offset += len(line)
     return 0
+
+
+# --- the trailing boilerplate block ---------------------------------------------------------
+#
+# A press release ends with one or more "About <Company>" blocks, a media contact, a
+# forward-looking-statements notice. Every sentence in them is well-formed, on-brand prose, so
+# every shape test in this module correctly calls them prose and the writer -- reasonably --
+# picks them: 295 of the 669 records in the 690-record run stored at least one span from this
+# region, including `About Breville**` verbatim, on records whose status was PASS.
+#
+# Banning them by matching each SENTENCE cannot work. Only the sentence carrying the trigger
+# phrase matches; the rest of the block ("Renowned for its user-friendly API-First platform...")
+# names nothing and sails through. Banning them by `cand.section` cannot work either: `**Über
+# Algolia**` is bold emphasis, not a heading, so the splitter never opens a section there and the
+# section title returned is the ARTICLE'S OWN headline.
+#
+# So the exclusion is POSITIONAL, computed on the raw markdown before anything is split -- the
+# same shape as `main_content_start`, at the other end of the page.
+_NAME_TOKEN = re.compile(r"[A-Z][\w&.'\-]*")
+_LOWER_BRAND = re.compile(r"[a-z][\w&.\-]{2,}")     # commercetools, algolia
+_MAX_NAME_TOKENS = 3                                # "IDC MarketScape", "JD Sports"
+
+
+def _labelled_name(markdown: str, pos: int) -> tuple[int, str]:
+    """End offset of the name a label announces, and that name's first token.
+
+    Stops before a token that REPEATS the first one. "Über Algolia Algolia ist..." is a label
+    followed by the block's opening sentence, not a company called "Algolia Algolia" -- and
+    letting the name swallow the repeat destroys the very evidence `boilerplate_block_start`
+    looks for. Measured: that greed alone produced 115 false misses on the press-release slice.
+    """
+    first: str | None = None
+    end = pos
+    probe = pos
+    for _ in range(_MAX_NAME_TOKENS):
+        m = _NAME_TOKEN.match(markdown, probe)
+        if not m:
+            break
+        token = m.group(0)
+        if first is None:
+            first = token
+        elif token.rstrip(".,:").lower() == first.rstrip(".,:").lower():
+            break
+        end = probe = m.end()
+        while probe < len(markdown) and markdown[probe] == " ":
+            probe += 1
+    if first is None:
+        m = _LOWER_BRAND.match(markdown, pos)
+        if m:
+            return m.end(), m.group(0)
+    return end, (first or "")
+
+
+def boilerplate_block_start(markdown: str,
+                            openers: tuple[re.Pattern, ...]) -> tuple[int, str] | None:
+    """(offset, evidence) where the page's trailing boilerplate begins, or None.
+
+    A phrase is a block LABEL only with STRUCTURAL EVIDENCE that it labels something: it closes a
+    bold run, it owns its line, a colon follows it, or the block's first sentence restates the
+    name just announced. The phrase alone is never enough, and this is not caution for its own
+    sake -- `Über` and `À propos de` are ordinary prepositions. `Über Modell-Benchmarks hinaus:`
+    is a German page's own HEADLINE, 20% into the page; a phrase-only rule cuts 79% of that
+    article. `Uber für 3,1 Milliarden Dollar` is the ride company inside a biography. Both are
+    real pages in this corpus and the evidence requirement refutes both.
+
+    Deliberately NOT anchored to the start of a line: measured, that requirement rejected 36 real
+    boilerplate labels, because the raw markdown fuses the label onto the end of the preceding
+    paragraph -- which is the defect this function was written to solve.
+
+    The EARLIEST qualifying label wins and the cut runs to the end of the page. What follows a
+    press release's first "About" block is more of the same: further company blocks, the media
+    contact, the forward-looking notice, then site furniture. Verified by reading the widest cuts
+    in the corpus rather than assuming it.
+    """
+    best: tuple[int, str] | None = None
+    for opener in openers:
+        for m in opener.finditer(markdown):
+            end, name = _labelled_name(markdown, m.end())
+            after = markdown[end:end + 80]
+            if re.match(r"\s*\*\*", after):
+                evidence = "bold-close"
+            elif re.match(r"\s*(?:\n|$)", after):
+                evidence = "own-line"
+            elif re.match(r"[\s*]*:", after):
+                evidence = "colon"
+            elif name and re.match(r"[\s*:]*\[?" + re.escape(name), after):
+                evidence = "name-repeat"
+            else:
+                continue
+            if best is None or m.start() < best[0]:
+                best = (m.start(), evidence)
+    return best
 
 
 def page_lede_quote_range(markdown: str) -> tuple[int, int] | None:
@@ -329,7 +442,8 @@ def classify(text: str, complete: bool, section_title: str,
 def split_candidates(markdown: str, max_candidates: int = 400,
                      boilerplate: set[str] | None = None,
                      already_indexed: str | None = None,
-                     content_start: int = 0) -> tuple[list[Candidate], Canon]:
+                     content_start: int = 0,
+                     content_end: int | None = None) -> tuple[list[Candidate], Canon]:
     """Every selectable unit of the page, numbered. Offsets map back to the original markdown.
 
     Order: BLOCK -> sentence -> MAX_CHARS piece. The block step is what stops a timer merging
@@ -395,6 +509,11 @@ def split_candidates(markdown: str, max_candidates: int = 400,
                 except (ValueError, IndexError):
                     continue
                 if o_start < content_start:
+                    continue
+                # Same test at the other end of the page: the trailing boilerplate block. Scoped
+                # by ORIGINAL offset, like content_start, because both are measured on the raw
+                # markdown before canonicalisation moves anything.
+                if content_end is not None and o_start >= content_end:
                     continue
                 # A chop is a fragment by construction: only the first piece begins where a
                 # sentence began, only the last ends where one ended, the middle does neither.

@@ -87,6 +87,12 @@ class SourceProfile:
     dead_page_markers: tuple[str, ...] = ()
     shell_markers: tuple[str, ...] = ()
     forbidden_patterns: tuple[str, ...] = ()
+    # Phrases that OPEN the page's trailing boilerplate block. Not a ban list: each one only
+    # counts where `candidates.boilerplate_block_start` also finds structural evidence that it
+    # labels a block, and the whole page from there down is then out of scope. Per profile
+    # because "About <Company>" is press-release furniture and could be a real section heading
+    # elsewhere. Empty means no positional exclusion, which is every other profile today.
+    boilerplate_block_openers: tuple[str, ...] = ()
     information_gain_minimum: int = 8
     max_method_disagreement_pct: float = 0.10
     raw: dict = field(default_factory=dict, repr=False, compare=False)
@@ -108,6 +114,10 @@ class SourceProfile:
     @property
     def compiled_forbidden(self) -> tuple[re.Pattern, ...]:
         return tuple(re.compile(p) for p in self.forbidden_patterns)
+
+    @property
+    def compiled_block_openers(self) -> tuple[re.Pattern, ...]:
+        return tuple(re.compile(p) for p in self.boilerplate_block_openers)
 
 
 def profile_filename(source: str, page_type: str) -> str:
@@ -192,6 +202,12 @@ def build_profile(data: dict) -> SourceProfile:
             re.compile(pat)
         except re.error as exc:
             raise ProfileError(f"forbidden_patterns entry {pat!r} is not a valid regex: {exc}")
+    for pat in data.get("boilerplate_block_openers") or []:
+        try:
+            re.compile(pat)
+        except re.error as exc:
+            raise ProfileError(
+                f"boilerplate_block_openers entry {pat!r} is not a valid regex: {exc}")
 
     return SourceProfile(
         source=data["source"],
@@ -216,6 +232,7 @@ def build_profile(data: dict) -> SourceProfile:
         dead_page_markers=tuple(data.get("dead_page_markers") or ()),
         shell_markers=tuple(data.get("shell_markers") or ()),
         forbidden_patterns=tuple(data.get("forbidden_patterns") or ()),
+        boilerplate_block_openers=tuple(data.get("boilerplate_block_openers") or ()),
         information_gain_minimum=int(data.get("information_gain_minimum", 8)),
         max_method_disagreement_pct=float(data.get("max_method_disagreement_pct", 0.10)),
         raw=data,

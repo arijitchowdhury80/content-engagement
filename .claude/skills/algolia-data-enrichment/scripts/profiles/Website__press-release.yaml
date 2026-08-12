@@ -16,9 +16,66 @@ coverage_target_pct: 0.85
 minimum_review_sample: 20
 allow_quotes: false
 forbidden_patterns:
-  - "^About Algolia"
-  - "^(Media|Press) (Contact|Inquiries)"
-  - "^Forward[- ]looking statements"
-  - "^[A-Z][A-Z .]+, [A-Z][a-z]+ \\d{1,2}, \\d{4}\\s*[—–-]"   # the dateline
-  - "^SOURCE Algolia"
+  # Found 2026-08-11 on the press-release pilot (30 records, en:10/de:10/fr:10): these bans were
+  # English-only and the French "About Algolia" boilerplate ("À propos d'Algolia...") sailed
+  # straight through into a highlight on 2 of 10 fr records. Same defect class as
+  # DESIGN-DECISIONS.md #9 -- a filter that only speaks English on a multilingual corpus.
+  #
+  # Found 2026-08-11 on the full 690-record run: fixing only the Algolia-specific, start-anchored
+  # version was one instance, not the class. Two more leaks on the full run: (1) "About Breville"
+  # -- the boilerplate names WHICHEVER company the release is about, not always Algolia; (2) the
+  # candidate splitter fuses a CTA sentence onto the boilerplate paragraph with no period between
+  # them ("...rendez-vous sur À propos d'Algolia: Algolia est..."), so a `^`-anchored pattern can
+  # never match it -- the boilerplate is never at position 0 of that merged candidate. Every
+  # boilerplate/contact/forward-looking pattern below is now unanchored (matches anywhere in the
+  # candidate, not just its start) and names no specific company. Datelines stay anchored: they
+  # are lower-risk (a dateline structurally sits at a candidate's start) and an unanchored city-name
+  # pattern would false-positive on ordinary sentences that just happen to mention a city.
+  - "About [A-Z][\\w&.'-]{1,40}:?\\s+[A-Za-zÀ-ÿ]"
+  - "À propos d['’]\\s?[A-Z][\\w&.-]{1,40}"
+  - "À propos de [A-Z][\\w&.-]{1,40}"
+  - "Über [A-Z][\\w&.-]{1,40}"
+  - "(Media|Press) (Contact|Inquiries)"
+  - "Contacts? (presse|médias)"
+  - "(Presse|Medien)kontakt"
+  - "Forward[- ]looking statements"
+  - "Déclarations? prospectives?"
+  - "Zukunftsgerichtete Aussagen"
+  - "^[A-Z][A-Z .]+, [A-Z][a-z]+ \\d{1,2}, \\d{4}\\s*[—–-]"   # the dateline, en: "CITY, Month Day, Year --"
+  - "^[A-Z][A-Z .]+, le \\d{1,2} [a-zà-ÿ]+ \\d{4}\\s*[—–-]"    # fr: "CITY, le Day Month Year --"
+  - "^[A-Z][A-Z .]+, \\d{1,2}\\. [A-Za-zäöü]+ \\d{4}\\s*[—–-]" # de: "CITY, Day. Month Year --"
+  - "SOURCE Algolia"
+  # The two fr/de dateline patterns and the contact/forward-looking translations are inferred from
+  # general convention, not measured against a corpus sample the way the en pattern and both
+  # "About Algolia" bans were -- re-check against real records if fr/de datelines still leak.
+
+# Where the page's trailing boilerplate BEGINS. Everything from the earliest qualifying label to
+# the end of the page leaves the candidate menu -- the "About <Company>" blocks, the media
+# contact, the forward-looking notice, and the site furniture after them.
+#
+# This exists because `forbidden_patterns` above cannot do it. A pattern matched against a
+# candidate bans only the sentence carrying the trigger phrase; the rest of the same block names
+# nothing ("Renowned for its user-friendly API-First platform...") and passes every shape test,
+# because it IS well-formed prose. Measured on the full 690-record run: 295 of 669 records stored
+# at least one span from this region, `About Breville**` among them, on records marked PASS.
+#
+# These are OPENERS, not bans. Each only counts where `candidates.boilerplate_block_start` finds
+# structural evidence that it labels a block (closes a bold run / owns its line / is followed by
+# a colon / the block restates the name). That requirement is load-bearing, not caution: "Über"
+# and "À propos de" are ordinary prepositions. Real pages in this corpus contain the headline
+# "Über Modell-Benchmarks hinaus:" and the sentence "Uber für 3,1 Milliarden Dollar" -- a
+# phrase-only rule cuts 79% of the first article. Do not add an opener that cannot survive that.
+boilerplate_block_openers:
+  - "About\\s+"
+  - "A propos d[e’']\\s*"
+  - "À propos d[e’']\\s*"
+  - "Uber\\s+"
+  - "Über\\s+"
+  - "(Media|Press) (Contact|Inquiries)"
+  - "Contacts? (presse|médias)"
+  - "(Presse|Medien)kontakt"
+  - "Forward[- ]looking statements"
+  - "Déclarations? prospectives?"
+  - "Zukunftsgerichtete Aussagen"
+  - "SOURCE Algolia"
 dead_page_markers: ["Press release not found", "Page not found"]

@@ -18,9 +18,9 @@ import algolia_enrich
 
 from conftest import FakeAlgolia, FakeInference, FakeScout, TARGET_INDEX, body_for, make_records
 
-from algolia_enrichment import human_review
+from algolia_enrichment import human_review, pipeline
 from algolia_enrichment.bodysource import IngestPayload, RunCache, ScoutRefetch
-from algolia_enrichment.candidates import Candidate, split_candidates
+from algolia_enrichment.candidates import Candidate, main_content_start, split_candidates
 from algolia_enrichment.canonical import canonicalise
 from algolia_enrichment.dispatch import route, sniff
 from algolia_enrichment.errors import EnrichmentError, StateError, ZeroWorkError
@@ -77,10 +77,58 @@ CASE_STUDY = load_profile(PROFILES, "Customer Stories", "case-study")
 REFERENCE = load_profile(PROFILES, "Documentation", "doc-sdk")
 
 
-def test_judge_prompt_requires_literal_page_evidence_not_a_rationale():
-    """The cited-quality gate is only meaningful when citations are real source excerpts."""
-    assert "contiguous excerpt copied character-for-character" in JUDGE_PROMPT
-    assert "must not be an explanation of your score" in JUDGE_PROMPT
+def test_judge_prompt_leaves_source_citations_to_the_script():
+    """The quality model scores; its output cannot invent or mangle a provenance citation."""
+    assert "Do not provide citations or replacement text." in JUDGE_PROMPT
+    assert "script attaches the selected, verbatim page" in JUDGE_PROMPT
+    assert "spans as the evidence" in JUDGE_PROMPT
+
+
+def test_frozen_validated_selection_is_not_rejudged_on_replay(monkeypatch):
+    """A stochastic judge must not relabel an unchanged, already-approved contract."""
+    body = body_for(0)
+    cands, canon = split_candidates(body, already_indexed="How Acme 0 rebuilt discovery.")
+    selected = type("Selection", (), {"abstract": cands[:2], "highlights": cands[2:6]})()
+    att = pipeline.Attempt(ok=True, sel=selected,
+                           abstract_spans=[c.text for c in selected.abstract],
+                           highlight_spans=[c.text for c in selected.highlights])
+    monkeypatch.setattr(pipeline, "evaluate_selection", lambda *args, **kwargs: att)
+    monkeypatch.setattr(pipeline, "route", lambda *args: {"agrees": True})
+
+    class NoModelCalls:
+        def complete(self, *args, **kwargs):
+            raise AssertionError("a frozen selection must not call writer or judge")
+
+    # This test is about frozen replay, not the separate prompt-hash contract. Pin the live
+    # helper so the fixture cannot accidentally recreate a pre-filter menu by hand.
+    monkeypatch.setattr(pipeline, "selection_content_hash", lambda *args: "a" * 64)
+    key = pipeline.key_of({"selection_content_hash": "a" * 64,
+                           "profile_version": CASE_STUDY.version,
+                           "prompt_version": pipeline.PROMPT_VERSION})
+    frozen = {key: {"selected_candidate_ids": {
+        "abstract": [c.index for c in selected.abstract],
+        "highlights": [c.index for c in selected.highlights]}, "frozen_from_run": "a12"}}
+    row = pipeline.process_record(
+        {"objectID": "x", "url": "/en/customers/acme", "title": "Acme story",
+         "description": "How Acme 0 rebuilt discovery.", "language_code": "en",
+         "content_hash": "raw", "markdown": body}, CASE_STUDY, NoModelCalls(),
+        writer_tier="large", judge_tier="small", selection_cache=frozen)
+    assert row["status"] == "PASS"
+    assert row["selection_origin"] == "registry"
+    assert "validated frozen selection" in row["judge_skipped"]
+
+
+def test_selection_contract_includes_record_description_after_pool_filter():
+    """Same page bytes can yield a different legal menu when indexed text differs."""
+    body = body_for(0)
+    cands, _ = split_candidates(body, already_indexed="")
+    first = pipeline.selection_content_hash(
+        {"url": "/doc/a", "title": "API method", "description": "First indexed description",
+         "language_code": "en"}, CASE_STUDY, cands, set())
+    second = pipeline.selection_content_hash(
+        {"url": "/doc/a", "title": "API method", "description": "Second indexed description",
+         "language_code": "en"}, CASE_STUDY, cands, set())
+    assert first != second
 
 
 # ---------------------------------------------------------------------------
@@ -219,7 +267,12 @@ def test_dispatch_does_not_split_hairs_between_editorial_shapes():
 def test_dispatch_disagreement_refuses_to_write(run_cli, wire, workspace):
     from conftest import FakeScout
     records = make_records(1)
-    wire(algolia=FakeAlgolia(records), scout_client=FakeScout({"rec-0": API_BODY * 3}),
+    # The body must NAME the record's subject ("Acme 0"), or the soft-404 gate correctly fires
+    # first and this test stops exercising method disagreement. A page at /customers/acme-0 that
+    # never says "acme" is a deleted page, and that verdict is right -- it is simply not the one
+    # under test here.
+    wire(algolia=FakeAlgolia(records),
+         scout_client=FakeScout({"rec-0": "Acme 0 customer story. " + API_BODY * 3}),
          inference=FakeInference({"large": {"verdict": "REAL", "abstract": [1],
                                             "highlights": [2, 3, 4], "language_observed": "en"}}))
     run = "20260810-cs-case-study-a01"

@@ -72,6 +72,82 @@ Between them:
   number the checks against its clauses and retire the R-names.
 - Report the candidate queue — values seen but absent from the vocabulary. That queue is the schema's improvement backlog: the system reporting what it does not yet know, rather than silently discarding it. Currently empty.
 
+## The `description` field is missing exactly where it is most searchable
+
+**This is in scope for Chapter 4 and it is not optional.** Everything above validates values the
+pipeline *writes*. This validates a field the pipeline *reads and depends on* — and which is
+absent on one record in seven.
+
+### Measured, full census, no sampling
+
+Verified 2026-08-11 against every one of the **11,928** records in `Algolia_Prod_Copy_Enhanced`,
+not a sample: **85.7% of records carry a real description. 14.3% do not** — 7.9% an empty string,
+6.3% the literal `…` placeholder character, 0.1% genuinely null.
+
+The corpus-wide number hides the shape of the problem. It is not spread evenly; it is
+concentrated in three content families:
+
+| source / page_type | total | no description | % |
+|---|---:|---:|---:|
+| Website/press-release | 690 | 401 | **58.1%** |
+| Resources/resource | 835 | 291 | **34.9%** |
+| Blog/blog-post | 2,694 | 887 | **32.9%** |
+| Documentation/doc-rest-api | 333 | 23 | 6.9% |
+| Customer Stories/case-study | 237 | 7 | 3.0% |
+| Documentation/doc-guide | 586 | 6 | 1.0% |
+
+Customer Stories and Documentation do not have this problem. The three families at the top do,
+and press-release is more than half missing.
+
+### Why this is a search defect and not a metadata blemish
+
+`description` is a **searchable attribute, ranked immediately after `title`** — position in
+`searchableAttributes` *is* ranking priority in Algolia. A record with no description is not
+merely thinner; it is absent from the second-highest-priority matching lane altogether. On
+press-release that is 401 of 690 pages.
+
+This is the opposite failure to the one recorded in Chapter 3. There, enriched fields were
+populated but *not searchable*, so the work changed zero results. Here the field **is**
+searchable and is *not populated*. Both end in the same place — no effect on what a user finds —
+and neither is visible from a coverage number.
+
+### Two pipeline gates are silently inert without it
+
+Confirmed in code, not inferred. `pipeline.evaluate_selection` passes the record's description
+into the splitter as `already_indexed`, and `filters.drop_reason` uses it for both
+`DUPLICATE_DESC_EXACT` and `DUPLICATE_DESC_NEAR`. With an empty description:
+
+- the **duplicate-description gate does nothing** — there is no value to be a duplicate *of*;
+- the `[ALREADY INDEXED]` label never appears in the menu, so the writer is never warned it is
+  about to restate a field the record already stores.
+
+`Website/press-release` sets `duplicate_description_policy: ban`. On 58.1% of that slice, that
+ban is enforcing nothing. A gate that cannot fire is not a passing gate, and this is the same
+false-green shape as the pool filter that could not see the corpus facts it was asked to enforce.
+
+### What has to be decided before anything is built
+
+The gap is a **source-data fact**, not a pipeline bug: these pages never had a description
+upstream. So filling it is new enrichment scope, with the same standards as the rest:
+
+1. **Scope.** Press-release, blog and resources — 1,579 records with no description. Confirm the
+   count at run time from the live index; do not carry this number forward as an input.
+2. **Provenance.** Generating a description from the page is the same class of task as
+   `abstract_enriched`, so it inherits the same guarantee: **verbatim spans selected by index,
+   never model-written text.** A generated description is a new field, written to the parallel
+   index, and must never overwrite an existing real one — gap-fill only, never overwrite.
+3. **The ordering trap.** `abstract_enriched` is *also* derived from the page. If a backfilled
+   description and the abstract are both cut from the same lede, the record gains a duplicate,
+   the duplicate gate then starts firing against a value this pipeline itself wrote, and
+   `information_gain` collapses. Decide which field owns the lede before generating either.
+4. **Do not report coverage as the outcome.** Populating 1,579 descriptions proves nothing on its
+   own. The claim to make is a measured change in what search returns — and per Chapter 3 that
+   requires checking the served result, not the settings.
+
+> **Open, awaiting Arijit's decision:** whether description backfill runs as part of Chapter 4 or
+> becomes its own chapter. It is recorded here because it was measured here; the sequencing is
+> not mine to set.
+
 ## Two open gate failures inherited from Chapter 1
 
 R5 rejects any value covering more than 40% of the records where its axis is written. It currently fails on:

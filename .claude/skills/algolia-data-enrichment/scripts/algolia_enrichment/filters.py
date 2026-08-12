@@ -91,8 +91,22 @@ def drop_reason(cand, description: str = "", title: str = "",
     """Why this candidate is not the page's own content, or None to keep it.
 
     `extra_patterns` are the profile's `forbidden_patterns` -- per-source bans such as
-    "^About Algolia" on press releases, which is the highest-scoring editorial-looking prose on
+    "About Algolia" on press releases, which is the highest-scoring editorial-looking prose on
     the page and would otherwise become the abstract on all 690 of them.
+
+    THE PATTERNS ARE MATCHED AGAINST THE CANDIDATE'S OWN TEXT AND NOTHING ELSE.
+
+    They were briefly matched against `cand.section` too, reaching for the whole boilerplate
+    block by position rather than sentence by sentence. It does not work and it is not safe:
+      * It does not work. `**Über Algolia**` is bold emphasis, not a heading, so the splitter
+        never opens a section there and `cand.section` returns the ARTICLE'S OWN headline.
+      * It is not safe, which is the part that was missed. Because `section` is the article's
+        headline, one German page headed "Über Modell-Benchmarks hinaus: ..." matched the "Über"
+        ban on EVERY candidate it contained and lost all 14 of them -- the whole page, for a
+        preposition. It shipped described as harmless with the suite green, because no test drove
+        a page whose headline happened to contain a banned word.
+    Reaching the rest of the block is `candidates.boilerplate_block_start`'s job: it is positional,
+    computed on the raw markdown, and it requires evidence that a phrase LABELS a block.
 
     Order matters only for the reported reason, not for the outcome: the most specific and most
     defensible cause is checked first so the packet's histogram is readable.

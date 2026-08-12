@@ -109,3 +109,25 @@ def apply_write(client, target_index: str, source_index: str, payloads: list[dic
         "indexing_published": published,
         "objectIDs": [p["objectID"] for p in payloads],
     }
+
+
+def apply_write_to_index(client, index: str, payloads: list[dict]) -> dict:
+    """Write payloads to `index` with NO source/target guard, for the promotion path only.
+
+    `apply_write` refuses `target == source` and that default is right. Promotion into the source
+    is gated instead by `promote.py`: a snapshot must exist AND an approval file must name the
+    index and the exact count. Those checks run BEFORE this is called; this function is the
+    mechanical write and asserts nothing about permission, so it must never be called directly
+    from a command that has not passed them.
+
+    `partialUpdateObject` (creating) adds the two enriched fields to an existing record. It
+    cannot replace a record and it cannot remove an attribute -- which is why `promote.py`
+    refuses an empty field rather than sending it.
+    """
+    if not payloads:
+        raise EnrichmentError("apply_write_to_index was given zero payloads. Zero work fails.")
+    responses = client.save_objects(index, payloads, action="partialUpdateObject")
+    task_ids = [r.get("taskID") for r in responses if r.get("taskID")]
+    published = all(client.wait_task(index, t) for t in task_ids)
+    return {"index": index, "written": len(payloads), "tasks": len(task_ids),
+            "published": published}

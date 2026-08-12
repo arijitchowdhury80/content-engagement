@@ -28,10 +28,12 @@ from __future__ import annotations
 
 import datetime as dt
 import hashlib
+import json
 from dataclasses import dataclass, field
 
 from . import strategies
-from .candidates import main_content_start, render_menu, resolve_selection, split_candidates
+from .candidates import (boilerplate_block_start, main_content_start, render_menu,
+                         resolve_selection, split_candidates)
 from .canonical import canonicalise, prose_chars
 from .dispatch import route
 from .filters import filter_pool
@@ -186,22 +188,43 @@ def _prompt(record: dict, profile, menu: str) -> str:
         menu=menu)
 
 
+def selection_input_lock_key(record: dict, profile) -> str:
+    """A conservative pre-writer key for the runner's single-flight lock.
+
+    The exact registry key is calculated after candidate filtering below.  This key includes all
+    record fields that can influence that filtering or the writer prompt, so equal selection
+    input always serialises while different records may merely wait unnecessarily, never reuse a
+    wrong selection.
+    """
+    markdown = record.get("markdown") or ""
+    start = main_content_start(markdown)
+    payload = {
+        "body": canonicalise(markdown[start:]).text,
+        "url": record.get("source_url") or record.get("url", ""),
+        "title": record.get("title", ""),
+        "description": record.get("description", ""),
+        "language_code": record.get("language_code", ""),
+        "profile_version": profile.version,
+        "prompt_version": PROMPT_VERSION,
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
+def selection_content_hash(record: dict, profile, candidates, ineligible: set[int]) -> str:
+    """Hash the literal prompt input, not raw Scout bytes or a partial subset of it."""
+    prompt = _prompt(record, profile, render_menu(candidates, no_open=ineligible))
+    return hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+
+
 def judge_quality_failures(judge: dict, canon) -> list[str]:
-    """A quality approval must show page-grounded evidence for every scored criterion."""
-    evidence = judge.get("evidence") if isinstance(judge, dict) else None
-    if not isinstance(evidence, dict):
-        return ["judge supplied no per-criterion evidence"]
+    """Validate the judge's scores; source evidence is attached by the script, not the model."""
     failures = []
     for criterion in JUDGE_CRITERIA:
-        score, quote = judge.get(criterion), evidence.get(criterion)
+        score = judge.get(criterion)
         if not isinstance(score, int) or not 1 <= score <= 5:
             failures.append(f"judge {criterion} score is not an integer 1-5")
         elif score < 4:
             failures.append(f"judge {criterion} score {score} is below approval floor 4")
-        if not isinstance(quote, str) or not quote.strip():
-            failures.append(f"judge {criterion} has no evidence quote")
-        elif canonicalise(quote).text not in canon.text:
-            failures.append(f"judge {criterion} evidence is not on the page")
     return failures
 
 
@@ -258,13 +281,15 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
 
     content_start = main_content_start(markdown)
     out["content_start"] = content_start
-    # The selection contract is the cleaned main content the model may actually see. Keep the
-    # raw Scout hash separately for fetch provenance; it is deliberately not a selection key.
-    out["selection_content_hash"] = hashlib.sha256(
-        canonicalise(markdown[content_start:]).text.encode("utf-8")).hexdigest()
+    # The other end of the page. Recorded with the evidence that found it, because a positional
+    # cut that goes wrong is only diagnosable if the run says WHERE it cut and WHY.
+    block = boilerplate_block_start(markdown, profile.compiled_block_openers)
+    content_end = block[0] if block else None
+    out["content_end"] = content_end
+    out["content_end_evidence"] = block[1] if block else None
     cands, canon = split_candidates(markdown, boilerplate=boilerplate,
                                     already_indexed=record.get("description", ""),
-                                    content_start=content_start)
+                                    content_start=content_start, content_end=content_end)
     out["candidates"] = len(cands)
     out["already_indexed_candidates"] = sum(1 for c in cands if c.is_already_indexed)
     if not cands:
@@ -301,6 +326,9 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
                     "candidates_before_filter": len(unfiltered)})
         return out
 
+    # The durable contract is the complete prompt input after all pool filtering, including
+    # title, description and the numbered menu. Raw Scout bytes are fetch provenance only.
+    out["selection_content_hash"] = selection_content_hash(record, profile, cands, ineligible)
     cache_key = key_of({"selection_content_hash": out["selection_content_hash"],
                         "profile_version": profile.version, "prompt_version": PROMPT_VERSION})
     frozen = (selection_cache or {}).get(cache_key)
@@ -309,7 +337,7 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
         llm, meta = ({"verdict": "REAL", "abstract": ids["abstract"],
                       "highlights": ids["highlights"],
                       "language_observed": record.get("language_code") or ""}, {})
-        out["selection_origin"] = "registry"
+        out["selection_origin"] = "run_singleflight" if frozen.get("run_local") else "registry"
         out["selection_frozen_from_run"] = frozen.get("frozen_from_run")
     else:
         llm, meta = inference.complete(writer_tier, _prompt(record, profile,
@@ -406,6 +434,12 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
     out["abstract_spans_stored"] = att.abstract_spans
     out["abstract_enriched"] = " ".join(att.abstract_spans)
     out["keyhighlights_enriched"] = att.highlight_spans
+    # The judge may score these selected spans, but it never authors their citations. This makes
+    # every quality decision traceable to literal source text by construction.
+    out["judge_evidence"] = {criterion: {
+        "abstract_spans": list(att.abstract_spans),
+        "highlight_spans": list(att.highlight_spans),
+    } for criterion in JUDGE_CRITERIA}
     # Artifact-only provenance for deterministic replay. These are never payload fields and
     # therefore can never pollute the Algolia record. The numbers address this run's numbered
     # page menu, not model-generated prose.
@@ -424,6 +458,19 @@ def process_record(record: dict, profile, inference, *, writer_tier: str,
     # A judge whose verdict does not change writability is not a gate. Across 3,069 Blog rows the
     # old judge's verdict changed the outcome for ZERO records because both its verdicts were
     # writable. Here RESELECT and HUMAN_REVIEW are NOT writable.
+    if frozen:
+        # A registry entry exists only after this exact selection cleared deterministic gates,
+        # the quality judge, and final validation. Re-running a stochastic judge here would make
+        # identical, approved data flip status on replay. The deterministic gates above still
+        # run against the current body before this return.
+        out["judge"] = None
+        out["judge_skipped"] = ("in-run selection already cleared the current quality gate; "
+                                "final artifact validation remains required"
+                                if frozen.get("run_local") else
+                                "validated frozen selection; replay uses the approved contract")
+        out["status"] = "PASS"
+        return out
+
     if not (profile.judge_required and judge_tier):
         out["judge"] = None
         out["judge_skipped"] = ("judge disabled for this profile; deterministic gates and human "

@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import pathlib
+import re
 from urllib.parse import urlparse
 
 LOGIN_REQUIRED = "LOGIN_REQUIRED"
@@ -44,6 +45,11 @@ NON_ENRICHMENT = frozenset({
 # and this default only applies when none is given.
 DEFAULT_DEAD_BODY_MIN_CHARS = 1200
 
+# How far past the page's first heading to look for a not-found stub. 400 covers the H1 plus the
+# sentence under it -- where a soft 404 announces itself ("No Products Found", a hub headline) --
+# without reaching into an article's body, where the same words could appear legitimately.
+DEAD_MARKER_WINDOW = 400
+
 # Matched against the first 200 characters, case-folded. A live article that merely mentions the
 # phrase deep in its text is not a dead page.
 DEFAULT_DEAD_MARKERS = (
@@ -53,17 +59,93 @@ DEFAULT_DEAD_MARKERS = (
 
 def dead_page_reason(markdown: str | None, min_chars: int = DEFAULT_DEAD_BODY_MIN_CHARS,
                      markers: tuple[str, ...] = DEFAULT_DEAD_MARKERS) -> str | None:
-    """Why this body is not a page, or None if it is one."""
+    """Why this body is not a page, or None if it is one.
+
+    TWO WINDOWS, NOT ONE, AND THE SECOND ONE IS WHY.
+      This scanned only `body[:200]`. On algolia.com the first 200 characters are the language
+      switcher and the logo-pack links -- identical on every page, content on none. A SOFT 404
+      therefore sailed through: HTTP 200, 8,230 characters, `served_url` matching, and the
+      customer's own name appearing zero times on the page.
+
+      Measured 2026-08-11 by re-fetching four case studies the pipeline had called NO_PROSE:
+        /customers/kingarthur (en/de/fr) -> redirected to the customer hub, H1 "Your customer hub
+            for everything Algolia" at offset ~1,200
+        /customers/bringmeister          -> renders "No Products Found!!!" at offset ~1,400
+      Both markers sit far outside a 200-character head, so no marker list could ever have fired.
+      Adding markers without widening the window would have been a change that reads like a fix
+      and does nothing -- this file has been bitten by exactly that before.
+
+      So the stub text is looked for where a page states what it is: from its first heading.
+    """
     body = (markdown or "").strip()
     head = body[:200].casefold()
+    # The content region, found without importing the splitter: the first markdown heading.
+    m = re.search(r"^\s{0,3}#{1,3}[ \t]+\S", body, re.M)
+    content = body[m.start(): m.start() + DEAD_MARKER_WINDOW].casefold() if m else ""
     for marker in markers:
-        if marker.casefold() in head:
+        folded = marker.casefold()
+        if folded in head:
             return (f"body opens with a not-found stub ({marker!r} in the first 200 chars); "
                     f"the page has been deleted or moved")
+        if folded in content:
+            return (f"the page's own content region is a not-found stub ({marker!r}); "
+                    f"HTTP status and body size look healthy, but the page is gone")
     if len(body) < min_chars:
         return (f"body is {len(body)} chars, under the {min_chars}-char floor for this profile; "
                 f"too small to be a content page")
     return None
+
+
+# Words that identify no page in particular, so their presence proves nothing about the subject.
+SUBJECT_STOPWORDS = frozenset({
+    "algolia", "customers", "customer", "story", "stories", "case", "study", "blog", "news",
+    "about", "product", "products", "solution", "solutions", "doc", "docs", "guide",
+    "the", "and", "for", "with", "how", "why", "what", "your", "you", "our", "its",
+})
+
+
+def subject_tokens(url: str) -> list[str]:
+    """The record's own identity, taken from its URL slug. Deterministic; no model involved."""
+    slug = (url or "").rstrip("/").split("/")[-1]
+    return [p for p in re.split(r"[-_]", slug.lower())
+            if p and len(p) > 3 and p not in SUBJECT_STOPWORDS]
+
+
+def subject_absent_reason(url: str, markdown: str | None) -> str | None:
+    """A page that never mentions its own subject is a SOFT 404, whatever its status says.
+
+    THE CLASS FIX, and the marker list above is only the instance one.
+
+    A soft 404 defeats every other check: HTTP 200, a full-size body, `served_url` matching the
+    request, `redirect_mismatch` False. Measured 2026-08-11 -- `/customers/kingarthur` serves
+    8,230 characters of the generic customer hub and the string "king arthur" appears ZERO
+    times; `/customers/bringmeister` renders "No Products Found!!!" and never says
+    "bringmeister". Marker lists catch the two stubs we happened to read. This catches the shape:
+    a case study about a company whose page never names that company is gone, whatever wording
+    the stub uses.
+
+    MEASURED FALSE-POSITIVE RATE: zero, across 3,381 live pages in three corpora --
+    case-study 223/223, Blog 2,691/2,691, press-release 690/690. The four flagged records are
+    exactly the four known soft 404s.
+
+    Returns None when the slug yields no usable token (3 Blog records), because "we could not
+    form a question" must never be reported as "the answer is no".
+    """
+    tokens = subject_tokens(url)
+    if not tokens or not markdown:
+        return None
+    low = markdown.lower()
+    # BOTH SIDES ARE FLATTENED, and this is the difference between a gate and a wrecking ball.
+    # A slug concatenates what prose spaces out: `/customers/kingarthur` against a page that says
+    # "King Arthur Baking". Matching the raw token would have condemned a REAL case study as a
+    # soft 404 -- caught by a test, not by inspection, and the first version of this function did
+    # exactly that. Flattening to alphanumerics makes "kingarthur" find "King Arthur".
+    flat = re.sub(r"[^a-z0-9]", "", low)
+    if any(token in low or re.sub(r"[^a-z0-9]", "", token) in flat for token in tokens):
+        return None
+    return (f"the page never mentions its own subject {tokens!r} taken from the URL slug; "
+            f"HTTP status, body size and served URL all look healthy, so this is a soft 404 -- "
+            f"the document this record points at no longer exists")
 
 
 def shell_reason(markdown: str | None, markers: tuple[str, ...] = ()) -> str | None:
@@ -156,6 +238,11 @@ def classify(body: dict, canonical: dict[str, str] | None = None,
         shell = shell_reason(body.get("markdown"), shell_markers)
         if shell:
             return _verdict(SHELL_PAGE, shell, http_status=body.get("http_status", 0))
+        # Before the marker list, because this catches the shape rather than the wording. A soft
+        # 404 passes every status/size/identity check above it.
+        absent = subject_absent_reason(body.get("url", ""), body.get("markdown"))
+        if absent:
+            return _verdict(DEAD_PAGE, absent, http_status=body.get("http_status", 0))
         dead = dead_page_reason(body.get("markdown"), min_body_chars, dead_markers)
         if dead:
             return _verdict(DEAD_PAGE, dead, http_status=body.get("http_status", 0))
