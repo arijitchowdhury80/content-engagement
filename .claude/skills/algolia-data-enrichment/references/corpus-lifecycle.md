@@ -4,7 +4,7 @@
 
 `corpus-status` reconciles three independent sources: the live source index, the live target
 index, and the run manifests. A number only one of them knows is a claim, not a status. It writes
-`docs/70-enrichment/CORPUS-STATE.json` and `CORPUS-STATUS.md`, and it **fails** — not warns — on
+`docs/operations/enrichment/state/CORPUS-STATE.json` and `CORPUS-STATUS.md`, and it **fails** — not warns — on
 an unprofiled live page_type or a slice whose artifact count disagrees with the live count.
 
 No future slice starts while it is red.

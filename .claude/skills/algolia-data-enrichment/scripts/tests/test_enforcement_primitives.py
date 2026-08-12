@@ -12,6 +12,7 @@ from algolia_enrichment.artifacts import RunFolder
 from algolia_enrichment.errors import EnrichmentError, LockError, StateError
 from algolia_enrichment.lock import run_lock
 from algolia_enrichment.state import RunState
+from algolia_enrichment import corpus
 
 
 def _state():
@@ -75,3 +76,38 @@ def test_manifest_records_what_was_written(tmp_path):
     import json
     m = json.loads((rf.dir / "artifact-manifest.json").read_text())
     assert m["build-final"] == ["final/results.jsonl"]
+
+
+def test_corpus_status_ignores_unwritten_smoke_manifests(tmp_path):
+    class Client:
+        def browse(self, index, attributes=None):
+            if index == "source":
+                return [{"objectID": "a", "source": "Blog", "page_type": "blog-post"},
+                        {"objectID": "b", "source": "Blog", "page_type": "blog-post"}]
+            return [{"objectID": "a", "abstract_enriched": "grounded"}]
+
+        def record_count(self, index):
+            return ("task", 2 if index == "source" else 1)
+
+        def index_exists(self, index):
+            return True
+
+    def run(name, write, ids, payload_ids=()):
+        d = tmp_path / name
+        d.mkdir()
+        (d / "manifest.json").write_text(__import__("json").dumps({
+            "run_id": name, "source": "Blog", "page_type": "blog-post", "objectIDs": ids,
+        }))
+        (d / "state.json").write_text(__import__("json").dumps({"tracks": {"write": write}}))
+        if payload_ids:
+            (d / "final").mkdir()
+            (d / "final" / "payloads.jsonl").write_text("".join(
+                __import__("json").dumps({"objectID": oid}) + "\n" for oid in payload_ids))
+
+    run("smoke", "NONE", ["a", "b"])
+    run("accepted", "LIVE_VERIFIED", ["a"], ["a"])
+    status = corpus.build_status(Client(), "source", "target", tmp_path, {"uncovered": [], "excluded": {}})
+    assert status["ok"]
+    assert status["slices"]["Blog/blog-post"]["target_written_live"] == 1
+    assert status["slices"]["Blog/blog-post"]["nonterminal_runs"] == [
+        {"run_id": "smoke", "write_state": "NONE"}]

@@ -37,3 +37,15 @@ __pycache__/
 # Skill build residue — pattern, not instances (see docs/70-enrichment/.gitignore for why)
 .claude/skills/*/scripts/**/__pycache__/
 .claude/skills/*/.pytest_cache/
+
+# Local execution state. These files support a developer session but are not project source,
+# customer evidence, or safe public GitHub content.
+.planning/
+.development-loop/
+.tmp-jahia-upload/
+.pytest_cache/
+
+# Regenerable local analysis and enrichment residue.
+docs/research/search-experience/.cache-enhanced-census.jsonl
+docs/operations/enrichment/.selection-registry.jsonl.lock
+docs/operations/enrichment/_archive/

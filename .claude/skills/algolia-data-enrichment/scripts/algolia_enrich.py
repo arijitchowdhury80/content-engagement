@@ -3,7 +3,7 @@
 
     python3 algolia_enrich.py <command> --workspace <path> --run-id <id> [args]
 
-Every operation goes through here. The loose scripts in `docs/70-enrichment/*.py` are historical:
+Every operation goes through here. The loose scripts in `docs/operations/enrichment/*.py` are historical:
 25 of the 40 do not belong in this pipeline at all, and two of the ones that do contain code
 paths the runner never reached. Running them is how the Blog slice acquired 67 report files and
 two "fixes" that changed nothing.
@@ -76,7 +76,7 @@ class Ctx:
         self.args = args
         self.cfg = load_config(args.workspace, args.source_index, args.target_index)
         self.workspace = self.cfg.workspace
-        self.enrichment_dir = self.workspace / "docs" / "70-enrichment"
+        self.enrichment_dir = self.workspace / "docs" / "operations" / "enrichment"
         self.run_id = args.run_id
         self.rf = RunFolder(self.enrichment_dir, self.run_id) if self.run_id else None
         self.profiles_dir = HERE / "profiles"
@@ -1176,7 +1176,7 @@ def cmd_handoff(ctx: Ctx) -> int:
         "## Next step", "", f"    {next_step}", "",
         "## Rules that do not change", "",
         "- run every operation through `algolia_enrich.py`; the loose scripts in",
-        "  `docs/70-enrichment/*.py` are historical and two of them contain dead gate paths",
+        "  `docs/operations/enrichment/*.py` are historical and two of them contain dead gate paths",
         "- Scout is the only body source; `enrich` reads only this run folder's own cache",
         "- three fields may be written: objectID, abstract_enriched, keyhighlights_enriched",
         f"- never write to `{ctx.cfg.source_index}`", "",

@@ -23,7 +23,7 @@ design working, not a fault. Nothing is running.
    ship, or close out. **Do not write an approval file yourself.** Same for
    `20260810-blog-blog-post-a02`.
 2. Re-run `corpus-status` and confirm it is green.
-3. Then run the next slice from `docs/70-enrichment/PROMPT-press-release-slice.md`.
+3. Then run the next slice from `docs/operations/enrichment/plans/PROMPT-press-release-slice.md`.
 
 ## Where we stopped (exact)
 
@@ -44,7 +44,7 @@ asserted before and after every write this session.
 ## Decisions locked
 
 - **The skill lives at `.claude/skills/algolia-data-enrichment/`.** Commit `bb526bf`, 62 renames
-  so history follows. `docs/70-enrichment/skill/` is gone.
+  so history follows. `docs/operations/enrichment/skill/` is gone.
 - **`span_gate.run_gates()` is not ported.** It is the function the runner never called and that
   was "fixed" inside twice with every test green. `pipeline.evaluate_selection` is the single
   live path.
@@ -56,7 +56,7 @@ asserted before and after every write this session.
   the old judge changed the outcome for zero of 3,069 rows.
 - **Next slice is `Website/press-release` (690)**, chosen over `doc-sdk` (2,203). Press-release is
   the better *test*; doc-sdk is the better *value* and comes after.
-- **Run output stays under `docs/70-enrichment/runs/`.** It belongs with the corpus work, not the
+- **Run output stays under `docs/operations/enrichment/runs/`.** It belongs with the corpus work, not the
   tool.
 
 ## Remaining work
@@ -95,12 +95,12 @@ asserted before and after every write this session.
 | what | where |
 |---|---|
 | the skill | `.claude/skills/algolia-data-enrichment/` |
-| next slice prompt | `docs/70-enrichment/PROMPT-press-release-slice.md` |
+| next slice prompt | `docs/operations/enrichment/plans/PROMPT-press-release-slice.md` |
 | how it was built, incl. 4 failures | `.claude/skills/algolia-data-enrichment/docs/source/EVAL-LOG.md` |
 | the spec it was built from | `.claude/skills/algolia-data-enrichment/docs/source/PLAN-skill-algolia-corpus-enrichment.md` |
 | runbook | `.claude/skills/algolia-data-enrichment/docs/OPERATIONS.md` |
 | why anything looks odd | `.claude/skills/algolia-data-enrichment/docs/DESIGN-DECISIONS.md` |
-| parked runs | `docs/70-enrichment/runs/20260811-customer-stories-case-study-a03/`, `.../20260810-blog-blog-post-a02/` |
+| parked runs | `docs/operations/enrichment/runs/20260811-customer-stories-case-study-a03/`, `.../20260810-blog-blog-post-a02/` |
 
 ## Two traps that cost the most, so they are not repeated
 
@@ -116,7 +116,7 @@ changes. Reset and re-staged to 74. `CLAUDE.md` warns about exactly this.
 ## Files written this session
 
 - `.claude/skills/algolia-data-enrichment/**` — 78 files (skill, docs, references, source materials)
-- `docs/70-enrichment/PROMPT-press-release-slice.md`
-- `docs/70-enrichment/runs/20260810-skillbuild-a01/` — eval log + the Gate 2 independent checker
+- `docs/operations/enrichment/plans/PROMPT-press-release-slice.md`
+- `docs/operations/enrichment/runs/20260810-skillbuild-a01/` — eval log + the Gate 2 independent checker
 - Commits: `c7dcb15` (build), `ab45f7d` (H1 content-start fix), `bb526bf` (relocation)
 - `arijit-skills`: PR #7 merged as `f664dbc`

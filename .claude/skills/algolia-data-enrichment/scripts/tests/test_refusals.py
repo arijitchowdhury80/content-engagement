@@ -30,7 +30,7 @@ SLICE = ["--source", "Customer Stories", "--page-type", "case-study"]
 
 
 def _run_dir(workspace):
-    return Path(workspace) / "docs" / "70-enrichment" / "runs" / RUN
+    return Path(workspace) / "docs" / "operations" / "enrichment" / "runs" / RUN
 
 
 def _approval(workspace, name, **fields):
@@ -145,7 +145,7 @@ def test_plan_slice_refuses_an_empty_target_set(run_cli, wire, workspace):
 
 def test_plan_slice_replays_exact_objectids_but_reads_current_source_records(run_cli, wire, workspace):
     records = make_records(4, source="Blog", page_type="blog-post")
-    prior = Path(workspace) / "docs" / "70-enrichment" / "runs" / "prior" / "manifest.json"
+    prior = Path(workspace) / "docs" / "operations" / "enrichment" / "runs" / "prior" / "manifest.json"
     prior.parent.mkdir(parents=True)
     prior.write_text(json.dumps({"source": "Blog", "page_type": "blog-post",
                                  "objectIDs": ["rec-3", "rec-1"]}))
@@ -231,7 +231,7 @@ def test_freeze_selections_reaches_validated_cli_output(run_cli, wire, workspace
         "selected_candidate_ids": {"abstract": [1, 2], "highlights": [3, 4, 5]},
     }) + "\n")
     assert run_cli("freeze-selections", "--run-id", RUN, *SLICE) == 0
-    registry = Path(workspace) / "docs" / "70-enrichment" / "selection-registry.jsonl"
+    registry = Path(workspace) / "docs" / "operations" / "enrichment" / "state" / "selection-registry.jsonl"
     assert registry.exists() and registry.read_text().strip()
 
 
@@ -582,5 +582,5 @@ def test_handoff_names_the_next_step(run_cli, wire, workspace):
     _plan_and_fetch(run_cli, wire, workspace)
     wire(algolia=FakeAlgolia(make_records(4)))
     assert run_cli("handoff", "--run-id", RUN) == 0
-    text = (Path(workspace) / "docs" / "70-enrichment" / "HANDOFF-current.md").read_text()
+    text = (Path(workspace) / "docs" / "operations" / "enrichment" / "HANDOFF-current.md").read_text()
     assert "## Next step" in text and "enrich" in text

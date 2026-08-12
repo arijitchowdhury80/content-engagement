@@ -3,8 +3,8 @@
 Read `SESSION.md` first. It is the resume point.
 
 **Two sessions run in parallel on this repo, intentionally (Arijit, 2026-08-06).**
-Backend session: `docs/70-enrichment/` taxonomy/enrichment pipeline, writes to
-`Algolia_Prod_Copy_Enhanced`. Frontend session: `docs/50-prototype/demo/`, the WU-briefs,
+Backend session: `docs/operations/enrichment/` taxonomy/enrichment pipeline, writes to
+`Algolia_Prod_Copy_Enhanced`. Frontend session: `frontend/search-first-demo/demo/`, the WU-briefs,
 Asana task state. Each stays in its lane. Before running `git add -A`, check
 `git status` first — the other session may have its own uncommitted work in flight.
 
@@ -18,9 +18,9 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 | Status SSOT — **enrichment** | Asana project `algolia.com` = `1217323957361215`, section "Workstream 5 — algolia.com Target Surface" |
 | Status SSOT — search-first redesign | Asana project `Search-First Algolia.com` = `1217199861767750` |
 | **Enrichment skill (USE THIS)** | `.claude/skills/algolia-data-enrichment/` |
-| Enrichment run output + history | `docs/70-enrichment/` |
-| Software documentation | `docs/80-documentation/` |
-| Execution briefs | `docs/briefs/` |
+| Enrichment run output + history | `docs/operations/enrichment/` |
+| Software documentation | `docs/reference/` |
+| Execution briefs | `docs/program/work-units/` |
 
 ## Hard constraints
 
@@ -28,14 +28,14 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   `./.env.asana` or another project-local file. Never commit either.
 - **This repo is PUBLIC**: `github.com/arijitchowdhury80/content-engagement`. Arijit's explicit
   decision. Do not add credentials, internal system-prompt text, or anything you would not want
-  indexed. `docs/20-research/agent-studio-inventory.json` is gitignored for exactly this reason.
+  indexed. `docs/research/search-experience/agent-studio-inventory.json` is gitignored for exactly this reason.
 - **`SEARCHFIRST_WWW_v1` is DELETED — 2026-08-07, verified 404.** Do not recreate it and do not
   re-crawl algolia.com. Read the history here, because it is the interesting part: this file
   claimed it was deleted on **2026-08-06**, but only the local crawl output was removed that day.
   The index itself survived a further day, unnoticed, because the claim was checked against the
   filesystem and never against the account. **Verify a deletion on the surface you deleted from.**
   Before it went, its **325 unique body records** — URLs whose body text existed in no other index —
-  were rescued to `docs/70-enrichment/body-rescue-searchfirst-20260806.jsonl` (gitignored), so
+  were rescued to `docs/operations/enrichment/body-rescue-searchfirst-20260806.jsonl` (gitignored), so
   Chapter 3's body coverage is unchanged at 6,497 URLs. The from-scratch crawl work units
   (WU-05/WU-10) remain superseded.
 - **The demo queries `Algolia_Prod_Copy_Enhanced` directly** — **12,114 records** after the
@@ -52,7 +52,7 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   is much the larger one. The only refresh path is:
   copy → `classify.py` → `apply_taxonomy.py` → `dedupe.py`, in that order.
   Nothing currently writes to Enhanced; the risk is a human running a convenience copy.
-  See `docs/80-documentation/enrichment/chapter-2-deduplication.md` §10.
+  See `docs/reference/enrichment/chapter-2-deduplication.md` §10.
 - **`Algolia_Prod_Copy_Enhanced` has `distinct: true` on `url`.** Search always returns one result
   per URL, so `nbHits` is the distinct-URL count, not the record count. Read the index settings
   before diagnosing anything as a duplicate-records problem — this is what made a whole plan's
@@ -90,7 +90,7 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
   punctuation — that is fabrication.
 - **Run enrichment through the skill, never the loose scripts.**
   `python3 .claude/skills/algolia-data-enrichment/scripts/algolia_enrich.py <command> --workspace .`
-  25 of the 40 `docs/70-enrichment/*.py` files do not belong in the pipeline at all, and two of
+  25 of the 40 `docs/operations/enrichment/*.py` files do not belong in the pipeline at all, and two of
   the ones that do contain gate paths the runner never reached. The skill carries 15 of them,
   split rather than copied. 166 tests.
 - **`span_gate.run_gates()` is NOT in the skill, deliberately.** It is the function the historical
@@ -111,14 +111,14 @@ Asana task state. Each stays in its lane. Before running `git add -A`, check
 `WU-11` → `WS5`, `WU-11.n` → `WS5.n`**. `Enrichment documentation` (5 chapters) moved with them
 and is now a top-level task there rather than a child of `Create Project Documentation`.
 
-Measured before the rename, not assumed: **55 occurrences in 15 files**, no `docs/briefs/WU-11.md`
+Measured before the rename, not assumed: **55 occurrences in 15 files**, no `docs/program/work-units/WU-11.md`
 to `git mv`. 40 were rewritten in one pass; 15 were left alone on purpose (below). Asana GIDs are
 unchanged by a move or a rename, so every `asana:` frontmatter pointer in the chapter files still
 resolves.
 
 **Three files keep `WU-11` deliberately** — they are history, and rewriting them would corrupt the
 record they exist to preserve: `docs/05-execution-plan.md` (the archived plan),
-`docs/70-enrichment/wu-renumber-map.json` and `asana-number-map.json` (the resolvers for the
+`docs/operations/enrichment/wu-renumber-map.json` and `asana-number-map.json` (the resolvers for the
 EARLIER renumber). Do not "finish the job" by sweeping these.
 
 **The phase table below still says `WU-11`, and that is correct.** It describes the historical
@@ -154,11 +154,11 @@ middle.
 
 ### The two scripts, and the trap in both
 
-- `docs/70-enrichment/asana_restructure.py` — sections, prefix removal, subtask renumbering
-- `docs/70-enrichment/asana_renumber_units.py` — work-unit renumbering to match phase order
+- `docs/archive/enrichment/legacy-tooling/asana_restructure.py` — sections, prefix removal, subtask renumbering
+- `docs/archive/enrichment/legacy-tooling/asana_renumber_units.py` — work-unit renumbering to match phase order
 
 Both rewrite Asana notes, sweep the repo and vault, and re-read from Asana to verify. The unit
-script also `git mv`s `docs/briefs/WU-NN.md` in two phases so a rename cannot collide.
+script also `git mv`s `docs/program/work-units/WU-NN.md` in two phases so a rename cannot collide.
 
 **Substitution must be a single pass with a callback.** Sequential replaces double-apply:
 `04→07`, then that same `07→12`. **And build the rename map from a pre-change snapshot** — run

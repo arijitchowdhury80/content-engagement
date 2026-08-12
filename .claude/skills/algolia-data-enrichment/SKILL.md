@@ -15,7 +15,7 @@ the Scout-fetched page body.
 python3 scripts/algolia_enrich.py <command> --workspace <repo root> --run-id <id> ...
 ```
 
-Do not run loose scripts from `docs/70-enrichment/*.py` (the historical scripts). Measured by walking the import graph on
+Do not run loose scripts from `docs/operations/enrichment/*.py` (the historical scripts). Measured by walking the import graph on
 2026-08-10: 25 of those 40 files do not belong in this pipeline at all, and two of the ones that
 do — `enrich_run.py` and `span_gate.py` — contain gate code paths the runner never reached. A
 gate was "fixed" in one of them twice, with every unit test green and the pipeline unchanged.

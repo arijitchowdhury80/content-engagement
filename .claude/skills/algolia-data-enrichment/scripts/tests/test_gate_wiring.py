@@ -71,7 +71,7 @@ def _drive(run_cli, wire, pick, body=CHROME_BODY):
 
 
 def _rows(workspace):
-    p = (Path(workspace) / "docs" / "70-enrichment" / "runs" / RUN /
+    p = (Path(workspace) / "docs" / "operations" / "enrichment" / "runs" / RUN /
          "outputs" / "base" / "results.jsonl")
     return [json.loads(l) for l in p.read_text().splitlines() if l.strip()]
 
@@ -110,7 +110,7 @@ def test_the_language_policy_reaches_the_live_path(run_cli, wire, workspace):
 def test_the_effective_config_echo_states_which_gates_ran(run_cli, wire, workspace):
     _drive(run_cli, wire, {"verdict": "REAL", "abstract": [2, 3], "highlights": [4, 5, 6],
                            "language_observed": "en"})
-    cfg = json.loads((Path(workspace) / "docs" / "70-enrichment" / "runs" / RUN /
+    cfg = json.loads((Path(workspace) / "docs" / "operations" / "enrichment" / "runs" / RUN /
                       "effective-config.json").read_text())
     assert cfg["profile_id"] == "Customer Stories/case-study"
     assert cfg["strategy"] == "case_study"

@@ -169,15 +169,11 @@ Score each 1-5:
 
 Return ONLY this JSON, no code fence:
 {{"representativeness":1,"specificity":1,"information_gain":1,"coherence":1,"juxtaposition":1,
-"verdict":"PASS","defects":[],"evidence":{{"representativeness":"verbatim page excerpt",
-"specificity":"verbatim page excerpt","information_gain":"verbatim page excerpt",
-"coherence":"verbatim page excerpt","juxtaposition":"verbatim page excerpt"}}}}
+"verdict":"PASS","defects":[]}}
 
-EVIDENCE RULE: every `evidence` value MUST be a contiguous excerpt copied character-for-character
-from PAGE above. It must not be an explanation of your score, a summary, or a claim about the
-selection. For coherence and juxtaposition, cite the page sentence that best establishes the
-relationship you are approving. If you cannot provide a literal page excerpt for a criterion,
-score it below 4 and return HUMAN_REVIEW.
+Do not provide citations or replacement text. The script attaches the selected, verbatim page
+spans as the evidence for each score; this prevents a formatting mistake in a model-generated
+quote from masquerading as a quality failure.
 
 verdict is one of PASS, RESELECT, DROP_HIGHLIGHT, HUMAN_REVIEW. Use RESELECT when a better
 sentence is clearly available; use HUMAN_REVIEW when you cannot tell. You may NOT supply
