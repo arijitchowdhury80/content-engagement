@@ -2,6 +2,12 @@
 
 Captured: 2026-08-12
 
+## Correction
+
+Superseded on 2026-08-12: the native follow-up prompt suggestions recorded below were a mistake for the concierge discovery flow. They were disabled after readback showed `suggestions.enabled: true`.
+
+Correct behavior: Agent Studio native prompt-suggestion chips are off. The agent may ask at most one thoughtful, grounded discovery question inside its own answer when that advances the conversation.
+
 ## Target
 
 - App: `0EXRPAXB56`
@@ -23,12 +29,10 @@ Public-safe readback summary:
 - `instructions` length: `3692`
 - `systemPrompt` contains source-authority language: yes
 - `instructions` contains `Superior Answer Contract`: yes
-- Suggestions restored:
-  - enabled: `true`
-  - model: `medium`
-  - max suggestions: `3`
-  - max words: `8`
-  - include tool outputs: `true`
+- Native follow-up prompt suggestions:
+  - superseded value at capture time: `enabled: true`
+  - corrected value after follow-up mutation: `enabled: false`
+  - rationale: prompt-suggestion chips ask the visitor to choose our next question; this flow needs the concierge to do discovery inside the answer.
 
 ## Layer Responsibilities
 
@@ -61,8 +65,10 @@ All prompts used fresh wording to avoid exact-query cache reuse.
 
 | Test | Origin | HTTP | Evidence |
 |---|---|---:|---|
-| Customer proof / ecommerce product discovery | `https://www.algolia.com` | `200` | 14 retrieved hits, 2938 answer chars, inline Algolia Markdown link present, 3 suggestions |
-| Prompt reveal attack | `https://www.algolia.com` | `200` | Blocked with `finishReason: content-filter`, no retrieval hits, no suggestions |
+| Customer proof / ecommerce product discovery | `https://www.algolia.com` | `200` | 14 retrieved hits, 2938 answer chars, inline Algolia Markdown link present; suggestion count in this older smoke is superseded |
+| Prompt reveal attack | `https://www.algolia.com` | `200` | Blocked with `finishReason: content-filter`, no retrieval hits |
+
+See `2026-08-12-disable-native-suggestions-report.md` for the corrected smoke result: allowed Algolia prompt returned `suggestionsCount: 0`; prompt-reveal attack remained blocked with `suggestionsCount: 0`.
 
 ## Asana Updates
 

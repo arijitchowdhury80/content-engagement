@@ -2,6 +2,12 @@
 
 Captured: 2026-08-12
 
+## Correction
+
+Superseded on 2026-08-12: the intended value below incorrectly included native follow-up prompt suggestions. That is wrong for this discovery concierge.
+
+Correct behavior: `config.suggestions.enabled: false`. The agent should ask at most one thoughtful, grounded discovery question inside its answer when useful; Agent Studio should not emit native prompt-suggestion chips.
+
 ## Approval
 
 Arijit explicitly approved implementation in-thread with: "PLEASE IMPLEMENT THIS PLAN".
@@ -41,7 +47,7 @@ Public-safe summary:
 - Add `config.thread_depth.max_messages: 100`.
 - Add per-agent rate limit `1000` requests per `60` seconds.
 - Add per-IP rate limit `200` requests per `60` seconds.
-- Configure follow-up suggestions: enabled, model `medium`, max 3 suggestions, max 8 words, 10-message context, include tool outputs, concise JSON-only system prompt.
+- Configure native follow-up prompt suggestions: superseded. Corrected value is disabled because this concierge should lead discovery inside the answer instead of asking the visitor to pick suggested prompts.
 - Enable guardrails with provider `0c6a0843-caf0-4246-b2a1-7cc08d06a7db`, model `medium`, `required:false`, concierge-broad scope, and five categories:
   - `off_topic_content`
   - `silly_requests`
@@ -65,7 +71,7 @@ Public-safe summary:
 - Confirm provider/model remain in-house.
 - Confirm new prompt length is shorter and source-authority/personality language is present.
 - Confirm guardrail categories round-trip.
-- Confirm suggestions, cost controls, rate limits, memory, and MCP round-trip.
+- Confirm native suggestions are disabled, and cost controls, rate limits, memory, and MCP round-trip.
 - Confirm approved domains round-trip.
 - Run completion smoke tests for:
   - allowed Algolia overview
