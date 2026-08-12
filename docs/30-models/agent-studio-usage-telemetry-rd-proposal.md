@@ -5,7 +5,12 @@ status: proposal
 date: 2026-08-12
 scope: "Agent Studio product proposal, informed by the Algolia.com chat widget spike"
 related_asana: "2.2 Algolia Query Metering; 2.3 Token & Cost Economics; 2.4 End-to-End Turn Observability & Traceability"
+asana_task_2_2: "https://app.asana.com/0/0/1217389911359035/f"
+asana_task_2_2_1: "https://app.asana.com/0/0/1217389989753201/f"
 asana_task_2_2_2: "https://app.asana.com/0/0/1217389911594494/f"
+asana_task_2_3: "https://app.asana.com/0/0/1217389957695997/f"
+asana_task_2_3_1: "https://app.asana.com/0/0/1217389831395535/f"
+asana_task_2_3_2: "https://app.asana.com/0/0/1217389911611814/f"
 ---
 
 # Agent Studio Usage Telemetry
@@ -20,9 +25,9 @@ This is not a new chat-widget backend. It applies to every Agent Studio use case
 assistant, content assistant, conversational search, internal knowledge assistant, or custom
 workflow. The chat widget is a useful product spike, not the system of record.
 
-The first delivery track is [Asana 2.2.2: Instrument, display, and reconcile Algolia
-operations](https://app.asana.com/0/0/1217389911594494/f). This proposal is also the shared product
-direction for 2.3 token and cost economics and 2.4 end-to-end traceability.
+This proposal guides [2.2 Algolia Query Metering](https://app.asana.com/0/0/1217389911359035/f),
+[2.3 Token & Cost Economics](https://app.asana.com/0/0/1217389957695997/f), and 2.4 end-to-end
+traceability. It is a product enhancement proposal, not a claim that those workstreams are complete.
 
 ## What exists today
 
@@ -51,6 +56,50 @@ the two Search-tool calls. Those two tool calls contained four logical query-pla
 
 That is an important result: a visitor turn, a Search-tool call, a logical query-plan item, a Search
 API request, and a billed search request are not automatically the same number.
+
+Agent Studio also already provides the first correlation key that the original proposal treated as a
+future requirement. It persists a conversation for every completion request with messages and
+returns its ID in the `X-Conversation-Id` response header. A client can instead supply the
+conversation and message IDs itself. This means the Algolia.com widget can associate its own browser
+completion legs with a stored conversation today, after a browser-readability check for that header
+and after it keeps the same conversation/message IDs across turns. It does not mean that the widget
+can see Agent Studio's internal Search API work or price calculation.
+
+## Current scope assessment: 2.2 and 2.3
+
+The screenshots and live API evidence change the delivery shape. Most aggregate measurement and
+conversation persistence already exist in Agent Studio. We should extend those surfaces, not build a
+second telemetry service beside them.
+
+| Asana task | Already in Agent Studio | Still needed in the Algolia.com spike | Still needed from Agent Studio R&D |
+|---|---|---|---|
+| [2.2.1 Boundary and contract](https://app.asana.com/0/0/1217389989753201/f) | Analytics defines a Search call as a built-in Search-tool invocation; Conversations persist tool calls and metadata | Record the exact unit labels and prove source pills/suggestions do not create a request | Publish the same definitions in API schemas and analytics help text |
+| [2.2.2 Instrument and reconcile](https://app.asana.com/0/0/1217389911594494/f) | Aggregate Search calls by date and agent; per-conversation Search-query total; conversation ID response header | Capture safe browser completion observations, retain the conversation ID, and run the negative network proofs | Persist per-turn Search-tool, logical-query-plan, actual Search API request, cache/retry, index, and billing-reconciliation trace |
+| [2.3.1 Token capture and prices](https://app.asana.com/0/0/1217389831395535/f) | Aggregate input/output tokens and averages; conversation and message token totals; cached-input/reasoning fields when supplied | Verify the response/header and conversation fields on real widget turns; do not invent a client tokenizer | Persist token provenance and resolved provider/model version; maintain a versioned price registry with effective dates |
+| [2.3.2 Economics and reconciliation](https://app.asana.com/0/0/1217389911611814/f) | Analytics overview, per-agent token totals, conversation JSON export | Reconcile the widget turn to the stored conversation and show only values with an authority | Add per-turn/per-agent cost, reported-versus-estimated basis, price version, CSV/usage export, estimator error, and supported Analytics API |
+
+### What is already solved
+
+- Agent Studio already collects multi-user, server-side aggregate conversations, token usage, and
+  Search-tool calls. The dashboard filters by time period and agent.
+- It already shows a conversation's input/output token total and Search-query total, and it exports
+  stored conversations as JSON for operators.
+- Its conversation API exposes per-message token counts, tool calls, tool results, and timestamps.
+- A secure user JWT can scope conversation retrieval to one end user. The dashboard/operator path
+  remains separate and must keep its `logs` access server-side.
+
+### What is not solved
+
+- The dashboard's **Search calls** metric is a Search-tool call count. It is not a count of logical
+  query items, Search API requests, or billed requests.
+- Current conversation data does not show a complete request-level execution trace or safely assign a
+  billing unit to one turn.
+- Token totals exist, but the checked stored assistant message did not expose the resolved billed
+  model. Therefore a customer-facing cost cannot yet be provider-reported.
+- There is no documented Agent Studio Analytics API that returns the dashboard's aggregate metrics
+  or a filtered turn-level drill-down. Conversation APIs and JSON export are useful inputs, not a
+  substitute.
+- The existing UI does not link a conversation's short summary to a turn-level Analytics view.
 
 ## The problem to solve
 
@@ -236,12 +285,14 @@ own privacy and retention review.
 ## R&D deliverables
 
 1. Document the current definitions and data source for every Agent Studio Analytics metric.
-2. Persist normalized per-turn usage and trace fields from the server-side execution path.
-3. Add the compact Usage summary and deep link to the Conversation view.
-4. Add the filtered conversation drill-down inside Analytics.
-5. Extend JSON export and provide a supported Analytics API with the same definitions.
-6. Add a versioned price registry and label every cost as reported or estimated.
-7. Reconcile aggregate search usage against account-level Usage API and contract data without
+2. Document and expose the existing multi-turn conversation/message ID contract, including CORS-safe
+   access to `X-Conversation-Id` for browser clients that use it.
+3. Persist normalized per-turn usage and trace fields from the server-side execution path.
+4. Add the compact Usage summary and deep link to the Conversation view.
+5. Add the filtered conversation drill-down inside Analytics.
+6. Extend JSON export and provide a supported Analytics API with the same definitions.
+7. Add a versioned price registry and label every cost as reported or estimated.
+8. Reconcile aggregate search usage against account-level Usage API and contract data without
    claiming unsupported per-turn billing precision.
 
 ## Spike proof points

@@ -122,7 +122,8 @@ cannot see that internal request.
 4. Parse the SSE stream without changing response handling. Preserve start and tool metadata only when
    the frame actually contains it.
 5. Record the widget turn and segment IDs that initiated the request.
-6. After the turn settles, fetch the matching Agent Studio conversation through an operator-only path.
+6. Read `X-Conversation-Id` from the completion response when CORS exposes it. If it isn't readable,
+   use the operator-only path to match the stored conversation during the spike and record the gap.
 7. Compare the browser completion legs with stored Search-tool calls and query-plan items.
 8. Compare the aggregate time window with Usage API/account evidence when access permits.
 9. Mark missing facts as unavailable. Do not replace missing data with zero.
@@ -190,17 +191,19 @@ different units into one "query" number.
 These requirements cannot be completed in the Algolia.com widget repository because the widget does
 not own Agent Studio's server execution trace.
 
-1. Persist a stable conversation ID, turn ID, run ID, agent ID, phase, and retry attempt with every
-   Agent Studio completion.
-2. Persist each built-in Search-tool invocation with tool name, query-plan count, index list, cache
+1. Expose the existing conversation ID consistently to browser clients, including CORS-safe access to
+   `X-Conversation-Id`, and document the supported multi-turn conversation/message ID contract.
+2. Persist a stable turn ID, run ID, agent ID, phase, and retry attempt with every Agent Studio
+   completion.
+3. Persist each built-in Search-tool invocation with tool name, query-plan count, index list, cache
    outcome, status, error, duration, request ID, and correlation ID when available.
-3. Persist the count of actual Search API requests separately from the count of Search-tool calls.
-4. Provide a contract-aware reconciliation field. It may be null for a single turn when the billing
+4. Persist the count of actual Search API requests separately from the count of Search-tool calls.
+5. Provide a contract-aware reconciliation field. It may be null for a single turn when the billing
    system cannot safely assign the unit.
-5. Expose a supported Analytics API filtered by agent, conversation, turn, and date range.
-6. Return the conversation and run identifiers in a browser-safe completion response or provide a
-   user-scoped read API that the widget can call with a secure user JWT.
-7. Keep customer/operator conversation export behind existing server-side logs access.
+6. Expose a supported Analytics API filtered by agent, conversation, turn, and date range.
+7. Persist resolved provider/model version, token provenance, cost basis, and price-registry version
+   with each completion.
+8. Keep customer/operator conversation export behind existing server-side logs access.
 
 This is an Agent Studio Analytics enhancement. It is not a request to send fabricated events through
 Insights and it is not a request for a new widget-owned collector.
@@ -376,7 +379,7 @@ design is approved and Asana 2.2.1 has the contract checklist.
 
 | Risk | Control | Rollback |
 |---|---|---|
-| SSE does not expose a conversation ID | Use operator-only post-turn matching for the spike; raise R&D delta | Disable reconciliation display and retain browser-only diagnostics |
+| Browser CORS does not expose `X-Conversation-Id` | Use operator-only post-turn matching for the spike; raise R&D delta | Disable reconciliation display and retain browser-only diagnostics |
 | Browser cannot observe internal Search API requests | Treat Agent Studio as authority; do not infer | Show the metric as unavailable |
 | Current source count is mistaken for search count | Rename UI and add regression tests | Revert only the usage disclosure; leave source pills unchanged |
 | A privileged conversation key leaks into the widget | Keep all logs access in local operator tooling or server code | Remove the integration immediately and rotate key |
