@@ -21,8 +21,16 @@ conversational search, internal knowledge assistant, or custom workflow. It is n
 feature. The current public [Agent Studio Analytics
 documentation](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/analytics) says
 that the dashboard provides aggregate conversations, input tokens, output tokens, and Search-tool
-calls. This proposal has not yet verified that those metrics are enabled or visible in our specific
-Algolia app. The spike must verify that first.
+calls. This is now verified in the Flagship - Accelerator Program account by screenshots captured
+on 2026-08-12. The live screen also shows average input/output token usage, total input/output
+tokens, median time to first byte, median time to last token, daily usage charts, conversation-depth
+distribution, feedback, input/output block rates and reasons, and a per-agent breakdown.
+
+For the displayed 30-day period, the account reports 4,090 conversations, 113,745,676 input tokens,
+2,440,436 output tokens, and 2,203 Search-tool calls. The `www Chat - Orchestrator` row alone
+reports 794 conversations, 32,145,523 tokens used, and 1,149 Search-tool calls. Judge agents are
+also present in the same table, with their own token use and zero Search-tool calls. This confirms
+that Agent Studio already collects cross-agent, server-side aggregate usage data.
 
 Whether that existing aggregate view is available to this account or not, it does not replace the
 usage-insights layer proposed here: a clear, evidence-backed explanation of the work, cost, and
@@ -274,8 +282,8 @@ two user experiences without pretending that a prototype is already a global tel
 
 It must prove, with tests and browser/network evidence, that:
 
-- the existing Agent Studio Analytics view is either verified in this app or documented as
-  unavailable, including which aggregate metrics it exposes;
+- the calculation and backend source of each existing Agent Studio Analytics metric is documented,
+  including the precise definitions of Search-tool calls, time to first byte, and time to last token;
 - source pills do not make another Algolia request;
 - follow-up suggestions are counted only when they really retrieve;
 - a visitor turn, Search-tool call, Search API request, and billed search request remain separate
