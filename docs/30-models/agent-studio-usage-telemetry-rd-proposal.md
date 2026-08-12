@@ -18,10 +18,16 @@ visitor, conversation, agent, search request, model call, and cost.
 
 This applies to every Agent Studio use case: a shopping assistant, content assistant,
 conversational search, internal knowledge assistant, or custom workflow. It is not a chat-widget
-feature. Agent Studio already provides aggregate conversation, token, and search-call metrics. This
-proposal adds the missing usage-insights layer: a clear, evidence-backed explanation of the work,
-cost, and search usage behind each turn and conversation. Today, a customer cannot clearly answer
-these basic questions:
+feature. The current public [Agent Studio Analytics
+documentation](https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/analytics) says
+that the dashboard provides aggregate conversations, input tokens, output tokens, and Search-tool
+calls. This proposal has not yet verified that those metrics are enabled or visible in our specific
+Algolia app. The spike must verify that first.
+
+Whether that existing aggregate view is available to this account or not, it does not replace the
+usage-insights layer proposed here: a clear, evidence-backed explanation of the work, cost, and
+search usage behind each turn and conversation. Today, a customer cannot clearly answer these basic
+questions:
 
 - How many Algolia retrieval operations did this turn make?
 - Which agent, tool, and index made them?
@@ -268,6 +274,8 @@ two user experiences without pretending that a prototype is already a global tel
 
 It must prove, with tests and browser/network evidence, that:
 
+- the existing Agent Studio Analytics view is either verified in this app or documented as
+  unavailable, including which aggregate metrics it exposes;
 - source pills do not make another Algolia request;
 - follow-up suggestions are counted only when they really retrieve;
 - a visitor turn, Search-tool call, Search API request, and billed search request remain separate
