@@ -2,6 +2,28 @@
 
 Read `SESSION.md` first. It is the resume point.
 
+## Repository Structure: Effective 2026-08-12
+
+Read `PROJECT-INDEX.md` before creating files or running project commands. The repository was
+reorganized by purpose. Do not recreate the old numeric folders or `scripts/` root.
+
+| Old path | Current path |
+|---|---|
+| `scripts/agents/` | `agents/definitions/` |
+| `scripts/spikes/` | `agents/probes/` |
+| `docs/50-prototype/` | `frontend/search-first-demo/` |
+| `docs/20-research/` | `docs/research/search-experience/` |
+| `docs/30-models/` | `docs/design/agent-studio/models/` |
+| `docs/40-concepts/` | `docs/design/search-experience/concepts/` |
+| `docs/70-enrichment/` | `docs/operations/enrichment/` |
+| `docs/80-documentation/` | `docs/reference/enrichment/` |
+| `docs/briefs/` | `docs/program/work-units/` |
+
+The active enrichment program is the supported skill in
+`.claude/skills/algolia-data-enrichment/`. Historical loose tools are in
+`docs/archive/enrichment/legacy-tooling/`; do not run them. If a move is needed, use `git mv` and
+update all active references in the same change.
+
 **Two sessions run in parallel on this repo, intentionally (Arijit, 2026-08-06).**
 Backend session: `docs/operations/enrichment/` taxonomy/enrichment pipeline, writes to
 `Algolia_Prod_Copy_Enhanced`. Frontend session: `frontend/search-first-demo/demo/`, the WU-briefs,
