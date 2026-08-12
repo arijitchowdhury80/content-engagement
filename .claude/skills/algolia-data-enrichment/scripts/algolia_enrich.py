@@ -429,6 +429,18 @@ def cmd_plan_slice(ctx: Ctx) -> int:
                 f"{len(missing)} replay records no longer belong to {profile.key}: {missing[:5]}")
         records = [current[oid] for oid in wanted]
         replay_of = ctx.args.replay_run
+    elif getattr(ctx.args, "object_id", ""):
+        # Named records only. Exists because the writer is NOT reproducible: re-running a whole
+        # slice to recover one quarantined record regenerates every other record in it, and the
+        # 225 already promoted to Enhanced would diverge from their live values. Measured on
+        # press-release: 34% of records changed status under byte-identical inputs.
+        wanted = [w.strip() for w in ctx.args.object_id.split(",") if w.strip()]
+        current = {r["objectID"]: r for r in records}
+        missing = [oid for oid in wanted if oid not in current]
+        if missing:
+            raise EnrichmentError(
+                f"{len(missing)} requested objectIDs are not in {profile.key}: {missing[:5]}")
+        records = [current[oid] for oid in wanted]
     elif ctx.args.limit:
         # A bounded smoke slice. Deterministically sampled, and the manifest says so -- an
         # unlabelled subset reported as a slice is how a partial run reads as a complete one.
@@ -473,7 +485,7 @@ def cmd_plan_slice(ctx: Ctx) -> int:
         "target_index": ctx.cfg.target_index,
         "live_slice_count": live_count,
         "planned_count": len(ids),
-        "is_bounded_subset": bool(ctx.args.limit),
+        "is_bounded_subset": bool(ctx.args.limit or getattr(ctx.args, "object_id", "")),
         "replay_of": replay_of or None,
         "language_split": dict(sorted(langs.items())),
         "objectIDs": ids,
@@ -1417,6 +1429,11 @@ def build_parser() -> argparse.ArgumentParser:
                     help="stratified subset, e.g. 'de:4,fr:4,en:2'")
     ap.add_argument("--concurrency", type=int, default=DEFAULT_SCOUT_CONCURRENCY)
     ap.add_argument("--probe-url", default="")
+    ap.add_argument("--object-id", default="",
+                    help="plan-slice: comma-separated objectIDs to plan INSTEAD of the whole "
+                         "slice. For recovering named records without regenerating the rest -- "
+                         "the writer is not reproducible, so re-running a whole slice to fix one "
+                         "record changes the others too. Recorded as a bounded subset.")
     ap.add_argument("--verify-index", default="",
                     help="verify-corpus: which index to verify. Defaults to the source index. "
                          "Point it at the parallel target to verify payloads parked there; "

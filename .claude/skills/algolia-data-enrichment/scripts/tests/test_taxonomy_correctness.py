@@ -109,3 +109,39 @@ def test_locale_prefixed_urls_resolve_to_the_same_rule():
             _rec("b", "https://www.algolia.com/fr/blog/y", page_type="blog-post")]
     out = check_records(recs, SCHEMA)
     assert out["checked"] == 2 and out["ok"] is True
+
+
+# --- the span-distance retry must be satisfiable ------------------------------------------------
+
+def test_the_span_distance_ban_measures_what_the_gate_measures():
+    """A retry handed a menu with no legal answer quarantines a healthy page forever.
+
+    The gate computes max(end) - min(start). The ban filtered on c.start, so a candidate STARTING
+    one character inside the window survived the ban while ENDING past it. Measured on
+    /customers/donorschoose: the retry banned 52 candidates, kept 62, and still produced a spread
+    of 8,111 against a limit of 8,000 -- exactly the length of the closing span.
+    """
+    from algolia_enrichment.gates import retry_constraints
+
+    class C:
+        def __init__(self, index, start, end):
+            self.index, self.start, self.end = index, start, end
+            self.text, self.is_quoted, self.section = "x", False, ""
+
+    class Sel:
+        pass
+
+    limit = 8000
+    anchor = 0
+    # starts INSIDE the window, ends 111 past it -- the exact donorschoose shape
+    straddler = C(2, anchor + limit - 50, anchor + limit + 111)
+    cands = [C(1, anchor, anchor + 100), straddler]
+    sel = Sel()
+    sel.abstract = [cands[0]]
+    sel.highlights = []
+    ban, _reason = retry_constraints(
+        ["abstract spans span ~8111 characters of the original page (limit 8000)"],
+        sel, cands, title="", ineligible=set(), max_span_distance=limit)
+    assert straddler.index in ban, (
+        "a candidate ending past the window must be banned; banning only on `start` leaves the "
+        "retry no legal answer")

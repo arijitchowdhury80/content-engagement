@@ -597,7 +597,16 @@ def retry_constraints(failures: list[str], sel, cands: list, title: str,
             # Keep the retry inside one forward page interval. An absolute-distance window is
             # wrong: it permits one candidate before the anchor and another after it, whose
             # combined spread exceeds the profile limit even though each is individually close.
-            far = {c.index for c in cands if c.start < anchor or c.start > anchor + limit}
+            #
+            # THE BAN MUST MEASURE WHAT THE GATE MEASURES, AND IT DID NOT.
+            # The gate computes `max(end) - min(start)` -- start of the first span to the END of
+            # the last. This filtered on `c.start`, so a candidate STARTING one character inside
+            # the window survived the ban while ENDING past it, and the retry was handed a menu
+            # on which no legal answer existed. Measured on /customers/donorschoose: the retry
+            # banned 52 candidates, kept 62, and still produced a spread of 8,111 against a limit
+            # of 8,000 -- 111 characters, which is simply the length of the closing span. A gate
+            # its own retry cannot satisfy quarantines a healthy page forever.
+            far = {c.index for c in cands if c.start < anchor or c.end > anchor + limit}
             ban |= far
             reasons.append(f"{len(far)} candidates outside the profile's {limit}-char window "
                            f"around offset {anchor} banned")
