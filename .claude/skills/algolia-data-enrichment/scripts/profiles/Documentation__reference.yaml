@@ -1,0 +1,29 @@
+# Documentation reference family -- 3,411 records (78.6% of Documentation).
+# Routes: doc-sdk 2203, doc-api-reference 418, doc-sdk-unified 398, doc-rest-api 333,
+#         doc-ui-library 59.
+strategy: docs_api
+abstract_shape: api_facts
+language_policy: must_match_record
+# LOW ON PURPOSE. A terse API reference page is legitimately short and is not a dead page.
+# Reusing Blog's 1,200 floor here would quarantine correct pages en masse.
+min_body_chars: 250
+abstract_span_count: [1, 3]
+highlight_count: [3, 6]
+max_span_distance: 12000        # reference prose is interleaved with code blocks
+allowed_code_comments: false
+duplicate_description_policy: ban
+# On an API page the title IS the endpoint name and the description IS what it does, so a
+# faithful abstract necessarily repeats them. Measured on 16 such failures the gains were
+# 0,0,0,1,1,2,3,3,3,4,4,6,6,6,7,7: a bar of 3 recovers 10 and still rejects 0/1/2.
+information_gain_minimum: 3
+judge_required: true
+coverage_target_pct: 0.75       # honest no-abstract outcomes are expected here
+minimum_review_sample: 25
+forbidden_patterns:
+  - "^(Parameters|Returns|Response|Example|Usage|Signature)$"
+  - "^(GET|POST|PUT|DELETE|PATCH) /"
+  - "^(import|const|from|require|package|using) "
+  - "^See (also )?the .* (guide|reference|documentation)"
+  - "^(Was this page helpful|On this page|Edit this page)"
+dead_page_markers: ["Page not found", "This page has moved"]
+shell_markers: ["Loading documentation", "doc-index"]

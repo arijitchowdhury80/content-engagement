@@ -1,0 +1,230 @@
+{
+  "is_bounded_subset": false,
+  "language_split": {
+    "de": 7,
+    "en": 7,
+    "fr": 6
+  },
+  "live_slice_count": 2694,
+  "objectIDs": [
+    "de_26746102-cac6-4164-b199-30fc997b5ff9_0_1",
+    "de_467583b5-39fb-42f2-86c1-fec3bf2777f5",
+    "de_7363423d-4e77-4c6f-b9db-36659526c42d",
+    "de_a623936c-6517-439d-92d0-6feb53dbbe71",
+    "de_a7d58669-7426-4e7d-90eb-25eda68c6cb6",
+    "de_a85669e8-f9ae-468b-8ddd-aaaf76b1aa3b",
+    "de_cf6ffef5-5755-4f23-ae2c-e482e57ad0db",
+    "en_05ca9a29-d81b-42a1-b1ba-e6844c4ce150_0_1",
+    "en_0b2eaaee-9e3a-4dad-afee-d61f9862e480_0_1",
+    "en_4908c829-2725-4f6b-9cc7-1cb747eb0292_0_2",
+    "en_4c0ad660-5b0f-49f2-8f07-f17d20aacef3_0_1",
+    "en_571f74eb-6604-4019-9d0e-aa070ca291bb",
+    "en_7ed8f0e3-6c0d-45ad-8c36-ee215bc41dbe_0_99",
+    "en_b8b613f0-4858-4de8-a55b-2a12d3ab3849_0_9",
+    "fr_18168a7f-7378-4346-9a9e-39fddf2203ac",
+    "fr_595c7b31-b22e-4374-9e4b-47a031e7e6ca",
+    "fr_ac4ea7fd-45ca-45eb-b2fd-742d7a09f9a7_0_2",
+    "fr_b0d45919-fc59-4341-9c7b-0cc59e50e4db",
+    "fr_bb47b3b7-0e3d-46af-8b93-9e0af590043f",
+    "fr_ee363676-d3c0-4cac-b935-436014798570"
+  ],
+  "page_type": "blog-post",
+  "planned_at": "2026-08-11T05:09:29.512703+00:00",
+  "planned_count": 20,
+  "profile_version": "blog-post:2946b4b57a45",
+  "projection": {
+    "concurrency": 4,
+    "measured_s_per_record": 80.0,
+    "note": "projected from measured queue-inclusive elapsed time per record, not from the scrape duration. Queue wait dominates; scrape duration would promise ~7x faster.",
+    "projected_wall_clock_h": 0.11,
+    "projected_wall_clock_s": 400,
+    "records": 20
+  },
+  "records": [
+    {
+      "description": "",
+      "language_code": "de",
+      "objectID": "de_26746102-cac6-4164-b199-30fc997b5ff9_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Making a for you page in Algolia",
+      "url": "/de/blog/engineering/making-a-for-you-page"
+    },
+    {
+      "description": "…",
+      "language_code": "de",
+      "objectID": "de_467583b5-39fb-42f2-86c1-fec3bf2777f5",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "5 Best Practices for Site Search - Algolia Blog | Algolia",
+      "url": "/de/blog/product/learn-about-site-search-best-practices"
+    },
+    {
+      "description": "AI leverages your store’s data to make informed decisions about which products to display for fine-tuning the UX journey to each user’s needs.",
+      "language_code": "de",
+      "objectID": "de_7363423d-4e77-4c6f-b9db-36659526c42d",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How AI can help improve your user experience - Algolia Blog | Algolia",
+      "url": "/de/blog/ux/ai-improve-user-experience"
+    },
+    {
+      "description": "Emerging AI tech will make a huge impact on an already steadily growing ecommerce industry. Learn the before & after scenarios that are closer than you think.",
+      "language_code": "de",
+      "objectID": "de_a623936c-6517-439d-92d0-6feb53dbbe71",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How AI will impact ecommerce: A before & after | Algolia",
+      "url": "/de/blog/ai/ai-eats-ecommerce"
+    },
+    {
+      "description": "An SEO strategy isn’t complete without optimized on-site search. Read more about the benefits of a great internal search on your business.",
+      "language_code": "de",
+      "objectID": "de_a7d58669-7426-4e7d-90eb-25eda68c6cb6",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Site search and SEO: functionality creates value | Algolia",
+      "url": "/de/blog/product/site-search-and-seo"
+    },
+    {
+      "description": "Discover the instant personal shopper that knows what's on the shelf right now. Dive into the architecture, model secrets, and why hyper-local relevance is retail and e-commerce's new superpower.",
+      "language_code": "de",
+      "objectID": "de_a85669e8-f9ae-468b-8ddd-aaaf76b1aa3b",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Edge AI as a local relevance & retrieval engine",
+      "url": "/de/blog/ai/edge-ai-local-relevance-retrieval-engine"
+    },
+    {
+      "description": "From DevCon 2025: Read on as Maria Lungu (UX engineer) and Paul-Louis Nech (Staff ML engineer) as they battle through real design trade-offs, showing how the friction between ML ambition and UX wisdom creates AI that users actually love.",
+      "language_code": "de",
+      "objectID": "de_cf6ffef5-5755-4f23-ae2c-e482e57ad0db",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "The Fellowship of AI: why great AI apps need both Galadriel and Gandalf",
+      "url": "/de/blog/ai/the-fellowship-of-ai"
+    },
+    {
+      "description": "Content discovery helps customers explore website content and helps businesses highlight and promote new offerings. Learn how site search can power discovery on your site.",
+      "language_code": "en",
+      "objectID": "en_05ca9a29-d81b-42a1-b1ba-e6844c4ce150_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How site search drives content discovery | Algolia | Algolia",
+      "url": "/blog/ux/site-search-content-discovery"
+    },
+    {
+      "description": "Product detail page, PDP, product retail page, product page: whatever you call it, it’s key to ecommerce business success.",
+      "language_code": "en",
+      "objectID": "en_0b2eaaee-9e3a-4dad-afee-d61f9862e480_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "The critical role of the ecommerce PDP | Algolia",
+      "url": "/blog/ecommerce/what-are-product-detail-pages-and-why-are-they-critical-for-ecommerce-success"
+    },
+    {
+      "description": "Strategies that publishers use to capture the reader's attentions, creating discovery with relevant content and speedy content surfacing.",
+      "language_code": "en",
+      "objectID": "en_4908c829-2725-4f6b-9cc7-1cb747eb0292_0_2",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How to get your story in front of the right audience | Algolia",
+      "url": "/blog/product/a-guide-for-publishers-how-to-get-your-story-in-front-of-the-right-audience"
+    },
+    {
+      "description": "Let’s talk about conversational AI: a smart tactic for ecommerce businesses wanting to rock their search and discovery, and increase conversion.",
+      "language_code": "en",
+      "objectID": "en_4c0ad660-5b0f-49f2-8f07-f17d20aacef3_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What is conversational AI? | Algolia",
+      "url": "/blog/ai/what-is-conversational-ai-and-how-does-it-work"
+    },
+    {
+      "description": "Algolia is excited to announce the release of Query Categorization, an all-new AI-powered feature that automatically improves search results.",
+      "language_code": "en",
+      "objectID": "en_571f74eb-6604-4019-9d0e-aa070ca291bb",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Boost CVR with AI-powered Query Categorization | Algolia",
+      "url": "/blog/product/boosting-conversions-with-new-ai-powered-query-categorization"
+    },
+    {
+      "description": " Algolia partner Ziffity Solutions discusses the opportunities that Adobe Commerce customers have to modernize their search capabilities. ",
+      "language_code": "en",
+      "objectID": "en_7ed8f0e3-6c0d-45ad-8c36-ee215bc41dbe_0_99",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Modernizing Adobe Commerce Search with Key Considerations and Tools",
+      "url": "/blog/ecommerce/modernizing-adobe-commerce-search-partner-blog"
+    },
+    {
+      "description": "Why every retail merchandising plan needs an ecommerce merchandising component.",
+      "language_code": "en",
+      "objectID": "en_b8b613f0-4858-4de8-a55b-2a12d3ab3849_0_9",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What is website merchandising? How to master it, best practices, and benefits",
+      "url": "/blog/ecommerce/what-is-online-retail-merchandising-an-introduction"
+    },
+    {
+      "description": "How you can use intent prediction data to determine your prospective customers’ needs and then target shoppers at the optimal moment",
+      "language_code": "fr",
+      "objectID": "fr_18168a7f-7378-4346-9a9e-39fddf2203ac",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What is intent data? | Algolia",
+      "url": "/fr/blog/ux/what-is-intent-data-and-how-can-you-use-it-to-predict-user-intent-and-increase-roi"
+    },
+    {
+      "description": "",
+      "language_code": "fr",
+      "objectID": "fr_595c7b31-b22e-4374-9e4b-47a031e7e6ca",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Add semantics & question answering to search pages | Algolia",
+      "url": "/fr/blog/ux/semantic-search-returns-knowledge-and-answers-your-questions"
+    },
+    {
+      "description": "",
+      "language_code": "fr",
+      "objectID": "fr_ac4ea7fd-45ca-45eb-b2fd-742d7a09f9a7_0_2",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Building and enriching your search index with Algolia Fetch",
+      "url": "/fr/blog/engineering/building-and-enriching-your-search-index-with-algolia-fetch"
+    },
+    {
+      "description": "How to inject your data into Algolia's machine learning models to provide meaningful recommendations & elegant UIs (code samples)",
+      "language_code": "fr",
+      "objectID": "fr_b0d45919-fc59-4341-9c7b-0cc59e50e4db",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "A complete guide to recommendations for developers | Algolia",
+      "url": "/fr/blog/engineering/recommendations-for-developers-the-complete-how-to-what-to-and-where-to-guide"
+    },
+    {
+      "description": "Traditional retailers are learning the importance of moving from a monolithic to a headless architecture. Here are 5 reasons why you should consider it, too.",
+      "language_code": "fr",
+      "objectID": "fr_bb47b3b7-0e3d-46af-8b93-9e0af590043f",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Monolithic, headless, or composable architecture? What to choose and why in 2024 - Algolia Blog | Algolia",
+      "url": "/fr/blog/ecommerce/monolithic-headless-or-composable-architecture-what-to-choose-and-why-in-1"
+    },
+    {
+      "description": "",
+      "language_code": "fr",
+      "objectID": "fr_ee363676-d3c0-4cac-b935-436014798570",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Exploring how a combination of advanced search and composable commerce can unlock B2B growth",
+      "url": "/fr/blog/ecommerce/leveraging-advanced-search-and-discovery-with-b2b-composable-commerce"
+    }
+  ],
+  "replay_of": "20260811-blog-blog-post-a05",
+  "run_id": "20260811-blog-blog-post-a11",
+  "source": "Blog",
+  "source_index": "Algolia_Prod_Copy_Enhanced",
+  "target_index": "Algolia_Prod_Copy_Enhanced_Parallel"
+}

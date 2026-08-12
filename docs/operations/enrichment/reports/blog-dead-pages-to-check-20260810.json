@@ -1,0 +1,626 @@
+[
+  {
+    "objectID": "en_e04119c3-7049-40b2-8676-7eb9ef2d1f9a",
+    "url": "/blog/product/algolia-s-top-10-tips-to-achieve-highly-relevant-search-results",
+    "source_url": "https://www.algolia.com/blog/product/algolia-s-top-10-tips-to-achieve-highly-relevant-search-results",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_21c50ba2-22e0-4865-bb9f-5dfd87331a9d",
+    "url": "/de/blog/product/feature-spotlight-query-rules-1",
+    "source_url": "https://www.algolia.com/de/blog/product/feature-spotlight-query-rules-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_21c50ba2-22e0-4865-bb9f-5dfd87331a9d",
+    "url": "/blog/product/feature-spotlight-query-rules-1",
+    "source_url": "https://www.algolia.com/blog/product/feature-spotlight-query-rules-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_21c50ba2-22e0-4865-bb9f-5dfd87331a9d",
+    "url": "/fr/blog/product/feature-spotlight-query-rules-1",
+    "source_url": "https://www.algolia.com/fr/blog/product/feature-spotlight-query-rules-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_34899d5d-9aee-45f4-a2d9-caf838745bde",
+    "url": "/blog/product/what-are-synonyms-as-they-apply-to-search-part-1",
+    "source_url": "https://www.algolia.com/blog/product/what-are-synonyms-as-they-apply-to-search-part-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_6a2b2dd5-9752-4b4d-9865-00841111cd4a",
+    "url": "/blog/engineering/part-4-supercharging-search-for-ecommerce-solutions-with-algolia-and-mongodb-frontend-implementation-and-conclusion",
+    "source_url": "https://www.algolia.com/blog/engineering/part-4-supercharging-search-for-ecommerce-solutions-with-algolia-and-mongodb-frontend-implementation-and-conclusion",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_209c8e5e-f36b-4145-ba11-929d6cce499e",
+    "url": "/de/blog/customers/maison-kitsun-the-best-of-both-worlds-a-use-case-featuring-hyv-themes-for-adobe-commerce-x-algolia-search",
+    "source_url": "https://www.algolia.com/de/blog/customers/maison-kitsun-the-best-of-both-worlds-a-use-case-featuring-hyv-themes-for-adobe-commerce-x-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_45b49451-9d57-423c-ad5d-8cdff5ebd344",
+    "url": "/de/blog/customers/how-beyond-retro-improved-its-ecommerce-site-with-algolia-s-magento-plugin",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-beyond-retro-improved-its-ecommerce-site-with-algolia-s-magento-plugin",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_27dcbd04-a921-4772-acab-aa6d73c07e64",
+    "url": "/de/blog/customers/quadrant-io-solves-the-frustration-of-economic-data-search-with-algolia",
+    "source_url": "https://www.algolia.com/de/blog/customers/quadrant-io-solves-the-frustration-of-economic-data-search-with-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_5bb435b8-99a0-4209-b726-161924c2ff2f",
+    "url": "/de/blog/customers/hacker-news-search-6-5-million-articles-and-comments-at-your-fingertips",
+    "source_url": "https://www.algolia.com/de/blog/customers/hacker-news-search-6-5-million-articles-and-comments-at-your-fingertips",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_5ca86791-3b3d-40b6-a677-61bdef7d43d7",
+    "url": "/de/blog/customers/concertwith-me-s-competitive-edge-a-revamped-search-ux-with-algolia",
+    "source_url": "https://www.algolia.com/de/blog/customers/concertwith-me-s-competitive-edge-a-revamped-search-ux-with-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_9c305612-ab82-4dac-a95d-7788c6bffa18",
+    "url": "/de/blog/customers/sharypic-benefits-from-algolia-search",
+    "source_url": "https://www.algolia.com/de/blog/customers/sharypic-benefits-from-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_db3b6e50-cd15-4030-9993-e8c8b85bb0c4",
+    "url": "/de/blog/customers/how-abacus-leverages-algolia-for-realtime-expense-reporting",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-abacus-leverages-algolia-for-realtime-expense-reporting",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_45b49451-9d57-423c-ad5d-8cdff5ebd344",
+    "url": "/blog/customers/how-beyond-retro-improved-its-ecommerce-site-with-algolia-s-magento-plugin",
+    "source_url": "https://www.algolia.com/blog/customers/how-beyond-retro-improved-its-ecommerce-site-with-algolia-s-magento-plugin",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_209c8e5e-f36b-4145-ba11-929d6cce499e_0_2",
+    "url": "/blog/customers/maison-kitsun-the-best-of-both-worlds-a-use-case-featuring-hyv-themes-for-adobe-commerce-x-algolia-search",
+    "source_url": "https://www.algolia.com/blog/customers/maison-kitsun-the-best-of-both-worlds-a-use-case-featuring-hyv-themes-for-adobe-commerce-x-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_27dcbd04-a921-4772-acab-aa6d73c07e64",
+    "url": "/blog/customers/quadrant-io-solves-the-frustration-of-economic-data-search-with-algolia",
+    "source_url": "https://www.algolia.com/blog/customers/quadrant-io-solves-the-frustration-of-economic-data-search-with-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_5ca86791-3b3d-40b6-a677-61bdef7d43d7",
+    "url": "/blog/customers/concertwith-me-s-competitive-edge-a-revamped-search-ux-with-algolia",
+    "source_url": "https://www.algolia.com/blog/customers/concertwith-me-s-competitive-edge-a-revamped-search-ux-with-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_5bb435b8-99a0-4209-b726-161924c2ff2f",
+    "url": "/blog/customers/hacker-news-search-6-5-million-articles-and-comments-at-your-fingertips",
+    "source_url": "https://www.algolia.com/blog/customers/hacker-news-search-6-5-million-articles-and-comments-at-your-fingertips",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_9c305612-ab82-4dac-a95d-7788c6bffa18",
+    "url": "/blog/customers/sharypic-benefits-from-algolia-search",
+    "source_url": "https://www.algolia.com/blog/customers/sharypic-benefits-from-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_209c8e5e-f36b-4145-ba11-929d6cce499e",
+    "url": "/fr/blog/customers/maison-kitsun-the-best-of-both-worlds-a-use-case-featuring-hyv-themes-for-adobe-commerce-x-algolia-search",
+    "source_url": "https://www.algolia.com/fr/blog/customers/maison-kitsun-the-best-of-both-worlds-a-use-case-featuring-hyv-themes-for-adobe-commerce-x-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_db3b6e50-cd15-4030-9993-e8c8b85bb0c4",
+    "url": "/blog/customers/how-abacus-leverages-algolia-for-realtime-expense-reporting",
+    "source_url": "https://www.algolia.com/blog/customers/how-abacus-leverages-algolia-for-realtime-expense-reporting",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_5ca86791-3b3d-40b6-a677-61bdef7d43d7",
+    "url": "/fr/blog/customers/concertwith-me-s-competitive-edge-a-revamped-search-ux-with-algolia",
+    "source_url": "https://www.algolia.com/fr/blog/customers/concertwith-me-s-competitive-edge-a-revamped-search-ux-with-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_27dcbd04-a921-4772-acab-aa6d73c07e64",
+    "url": "/fr/blog/customers/quadrant-io-solves-the-frustration-of-economic-data-search-with-algolia",
+    "source_url": "https://www.algolia.com/fr/blog/customers/quadrant-io-solves-the-frustration-of-economic-data-search-with-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_9c305612-ab82-4dac-a95d-7788c6bffa18",
+    "url": "/fr/blog/customers/sharypic-benefits-from-algolia-search",
+    "source_url": "https://www.algolia.com/fr/blog/customers/sharypic-benefits-from-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_45b49451-9d57-423c-ad5d-8cdff5ebd344",
+    "url": "/fr/blog/customers/how-beyond-retro-improved-its-ecommerce-site-with-algolia-s-magento-plugin",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-beyond-retro-improved-its-ecommerce-site-with-algolia-s-magento-plugin",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_5bb435b8-99a0-4209-b726-161924c2ff2f",
+    "url": "/fr/blog/customers/hacker-news-search-6-5-million-articles-and-comments-at-your-fingertips",
+    "source_url": "https://www.algolia.com/fr/blog/customers/hacker-news-search-6-5-million-articles-and-comments-at-your-fingertips",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_db3b6e50-cd15-4030-9993-e8c8b85bb0c4",
+    "url": "/fr/blog/customers/how-abacus-leverages-algolia-for-realtime-expense-reporting",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-abacus-leverages-algolia-for-realtime-expense-reporting",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_73f63a0e-dea1-434b-84c9-f53ea99fe81a",
+    "url": "/de/blog/customers/how-algolia-is-powering-up-prodpad-s-help-center",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-algolia-is-powering-up-prodpad-s-help-center",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_8d692bee-a199-4ed7-a392-923f4a4ef7f1",
+    "url": "/de/blog/customers/collaborative-3d-printing-made-possible-by-pinshape-search-powered-by-algolia",
+    "source_url": "https://www.algolia.com/de/blog/customers/collaborative-3d-printing-made-possible-by-pinshape-search-powered-by-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_066fdf59-a7a9-436e-a71c-3fb502725270",
+    "url": "/de/blog/customers/inside-growthhackers-com-s-implementation-of-algolia",
+    "source_url": "https://www.algolia.com/de/blog/customers/inside-growthhackers-com-s-implementation-of-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_d589156d-398e-4147-a5a0-ca473a153237",
+    "url": "/de/blog/customers/how-algolia-keeps-all-your-data-safe-but-searchable-on-solid",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-algolia-keeps-all-your-data-safe-but-searchable-on-solid",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_9aacfca3-82f9-4645-beb4-901269053789",
+    "url": "/de/blog/customers/how-algolia-increased-tradepub-com-s-search-conversions-by-70",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-algolia-increased-tradepub-com-s-search-conversions-by-70",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_066fdf59-a7a9-436e-a71c-3fb502725270",
+    "url": "/blog/customers/inside-growthhackers-com-s-implementation-of-algolia",
+    "source_url": "https://www.algolia.com/blog/customers/inside-growthhackers-com-s-implementation-of-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_8d692bee-a199-4ed7-a392-923f4a4ef7f1",
+    "url": "/blog/customers/collaborative-3d-printing-made-possible-by-pinshape-search-powered-by-algolia",
+    "source_url": "https://www.algolia.com/blog/customers/collaborative-3d-printing-made-possible-by-pinshape-search-powered-by-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_73f63a0e-dea1-434b-84c9-f53ea99fe81a",
+    "url": "/blog/customers/how-algolia-is-powering-up-prodpad-s-help-center",
+    "source_url": "https://www.algolia.com/blog/customers/how-algolia-is-powering-up-prodpad-s-help-center",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_e706f3aa-4c95-4473-b0d2-ef2259688d9b",
+    "url": "/de/blog/customers/building-a-video-discovery-platform-with-algolia-unreel-co",
+    "source_url": "https://www.algolia.com/de/blog/customers/building-a-video-discovery-platform-with-algolia-unreel-co",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_8d692bee-a199-4ed7-a392-923f4a4ef7f1",
+    "url": "/fr/blog/customers/collaborative-3d-printing-made-possible-by-pinshape-search-powered-by-algolia",
+    "source_url": "https://www.algolia.com/fr/blog/customers/collaborative-3d-printing-made-possible-by-pinshape-search-powered-by-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_e803e511-14a4-406f-a4d6-0afb326e8f83",
+    "url": "/de/blog/customers/jadopado-delivers-instasearch-for-mobile-and-web-powered-by-algolia",
+    "source_url": "https://www.algolia.com/de/blog/customers/jadopado-delivers-instasearch-for-mobile-and-web-powered-by-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_9aacfca3-82f9-4645-beb4-901269053789",
+    "url": "/blog/customers/how-algolia-increased-tradepub-com-s-search-conversions-by-70",
+    "source_url": "https://www.algolia.com/blog/customers/how-algolia-increased-tradepub-com-s-search-conversions-by-70",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_066fdf59-a7a9-436e-a71c-3fb502725270",
+    "url": "/fr/blog/customers/inside-growthhackers-com-s-implementation-of-algolia",
+    "source_url": "https://www.algolia.com/fr/blog/customers/inside-growthhackers-com-s-implementation-of-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_73f63a0e-dea1-434b-84c9-f53ea99fe81a",
+    "url": "/fr/blog/customers/how-algolia-is-powering-up-prodpad-s-help-center",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-algolia-is-powering-up-prodpad-s-help-center",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_d589156d-398e-4147-a5a0-ca473a153237",
+    "url": "/blog/customers/how-algolia-keeps-all-your-data-safe-but-searchable-on-solid",
+    "source_url": "https://www.algolia.com/blog/customers/how-algolia-keeps-all-your-data-safe-but-searchable-on-solid",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_e706f3aa-4c95-4473-b0d2-ef2259688d9b",
+    "url": "/blog/customers/building-a-video-discovery-platform-with-algolia-unreel-co",
+    "source_url": "https://www.algolia.com/blog/customers/building-a-video-discovery-platform-with-algolia-unreel-co",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_e803e511-14a4-406f-a4d6-0afb326e8f83",
+    "url": "/blog/customers/jadopado-delivers-instasearch-for-mobile-and-web-powered-by-algolia",
+    "source_url": "https://www.algolia.com/blog/customers/jadopado-delivers-instasearch-for-mobile-and-web-powered-by-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_9aacfca3-82f9-4645-beb4-901269053789",
+    "url": "/fr/blog/customers/how-algolia-increased-tradepub-com-s-search-conversions-by-70",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-algolia-increased-tradepub-com-s-search-conversions-by-70",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_d589156d-398e-4147-a5a0-ca473a153237",
+    "url": "/fr/blog/customers/how-algolia-keeps-all-your-data-safe-but-searchable-on-solid",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-algolia-keeps-all-your-data-safe-but-searchable-on-solid",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_e706f3aa-4c95-4473-b0d2-ef2259688d9b",
+    "url": "/fr/blog/customers/building-a-video-discovery-platform-with-algolia-unreel-co",
+    "source_url": "https://www.algolia.com/fr/blog/customers/building-a-video-discovery-platform-with-algolia-unreel-co",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_b567ed4c-fbee-4ac3-8f9d-85203e4917b3",
+    "url": "/de/blog/customers/bringing-algolia-s-faceting-experience-to-mobile-the-evolution-of-appapp",
+    "source_url": "https://www.algolia.com/de/blog/customers/bringing-algolia-s-faceting-experience-to-mobile-the-evolution-of-appapp",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_9405bdb7-5ca1-4858-b390-d78ad84ad76a",
+    "url": "/de/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_8bfdf688-36a4-4672-93b7-b98bf9c8ce8a",
+    "url": "/de/blog/customers/how-to-boost-online-sales-with-category-merchandising",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-to-boost-online-sales-with-category-merchandising",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_e803e511-14a4-406f-a4d6-0afb326e8f83",
+    "url": "/fr/blog/customers/jadopado-delivers-instasearch-for-mobile-and-web-powered-by-algolia",
+    "source_url": "https://www.algolia.com/fr/blog/customers/jadopado-delivers-instasearch-for-mobile-and-web-powered-by-algolia",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_d91bf433-68b1-4570-92fa-4aacfa918556",
+    "url": "/de/blog/customers/building-a-better-istyles-shopping-experience-with-algolia-search",
+    "source_url": "https://www.algolia.com/de/blog/customers/building-a-better-istyles-shopping-experience-with-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_08871b1c-840e-4a04-ad1e-83ef88c08236",
+    "url": "/de/blog/customers/search-infrastructure-products-inflect",
+    "source_url": "https://www.algolia.com/de/blog/customers/search-infrastructure-products-inflect",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_f56112bb-e817-4425-8f5e-f57b711bc179",
+    "url": "/de/blog/customers/manomanos-make-or-buy-decision-grid",
+    "source_url": "https://www.algolia.com/de/blog/customers/manomanos-make-or-buy-decision-grid",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_08871b1c-840e-4a04-ad1e-83ef88c08236_0_1",
+    "url": "/blog/customers/search-infrastructure-products-inflect",
+    "source_url": "https://www.algolia.com/blog/customers/search-infrastructure-products-inflect",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_9405bdb7-5ca1-4858-b390-d78ad84ad76a_0_3",
+    "url": "/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+    "source_url": "https://www.algolia.com/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_8bfdf688-36a4-4672-93b7-b98bf9c8ce8a_0_1",
+    "url": "/blog/customers/how-to-boost-online-sales-with-category-merchandising",
+    "source_url": "https://www.algolia.com/blog/customers/how-to-boost-online-sales-with-category-merchandising",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_b567ed4c-fbee-4ac3-8f9d-85203e4917b3",
+    "url": "/blog/customers/bringing-algolia-s-faceting-experience-to-mobile-the-evolution-of-appapp",
+    "source_url": "https://www.algolia.com/blog/customers/bringing-algolia-s-faceting-experience-to-mobile-the-evolution-of-appapp",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_08871b1c-840e-4a04-ad1e-83ef88c08236",
+    "url": "/fr/blog/customers/search-infrastructure-products-inflect",
+    "source_url": "https://www.algolia.com/fr/blog/customers/search-infrastructure-products-inflect",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_f56112bb-e817-4425-8f5e-f57b711bc179_0_2",
+    "url": "/blog/customers/manomanos-make-or-buy-decision-grid",
+    "source_url": "https://www.algolia.com/blog/customers/manomanos-make-or-buy-decision-grid",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_d7d872a2-2eef-4233-806c-8b297c2a1c94",
+    "url": "/blog/customers/how-swedol-created-a-better-digital-b2b-experience",
+    "source_url": "https://www.algolia.com/blog/customers/how-swedol-created-a-better-digital-b2b-experience",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_d91bf433-68b1-4570-92fa-4aacfa918556",
+    "url": "/blog/customers/building-a-better-istyles-shopping-experience-with-algolia-search",
+    "source_url": "https://www.algolia.com/blog/customers/building-a-better-istyles-shopping-experience-with-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_8bfdf688-36a4-4672-93b7-b98bf9c8ce8a",
+    "url": "/fr/blog/customers/how-to-boost-online-sales-with-category-merchandising",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-to-boost-online-sales-with-category-merchandising",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_9405bdb7-5ca1-4858-b390-d78ad84ad76a",
+    "url": "/fr/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_b567ed4c-fbee-4ac3-8f9d-85203e4917b3",
+    "url": "/fr/blog/customers/bringing-algolia-s-faceting-experience-to-mobile-the-evolution-of-appapp",
+    "source_url": "https://www.algolia.com/fr/blog/customers/bringing-algolia-s-faceting-experience-to-mobile-the-evolution-of-appapp",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_f56112bb-e817-4425-8f5e-f57b711bc179",
+    "url": "/fr/blog/customers/manomanos-make-or-buy-decision-grid",
+    "source_url": "https://www.algolia.com/fr/blog/customers/manomanos-make-or-buy-decision-grid",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_d91bf433-68b1-4570-92fa-4aacfa918556",
+    "url": "/fr/blog/customers/building-a-better-istyles-shopping-experience-with-algolia-search",
+    "source_url": "https://www.algolia.com/fr/blog/customers/building-a-better-istyles-shopping-experience-with-algolia-search",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_2fe78e2c-5675-464f-8304-64aac543149b",
+    "url": "/de/blog/customers/algolia-search-improving-trading-card-experience",
+    "source_url": "https://www.algolia.com/de/blog/customers/algolia-search-improving-trading-card-experience",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_2fe78e2c-5675-464f-8304-64aac543149b",
+    "url": "/blog/customers/algolia-search-improving-trading-card-experience",
+    "source_url": "https://www.algolia.com/blog/customers/algolia-search-improving-trading-card-experience",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_a0b22433-2801-4b3b-a60c-ee8752690b01",
+    "url": "/de/blog/customers/best-ways-to-leverage-ai-to-optimize-a-user-conversion",
+    "source_url": "https://www.algolia.com/de/blog/customers/best-ways-to-leverage-ai-to-optimize-a-user-conversion",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_67bf6586-daea-4b4d-8238-85fd75c9f18a",
+    "url": "/de/blog/customers/gymsharks-journey-to-mach-the-practical-case-for-search-and-navigation",
+    "source_url": "https://www.algolia.com/de/blog/customers/gymsharks-journey-to-mach-the-practical-case-for-search-and-navigation",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_71a45605-a588-4d83-a4f0-f941c2c89622",
+    "url": "/de/blog/customers/how-algolia-helped-improve-ux",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-algolia-helped-improve-ux",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_67bf6586-daea-4b4d-8238-85fd75c9f18a_0_1",
+    "url": "/blog/customers/gymsharks-journey-to-mach-the-practical-case-for-search-and-navigation",
+    "source_url": "https://www.algolia.com/blog/customers/gymsharks-journey-to-mach-the-practical-case-for-search-and-navigation",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_a0b22433-2801-4b3b-a60c-ee8752690b01",
+    "url": "/fr/blog/customers/best-ways-to-leverage-ai-to-optimize-a-user-conversion",
+    "source_url": "https://www.algolia.com/fr/blog/customers/best-ways-to-leverage-ai-to-optimize-a-user-conversion",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_c36715bd-9db5-454c-b48c-5684bc8233ca",
+    "url": "/de/blog/customers/best-practices-for-ecommerce-personalization",
+    "source_url": "https://www.algolia.com/de/blog/customers/best-practices-for-ecommerce-personalization",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_c36715bd-9db5-454c-b48c-5684bc8233ca_0_2",
+    "url": "/blog/customers/best-practices-for-ecommerce-personalization",
+    "source_url": "https://www.algolia.com/blog/customers/best-practices-for-ecommerce-personalization",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_2fe78e2c-5675-464f-8304-64aac543149b",
+    "url": "/fr/blog/customers/algolia-search-improving-trading-card-experience",
+    "source_url": "https://www.algolia.com/fr/blog/customers/algolia-search-improving-trading-card-experience",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_a0b22433-2801-4b3b-a60c-ee8752690b01_0_2",
+    "url": "/blog/customers/best-ways-to-leverage-ai-to-optimize-a-user-conversion",
+    "source_url": "https://www.algolia.com/blog/customers/best-ways-to-leverage-ai-to-optimize-a-user-conversion",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_71a45605-a588-4d83-a4f0-f941c2c89622",
+    "url": "/blog/customers/how-algolia-helped-improve-ux",
+    "source_url": "https://www.algolia.com/blog/customers/how-algolia-helped-improve-ux",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_67bf6586-daea-4b4d-8238-85fd75c9f18a",
+    "url": "/fr/blog/customers/gymsharks-journey-to-mach-the-practical-case-for-search-and-navigation",
+    "source_url": "https://www.algolia.com/fr/blog/customers/gymsharks-journey-to-mach-the-practical-case-for-search-and-navigation",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_71a45605-a588-4d83-a4f0-f941c2c89622",
+    "url": "/fr/blog/customers/how-algolia-helped-improve-ux",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-algolia-helped-improve-ux",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_c36715bd-9db5-454c-b48c-5684bc8233ca",
+    "url": "/fr/blog/customers/best-practices-for-ecommerce-personalization",
+    "source_url": "https://www.algolia.com/fr/blog/customers/best-practices-for-ecommerce-personalization",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_ee3c1e3a-f08b-4cfb-b8a4-c629f654b028",
+    "url": "/de/blog/ecommerce/how-to-satisfy-user-intent-when-considering-search-vs-browse-1",
+    "source_url": "https://www.algolia.com/de/blog/ecommerce/how-to-satisfy-user-intent-when-considering-search-vs-browse-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_ee3c1e3a-f08b-4cfb-b8a4-c629f654b028_0_3",
+    "url": "/blog/ecommerce/how-to-satisfy-user-intent-when-considering-search-vs-browse-1",
+    "source_url": "https://www.algolia.com/blog/ecommerce/how-to-satisfy-user-intent-when-considering-search-vs-browse-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_ee3c1e3a-f08b-4cfb-b8a4-c629f654b028",
+    "url": "/fr/blog/ecommerce/how-to-satisfy-user-intent-when-considering-search-vs-browse-1",
+    "source_url": "https://www.algolia.com/fr/blog/ecommerce/how-to-satisfy-user-intent-when-considering-search-vs-browse-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_d7d872a2-2eef-4233-806c-8b297c2a1c94",
+    "url": "/de/blog/customers/how-swedol-created-a-better-digital-b2b-experience",
+    "source_url": "https://www.algolia.com/de/blog/customers/how-swedol-created-a-better-digital-b2b-experience",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_d7d872a2-2eef-4233-806c-8b297c2a1c94",
+    "url": "/fr/blog/customers/how-swedol-created-a-better-digital-b2b-experience",
+    "source_url": "https://www.algolia.com/fr/blog/customers/how-swedol-created-a-better-digital-b2b-experience",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_847689a0-afd3-4855-85fa-c4ebcc6fe48b_0_2",
+    "url": "/blog/ai/change-slug",
+    "source_url": "https://www.algolia.com/blog/ai/change-slug",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_847689a0-afd3-4855-85fa-c4ebcc6fe48b",
+    "url": "/fr/blog/ai/change-slug",
+    "source_url": "https://www.algolia.com/fr/blog/ai/change-slug",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_847689a0-afd3-4855-85fa-c4ebcc6fe48b",
+    "url": "/de/blog/ai/change-slug",
+    "source_url": "https://www.algolia.com/de/blog/ai/change-slug",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_ecca8626-b368-400f-a361-247a52b487a8",
+    "url": "/de/blog/ecommerce/leveraging-advanced-search-and-discovery-with-b2b-composable-commerce-1",
+    "source_url": "https://www.algolia.com/de/blog/ecommerce/leveraging-advanced-search-and-discovery-with-b2b-composable-commerce-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_ecca8626-b368-400f-a361-247a52b487a8_0_3",
+    "url": "/blog/ecommerce/leveraging-advanced-search-and-discovery-with-b2b-composable-commerce-1",
+    "source_url": "https://www.algolia.com/blog/ecommerce/leveraging-advanced-search-and-discovery-with-b2b-composable-commerce-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_ecca8626-b368-400f-a361-247a52b487a8",
+    "url": "/fr/blog/ecommerce/leveraging-advanced-search-and-discovery-with-b2b-composable-commerce-1",
+    "source_url": "https://www.algolia.com/fr/blog/ecommerce/leveraging-advanced-search-and-discovery-with-b2b-composable-commerce-1",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_6da2db25-334c-4e75-809b-57d32684e268",
+    "url": "/blog/ai/top-examples-of-some-of-the-best-large-language-models-out-there",
+    "source_url": "https://www.algolia.com/blog/ai/top-examples-of-some-of-the-best-large-language-models-out-there",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_dc5b2d6b-f7a8-48b6-85d7-678e31a1cdfe_0_1",
+    "url": "/de/blog/engineering/managing-11-sdks-from-one-openapi-spec",
+    "source_url": "https://www.algolia.com/de/blog/engineering/managing-11-sdks-from-one-openapi-spec",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_b790ffec-1921-49cb-8b40-5f35f93422f5",
+    "url": "/de/blog/ecommerce/digital-expert-series-otrium",
+    "source_url": "https://www.algolia.com/de/blog/ecommerce/digital-expert-series-otrium",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_b790ffec-1921-49cb-8b40-5f35f93422f5",
+    "url": "/fr/blog/ecommerce/digital-expert-series-otrium",
+    "source_url": "https://www.algolia.com/fr/blog/ecommerce/digital-expert-series-otrium",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_b790ffec-1921-49cb-8b40-5f35f93422f5",
+    "url": "/blog/ecommerce/digital-expert-series-otrium",
+    "source_url": "https://www.algolia.com/blog/ecommerce/digital-expert-series-otrium",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "de_db6829e1-77f7-462c-9732-29e62256a63e",
+    "url": "/de/blog/product/help-yourself-avoid-these-7-mistakes-and-rock-your-self-serve-customer-service",
+    "source_url": "https://www.algolia.com/de/blog/product/help-yourself-avoid-these-7-mistakes-and-rock-your-self-serve-customer-service",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_db6829e1-77f7-462c-9732-29e62256a63e_0_2",
+    "url": "/blog/product/help-yourself-avoid-these-7-mistakes-and-rock-your-self-serve-customer-service",
+    "source_url": "https://www.algolia.com/blog/product/help-yourself-avoid-these-7-mistakes-and-rock-your-self-serve-customer-service",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_db6829e1-77f7-462c-9732-29e62256a63e",
+    "url": "/fr/blog/product/help-yourself-avoid-these-7-mistakes-and-rock-your-self-serve-customer-service",
+    "source_url": "https://www.algolia.com/fr/blog/product/help-yourself-avoid-these-7-mistakes-and-rock-your-self-serve-customer-service",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "fr_dc5b2d6b-f7a8-48b6-85d7-678e31a1cdfe_0_1",
+    "url": "/fr/blog/engineering/managing-11-sdks-from-one-openapi-spec",
+    "source_url": "https://www.algolia.com/fr/blog/engineering/managing-11-sdks-from-one-openapi-spec",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_dc5b2d6b-f7a8-48b6-85d7-678e31a1cdfe_0_1",
+    "url": "/blog/engineering/managing-11-sdks-from-one-openapi-spec",
+    "source_url": "https://www.algolia.com/blog/engineering/managing-11-sdks-from-one-openapi-spec",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  },
+  {
+    "objectID": "en_ddd92a2c-99fa-492c-93e5-5e796aa31310",
+    "url": "/blog/product/how-to-use-site-search-to-avoid-no-results-pages",
+    "source_url": "https://www.algolia.com/blog/product/how-to-use-site-search-to-avoid-no-results-pages",
+    "verdict_reason": "body opens with a not-found stub ('page not found' in the first 200 chars); the article has been deleted or moved"
+  }
+]

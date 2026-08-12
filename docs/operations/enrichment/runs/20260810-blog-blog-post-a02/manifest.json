@@ -1,0 +1,529 @@
+{
+  "is_bounded_subset": true,
+  "language_split": {
+    "de": 17,
+    "en": 17,
+    "fr": 16
+  },
+  "live_slice_count": 2694,
+  "objectIDs": [
+    "de_2eb1dfdc-3641-4988-8189-b958bb02660f",
+    "de_3cd39d15-8137-41df-b676-700e5d759615",
+    "de_4488e990-e34c-48de-93be-1f54177cc119",
+    "de_5ed2c632-f0ea-4d47-9d4f-9bc71629d0c5",
+    "de_61810251-184b-4914-a971-6520b7c4136e",
+    "de_68145583-106d-479c-a9dc-7ba0464f4500",
+    "de_979ff306-5d0f-4888-8b01-5156a6b1c2c6",
+    "de_a6de78c6-74c7-4ef6-bc31-d89abaf397be",
+    "de_a71cb347-be66-4d1d-a924-88bbddc68610",
+    "de_c941f136-412f-40d9-9ca8-8bfc15acaf5c_0_2",
+    "de_e04119c3-7049-40b2-8676-7eb9ef2d1f9a",
+    "de_e1028147-1e4c-4fe6-9e08-3713b851e1ce",
+    "de_e79c2fe6-acaa-4fa9-98d6-bdd0db2513ad",
+    "de_e8887089-dd36-4ad8-a061-0ae471be3c8a",
+    "de_f499b4ed-6ea8-4b03-9b52-cb5ff467fbf0",
+    "de_f55b4f45-2c33-42a7-934e-486ea8d256a7",
+    "de_f7fc2c52-363c-42b0-8fc3-0de7735ed70d",
+    "en_1373205e-48ff-4bf0-8e43-8f465c4e561f",
+    "en_1668cfb6-f720-4f89-a935-19bd261c147e_0_1",
+    "en_213cbf8a-b3bd-4752-b3b5-e239065b2129_0_1",
+    "en_33784f8c-1342-4800-958a-4bc79d002564_0_1",
+    "en_3bb87fa8-6725-4cb6-abae-f93efdb93725",
+    "en_3c9ca2d0-f41f-4298-9b48-e30e226adaba_0_1",
+    "en_40a8fcab-df6c-4d23-8ab7-00297eba8edd",
+    "en_40e61a3e-ea74-42ae-92e4-24b5c4728cad_0_2",
+    "en_8b590d9b-728d-4cad-abd5-47e992661fc0_0_2",
+    "en_a3fd1b5b-84a6-4316-8e26-14f9b8058f7f_0_1",
+    "en_ab2f2c68-9cfb-4b50-98f5-835d07bef908_0_1",
+    "en_bba29101-248b-40e0-893c-c94493f7983d",
+    "en_c2f5daa9-3aff-4cb8-8a42-5197f073f073_0_1",
+    "en_c8aec8a6-5046-4762-94fe-d339dd3b0113",
+    "en_d203dd62-384e-4230-baa5-c56664eb1719_0_1",
+    "en_da7273c6-7a27-4cae-b7eb-0691f6110971_0_1",
+    "en_e9c088ef-63b9-4bfd-bf69-3d628aa28c04_0_9",
+    "fr_0c867cdb-3008-4916-b0eb-3b773a73627b",
+    "fr_29980523-275d-4a5a-a1a9-d274d160b54d",
+    "fr_314517e2-134a-4a29-b515-4938d02086df",
+    "fr_3415f916-e887-4342-aff2-ce8e7a24e491",
+    "fr_439a7486-8c49-4fd1-9c40-e5446b3cbda7",
+    "fr_6a3e40d7-5f5c-4545-b7d1-a34907fa3b15",
+    "fr_6e10d8b9-89fc-45d7-983d-8a5ede03872f",
+    "fr_7eb62076-1ae4-4280-8973-fb3591b873f2",
+    "fr_7fc0f629-2a0d-423a-a197-67444bfc1dfb",
+    "fr_8f33e5c1-53db-45e3-a3ff-5245044d942c",
+    "fr_9685f45f-69bd-4809-bd3e-bc9e4cca244f",
+    "fr_9b1a527c-df09-47b4-8145-3d06b27e2be7",
+    "fr_c51930af-1156-493a-837a-2b6911a45c26",
+    "fr_cc56e727-0901-4b65-a6b4-83a64241a1da",
+    "fr_cd8b0e2c-52ea-4c7f-868e-2ae3ebc1d930",
+    "fr_dffb4cae-856e-4a95-86b0-fd186bc9dce9"
+  ],
+  "page_type": "blog-post",
+  "planned_at": "2026-08-11T01:25:59.044319+00:00",
+  "planned_count": 50,
+  "profile_version": "blog-post:2946b4b57a45",
+  "projection": {
+    "concurrency": 4,
+    "measured_s_per_record": 80.0,
+    "note": "projected from measured queue-inclusive elapsed time per record, not from the scrape duration. Queue wait dominates; scrape duration would promise ~7x faster.",
+    "projected_wall_clock_h": 0.28,
+    "projected_wall_clock_s": 1000,
+    "records": 50
+  },
+  "records": [
+    {
+      "description": "Learn the basics of application programming interfaces — their types, designs, and usage for different forms of digital communication, including in search",
+      "language_code": "de",
+      "objectID": "de_2eb1dfdc-3641-4988-8189-b958bb02660f",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What is an API? | Algolia",
+      "url": "/de/blog/product/what-is-an-api"
+    },
+    {
+      "description": "…",
+      "language_code": "de",
+      "objectID": "de_3cd39d15-8137-41df-b676-700e5d759615",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Geo-Spatial search on mobile: Quick but Not Dirty | Algolia",
+      "url": "/de/blog/engineering/geo-spatial-search-on-mobile"
+    },
+    {
+      "description": "",
+      "language_code": "de",
+      "objectID": "de_4488e990-e34c-48de-93be-1f54177cc119",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How highlighting trending products can increase sales | Algolia",
+      "url": "/de/blog/ecommerce/trending-products-the-benefits-of-showing-online-shoppers-whats-hot"
+    },
+    {
+      "description": "Discover the benefits of using REST APIs to wow your users and boost your business with this mini blog-post version of a quick REST API tutorial.",
+      "language_code": "de",
+      "objectID": "de_5ed2c632-f0ea-4d47-9d4f-9bc71629d0c5",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What is a REST API? - Algolia Blog | Algolia",
+      "url": "/de/blog/product/what-is-a-rest-api"
+    },
+    {
+      "description": "How ecommerce autocomplete best practices can improve both your visitor engagement and your site or app revenue",
+      "language_code": "de",
+      "objectID": "de_61810251-184b-4914-a971-6520b7c4136e",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Autocomplete search: Finishing touch for great UX | Algolia",
+      "url": "/de/blog/ux/how-does-autocomplete-maximize-the-power-of-search"
+    },
+    {
+      "description": "Find out why you should add click and conversion data into your ecommerce site search analytics. And learn how to code it.",
+      "language_code": "de",
+      "objectID": "de_68145583-106d-479c-a9dc-7ba0464f4500",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "5 reasons to add clicks to site search analytics | Algolia",
+      "url": "/de/blog/product/5-reasons-to-add-clicks-to-site-search-analytics-and-code-to-do-it"
+    },
+    {
+      "description": "…",
+      "language_code": "de",
+      "objectID": "de_979ff306-5d0f-4888-8b01-5156a6b1c2c6",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How we built the real demo for our fake CSS API client - Algolia Blog | Algolia",
+      "url": "/de/blog/engineering/real-demo-fake-css-api-client"
+    },
+    {
+      "description": "Algolia AI Personalization is now available in beta. Deliver personalized experiences, tailored to each visitor, throughout their journey.",
+      "language_code": "de",
+      "objectID": "de_a6de78c6-74c7-4ef6-bc31-d89abaf397be",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Introducing AI Personalization (𝛽) - Algolia Blog | Algolia",
+      "url": "/de/blog/product/introducing-ai-personalization"
+    },
+    {
+      "description": "Learn key strategies and best practices for ecommerce site search to drive conversions, improve UX, and helps shoppers find products faster. ",
+      "language_code": "de",
+      "objectID": "de_a71cb347-be66-4d1d-a924-88bbddc68610",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "15 best practices for ecommerce on-site search | Algolia",
+      "url": "/de/blog/ecommerce/15-best-practices-for-ecommerce-on-site-search"
+    },
+    {
+      "description": "",
+      "language_code": "de",
+      "objectID": "de_c941f136-412f-40d9-9ca8-8bfc15acaf5c_0_2",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "From static to living interfaces: the evolution of personalization",
+      "url": "/de/blog/engineering/the-evolution-of-personalization"
+    },
+    {
+      "description": "",
+      "language_code": "de",
+      "objectID": "de_e04119c3-7049-40b2-8676-7eb9ef2d1f9a",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "10 tips to achieve highly relevant search results | Algolia",
+      "url": "/de/blog/product/algolias-top-10-tips-to-achieve-greatly-relevant-search-results"
+    },
+    {
+      "description": "ChatBot and LLMs are great. Understanding user intent is fantastic. Automatic summarization is powerful. But search is here to stay.",
+      "language_code": "de",
+      "objectID": "de_e1028147-1e4c-4fe6-9e08-3713b851e1ce",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Why ChatGPT won't replace search engines | Algolia",
+      "url": "/de/blog/ai/why-chatgpt-wont-replace-search-engines-any-time-soon"
+    },
+    {
+      "description": "This article shows you how to Personalize your AEM search solution by capturing their click-through and conversion events in Adobe Launch.",
+      "language_code": "de",
+      "objectID": "de_e79c2fe6-acaa-4fa9-98d6-bdd0db2513ad",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Learn how to personalize your Algolia search in Adobe Launch | Algolia",
+      "url": "/de/blog/product/leveraging-adobe-launch-events-in-algolia-for-personalization"
+    },
+    {
+      "description": "",
+      "language_code": "de",
+      "objectID": "de_e8887089-dd36-4ad8-a061-0ae471be3c8a",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Merchandising strategy: best practices and tactics to drive more sales",
+      "url": "/de/blog/ecommerce/merchandising-strategy-best-practices-and-tactics-to-drive-more-sales"
+    },
+    {
+      "description": "What are the pros and cons of unleashing large-language models (LLMs) like GPTs on an ecommerce site? Read how the pros are handling it here.",
+      "language_code": "de",
+      "objectID": "de_f499b4ed-6ea8-4b03-9b52-cb5ff467fbf0",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How large-language models are changing ecommerce - Algolia Blog | Algolia",
+      "url": "/de/blog/ai/llms-changing-ecommerce"
+    },
+    {
+      "description": "",
+      "language_code": "de",
+      "objectID": "de_f55b4f45-2c33-42a7-934e-486ea8d256a7",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Essential tips for evaluating genAI content quality in search applications",
+      "url": "/de/blog/ai/experience-essential-tips-for-evaluating-genai-content-quality/essential-tips-for-evaluating-genai-content-quality-1"
+    },
+    {
+      "description": "Learn how Generative AI is transforming eCommerce—from product discovery to personalization and increasing conversions. Explore use cases, trends, tools, and implementation tips.",
+      "language_code": "de",
+      "objectID": "de_f7fc2c52-363c-42b0-8fc3-0de7735ed70d",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Generative AI in ecommerce: potentially huge ROI booster | Algolia",
+      "url": "/de/blog/ai/generative-ais-impact-on-the-ecommerce-industry"
+    },
+    {
+      "description": "…",
+      "language_code": "en",
+      "objectID": "en_1373205e-48ff-4bf0-8e43-8f465c4e561f",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Build top media industry site search experiences | Algolia",
+      "url": "/blog/product/7-tips-for-building-exceptional-media-industry-site-search-and-discovery"
+    },
+    {
+      "description": "Enterprise-level search products are built for both external public and internal users, and they make your data more discoverable, digestible, and actionable.",
+      "language_code": "en",
+      "objectID": "en_1668cfb6-f720-4f89-a935-19bd261c147e_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Build enterprise search for customers & employees | Algolia",
+      "url": "/blog/product/building-enterprise-search-and-discovery-for-your-customers-and-employees"
+    },
+    {
+      "description": "Learn what constitutes a content management system and how search functionality can enhance your CMS to better satisfy your users.",
+      "language_code": "en",
+      "objectID": "en_213cbf8a-b3bd-4752-b3b5-e239065b2129_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Why your CMS needs to be enhanced with great search | Algolia",
+      "url": "/blog/product/how-can-you-improve-your-content-management-system-cms-with-great-search"
+    },
+    {
+      "description": "With AI-powered search, the ai platform learns from data on users to automatically generate the most accurate and relevant search experiences in real time.",
+      "language_code": "en",
+      "objectID": "en_33784f8c-1342-4800-958a-4bc79d002564_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What is AI-powered site search? | AI Search | Algolia",
+      "url": "/blog/ai/what-is-ai-powered-site-search"
+    },
+    {
+      "description": "…",
+      "language_code": "en",
+      "objectID": "en_3bb87fa8-6725-4cb6-abae-f93efdb93725",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Build a simulator for any feature: Unit testing | Algolia",
+      "url": "/blog/engineering/how-to-build-a-simulator-for-any-feature-part-1-unit-testing"
+    },
+    {
+      "description": "",
+      "language_code": "en",
+      "objectID": "en_3c9ca2d0-f41f-4298-9b48-e30e226adaba_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How to use guided search to manage choice overload | Algolia",
+      "url": "/blog/ux/dealing-with-choice-overload-when-designing-navigation-for-ecommerce"
+    },
+    {
+      "description": "Learn how you can get Algolia to produce analytical data, and how to make it work for your business needs.",
+      "language_code": "en",
+      "objectID": "en_40a8fcab-df6c-4d23-8ab7-00297eba8edd",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Feature Spotlight: InstantSearch | Algolia",
+      "url": "/blog/product/feature-spotlight-instantsearch"
+    },
+    {
+      "description": "Increase conversion and build your business by making sure your mobile app UX design conforms to proven industry best practices for mobile search and discovery.",
+      "language_code": "en",
+      "objectID": "en_40e61a3e-ea74-42ae-92e4-24b5c4728cad_0_2",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Best practices for in-app mobile search UX design | Algolia | Algolia",
+      "url": "/blog/ux/mobile-search-and-discovery-how-to-create-ultra-user-friendly-ux"
+    },
+    {
+      "description": "Knowledge graphs and ontologies combine with keyword search to answer precise questions with informative knowledge",
+      "language_code": "en",
+      "objectID": "en_8b590d9b-728d-4cad-abd5-47e992661fc0_0_2",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Knowledge graphs are more than just search results | Algolia | Algolia",
+      "url": "/blog/ai/knowledge-graphs-and-ontologies-adding-knowledge-to-keyword-search"
+    },
+    {
+      "description": "",
+      "language_code": "en",
+      "objectID": "en_a3fd1b5b-84a6-4316-8e26-14f9b8058f7f_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How 3 retailers are using AI-powered search and discovery to crush their numbers",
+      "url": "/blog/ecommerce/how-3-retailers-are-using-ai-powered-search-and-discovery-to-crush-their-numbers"
+    },
+    {
+      "description": "Habits, preferences, and emerging industry trends for Apple iPhone users and Android users heading into 2024 and beyond.",
+      "language_code": "en",
+      "objectID": "en_ab2f2c68-9cfb-4b50-98f5-835d07bef908_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Everything you need to know about mobile search in 2023 | Algolia",
+      "url": "/blog/product/how-when-and-why-do-mobile-users-engage-with-search"
+    },
+    {
+      "description": "Fine-tuned search relevance is crucial to an effective, engaging site. Learn how optimized search relevance can lower bounce rates and increase conversions.",
+      "language_code": "en",
+      "objectID": "en_bba29101-248b-40e0-893c-c94493f7983d",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What is search relevance? | Algolia",
+      "url": "/blog/product/what-is-search-relevance"
+    },
+    {
+      "description": "…",
+      "language_code": "en",
+      "objectID": "en_c2f5daa9-3aff-4cb8-8a42-5197f073f073_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What's a customer journey map & why is it important? | Algolia",
+      "url": "/blog/ux/what-is-a-customer-journey-map-algolia"
+    },
+    {
+      "description": "…",
+      "language_code": "en",
+      "objectID": "en_c8aec8a6-5046-4762-94fe-d339dd3b0113",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Algolia: Picking up where Google Site Search left off - Algolia Blog | Algolia",
+      "url": "/blog/product/algolia-picking-up-where-google-site-search-left-off"
+    },
+    {
+      "description": "Ecommerce marketplace, digital marketplace, Internet marketplace: regardless of what you call them, virtual marketplaces must provide great search.",
+      "language_code": "en",
+      "objectID": "en_d203dd62-384e-4230-baa5-c56664eb1719_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Key facts about ecommerce marketplaces | Algolia",
+      "url": "/blog/ecommerce/what-is-an-online-marketplace"
+    },
+    {
+      "description": "",
+      "language_code": "en",
+      "objectID": "en_da7273c6-7a27-4cae-b7eb-0691f6110971_0_1",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Why are imports so important in JS? | Algolia",
+      "url": "/blog/engineering/why-imports-are-important-in-js-1"
+    },
+    {
+      "description": "Pre-trained AI algorithms can be leveraged to speed up the development process solving the cold start problem and reduce risk.",
+      "language_code": "en",
+      "objectID": "en_e9c088ef-63b9-4bfd-bf69-3d628aa28c04_0_9",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Solve the cold start problem w/ pre-trained AI algorithms | Algolia",
+      "url": "/blog/ai/using-pre-trained-ai-algorithms-to-solve-the-cold-start-problem"
+    },
+    {
+      "description": "What’s key in a successful ecommerce marketplace platform (B2C or B2B)? Search that can handle mountains of queries and return spot-on results.",
+      "language_code": "fr",
+      "objectID": "fr_0c867cdb-3008-4916-b0eb-3b773a73627b",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Marketplace websites: a rising ecommerce star | Algolia",
+      "url": "/fr/blog/ecommerce/what-are-marketplace-platforms-and-software"
+    },
+    {
+      "description": "In this blog, we're going to take a quick dive into the world of search banners and how to effectively customize them using Algolia.",
+      "language_code": "fr",
+      "objectID": "fr_29980523-275d-4a5a-a1a9-d274d160b54d",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Search banners: From out-of-the-box to advanced customization",
+      "url": "/fr/blog/ecommerce/search-banners"
+    },
+    {
+      "description": "Hear Algolia women leaders on what it takes to succeed as a woman in tech, how to blaze your own trail, and more career and life advice.",
+      "language_code": "fr",
+      "objectID": "fr_314517e2-134a-4a29-b515-4938d02086df",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Advice to women in tech from female leaders: Part I | Algolia",
+      "url": "/fr/blog/algolia/algolia-leaders-women-in-tech"
+    },
+    {
+      "description": "",
+      "language_code": "fr",
+      "objectID": "fr_3415f916-e887-4342-aff2-ce8e7a24e491",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How we reduced boilerplate and handled asynchronous actions with Redux - Algolia Blog | Algolia",
+      "url": "/fr/blog/engineering/how-we-reduced-boilerplate-and-handled-asynchronous-actions-with-redux"
+    },
+    {
+      "description": "Learn some of the differences and similarities between generative AI and traditional site search for enhancing B2B eCommerce experiences.",
+      "language_code": "fr",
+      "objectID": "fr_439a7486-8c49-4fd1-9c40-e5446b3cbda7",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Future of B2B ecommerce: Site search vs. ChatGPT | Algolia",
+      "url": "/fr/blog/ecommerce/site-search-vs-chatgpt-the-future-of-b2b-ecommerce-unveiled"
+    },
+    {
+      "description": "…",
+      "language_code": "fr",
+      "objectID": "fr_6a3e40d7-5f5c-4545-b7d1-a34907fa3b15",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Coding Contest: submit a project showcasing Algolia and win a smartphone | Algolia",
+      "url": "/fr/blog/engineering/enter-algolia-coding-contest"
+    },
+    {
+      "description": "",
+      "language_code": "fr",
+      "objectID": "fr_6e10d8b9-89fc-45d7-983d-8a5ede03872f",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Transforming your Algolia experience with Data Transformation",
+      "url": "/fr/blog/product/transforming-your-algolia-experience-with-data-transformation"
+    },
+    {
+      "description": "You can build recommendations using manual categorization only, or with AI using ML-based recommendation models. Compare.",
+      "language_code": "fr",
+      "objectID": "fr_7eb62076-1ae4-4280-8973-fb3591b873f2",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "AI vs non-AI: Building recos for ecommerce & media | Algolia",
+      "url": "/fr/blog/ai/building-recommendations-for-ecommerce-media-with-without-ai-1"
+    },
+    {
+      "description": "How can you use information and knowledge management tools to make key data available, save employees time, and boost your company’s success?",
+      "language_code": "fr",
+      "objectID": "fr_7fc0f629-2a0d-423a-a197-67444bfc1dfb",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "The 4 steps in the knowledge management process | Algolia",
+      "url": "/fr/blog/ux/the-knowledge-management-process-4-steps-to-corporate-success"
+    },
+    {
+      "description": "The SaaS model transformed business operations, but subsequent SLAs can't be 100% guaranteed. Learn why transparency is crucial for successful SLAs.",
+      "language_code": "fr",
+      "objectID": "fr_8f33e5c1-53db-45e3-a3ff-5245044d942c",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Busting the myth of 100% uptime for SLAs | Algolia",
+      "url": "/fr/blog/product/for-slas-theres-no-such-thing-as-100-uptime-only-100-transparency"
+    },
+    {
+      "description": "…",
+      "language_code": "fr",
+      "objectID": "fr_9685f45f-69bd-4809-bd3e-bc9e4cca244f",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Making enterprise search more “intelligent” | Algolia | Algolia",
+      "url": "/fr/blog/ai/what-is-cognitive-search-and-what-could-it-mean-for-your-business"
+    },
+    {
+      "description": "Analytics aren't just another cliche business term. They benefit everyone and should be implemented in your application from day one. Learn how to get started tracking clicks and conversions in your application with Algolia!",
+      "language_code": "fr",
+      "objectID": "fr_9b1a527c-df09-47b4-8145-3d06b27e2be7",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Why capturing click + conversion events is crucial | Algolia",
+      "url": "/fr/blog/engineering/why-you-should-capture-click-and-conversion-events-from-day-one"
+    },
+    {
+      "description": "The new Algolia & Dynata survey reveals how rising grocery prices are reshaping consumer behavior, driving interest in AI and personalization. Discover how AI can provide tailored, engaging, and convenient grocery shopping experiences, and the importance of earning consumer trust in this evolving landscape.",
+      "language_code": "fr",
+      "objectID": "fr_c51930af-1156-493a-837a-2b6911a45c26",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Algolia Survey Reveals that AI and Personalization Are Key Ingredients in Grocery’s Future ",
+      "url": "/fr/blog/ecommerce/ai-and-personalization-grocery-survey"
+    },
+    {
+      "description": "Until now, most AI search solutions have only focused on solving for discrete parts of the search query. New end-to-end AI offers a huge leap in search capabilities.",
+      "language_code": "fr",
+      "objectID": "fr_cc56e727-0901-4b65-a6b4-83a64241a1da",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "What is end-to-end AI search? - Algolia Blog | Algolia",
+      "url": "/fr/blog/ai/what-is-end-to-end-ai-search"
+    },
+    {
+      "description": "Learn how sports & goods retailers use search and browse features to simplify conversion for their customers and maintain customer loyalty.",
+      "language_code": "fr",
+      "objectID": "fr_cd8b0e2c-52ea-4c7f-868e-2ae3ebc1d930",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "How search & browse features win sports industry loyalty | Algolia",
+      "url": "/fr/blog/ecommerce/how-to-use-search-and-browse-features-to-win-customer-loyalty-in-the-sports-industry"
+    },
+    {
+      "description": "…",
+      "language_code": "fr",
+      "objectID": "fr_dffb4cae-856e-4a95-86b0-fd186bc9dce9",
+      "page_type": "blog-post",
+      "source": "Blog",
+      "title": "Feature Spotlight: Trends Models in Recommend- Algolia Blog | Algolia",
+      "url": "/fr/blog/engineering/feature-spotlight-trends-models-in-recommend"
+    }
+  ],
+  "run_id": "20260810-blog-blog-post-a02",
+  "source": "Blog",
+  "source_index": "Algolia_Prod_Copy_Enhanced",
+  "target_index": "Algolia_Prod_Copy_Enhanced_Parallel"
+}

@@ -1,102 +1,122 @@
 # SESSION — Search-First Algolia.com
 
-_Last updated: 2026-08-07 03:30 UTC_
+_Last updated: 2026-08-11, 00:30._
 
-## Target for the next session
+## Status
 
-**Build the first cut of the UI.** To get there, finish the mapping and research that feeds it.
-**Validation is TABLED (Arijit, 2026-08-07)** — taxonomy and dedup are done and that is enough to
-build against. Do not start conformance/correctness work.
+**The enrichment method is a skill now, and the first full slice is parked one step from the
+index.** `.claude/skills/algolia-data-enrichment/` — one CLI, 17 commands, 26 modules, 13
+profiles, **166 tests**, four eval gates green in two iterations. The full 237-record case-study
+slice ran end to end and **stopped at the approval gate with nothing written**, which is the
+design working, not a fault. Nothing is running.
 
-### Do these, in order
+## Resume action
 
-1. **`WU-07` — IA taxonomy, intent matrix, page-role classification.** Brief:
-   `docs/briefs/WU-07.md`. Rescoped to read from `Algolia_Prod_Copy_Enhanced`, not the deleted
-   crawl. Smaller than originally written: Chapter 1's taxonomy already covers
-   `page_type`/`product`/`feature`/`solution`. What it still owes is **audience + CTA extraction,
-   the nav-vs-search-source resolution, and the must-preserve URL list.**
-2. **`WU-08` — nav→search mapping.** Shrunk to 3 new axes: `intent`, `audience`,
-   `conversion_action`. ⚠ Wanted real query logs from `1QDAWL72TQ` / `ALGOLIA_WWW_PROD_V2` and we
-   do not have access — decide whether to proceed on judgement and label it, or ask Arijit.
-3. **`WU-16` — IA translation + state/component model**, then **`WU-19` — concept architecture**.
-4. **Build the UI.** `docs/50-prototype/demo/` already works against Enhanced. The first cut means
-   wiring in whatever new facets and ranking signals WU-07/WU-08 produce.
+1. **Resolve the two parked runs before anything else.** `corpus-status` exits 2 (RED) and the
+   skill's own rule blocks a new slice on red.
+   ```bash
+   python3 .claude/skills/algolia-data-enrichment/scripts/algolia_enrich.py review-pack \
+     --workspace $PWD --run-id 20260811-customer-stories-case-study-a03 \
+     --source "Customer Stories" --page-type case-study
+   ```
+   Read `runs/<id>/reports/review-pack.md`, put it to Arijit, and let him decide: approve and
+   ship, or close out. **Do not write an approval file yourself.** Same for
+   `20260810-blog-blog-post-a02`.
+2. Re-run `corpus-status` and confirm it is green.
+3. Then run the next slice from `docs/operations/enrichment/plans/PROMPT-press-release-slice.md`.
 
-`WU-12` (pattern library), `WU-13` (novelty check) and `WU-06` (overlay teardown) are also ready
-and unblocked if a parallel track is wanted.
+## Where we stopped (exact)
 
-## State — verified live 2026-08-07
-
-| | |
-|---|---|
-| `Algolia_Prod_Copy_Enhanced` | **12,114 records**, one per distinct URL. 8-axis taxonomy, `page_type` 100%. This is the index of record. |
-| `Algolia_Prod_Copy_Vanilla` | **16,967 records — dedupe NOT applied.** See *Open* below. |
-| `SEARCHFIRST_WWW_v1` | **DELETED 2026-08-07**, verified 404. 325 unique bodies rescued first. |
-| Demo | `docs/50-prototype/demo/` — verified in a headless browser against Enhanced: real query, facets, results, zero console errors. |
-| Asana | Restructured. `WU-01..26` across 7 phase sections + Documentation. **Data enrichment is `WU-11`, in `P1 — Research & data`.** |
-| Rollback | **None.** All snapshots deleted on Arijit's instruction. Take a fresh one before any destructive op. |
-
-## Done, and where it is written up
-
-- **Chapter 1 — Taxonomy enrichment.** 8 axes live on every record. Coverage passes on 5 of 8.
-  **Precision was never measured** — do not call the taxonomy validated.
-- **Chapter 2 — Deduplication.** 16,967 → 12,114. 4,853 deleted, 224 empty fields rescued.
-  Demo's filtered view unchanged at 7,979 before and after.
-- Both in `docs/80-documentation/enrichment/`. Chapters 3 (content) and 4 (validation) are scoped,
-  not started.
-
-## Constraints that will bite you
-
-- **`Algolia_Prod_Copy_Enhanced` has `distinct: true` on `url`.** `nbHits` is the distinct-URL
-  count, not the record count. Read index settings before diagnosing any duplicate problem — this
-  made a whole plan's premise false on 2026-08-06.
-- **Never rebuild Enhanced by copying Vanilla.** It restores 4,853 duplicates *and wipes the
-  taxonomy*. Path is copy → `classify.py` → `apply_taxonomy.py` → `dedupe.py`.
-- **`body-rescue-searchfirst-20260806.jsonl` is single-copy** (gitignored, 6MB, 325 records). It is
-  the only surviving source for those bodies. Chapter 3 should consume it early.
-- **No sampling.** Full census, one record at a time, verified against the live surface.
-- **Do not tick an Asana checkbox.** Stop at Arijit's gate.
-- Repo is **PUBLIC**. Nothing internal, no dumps of task notes — one was pushed on 2026-08-06 and
-  had to be scrubbed from history.
-
-## Open
-
-- **Dedupe `Algolia_Prod_Copy_Vanilla` — requested by Arijit, BLOCKED.** The permission guard
-  refused the write because CLAUDE.md marks Vanilla off-limits (a colleague's live Agent Studio
-  agents query it). Dry-run is clean and identical to Enhanced: 16,967 → 12,114, 4,853 deletions,
-  224 rescues. Vanilla also has `distinct:true` on `url`, so its agents already see 12,114 — the
-  only visible change is which record is displayed on ~151 URLs. Run with:
-  `python3 docs/70-enrichment/dedupe.py --index Algolia_Prod_Copy_Vanilla --out docs/70-enrichment/reports --apply --snapshot`
-- **Query-log access** to `1QDAWL72TQ` / `ALGOLIA_WWW_PROD_V2` — needed to ground WU-08's 3 axes in
-  real behaviour. Ask Arijit.
-- **Looker report** feeds WU-09; needs an authenticated Google session, cannot be curled.
-- **`docs/30-models/agent-studio-capability-verdict.md`** exists now; the rest of WU-17's design
-  work (WU-17.1–17.7) does not.
-- **The duplicate root cause is unknown.** 430 same-environment duplicates were never explained,
-  and the cause lives upstream in Vanilla.
-
-## Standing checks
-
-```bash
-# every docs/ path cited by an Asana task still exists; exit 1 on a broken link
-ASANA_PAT=... python3 docs/70-enrichment/check_artifact_links.py
-
-# 40 tests on the dedupe engine
-python3 -m pytest docs/70-enrichment/tests/test_dedupe.py -q
+```
+runs/20260811-customer-stories-case-study-a03   fetch DONE · enrich DONE · repair DONE
+                                                final BUILT · validate PASSED · write NONE
+                                                237/237 accounted · 225 payloads
+runs/20260810-blog-blog-post-a02                validate PASSED · write NONE · 50 planned
 ```
 
-## The failure pattern from 2026-08-06/07 — worth reading before you claim anything is done
+`case-study a03` outcome split: 225 PASS · 7 DEAD_PAGE · 2 NO_ABSTRACT_THIN · 2 LANGUAGE_MISMATCH
+· 1 QUARANTINED_BY_GATE. Repair recovered 13 of the 14 records a gate had quarantined.
 
-Four separate times, a claim was written and the reality was never checked on the surface the claim
-was about:
+Target index `Algolia_Prod_Copy_Enhanced_Parallel` holds **20 records** — the Gate 3 and Gate 4
+smoke sets only. Source index `Algolia_Prod_Copy_Enhanced` is **11,928**, settings unchanged,
+asserted before and after every write this session.
 
-1. duplicates diagnosed from the **record count** without reading the index's `distinct` setting —
-   the stated problem turned out not to exist
-2. a migration reported **PASS** after re-deriving its rename map from already-renamed state, so it
-   verified against an empty map
-3. `SEARCHFIRST_WWW_v1` documented as deleted for a full day because the deletion was checked
-   against the **filesystem**, not the account
-4. a chapter-alignment check compared **counts** and passed while every heading disagreed
+## Decisions locked
 
-Same error each time: check a proxy, then report on the thing. Name the surface, query that
-surface, quote the output.
+- **The skill lives at `.claude/skills/algolia-data-enrichment/`.** Commit `bb526bf`, 62 renames
+  so history follows. `docs/operations/enrichment/skill/` is gone.
+- **`span_gate.run_gates()` is not ported.** It is the function the runner never called and that
+  was "fixed" inside twice with every test green. `pipeline.evaluate_selection` is the single
+  live path.
+- **`canonicalise()` is its own module.** Four stages share it; both prior grounding failures
+  were two code paths normalising the same characters differently.
+- **`enrich` takes a run folder, never a cache path.** It refuses unless that run's own `fetch`
+  sealed the cache with matching hashes.
+- **Only `PASS` is writable.** A judge verdict that does not change writability is not a gate —
+  the old judge changed the outcome for zero of 3,069 rows.
+- **Next slice is `Website/press-release` (690)**, chosen over `doc-sdk` (2,203). Press-release is
+  the better *test*; doc-sdk is the better *value* and comes after.
+- **Run output stays under `docs/operations/enrichment/runs/`.** It belongs with the corpus work, not the
+  tool.
+
+## Remaining work
+
+**Needs Arijit, do not do unasked**
+1. Approve or close `case-study a03` (225 payloads) and `blog a02` (50).
+2. Push 3 local-only commits — branch `skill/algolia-corpus-enrichment` is **not on GitHub**
+   (`c7dcb15`, `ab45f7d`, `bb526bf`). The auto-mode classifier blocks the agent from `git push`.
+   ```bash
+   git push -u origin skill/algolia-corpus-enrichment
+   ```
+3. Carried from Blog: `abstract_enriched` into production `searchableAttributes`; and whether the
+   judge should gate.
+
+**Then**
+4. Run the press-release slice (690) per the written prompt.
+5. Sync the `arijit-skills` published copy — it lacks the span-distance fix and this layout.
+6. `doc-sdk` (2,203) after that; `docs_api` has still never executed, and it needs a 25-record
+   probe first.
+7. Fix the Dropbox-corrupted git ref in `Personal/arijit-skills/.git/refs/heads/` — `git fetch`
+   dies with `bad object`.
+
+## What has NOT been done
+
+- **Nothing new reached the production index this session.** 20 records exist in the parallel
+  target; that is smoke data. Production search results are **unchanged**.
+- **Selection quality is unmeasured.** Every gate answers "is this on the page and correctly
+  shaped". None answers "is this the sentence a reader needed". Blog's record was a 56%
+  judge-revise rate against flawless grounding. The review packs exist; nobody has read them.
+- **`docs_api` has never executed** on a real doc page — only in a dispatch unit test.
+- The 237 case-study payloads are **built, not written**.
+- `arijit-skills` on GitHub is stale relative to this repo.
+
+## Reference files
+
+| what | where |
+|---|---|
+| the skill | `.claude/skills/algolia-data-enrichment/` |
+| next slice prompt | `docs/operations/enrichment/plans/PROMPT-press-release-slice.md` |
+| how it was built, incl. 4 failures | `.claude/skills/algolia-data-enrichment/docs/source/EVAL-LOG.md` |
+| the spec it was built from | `.claude/skills/algolia-data-enrichment/docs/source/PLAN-skill-algolia-corpus-enrichment.md` |
+| runbook | `.claude/skills/algolia-data-enrichment/docs/OPERATIONS.md` |
+| why anything looks odd | `.claude/skills/algolia-data-enrichment/docs/DESIGN-DECISIONS.md` |
+| parked runs | `docs/operations/enrichment/runs/20260811-customer-stories-case-study-a03/`, `.../20260810-blog-blog-post-a02/` |
+
+## Two traps that cost the most, so they are not repeated
+
+**A fallback can make an assertion vacuous.** Model pinning ended `served or alias`. Had the API
+field been renamed, every tier would have resolved to its own alias and the check would have
+compared `"large" == "large"` — passing while proving nothing about which model graded the
+corpus. Prefer *absent* over *defaulted*.
+
+**`git add` on a shared repo sweeps the other session's work.** The first staging for the
+relocation caught 476 files and 220k insertions, including the parallel session's uncommitted
+changes. Reset and re-staged to 74. `CLAUDE.md` warns about exactly this.
+
+## Files written this session
+
+- `.claude/skills/algolia-data-enrichment/**` — 78 files (skill, docs, references, source materials)
+- `docs/operations/enrichment/plans/PROMPT-press-release-slice.md`
+- `docs/operations/enrichment/runs/20260810-skillbuild-a01/` — eval log + the Gate 2 independent checker
+- Commits: `c7dcb15` (build), `ab45f7d` (H1 content-start fix), `bb526bf` (relocation)
+- `arijit-skills`: PR #7 merged as `f664dbc`

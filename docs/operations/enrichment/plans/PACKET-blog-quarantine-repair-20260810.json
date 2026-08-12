@@ -1,0 +1,37 @@
+{
+  "results_root": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/70-enrichment/batches-out-blog-repair3",
+  "expect": 589,
+  "rows": 589,
+  "distinct": 589,
+  "duplicates": [],
+  "status": {
+    "PASS": 568,
+    "JUDGE_REVISE": 20,
+    "QUARANTINED_BY_GATE": 1
+  },
+  "recovered": 588,
+  "still_quarantined": 1,
+  "spans_checked": 4825,
+  "grounding_failures": [],
+  "leakage_failures": [],
+  "quality_defects": {},
+  "defective_rows": [],
+  "remaining_reasons": {
+    "INCOMPLETE_SPAN": 2
+  },
+  "pool_gate_dropped": {
+    "REVERSAL_UNREPAIRABLE": 480,
+    "REVERSAL_EXTENDED": 1180,
+    "EXCLUDED_SECTION": 613,
+    "SPEECH_QUOTE": 58,
+    "BLACKLIST": 308,
+    "EXCLUDED_SECTION_EXTRA": 114,
+    "EXTENSION_DUPLICATE_TITLE": 4
+  },
+  "attempts": {
+    "1": 533,
+    "2": 50,
+    "3": 6
+  },
+  "all_checks_pass": true
+}

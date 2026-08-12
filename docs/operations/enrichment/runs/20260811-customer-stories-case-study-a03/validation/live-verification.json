@@ -1,0 +1,59 @@
+{
+  "proof_of_life": {
+    "ok": true,
+    "probes": [
+      {
+        "found_self": true,
+        "nbHits": 1,
+        "objectID": "de_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503",
+        "query": "beliebte landesweite Kette beschloss, die digitale"
+      },
+      {
+        "found_self": true,
+        "nbHits": 4,
+        "objectID": "de_96759fb1-e0b6-407d-abf3-9f966262ec8d",
+        "query": "stellte fest, dass Algolia Search die"
+      },
+      {
+        "found_self": true,
+        "nbHits": 1,
+        "objectID": "fr_96759fb1-e0b6-407d-abf3-9f966262ec8d",
+        "query": "constaté qu'Algolia Search améliorait considérablement la"
+      },
+      {
+        "found_self": true,
+        "nbHits": 2,
+        "objectID": "en_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503_3_0",
+        "query": "result of improving the customer journey"
+      },
+      {
+        "found_self": true,
+        "nbHits": 2,
+        "objectID": "en_96759fb1-e0b6-407d-abf3-9f966262ec8d_4_0",
+        "query": "by improving customer experience and website"
+      }
+    ],
+    "queries_with_hits": 5
+  },
+  "source_index": {
+    "expected_records": 11928,
+    "index": "Algolia_Prod_Copy_Enhanced",
+    "ok": true,
+    "records": 11928,
+    "records_unchanged": true,
+    "settings_changed": []
+  },
+  "verification": {
+    "exact": 225,
+    "expected": 225,
+    "extra_count": 0,
+    "extra_records_in_target": [],
+    "forbidden_metadata": [],
+    "index": "Algolia_Prod_Copy_Enhanced_Parallel",
+    "mismatched": [],
+    "missing": [],
+    "ok": true,
+    "spans_compared": 1714
+  },
+  "verified_at": "2026-08-11T04:52:24.395046+00:00"
+}

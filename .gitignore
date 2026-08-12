@@ -10,8 +10,16 @@ node_modules/
 # raw crawl / enrichment data payloads — regenerable, too large for git, not "docs"
 docs/50-prototype/corpus/records.jsonl
 docs/50-prototype/corpus/records-doc.jsonl
-docs/60-enrichment/enhanced-pre-taxonomy-*.jsonl
-docs/60-enrichment/taxonomy-assignments.jsonl
+# These said `docs/60-enrichment/` until 2026-08-07. That directory was renamed to
+# 70-enrichment long before, so both rules matched nothing and 23MB of payload
+# (enhanced-pre-taxonomy 18MB, taxonomy-assignments 4.2MB) was committed to this PUBLIC
+# repo against the intent stated one line above. Same rename that renumbered the work units.
+# Duplicated in docs/70-enrichment/.gitignore so a future rename cannot orphan them again.
+docs/70-enrichment/enhanced-pre-taxonomy-*.jsonl
+docs/70-enrichment/taxonomy-assignments.jsonl
+docs/70-enrichment/snapshots/
+docs/70-enrichment/work-queue.jsonl
+docs/70-enrichment/cache*/
 
 # full Agent Studio agent dump — contains complete internal system-prompt text for 51
 # live agents; this repo is public, do not ship internal prompt content by default
@@ -22,3 +30,22 @@ docs/20-research/agent-studio-inventory.json
 
 # VPS connection params — project-local, never commit
 .env.vps
+
+# python bytecode from the WU-06 research scripts
+__pycache__/
+
+# Skill build residue — pattern, not instances (see docs/70-enrichment/.gitignore for why)
+.claude/skills/*/scripts/**/__pycache__/
+.claude/skills/*/.pytest_cache/
+
+# Local execution state. These files support a developer session but are not project source,
+# customer evidence, or safe public GitHub content.
+.planning/
+.development-loop/
+.tmp-jahia-upload/
+.pytest_cache/
+
+# Regenerable local analysis and enrichment residue.
+docs/research/search-experience/.cache-enhanced-census.jsonl
+docs/operations/enrichment/.selection-registry.jsonl.lock
+docs/operations/enrichment/_archive/

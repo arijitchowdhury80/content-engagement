@@ -1,0 +1,139 @@
+{
+  "coverage": {
+    "all_accounted_for": true,
+    "coverage_target_pct": 0.85,
+    "human_review_open": 0,
+    "human_review_pct": 0.0,
+    "max_human_review_open_pct": 0.05,
+    "meets_coverage": true,
+    "outcome_coverage_pct": 1.0,
+    "planned_target_count": 1,
+    "target_written": 1,
+    "terminal_unwritable": 0,
+    "unattempted": 0,
+    "within_human_review_cap": true,
+    "writable_coverage_pct": 1.0
+  },
+  "gates_loaded": [
+    "G-blacklist",
+    "G-context-language-mix",
+    "G-context-quotation",
+    "G-context-reversal",
+    "G-context-section",
+    "G-context-sections-spread",
+    "G-id-only-selection",
+    "G-information-gain",
+    "G-integrity",
+    "G-judge",
+    "G-method-agreement",
+    "G-pool-filter",
+    "G-pool-reversal",
+    "G-pool-static-ban",
+    "G-repair-incomplete",
+    "G-subject-present",
+    "G-terminal-verdict",
+    "V-grounding-offset-free",
+    "V-grounding-offset-slice",
+    "V-grounding-zero-spans",
+    "V-live-byte-match",
+    "V-live-no-extra-records",
+    "V-live-no-metadata",
+    "V-live-proof-of-life",
+    "V-payload-allowed-fields",
+    "V-payload-in-manifest",
+    "V-payload-no-duplicate-ids",
+    "V-payload-no-null",
+    "V-quality-chrome",
+    "V-quality-duplicate-description",
+    "V-quality-incomplete",
+    "V-quality-leakage",
+    "V-quality-template",
+    "V-source-index-unchanged"
+  ],
+  "grounding": {
+    "failures": [],
+    "located": 8,
+    "missing_body": [],
+    "modes": {
+      "canonical": 2,
+      "exact": 6
+    },
+    "offset_drift": [],
+    "ok": true,
+    "rows": 1,
+    "spans_checked": 8
+  },
+  "language_census": {
+    "en": {
+      "abstract_span_chars": {
+        "max": 242,
+        "mean": 162.0,
+        "min": 121,
+        "n": 3,
+        "p50": 123
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 3.0,
+        "min": 3,
+        "n": 1,
+        "p50": 3
+      },
+      "candidates": {
+        "max": 98,
+        "mean": 98.0,
+        "min": 98,
+        "n": 1,
+        "p50": 98
+      },
+      "highlight_chars": {
+        "max": 220,
+        "mean": 142.6,
+        "min": 97,
+        "n": 5,
+        "p50": 123
+      },
+      "highlight_count": {
+        "max": 5,
+        "mean": 5.0,
+        "min": 5,
+        "n": 1,
+        "p50": 5
+      },
+      "records": 1,
+      "statuses": {
+        "PASS": 1
+      }
+    }
+  },
+  "method_check": {
+    "disagreements": 0,
+    "ok": true,
+    "rate": 0.0,
+    "threshold": 0.1
+  },
+  "payload": {
+    "duplicate_object_ids": [],
+    "fields": [
+      "abstract_enriched",
+      "keyhighlights_enriched",
+      "objectID"
+    ],
+    "forbidden_fields_present": [],
+    "ok": true,
+    "payloads": 1
+  },
+  "profile_version": "case-study:64aeeb72fd5b",
+  "quality": {
+    "chrome": [],
+    "duplicate_description": [],
+    "incomplete_spans": [],
+    "leakage": [],
+    "ok": true,
+    "rows": 1,
+    "spans_checked": 8,
+    "template_collisions": {}
+  },
+  "run_id": "20260812-cs-donorschoose-a01",
+  "validated_at": "2026-08-12T05:17:17.317184+00:00"
+}

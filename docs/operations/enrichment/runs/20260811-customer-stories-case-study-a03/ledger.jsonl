@@ -1,0 +1,508 @@
+{"chars": 13303, "objectID": "de_96759fb1-e0b6-407d-abf3-9f966262ec8d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13553, "objectID": "fr_96759fb1-e0b6-407d-abf3-9f966262ec8d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15806, "objectID": "de_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11270, "objectID": "en_96759fb1-e0b6-407d-abf3-9f966262ec8d_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16421, "objectID": "fr_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13530, "objectID": "en_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15364, "objectID": "de_1e12af9e-c458-4825-85a7-5b3e94258763", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15182, "objectID": "fr_1e12af9e-c458-4825-85a7-5b3e94258763", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12259, "objectID": "en_1e12af9e-c458-4825-85a7-5b3e94258763_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14456, "objectID": "fr_a1ab6edb-ece3-473f-a934-269b816db624", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12143, "objectID": "en_a1ab6edb-ece3-473f-a934-269b816db624_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14239, "objectID": "de_a1ab6edb-ece3-473f-a934-269b816db624", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 19813, "objectID": "de_7ee94215-25f0-4fba-a760-27f9634b520f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 19897, "objectID": "fr_7ee94215-25f0-4fba-a760-27f9634b520f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16206, "objectID": "en_7ee94215-25f0-4fba-a760-27f9634b520f_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 21066, "objectID": "de_bc4d8a99-ec83-404a-b6d3-03fd591c61f6", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 17240, "objectID": "en_bc4d8a99-ec83-404a-b6d3-03fd591c61f6_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13619, "objectID": "en_aa7ef1a7-cae9-4096-8d1f-08763268af54_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 205, "objectID": "de_e393be62-de5f-4673-8d56-b4682bbc9ebb_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 20785, "objectID": "fr_bc4d8a99-ec83-404a-b6d3-03fd591c61f6", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15776, "objectID": "fr_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12901, "objectID": "de_256c2a5e-f0e2-4126-94ed-fdf7c99245c3", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12708, "objectID": "de_48242ec9-4d61-47b1-a3a1-1869e3a36bd7", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13167, "objectID": "fr_48242ec9-4d61-47b1-a3a1-1869e3a36bd7", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16243, "objectID": "de_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15833, "objectID": "en_78986fd0-7d33-454c-b243-45b66f9ca4c5_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 18751, "objectID": "de_78986fd0-7d33-454c-b243-45b66f9ca4c5", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12996, "objectID": "fr_256c2a5e-f0e2-4126-94ed-fdf7c99245c3", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10897, "objectID": "en_256c2a5e-f0e2-4126-94ed-fdf7c99245c3_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8322, "objectID": "de_f3ea09ef-2a78-4188-8a1f-72f330496179", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 7052, "objectID": "en_f3ea09ef-2a78-4188-8a1f-72f330496179", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 18985, "objectID": "fr_78986fd0-7d33-454c-b243-45b66f9ca4c5", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13801, "objectID": "de_e6deb45c-7ecf-479c-9b42-3a03841e4068", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8182, "objectID": "fr_f3ea09ef-2a78-4188-8a1f-72f330496179", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 7151, "objectID": "en_84daa182-b423-4ddc-9e33-18b6a5ae6127", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11962, "objectID": "en_e6deb45c-7ecf-479c-9b42-3a03841e4068_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8364, "objectID": "de_84daa182-b423-4ddc-9e33-18b6a5ae6127", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13323, "objectID": "de_9011f3d1-31dd-4480-ad26-1ee447b8a274", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11379, "objectID": "en_9011f3d1-31dd-4480-ad26-1ee447b8a274_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14364, "objectID": "fr_e6deb45c-7ecf-479c-9b42-3a03841e4068", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13752, "objectID": "fr_9011f3d1-31dd-4480-ad26-1ee447b8a274", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11339, "objectID": "en_34a73e6c-a20a-491c-9144-10384494a2da_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13483, "objectID": "fr_34a73e6c-a20a-491c-9144-10384494a2da", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10480, "objectID": "en_9a1f8335-3451-40ac-9e56-162d5721916c", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13260, "objectID": "de_34a73e6c-a20a-491c-9144-10384494a2da", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8217, "objectID": "fr_84daa182-b423-4ddc-9e33-18b6a5ae6127", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12270, "objectID": "de_9a1f8335-3451-40ac-9e56-162d5721916c_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13181, "objectID": "de_0f6e04dd-b969-4f68-9249-df35828ee2e3", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11229, "objectID": "en_0f6e04dd-b969-4f68-9249-df35828ee2e3_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12160, "objectID": "fr_9a1f8335-3451-40ac-9e56-162d5721916c_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15120, "objectID": "de_2ba9965a-542d-4d31-889b-c447ad60e202", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12449, "objectID": "en_2ba9965a-542d-4d31-889b-c447ad60e202_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13706, "objectID": "fr_0f6e04dd-b969-4f68-9249-df35828ee2e3", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16478, "objectID": "en_e844f3fa-657d-4776-8a4b-3599a83ee7e9_6_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15196, "objectID": "fr_2ba9965a-542d-4d31-889b-c447ad60e202", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 19780, "objectID": "de_e844f3fa-657d-4776-8a4b-3599a83ee7e9", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14679, "objectID": "de_cf058e1a-76ff-463a-ab45-08e937f6ec35", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8223, "objectID": "en_a09ea35d-462c-4376-b33b-0c1d519cad76", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14919, "objectID": "de_aa29a6cd-cdeb-42f9-ac76-de7f714d9921", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9719, "objectID": "de_a09ea35d-462c-4376-b33b-0c1d519cad76", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10573, "objectID": "en_3e911e64-945a-48c0-a8bb-82402e447990", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12473, "objectID": "en_cf058e1a-76ff-463a-ab45-08e937f6ec35_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 20166, "objectID": "fr_e844f3fa-657d-4776-8a4b-3599a83ee7e9", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14950, "objectID": "fr_cf058e1a-76ff-463a-ab45-08e937f6ec35", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15126, "objectID": "fr_aa29a6cd-cdeb-42f9-ac76-de7f714d9921", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11399, "objectID": "en_4b49b086-f35c-48c9-a072-8d1d6681d737", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12717, "objectID": "en_aa29a6cd-cdeb-42f9-ac76-de7f714d9921_5_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9506, "objectID": "fr_a09ea35d-462c-4376-b33b-0c1d519cad76", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12362, "objectID": "de_3e911e64-945a-48c0-a8bb-82402e447990_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12518, "objectID": "fr_3e911e64-945a-48c0-a8bb-82402e447990", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13394, "objectID": "de_4b49b086-f35c-48c9-a072-8d1d6681d737_5_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13581, "objectID": "fr_4b49b086-f35c-48c9-a072-8d1d6681d737", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 18723, "objectID": "de_99298a76-2283-4946-afa8-a8110c3e078a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13863, "objectID": "en_24570e7d-f174-489e-b2a8-01409bf61c7e_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16113, "objectID": "de_24570e7d-f174-489e-b2a8-01409bf61c7e", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16017, "objectID": "en_99298a76-2283-4946-afa8-a8110c3e078a_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13147, "objectID": "de_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11545, "objectID": "en_d851224c-922e-4f33-8f0b-b92995bc8682", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 18847, "objectID": "fr_99298a76-2283-4946-afa8-a8110c3e078a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13332, "objectID": "fr_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12893, "objectID": "de_4d1663e7-981e-44a4-8733-4d15b6edfb14", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13258, "objectID": "fr_4d1663e7-981e-44a4-8733-4d15b6edfb14", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16531, "objectID": "fr_24570e7d-f174-489e-b2a8-01409bf61c7e", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10730, "objectID": "en_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10929, "objectID": "en_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10939, "objectID": "en_22d49010-f07b-44d6-9391-d18fb8780b96_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11023, "objectID": "en_4d1663e7-981e-44a4-8733-4d15b6edfb14_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14738, "objectID": "en_f2db43f6-1a47-48e7-8dbb-64225262c8bc_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12736, "objectID": "en_b9b8e76d-87a8-4194-af5c-9925e48fa774_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8100, "objectID": "en_1d5a6102-739f-469a-964b-42d5a6b1c67d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9713, "objectID": "de_1d5a6102-739f-469a-964b-42d5a6b1c67d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 7375, "objectID": "en_f51b1318-21fa-41cc-ae25-c0c350c5c83e", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11634, "objectID": "en_a92f12bd-cae6-4245-9138-4437c477f526_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13026, "objectID": "en_cdf26e3c-e470-4fb5-b306-92c942705380_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9787, "objectID": "fr_1d5a6102-739f-469a-964b-42d5a6b1c67d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12008, "objectID": "en_1d91e31e-3201-433e-91e1-579bde4b345c_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13830, "objectID": "en_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12208, "objectID": "en_5e5305c6-69ca-4d08-af0c-95f4d0759217_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10154, "objectID": "en_12c0a9e8-6859-437f-8122-317531b2f0ff", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10033, "objectID": "en_c7700c1c-b36f-4868-9dd8-327f033787ed", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13666, "objectID": "en_87da78ad-1820-4765-862d-3196c5729145_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11790, "objectID": "en_359d8099-0033-4685-97de-ea8e00813679_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12412, "objectID": "en_383018e1-30ba-4140-8b71-27b429ceed2d_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11298, "objectID": "en_145cbd99-e030-4dc9-914d-2ce01a8ef80d_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8831, "objectID": "en_ea16ae71-e155-4a81-9284-84e00d7dc90a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12940, "objectID": "en_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad_5_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12080, "objectID": "en_6dd6663b-b802-4dec-a8ec-53535dd97810_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8751, "objectID": "en_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11846, "objectID": "en_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10761, "objectID": "en_77275ca8-76e6-4b80-9420-c00297fdc62f_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10395, "objectID": "en_a2892dee-4f74-416a-957c-8e920cabd0aa", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12044, "objectID": "en_e098d8dc-17f2-4927-aa77-c4f768fa223d_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12331, "objectID": "en_38a4bb1b-037e-422d-9716-21a0d1d37a3b_5_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12236, "objectID": "en_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 3807, "objectID": "en_545928cd-188f-4b67-9823-fb89342b426e", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14611, "objectID": "en_003ce534-f7ab-446e-aa3b-056fd03c6b3c_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11865, "objectID": "en_efd0db31-e3cf-4b4f-ac28-1403f01f2d16", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11385, "objectID": "en_b9503457-db5d-4dae-af1b-3bb21a125a99_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11725, "objectID": "en_6c291d72-1d33-41e0-8e4d-3918dfe978d4_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9477, "objectID": "en_7e543149-b0ab-4a08-b35c-ba343512dbbe", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10708, "objectID": "en_2f9f4f3a-90f2-465d-9514-2f3ff24259a5_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12618, "objectID": "en_eca3c014-5834-4a67-8c25-43a17d819f2b_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13440, "objectID": "en_29428872-6288-432d-a72d-01b083eee84f_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12758, "objectID": "en_eab4c0ef-e5ad-4301-baee-4da7c5d6f802_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11223, "objectID": "en_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13_5_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11777, "objectID": "en_2343e356-ea15-4555-a0f8-d8d0caf3981f_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10669, "objectID": "en_351f8d88-abeb-487b-b96c-cc159fe37de1_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13761, "objectID": "en_9edae2fd-c919-4b57-ab98-56f6174d4847_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13625, "objectID": "en_d0625c3b-d12a-4547-9bf0-0e72a160ece8_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13375, "objectID": "en_13aaa810-eba0-4f71-9794-ad404b7ed359_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11052, "objectID": "en_27cd61c1-68d9-49ec-96ef-dd0c51e345cd_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11411, "objectID": "en_efdf6501-867d-40f6-b24d-cb60ba32fa62_5_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10693, "objectID": "en_48242ec9-4d61-47b1-a3a1-1869e3a36bd7_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10646, "objectID": "en_2d11146a-88a1-4c0a-90d2-e53bd636c815_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11748, "objectID": "en_6a023867-407d-40fe-ac36-d0cfef9097b8_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 7845, "objectID": "en_bc69733d-47e0-4583-bb38-79654a8cdf7f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14886, "objectID": "en_fe2981e6-5a8f-4d0d-a47e-9683a129ec92_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13400, "objectID": "de_efdf6501-867d-40f6-b24d-cb60ba32fa62", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15194, "objectID": "de_eab4c0ef-e5ad-4301-baee-4da7c5d6f802", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15462, "objectID": "fr_eab4c0ef-e5ad-4301-baee-4da7c5d6f802", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14538, "objectID": "de_6a023867-407d-40fe-ac36-d0cfef9097b8", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14458, "objectID": "fr_6a023867-407d-40fe-ac36-d0cfef9097b8", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13135, "objectID": "en_b1e338c8-834b-4bde-b0ad-49573cab2069_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13502, "objectID": "fr_b9503457-db5d-4dae-af1b-3bb21a125a99", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15868, "objectID": "de_29428872-6288-432d-a72d-01b083eee84f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16039, "objectID": "fr_29428872-6288-432d-a72d-01b083eee84f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13844, "objectID": "fr_efdf6501-867d-40f6-b24d-cb60ba32fa62", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 17210, "objectID": "fr_003ce534-f7ab-446e-aa3b-056fd03c6b3c", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16910, "objectID": "de_003ce534-f7ab-446e-aa3b-056fd03c6b3c", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14097, "objectID": "fr_efd0db31-e3cf-4b4f-ac28-1403f01f2d16_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13282, "objectID": "de_b9503457-db5d-4dae-af1b-3bb21a125a99", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13781, "objectID": "de_efd0db31-e3cf-4b4f-ac28-1403f01f2d16", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14189, "objectID": "fr_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14029, "objectID": "de_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13701, "objectID": "de_e098d8dc-17f2-4927-aa77-c4f768fa223d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 205, "objectID": "en_ced2f4d6-586d-49c4-9ff3-af230007904c", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 205, "objectID": "de_ced2f4d6-586d-49c4-9ff3-af230007904c", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13171, "objectID": "fr_351f8d88-abeb-487b-b96c-cc159fe37de1", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 205, "objectID": "fr_ced2f4d6-586d-49c4-9ff3-af230007904c", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12682, "objectID": "de_351f8d88-abeb-487b-b96c-cc159fe37de1", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16363, "objectID": "de_9edae2fd-c919-4b57-ab98-56f6174d4847", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10925, "objectID": "de_7e543149-b0ab-4a08-b35c-ba343512dbbe", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13830, "objectID": "fr_e098d8dc-17f2-4927-aa77-c4f768fa223d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11168, "objectID": "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15189, "objectID": "de_eca3c014-5834-4a67-8c25-43a17d819f2b", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14656, "objectID": "fr_2343e356-ea15-4555-a0f8-d8d0caf3981f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 17015, "objectID": "fr_9edae2fd-c919-4b57-ab98-56f6174d4847", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15264, "objectID": "fr_eca3c014-5834-4a67-8c25-43a17d819f2b", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15626, "objectID": "de_b1e338c8-834b-4bde-b0ad-49573cab2069", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12951, "objectID": "de_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14176, "objectID": "de_2343e356-ea15-4555-a0f8-d8d0caf3981f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13104, "objectID": "fr_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13908, "objectID": "de_a92f12bd-cae6-4245-9138-4437c477f526", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12646, "objectID": "de_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13990, "objectID": "fr_a92f12bd-cae6-4245-9138-4437c477f526", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12731, "objectID": "de_22d49010-f07b-44d6-9391-d18fb8780b96", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13082, "objectID": "fr_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14939, "objectID": "de_b9b8e76d-87a8-4194-af5c-9925e48fa774", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 18127, "objectID": "fr_f2db43f6-1a47-48e7-8dbb-64225262c8bc_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 17495, "objectID": "de_f2db43f6-1a47-48e7-8dbb-64225262c8bc", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15222, "objectID": "fr_b9b8e76d-87a8-4194-af5c-9925e48fa774_2_wotext", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15460, "objectID": "fr_cdf26e3c-e470-4fb5-b306-92c942705380", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12839, "objectID": "fr_22d49010-f07b-44d6-9391-d18fb8780b96_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9355, "objectID": "fr_bc69733d-47e0-4583-bb38-79654a8cdf7f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14168, "objectID": "de_1d91e31e-3201-433e-91e1-579bde4b345c_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16440, "objectID": "de_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8880, "objectID": "de_bc69733d-47e0-4583-bb38-79654a8cdf7f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15370, "objectID": "de_cdf26e3c-e470-4fb5-b306-92c942705380", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14089, "objectID": "fr_1d91e31e-3201-433e-91e1-579bde4b345c_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16720, "objectID": "fr_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14436, "objectID": "de_5e5305c6-69ca-4d08-af0c-95f4d0759217", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12052, "objectID": "fr_12c0a9e8-6859-437f-8122-317531b2f0ff", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14431, "objectID": "de_383018e1-30ba-4140-8b71-27b429ceed2d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11929, "objectID": "de_12c0a9e8-6859-437f-8122-317531b2f0ff", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14880, "objectID": "fr_383018e1-30ba-4140-8b71-27b429ceed2d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14439, "objectID": "fr_5e5305c6-69ca-4d08-af0c-95f4d0759217", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 17935, "objectID": "de_fe2981e6-5a8f-4d0d-a47e-9683a129ec92", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 17912, "objectID": "fr_fe2981e6-5a8f-4d0d-a47e-9683a129ec92", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14381, "objectID": "de_6dd6663b-b802-4dec-a8ec-53535dd97810", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13746, "objectID": "fr_145cbd99-e030-4dc9-914d-2ce01a8ef80d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10252, "objectID": "de_ea16ae71-e155-4a81-9284-84e00d7dc90a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14000, "objectID": "fr_359d8099-0033-4685-97de-ea8e00813679", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13451, "objectID": "de_145cbd99-e030-4dc9-914d-2ce01a8ef80d", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14663, "objectID": "fr_6dd6663b-b802-4dec-a8ec-53535dd97810", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15292, "objectID": "de_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10316, "objectID": "fr_ea16ae71-e155-4a81-9284-84e00d7dc90a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11749, "objectID": "de_c7700c1c-b36f-4868-9dd8-327f033787ed", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13865, "objectID": "de_359d8099-0033-4685-97de-ea8e00813679", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12001, "objectID": "fr_c7700c1c-b36f-4868-9dd8-327f033787ed_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15575, "objectID": "fr_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14526, "objectID": "fr_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15932, "objectID": "de_87da78ad-1820-4765-862d-3196c5729145_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12364, "objectID": "de_a2892dee-4f74-416a-957c-8e920cabd0aa", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14320, "objectID": "de_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14222, "objectID": "de_38a4bb1b-037e-422d-9716-21a0d1d37a3b", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12687, "objectID": "fr_a2892dee-4f74-416a-957c-8e920cabd0aa", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 16496, "objectID": "fr_87da78ad-1820-4765-862d-3196c5729145", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14432, "objectID": "fr_38a4bb1b-037e-422d-9716-21a0d1d37a3b", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10306, "objectID": "de_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13300, "objectID": "fr_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12668, "objectID": "fr_77275ca8-76e6-4b80-9420-c00297fdc62f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12984, "objectID": "de_77275ca8-76e6-4b80-9420-c00297fdc62f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13298, "objectID": "de_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8712, "objectID": "de_f51b1318-21fa-41cc-ae25-c0c350c5c83e", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13063, "objectID": "en_2f84bc0e-3fed-48c1-88e9-48aff3f6654e_3_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8696, "objectID": "fr_f51b1318-21fa-41cc-ae25-c0c350c5c83e", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15711, "objectID": "de_2f84bc0e-3fed-48c1-88e9-48aff3f6654e", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10410, "objectID": "fr_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12917, "objectID": "de_2f9f4f3a-90f2-465d-9514-2f3ff24259a5", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 15499, "objectID": "fr_2f84bc0e-3fed-48c1-88e9-48aff3f6654e", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 205, "objectID": "de_c9ee8103-5114-4af6-becc-252a0c94c1dc", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 205, "objectID": "fr_c9ee8103-5114-4af6-becc-252a0c94c1dc", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 12861, "objectID": "fr_2f9f4f3a-90f2-465d-9514-2f3ff24259a5", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8250, "objectID": "de_7ec2610c-3ed8-485c-addb-f3039005802a_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8250, "objectID": "fr_7ec2610c-3ed8-485c-addb-f3039005802a_4_0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 205, "objectID": "en_c9ee8103-5114-4af6-becc-252a0c94c1dc", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8336, "objectID": "en_7ec2610c-3ed8-485c-addb-f3039005802a", "outcome": "FETCHED", "stage": "fetch"}
+{"objectID": "de_e393be62-de5f-4673-8d56-b4682bbc9ebb_4_0", "outcome": "DEAD_PAGE", "stage": "enrich"}
+{"objectID": "en_1e12af9e-c458-4825-85a7-5b3e94258763_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_a1ab6edb-ece3-473f-a934-269b816db624", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_1e12af9e-c458-4825-85a7-5b3e94258763", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_96759fb1-e0b6-407d-abf3-9f966262ec8d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_bc4d8a99-ec83-404a-b6d3-03fd591c61f6", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_48242ec9-4d61-47b1-a3a1-1869e3a36bd7", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_96759fb1-e0b6-407d-abf3-9f966262ec8d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_bc4d8a99-ec83-404a-b6d3-03fd591c61f6_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_a1ab6edb-ece3-473f-a934-269b816db624", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_bc4d8a99-ec83-404a-b6d3-03fd591c61f6", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_aa7ef1a7-cae9-4096-8d1f-08763268af54_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_256c2a5e-f0e2-4126-94ed-fdf7c99245c3", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_96759fb1-e0b6-407d-abf3-9f966262ec8d_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_7ee94215-25f0-4fba-a760-27f9634b520f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_48242ec9-4d61-47b1-a3a1-1869e3a36bd7", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_a1ab6edb-ece3-473f-a934-269b816db624_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_f3ea09ef-2a78-4188-8a1f-72f330496179", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_78986fd0-7d33-454c-b243-45b66f9ca4c5_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_e6deb45c-7ecf-479c-9b42-3a03841e4068", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_9011f3d1-31dd-4480-ad26-1ee447b8a274", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "en_84daa182-b423-4ddc-9e33-18b6a5ae6127", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_256c2a5e-f0e2-4126-94ed-fdf7c99245c3_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_78986fd0-7d33-454c-b243-45b66f9ca4c5", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_e6deb45c-7ecf-479c-9b42-3a03841e4068_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_f3ea09ef-2a78-4188-8a1f-72f330496179", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_84daa182-b423-4ddc-9e33-18b6a5ae6127", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_256c2a5e-f0e2-4126-94ed-fdf7c99245c3", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_7ed2856b-6ab1-49b7-a1ea-8c7f69b93503", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_1e12af9e-c458-4825-85a7-5b3e94258763", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_9011f3d1-31dd-4480-ad26-1ee447b8a274", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_2ba9965a-542d-4d31-889b-c447ad60e202", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_9a1f8335-3451-40ac-9e56-162d5721916c_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_9a1f8335-3451-40ac-9e56-162d5721916c_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_0f6e04dd-b969-4f68-9249-df35828ee2e3_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_9011f3d1-31dd-4480-ad26-1ee447b8a274_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_34a73e6c-a20a-491c-9144-10384494a2da", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_9a1f8335-3451-40ac-9e56-162d5721916c", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_84daa182-b423-4ddc-9e33-18b6a5ae6127", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_a09ea35d-462c-4376-b33b-0c1d519cad76", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_7ee94215-25f0-4fba-a760-27f9634b520f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_7ee94215-25f0-4fba-a760-27f9634b520f_3_0", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "fr_f3ea09ef-2a78-4188-8a1f-72f330496179", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_0f6e04dd-b969-4f68-9249-df35828ee2e3", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_34a73e6c-a20a-491c-9144-10384494a2da_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_2ba9965a-542d-4d31-889b-c447ad60e202_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_a09ea35d-462c-4376-b33b-0c1d519cad76", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_3e911e64-945a-48c0-a8bb-82402e447990", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_4b49b086-f35c-48c9-a072-8d1d6681d737", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "fr_a09ea35d-462c-4376-b33b-0c1d519cad76", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_2ba9965a-542d-4d31-889b-c447ad60e202", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_24570e7d-f174-489e-b2a8-01409bf61c7e_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_99298a76-2283-4946-afa8-a8110c3e078a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_aa29a6cd-cdeb-42f9-ac76-de7f714d9921_5_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_78986fd0-7d33-454c-b243-45b66f9ca4c5", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_e844f3fa-657d-4776-8a4b-3599a83ee7e9", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "en_e844f3fa-657d-4776-8a4b-3599a83ee7e9_6_0", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "de_4b49b086-f35c-48c9-a072-8d1d6681d737_5_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_e6deb45c-7ecf-479c-9b42-3a03841e4068", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_3e911e64-945a-48c0-a8bb-82402e447990_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_3e911e64-945a-48c0-a8bb-82402e447990", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_0f6e04dd-b969-4f68-9249-df35828ee2e3", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_aa29a6cd-cdeb-42f9-ac76-de7f714d9921", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_99298a76-2283-4946-afa8-a8110c3e078a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_aa29a6cd-cdeb-42f9-ac76-de7f714d9921", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_24570e7d-f174-489e-b2a8-01409bf61c7e", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_cf058e1a-76ff-463a-ab45-08e937f6ec35_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_34a73e6c-a20a-491c-9144-10384494a2da", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_99298a76-2283-4946-afa8-a8110c3e078a_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_4d1663e7-981e-44a4-8733-4d15b6edfb14", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_d851224c-922e-4f33-8f0b-b92995bc8682", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_4d1663e7-981e-44a4-8733-4d15b6edfb14", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_1d5a6102-739f-469a-964b-42d5a6b1c67d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_22d49010-f07b-44d6-9391-d18fb8780b96_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_4b49b086-f35c-48c9-a072-8d1d6681d737", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_4d1663e7-981e-44a4-8733-4d15b6edfb14_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_24570e7d-f174-489e-b2a8-01409bf61c7e", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_a92f12bd-cae6-4245-9138-4437c477f526_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_cf058e1a-76ff-463a-ab45-08e937f6ec35", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "en_cdf26e3c-e470-4fb5-b306-92c942705380_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_1d91e31e-3201-433e-91e1-579bde4b345c_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_1d5a6102-739f-469a-964b-42d5a6b1c67d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_383018e1-30ba-4140-8b71-27b429ceed2d_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_b9b8e76d-87a8-4194-af5c-9925e48fa774_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_f51b1318-21fa-41cc-ae25-c0c350c5c83e", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_f2db43f6-1a47-48e7-8dbb-64225262c8bc_3_0", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "de_e844f3fa-657d-4776-8a4b-3599a83ee7e9", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "en_145cbd99-e030-4dc9-914d-2ce01a8ef80d_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_545928cd-188f-4b67-9823-fb89342b426e", "outcome": "NO_ABSTRACT_THIN", "stage": "enrich"}
+{"objectID": "en_5e5305c6-69ca-4d08-af0c-95f4d0759217_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad_5_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_12c0a9e8-6859-437f-8122-317531b2f0ff", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_e098d8dc-17f2-4927-aa77-c4f768fa223d_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_1d5a6102-739f-469a-964b-42d5a6b1c67d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_a2892dee-4f74-416a-957c-8e920cabd0aa", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_6dd6663b-b802-4dec-a8ec-53535dd97810_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_359d8099-0033-4685-97de-ea8e00813679_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_6c291d72-1d33-41e0-8e4d-3918dfe978d4_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_c7700c1c-b36f-4868-9dd8-327f033787ed", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_b9503457-db5d-4dae-af1b-3bb21a125a99_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_77275ca8-76e6-4b80-9420-c00297fdc62f_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_7e543149-b0ab-4a08-b35c-ba343512dbbe", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_ea16ae71-e155-4a81-9284-84e00d7dc90a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_efd0db31-e3cf-4b4f-ac28-1403f01f2d16", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_eca3c014-5834-4a67-8c25-43a17d819f2b_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_2343e356-ea15-4555-a0f8-d8d0caf3981f_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_351f8d88-abeb-487b-b96c-cc159fe37de1_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_003ce534-f7ab-446e-aa3b-056fd03c6b3c_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_2f9f4f3a-90f2-465d-9514-2f3ff24259a5_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_38a4bb1b-037e-422d-9716-21a0d1d37a3b_5_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_87da78ad-1820-4765-862d-3196c5729145_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13_5_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_b1e338c8-834b-4bde-b0ad-49573cab2069_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_27cd61c1-68d9-49ec-96ef-dd0c51e345cd_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_d0625c3b-d12a-4547-9bf0-0e72a160ece8_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_efdf6501-867d-40f6-b24d-cb60ba32fa62", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_efdf6501-867d-40f6-b24d-cb60ba32fa62_5_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_48242ec9-4d61-47b1-a3a1-1869e3a36bd7_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_29428872-6288-432d-a72d-01b083eee84f_4_0", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "de_6a023867-407d-40fe-ac36-d0cfef9097b8", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_6a023867-407d-40fe-ac36-d0cfef9097b8_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_fe2981e6-5a8f-4d0d-a47e-9683a129ec92_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_efdf6501-867d-40f6-b24d-cb60ba32fa62", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_9edae2fd-c919-4b57-ab98-56f6174d4847_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_ced2f4d6-586d-49c4-9ff3-af230007904c", "outcome": "DEAD_PAGE", "stage": "enrich"}
+{"objectID": "de_ced2f4d6-586d-49c4-9ff3-af230007904c", "outcome": "DEAD_PAGE", "stage": "enrich"}
+{"objectID": "fr_ced2f4d6-586d-49c4-9ff3-af230007904c", "outcome": "DEAD_PAGE", "stage": "enrich"}
+{"objectID": "en_13aaa810-eba0-4f71-9794-ad404b7ed359_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_efd0db31-e3cf-4b4f-ac28-1403f01f2d16", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_b9503457-db5d-4dae-af1b-3bb21a125a99", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_bc69733d-47e0-4583-bb38-79654a8cdf7f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_6a023867-407d-40fe-ac36-d0cfef9097b8", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_eab4c0ef-e5ad-4301-baee-4da7c5d6f802_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_2d11146a-88a1-4c0a-90d2-e53bd636c815_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_b9503457-db5d-4dae-af1b-3bb21a125a99", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "de_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_2343e356-ea15-4555-a0f8-d8d0caf3981f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_9edae2fd-c919-4b57-ab98-56f6174d4847", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_003ce534-f7ab-446e-aa3b-056fd03c6b3c", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_29428872-6288-432d-a72d-01b083eee84f", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "fr_e098d8dc-17f2-4927-aa77-c4f768fa223d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_7e543149-b0ab-4a08-b35c-ba343512dbbe", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_351f8d88-abeb-487b-b96c-cc159fe37de1", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_351f8d88-abeb-487b-b96c-cc159fe37de1", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_003ce534-f7ab-446e-aa3b-056fd03c6b3c", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_2343e356-ea15-4555-a0f8-d8d0caf3981f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_b1e338c8-834b-4bde-b0ad-49573cab2069", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_eca3c014-5834-4a67-8c25-43a17d819f2b", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_01a9e37e-54d5-4b41-8107-59aa4d479f5b_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_cf058e1a-76ff-463a-ab45-08e937f6ec35", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_a92f12bd-cae6-4245-9138-4437c477f526", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_bc69733d-47e0-4583-bb38-79654a8cdf7f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_9edae2fd-c919-4b57-ab98-56f6174d4847", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_e098d8dc-17f2-4927-aa77-c4f768fa223d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_22d49010-f07b-44d6-9391-d18fb8780b96", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_bc69733d-47e0-4583-bb38-79654a8cdf7f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_b9b8e76d-87a8-4194-af5c-9925e48fa774_2_wotext", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_cdf26e3c-e470-4fb5-b306-92c942705380", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_a92f12bd-cae6-4245-9138-4437c477f526", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_eab4c0ef-e5ad-4301-baee-4da7c5d6f802", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_1d91e31e-3201-433e-91e1-579bde4b345c_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_1d91e31e-3201-433e-91e1-579bde4b345c_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_eab4c0ef-e5ad-4301-baee-4da7c5d6f802", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_f2db43f6-1a47-48e7-8dbb-64225262c8bc", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_145cbd99-e030-4dc9-914d-2ce01a8ef80d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_efd0db31-e3cf-4b4f-ac28-1403f01f2d16_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_12c0a9e8-6859-437f-8122-317531b2f0ff", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_145cbd99-e030-4dc9-914d-2ce01a8ef80d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_cdf26e3c-e470-4fb5-b306-92c942705380", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_383018e1-30ba-4140-8b71-27b429ceed2d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_5e5305c6-69ca-4d08-af0c-95f4d0759217", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_12c0a9e8-6859-437f-8122-317531b2f0ff", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_b9b8e76d-87a8-4194-af5c-9925e48fa774", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_22d49010-f07b-44d6-9391-d18fb8780b96_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_fe2981e6-5a8f-4d0d-a47e-9683a129ec92", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_eca3c014-5834-4a67-8c25-43a17d819f2b", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_fe2981e6-5a8f-4d0d-a47e-9683a129ec92", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_ea16ae71-e155-4a81-9284-84e00d7dc90a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_5e5305c6-69ca-4d08-af0c-95f4d0759217", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_359d8099-0033-4685-97de-ea8e00813679", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_fcea9e1e-9044-4e46-89f0-c342c8fcbdf2", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_6dd6663b-b802-4dec-a8ec-53535dd97810", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_359d8099-0033-4685-97de-ea8e00813679", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_c7700c1c-b36f-4868-9dd8-327f033787ed", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_6dd6663b-b802-4dec-a8ec-53535dd97810", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_c7700c1c-b36f-4868-9dd8-327f033787ed_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_ea16ae71-e155-4a81-9284-84e00d7dc90a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_87da78ad-1820-4765-862d-3196c5729145_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_a2892dee-4f74-416a-957c-8e920cabd0aa", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_383018e1-30ba-4140-8b71-27b429ceed2d", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_f2db43f6-1a47-48e7-8dbb-64225262c8bc_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_7d9d9ec2-2c55-4659-80fb-c8897d0dab7a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_38a4bb1b-037e-422d-9716-21a0d1d37a3b", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_c9ee8103-5114-4af6-becc-252a0c94c1dc", "outcome": "DEAD_PAGE", "stage": "enrich"}
+{"objectID": "fr_c9ee8103-5114-4af6-becc-252a0c94c1dc", "outcome": "DEAD_PAGE", "stage": "enrich"}
+{"objectID": "fr_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_7ec2610c-3ed8-485c-addb-f3039005802a_4_0", "outcome": "LANGUAGE_MISMATCH", "stage": "enrich"}
+{"objectID": "de_2f9f4f3a-90f2-465d-9514-2f3ff24259a5", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_c9ee8103-5114-4af6-becc-252a0c94c1dc", "outcome": "DEAD_PAGE", "stage": "enrich"}
+{"objectID": "fr_2f9f4f3a-90f2-465d-9514-2f3ff24259a5", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_29428872-6288-432d-a72d-01b083eee84f", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "de_77275ca8-76e6-4b80-9420-c00297fdc62f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_7ec2610c-3ed8-485c-addb-f3039005802a_4_0", "outcome": "LANGUAGE_MISMATCH", "stage": "enrich"}
+{"objectID": "en_7ec2610c-3ed8-485c-addb-f3039005802a", "outcome": "NO_ABSTRACT_THIN", "stage": "enrich"}
+{"objectID": "fr_87da78ad-1820-4765-862d-3196c5729145", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_adf334dc-9267-4318-9466-893d3b3dd7aa_4_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_77275ca8-76e6-4b80-9420-c00297fdc62f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_2e24c4fa-c5f6-4671-af60-c2c4c8a7aa13", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "de_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad", "outcome": "QUARANTINED_BY_GATE", "stage": "enrich"}
+{"objectID": "de_2f84bc0e-3fed-48c1-88e9-48aff3f6654e", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_a2892dee-4f74-416a-957c-8e920cabd0aa", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_8a6ee0c1-0586-4f4b-9dee-cfdd28b87fc7", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_2f84bc0e-3fed-48c1-88e9-48aff3f6654e_3_0", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_f51b1318-21fa-41cc-ae25-c0c350c5c83e", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_f51b1318-21fa-41cc-ae25-c0c350c5c83e", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_2f84bc0e-3fed-48c1-88e9-48aff3f6654e", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_38a4bb1b-037e-422d-9716-21a0d1d37a3b", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_29428872-6288-432d-a72d-01b083eee84f_4_0", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}
+{"objectID": "de_29428872-6288-432d-a72d-01b083eee84f", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_e844f3fa-657d-4776-8a4b-3599a83ee7e9", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_b9503457-db5d-4dae-af1b-3bb21a125a99", "outcome": "PASS", "stage": "repair"}
+{"objectID": "de_e844f3fa-657d-4776-8a4b-3599a83ee7e9", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_29428872-6288-432d-a72d-01b083eee84f", "outcome": "PASS", "stage": "repair"}
+{"objectID": "en_e844f3fa-657d-4776-8a4b-3599a83ee7e9_6_0", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}
+{"objectID": "de_cf058e1a-76ff-463a-ab45-08e937f6ec35", "outcome": "PASS", "stage": "repair"}
+{"objectID": "de_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad", "outcome": "PASS", "stage": "repair"}
+{"objectID": "en_f2db43f6-1a47-48e7-8dbb-64225262c8bc_3_0", "outcome": "PASS", "stage": "repair"}
+{"objectID": "de_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "PASS", "stage": "repair"}
+{"objectID": "en_7ee94215-25f0-4fba-a760-27f9634b520f_3_0", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "PASS", "stage": "repair"}
+{"objectID": "de_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}
+{"objectID": "en_7ee94215-25f0-4fba-a760-27f9634b520f_3_0", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}
+{"objectID": "fr_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "PASS", "stage": "repair"}
+{"objectID": "de_e844f3fa-657d-4776-8a4b-3599a83ee7e9", "outcome": "PASS", "stage": "repair"}
+{"objectID": "en_e844f3fa-657d-4776-8a4b-3599a83ee7e9_6_0", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}
+{"objectID": "fr_e844f3fa-657d-4776-8a4b-3599a83ee7e9", "outcome": "PASS", "stage": "repair"}
+{"objectID": "de_cf058e1a-76ff-463a-ab45-08e937f6ec35", "outcome": "PASS", "stage": "repair"}
+{"objectID": "en_29428872-6288-432d-a72d-01b083eee84f_4_0", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}
+{"objectID": "en_f2db43f6-1a47-48e7-8dbb-64225262c8bc_3_0", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_b9503457-db5d-4dae-af1b-3bb21a125a99", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}
+{"objectID": "de_29428872-6288-432d-a72d-01b083eee84f", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_29428872-6288-432d-a72d-01b083eee84f", "outcome": "PASS", "stage": "repair"}
+{"objectID": "de_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_4e51bdb3-d6e4-4e6f-938b-db9eeeb134ad", "outcome": "PASS", "stage": "repair"}
+{"objectID": "fr_b9503457-db5d-4dae-af1b-3bb21a125a99", "outcome": "PASS", "stage": "repair"}
+{"objectID": "en_29428872-6288-432d-a72d-01b083eee84f_4_0", "outcome": "PASS", "stage": "repair"}
+{"objectID": "de_aa7ef1a7-cae9-4096-8d1f-08763268af54", "outcome": "PASS", "stage": "repair"}
+{"objectID": "en_e844f3fa-657d-4776-8a4b-3599a83ee7e9_6_0", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}
+{"objectID": "en_7ee94215-25f0-4fba-a760-27f9634b520f_3_0", "outcome": "PASS", "stage": "repair"}
+{"objectID": "en_e844f3fa-657d-4776-8a4b-3599a83ee7e9_6_0", "outcome": "QUARANTINED_BY_GATE", "stage": "repair"}

@@ -1,0 +1,15 @@
+{
+  "all_accounted_for": true,
+  "coverage_target_pct": 0.95,
+  "human_review_open": 0,
+  "human_review_pct": 0.0,
+  "max_human_review_open_pct": 0.05,
+  "meets_coverage": true,
+  "outcome_coverage_pct": 1.0,
+  "planned_target_count": 10,
+  "target_written": 10,
+  "terminal_unwritable": 0,
+  "unattempted": 0,
+  "within_human_review_cap": true,
+  "writable_coverage_pct": 1.0
+}

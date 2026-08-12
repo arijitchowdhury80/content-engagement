@@ -1,0 +1,50 @@
+{
+  "searchableAttributes": [
+    "title",
+    "unordered(abstract)",
+    "unordered(description)",
+    "unordered(tags)",
+    "unordered(keywords)",
+    "unordered(category)",
+    "unordered(url)"
+  ],
+  "attributesForFaceting": [
+    "algoliaDisabled",
+    "afterDistinct(authors)",
+    "afterDistinct(searchable(category))",
+    "environment",
+    "afterDistinct(facets.facet0)",
+    "afterDistinct(facets.facet1)",
+    "afterDistinct(facets.facet2)",
+    "afterDistinct(facets.facet3)",
+    "facets.facet4",
+    "facets.facet5",
+    "filterOnly(indexed_at)",
+    "is404",
+    "keywords",
+    "language_code",
+    "lastUpdated",
+    "afterDistinct(source)",
+    "afterDistinct(tags)",
+    "transform_source",
+    "afterDistinct(page_type)",
+    "afterDistinct(searchable(product))",
+    "afterDistinct(searchable(feature))",
+    "afterDistinct(searchable(solution))",
+    "afterDistinct(searchable(industry))",
+    "afterDistinct(customer)",
+    "afterDistinct(language_platform)",
+    "afterDistinct(integration_platform)",
+    "filterOnly(taxonomy_version)"
+  ],
+  "ranking": [
+    "typo",
+    "geo",
+    "words",
+    "filters",
+    "proximity",
+    "attribute",
+    "exact",
+    "custom"
+  ]
+}

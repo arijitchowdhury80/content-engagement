@@ -1,0 +1,374 @@
+{
+  "gates_loaded": [
+    "G-blacklist",
+    "G-context-language-mix",
+    "G-context-quotation",
+    "G-context-reversal",
+    "G-context-section",
+    "G-context-sections-spread",
+    "G-id-only-selection",
+    "G-information-gain",
+    "G-integrity",
+    "G-judge",
+    "G-method-agreement",
+    "G-pool-filter",
+    "G-pool-reversal",
+    "G-pool-static-ban",
+    "G-repair-incomplete",
+    "G-subject-present",
+    "G-terminal-verdict",
+    "V-grounding-offset-free",
+    "V-grounding-offset-slice",
+    "V-grounding-zero-spans",
+    "V-live-byte-match",
+    "V-live-no-extra-records",
+    "V-live-no-metadata",
+    "V-live-proof-of-life",
+    "V-payload-allowed-fields",
+    "V-payload-in-manifest",
+    "V-payload-no-duplicate-ids",
+    "V-payload-no-null",
+    "V-quality-chrome",
+    "V-quality-duplicate-description",
+    "V-quality-incomplete",
+    "V-quality-leakage",
+    "V-quality-template",
+    "V-source-index-unchanged"
+  ],
+  "grounding": {
+    "failures": [],
+    "located": 1714,
+    "missing_body": [],
+    "modes": {
+      "canonical": 412,
+      "exact": 1302
+    },
+    "offset_drift": [
+      {
+        "field": "keyhighlights_enriched",
+        "objectID": "de_1e12af9e-c458-4825-85a7-5b3e94258763",
+        "offsets": [
+          1806,
+          1919
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "de_0f6e04dd-b969-4f68-9249-df35828ee2e3",
+        "offsets": [
+          2580,
+          2741
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "en_0f6e04dd-b969-4f68-9249-df35828ee2e3_4_0",
+        "offsets": [
+          2246,
+          2371
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "de_2ba9965a-542d-4d31-889b-c447ad60e202",
+        "offsets": [
+          3007,
+          3173
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "fr_0f6e04dd-b969-4f68-9249-df35828ee2e3",
+        "offsets": [
+          2670,
+          2830
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "de_4b49b086-f35c-48c9-a072-8d1d6681d737_5_0",
+        "offsets": [
+          2548,
+          2763
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "en_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0",
+        "offsets": [
+          2621,
+          2724
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "en_77275ca8-76e6-4b80-9420-c00297fdc62f_3_0",
+        "offsets": [
+          2424,
+          2715
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "en_e098d8dc-17f2-4927-aa77-c4f768fa223d_3_0",
+        "offsets": [
+          2567,
+          2816
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "en_7e543149-b0ab-4a08-b35c-ba343512dbbe",
+        "offsets": [
+          2546,
+          2660
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "de_efd0db31-e3cf-4b4f-ac28-1403f01f2d16",
+        "offsets": [
+          3104,
+          3234
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "de_7e543149-b0ab-4a08-b35c-ba343512dbbe",
+        "offsets": [
+          2729,
+          2859
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe",
+        "offsets": [
+          2884,
+          3011
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "de_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0",
+        "offsets": [
+          3019,
+          3132
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "fr_1add78b3-7531-443b-8e58-ade8c33c40dc_3_0",
+        "offsets": [
+          3306,
+          3418
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "de_383018e1-30ba-4140-8b71-27b429ceed2d",
+        "offsets": [
+          3573,
+          3832
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "de_87da78ad-1820-4765-862d-3196c5729145_4_0",
+        "offsets": [
+          3054,
+          3326
+        ]
+      },
+      {
+        "field": "abstract_enriched",
+        "objectID": "fr_a2892dee-4f74-416a-957c-8e920cabd0aa",
+        "offsets": [
+          3441,
+          3716
+        ]
+      },
+      {
+        "field": "keyhighlights_enriched",
+        "objectID": "fr_a2892dee-4f74-416a-957c-8e920cabd0aa",
+        "offsets": [
+          4060,
+          4366
+        ]
+      },
+      {
+        "field": "keyhighlights_enriched",
+        "objectID": "fr_38a4bb1b-037e-422d-9716-21a0d1d37a3b",
+        "offsets": [
+          3956,
+          4102
+        ]
+      }
+    ],
+    "ok": true,
+    "rows": 225,
+    "spans_checked": 1714
+  },
+  "language_census": {
+    "de": {
+      "abstract_span_chars": {
+        "max": 393,
+        "mean": 199.6,
+        "min": 63,
+        "n": 208,
+        "p50": 201
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.8,
+        "min": 2,
+        "n": 74,
+        "p50": 3
+      },
+      "candidates": {
+        "max": 130,
+        "mean": 87.3,
+        "min": 48,
+        "n": 75,
+        "p50": 89
+      },
+      "highlight_chars": {
+        "max": 300,
+        "mean": 177.3,
+        "min": 33,
+        "n": 360,
+        "p50": 170
+      },
+      "highlight_count": {
+        "max": 6,
+        "mean": 4.9,
+        "min": 4,
+        "n": 74,
+        "p50": 5
+      },
+      "records": 78,
+      "statuses": {
+        "DEAD_PAGE": 3,
+        "LANGUAGE_MISMATCH": 1,
+        "PASS": 74
+      }
+    },
+    "en": {
+      "abstract_span_chars": {
+        "max": 386,
+        "mean": 179.8,
+        "min": 25,
+        "n": 222,
+        "p50": 173
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.8,
+        "min": 2,
+        "n": 78,
+        "p50": 3
+      },
+      "candidates": {
+        "max": 124,
+        "mean": 80.0,
+        "min": 16,
+        "n": 81,
+        "p50": 83
+      },
+      "highlight_chars": {
+        "max": 300,
+        "mean": 166.8,
+        "min": 26,
+        "n": 384,
+        "p50": 165
+      },
+      "highlight_count": {
+        "max": 6,
+        "mean": 4.9,
+        "min": 4,
+        "n": 78,
+        "p50": 5
+      },
+      "records": 83,
+      "statuses": {
+        "DEAD_PAGE": 2,
+        "NO_ABSTRACT_THIN": 2,
+        "PASS": 78,
+        "QUARANTINED_BY_GATE": 1
+      }
+    },
+    "fr": {
+      "abstract_span_chars": {
+        "max": 389,
+        "mean": 204.3,
+        "min": 63,
+        "n": 205,
+        "p50": 203
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.8,
+        "min": 2,
+        "n": 73,
+        "p50": 3
+      },
+      "candidates": {
+        "max": 124,
+        "mean": 79.1,
+        "min": 44,
+        "n": 74,
+        "p50": 80
+      },
+      "highlight_chars": {
+        "max": 300,
+        "mean": 174.6,
+        "min": 34,
+        "n": 335,
+        "p50": 170
+      },
+      "highlight_count": {
+        "max": 6,
+        "mean": 4.6,
+        "min": 4,
+        "n": 73,
+        "p50": 5
+      },
+      "records": 76,
+      "statuses": {
+        "DEAD_PAGE": 2,
+        "LANGUAGE_MISMATCH": 1,
+        "PASS": 73
+      }
+    }
+  },
+  "method_check": {
+    "disagreements": 0,
+    "ok": true,
+    "rate": 0.0,
+    "threshold": 0.1
+  },
+  "payload": {
+    "duplicate_object_ids": [],
+    "fields": [
+      "abstract_enriched",
+      "keyhighlights_enriched",
+      "objectID"
+    ],
+    "forbidden_fields_present": [],
+    "ok": true,
+    "payloads": 225
+  },
+  "profile_version": "case-study:a491e7de8230",
+  "quality": {
+    "chrome": [],
+    "duplicate_description": [],
+    "incomplete_spans": [],
+    "leakage": [],
+    "ok": true,
+    "rows": 225,
+    "spans_checked": 1714,
+    "template_collisions": {}
+  },
+  "run_id": "20260811-customer-stories-case-study-a03",
+  "validated_at": "2026-08-11T03:57:31.372799+00:00"
+}

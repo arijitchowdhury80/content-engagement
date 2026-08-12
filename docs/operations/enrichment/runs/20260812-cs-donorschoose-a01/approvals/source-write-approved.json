@@ -1,0 +1,9 @@
+{
+  "target_index": "Algolia_Prod_Copy_Enhanced",
+  "expected_write_count": 1,
+  "approved_by": "arijit",
+  "approved_at": "2026-08-12",
+  "instruction": "King holding us from claiming completion of blogs and case studies. What is that one bloody case study",
+  "context": "Recovery of /customers/donorschoose, the last enrichable case study. It had been quarantined by a span-distance gate its own retry could not satisfy: the gate measured max(end)-min(start) while the retry banned candidates on c.start only, so a span starting inside the window but ending 111 chars past it was always kept. Fixed in gates.py retry_constraints; the record then passed on the first attempt. validate PASS, 8/8 spans grounded.",
+  "scope": "adds abstract_enriched and keyhighlights_enriched to 1 existing record via partialUpdateObject"
+}

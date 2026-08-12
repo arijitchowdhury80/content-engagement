@@ -1,0 +1,780 @@
+{
+  "pricing": {
+    "nbHits": 159,
+    "enriched_only": 81,
+    "legacy_only": 75,
+    "top": [
+      {
+        "objectID": "https://www.algolia.com/doc/integration/salesforce-commerce-cloud-b2c/guides/pricing-and-promotions",
+        "title": "Pricing and promotions",
+        "source": "Documentation",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "en_2d9fda1d-25b8-4bb8-accd-24cc75d7fef4_15_23",
+        "title": "Pricing",
+        "source": "Website",
+        "matched": [
+          "title",
+          "url"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "019446a9-2698-7c46-b1e9-7b2f222dd7db",
+        "title": "Understand Pricing Options",
+        "source": "Academy",
+        "matched": [
+          "title",
+          "description",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "https://www.algolia.com/doc/guides/solutions/ecommerce/b2b-catalog-management/tutorials/personalized-pricing",
+        "title": "Personalized pricing",
+        "source": "Documentation",
+        "matched": [
+          "title",
+          "url",
+          "description"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "de_8536ac99-f819-46d4-8839-170791e95393_0_2",
+        "title": "Dynamic pricing: a potent option for ecommerce",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "url",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      }
+    ],
+    "enriched_only_top": [
+      {
+        "objectID": "en_50ac78e5-5b0b-4373-8a5f-e0ca179fc1c3",
+        "title": "B2B Ecommerce",
+        "source": "Website"
+      },
+      {
+        "objectID": "en_ddb333a2-3c23-48b4-8be9-3666216fe243_0_1",
+        "title": "Exploration of search indexing: Real-time indexing | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "de_5fabdc03-f6b2-4d75-ab42-c109c7ecc648",
+        "title": "DevBit #1 Recap - Algolia Blog | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_5fabdc03-f6b2-4d75-ab42-c109c7ecc648",
+        "title": "DevBit #1 Recap - Algolia Blog | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "fr_5fabdc03-f6b2-4d75-ab42-c109c7ecc648",
+        "title": "DevBit #1 Recap - Algolia Blog | Algolia",
+        "source": "Blog"
+      }
+    ]
+  },
+  "shopify": {
+    "nbHits": 430,
+    "enriched_only": 130,
+    "legacy_only": 314,
+    "top": [
+      {
+        "objectID": "9605297769617",
+        "title": "[Shopify] How can I display one product instead of variants?",
+        "source": "Support",
+        "matched": [
+          "title",
+          "category",
+          "url"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "8090973818513",
+        "title": "[Shopify] How can I remove the Algolia branding logo when I switch to a paid plan?",
+        "source": "Support",
+        "matched": [
+          "title",
+          "category",
+          "url",
+          "description",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "4406450221841",
+        "title": "[Shopify] When is a reindex triggered?",
+        "source": "Support",
+        "matched": [
+          "title",
+          "category",
+          "url"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "4406151420305",
+        "title": "[Shopify] How to render data from metafields?",
+        "source": "Support",
+        "matched": [
+          "title",
+          "category",
+          "url"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "17125587718161",
+        "title": "[Shopify] How can I fix my stuck reindexing?",
+        "source": "Support",
+        "matched": [
+          "title",
+          "category",
+          "url"
+        ],
+        "best_attr": "title"
+      }
+    ],
+    "enriched_only_top": [
+      {
+        "objectID": "fr_abb47fcc-5132-4af3-b3e7-1a5d5b1a9046",
+        "title": "Algolia et Shopify Plus - Créez des expériences de recherche de qualité avec Shopify | Algolia",
+        "source": "Website"
+      },
+      {
+        "objectID": "en_abb47fcc-5132-4af3-b3e7-1a5d5b1a9046",
+        "title": "Create amazing Shopify Plus search experiences | Algolia",
+        "source": "Website"
+      },
+      {
+        "objectID": "de_9477ce95-2385-42e7-9824-5f0239bbab10",
+        "title": "How Gymshark increased Black Friday sales | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_9477ce95-2385-42e7-9824-5f0239bbab10",
+        "title": "How Gymshark increased Black Friday sales | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "de_59b1d10d-d02f-4b94-afaa-6da1fec1f1be",
+        "title": "Why Shopify search filters & facets aren’t enough | Algolia",
+        "source": "Blog"
+      }
+    ]
+  },
+  "how do I add search to React": {
+    "nbHits": 64,
+    "enriched_only": 33,
+    "legacy_only": 12,
+    "top": [
+      {
+        "objectID": "8620911710225",
+        "title": "Why am I getting an error when passing filter values with spaces or quotes in React InstantSearch?",
+        "source": "Support",
+        "matched": [
+          "title",
+          "category",
+          "url",
+          "description",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "4406975214737",
+        "title": "Can I use Algolia in my JAMstack application?",
+        "source": "Support",
+        "matched": [
+          "description",
+          "abstract"
+        ],
+        "best_attr": "description"
+      },
+      {
+        "objectID": "en_ecd95154-a73b-46fe-a759-a87816ba3340",
+        "title": "How Algolia created its Netlify build plugin - Algolia Blog | Algolia",
+        "source": "Blog",
+        "matched": [
+          "description",
+          "abstract",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "description"
+      },
+      {
+        "objectID": "de_ecd95154-a73b-46fe-a759-a87816ba3340",
+        "title": "How Algolia created its Netlify build plugin - Algolia Blog | Algolia",
+        "source": "Blog",
+        "matched": [
+          "description",
+          "abstract",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "description"
+      },
+      {
+        "objectID": "fr_ecd95154-a73b-46fe-a759-a87816ba3340",
+        "title": "How Algolia created its Netlify build plugin - Algolia Blog | Algolia",
+        "source": "Blog",
+        "matched": [
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "description"
+      }
+    ],
+    "enriched_only_top": [
+      {
+        "objectID": "https://www.algolia.com/doc/ui-libraries",
+        "title": "UI libraries",
+        "source": "Documentation"
+      },
+      {
+        "objectID": "en_bab0e74f-e996-40ae-8847-68a28a32aceb_0_2",
+        "title": "Using Algolia Search with Adobe Experience Manager | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "fr_bab0e74f-e996-40ae-8847-68a28a32aceb",
+        "title": "Using Algolia Search with Adobe Experience Manager | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_68b95389-5ad9-42fe-bd05-8c5b934ccdc6_0_1",
+        "title": "The Algolia-Supabase connector",
+        "source": "Blog"
+      },
+      {
+        "objectID": "fr_68b95389-5ad9-42fe-bd05-8c5b934ccdc6_0_1",
+        "title": "The Algolia-Supabase connector",
+        "source": "Blog"
+      }
+    ]
+  },
+  "agent studio": {
+    "nbHits": 265,
+    "enriched_only": 83,
+    "legacy_only": 80,
+    "top": [
+      {
+        "objectID": "en_29d292e2-818f-405b-a59f-b03b31178aa9",
+        "title": "Agent Studio",
+        "source": "Website",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "de_29d292e2-818f-405b-a59f-b03b31178aa9",
+        "title": "Agent Studio | Algolia",
+        "source": "Website",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "fr_29d292e2-818f-405b-a59f-b03b31178aa9",
+        "title": "Agent Studio | Algolia",
+        "source": "Website",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "fr_ff49bdf1-c894-4268-b7e8-02593265c536_0_2",
+        "title": "Agent Studio — Building converting, business-aware agents with Algolia",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "en_ff49bdf1-c894-4268-b7e8-02593265c536_0_2",
+        "title": "Agent Studio — Building converting, business-aware agents with Algolia",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      }
+    ],
+    "enriched_only_top": [
+      {
+        "objectID": "de_a38ff168-eb49-47a2-a4c7-8e09d7ba8609",
+        "title": "Algolia Brings Agentic Commerce to the Modern Storefront, Giving Retailers AI Shopping Experiences Built on Trusted Product Data",
+        "source": "Website"
+      },
+      {
+        "objectID": "fr_a38ff168-eb49-47a2-a4c7-8e09d7ba8609",
+        "title": "Algolia Brings Agentic Commerce to the Modern Storefront, Giving Retailers AI Shopping Experiences Built on Trusted Product Data",
+        "source": "Website"
+      },
+      {
+        "objectID": "en_a38ff168-eb49-47a2-a4c7-8e09d7ba8609",
+        "title": "Algolia Brings Agentic Commerce to the Modern Storefront, Giving Retailers AI Shopping Experiences Built on Trusted Product Data",
+        "source": "Website"
+      },
+      {
+        "objectID": "de_29d292e2-818f-405b-a59f-b03b31178aa9",
+        "title": "Agent Studio | Algolia",
+        "source": "Website"
+      },
+      {
+        "objectID": "fr_29d292e2-818f-405b-a59f-b03b31178aa9",
+        "title": "Agent Studio | Algolia",
+        "source": "Website"
+      }
+    ]
+  },
+  "customer stories in grocery": {
+    "nbHits": 1,
+    "enriched_only": 0,
+    "legacy_only": 0,
+    "top": [
+      {
+        "objectID": "en_a3459784-fb65-4a9c-9684-4b83e27789b2",
+        "title": "From aisle to AI: The next generation of grocery growth",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      }
+    ],
+    "enriched_only_top": []
+  },
+  "contact sales": {
+    "nbHits": 15,
+    "enriched_only": 8,
+    "legacy_only": 7,
+    "top": [
+      {
+        "objectID": "4406981887761",
+        "title": "Can you integrate Algolia in my website/app?",
+        "source": "Support",
+        "matched": [
+          "description",
+          "abstract"
+        ],
+        "best_attr": "description"
+      },
+      {
+        "objectID": "4406975230993",
+        "title": "Can I extend the retention period of the analytics data?",
+        "source": "Support",
+        "matched": [
+          "description",
+          "abstract"
+        ],
+        "best_attr": "description"
+      },
+      {
+        "objectID": "12251302118161",
+        "title": "Can I view the history of changes made by team members of an application?",
+        "source": "Support",
+        "matched": [
+          "description",
+          "abstract"
+        ],
+        "best_attr": "description"
+      },
+      {
+        "objectID": "4406981943569",
+        "title": "What do you do about General Data Protection Regulation (GDPR)?",
+        "source": "Support",
+        "matched": [
+          "description",
+          "abstract"
+        ],
+        "best_attr": "description"
+      },
+      {
+        "objectID": "4405879681809",
+        "title": "How do I switch from one plan to another?",
+        "source": "Support",
+        "matched": [
+          "description",
+          "abstract"
+        ],
+        "best_attr": "description"
+      }
+    ],
+    "enriched_only_top": [
+      {
+        "objectID": "de_e1b0260c-f612-455f-9089-919a2ebd9fc1",
+        "title": "Supply chain risk readiness",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_e1b0260c-f612-455f-9089-919a2ebd9fc1",
+        "title": "Supply chain risk readiness",
+        "source": "Blog"
+      },
+      {
+        "objectID": "fr_e1b0260c-f612-455f-9089-919a2ebd9fc1",
+        "title": "Supply chain risk readiness",
+        "source": "Blog"
+      },
+      {
+        "objectID": "de_96b8413a-94e5-4ff8-9391-486bef0e6176_0_5",
+        "title": "Ecommerce business models and their growth levers",
+        "source": "Blog"
+      },
+      {
+        "objectID": "fr_96b8413a-94e5-4ff8-9391-486bef0e6176_0_5",
+        "title": "Ecommerce business models and their growth levers",
+        "source": "Blog"
+      }
+    ]
+  },
+  "black friday merchandising": {
+    "nbHits": 19,
+    "enriched_only": 14,
+    "legacy_only": 5,
+    "top": [
+      {
+        "objectID": "en_cc74c2d4-3421-4e7e-92cf-f217ed49123c",
+        "title": "5 considerations for Black Friday 2023 readiness | Algolia",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "en_cd419601-03ba-462c-928e-c32fe0f34c6a",
+        "title": "Black Friday Cyber Monday",
+        "source": "Website",
+        "matched": [
+          "title",
+          "abstract_enriched"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "en_230f8033-b088-4d6e-8f1d-785dbe1f796a_0_1",
+        "title": "Black Friday Bootcamp | Algolia Masterclass | 2026",
+        "source": "Website",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "0199aace-f053-7e6d-89d9-1096e9727783",
+        "title": "Masterclass: Black Friday Bootcamp",
+        "source": "Academy",
+        "matched": [
+          "title",
+          "tags",
+          "description",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "fr_6d686b27-edad-423a-8d65-5895332e033a_0_2",
+        "title": "Turn your Black Friday data into actionable insights",
+        "source": "Resources",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract"
+        ],
+        "best_attr": "title"
+      }
+    ],
+    "enriched_only_top": [
+      {
+        "objectID": "en_cc74c2d4-3421-4e7e-92cf-f217ed49123c",
+        "title": "5 considerations for Black Friday 2023 readiness | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "de_9faf9787-e284-4369-9139-a4af52822177",
+        "title": "What is searchandising? - Algolia Blog | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_9faf9787-e284-4369-9139-a4af52822177",
+        "title": "What is searchandising? - Algolia Blog | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "de_cd419601-03ba-462c-928e-c32fe0f34c6a",
+        "title": "Nutzung von Synonymvorschlägen zur Verfeinerung der Benutzersuche | Algolia",
+        "source": "Website"
+      },
+      {
+        "objectID": "en_cd419601-03ba-462c-928e-c32fe0f34c6a",
+        "title": "Black Friday Cyber Monday",
+        "source": "Website"
+      }
+    ]
+  },
+  "neural search vs keyword": {
+    "nbHits": 14,
+    "enriched_only": 5,
+    "legacy_only": 3,
+    "top": [
+      {
+        "objectID": "fr_65e18de7-9e64-415c-b9f7-24cc7394c35d_0_2",
+        "title": "How Algolia’s retrieval engine works, step by step",
+        "source": "Blog",
+        "matched": [
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "description"
+      },
+      {
+        "objectID": "en_253cf50d-1d7e-4d43-80c2-89ece3d96fc5",
+        "title": "Neural network vs. keyword search | Algolia",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "de_253cf50d-1d7e-4d43-80c2-89ece3d96fc5",
+        "title": "Neural network vs. keyword search | Algolia",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "fr_253cf50d-1d7e-4d43-80c2-89ece3d96fc5",
+        "title": "Neural network vs. keyword search | Algolia",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "de_a4430d7c-98d4-442b-9cea-94cc3d0d4b8a",
+        "title": "Vector vs keyword search: Why you should care | Algolia",
+        "source": "Blog",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "abstract",
+          "abstract_enriched",
+          "keyhighlights_enriched"
+        ],
+        "best_attr": "title"
+      }
+    ],
+    "enriched_only_top": [
+      {
+        "objectID": "fr_65e18de7-9e64-415c-b9f7-24cc7394c35d_0_2",
+        "title": "How Algolia’s retrieval engine works, step by step",
+        "source": "Blog"
+      },
+      {
+        "objectID": "fr_0eada9f4-a256-451e-a42f-aa1f8b7f8f94_0_1",
+        "title": "No, RAG is not dead",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_0eada9f4-a256-451e-a42f-aa1f8b7f8f94_0_1",
+        "title": "No, RAG is not dead",
+        "source": "Blog"
+      },
+      {
+        "objectID": "de_0eada9f4-a256-451e-a42f-aa1f8b7f8f94_0_1",
+        "title": "No, RAG is not dead",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_c14a0eb7-21c2-474f-9c25-c9510997cae1",
+        "title": "Why search Is becoming a strategic infrastructure in the composable era",
+        "source": "Blog"
+      }
+    ]
+  },
+  "B2B ecommerce search": {
+    "nbHits": 119,
+    "enriched_only": 76,
+    "legacy_only": 85,
+    "top": [
+      {
+        "objectID": "fr_4d69bcdd-b50b-43df-8c20-b42668b65898",
+        "title": "AI trends in B2B ecommerce search 2026",
+        "source": "Resources",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "keywords",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "en_4d69bcdd-b50b-43df-8c20-b42668b65898",
+        "title": "AI trends in B2B ecommerce search 2026",
+        "source": "Resources",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "keywords",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "de_4d69bcdd-b50b-43df-8c20-b42668b65898",
+        "title": "AI trends in B2B ecommerce search 2026",
+        "source": "Resources",
+        "matched": [
+          "title",
+          "url",
+          "description",
+          "keywords",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "fr_8429741a-9715-49e5-a674-4bfdedaceda0_0_5",
+        "title": "2025 B2B Ecommerce Site Search Trends Report",
+        "source": "Resources",
+        "matched": [
+          "title",
+          "description",
+          "keywords",
+          "abstract"
+        ],
+        "best_attr": "title"
+      },
+      {
+        "objectID": "en_8429741a-9715-49e5-a674-4bfdedaceda0_0_5",
+        "title": "2025 B2B Ecommerce Site Search Trends Report",
+        "source": "Resources",
+        "matched": [
+          "title",
+          "description",
+          "keywords",
+          "abstract"
+        ],
+        "best_attr": "title"
+      }
+    ],
+    "enriched_only_top": [
+      {
+        "objectID": "de_7ba64776-49f0-4f27-93f8-e15601879902",
+        "title": "Data-driven insights into B2B commerce site search trends - Algolia Blog | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_7ba64776-49f0-4f27-93f8-e15601879902",
+        "title": "Data-driven insights into B2B commerce site search trends - Algolia Blog | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "fr_7ba64776-49f0-4f27-93f8-e15601879902",
+        "title": "Data-driven insights into B2B commerce site search trends - Algolia Blog | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "de_439a7486-8c49-4fd1-9c40-e5446b3cbda7",
+        "title": "Future of B2B ecommerce: Site search vs. ChatGPT | Algolia",
+        "source": "Blog"
+      },
+      {
+        "objectID": "en_439a7486-8c49-4fd1-9c40-e5446b3cbda7_0_1",
+        "title": "Future of B2B ecommerce: Site search vs. ChatGPT | Algolia",
+        "source": "Blog"
+      }
+    ]
+  },
+  "zzzqqq no results": {
+    "nbHits": 0,
+    "enriched_only": 0,
+    "legacy_only": 0,
+    "top": [],
+    "enriched_only_top": []
+  }
+}

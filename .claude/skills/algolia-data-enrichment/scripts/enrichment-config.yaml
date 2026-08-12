@@ -1,0 +1,28 @@
+# Runtime configuration for the algolia-corpus-enrichment CLI.
+#
+# Index names live HERE, not in Python source. `--source-index` / `--target-index` override.
+# The source index is READ-ONLY for every command in this package; there is no code path that
+# writes, copies, renames or replaces it.
+
+indices:
+  source: Algolia_Prod_Copy_Enhanced
+  target: Algolia_Prod_Copy_Enhanced_Parallel
+
+site: https://www.algolia.com
+
+scout:
+  # The hosted VPS instance, not localhost. Key: SCOUT_HOSTED_API_KEY in .env.local.
+  base_url: https://scout.chowmes.com
+
+models:
+  # Tier is what the request asks for; model is the SERVED string, asserted at run start.
+  #
+  # `large` and `xlarge` BOTH serve glm-5.2, which is the writer. A tier-only writer!=judge check
+  # would let the writer grade its own output. `medium` (gemma-4-31b) is a different family and
+  # looks like a harmless judge upgrade -- pinning the served string means any re-point fails
+  # loudly instead of silently changing what graded the corpus.
+  writer_tier: large
+  writer_model: glm-5.2
+  judge_tier: small
+  judge_model: gemma-4-26b-a4b-nvfp4
+  judge_enabled: true

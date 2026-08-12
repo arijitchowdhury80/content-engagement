@@ -1,0 +1,65 @@
+# Run-local `source/page_type -> profile file` routing. NOT a taxonomy.
+#
+# No record's `source` or `page_type` is ever changed and no new index label is created. If
+# evidence shows a page_type needs a different enrichment profile, change the route here, record
+# the rationale in the run artifact, and re-run profile-lint.
+#
+# Counts verified by live census 2026-08-10 against Algolia_Prod_Copy_Enhanced (11,928 records,
+# 44 distinct source/page_type pairs). Every pair below is routed or explicitly excluded --
+# `corpus-status` fails on an uncovered one.
+
+routes:
+  # -- Documentation, 4,337 records, already classified into 12 real doc-* page_types.
+  #    Do not build a new classifier for an already-classified corpus, and do not invent shapes
+  #    like "service overview" -- those labels exist nowhere in the data.
+  #    reference 3,411 (78.6%) | guide 923 (21.3%) | nav 3 (0.1%). Sum checks: 3411+923+3 = 4337.
+  Documentation/doc-sdk: Documentation__reference.yaml                 # 2203 -- 18% of the whole corpus
+  Documentation/doc-api-reference: Documentation__reference.yaml       # 418
+  Documentation/doc-sdk-unified: Documentation__reference.yaml         # 398
+  Documentation/doc-rest-api: Documentation__reference.yaml            # 333
+  Documentation/doc-ui-library: Documentation__reference.yaml          # 59
+  Documentation/doc-guide: Documentation__guide.yaml                   # 586
+  Documentation/doc-tool: Documentation__guide.yaml                    # 175
+  Documentation/doc-integration: Documentation__guide.yaml             # 119
+  Documentation/doc-framework-integration: Documentation__guide.yaml   # 43
+  Documentation/doc-hub: _fallback__hub-page.yaml                      # 1
+  Documentation/doc-changelog: _fallback__hub-page.yaml                # 1
+  Documentation/doc-glossary: _fallback__hub-page.yaml                 # 1
+
+  # -- Developer content that sits under the Website source. Same page shape, different source
+  #    label, so it routes to the Developers profiles rather than getting duplicates of them.
+  Website/developer: Developers__developer.yaml                        # 58
+  Website/developer-code-sample: Developers__developer-code-sample.yaml  # 7
+
+  # -- Marketing tail. Individually tiny, collectively 250 records.
+  Website/solution-page: _fallback__generic-marketing-page.yaml        # 45
+  Website/industry-page: _fallback__generic-marketing-page.yaml        # 34
+  Website/event: _fallback__generic-marketing-page.yaml                # 28
+  Website/use-case: _fallback__generic-marketing-page.yaml             # 28
+  Website/comparison: _fallback__generic-marketing-page.yaml           # 21
+  Website/partner: _fallback__generic-marketing-page.yaml              # 18
+  Website/trust: _fallback__generic-marketing-page.yaml                # 17
+  Website/pricing: _fallback__generic-marketing-page.yaml              # 15
+  Website/department-page: _fallback__generic-marketing-page.yaml      # 15
+  Website/program: _fallback__generic-marketing-page.yaml              # 12
+  Website/webinar: _fallback__generic-marketing-page.yaml              # 10
+  Website/landing-page: _fallback__generic-marketing-page.yaml         # 9
+  Website/company: _fallback__generic-marketing-page.yaml              # 6
+  Website/services: _fallback__generic-marketing-page.yaml             # 3
+  Website/careers: _fallback__generic-marketing-page.yaml              # 3
+
+  # -- Nav furniture. No forced abstract; a hub page with no abstract is a PASS.
+  Website/utility: _fallback__hub-page.yaml                            # 11
+  Website/blog-hub: _fallback__hub-page.yaml                           # 10
+  Website/contact-sales: _fallback__hub-page.yaml                      # 9
+  Website/resource-hub: _fallback__hub-page.yaml                       # 6
+  Website/product-hub: _fallback__hub-page.yaml                        # 6
+  Website/developer-hub: _fallback__hub-page.yaml                      # 1
+
+excluded:
+  Support/support-article: >-
+    1,695 records, 14.2% of the corpus. Excluded by Arijit 2026-08-07: support articles are
+    authored answers from the technical support team -- definitive rulings we do not get to
+    reword. Measured, the whole article is 202-604 characters of prose and the index already
+    stores ~450 of it, so enrichment buys ~85 characters and risks putting our words on a support
+    ruling. Stays excluded until explicitly reopened; this is a decision for Arijit, not a gap.
