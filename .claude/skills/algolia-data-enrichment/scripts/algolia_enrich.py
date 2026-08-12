@@ -3,7 +3,7 @@
 
     python3 algolia_enrich.py <command> --workspace <path> --run-id <id> [args]
 
-Every operation goes through here. The loose scripts in `docs/70-enrichment/*.py` are historical:
+Every operation goes through here. The loose scripts in `docs/operations/enrichment/*.py` are historical:
 25 of the 40 do not belong in this pipeline at all, and two of the ones that do contain code
 paths the runner never reached. Running them is how the Blog slice acquired 67 report files and
 two "fixes" that changed nothing.
@@ -32,8 +32,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 from algolia_enrichment import (approvals, corpus, human_review, live_corpus, profile_lint,
-                                promote, selection_registry, strategies, taxonomy,
-                                taxonomy_correctness, write)
+                                promote, reconcile, seed, selection_registry, strategies,
+                                taxonomy, taxonomy_correctness, write)
 from algolia_enrichment.api import AlgoliaClient
 from algolia_enrichment.artifacts import RunFolder
 from algolia_enrichment.batching import (DEFAULT_MODEL_CONCURRENCY, DEFAULT_SCOUT_CONCURRENCY,
@@ -76,7 +76,7 @@ class Ctx:
         self.args = args
         self.cfg = load_config(args.workspace, args.source_index, args.target_index)
         self.workspace = self.cfg.workspace
-        self.enrichment_dir = self.workspace / "docs" / "70-enrichment"
+        self.enrichment_dir = self.workspace / "docs" / "operations" / "enrichment"
         self.run_id = args.run_id
         self.rf = RunFolder(self.enrichment_dir, self.run_id) if self.run_id else None
         self.profiles_dir = HERE / "profiles"
@@ -379,6 +379,83 @@ def cmd_health_scout(ctx: Ctx) -> int:
             f"evidence -- Scout has reported healthy for three hours while unable to start a "
             f"worker thread.")
     print(f"PASS: real job returned {report['chars']} chars in {report['elapsed_s']}s.")
+    return 0
+
+
+DOC_SITEMAP_URL = "https://www.algolia.com/doc/sitemap.xml"
+
+
+def _read_liveness(path: Path) -> tuple[list[str], set[str]]:
+    """(live canonical targets, dead keys) from a liveness census produced earlier.
+
+    The census is a second discovery source, not a convenience: 45 URLs that live records resolve
+    to with HTTP 200 are absent from `/doc/sitemap.xml`, so the sitemap is a floor. It also names
+    the 108 verified 404s, which is the only way `retire` can distinguish a page that VANISHED
+    from one that MOVED.
+    """
+    if not path.exists():
+        raise EnrichmentError(
+            f"liveness census not found at {path}. The refresh needs it to tell a dead page from "
+            f"a moved one; without it every retired record would be labelled the same.")
+    live_targets, dead = [], set()
+    for line in path.read_text().splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        key = seed.canonical_key(row.get("final") or row.get("url") or "")
+        if row.get("status") == 200:
+            live_targets.append(key)
+        elif row.get("status") == 404:
+            dead.add(seed.canonical_key(row.get("url") or ""))
+    return live_targets, dead
+
+
+def cmd_seed_documentation(ctx: Ctx) -> int:
+    """Discover every live Documentation URL. Read-only; writes only run artefacts."""
+    ctx.banner("seed-documentation")
+    sitemap_path = ctx.run_dir / "seed" / "sitemap.xml"
+    if not sitemap_path.exists():
+        raise EnrichmentError(
+            f"expected the sitemap at {sitemap_path}. Fetch it into the run folder first so the "
+            f"seed is reproducible from stored evidence rather than a live re-fetch.")
+
+    sitemap_urls = seed.parse_sitemap(sitemap_path.read_text(errors="ignore"))
+    live_targets, _ = _read_liveness(Path(ctx.args.liveness_census))
+    result = seed.build_seed(sitemap=sitemap_urls, discovered=live_targets)
+
+    ctx.emit_jsonl("seed/urls.jsonl", result["rows"], "seed-documentation")
+    ctx.emit("seed/report.json", result["report"], "seed-documentation")
+    rep = result["report"]
+    print(f"seed total={rep['total']} provenance={rep['provenance']} "
+          f"rejected_out_of_scope={rep['rejected_out_of_scope']}")
+    print("PASS: seed list is within the plausible band and scoped to /doc.")
+    return 0
+
+
+def cmd_reconcile_documentation(ctx: Ctx) -> int:
+    """Partition the live Documentation corpus against the seed list. Read-only."""
+    ctx.banner("reconcile-documentation")
+    rows_path = ctx.run_dir / "seed" / "urls.jsonl"
+    if not rows_path.exists():
+        raise EnrichmentError(f"seed list missing at {rows_path}; run seed-documentation first.")
+    seed_rows = [json.loads(line) for line in rows_path.read_text().splitlines() if line.strip()]
+
+    _, dead_keys = _read_liveness(Path(ctx.args.liveness_census))
+    records = [r for r in ctx.algolia().browse(
+        ctx.cfg.source_index,
+        attributes=["objectID", "url", "title", "description", "source", "page_type",
+                    "language_code"])
+        if r.get("source") == "Documentation"]
+    if not records:
+        raise ZeroWorkError("reconcile found zero Documentation records.")
+
+    result = reconcile.reconcile(seed_rows, records, dead_keys)
+    ctx.emit("validation/reconciliation.json", result["report"], "reconcile-documentation")
+    ctx.emit_jsonl("validation/refresh.jsonl", result["refresh"], "reconcile-documentation")
+    ctx.emit_jsonl("validation/new.jsonl", result["new"], "reconcile-documentation")
+    ctx.emit_jsonl("validation/retire.jsonl", result["retire"], "reconcile-documentation")
+    print(json.dumps(result["report"], indent=2))
+    print("PASS: partition is exhaustive, mutually exclusive, and within the retire guard.")
     return 0
 
 
@@ -1176,7 +1253,7 @@ def cmd_handoff(ctx: Ctx) -> int:
         "## Next step", "", f"    {next_step}", "",
         "## Rules that do not change", "",
         "- run every operation through `algolia_enrich.py`; the loose scripts in",
-        "  `docs/70-enrichment/*.py` are historical and two of them contain dead gate paths",
+        "  `docs/operations/enrichment/*.py` are historical and two of them contain dead gate paths",
         "- Scout is the only body source; `enrich` reads only this run folder's own cache",
         "- three fields may be written: objectID, abstract_enriched, keyhighlights_enriched",
         f"- never write to `{ctx.cfg.source_index}`", "",
@@ -1387,6 +1464,8 @@ COMMANDS = {
     "taxonomy-preflight": (cmd_taxonomy_preflight, True),
     "taxonomy-correctness": (cmd_taxonomy_correctness, False),
     "audit-documentation": (cmd_audit_documentation, True),
+    "seed-documentation": (cmd_seed_documentation, True),
+    "reconcile-documentation": (cmd_reconcile_documentation, True),
     "prepare-documentation-copy": (cmd_prepare_documentation_copy, True),
     "health-scout": (cmd_health_scout, False),
     "corpus-status": (cmd_corpus_status, False),
@@ -1429,6 +1508,9 @@ def build_parser() -> argparse.ArgumentParser:
                     help="stratified subset, e.g. 'de:4,fr:4,en:2'")
     ap.add_argument("--concurrency", type=int, default=DEFAULT_SCOUT_CONCURRENCY)
     ap.add_argument("--probe-url", default="")
+    ap.add_argument("--liveness-census", default="",
+                    help="path to a liveness-census jsonl (status + final URL per record). Names "
+                         "the verified 404s and the live pages the sitemap omits.")
     ap.add_argument("--object-id", default="",
                     help="plan-slice: comma-separated objectIDs to plan INSTEAD of the whole "
                          "slice. For recovering named records without regenerating the rest -- "
