@@ -1,13 +1,84 @@
 ---
 title: "Chapter 4 — Enrichment Validation"
 description: "Proving the values are correct, not merely present."
-status: not-started
+status: in-progress — Blog and Case Study verified 2026-08-12; taxonomy precision still open
 asana: "Chapter 4 : Enrichment Validation (1217211571015558)"
 ---
 
 # Chapter 4 — Enrichment Validation
 
-> **Status: not started.** This is the immediate next step.
+> **Status: in progress.** Blog and Case Study are verified end to end (§0). Taxonomy precision
+> — the original subject of this chapter — is still unmeasured.
+
+## 0. Corpus verification: Blog and Case Study, every record — 2026-08-12
+
+Two corpora were re-verified against the **live index**, one record at a time, no sampling.
+
+| | Records | Spans checked | Located | Genuine absences | Quality defects | Drift |
+|---|---:|---:|---:|---:|---:|---:|
+| Blog/blog-post | 2,694 | 21,790 | **21,790** | **0** | 0 | 0 |
+| Customer Stories/case-study | 225 | 1,714 | **1,714** | **0** | 0 | 0 |
+
+Command: `algolia_enrich.py verify-corpus --source <S> --page-type <P>`.
+Artifacts: `docs/70-enrichment/runs/20260812-blog-verify-final/` and `…-cs-verify-final/`, each
+carrying a per-record JSONL line. Commit `e97f0c8`.
+
+### Why this needed new code
+
+Every validation path in the skill was **run-scoped** — `cmd_validate` reads `ctx.run_dir`,
+`cmd_verify_live` reads that run's `final/payloads.jsonl`. All of them answer *"was this run
+correct?"* None could answer *"is what is in the index right now correct?"*, which is the only
+question that survives a run folder being cleaned up or the code changing underneath it. The Blog
+corpus had been validated on 2026-08-10 against **local batch outputs**; the live records had
+never been re-checked.
+
+`live_corpus.py` reads enriched records straight from the index, re-locates every stored span in
+its own cached source page, and re-runs the scripted quality gates. Deterministic; no LLM.
+
+### Case Study, fully accounted for
+
+237 records, and the enrichable ceiling is **226**, not 237:
+
+| | Count |
+|---|---:|
+| Enriched, verified, promoted into Enhanced | **225** |
+| `donorschoose` — recoverable, spans 8,111 chars apart vs an 8,000 limit (1.4% over) | 1 |
+| **Soft 404** — HTTP 200, full body, story removed | 4 |
+| Hard 404 — page gone, 205-byte error body | 7 |
+
+The 225 were promoted from the parallel holding pen into `Algolia_Prod_Copy_Enhanced` after a
+snapshot was taken (`…_SNAPSHOT_20260812`). Record count unchanged at 11,928, all 225 read back
+byte-exact, searchability proven by query. Case-study enrichment in Enhanced went **1 → 225**.
+
+### Three verifier defects found while producing these numbers
+
+Each would have produced a confident, wrong answer. They are recorded because the lesson is not
+about these bugs — it is that **a verifier's first failures are usually its own**.
+
+1. **`canonicalise` is not idempotent on 5.5% of Blog bodies** (22 of 400) — a JSX snippet inside
+   a code fence; pass one leaves the tag, pass two strips it. Grounding compares
+   `canon_text(span)` against `canonicalise(body).text`, canonicalising the span twice and the
+   haystack once, so a span that IS on the page reported as absent. Written first as *fatal*,
+   which would have blocked all 2,694 records over the verifier's own normalisation. Now reported,
+   and every miss is re-tested symmetrically and split into artifact vs genuine absence.
+2. **"HTTP status must be 200" flagged 1,805 of 2,694 records.** All false. Scout follows
+   redirects, so the cached status is the *first hop* — 1,881 Blog pages cached as 301 — while
+   `served_url` records where the chain landed. On all of them `served_url == url`. The status
+   code was never the signal.
+3. **Soft 404s were structurally undetectable.** Dead-page markers were scanned only in
+   `body[:200]`, which on algolia.com is the language switcher on every page. Four case studies
+   returned 200 with 3.7–8.2 KB and no story — `/customers/kingarthur` serves the generic customer
+   hub and says "king arthur" **zero times**. They had been labelled `NO_PROSE`, which blames the
+   writer for the page's absence. Fixed at two levels: a second marker window at the page's own
+   first heading (instance), and `subject_absent_reason` — *a page that never mentions its own
+   subject is gone, whatever the stub says* (class). Verified on **4,421 live pages across four
+   corpora: catches exactly the 4 known soft 404s, zero false positives.**
+
+### What this does NOT prove
+
+Grounding is a guarantee; selection quality is a judgement. These records are proven to be
+**faithful** — every span is on the page it claims. Nothing here proves a span was the **best**
+sentence to choose. That remains the judge's job, and the judge floor is unresolved.
 
 ## The distinction this chapter exists to make
 
