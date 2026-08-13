@@ -23,17 +23,19 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import random
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from algolia_enrichment import (approvals, corpus, human_review, live_corpus, profile_lint,
-                                promote, reconcile, seed, selection_registry, strategies,
-                                taxonomy, taxonomy_correctness, write)
+from algolia_enrichment import (approvals, corpus, docrefresh, human_review, live_corpus,
+                                profile_lint, promote, reconcile, seed, selection_registry,
+                                strategies, taxonomy, taxonomy_correctness, write)
 from algolia_enrichment.api import AlgoliaClient
 from algolia_enrichment.artifacts import RunFolder
 from algolia_enrichment.batching import (DEFAULT_MODEL_CONCURRENCY, DEFAULT_SCOUT_CONCURRENCY,
@@ -457,6 +459,163 @@ def cmd_reconcile_documentation(ctx: Ctx) -> int:
     print(json.dumps(result["report"], indent=2))
     print("PASS: partition is exhaustive, mutually exclusive, and within the retire guard.")
     return 0
+
+
+def cmd_fetch_documentation(ctx: Ctx) -> int:
+    """Fetch every seeded page through Scout into the run cache. No index writes.
+
+    Resumable by design: each page is cached under its canonical key, and a re-run skips what is
+    already there. That is not a nicety -- the derive step downstream will need correcting more
+    than once, and re-deriving must never mean re-fetching against an origin that has already
+    rate-limited us today.
+    """
+    ctx.banner("fetch-documentation")
+    rows_path = ctx.run_dir / "seed" / "urls.jsonl"
+    if not rows_path.exists():
+        raise EnrichmentError(f"seed list missing at {rows_path}; run seed-documentation first.")
+    rows = [json.loads(line) for line in rows_path.read_text().splitlines() if line.strip()]
+
+    cache = ctx.run_dir / "cache-scout"
+    cache.mkdir(parents=True, exist_ok=True)
+    client = ctx.scout()
+    site = ctx.cfg.site
+
+    def cache_path(key: str) -> Path:
+        return cache / (hashlib.sha256(key.encode("utf-8")).hexdigest()[:32] + ".json")
+
+    def one(row: dict) -> dict:
+        path = cache_path(row["key"])
+        if path.exists():
+            got = json.loads(path.read_text())
+            # Only a SUCCESS is a durable fact about a page. Caching a failure makes a transient
+            # rate-limit rejection permanent: the retry pass would read it back as settled and the
+            # page would be classified absent and deleted. Failures are re-attempted every run.
+            if not got.get("fetch_error"):
+                got["from_cache"] = True
+                return got
+        got = client.fetch({"objectID": row["url"], "url": row["url"]}, site)
+        got["key"] = row["key"]
+        got["from_cache"] = False
+        if not got.get("fetch_error"):
+            path.write_text(json.dumps(got, ensure_ascii=False))
+        return got
+
+    # Concurrency is bounded by Scout's hosted plan, not by us. The documented ceiling is 5, and
+    # exceeding it on 2026-08-09 failed 4,123 of 4,779 pages. It is left operator-settable so the
+    # ceiling can be MEASURED rather than assumed -- the per-page cache makes a failed experiment
+    # free, since a re-run skips everything already fetched -- but the run aborts if raising it
+    # actually starts costing pages.
+    results: list[dict] = []
+    done = 0
+    with ThreadPoolExecutor(max_workers=max(1, ctx.args.concurrency)) as pool:
+        for got in pool.map(one, rows):
+            results.append(got)
+            done += 1
+            if done % 100 == 0:
+                errs = sum(1 for r in results if r.get("fetch_error"))
+                print(f"  {done}/{len(rows)} fetched  errors={errs}", flush=True)
+            if done >= 100 and not got.get("from_cache"):
+                fresh = [r for r in results if not r.get("from_cache")]
+                if len(fresh) >= 50:
+                    err_share = sum(1 for r in fresh if r.get("fetch_error")) / len(fresh)
+                    if err_share > 0.10:
+                        raise EnrichmentError(
+                            f"aborting: {err_share:.0%} of fresh fetches are failing at "
+                            f"concurrency {ctx.args.concurrency}. This is the rate limiter, not "
+                            f"the pages. Re-run at a lower concurrency; the cache is kept so "
+                            f"nothing already fetched is lost.")
+
+    manifest = [{k: v for k, v in r.items() if k != "markdown"} for r in results]
+    ctx.emit_jsonl("fetch-manifest.jsonl", manifest, "fetch-documentation")
+    report = docrefresh.fetch_report(results)   # raises below the success floor
+    ctx.emit("validation/fetch-report.json", report, "fetch-documentation")
+    print(json.dumps(report, indent=2))
+    print("PASS: fetch represents the live site; derive may proceed from cache.")
+    return 0
+
+
+def cmd_build_documentation(ctx: Ctx) -> int:
+    """Derive records from the fetch cache. Pure and offline -- safe to re-run after a rule fix."""
+    ctx.banner("build-documentation")
+    cache = ctx.run_dir / "cache-scout"
+    if not cache.exists():
+        raise EnrichmentError(f"no fetch cache at {cache}; run fetch-documentation first.")
+
+    schema = taxonomy.load_schema(TAXONOMY_SCHEMA)
+    compiled = taxonomy_correctness.compile_rules(schema)
+
+    records, review, failures = [], [], []
+    for path in sorted(cache.glob("*.json")):
+        got = json.loads(path.read_text())
+        if got.get("fetch_error") or got.get("redirect_mismatch"):
+            failures.append({"key": got.get("key"), "error": got.get("fetch_error"),
+                             "redirect_mismatch": got.get("redirect_mismatch")})
+            continue
+        try:
+            record = docrefresh.build_record(got.get("url") or got.get("key"),
+                                             got.get("markdown") or "", schema, compiled)
+        except EnrichmentError as exc:
+            failures.append({"key": got.get("key"), "error": str(exc)})
+            continue
+        if record.pop("needs_description") or record.pop("needs_title"):
+            review.append({"objectID": record["objectID"], "url": record["url"],
+                           "title": record["title"],
+                           "missing": [f for f in ("title", "description")
+                                       if not str(record.get(f) or "").strip()]})
+        records.append(record)
+
+    if not records:
+        raise ZeroWorkError("build produced zero records.")
+
+    conformance = taxonomy.validate_records(records, schema)
+    counts: dict[str, int] = {}
+    for record in records:
+        counts[record["page_type"]] = counts.get(record["page_type"], 0) + 1
+    distribution = docrefresh.check_distribution(counts, _sitemap_sections(ctx), SECTION_MAP)
+
+    ctx.emit_jsonl("final/records.jsonl", records, "build-documentation")
+    ctx.emit_jsonl("final/human-review-queue.jsonl", review, "build-documentation")
+    ctx.emit("validation/build-report.json", {
+        "records": len(records), "needs_review": len(review), "failures": len(failures),
+        "taxonomy_violations": conformance["violation_count"],
+        "distribution": distribution}, "build-documentation")
+
+    print(f"records={len(records)} needs_review={len(review)} failures={len(failures)} "
+          f"taxonomy_violations={conformance['violation_count']}")
+    if conformance["violation_count"]:
+        raise EnrichmentError(
+            f"{conformance['violation_count']} records violate the taxonomy contract; refusing to "
+            f"carry them toward a write.")
+    if not distribution["ok"]:
+        raise EnrichmentError(
+            f"derived page_type distribution diverges from the live site: "
+            f"{json.dumps(distribution['divergences'])}. A rule is mis-tagging a whole section; "
+            f"fix the rule and re-run build (the fetch cache is reused, nothing is re-fetched).")
+    print("PASS: every record conforms, and the derived distribution matches the live site.")
+    return 0
+
+
+def _sitemap_sections(ctx: Ctx) -> dict[str, int]:
+    """Section counts straight from the site's own sitemap -- the independent yardstick."""
+    path = ctx.run_dir / "seed" / "sitemap.xml"
+    sections: dict[str, int] = {}
+    for loc in seed.parse_sitemap(path.read_text(errors="ignore")):
+        parts = [p for p in seed.canonical_key(loc).split("/") if p]
+        if len(parts) > 1 and parts[0] == "doc":
+            sections[parts[1]] = sections.get(parts[1], 0) + 1
+    return sections
+
+
+SECTION_MAP = {
+    "doc-guide": "guides",
+    "doc-sdk-unified": "libraries",
+    "doc-api-reference": "api-reference",
+    "doc-rest-api": "rest-api",
+    "doc-tool": "tools",
+    "doc-integration": "integration",
+    "doc-ui-library": "ui-libraries",
+    "doc-framework-integration": "framework-integration",
+}
 
 
 def cmd_plan_slice(ctx: Ctx) -> int:
@@ -1466,6 +1625,8 @@ COMMANDS = {
     "audit-documentation": (cmd_audit_documentation, True),
     "seed-documentation": (cmd_seed_documentation, True),
     "reconcile-documentation": (cmd_reconcile_documentation, True),
+    "fetch-documentation": (cmd_fetch_documentation, True),
+    "build-documentation": (cmd_build_documentation, True),
     "prepare-documentation-copy": (cmd_prepare_documentation_copy, True),
     "health-scout": (cmd_health_scout, False),
     "corpus-status": (cmd_corpus_status, False),
