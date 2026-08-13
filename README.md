@@ -1,4 +1,4 @@
-# Algolia.com Concierge
+# Algolia Content Engagement - White Glove Concierge
 
 This repository is the working home for the Algolia.com discovery concierge: Agent Studio
 configuration and prompts, the Jahia chat widget JavaScript, visitor-intelligence work,
@@ -13,7 +13,7 @@ workstreams.
 - Primary development agent: `www Chat - Orchestrator`
 - Retrieval index: `Algolia_Prod_Copy_Enhanced`
 - Production Ask Algolia is read-only comparison evidence. Do not mutate it from this repo.
-- Jahia development surface: `/sites/www/home/drift/custom-code-block`
+- Jahia development box: `https://tmp-content-eng-algolia.cloud.jahia.com/`
 
 ## Folder Map
 
