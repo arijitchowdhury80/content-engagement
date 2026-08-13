@@ -18,8 +18,8 @@ SAFETY, in the order the checks run
   5. After deleting, the LIVE index is re-counted and must equal (before - deleted).
      Verified on the surface the change was made to, never inferred from a 200 response.
 
-  python3 docs/70-enrichment/delete_records.py --host job-boards.greenhouse.io --expect 79
-  python3 docs/70-enrichment/delete_records.py --host job-boards.greenhouse.io --expect 79 \
+  python3 docs/operations/enrichment/delete_records.py --host job-boards.greenhouse.io --expect 79
+  python3 docs/operations/enrichment/delete_records.py --host job-boards.greenhouse.io --expect 79 \
       --apply --yes
 
 TLS: curl via subprocess. Python's certifi cannot reach the Algolia API from this machine

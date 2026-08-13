@@ -12,10 +12,10 @@ Owner: Arijit Chowdhury
 | Artifact | Owns |
 |---|---|
 | **this file** | WHY — reasoning, dependencies, critical path, coverage ledger |
-| **`docs/briefs/WU-NN.md`** | HOW — inputs with real paths, method, skill routing, output schema, runnable verify commands, DoD |
+| **`docs/program/work-units/WU-NN.md`** | HOW — inputs with real paths, method, skill routing, output schema, runnable verify commands, DoD |
 | **Asana** | STATUS — done/not-done, per-unit findings comments, the human gate |
 
-**To execute a unit, read `docs/briefs/README.md` and then that unit's brief.** Asana task
+**To execute a unit, read `docs/program/work-units/README.md` and then that unit's brief.** Asana task
 descriptions are deliberately pointers, not copies — a description you can execute from is
 a second copy of the plan, and two copies drift. Where a brief and this file disagree about
 *method*, the brief wins: the briefs were written after the corpus existed. Where they
@@ -69,7 +69,7 @@ Covers `[11] [18]` · Blocked by: WAF risk · Tier: Sonnet + `scout`
 - `[11]` Crawl current algolia.com navigation, footer, sitemap, key landing pages, conversion flows
 - `[18]` Extract every mega-menu item from Products, Solutions, Developers, Resources
 
-**DoD:** N records on disk in `docs/50-prototype/corpus/`, each with url, title, page-type, body, breadcrumb, CTA. Record count stated, not estimated.
+**DoD:** N records on disk in `frontend/search-first-demo/corpus/`, each with url, title, page-type, body, breadcrumb, CTA. Record count stated, not estimated.
 **Risk:** algolia.com may be behind Akamai/Cloudflare. Fallback is the stealth path in `algolia-audit-browser`. If both fail, this blocks WU-4, WU-5, WU-15 — escalate immediately rather than proceeding on partial data.
 
 ### WU-3 — Current search overlay teardown

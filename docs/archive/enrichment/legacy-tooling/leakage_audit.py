@@ -37,10 +37,10 @@ REFUSES TO AUDIT AN UNFINISHED FILE
   writers. --expect makes the row count, the distinct-objectID count and the duplicate count a
   precondition, not a footnote.
 
-    python3 docs/70-enrichment/leakage_audit.py \
-        --results docs/70-enrichment/batches-out/doc-md-twin-reference-001/results.jsonl \
-        --cache   docs/70-enrichment/cache-batches/doc-md-twin-reference-001 \
-        --baseline docs/70-enrichment/reports/gate-baseline-clean-20260808-2230.jsonl \
+    python3 docs/operations/enrichment/leakage_audit.py \
+        --results docs/operations/enrichment/batches-out/doc-md-twin-reference-001/results.jsonl \
+        --cache   docs/operations/enrichment/cache-batches/doc-md-twin-reference-001 \
+        --baseline docs/operations/enrichment/reports/gate-baseline-clean-20260808-2230.jsonl \
         --expect 50 --markdown
 
   Exit 0 clean, 1 leaks found, 2 the file is not a finished clean run.

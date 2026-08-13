@@ -4,7 +4,7 @@ Agent `40bdd425-1929-46e5-91ff-c95f0d8c85f1`, index `Algolia_Prod_Copy_Vanilla`,
 
 Questions taken **verbatim** from the 40 bullets in `docs/sample_questions.md`. Verbatim matters: Agent Studio caches completions by exact query text, so rewording silently dodges any cached pre-fix failure. An earlier pass used the 31-row frequency table instead of these 40 bullets — different wording, different cache keys, invalid as a test of this set.
 
-Verdict rule (`scripts/spikes/agent-tool-handoff/sweep-sample-questions.mjs`): `LINK-LIST` = 60%+ of lines carry a link and under 400 chars of unlinked prose. `THIN` = under 250 chars total. Else `SYNTHESIS`.
+Verdict rule (`agents/probes/agent-tool-handoff/sweep-sample-questions.mjs`): `LINK-LIST` = 60%+ of lines carry a link and under 400 chars of unlinked prose. `THIN` = under 250 chars total. Else `SYNTHESIS`.
 
 ## Result: 36 SYNTHESIS / 0 LINK-LIST / 4 THIN
 

@@ -23,8 +23,8 @@ WHAT IS EXCLUDED, AND WHY IT IS NOT A FILTER BUG
   Both are excluded from the ENRICHABLE set by design, not skipped silently: the summary prints
   them so the numbers reconcile against the 12,035 in the index.
 
-    python3 docs/70-enrichment/make_batches.py --out batches
-    python3 docs/70-enrichment/make_batches.py --out batches --only doc-md-twin/reference
+    python3 docs/operations/enrichment/make_batches.py --out batches
+    python3 docs/operations/enrichment/make_batches.py --out batches --only doc-md-twin/reference
 """
 
 from __future__ import annotations

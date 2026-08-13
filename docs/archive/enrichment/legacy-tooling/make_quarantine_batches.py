@@ -12,12 +12,12 @@ WHY THIS AND NOT make_batches.py
   calls the fetcher. That is also what keeps rule 1 true: Scout-fetched content, and only that.
 
 USAGE
-    python3 docs/70-enrichment/make_quarantine_batches.py \\
+    python3 docs/operations/enrichment/make_quarantine_batches.py \\
         --status QUARANTINED_BY_GATE --tag repair3
-    python3 docs/70-enrichment/run_batches.py \\
-        --batches docs/70-enrichment/batches-blog-repair3 \\
-        --out     docs/70-enrichment/batches-out-blog-repair3 \\
-        --cache   docs/70-enrichment/cache-scout/blog-repair3-batches --workers 8
+    python3 docs/operations/enrichment/run_batches.py \\
+        --batches docs/operations/enrichment/batches-blog-repair3 \\
+        --out     docs/operations/enrichment/batches-out-blog-repair3 \\
+        --cache   docs/operations/enrichment/cache-scout/blog-repair3-batches --workers 8
 
 THE PRECEDENCE RULE IS HERE BECAUSE IT LIVES NOWHERE ELSE
   The blog corpus is spread over five output folders that supersede each other BY objectID, and

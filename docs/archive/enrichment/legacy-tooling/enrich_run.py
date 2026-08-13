@@ -22,8 +22,8 @@ WHAT THE JUDGE IS AND IS NOT ASKED
 
 PILOT MODE WRITES NOTHING TO ALGOLIA. Output is files for a human to read.
 
-  python3 docs/70-enrichment/enrich_run.py --pilot            # all cached pilot records
-  python3 docs/70-enrichment/enrich_run.py --pilot --limit 3  # smoke test first
+  python3 docs/operations/enrichment/enrich_run.py --pilot            # all cached pilot records
+  python3 docs/operations/enrichment/enrich_run.py --pilot --limit 3  # smoke test first
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ FAMILIES = json.loads((HERE / "prompts" / "shape-families.json").read_text())["f
 # G8 -- corpus-wide boilerplate. Built by boilerplate.py from the fetched pages, loaded once.
 # A missing file yields an empty set and G8 simply does not apply; it never breaks the run.
 # Rebuild it whenever the fetched set grows:
-#   python3 docs/70-enrichment/boilerplate.py --cache <cache dir> --out docs/70-enrichment/boilerplate-map.json
+#   python3 docs/operations/enrichment/boilerplate.py --cache <cache dir> --out docs/operations/enrichment/boilerplate-map.json
 BOILERPLATE_MAP_PATH = HERE / "boilerplate-map.json"
 
 # url -> objectID for the whole corpus. Loaded once: REDIRECT_CANONICAL needs to answer "is the
@@ -114,7 +114,7 @@ CANONICAL_INDEX = canonical_index() if (HERE / "work-queue.jsonl").exists() else
 # evidence of furniture -- "Create, update, delete, and search for synonyms." appears on 20 pages
 # because the synonym endpoints share a generated preamble, and it does describe its page. Any
 # frequency-threshold gate plays whack-a-mole here. The map is NOT kept -- rebuild it with
-#   python3 docs/70-enrichment/boilerplate.py --cache <cache dir> --out <map.json>
+#   python3 docs/operations/enrichment/boilerplate.py --cache <cache dir> --out <map.json>
 # which takes seconds and cannot go stale, unlike a saved copy.
 #
 # AND NOTE: this was all measured on doc-md-twin bodies. Under HARD RULE 11 (Scout-only) it is

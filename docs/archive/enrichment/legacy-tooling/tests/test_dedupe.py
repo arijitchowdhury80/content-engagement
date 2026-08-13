@@ -6,7 +6,7 @@ This script deletes 4,853 records from a live index. Every rule it applies is
 tested here against a hand-built fixture, so a regression shows up as a red test
 rather than as missing data nobody notices.
 
-    python3 -m pytest docs/70-enrichment/tests/test_dedupe.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_dedupe.py -q
 """
 
 import os

@@ -11,7 +11,7 @@ WHY THESE TWO
      Sequentially that almost never fired. At 8 concurrent workers against ~7,700 Gemini calls it
      is a certainty. The test that matters is "a 429 is retried, not lost".
 
-    python3 -m pytest docs/70-enrichment/tests/test_batching_and_retry.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_batching_and_retry.py -q
 """
 
 import json

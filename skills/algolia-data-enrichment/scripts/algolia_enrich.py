@@ -1,0 +1,1834 @@
+#!/usr/bin/env python3
+"""algolia-corpus-enrichment -- the ONE entry point.
+
+    python3 algolia_enrich.py <command> --workspace <path> --run-id <id> [args]
+
+Every operation goes through here. The loose scripts in `docs/operations/enrichment/*.py` are historical:
+25 of the 40 do not belong in this pipeline at all, and two of the ones that do contain code
+paths the runner never reached. Running them is how the Blog slice acquired 67 report files and
+two "fixes" that changed nothing.
+
+WHAT EVERY COMMAND GUARANTEES
+  * it writes only under `runs/<run-id>/` (except `handoff`, by explicit exception)
+  * it holds the run lock, so two writers cannot touch one run folder
+  * it records what it produced in `artifact-manifest.json`
+  * it exits NON-ZERO on any invariant failure
+  * it never prints PASS after checking zero records or zero spans
+
+Run ids are `YYYYMMDD-source-page_type-aNN`. The `aNN` attempt suffix is not decoration: without
+it a same-day rerun of the same slice collides on the run folder and the lock.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import hashlib
+import json
+import random
+import sys
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
+from algolia_enrichment import (approvals, corpus, docapply, docmerge, docrefresh, human_review,
+                                live_corpus, profile_lint, promote, quarantine, reconcile, seed,
+                                selection_registry, strategies, taxonomy, taxonomy_correctness,
+                                waits, write)
+from algolia_enrichment.api import AlgoliaClient
+from algolia_enrichment.artifacts import RunFolder
+from algolia_enrichment.batching import (DEFAULT_MODEL_CONCURRENCY, DEFAULT_SCOUT_CONCURRENCY,
+                                         project_runtime, run_concurrent)
+from algolia_enrichment.bodysource import (FETCH_MANIFEST, SEALED_SCOUT_REPLAY, IngestPayload,
+                                           RunCache, ScoutRefetch)
+from algolia_enrichment.canonical import canonical_version
+from algolia_enrichment.config import env_values, load_config
+from algolia_enrichment.errors import (ApprovalError, EnrichmentError, LockError, ProfileError,
+                                       StateError, ZeroWorkError)
+from algolia_enrichment.ledger import Ledger, Metrics, read_effective_config, write_effective_config
+from algolia_enrichment.lock import run_lock
+from algolia_enrichment.model_io import (InferenceClient, PROMPT_VERSION, assert_model_separation)
+from algolia_enrichment.pipeline import GATES_LOADED, process_record, selection_input_lock_key
+from algolia_enrichment.profiles import load_profile
+from algolia_enrichment.scout import ScoutClient
+from algolia_enrichment.state import RunState
+from algolia_enrichment.validate import GATE_REGISTRY, grounding, live as live_validate, payload, quality
+from algolia_enrichment.verdicts import canonical_index
+
+RECORD_ATTRIBUTES = ["objectID", "url", "title", "description", "source", "page_type",
+                     "language_code", "product", "feature", "solution", "industry", "customer",
+                     "language_platform", "integration_platform", "taxonomy_version",
+                     "taxonomy_provenance", "taxonomy_confidence"]
+TAXONOMY_SCHEMA = HERE.parent / "references" / "taxonomy-schema.algolia-com.json"
+
+# Measured on one real Scout job, queue wait included. Used only to PROJECT a runtime, never to
+# claim one.
+MEASURED_S_PER_RECORD = 80.0
+
+
+# ---------------------------------------------------------------------------
+# plumbing
+# ---------------------------------------------------------------------------
+
+class Ctx:
+    """Everything a command needs, resolved once and printed once."""
+
+    def __init__(self, args):
+        self.args = args
+        self.cfg = load_config(args.workspace, args.source_index, args.target_index)
+        self.workspace = self.cfg.workspace
+        self.enrichment_dir = self.workspace / "docs" / "operations" / "enrichment"
+        self.run_id = args.run_id
+        self.rf = RunFolder(self.enrichment_dir, self.run_id) if self.run_id else None
+        self.profiles_dir = HERE / "profiles"
+
+    @property
+    def run_dir(self) -> Path:
+        if self.rf is None:
+            raise EnrichmentError("this command needs --run-id")
+        return self.rf.dir
+
+    def algolia(self) -> AlgoliaClient:
+        return AlgoliaClient.from_env(self.workspace)
+
+    def scout(self) -> ScoutClient:
+        env = env_values(self.workspace)
+        return ScoutClient(self.cfg.scout_base, env.get("SCOUT_HOSTED_API_KEY", ""))
+
+    def inference(self) -> InferenceClient:
+        return InferenceClient.from_env(self.workspace)
+
+    def profile(self):
+        if not self.args.source or not self.args.page_type:
+            raise EnrichmentError("this command needs --source and --page-type")
+        return load_profile(self.profiles_dir, self.args.source, self.args.page_type)
+
+    def state(self) -> RunState:
+        path = self.run_dir / "state.json"
+        if path.exists():
+            return RunState.load(self.run_dir)
+        return RunState(run_id=self.run_id, source=self.args.source or "",
+                        page_type=self.args.page_type or "",
+                        target_index=self.cfg.target_index)
+
+    def manifest(self) -> dict:
+        p = self.run_dir / "manifest.json"
+        if not p.exists():
+            raise EnrichmentError(f"{p} not found. Run plan-slice first.")
+        return json.loads(p.read_text())
+
+    def emit(self, rel: str, data, command: str) -> Path:
+        text = data if isinstance(data, str) else json.dumps(data, indent=2, ensure_ascii=False,
+                                                             sort_keys=True)
+        return self.rf.write(rel, text, command)
+
+    def emit_jsonl(self, rel: str, rows: list[dict], command: str) -> Path:
+        return self.rf.write(rel, "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows),
+                             command)
+
+    def banner(self, command: str) -> None:
+        print(f"[{command}] workspace={self.workspace}")
+        print(f"[{command}] source-index={self.cfg.source_index}  "
+              f"target-index={self.cfg.target_index}")
+        if self.run_id:
+            print(f"[{command}] run-id={self.run_id}  run-dir={self.run_dir}")
+
+
+def _now() -> str:
+    return dt.datetime.now(dt.timezone.utc).isoformat()
+
+
+def _echo_config(ctx: Ctx, profile, judge_tier: str | None, body_source: str) -> dict:
+    cfg = write_effective_config(
+        ctx.run_dir, profile=profile,
+        gates_loaded=GATES_LOADED + sorted(GATE_REGISTRY),
+        writer_model=ctx.cfg.writer_model, judge_model=ctx.cfg.judge_model if judge_tier else None,
+        prompt_version=PROMPT_VERSION, canonical_version=canonical_version(),
+        body_source=body_source,
+        thresholds={
+            "min_body_chars": profile.min_body_chars,
+            "abstract_span_count": list(profile.abstract_span_count),
+            "highlight_count": list(profile.highlight_count),
+            "information_gain_minimum": profile.information_gain_minimum,
+            "coverage_target_pct": profile.coverage_target_pct,
+            "max_human_review_open_pct": profile.max_human_review_open_pct,
+            "max_span_distance": profile.max_span_distance,
+        })
+    print("[effective-config] " + json.dumps(cfg, sort_keys=True))
+    return cfg
+
+
+def _sealed_body_source(ctx: Ctx) -> str:
+    """Return the body-source provenance that this run's sealed fetch declared.
+
+    `enrich` must report the same source that `fetch` sealed. Replays are Scout-derived,
+    but they are not fresh Scout requests; collapsing the two would make the evidence lie.
+    RunCache.load() independently verifies the bodies against this declaration.
+    """
+    path = ctx.run_dir / FETCH_MANIFEST
+    if not path.exists():
+        raise EnrichmentError(f"no {FETCH_MANIFEST}. Run fetch before enrich.")
+    source = json.loads(path.read_text()).get("body_source")
+    if not isinstance(source, str) or not source:
+        raise EnrichmentError(f"{FETCH_MANIFEST} has no body_source")
+    return source
+
+
+# ---------------------------------------------------------------------------
+# read-only commands
+# ---------------------------------------------------------------------------
+
+def cmd_census(ctx: Ctx) -> int:
+    ctx.banner("census")
+    client = ctx.algolia()
+    distinct, raw = client.record_count(ctx.cfg.source_index)
+    if raw <= 0 and not ctx.args.allow_empty_index:
+        raise ZeroWorkError(
+            f"{ctx.cfg.source_index} reports {raw} records. A zero-record census is a failure "
+            f"unless --allow-empty-index says an empty index is expected.")
+    counts = corpus.live_slice_counts(client, ctx.cfg.source_index)
+    scanned = sum(counts.values())
+    if scanned != raw:
+        raise EnrichmentError(
+            f"scan counted {scanned} records but the index reports {raw}. A census that does not "
+            f"reconcile is not a census.")
+    data = {"index": ctx.cfg.source_index, "taken_at": _now(),
+            "distinct_url_hits": distinct, "records": raw, "scanned": scanned,
+            "slices": dict(sorted(counts.items(), key=lambda kv: -kv[1]))}
+    if ctx.rf:
+        ctx.emit("census-before.json", data, "census")
+    print(f"records={raw}  distinct-url={distinct}  page_types={len(counts)}")
+    for key, n in sorted(counts.items(), key=lambda kv: -kv[1])[:15]:
+        print(f"  {n:6d}  {key}")
+    return 0
+
+
+def cmd_profile_lint(ctx: Ctx) -> int:
+    ctx.banner("profile-lint")
+    client = ctx.algolia()
+    counts = corpus.live_slice_counts(client, ctx.cfg.source_index)
+    report = profile_lint.lint(ctx.profiles_dir, counts)
+    if ctx.rf:
+        ctx.emit("validation/profile-lint.json", report, "profile-lint")
+    print(f"live page_types : {report['live_page_types']}")
+    print(f"resolved        : {len(report['resolved'])}")
+    print(f"excluded        : {len(report['excluded'])} "
+          f"({sum(v['records'] for v in report['excluded'].values())} records)")
+    for u in report["uncovered"]:
+        print(f"  UNCOVERED {u['key']} ({u['records']} records)")
+    for e in report["errors"]:
+        print(f"  ERROR {e}")
+    if not report["ok"]:
+        raise EnrichmentError(
+            f"{len(report['uncovered'])} uncovered page_types ({report['uncovered_records']} "
+            f"records) and {len(report['errors'])} profile errors. An uncovered page_type means "
+            f"a slice hard-refuses mid-run.")
+    print("PASS: every live page_type resolves to a profile or an explicit exclusion.")
+    return 0
+
+
+def _taxonomy_preflight(ctx: Ctx) -> dict:
+    schema = taxonomy.load_schema(TAXONOMY_SCHEMA)
+    records = list(ctx.algolia().browse(ctx.cfg.source_index, attributes=RECORD_ATTRIBUTES))
+    if not records:
+        raise ZeroWorkError("taxonomy preflight found zero records. Zero work is not a preflight.")
+    report = taxonomy.validate_records(records, schema)
+    report.update({"source_index": ctx.cfg.source_index, "schema_version": schema["version"],
+                   "semantic_correctness": "not_proven_by_conformance; sampled review required"})
+    return report
+
+
+def cmd_taxonomy_preflight(ctx: Ctx) -> int:
+    """Hard-check the 8-axis taxonomy contract before any enrichment work."""
+    ctx.banner("taxonomy-preflight")
+    report = _taxonomy_preflight(ctx)
+    ctx.emit("validation/taxonomy-conformance.json", report, "taxonomy-preflight")
+    print(f"taxonomy records={report['records']} page_types={len(report['page_type_counts'])} "
+          f"violations={report['violation_count']}")
+    if not report["ok"]:
+        raise EnrichmentError(f"taxonomy conformance failed for {report['violation_count']} records")
+    print("PASS: all records conform to the 8-axis taxonomy contract. Semantic review remains required.")
+    return 0
+
+
+DOCUMENTATION_REQUIRED_FIELDS = ("objectID", "url", "title", "description", "source",
+                                 "page_type", "language_code")
+
+
+def _documentation_inventory(ctx: Ctx) -> tuple[list[dict], dict]:
+    """Read and classify Documentation metadata without calling any content system."""
+    records = [record for record in ctx.algolia().browse(
+        ctx.cfg.source_index,
+        attributes=[*DOCUMENTATION_REQUIRED_FIELDS, "abstract_enriched", "keyhighlights_enriched"])
+        if record.get("source") == "Documentation"]
+    if not records:
+        raise ZeroWorkError("Documentation audit found zero records. Zero work is not an audit.")
+
+    missing: list[dict] = []
+    invalid_language: list[dict] = []
+    page_type_counts: dict[str, int] = {}
+    legacy_enriched: list[str] = []
+    not_no_abstract: list[dict] = []
+    for record in records:
+        fields = [field for field in DOCUMENTATION_REQUIRED_FIELDS
+                  if not str(record.get(field) or "").strip()]
+        if fields:
+            missing.append({"objectID": record.get("objectID", ""), "missing": fields,
+                            "url": record.get("url"), "title": record.get("title"),
+                            "page_type": record.get("page_type")})
+        if str(record.get("language_code") or "").strip() != "en":
+            invalid_language.append({"objectID": record.get("objectID", ""),
+                                     "language_code": record.get("language_code")})
+        page_type = str(record.get("page_type") or "")
+        page_type_counts[page_type] = page_type_counts.get(page_type, 0) + 1
+        try:
+            profile = load_profile(ctx.profiles_dir, "Documentation", page_type)
+            if profile.strategy != "no_abstract":
+                not_no_abstract.append({"page_type": page_type, "strategy": profile.strategy})
+        except ProfileError as exc:
+            not_no_abstract.append({"page_type": page_type, "error": str(exc)})
+        if record.get("abstract_enriched") or record.get("keyhighlights_enriched"):
+            legacy_enriched.append(record["objectID"])
+
+    report = {
+        "source_index": ctx.cfg.source_index,
+        "source": "Documentation",
+        "records": len(records),
+        "page_type_counts": dict(sorted(page_type_counts.items())),
+        "missing_required_fields": missing,
+        "invalid_language": invalid_language,
+        "profiles_not_no_abstract": not_no_abstract,
+        "legacy_enriched_count": len(legacy_enriched),
+        "legacy_enriched_objectIDs": legacy_enriched,
+        "writer_or_judge_called": False,
+    }
+    return records, report
+
+
+def cmd_audit_documentation(ctx: Ctx) -> int:
+    """Validate Documentation taxonomy and required index fields without fetching or writing."""
+    ctx.banner("audit-documentation")
+    _, report = _documentation_inventory(ctx)
+    ctx.emit("validation/documentation-metadata-audit.json", report, "audit-documentation")
+    print(f"documentation records={report['records']} page_types={len(report['page_type_counts'])} "
+          f"missing={len(report['missing_required_fields'])} "
+          f"language_mismatch={len(report['invalid_language'])} "
+          f"legacy_enriched={report['legacy_enriched_count']}")
+    if (report["missing_required_fields"] or report["invalid_language"] or
+            report["profiles_not_no_abstract"]):
+        raise EnrichmentError(
+            f"Documentation metadata audit failed: missing={len(report['missing_required_fields'])}, "
+            f"language_mismatch={len(report['invalid_language'])}, "
+            f"profiles_not_no_abstract={len(report['profiles_not_no_abstract'])}")
+    print("PASS: Documentation taxonomy and required metadata are complete; no LLM enrichment is allowed.")
+    return 0
+
+
+def cmd_prepare_documentation_copy(ctx: Ctx) -> int:
+    """Prepare `description -> abstract_enriched` Documentation payloads, with no LLM call."""
+    ctx.banner("prepare-documentation-copy")
+    records, audit = _documentation_inventory(ctx)
+    if audit["profiles_not_no_abstract"]:
+        raise EnrichmentError("Documentation copy refused: a Documentation profile permits enrichment")
+
+    missing_by_id = {row["objectID"]: row["missing"]
+                     for row in audit["missing_required_fields"]}
+    bad_language = {row["objectID"] for row in audit["invalid_language"]}
+    payloads: list[dict] = []
+    review: list[dict] = []
+    for record in records:
+        oid = record["objectID"]
+        if oid in missing_by_id or oid in bad_language:
+            fields = missing_by_id.get(oid, [])
+            review.append({
+                "objectID": oid, "url": record.get("url"), "title": record.get("title"),
+                "page_type": record.get("page_type"),
+                "reason": (f"missing required metadata: {', '.join(fields)}" if fields else
+                           f"language_code is {record.get('language_code')!r}, expected 'en'"),
+                "suggested_action": "supply_description" if fields == ["description"]
+                                    else "fix_documentation_metadata",
+                "review_status": "OPEN",
+            })
+            continue
+        item = {"objectID": oid, "abstract_enriched": [record["description"]]}
+        payload.assert_payload(item)
+        payloads.append(item)
+
+    if not payloads:
+        raise ZeroWorkError("Documentation copy produced zero payloads. Nothing is ready to write.")
+    report = {**audit, "copy_ready": len(payloads),
+              "needs_metadata_remediation": len(review),
+              "payload_fields": ["objectID", "abstract_enriched"],
+              "writer_or_judge_called": False}
+    ctx.emit_jsonl("documentation-copy/payloads.jsonl", payloads, "prepare-documentation-copy")
+    ctx.emit_jsonl("documentation-copy/human-review-queue.jsonl", review,
+                   "prepare-documentation-copy")
+    ctx.emit("documentation-copy/report.json", report, "prepare-documentation-copy")
+    print(f"copy-ready={len(payloads)} metadata-review={len(review)} writer-or-judge-called=false")
+    return 0
+
+
+def cmd_health_scout(ctx: Ctx) -> int:
+    ctx.banner("health-scout")
+    report = ctx.scout().health(ctx.args.probe_url, ctx.cfg.site)
+    if ctx.rf:
+        ctx.emit("scout-health.json", report, "health-scout")
+    print(json.dumps(report, indent=2))
+    if not report["ok"]:
+        raise EnrichmentError(
+            f"Scout returned no usable body for {ctx.args.probe_url}. `/health` alone is not "
+            f"evidence -- Scout has reported healthy for three hours while unable to start a "
+            f"worker thread.")
+    print(f"PASS: real job returned {report['chars']} chars in {report['elapsed_s']}s.")
+    return 0
+
+
+DOC_SITEMAP_URL = "https://www.algolia.com/doc/sitemap.xml"
+
+
+def _read_liveness(path: Path) -> tuple[list[str], set[str]]:
+    """(live canonical targets, dead keys) from a liveness census produced earlier.
+
+    The census is a second discovery source, not a convenience: 45 URLs that live records resolve
+    to with HTTP 200 are absent from `/doc/sitemap.xml`, so the sitemap is a floor. It also names
+    the 108 verified 404s, which is the only way `retire` can distinguish a page that VANISHED
+    from one that MOVED.
+    """
+    if not path.exists():
+        raise EnrichmentError(
+            f"liveness census not found at {path}. The refresh needs it to tell a dead page from "
+            f"a moved one; without it every retired record would be labelled the same.")
+    live_targets, dead = [], set()
+    for line in path.read_text().splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        key = seed.canonical_key(row.get("final") or row.get("url") or "")
+        if row.get("status") == 200:
+            live_targets.append(key)
+        elif row.get("status") == 404:
+            dead.add(seed.canonical_key(row.get("url") or ""))
+    return live_targets, dead
+
+
+def cmd_seed_documentation(ctx: Ctx) -> int:
+    """Discover every live Documentation URL. Read-only; writes only run artefacts."""
+    ctx.banner("seed-documentation")
+    sitemap_path = ctx.run_dir / "seed" / "sitemap.xml"
+    if not sitemap_path.exists():
+        raise EnrichmentError(
+            f"expected the sitemap at {sitemap_path}. Fetch it into the run folder first so the "
+            f"seed is reproducible from stored evidence rather than a live re-fetch.")
+
+    sitemap_urls = seed.parse_sitemap(sitemap_path.read_text(errors="ignore"))
+    live_targets, _ = _read_liveness(Path(ctx.args.liveness_census))
+    result = seed.build_seed(sitemap=sitemap_urls, discovered=live_targets)
+
+    ctx.emit_jsonl("seed/urls.jsonl", result["rows"], "seed-documentation")
+    ctx.emit("seed/report.json", result["report"], "seed-documentation")
+    rep = result["report"]
+    print(f"seed total={rep['total']} provenance={rep['provenance']} "
+          f"rejected_out_of_scope={rep['rejected_out_of_scope']}")
+    print("PASS: seed list is within the plausible band and scoped to /doc.")
+    return 0
+
+
+def cmd_reconcile_documentation(ctx: Ctx) -> int:
+    """Partition the live Documentation corpus against the seed list. Read-only."""
+    ctx.banner("reconcile-documentation")
+    rows_path = ctx.run_dir / "seed" / "urls.jsonl"
+    if not rows_path.exists():
+        raise EnrichmentError(f"seed list missing at {rows_path}; run seed-documentation first.")
+    seed_rows = [json.loads(line) for line in rows_path.read_text().splitlines() if line.strip()]
+
+    _, dead_keys = _read_liveness(Path(ctx.args.liveness_census))
+    records = [r for r in ctx.algolia().browse(
+        ctx.cfg.source_index,
+        attributes=["objectID", "url", "title", "description", "source", "page_type",
+                    "language_code"])
+        if r.get("source") == "Documentation"]
+    if not records:
+        raise ZeroWorkError("reconcile found zero Documentation records.")
+
+    result = reconcile.reconcile(seed_rows, records, dead_keys)
+    ctx.emit("validation/reconciliation.json", result["report"], "reconcile-documentation")
+    ctx.emit_jsonl("validation/refresh.jsonl", result["refresh"], "reconcile-documentation")
+    ctx.emit_jsonl("validation/new.jsonl", result["new"], "reconcile-documentation")
+    ctx.emit_jsonl("validation/retire.jsonl", result["retire"], "reconcile-documentation")
+    print(json.dumps(result["report"], indent=2))
+    print("PASS: partition is exhaustive, mutually exclusive, and within the retire guard.")
+    return 0
+
+
+def cmd_fetch_documentation(ctx: Ctx) -> int:
+    """Fetch every seeded page through Scout into the run cache. No index writes.
+
+    Resumable by design: each page is cached under its canonical key, and a re-run skips what is
+    already there. That is not a nicety -- the derive step downstream will need correcting more
+    than once, and re-deriving must never mean re-fetching against an origin that has already
+    rate-limited us today.
+    """
+    ctx.banner("fetch-documentation")
+    rows_path = ctx.run_dir / "seed" / "urls.jsonl"
+    if not rows_path.exists():
+        raise EnrichmentError(f"seed list missing at {rows_path}; run seed-documentation first.")
+    rows = [json.loads(line) for line in rows_path.read_text().splitlines() if line.strip()]
+
+    cache = ctx.run_dir / "cache-scout"
+    cache.mkdir(parents=True, exist_ok=True)
+    client = ctx.scout()
+    site = ctx.cfg.site
+
+    def cache_path(key: str) -> Path:
+        return cache / (hashlib.sha256(key.encode("utf-8")).hexdigest()[:32] + ".json")
+
+    def one(row: dict) -> dict:
+        path = cache_path(row["key"])
+        if path.exists():
+            got = json.loads(path.read_text())
+            # Only a SUCCESS is a durable fact about a page. Caching a failure makes a transient
+            # rate-limit rejection permanent: the retry pass would read it back as settled and the
+            # page would be classified absent and deleted. Failures are re-attempted every run.
+            if not got.get("fetch_error"):
+                got["from_cache"] = True
+                return got
+        got = client.fetch({"objectID": row["url"], "url": row["url"]}, site)
+        got["key"] = row["key"]
+        got["from_cache"] = False
+        if not got.get("fetch_error"):
+            path.write_text(json.dumps(got, ensure_ascii=False))
+        return got
+
+    # Concurrency is bounded by Scout's hosted plan, not by us. The documented ceiling is 5, and
+    # exceeding it on 2026-08-09 failed 4,123 of 4,779 pages. It is left operator-settable so the
+    # ceiling can be MEASURED rather than assumed -- the per-page cache makes a failed experiment
+    # free, since a re-run skips everything already fetched -- but the run aborts if raising it
+    # actually starts costing pages.
+    results: list[dict] = []
+    done = 0
+    with ThreadPoolExecutor(max_workers=max(1, ctx.args.concurrency)) as pool:
+        for got in pool.map(one, rows):
+            results.append(got)
+            done += 1
+            if done % 100 == 0:
+                errs = sum(1 for r in results if r.get("fetch_error"))
+                print(f"  {done}/{len(rows)} fetched  errors={errs}", flush=True)
+            if done >= 100 and not got.get("from_cache"):
+                fresh = [r for r in results if not r.get("from_cache")]
+                if len(fresh) >= 50:
+                    err_share = sum(1 for r in fresh if r.get("fetch_error")) / len(fresh)
+                    if err_share > 0.10:
+                        raise EnrichmentError(
+                            f"aborting: {err_share:.0%} of fresh fetches are failing at "
+                            f"concurrency {ctx.args.concurrency}. This is the rate limiter, not "
+                            f"the pages. Re-run at a lower concurrency; the cache is kept so "
+                            f"nothing already fetched is lost.")
+
+    manifest = [{k: v for k, v in r.items() if k != "markdown"} for r in results]
+    ctx.emit_jsonl("fetch-manifest.jsonl", manifest, "fetch-documentation")
+    report = docrefresh.fetch_report(results)   # raises below the success floor
+    ctx.emit("validation/fetch-report.json", report, "fetch-documentation")
+    print(json.dumps(report, indent=2))
+    print("PASS: fetch represents the live site; derive may proceed from cache.")
+    return 0
+
+
+def cmd_build_documentation(ctx: Ctx) -> int:
+    """Derive records from the fetch cache. Pure and offline -- safe to re-run after a rule fix."""
+    ctx.banner("build-documentation")
+    cache = ctx.run_dir / "cache-scout"
+    if not cache.exists():
+        raise EnrichmentError(f"no fetch cache at {cache}; run fetch-documentation first.")
+
+    schema = taxonomy.load_schema(TAXONOMY_SCHEMA)
+    compiled = taxonomy_correctness.compile_rules(schema)
+
+    # The write is a full-record replace, so the rebuilt record is merged OVER the record already
+    # in the index. Writing only the rebuilt fields would delete the rest -- `abstract` is
+    # populated on 4,317 Documentation records and is a searchable attribute, so losing it would
+    # degrade retrieval while the run reported success.
+    existing_by_id = {r["objectID"]: r for r in ctx.algolia().browse(ctx.cfg.source_index)
+                      if r.get("source") == docapply.SOURCE}
+    existing_by_key = {seed.canonical_key(r.get("url") or ""): r
+                       for r in existing_by_id.values()}
+
+    records, review, failures = [], [], []
+    for path in sorted(cache.glob("*.json")):
+        got = json.loads(path.read_text())
+        if got.get("fetch_error") or got.get("redirect_mismatch"):
+            failures.append({"key": got.get("key"), "error": got.get("fetch_error"),
+                             "redirect_mismatch": got.get("redirect_mismatch")})
+            continue
+        try:
+            record = docrefresh.build_record(
+                got.get("url") or got.get("key"), got.get("markdown") or "", schema, compiled,
+                metadata={"title": got.get("page_title"),
+                          "description": got.get("page_description"),
+                          "language": got.get("page_language")})
+        except EnrichmentError as exc:
+            failures.append({"key": got.get("key"), "error": str(exc)})
+            continue
+        if record.pop("needs_description") or record.pop("needs_title"):
+            review.append({"objectID": record["objectID"], "url": record["url"],
+                           "title": record["title"],
+                           "missing": [f for f in ("title", "description")
+                                       if not str(record.get(f) or "").strip()]})
+        prior = existing_by_key.get(seed.canonical_key(record["url"]))
+        merged = docmerge.merge_record(prior, record)
+        merged = docmerge.fill_required_axes(merged, schema)
+        if prior:
+            docmerge.assert_no_field_lost(prior, merged)
+        # Algolia rejects the whole batch if any single record exceeds 100kB.
+        merged = docrefresh.fit_record_size(merged)
+        records.append(merged)
+
+    if not records:
+        raise ZeroWorkError("build produced zero records.")
+
+    conformance = taxonomy.validate_records(records, schema)
+    counts: dict[str, int] = {}
+    for record in records:
+        counts[record["page_type"]] = counts.get(record["page_type"], 0) + 1
+    distribution = docrefresh.check_distribution(counts, _sitemap_sections(ctx), SECTION_MAP)
+
+    ctx.emit_jsonl("final/records.jsonl", records, "build-documentation")
+    ctx.emit_jsonl("final/human-review-queue.jsonl", review, "build-documentation")
+    ctx.emit("validation/build-report.json", {
+        "records": len(records), "needs_review": len(review), "failures": len(failures),
+        "taxonomy_violations": conformance["violation_count"],
+        "distribution": distribution}, "build-documentation")
+
+    print(f"records={len(records)} needs_review={len(review)} failures={len(failures)} "
+          f"taxonomy_violations={conformance['violation_count']}")
+    if conformance["violation_count"]:
+        raise EnrichmentError(
+            f"{conformance['violation_count']} records violate the taxonomy contract; refusing to "
+            f"carry them toward a write.")
+    if not distribution["ok"]:
+        raise EnrichmentError(
+            f"derived page_type distribution diverges from the live site: "
+            f"{json.dumps(distribution['divergences'])}. A rule is mis-tagging a whole section; "
+            f"fix the rule and re-run build (the fetch cache is reused, nothing is re-fetched).")
+    print("PASS: every record conforms, and the derived distribution matches the live site.")
+    return 0
+
+
+def cmd_apply_documentation_refresh(ctx: Ctx) -> int:
+    """Write the rebuilt Documentation corpus and retire the stale records. DESTRUCTIVE.
+
+    Order is deliberate and is the whole safety argument: quarantine first, verify the quarantine
+    by reading it back, write second, delete last, then re-read the index to prove all three
+    happened. Nothing is deleted while its copy is unaccounted for.
+    """
+    ctx.banner("apply-documentation-refresh")
+    index = ctx.cfg.source_index
+
+    records = [json.loads(l) for l in
+               (ctx.run_dir / "final" / "records.jsonl").read_text().splitlines() if l.strip()]
+    retire = [json.loads(l) for l in
+              (ctx.run_dir / "validation" / "retire.jsonl").read_text().splitlines() if l.strip()]
+    docapply.assert_records_sane(records)
+    if not retire:
+        raise ZeroWorkError("no records to retire; expected the reconcile output.")
+
+    client = ctx.algolia()
+    before_distinct, before_raw = client.record_count(index)
+
+    # The delete set is derived by SET ARITHMETIC against what is actually in the index, not read
+    # off the reconcile buckets. The refresh normalises objectIDs, and 8 refresh records carry an
+    # old objectID (a stray `-0` suffix, a trailing slash) that differs from its normalised form.
+    # Writing the new id without removing the old would leave orphan duplicates -- precisely the
+    # duplication this refresh exists to remove. Deriving the set from the index cannot miss them.
+    existing_ids = {r["objectID"] for r in client.browse(index, attributes=["objectID", "source"])
+                    if r.get("source") == docapply.SOURCE}
+    new_ids = {r["objectID"] for r in records}
+
+    # A page we could not fetch is a page we know nothing about -- and not knowing is never
+    # evidence that it is gone. Without this, /doc/onboarding (a live page that 302-redirects to
+    # its trailing-slash form, so Scout returned no body) would have been DELETED for being
+    # briefly unreachable.
+    unfetched = set()
+    manifest = ctx.run_dir / "fetch-manifest.jsonl"
+    if manifest.exists():
+        for line in manifest.read_text().splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            if row.get("fetch_error") or row.get("redirect_mismatch"):
+                key = seed.canonical_key(row.get("url") or row.get("key") or "")
+                unfetched |= {oid for oid in existing_ids if seed.canonical_key(oid) == key}
+    if unfetched:
+        print(f"protected from deletion (fetch failed, liveness unknown): {len(unfetched)}")
+
+    delete_ids = docapply.delete_set(existing_ids, new_ids, unfetched)
+    create_ids = new_ids - existing_ids
+    expected_total = before_raw - len(delete_ids) + len(create_ids)
+    print(f"existing={len(existing_ids)} writing={len(records)} deleting={len(delete_ids)} "
+          f"creating={len(create_ids)} predicted_total={expected_total}")
+
+    snapshot = promote.assert_snapshot_exists(client, index)
+    approval = docapply.read_refresh_approval(
+        ctx.run_dir, target_index=index, write_count=len(records), delete_count=len(delete_ids))
+    print(f"snapshot={snapshot}  approved_by={approval['approved_by']}")
+
+    # Quarantine copies are taken from the INDEX, so every deleted record has a complete copy
+    # whatever bucket it came from -- including the objectID-normalisation casualties, which are
+    # in no retire bucket at all.
+    reasons = {r["objectID"]: r.get("reason", "") for r in retire}
+    originals = client.get_objects(index, delete_ids)
+    doomed = []
+    for object_id in delete_ids:
+        original = originals.get(object_id)
+        if not original:
+            raise EnrichmentError(
+                f"{object_id} is scheduled for deletion but cannot be read back from {index}; "
+                f"refusing to delete a record we cannot copy first.")
+        doomed.append({**original,
+                       "reason": reasons.get(object_id) or "superseded-objectid-normalised"})
+
+    stamp = dt.datetime.now(dt.timezone.utc).isoformat()
+    payloads = quarantine.build_quarantine_payloads(doomed, from_index=index, stamp=stamp)
+    qindex = ctx.args.quarantine_index or f"{index}_Quarantine"
+    for response in client.save_objects(qindex, payloads, action="updateObject"):
+        waits.wait_or_fail(client, qindex, response["taskID"], "quarantine copy")
+    qreport = quarantine.verify_quarantined(client, qindex, payloads)
+    ctx.emit("validation/quarantine-report.json", qreport, "apply-documentation-refresh")
+    print(f"quarantined and byte-verified: {qreport['verified']} records in {qindex}")
+
+    for response in client.save_objects(index, records, action="updateObject"):
+        waits.wait_or_fail(client, index, response["taskID"], "record write")
+    print(f"wrote {len(records)} records")
+
+    for response in client.save_objects(
+            index, [{"objectID": o} for o in delete_ids], action="deleteObject"):
+        waits.wait_or_fail(client, index, response["taskID"], "record delete")
+    print(f"deleted {len(delete_ids)} records")
+
+    report = docapply.verify_after_refresh(client, index, records, delete_ids, expected_total)
+    report.update({"snapshot": snapshot, "quarantine_index": qindex,
+                   "before_raw": before_raw, "expected_total": expected_total})
+    ctx.emit("validation/refresh-applied.json", report, "apply-documentation-refresh")
+    print(json.dumps(report, indent=2))
+    print("PASS: written records read back, deleted records are gone, total matches prediction.")
+    return 0
+
+
+def _sitemap_sections(ctx: Ctx) -> dict[str, int]:
+    """Section counts straight from the site's own sitemap -- the independent yardstick."""
+    path = ctx.run_dir / "seed" / "sitemap.xml"
+    sections: dict[str, int] = {}
+    for loc in seed.parse_sitemap(path.read_text(errors="ignore")):
+        parts = [p for p in seed.canonical_key(loc).split("/") if p]
+        if len(parts) > 1 and parts[0] == "doc":
+            sections[parts[1]] = sections.get(parts[1], 0) + 1
+    return sections
+
+
+SECTION_MAP = {
+    "doc-guide": "guides",
+    "doc-sdk-unified": "libraries",
+    "doc-api-reference": "api-reference",
+    "doc-rest-api": "rest-api",
+    "doc-tool": "tools",
+    "doc-integration": "integration",
+    "doc-ui-library": "ui-libraries",
+    "doc-framework-integration": "framework-integration",
+}
+
+
+def cmd_plan_slice(ctx: Ctx) -> int:
+    ctx.banner("plan-slice")
+    profile = ctx.profile()
+    client = ctx.algolia()
+    records = [r for r in client.browse(ctx.cfg.source_index, attributes=RECORD_ATTRIBUTES)
+               if r.get("source") == profile.source and r.get("page_type") == profile.page_type]
+
+    counts = corpus.live_slice_counts(client, ctx.cfg.source_index)
+    live_count = counts.get(profile.key, 0)
+    if len(records) != live_count:
+        raise EnrichmentError(
+            f"scan found {len(records)} records for {profile.key} but the census says "
+            f"{live_count}. The two must agree before a slice is planned.")
+
+    # Establish slice stability before spending a full scan on taxonomy. This ordering makes an
+    # index that changes between the slice scan and census fail for that reason, rather than
+    # letting a separate preflight accidentally consume the snapshot the comparison needs.
+    taxonomy_report = _taxonomy_preflight(ctx)
+    ctx.emit("validation/taxonomy-conformance.json", taxonomy_report, "plan-slice")
+    if not taxonomy_report["ok"]:
+        raise EnrichmentError(
+            f"plan-slice refused: taxonomy conformance failed for "
+            f"{taxonomy_report['violation_count']} records")
+
+    replay_of = ""
+    if ctx.args.replay_run:
+        # A stability experiment must re-run the SAME records, while reading their current source
+        # fields afresh. Reusing the previous manifest rows would silently reuse stale metadata;
+        # re-planning with --limit would sample different objectIDs because the run id changes.
+        prior_path = ctx.enrichment_dir / "runs" / ctx.args.replay_run / "manifest.json"
+        if not prior_path.exists():
+            raise EnrichmentError(f"replay manifest not found: {prior_path}")
+        prior = json.loads(prior_path.read_text())
+        if prior.get("source") != profile.source or prior.get("page_type") != profile.page_type:
+            raise EnrichmentError(
+                f"replay slice is {prior.get('source')!r}/{prior.get('page_type')!r}, not "
+                f"{profile.source!r}/{profile.page_type!r}")
+        wanted = list(prior.get("objectIDs") or [])
+        if not wanted:
+            raise ZeroWorkError("replay manifest names zero records")
+        current = {r["objectID"]: r for r in records}
+        missing = [oid for oid in wanted if oid not in current]
+        if missing:
+            raise EnrichmentError(
+                f"{len(missing)} replay records no longer belong to {profile.key}: {missing[:5]}")
+        records = [current[oid] for oid in wanted]
+        replay_of = ctx.args.replay_run
+    elif getattr(ctx.args, "object_id", ""):
+        # Named records only. Exists because the writer is NOT reproducible: re-running a whole
+        # slice to recover one quarantined record regenerates every other record in it, and the
+        # 225 already promoted to Enhanced would diverge from their live values. Measured on
+        # press-release: 34% of records changed status under byte-identical inputs.
+        wanted = [w.strip() for w in ctx.args.object_id.split(",") if w.strip()]
+        current = {r["objectID"]: r for r in records}
+        missing = [oid for oid in wanted if oid not in current]
+        if missing:
+            raise EnrichmentError(
+                f"{len(missing)} requested objectIDs are not in {profile.key}: {missing[:5]}")
+        records = [current[oid] for oid in wanted]
+    elif ctx.args.limit:
+        # A bounded smoke slice. Deterministically sampled, and the manifest says so -- an
+        # unlabelled subset reported as a slice is how a partial run reads as a complete one.
+        if ctx.args.languages:
+            wanted = [w.strip() for w in ctx.args.languages.split(",") if w.strip()]
+            by_lang: dict[str, list[dict]] = {}
+            for r in records:
+                by_lang.setdefault((r.get("language_code") or "?"), []).append(r)
+            chosen: list[dict] = []
+            for spec in wanted:
+                lang, _, n = spec.partition(":")
+                pool = sorted(by_lang.get(lang, []), key=lambda r: r["objectID"])
+                take = int(n) if n else ctx.args.limit
+                if len(pool) < take:
+                    raise EnrichmentError(
+                        f"asked for {take} {lang!r} records, the slice has {len(pool)}")
+                rng = random.Random(f"{ctx.run_id}:{lang}")
+                chosen += rng.sample(pool, take)
+            records = sorted(chosen, key=lambda r: r["objectID"])
+        else:
+            rng = random.Random(ctx.run_id)
+            records = sorted(rng.sample(records, min(ctx.args.limit, len(records))),
+                             key=lambda r: r["objectID"])
+
+    ids = [r["objectID"] for r in records]
+    if len(set(ids)) != len(ids):
+        raise EnrichmentError("duplicate objectIDs in the planned slice")
+    if not ids and not ctx.args.allow_empty:
+        raise ZeroWorkError(f"{profile.key} planned zero records. Zero work is a failure.")
+
+    langs: dict[str, int] = {}
+    for r in records:
+        langs[r.get("language_code") or "?"] = langs.get(r.get("language_code") or "?", 0) + 1
+
+    manifest = {
+        "run_id": ctx.run_id,
+        "planned_at": _now(),
+        "source": profile.source,
+        "page_type": profile.page_type,
+        "profile_version": profile.version,
+        "source_index": ctx.cfg.source_index,
+        "target_index": ctx.cfg.target_index,
+        "live_slice_count": live_count,
+        "planned_count": len(ids),
+        "is_bounded_subset": bool(ctx.args.limit or getattr(ctx.args, "object_id", "")),
+        "replay_of": replay_of or None,
+        "language_split": dict(sorted(langs.items())),
+        "objectIDs": ids,
+        "records": records,
+        "projection": project_runtime(len(ids), DEFAULT_SCOUT_CONCURRENCY, MEASURED_S_PER_RECORD),
+    }
+    ctx.emit("manifest.json", manifest, "plan-slice")
+    state = ctx.state()
+    state.save(ctx.run_dir)
+    print(f"planned {len(ids)} of {live_count} live {profile.key} records")
+    print(f"languages: {manifest['language_split']}")
+    print(f"projection: {json.dumps(manifest['projection'])}")
+    return 0
+
+
+def cmd_corpus_status(ctx: Ctx) -> int:
+    ctx.banner("corpus-status")
+    client = ctx.algolia()
+    counts = corpus.live_slice_counts(client, ctx.cfg.source_index)
+    lint = profile_lint.lint(ctx.profiles_dir, counts)
+    status = corpus.build_status(client, ctx.cfg.source_index, ctx.cfg.target_index,
+                                 ctx.enrichment_dir / "runs", lint)
+    path = corpus.write_state(ctx.workspace, status)
+    lines = [f"# Corpus status\n", f"_generated {status['updated_at']}_\n",
+             f"- source `{status['source_index']}`: {status['total_live_records']} records, "
+             f"{status['live_page_types']} page_types",
+             f"- target `{status['target_index']}`: {status['target_records']} records, "
+             f"{status['target_enriched_records']} enriched\n",
+             "| slice | planned | written (live) | reconciles |", "|---|---:|---:|---|"]
+    for key, s in sorted(status["slices"].items()):
+        lines.append(f"| {key} | {s['planned_target_count']} | {s['target_written_live']} | "
+                     f"{s.get('reconciles', 'n/a')} |")
+    (ctx.enrichment_dir / "CORPUS-STATUS.md").write_text("\n".join(lines) + "\n")
+    print("\n".join(lines))
+    print(f"\nwrote {path}")
+    if not status["ok"]:
+        raise EnrichmentError(
+            f"corpus-status is RED: unprofiled={status['unprofiled_page_types']} "
+            f"unreconciled={status['unreconciled_slices']}. No future slice starts on red.")
+    print("PASS: every live page_type is profiled or excluded, and every slice reconciles.")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# the pipeline
+# ---------------------------------------------------------------------------
+
+def cmd_fetch(ctx: Ctx) -> int:
+    ctx.banner("fetch")
+    profile = ctx.profile()
+    manifest = ctx.manifest()
+    state = ctx.state()
+    metrics = Metrics(ctx.run_dir, "fetch")
+    ledger = Ledger(ctx.run_dir)
+    cache = RunCache(ctx.run_dir, ctx.run_id)
+    records = manifest["records"]
+    done = {"ok": 0, "failed": 0}
+    source_name = ScoutRefetch.name
+    replay_bodies: dict[str, dict] = {}
+    if ctx.args.replay_bodies_run:
+        donor_dir = ctx.enrichment_dir / "runs" / ctx.args.replay_bodies_run
+        donor_manifest_path = donor_dir / "manifest.json"
+        if not donor_manifest_path.exists():
+            raise EnrichmentError(f"sealed-body replay manifest not found: {donor_manifest_path}")
+        donor_manifest = json.loads(donor_manifest_path.read_text())
+        expected = [r["objectID"] for r in records]
+        if donor_manifest.get("objectIDs") != expected:
+            raise EnrichmentError("sealed-body replay refuses a different objectID sequence")
+        replay_bodies = RunCache(donor_dir, ctx.args.replay_bodies_run).load()
+        if set(replay_bodies) != set(expected):
+            raise EnrichmentError("sealed-body replay donor does not contain exactly this slice")
+        source_name = SEALED_SCOUT_REPLAY
+
+    _echo_config(ctx, profile, ctx.cfg.judge_tier if profile.judge_required else None, source_name)
+
+    source = None if replay_bodies else ScoutRefetch(ctx.scout(), ctx.cfg.site)
+
+    def one(rec: dict) -> dict:
+        body = dict(replay_bodies[rec["objectID"]]) if replay_bodies else source.body_for(rec)
+        if replay_bodies:
+            body["replayed_from_run"] = ctx.args.replay_bodies_run
+        cache.store(body)
+        return body
+
+    def report(rec, res, exc):
+        if exc is not None or res is None or res.get("fetch_error"):
+            done["failed"] += 1
+            reason = str(exc) if exc else res.get("fetch_error", "unknown")
+            ledger.append(rec["objectID"], "fetch", "FETCH_FAILED", reason=reason[:200])
+            print(f"  FAIL {rec['objectID']}: {reason[:120]}")
+        else:
+            done["ok"] += 1
+            ledger.append(rec["objectID"], "fetch", "REPLAYED" if replay_bodies else "FETCHED",
+                          chars=len(res["markdown"]))
+            if done["ok"] % 10 == 0:
+                print(f"  ... {done['ok']} fetched")
+
+    run_concurrent(records, one, ctx.args.concurrency, report)
+    fetch_manifest = cache.seal([r["objectID"] for r in records], source_name)
+    if replay_bodies:
+        fetch_manifest["replayed_from_run"] = ctx.args.replay_bodies_run
+        (ctx.run_dir / "fetch-manifest.json").write_text(json.dumps(fetch_manifest, indent=2,
+                                                                       sort_keys=True))
+    ctx.rf.record(f"{RunCache(ctx.run_dir, ctx.run_id).cache_dir.name}/", "fetch")
+    ctx.rf.record("fetch-manifest.json", "fetch")
+    metrics.flush(len(records))
+
+    state.set("fetch", "DONE" if done["failed"] == 0 else "PARTIAL")
+    state.save(ctx.run_dir)
+    print(f"fetched {done['ok']}, failed {done['failed']}, of {len(records)} planned")
+    if done["ok"] == 0:
+        raise ZeroWorkError("fetch produced zero bodies. Zero work is a failure.")
+    print(f"cache sealed: {fetch_manifest['fetched']} bodies under this run id")
+    return 0
+
+
+def cmd_enrich(ctx: Ctx) -> int:
+    ctx.banner("enrich")
+    profile = ctx.profile()
+    manifest = ctx.manifest()
+    state = ctx.state()
+    state.require("fetch", "DONE", "PARTIAL")
+    metrics = Metrics(ctx.run_dir, "enrich")
+    ledger = Ledger(ctx.run_dir)
+
+    no_enrichment = profile.strategy == "no_abstract"
+    judge_tier = ctx.cfg.judge_tier if (profile.judge_required and ctx.cfg.judge_enabled) else None
+    inference = None
+    writer_tier = ""
+    if no_enrichment:
+        print("[models] skipped: profile strategy is no_abstract")
+    else:
+        inference = ctx.inference()
+        pinned = assert_model_separation(inference, ctx.cfg)
+        print(f"[models] {json.dumps(pinned['tiers'], sort_keys=True)}")
+        writer_tier = ctx.cfg.writer_tier
+    _echo_config(ctx, profile, judge_tier, _sealed_body_source(ctx))
+
+    # THE JOIN. `enrich` cannot be pointed at any cache other than the one this run's own fetch
+    # produced -- there is no argument for it.
+    bodies = RunCache(ctx.run_dir, ctx.run_id).load()
+    canon_map = canonical_index(manifest["records"])
+    registry_path = ctx.workspace / selection_registry.REGISTRY_RELATIVE_PATH
+    selection_cache = {} if ctx.args.ignore_selection_registry else selection_registry.load(registry_path)
+    selection_coordinator = selection_registry.RunSelectionCoordinator(selection_cache)
+    print(f"[selection-registry] {len(selection_cache)} frozen content contracts"
+          + (" (intentionally bypassed for stability evaluation)"
+             if ctx.args.ignore_selection_registry else ""))
+
+    work = []
+    for rec in manifest["records"]:
+        body = bodies.get(rec["objectID"])
+        if body is None:
+            continue
+        merged = dict(rec)
+        merged.update({k: v for k, v in body.items() if k != "url"})
+        work.append(merged)
+    if not work:
+        raise ZeroWorkError("enrich found zero fetched bodies for the planned records.")
+
+    def one(rec: dict) -> dict:
+        # Keep exactly matching prompt input single-flight while allowing unrelated pages to use
+        # all requested workers. A later final validation is still required before durable freeze.
+        with selection_coordinator.hold(selection_input_lock_key(rec, profile)):
+            result = process_record(rec, profile, inference, writer_tier=writer_tier,
+                                    judge_tier=judge_tier, canonical_map=canon_map,
+                                    selection_cache=selection_cache)
+            selection_coordinator.publish(result, run_id=ctx.run_id)
+            return result
+
+    counts: dict[str, int] = {}
+
+    def report(rec, res, exc):
+        if exc is not None or res is None:
+            counts["ERROR"] = counts.get("ERROR", 0) + 1
+            ledger.append(rec["objectID"], "enrich", "ERROR", reason=str(exc)[:200])
+            print(f"  ERROR {rec['objectID']}: {exc}")
+            return
+        status = res.get("status", "?")
+        counts[status] = counts.get(status, 0) + 1
+        ledger.append(rec["objectID"], "enrich", status)
+
+    results = [r for r in run_concurrent(work, one, ctx.args.concurrency, report) if r]
+    ctx.emit_jsonl("outputs/base/results.jsonl", results, "enrich")
+    metrics.flush(len(work))
+    state.set("enrich", "DONE" if not counts.get("ERROR") else "PARTIAL")
+    state.save(ctx.run_dir)
+    print(f"processed {len(results)} of {len(work)}: {json.dumps(counts, sort_keys=True)}")
+    if not results:
+        raise ZeroWorkError("enrich produced zero rows. Zero work is a failure.")
+    return 0
+
+
+REPAIRABLE_STATUSES = {"QUARANTINED_BY_GATE", "WRITER_UNPARSEABLE", "JUDGE_UNAVAILABLE"}
+
+
+def merge_repair_results(prior: list[dict], latest: list[dict]) -> list[dict]:
+    """Keep the best known repair result for each record.
+
+    Writer selection is non-deterministic. A later failed retry is evidence about that retry, not
+    grounds for erasing a prior grounded PASS. This makes the repair artifact monotonic: a PASS
+    can only be replaced by another PASS.
+    """
+    merged = {row["objectID"]: row for row in prior}
+    for row in latest:
+        existing = merged.get(row["objectID"])
+        if existing and existing.get("status") == "PASS" and row.get("status") != "PASS":
+            continue
+        merged[row["objectID"]] = row
+    return list(merged.values())
+
+
+def cmd_repair(ctx: Ctx) -> int:
+    """Re-run the selection ladder for rows a gate refused.
+
+    Repair is not a second algorithm. It is the SAME live path over the same bodies, with the
+    failing candidates banned -- which is what `evaluate_selection`'s retry ladder already does
+    inside `enrich`. This command exists for rows whose ladder ran out of attempts, so the extra
+    attempts happen against artifacts rather than a re-fetch.
+    """
+    ctx.banner("repair")
+    profile = ctx.profile()
+    manifest = ctx.manifest()
+    state = ctx.state()
+    state.require("enrich", "DONE", "PARTIAL")
+    base = _read_jsonl(ctx.run_dir / "outputs" / "base" / "results.jsonl")
+    prior = _read_jsonl(ctx.run_dir / "outputs" / "repair" / "results.jsonl")
+    effective = {row["objectID"]: row for row in base}
+    effective.update({row["objectID"]: row for row in prior})
+    targets = [effective[row["objectID"]] for row in base
+               if effective[row["objectID"]].get("status") in REPAIRABLE_STATUSES]
+    if not targets and not ctx.args.allow_empty:
+        raise ZeroWorkError(
+            "repair found zero repairable rows. If that is the true state, pass --allow-empty; "
+            "silently reporting success on zero rows is the failure this refuses.")
+
+    bodies = RunCache(ctx.run_dir, ctx.run_id).load()
+    by_id = {r["objectID"]: r for r in manifest["records"]}
+    judge_tier = ctx.cfg.judge_tier if (profile.judge_required and ctx.cfg.judge_enabled) else None
+    inference = ctx.inference()
+    assert_model_separation(inference, ctx.cfg)
+    canon_map = canonical_index(manifest["records"])
+    selection_cache = selection_registry.load(
+        ctx.workspace / selection_registry.REGISTRY_RELATIVE_PATH)
+    ledger = Ledger(ctx.run_dir)
+
+    def one(row: dict) -> dict:
+        rec = dict(by_id[row["objectID"]])
+        rec.update({k: v for k, v in bodies[row["objectID"]].items() if k != "url"})
+        out = process_record(rec, profile, inference, writer_tier=ctx.cfg.writer_tier,
+                             judge_tier=judge_tier, canonical_map=canon_map,
+                             selection_cache=selection_cache)
+        out["repair_attempt"] = True
+        return out
+
+    recovered = 0
+
+    def report(row, res, exc):
+        nonlocal recovered
+        if res and res.get("status") == "PASS":
+            recovered += 1
+        ledger.append(row["objectID"], "repair",
+                      (res or {}).get("status", "ERROR") if not exc else "ERROR")
+
+    latest = [r for r in run_concurrent(targets, one, ctx.args.concurrency, report) if r]
+    results = merge_repair_results(prior, latest)
+    ctx.emit_jsonl("outputs/repair/results.jsonl", results, "repair")
+    state.set("repair", "DONE")
+    state.save(ctx.run_dir)
+    print(f"repair attempted {len(targets)}, recovered {recovered} to PASS")
+    return 0
+
+
+def cmd_build_final(ctx: Ctx) -> int:
+    ctx.banner("build-final")
+    profile = ctx.profile()
+    manifest = ctx.manifest()
+    state = ctx.state()
+    state.require("enrich", "DONE", "PARTIAL")
+
+    final_path = ctx.run_dir / "final" / "results.jsonl"
+    if final_path.exists():
+        approvals.require(ctx.run_dir, "rerun", run_id=ctx.run_id,
+                          source_index=ctx.cfg.source_index, target_index=ctx.cfg.target_index)
+
+    base = _read_jsonl(ctx.run_dir / "outputs" / "base" / "results.jsonl")
+    repair = _read_jsonl(ctx.run_dir / "outputs" / "repair" / "results.jsonl")
+
+    # EXPLICIT PRECEDENCE, never an implicit glob. Historical artifacts poisoned validation on
+    # this project: a repair output and a base output for the same record, and whichever the glob
+    # happened to read last won.
+    merged: dict[str, dict] = {}
+    for row in base:
+        merged[row["objectID"]] = row
+    for row in repair:
+        prior = merged.get(row["objectID"])
+        # A repair wins ONLY when it improved the outcome. A repair that failed must not
+        # overwrite a base row that passed.
+        if prior is None or row.get("status") == "PASS" or prior.get("status") != "PASS":
+            merged[row["objectID"]] = row
+
+    planned = list(manifest["objectIDs"])
+    missing = [oid for oid in planned if oid not in merged]
+    extra = [oid for oid in merged if oid not in set(planned)]
+    if extra:
+        raise EnrichmentError(f"final artifact contains {len(extra)} objectIDs the manifest never "
+                              f"planned: {extra[:5]}")
+
+    rows = [merged[oid] for oid in planned if oid in merged]
+    for oid in missing:
+        # A record that never produced a row is UNATTEMPTED, and it is counted -- not dropped.
+        rows.append({"objectID": oid, "status": "UNATTEMPTED",
+                     "verdict_reason": "no result row was produced for this planned record"})
+
+    writable, review_rows, terminal = human_review.partition(rows, profile)
+    payloads, skipped = payload.build_payloads(rows)
+
+    ctx.emit_jsonl("final/results.jsonl", rows, "build-final")
+    ctx.emit_jsonl("final/payloads.jsonl", payloads, "build-final")
+    ctx.emit_jsonl("final/human-review-queue.jsonl", review_rows, "build-final")
+
+    cov = human_review.coverage(manifest["planned_count"], len(writable), len(review_rows),
+                                len(terminal), profile)
+    ctx.emit("validation/coverage.json", cov, "build-final")
+    state.set("final", "BUILT")
+    state.save(ctx.run_dir)
+
+    print(f"planned {manifest['planned_count']} | writable {len(writable)} | "
+          f"human-review {len(review_rows)} | terminal {len(terminal)} | "
+          f"unattempted {cov['unattempted']}")
+    print(f"skipped-by-status: {json.dumps(skipped, sort_keys=True)}")
+    print(f"coverage: {json.dumps(cov, sort_keys=True)}")
+    if not cov["all_accounted_for"]:
+        raise EnrichmentError(
+            f"{cov['unattempted']} planned records have no terminal outcome. Every planned record "
+            f"must be written, repaired-then-written, or in the human-review queue.")
+    return 0
+
+
+def cmd_validate(ctx: Ctx) -> int:
+    ctx.banner("validate")
+    profile = ctx.profile()
+    manifest = ctx.manifest()
+    state = ctx.state()
+    state.require("final", "BUILT")
+
+    echoed = read_effective_config(ctx.run_dir)
+    if not echoed:
+        raise EnrichmentError("no effective-config.json. A run that did not echo its config "
+                              "cannot be validated against the profile it claims.")
+    if echoed.get("profile_version") != profile.version:
+        raise EnrichmentError(
+            f"effective-config.json claims profile {echoed.get('profile_version')!r} but the "
+            f"profile on disk is {profile.version!r}. The run and the profile disagree; a gate "
+            f"'fixed' after the run does not apply to it.")
+    if echoed.get("canonical_version") != canonical_version():
+        raise EnrichmentError(
+            f"canonicalisation rules changed since the run "
+            f"({echoed.get('canonical_version')} -> {canonical_version()}). A stored span is only "
+            f"findable under the rules that produced it; re-run rather than re-validate.")
+
+    rows = _read_jsonl(ctx.run_dir / "final" / "results.jsonl")
+    bodies = RunCache(ctx.run_dir, ctx.run_id).load()
+    writable = [r for r in rows if human_review.is_writable(r)]
+
+    g = grounding.check_rows(writable, bodies)
+    q = quality.check_rows(writable)
+    payloads = _read_jsonl(ctx.run_dir / "final" / "payloads.jsonl")
+    p = payload.check_payloads(payloads, expected_target_ids=set(manifest["objectIDs"]))
+    census = quality.quality_census(rows)
+    coverage_path = ctx.run_dir / "validation" / "coverage.json"
+    if not coverage_path.exists():
+        raise EnrichmentError("build-final did not produce coverage.json; coverage cannot be assumed")
+    coverage = json.loads(coverage_path.read_text())
+
+    disagreements = [r["objectID"] for r in rows if r.get("status") == "METHOD_DISAGREEMENT"]
+    method_rate = len(disagreements) / max(1, len(rows))
+
+    report = {
+        "run_id": ctx.run_id, "validated_at": _now(),
+        "profile_version": profile.version,
+        "grounding": g, "quality": q, "payload": p,
+        "coverage": coverage,
+        "language_census": census,
+        "method_check": {"disagreements": len(disagreements),
+                         "rate": round(method_rate, 4),
+                         "threshold": profile.max_method_disagreement_pct,
+                         "ok": method_rate <= profile.max_method_disagreement_pct},
+        "gates_loaded": echoed.get("gates_loaded"),
+    }
+    ctx.emit("validation/artifact-validation.json", report, "validate")
+    ctx.emit("validation/method-check.json", report["method_check"], "validate")
+
+    print(f"grounding : {g['located']}/{g['spans_checked']} spans located, modes={g['modes']}")
+    print(f"quality   : leakage={len(q['leakage'])} chrome={len(q['chrome'])} "
+          f"incomplete={len(q['incomplete_spans'])} "
+          f"duplicate-description={len(q['duplicate_description'])}")
+    print(f"payload   : {p['payloads']} payloads, fields={p['fields']}")
+    print(f"coverage  : writable={coverage['writable_coverage_pct']:.1%} "
+          f"(target {coverage['coverage_target_pct']:.1%}), open-review="
+          f"{coverage['human_review_pct']:.1%} (cap {coverage['max_human_review_open_pct']:.1%})")
+    print("language census:")
+    for lang, s in census.items():
+        print(f"  {lang}: records={s['records']} candidates={s['candidates']} "
+              f"abstract_chars={s['abstract_span_chars']} highlights={s['highlight_count']}")
+
+    fatal = []
+    if not g["ok"]:
+        fatal.append(f"{len(g['failures'])} spans not found in their source body, "
+                     f"{len(g['missing_body'])} rows with no body")
+    if q["leakage"] or q["chrome"] or q["incomplete_spans"]:
+        fatal.append("quality: leakage/chrome/incomplete spans present")
+    if not report["method_check"]["ok"]:
+        fatal.append(f"method disagreement {method_rate:.1%} over "
+                     f"{profile.max_method_disagreement_pct:.1%}")
+    if not coverage.get("meets_coverage"):
+        fatal.append(f"writable coverage {coverage.get('writable_coverage_pct', 0):.1%} below "
+                     f"profile target {coverage.get('coverage_target_pct', 0):.1%}")
+    if not coverage.get("within_human_review_cap"):
+        fatal.append(f"open human review {coverage.get('human_review_pct', 0):.1%} over "
+                     f"profile cap {coverage.get('max_human_review_open_pct', 0):.1%}")
+    if fatal:
+        state.set("validate", "FAILED"); state.save(ctx.run_dir)
+        raise EnrichmentError("VALIDATION FAILED: " + "; ".join(fatal))
+
+    state.set("validate", "PASSED")
+    state.save(ctx.run_dir)
+    print(f"PASS: {g['spans_checked']} spans checked, 0 grounding failures.")
+    return 0
+
+
+def cmd_review_pack(ctx: Ctx) -> int:
+    ctx.banner("review-pack")
+    profile = ctx.profile()
+    rows = _read_jsonl(ctx.run_dir / "final" / "results.jsonl")
+    review = _read_jsonl(ctx.run_dir / "final" / "human-review-queue.jsonl")
+    bodies = RunCache(ctx.run_dir, ctx.run_id).load()
+    if not rows:
+        raise ZeroWorkError("review-pack has no final rows to sample.")
+
+    passed = [r for r in rows if human_review.is_writable(r)]
+    repaired = [r for r in passed if r.get("repaired") or r.get("repair_attempt")]
+    if not repaired and any(r.get("repaired") for r in rows):
+        raise EnrichmentError("review pack would omit repaired records")
+
+    def take(pool, n):
+        pool = sorted(pool, key=lambda r: r["objectID"])
+        return pool[:n] if len(pool) <= n else \
+            random.Random(ctx.run_id).sample(pool, n)
+
+    sample = {
+        "writable_pass": take(passed, min(20, len(passed))),
+        "repaired": take(repaired, min(10, len(repaired))),
+        "human_review": review[:10],
+        "language_mismatch": [r for r in rows if r.get("language_mismatch")],
+    }
+    lines = [f"# Review pack -- {profile.key}", "",
+             f"run: `{ctx.run_id}`  profile: `{profile.version}`",
+             f"minimum_review_sample: {profile.minimum_review_sample}", ""]
+    for group, items in sample.items():
+        lines.append(f"## {group} ({len(items)})\n")
+        for r in items:
+            oid = r.get("objectID")
+            body = (bodies.get(oid) or {}).get("markdown", "")
+            lines += [f"### `{oid}`", f"- url: {r.get('url')}",
+                      f"- status: {r.get('status')}  language: {r.get('language_code')}",
+                      f"- abstract: {' '.join(r.get('abstract_spans_stored') or []) or '(none)'}"]
+            for h in (r.get("keyhighlights_enriched") or []):
+                lines.append(f"  - highlight: {h}")
+            if r.get("reason") or r.get("verdict_reason"):
+                lines.append(f"- reason: {r.get('reason') or r.get('verdict_reason')}")
+            lines.append(f"- source body: {len(body)} chars\n")
+    ctx.emit("reports/review-pack.md", "\n".join(lines), "review-pack")
+    print(f"review pack: {sum(len(v) for v in sample.values())} records across "
+          f"{len(sample)} strata")
+    return 0
+
+
+def cmd_freeze_selections(ctx: Ctx) -> int:
+    """Promote validated candidate IDs to the content-addressed reproducibility registry."""
+    ctx.banner("freeze-selections")
+    state = ctx.state()
+    state.require("validate", "PASSED")
+    rows = _read_jsonl(ctx.run_dir / "final" / "results.jsonl")
+    if not rows:
+        raise ZeroWorkError("freeze-selections has no final rows")
+    path = ctx.workspace / selection_registry.REGISTRY_RELATIVE_PATH
+    report = selection_registry.freeze(path, rows, run_id=ctx.run_id)
+    ctx.emit("validation/selection-freeze.json", report, "freeze-selections")
+    print(json.dumps(report, sort_keys=True))
+    print("PASS: validated selections are frozen by content hash, profile and prompt version.")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# write path
+# ---------------------------------------------------------------------------
+
+def cmd_prepare_target_index(ctx: Ctx) -> int:
+    ctx.banner("prepare-target-index")
+    client = ctx.algolia()
+    write.assert_write_target(ctx.cfg.source_index, ctx.cfg.target_index)
+    exists = client.index_exists(ctx.cfg.target_index)
+    if not exists:
+        approvals.require(ctx.run_dir, "prepare-target-index", run_id=ctx.run_id,
+                          source_index=ctx.cfg.source_index, target_index=ctx.cfg.target_index)
+    report = write.prepare_target_index(client, ctx.cfg.source_index, ctx.cfg.target_index,
+                                        create=not exists)
+    ctx.emit("validation/target-index-ready.json", report, "prepare-target-index")
+    ctx.emit("validation/target-index-settings.json",
+             client.get_settings(ctx.cfg.target_index), "prepare-target-index")
+    print(json.dumps(report, indent=2))
+    print("PASS: target index ready, both enriched fields present as separate attributes.")
+    return 0
+
+
+def cmd_dry_run_write(ctx: Ctx) -> int:
+    ctx.banner("dry-run-write")
+    manifest = ctx.manifest()
+    state = ctx.state()
+    state.require("validate", "PASSED")
+    client = ctx.algolia()
+    write.assert_write_target(ctx.cfg.source_index, ctx.cfg.target_index)
+    if not client.index_exists(ctx.cfg.target_index):
+        raise EnrichmentError(f"{ctx.cfg.target_index} does not exist. Run prepare-target-index.")
+
+    payloads = _read_jsonl(ctx.run_dir / "final" / "payloads.jsonl")
+    report = payload.check_payloads(payloads, expected_target_ids=set(manifest["objectIDs"]))
+
+    _, source_now = client.record_count(ctx.cfg.source_index)
+    census_path = ctx.run_dir / "census-before.json"
+    if census_path.exists():
+        before = json.loads(census_path.read_text()).get("records")
+        if before is not None and before != source_now:
+            # The live index can change mid-run. A drift that is not acknowledged makes every
+            # count in the packet stale.
+            raise EnrichmentError(
+                f"source index moved from {before} to {source_now} records since the census. "
+                f"Re-census and re-plan rather than writing against a stale count.")
+
+    out = {
+        "target_index": ctx.cfg.target_index,
+        "source_index": ctx.cfg.source_index,
+        "source_records_now": source_now,
+        "payload_count": len(payloads),
+        "allowed_fields": sorted(payload.ALLOWED_FIELDS),
+        "forbidden_fields_present": [],
+        "sample_payload": payloads[0] if payloads else None,
+        "check": report,
+    }
+    ctx.emit("validation/write-dry-run.json", out, "dry-run-write")
+    state.set("write", "DRY_RUN_PASSED")
+    state.save(ctx.run_dir)
+    print(f"{len(payloads)} payloads would be written to {ctx.cfg.target_index}")
+    print(f"fields: {sorted(payload.ALLOWED_FIELDS)}")
+    print("PASS: payload shape legal, every objectID in the manifest, source count unchanged.")
+    return 0
+
+
+def cmd_apply_write(ctx: Ctx) -> int:
+    ctx.banner("apply-write")
+    manifest = ctx.manifest()
+    state = ctx.state()
+    state.require("write", "DRY_RUN_PASSED")
+    client = ctx.algolia()
+    payloads = _read_jsonl(ctx.run_dir / "final" / "payloads.jsonl")
+    if not payloads:
+        raise ZeroWorkError("apply-write has zero payloads. Zero work is a failure.")
+
+    # The count compared is the one THIS run built, not the one the approval claims -- comparing
+    # the approval to itself would be a tautology.
+    approval = approvals.require(
+        ctx.run_dir, "apply-write", run_id=ctx.run_id,
+        source_index=ctx.cfg.source_index, target_index=ctx.cfg.target_index,
+        source=manifest["source"], page_type=manifest["page_type"],
+        expected_target_count=manifest["planned_count"],
+        expected_write_count=len(payloads))
+    print(f"[approval] {approval.path.name} by {approval.approved_by}")
+
+    _, source_before = client.record_count(ctx.cfg.source_index)
+    settings_before = client.get_settings(ctx.cfg.source_index)
+
+    result = write.apply_write(client, ctx.cfg.target_index, ctx.cfg.source_index, payloads)
+    ctx.emit("validation/write-applied.json", result, "apply-write")
+
+    src = live_validate.source_index_unchanged(client, ctx.cfg.source_index, source_before,
+                                               settings_before)
+    ctx.emit("validation/source-index-unchanged.json", src, "apply-write")
+    state.set("write", "APPLIED")
+    state.save(ctx.run_dir)
+    print(f"wrote {result['written']} records to {ctx.cfg.target_index} "
+          f"(indexing published: {result['indexing_published']})")
+    print(f"source index {ctx.cfg.source_index}: {src['records']} records, "
+          f"settings changed: {src['settings_changed'] or 'none'}")
+    if not src["ok"]:
+        raise EnrichmentError("SOURCE INDEX CHANGED during a target-index write. Stop.")
+    return 0
+
+
+def cmd_verify_live(ctx: Ctx) -> int:
+    ctx.banner("verify-live")
+    manifest = ctx.manifest()
+    state = ctx.state()
+    state.require("write", "APPLIED", "LIVE_VERIFIED")
+    client = ctx.algolia()
+    payloads = _read_jsonl(ctx.run_dir / "final" / "payloads.jsonl")
+
+    # Every objectID any run of this skill has ever planned. The target index accumulates
+    # slices, so scoping "extra records" to THIS run's manifest would report the previous slice
+    # as contamination -- measured on the case-study smoke, which flagged the 10 Blog records
+    # written an hour earlier.
+    planned_by_any_run = _all_planned_ids(ctx.enrichment_dir / "runs")
+    report = live_validate.verify(client, ctx.cfg.target_index, payloads,
+                                  manifest_ids=planned_by_any_run)
+    life = live_validate.proof_of_life(client, ctx.cfg.target_index, payloads)
+    src = live_validate.source_index_unchanged(
+        client, ctx.cfg.source_index,
+        json.loads((ctx.run_dir / "census-before.json").read_text())["records"]
+        if (ctx.run_dir / "census-before.json").exists() else
+        client.record_count(ctx.cfg.source_index)[1])
+
+    out = {"verification": report, "proof_of_life": life, "source_index": src,
+           "verified_at": _now()}
+    ctx.emit("validation/live-verification.json", out, "verify-live")
+    print(f"live: {report['exact']} exact of {report['expected']}, "
+          f"missing={len(report['missing'])} mismatched={len(report['mismatched'])} "
+          f"extra={report['extra_count']} spans={report['spans_compared']}")
+    for p in life["probes"]:
+        print(f"  probe {p['objectID']}: nbHits={p['nbHits']} found_self={p['found_self']} "
+              f"q={p['query']!r}")
+    print(f"source index unchanged: {src['ok']} ({src['records']} records)")
+    if not (report["ok"] and life["ok"] and src["ok"]):
+        raise EnrichmentError("LIVE VERIFICATION FAILED. See validation/live-verification.json")
+    state.set("write", "LIVE_VERIFIED")
+    state.save(ctx.run_dir)
+    print(f"PASS: {report['exact']} records byte-match, {life['queries_with_hits']} "
+          f"enriched-only queries return hits.")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# housekeeping
+# ---------------------------------------------------------------------------
+
+def cmd_cleanup(ctx: Ctx) -> int:
+    ctx.banner("cleanup")
+    protected = ["manifest.json", "final", "validation", "reports/packet.md", "approvals",
+                 "artifact-manifest.json", "state.json", "effective-config.json"]
+    if ctx.args.delete:
+        approvals.require(ctx.run_dir, "cleanup", run_id=ctx.run_id,
+                          source_index=ctx.cfg.source_index, target_index=ctx.cfg.target_index)
+    archive = ctx.run_dir / "archive"
+    archive.mkdir(exist_ok=True)
+    moved = []
+    for name in ("tmp", "logs", "probes"):
+        src = ctx.run_dir / name
+        if src.exists():
+            dest = archive / name
+            if dest.exists():
+                continue
+            src.rename(dest)
+            moved.append(name)
+    report = {"archived": moved, "protected": protected, "deleted": []}
+    ctx.emit("validation/cleanup.json", report, "cleanup")
+    print(json.dumps(report, indent=2))
+    print("accepted evidence is never deleted by default; deletion needs cleanup-approved.json")
+    return 0
+
+
+def cmd_handoff(ctx: Ctx) -> int:
+    ctx.banner("handoff")
+    state = ctx.state()
+    manifest_path = ctx.run_dir / "manifest.json"
+    manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    if not manifest:
+        raise EnrichmentError("handoff needs a planned run: no manifest.json")
+    next_step = _next_step(state)
+    if not next_step:
+        raise EnrichmentError("handoff refuses to write without a named next step")
+    body = "\n".join([
+        f"# Handoff -- {ctx.run_id}", "",
+        f"- generated: {_now()}",
+        f"- slice: `{manifest.get('source')}/{manifest.get('page_type')}` "
+        f"({manifest.get('planned_count')} planned)",
+        f"- source index: `{ctx.cfg.source_index}` (read-only)",
+        f"- target index: `{ctx.cfg.target_index}`",
+        f"- state: `{json.dumps(state.tracks, sort_keys=True)}`", "",
+        "## Next step", "", f"    {next_step}", "",
+        "## Rules that do not change", "",
+        "- run every operation through `algolia_enrich.py`; the loose scripts in",
+        "  `docs/operations/enrichment/*.py` are historical and two of them contain dead gate paths",
+        "- Scout is the only body source; `enrich` reads only this run folder's own cache",
+        "- three fields may be written: objectID, abstract_enriched, keyhighlights_enriched",
+        f"- never write to `{ctx.cfg.source_index}`", "",
+    ])
+    path = ctx.enrichment_dir / "HANDOFF-current.md"
+    path.write_text(body)
+    print(body)
+    print(f"\nwrote {path}")
+    return 0
+
+
+def _next_step(state: RunState) -> str:
+    t = state.tracks
+    if t.get("fetch") == "NONE":
+        return "fetch"
+    if t.get("enrich") == "NONE":
+        return "enrich"
+    if t.get("final") == "NONE":
+        return "build-final"
+    if t.get("validate") != "PASSED":
+        return "validate"
+    if t.get("write") == "NONE":
+        return "dry-run-write"
+    if t.get("write") == "DRY_RUN_PASSED":
+        return "apply-write (needs approvals/write-approved.json)"
+    if t.get("write") == "APPLIED":
+        return "verify-live"
+    return "cleanup, then corpus-status"
+
+
+def _all_planned_ids(runs_dir: Path) -> set[str]:
+    """Every objectID planned by any run on disk.
+
+    This is the denominator for "no extra records in the target index". A record belonging to no
+    run at all is an unknown writer and is the thing that check exists to catch.
+    """
+    ids: set[str] = set()
+    for m in Path(runs_dir).glob("*/manifest.json"):
+        try:
+            ids |= set(json.loads(m.read_text()).get("objectIDs") or [])
+        except (json.JSONDecodeError, OSError):
+            continue
+    return ids
+
+
+def _read_jsonl(path: Path) -> list[dict]:
+    p = Path(path)
+    if not p.exists():
+        return []
+    return [json.loads(l) for l in p.read_text().splitlines() if l.strip()]
+
+
+# ---------------------------------------------------------------------------
+# registry
+# ---------------------------------------------------------------------------
+
+# command -> (handler, needs a run folder + lock)
+def cmd_promote_to_source(ctx: Ctx) -> int:
+    """Promote a run's validated payloads from the proving ground into the SOURCE index.
+
+    Deliberately harder to invoke than `apply-write`: it needs a snapshot to exist AND an
+    approval file naming the index and the exact count. See `promote.py` for why.
+    """
+    ctx.banner("promote-to-source")
+    client = ctx.algolia()
+    index = ctx.cfg.source_index
+    payloads = _read_jsonl(ctx.run_dir / "final" / "payloads.jsonl")
+    promote.assert_payloads_sane(payloads)
+
+    snapshot = promote.assert_snapshot_exists(client, index)
+    print(f"[snapshot] {snapshot}")
+    approval = promote.read_approval(ctx.run_dir, target_index=index,
+                                     expected_count=len(payloads))
+    print(f"[approval] {promote.APPROVAL_FILENAME} by {approval['approved_by']}")
+
+    _, before = client.record_count(index)
+    result = write.apply_write_to_index(client, index, payloads)
+    _, after = client.record_count(index)
+    if after != before:
+        raise EnrichmentError(
+            f"{index} record count changed {before} -> {after}. A promotion adds two fields to "
+            f"existing records and must never change the count. Snapshot: {snapshot}")
+
+    check = promote.verify_after_write(client, index, payloads)
+    report = {"index": index, "snapshot": snapshot, "approved_by": approval["approved_by"],
+              "payloads": len(payloads), "record_count_before": before,
+              "record_count_after": after, "write": result, "verification": check,
+              "promoted_at": _now()}
+    ctx.emit("validation/promotion.json", report, "promote-to-source")
+
+    print(f"records   : {index} {before} -> {after} (unchanged, as required)")
+    print(f"written   : {len(payloads)} payloads")
+    print(f"verified  : {check['found']}/{check['checked']} read back, "
+          f"{len(check['missing'])} missing, {len(check['mismatched'])} mismatched")
+    if not check["ok"]:
+        raise EnrichmentError(
+            f"PROMOTION VERIFICATION FAILED: {len(check['missing'])} records missing, "
+            f"{len(check['mismatched'])} byte-mismatched. Snapshot for rollback: {snapshot}")
+    print(f"PASS: {len(payloads)} records promoted into {index} and read back byte-exact.")
+    return 0
+
+
+def cmd_taxonomy_correctness(ctx: Ctx) -> int:
+    """Is the stored taxonomy value the RIGHT value, for everything a url_rule decides?
+
+    Distinct from `taxonomy-preflight`, which proves the CONTRACT and never reads a URL. This
+    re-runs the schema's own url_rules table against each record and compares. Deterministic.
+    """
+    ctx.banner("taxonomy-correctness")
+    schema = taxonomy.load_schema(TAXONOMY_SCHEMA)
+    records = list(ctx.algolia().browse(ctx.cfg.source_index, attributes=RECORD_ATTRIBUTES))
+    report = taxonomy_correctness.check_records(records, schema)
+    report.update({"source_index": ctx.cfg.source_index, "schema_version": schema["version"],
+                   "checked_at": _now()})
+    if ctx.rf:
+        ctx.emit("validation/taxonomy-correctness.json", report, "taxonomy-correctness")
+
+    print(f"records   : {report['records']}  with a url_rule: {report['records_with_a_rule']}")
+    print(f"{'axis':22s}{'checked':>9s}{'agree':>8s}{'mismatch':>10s}{'missing':>9s}")
+    for axis, a in sorted(report["per_axis"].items()):
+        print(f"{axis:22s}{a['checked']:9d}{a['agree']:8d}{a['mismatch']:10d}{a['missing']:9d}")
+    print(f"{'TOTAL':22s}{report['checked']:9d}{report['agree']:8d}"
+          f"{report['mismatch']:10d}{report['missing']:9d}")
+    contradictions = report["rule_contradicts_applicability"]
+    if contradictions:
+        axes_hit = sorted({c["axis"] + "/" + c["page_type"] for c in contradictions})
+        print(f"schema    : {len(contradictions)} records where a url_rule names a value for an "
+              f"axis the applicability model says does not apply -- {axes_hit[:4]}")
+        print(f"            (NOT a data defect: the record is right to omit it. Dead rule config.)")
+    print(f"note      : {report['unverifiable_note']}")
+
+    if not report["ok"]:
+        raise EnrichmentError(
+            f"TAXONOMY CORRECTNESS FAILED: {report['mismatch']} stored values disagree with the "
+            f"url_rule that predicts them, {report['missing']} records missing a predicted value.")
+    print(f"PASS: all {report['checked']} rule-predicted taxonomy values match what is stored.")
+    return 0
+
+
+def cmd_verify_corpus(ctx: Ctx) -> int:
+    """TIER 1: is what is IN THE INDEX right now correct? Deterministic, no LLM.
+
+    Distinct from `verify-live`, which proves a RUN's payloads landed. This proves the live
+    corpus itself, without the run that produced it -- runs get cleaned up, code changes
+    underneath them, and a two-day-old report is not evidence about today's index.
+    """
+    ctx.banner("verify-corpus")
+    if not ctx.args.source or not ctx.args.page_type:
+        raise EnrichmentError("this command needs --source and --page-type")
+    source, page_type = ctx.args.source, ctx.args.page_type
+    client = ctx.algolia()
+
+    # --verify-index lets this point at the parallel holding pen, whose records carry only
+    # objectID + the two enriched fields; identity is then joined from the full-record index.
+    verify_index = getattr(ctx.args, "verify_index", None) or ctx.cfg.source_index
+    identity_index = ctx.cfg.source_index if verify_index != ctx.cfg.source_index else None
+
+    report = live_corpus.verify_corpus(
+        client, verify_index, source, page_type, ctx.workspace, identity_index=identity_index)
+    identity = live_corpus.slice_map(client, identity_index) if identity_index else None
+    rows = live_corpus.rows_from_index(client, verify_index, source, page_type, identity=identity)
+    per_record = live_corpus.per_record_rows(report, rows)
+
+    report["taken_at"] = _now()
+    ctx.emit("corpus-verification.json", report, "verify-corpus")
+    ctx.emit_jsonl("corpus-verification-per-record.jsonl", per_record, "verify-corpus")
+
+    cov, g, q = report["coverage"], report["grounding"], report["quality"]
+    print(f"corpus    : {report['corpus']}  in {report['index']}")
+    print(f"records   : {cov['records_in_index']} enriched, "
+          f"{cov['records_with_cached_body']} with a cached body, "
+          f"{cov['records_without_cached_body']} without")
+    idem = report["canonicalise_idempotent"]
+    print(f"idempotent: canonicalise stable on "
+          f"{idem['checked'] - len(idem['offenders'])}/{idem['checked']} bodies "
+          f"({len(idem['offenders'])} carry HTML-in-code-fence)")
+    t = report["grounding_triage"]
+    print(f"grounding : {g['located']}/{g['spans_checked']} spans located, modes={g['modes']}")
+    print(f"  triage  : {t['reported']} reported misses -> "
+          f"{len(t['canonicalisation_artifacts'])} verifier artifacts, "
+          f"{len(t['genuine_absences'])} GENUINELY absent")
+    print(f"quality   : leakage={len(q['leakage'])} chrome={len(q['chrome'])} "
+          f"incomplete={len(q['incomplete_spans'])} "
+          f"duplicate-description={len(q['duplicate_description'])} "
+          f"templates={len(q['template_collisions'])}")
+    print(f"provenance: {len(report['fetch_provenance']['defects'])} defects, "
+          f"{len(report['fetch_provenance']['missing_body'])} missing body")
+    print(f"drift     : {len(report['content_drift']['drifted'])} of "
+          f"{report['content_drift']['compared']} pages changed since enrichment")
+
+    if not report["ok"]:
+        raise EnrichmentError(
+            f"CORPUS VERIFICATION FAILED for {report['corpus']}: "
+            f"{len(t['genuine_absences'])} spans genuinely not on their page, "
+            f"{len(g['missing_body'])} rows with no cached body, "
+            f"{len(report['fetch_provenance']['defects'])} fetch-provenance defects. "
+            f"Per-record detail in corpus-verification-per-record.jsonl.")
+    print(f"PASS: every one of {g['spans_checked']} spans across {cov['records_in_index']} "
+          f"records is present on its own page.")
+    return 0
+
+
+COMMANDS = {
+    "verify-corpus": (cmd_verify_corpus, True),
+    "promote-to-source": (cmd_promote_to_source, True),
+    "census": (cmd_census, False),
+    "profile-lint": (cmd_profile_lint, False),
+    "taxonomy-preflight": (cmd_taxonomy_preflight, True),
+    "taxonomy-correctness": (cmd_taxonomy_correctness, False),
+    "audit-documentation": (cmd_audit_documentation, True),
+    "seed-documentation": (cmd_seed_documentation, True),
+    "reconcile-documentation": (cmd_reconcile_documentation, True),
+    "fetch-documentation": (cmd_fetch_documentation, True),
+    "build-documentation": (cmd_build_documentation, True),
+    "apply-documentation-refresh": (cmd_apply_documentation_refresh, True),
+    "prepare-documentation-copy": (cmd_prepare_documentation_copy, True),
+    "health-scout": (cmd_health_scout, False),
+    "corpus-status": (cmd_corpus_status, False),
+    "plan-slice": (cmd_plan_slice, True),
+    "fetch": (cmd_fetch, True),
+    "enrich": (cmd_enrich, True),
+    "repair": (cmd_repair, True),
+    "build-final": (cmd_build_final, True),
+    "validate": (cmd_validate, True),
+    "review-pack": (cmd_review_pack, True),
+    "freeze-selections": (cmd_freeze_selections, True),
+    "prepare-target-index": (cmd_prepare_target_index, True),
+    "dry-run-write": (cmd_dry_run_write, True),
+    "apply-write": (cmd_apply_write, True),
+    "verify-live": (cmd_verify_live, True),
+    "cleanup": (cmd_cleanup, True),
+    "handoff": (cmd_handoff, True),
+}
+
+
+def build_parser() -> argparse.ArgumentParser:
+    ap = argparse.ArgumentParser(prog="algolia_enrich.py", description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("command", choices=sorted(COMMANDS))
+    ap.add_argument("--workspace", required=True)
+    ap.add_argument("--run-id", default="")
+    ap.add_argument("--source-index", default=None)
+    ap.add_argument("--target-index", default=None)
+    ap.add_argument("--source", default="")
+    ap.add_argument("--page-type", default="")
+    ap.add_argument("--limit", type=int, default=0,
+                    help="bound the slice; the manifest records that it is a subset")
+    ap.add_argument("--replay-run", default="",
+                    help="plan the exact objectIDs from another run's manifest using fresh source records")
+    ap.add_argument("--replay-bodies-run", default="",
+                    help="reuse only a prior run's sealed Scout bodies; never calls Scout")
+    ap.add_argument("--ignore-selection-registry", action="store_true",
+                    help="evaluation only: force a fresh model selection from sealed bodies")
+    ap.add_argument("--languages", default="",
+                    help="stratified subset, e.g. 'de:4,fr:4,en:2'")
+    ap.add_argument("--concurrency", type=int, default=DEFAULT_SCOUT_CONCURRENCY)
+    ap.add_argument("--probe-url", default="")
+    ap.add_argument("--quarantine-index", default="")
+    ap.add_argument("--liveness-census", default="",
+                    help="path to a liveness-census jsonl (status + final URL per record). Names "
+                         "the verified 404s and the live pages the sitemap omits.")
+    ap.add_argument("--object-id", default="",
+                    help="plan-slice: comma-separated objectIDs to plan INSTEAD of the whole "
+                         "slice. For recovering named records without regenerating the rest -- "
+                         "the writer is not reproducible, so re-running a whole slice to fix one "
+                         "record changes the others too. Recorded as a bounded subset.")
+    ap.add_argument("--verify-index", default="",
+                    help="verify-corpus: which index to verify. Defaults to the source index. "
+                         "Point it at the parallel target to verify payloads parked there; "
+                         "identity fields are joined from the source index automatically.")
+    ap.add_argument("--allow-empty", action="store_true")
+    ap.add_argument("--allow-empty-index", action="store_true")
+    ap.add_argument("--delete", action="store_true")
+    ap.add_argument("--recover-lock", action="store_true")
+    return ap
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    handler, needs_run = COMMANDS[args.command]
+    if args.command == "enrich" and args.concurrency == DEFAULT_SCOUT_CONCURRENCY:
+        args.concurrency = DEFAULT_MODEL_CONCURRENCY
+    try:
+        ctx = Ctx(args)
+        if needs_run:
+            if not ctx.run_id:
+                raise EnrichmentError(f"{args.command} requires --run-id")
+            ctx.run_dir.mkdir(parents=True, exist_ok=True)
+            with run_lock(ctx.run_dir, args.command, _now(), recover=args.recover_lock):
+                return handler(ctx)
+        return handler(ctx)
+    except (ApprovalError, EnrichmentError, LockError, ProfileError, StateError,
+            ZeroWorkError) as exc:
+        print(f"\nFAIL [{args.command}] {type(exc).__name__}: {exc}", file=sys.stderr)
+        return 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

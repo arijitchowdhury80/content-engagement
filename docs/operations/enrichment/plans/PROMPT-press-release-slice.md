@@ -14,21 +14,21 @@ no code changes expected. If code changes turn out to be needed, that is the fin
 
 ## Read first. Do not re-derive any of it.
 
-1. `.claude/skills/algolia-data-enrichment/SKILL.md` — the contract. Use the CLI only.
-2. `.claude/skills/algolia-data-enrichment/docs/OPERATIONS.md` — the runbook, including the
+1. `skills/algolia-data-enrichment/SKILL.md` — the contract. Use the CLI only.
+2. `skills/algolia-data-enrichment/docs/OPERATIONS.md` — the runbook, including the
    failure table and what each per-record status means.
-3. `.claude/skills/algolia-data-enrichment/docs/COMMANDS.md` — the 17 commands, their refusals.
-4. `.claude/skills/algolia-data-enrichment/scripts/profiles/Website__press-release.yaml` — the
+3. `skills/algolia-data-enrichment/docs/COMMANDS.md` — the 17 commands, their refusals.
+4. `skills/algolia-data-enrichment/scripts/profiles/Website__press-release.yaml` — the
    profile. Read the `forbidden_patterns`; four of the five exist because of a specific defect.
-5. `.claude/skills/algolia-data-enrichment/docs/DESIGN-DECISIONS.md` — read when something looks
+5. `skills/algolia-data-enrichment/docs/DESIGN-DECISIONS.md` — read when something looks
    arbitrary. It usually is not, and the cheap-looking alternative was usually tried first.
 
 ## Already true. Do not redo, do not re-verify from scratch.
 
 ```text
-skill            .claude/skills/algolia-data-enrichment/   166 tests passing
+skill            skills/algolia-data-enrichment/   166 tests passing
                  run every command as:
-                   python3 .claude/skills/algolia-data-enrichment/scripts/algolia_enrich.py \
+                   python3 skills/algolia-data-enrichment/scripts/algolia_enrich.py \
                      <command> --workspace <repo root> ...
 source index     Algolia_Prod_Copy_Enhanced            11,928 records, READ-ONLY
 target index     Algolia_Prod_Copy_Enhanced_Parallel   both enriched fields searchable

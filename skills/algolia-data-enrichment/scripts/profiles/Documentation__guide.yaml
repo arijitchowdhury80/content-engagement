@@ -1,0 +1,20 @@
+# Documentation guides are also definitive technical material. Audit metadata only; do not
+# generate an abstract or key highlights from them.
+strategy: no_abstract
+abstract_shape: none
+language_policy: must_match_record
+min_body_chars: 600
+abstract_span_count: [2, 3]
+highlight_count: [3, 5]
+max_span_distance: 8000
+allowed_code_comments: false
+duplicate_description_policy: no_abstract
+judge_required: false
+coverage_target_pct: 0.0
+minimum_review_sample: 20
+forbidden_patterns:
+  - "^(Prerequisites|Before you begin|Next steps|Related)$"
+  - "^(import|const|from|require) "
+  - "^(Was this page helpful|On this page)"
+dead_page_markers: ["Page not found", "This page has moved"]
+shell_markers: ["Loading documentation"]

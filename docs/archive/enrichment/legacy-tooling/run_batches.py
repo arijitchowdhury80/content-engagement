@@ -26,10 +26,10 @@ CONCURRENCY SAFETY, CHECKED NOT ASSUMED
   layer handles them, but the ramp is how you find out what the ceiling is before 8 workers are
   hammering it.
 
-    python3 docs/70-enrichment/make_batches.py --out batches
-    python3 docs/70-enrichment/run_batches.py --workers 2 --limit-batches 2   # smoke
-    python3 docs/70-enrichment/run_batches.py --workers 8                     # full
-    python3 docs/70-enrichment/run_batches.py --only doc-md-twin-reference    # one group
+    python3 docs/operations/enrichment/make_batches.py --out batches
+    python3 docs/operations/enrichment/run_batches.py --workers 2 --limit-batches 2   # smoke
+    python3 docs/operations/enrichment/run_batches.py --workers 8                     # full
+    python3 docs/operations/enrichment/run_batches.py --only doc-md-twin-reference    # one group
 """
 
 from __future__ import annotations

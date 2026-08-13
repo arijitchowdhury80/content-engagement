@@ -1,9 +1,0 @@
-{
-  "target_index": "Algolia_Prod_Copy_Enhanced",
-  "expected_write_count": 225,
-  "approved_by": "arijit",
-  "approved_at": "2026-08-12",
-  "instruction": "push case study updates to Enhanced index rom parallel. Lets commit it",
-  "context": "Arijit's explicit instruction in session 2026-08-12, after Tier 1 verification passed 1714/1714 spans on all 225 case-study payloads. Snapshot Algolia_Prod_Copy_Enhanced_SNAPSHOT_20260812 (11,928 records) taken before this write.",
-  "scope": "adds abstract_enriched and keyhighlights_enriched to 225 existing records via partialUpdateObject; no record is created, replaced or removed; no other field is touched"
-}

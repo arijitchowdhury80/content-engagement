@@ -18,7 +18,7 @@
 >    content instead. Fixtures fail acceptance criterion 1.
 >
 > Working set: `docs/00-vision-manifesto.md`, `docs/10-decision-brief.md`,
-> `docs/20-research/`, `docs/30-models/`, `docs/40-concepts/`, `docs/50-prototype/`,
+> `docs/research/search-experience/`, `docs/design/agent-studio/models/`, `docs/design/search-experience/concepts/`, `frontend/search-first-demo/`,
 > `docs/60-show/`. Execution tracker: Asana project `Search-First Algolia.com`.
 
 Date: 2026-08-05

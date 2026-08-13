@@ -8,7 +8,7 @@ one run and REAL on the next. glm-5.2 accepts temperature 0, so runs SHOULD be i
 
 Runs the same records twice through the writer and diffs the selected spans.
 
-  python3 docs/70-enrichment/test_reproducibility.py --n 8
+  python3 docs/operations/enrichment/test_reproducibility.py --n 8
 """
 import argparse, json, pathlib, sys
 HERE = pathlib.Path(__file__).parent

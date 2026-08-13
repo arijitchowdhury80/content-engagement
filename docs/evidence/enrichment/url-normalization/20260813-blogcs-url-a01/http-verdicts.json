@@ -1,0 +1,13 @@
+{
+  "by_verdict": {
+    "dead": 23,
+    "live": 2908
+  },
+  "checked": 2931,
+  "exception_count": 23,
+  "index": "Algolia_Prod_Copy_Enhanced",
+  "sources": [
+    "Blog",
+    "Customer Stories"
+  ]
+}

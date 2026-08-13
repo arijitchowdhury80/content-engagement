@@ -394,7 +394,7 @@ corpus-layer gaps. Items 28–33 are the v4 architecture above.
     scripts, historical reports, dead-path helpers, and residue" — is a SKILL.md failure,
     not a package failure. A fresh agent reads SKILL.md and nothing else. Specify:
     trigger description, the single CLI invocation, an explicit forbidden-actions list
-    (never run loose scripts in `docs/70-enrichment/*.py`, never glob historical reports,
+    (never run loose scripts in `docs/operations/enrichment/*.py`, never glob historical reports,
     never write outside the run folder, never self-approve), required read order, and
     refusal behaviour for an unknown source/page_type.
 

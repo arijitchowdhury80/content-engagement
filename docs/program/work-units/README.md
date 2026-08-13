@@ -105,7 +105,7 @@ body, body_chars, chrome_removed_chars, search_overlay_present`.
   468 are `/blogaauthorcontainer/author*` CMS artifacts.
 
 **Algolia account (WU-20 blocker cleared 2026-08-05):**
-Credentials at `RAG/Algolia-Central-Spectrum/.env.local` —
+Credentials use the approved local Algolia.com environment file —
 `ALGOLIA_APP_ID`, `ALGOLIA_ADMIN_API_KEY`, `ALGOLIA_WRITE_API_KEY`.
 Verified live: auth OK, 146 indices. **Never print these values.**
 - `mode: "neuralSearch"` is live on this app → neural capability is proven, not inferred.

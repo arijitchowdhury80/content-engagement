@@ -5,7 +5,7 @@ WU-15 — build the demo Algolia index.
 Real index, real algolia.com content, zero fixtures (acceptance criterion 1).
 
 Run from docs/:
-    set -a; . ../../RAG/Algolia-Central-Spectrum/.env.local; set +a
+    set -a; . /Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/.env.local; set +a
     python3 50-prototype/build_index.py
 
 Config pattern copied from AC2_WWW_MULTI_NEURAL (mode=neuralSearch, title-first

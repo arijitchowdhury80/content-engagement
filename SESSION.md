@@ -1,122 +1,154 @@
-# SESSION — Search-First Algolia.com
+# SESSION.md — algolia-com
 
-_Last updated: 2026-08-11, 00:30._
+_Updated 2026-08-13 ~01:30. This file is the resume point. Read it first._
+_Two lanes run in parallel: the Runtime Contract below is the frontend/Agent-Studio lane (Codex).
+The Enrichment section is the backend/corpus lane. Do not overwrite the other lane's section._
 
-## Status
+## Non-Negotiable Runtime Contract
 
-**The enrichment method is a skill now, and the first full slice is parked one step from the
-index.** `.claude/skills/algolia-data-enrichment/` — one CLI, 17 commands, 26 modules, 13
-profiles, **166 tests**, four eval gates green in two iterations. The full 237-record case-study
-slice ran end to end and **stopped at the approval gate with nothing written**, which is the
-design working, not a fault. Nothing is running.
+This contract overrides stale demos, old WIP bundles, and historical notes.
 
-## Resume action
+- **Index:** `Algolia_Prod_Copy_Enhanced` is the only permitted chat/retrieval index. `Algolia_Prod_Copy_Vanilla` is obsolete and must never be deployed, copied, or suggested.
+- **App and agents:** work only in app `0EXRPAXB56`. The primary chat agent is `www Chat - Orchestrator`; visitor-intelligence agents are `www Person - *`; execution/specialist agents are `www Chat - *`; and the judge layer is distinct answer evaluation: root judge `4479f02f-d5d0-4fce-a875-dafda15de166` with Skeptic `a4c3846b-e538-4c9c-8e39-1bb15a21f2c2`, Referee `c43d7374-801a-4d0f-aa09-ca12830565c3`, and Advocate `f14b8ddf-2285-422c-89e5-180d7fa0b3bf`.
+- **Scope:** algolia.com only. Never use, change, validate against, or deploy any non-algolia.com surface. Never modify production Ask Algolia or its Agent Studio configuration.
+- **Jahia test surface:** deploy only to the development Jahia Drift custom-code block at `/sites/www/home/drift/custom-code-block`, then publish its parent `/sites/www/home/drift` with its subtree. This is the shared template block, not a local host HTML file.
+- **Current deployment:** published on 2026-08-12 with `data-release="enhanced-local-visual-parity-20260812"`. It uses the Enhanced index, Algolia theme, visitor/person configuration, concierge engagement, specialist routing declarations, judges, and form tool. The chat bundle is versioned as `algolia-chat.js?citationFallback=20260812`; its source-link guard guarantees visible canonical evidence when the model omits Markdown citations. Test URL: `https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?widgetFinal=20260812`.
+- **Deployment discipline:** confirm the target index, app, agent IDs, current live block, before-state, and rollback method before every publish. Read the live JCR block back after publishing and browser-test the actual Jahia page. Do not rely on an old local demo as the deployment source of truth.
+- **Status honesty:** the Jahia widget was verified to open and answer a live question with sources. Proactive engagement, visitor intelligence freshness, specialist handoff, judge reliability, and answer-quality superiority each still require their own end-to-end validation; do not claim them complete because their assets/configuration are present. Judge output is diagnostic evidence, never a substitute for source grounding.
 
-1. **Resolve the two parked runs before anything else.** `corpus-status` exits 2 (RED) and the
-   skill's own rule blocks a new slice on red.
-   ```bash
-   python3 .claude/skills/algolia-data-enrichment/scripts/algolia_enrich.py review-pack \
-     --workspace $PWD --run-id 20260811-customer-stories-case-study-a03 \
-     --source "Customer Stories" --page-type case-study
-   ```
-   Read `runs/<id>/reports/review-pack.md`, put it to Arijit, and let him decide: approve and
-   ship, or close out. **Do not write an approval file yourself.** Same for
-   `20260810-blog-blog-post-a02`.
-2. Re-run `corpus-status` and confirm it is green.
-3. Then run the next slice from `docs/operations/enrichment/plans/PROMPT-press-release-slice.md`.
+## ENRICHMENT LANE — Status (2026-08-13)
 
-## Where we stopped (exact)
+**Session closed 2026-08-13 ~01:50. State verified at close, read back from the live account:**
+`Algolia_Prod_Copy_Enhanced` **9,525** · Quarantine **2,548** ·
+snapshot `Algolia_Prod_Copy_Enhanced_SNAPSHOT_20260813_prerefresh` **11,928** (rollback intact) ·
+**376 tests passing** · working tree clean at `76856e2`, all 11 session commits on the remote.
 
+**Resume action:** read this file top to bottom, then start at *NEXT TASK* below.
+
+**Documentation refreshed and live. Third corpus closed.** Index **11,928 → 9,525**.
+
+| Corpus | Records | What it actually has | Status |
+|---|---:|---|---|
+| Blog | 2,694 | enriched abstract + highlights | enriched · **no absolute URL, no body** |
+| Documentation | 1,934 | body + absolute URL + taxonomy | **refreshed 2026-08-13** |
+| Customer Stories | 237 | enriched abstract + highlights (226) | enriched · **no absolute URL, no body** |
+| Support | 1,695 | title + desc + absolute URL | untouched |
+| Website | 1,123 | title + desc (226 stray enriched) | untouched |
+| Developers | 865 | title + desc (2 stray enriched) | untouched |
+| Resources | 835 | title + desc (11 stray enriched) | untouched |
+| Academy | 142 | title + desc + absolute URL | untouched |
+
+### THE FINDING THAT SHAPES THE NEXT SESSION
+
+**"Done" has meant two incompatible things, and no corpus has both.**
+Blog and Customer Stories have enriched abstracts but **relative URLs and zero body**.
+Documentation has body and absolute URLs but **no abstracts** (locked no-LLM decision).
+Blog is the largest corpus and all 2,694 records still carry relative URLs — the exact class of
+problem just fixed for Documentation.
+
+## NEXT TASK (Arijit, 2026-08-13 01:30)
+
+Bring the three closed corpora to ONE consistent, fully-verified standard.
+
+Target for Blog, Customer Stories, Documentation:
+taxonomy · title · description · **absolute URL** · **body** · abstract+keyhighlights
+(Blog and Customer Stories only — Documentation stays no-LLM).
+
+1. **Blog 2,694** — absolute URLs + body. Currently 0 of 2,694 have either.
+2. **Customer Stories 237** — absolute URLs + body. Currently 0 of 237 have either.
+3. Re-verify all three against the live index afterwards.
+
+**Arijit: use Teams mode / parallel agents.** Fan out; do not process corpora serially.
+
+⚠️ **Confirm one ambiguity first.** Arijit said "for customer stories and blogs there will not be
+an abstract or key highlights" — but they DO have them (2,694 / 226) and Documentation does not.
+He most likely meant Documentation. Confirm before acting.
+
+## What this session did
+
+**Documentation refresh, applied and live-verified:**
+- Index 11,928 → **9,525** · Documentation 4,337 → **1,934**
+- written 1,933 · deleted 2,440 · **all 2,440 quarantined and byte-verified BEFORE deletion**
+- title 1,934/1,934 · description 1,927/1,934 · body 1,933/1,934 (avg 8,325 chars, was 0–300)
+- absolute URL 1,933/1,934 (**was 0 of 4,337**) · taxonomy violations across all 9,525: **0**
+
+**Root cause:** the corpus was STALE, not duplicated. Captured 2026-07-21; Algolia then rebuilt
+its docs on Mintlify, merging per-language SDK pages into single tabbed pages. 57% of stored URLs
+no longer resolved. Confirmed two ways within 1.6% — following all 4,337 URLs gave 1,921 live
+pages; the site sitemap lists 1,890.
+
+**New modules:** `seed.py` `reconcile.py` `docrefresh.py` `docmerge.py` `docapply.py`
+`quarantine.py` `waits.py`. **New commands:** `seed-documentation` `reconcile-documentation`
+`fetch-documentation` `build-documentation` `apply-documentation-refresh`.
+**376 tests** (257 at session start). Commits `091479d` → `b55913f` (10).
+
+## Eight defects caught, none reached production
+
+Five share one pattern: **absence of information treated as information.**
+
+1. **Scout client discarded 20 of its 23 response fields**, including the `metadata` holding title
+   and description. Downstream parsed markdown for them instead — titles were 30/882. Now
+   1,934/1,934. *We built a workaround for data we were throwing away.*
+2. A url_rule capture group wrote API parameter names (`advancedSyntax`) into `feature`; the merge
+   would have **overwritten the correct tag on 90 records**.
+3. A full-record replace would have **deleted `abstract` from 4,317 records** — a searchable field.
+4. The delete list from the wrong source would have left 8 orphan duplicates.
+5. A fast liveness probe recorded blocked requests as dead pages — would have reported 3,580 dead
+   against a true 108.
+6. `api.py` passed request bodies via argv — broke at ~800kB/batch once bodies existed.
+7. 2 records exceeded Algolia's 100kB limit, which rejects the ENTIRE batch.
+8. **A fetch failure would have DELETED a live page** (`/doc/onboarding`).
+
+## Open items
+
+- **`feature: unknown` on 592 of 1,934 Documentation records (30.6%)** — slightly worse than
+  before (27.1%). Conformance passes because `unknown` is a legal vocabulary value. **Fixable and
+  concentrated:** 248 `/doc/libraries/sdk`, 57 `/doc/tools/cli`, 56 `/doc/api-reference/
+  api-parameters`, 36 `/doc/rest-api/agent-studio`. Rules already map the OLD per-language method
+  paths (`methods/analytics` → analytics, +8 more); the site moved those groups to
+  `/doc/libraries/sdk/methods/` and no rule covers the new shape. Mirroring resolves ~131 of 248.
+- **`body` is stored but NOT in `searchableAttributes`** — this is the change that turns the
+  Documentation work into better Agent Studio answers. Alters ranking index-wide; separate decision.
+- 10 Documentation records need human-written descriptions (page genuinely has none).
+- 16 taxonomy values marked `unresolved-no-rule`.
+- **Academy may have dead links** — a sampled Academy URL returned a WorkRamp "Content Deleted"
+  page. Run a liveness census first.
+- Stray pilot enrichment: Website 226, Resources 11, Developers 2 — tracked nowhere.
+- `solution`/`industry`/`customer` are always empty on Documentation by schema design.
+
+## Index and safety state
+
+- `Algolia_Prod_Copy_Enhanced` — **9,525**
+- `Algolia_Prod_Copy_Enhanced_Quarantine` — **2,548** (108 prior + 2,440 retired, byte-verified)
+- `Algolia_Prod_Copy_Enhanced_SNAPSHOT_20260813_prerefresh` — **11,928**, full rollback point
+- `attributeForDistinct` still `url`; `distinct: true`
+
+## ⚠️ THE SKILL MOVED
+
+`.claude/skills/algolia-data-enrichment/` → **`skills/algolia-data-enrichment/`** (project root):
+```bash
+python3 skills/algolia-data-enrichment/scripts/algolia_enrich.py <command> --workspace .
 ```
-runs/20260811-customer-stories-case-study-a03   fetch DONE · enrich DONE · repair DONE
-                                                final BUILT · validate PASSED · write NONE
-                                                237/237 accounted · 225 payloads
-runs/20260810-blog-blog-post-a02                validate PASSED · write NONE · 50 planned
-```
-
-`case-study a03` outcome split: 225 PASS · 7 DEAD_PAGE · 2 NO_ABSTRACT_THIN · 2 LANGUAGE_MISMATCH
-· 1 QUARANTINED_BY_GATE. Repair recovered 13 of the 14 records a gate had quarantined.
-
-Target index `Algolia_Prod_Copy_Enhanced_Parallel` holds **20 records** — the Gate 3 and Gate 4
-smoke sets only. Source index `Algolia_Prod_Copy_Enhanced` is **11,928**, settings unchanged,
-asserted before and after every write this session.
-
-## Decisions locked
-
-- **The skill lives at `.claude/skills/algolia-data-enrichment/`.** Commit `bb526bf`, 62 renames
-  so history follows. `docs/operations/enrichment/skill/` is gone.
-- **`span_gate.run_gates()` is not ported.** It is the function the runner never called and that
-  was "fixed" inside twice with every test green. `pipeline.evaluate_selection` is the single
-  live path.
-- **`canonicalise()` is its own module.** Four stages share it; both prior grounding failures
-  were two code paths normalising the same characters differently.
-- **`enrich` takes a run folder, never a cache path.** It refuses unless that run's own `fetch`
-  sealed the cache with matching hashes.
-- **Only `PASS` is writable.** A judge verdict that does not change writability is not a gate —
-  the old judge changed the outcome for zero of 3,069 rows.
-- **Next slice is `Website/press-release` (690)**, chosen over `doc-sdk` (2,203). Press-release is
-  the better *test*; doc-sdk is the better *value* and comes after.
-- **Run output stays under `docs/operations/enrichment/runs/`.** It belongs with the corpus work, not the
-  tool.
-
-## Remaining work
-
-**Needs Arijit, do not do unasked**
-1. Approve or close `case-study a03` (225 payloads) and `blog a02` (50).
-2. Push 3 local-only commits — branch `skill/algolia-corpus-enrichment` is **not on GitHub**
-   (`c7dcb15`, `ab45f7d`, `bb526bf`). The auto-mode classifier blocks the agent from `git push`.
-   ```bash
-   git push -u origin skill/algolia-corpus-enrichment
-   ```
-3. Carried from Blog: `abstract_enriched` into production `searchableAttributes`; and whether the
-   judge should gate.
-
-**Then**
-4. Run the press-release slice (690) per the written prompt.
-5. Sync the `arijit-skills` published copy — it lacks the span-distance fix and this layout.
-6. `doc-sdk` (2,203) after that; `docs_api` has still never executed, and it needs a 25-record
-   probe first.
-7. Fix the Dropbox-corrupted git ref in `Personal/arijit-skills/.git/refs/heads/` — `git fetch`
-   dies with `bad object`.
-
-## What has NOT been done
-
-- **Nothing new reached the production index this session.** 20 records exist in the parallel
-  target; that is smoke data. Production search results are **unchanged**.
-- **Selection quality is unmeasured.** Every gate answers "is this on the page and correctly
-  shaped". None answers "is this the sentence a reader needed". Blog's record was a 56%
-  judge-revise rate against flawless grounding. The review packs exist; nobody has read them.
-- **`docs_api` has never executed** on a real doc page — only in a dispatch unit test.
-- The 237 case-study payloads are **built, not written**.
-- `arijit-skills` on GitHub is stale relative to this repo.
 
 ## Reference files
 
-| what | where |
+| Thing | Path |
 |---|---|
-| the skill | `.claude/skills/algolia-data-enrichment/` |
-| next slice prompt | `docs/operations/enrichment/plans/PROMPT-press-release-slice.md` |
-| how it was built, incl. 4 failures | `.claude/skills/algolia-data-enrichment/docs/source/EVAL-LOG.md` |
-| the spec it was built from | `.claude/skills/algolia-data-enrichment/docs/source/PLAN-skill-algolia-corpus-enrichment.md` |
-| runbook | `.claude/skills/algolia-data-enrichment/docs/OPERATIONS.md` |
-| why anything looks odd | `.claude/skills/algolia-data-enrichment/docs/DESIGN-DECISIONS.md` |
-| parked runs | `docs/operations/enrichment/runs/20260811-customer-stories-case-study-a03/`, `.../20260810-blog-blog-post-a02/` |
+| **Documentation refresh write-up** | `docs/customer-documentation/enrichment/chapter-7-documentation-refresh.md` |
+| Blog + Case Study write-up | `docs/customer-documentation/enrichment/chapter-6-blog-and-case-study-enrichment.md` |
+| Taxonomy chapter | `docs/customer-documentation/enrichment/chapter-1-taxonomy-enrichment.md` |
+| Compact verification evidence | `docs/evidence/enrichment/` |
+| Generated run payloads | intentionally local/ignored under `docs/operations/enrichment/runs/` |
+| Enrichment skill (USE THIS) | `skills/algolia-data-enrichment/` |
+| Asana — enrichment SSOT | project `Algolia.com` `1217389830976091`, task 4.1 (4.1.14 now ✅) |
 
-## Two traps that cost the most, so they are not repeated
+## Operating notes earned this session
 
-**A fallback can make an assertion vacuous.** Model pinning ended `served or alias`. Had the API
-field been renamed, every tier would have resolved to its own alias and the check would have
-compared `"large" == "large"` — passing while proving nothing about which model graded the
-corpus. Prefer *absent* over *defaulted*.
-
-**`git add` on a shared repo sweeps the other session's work.** The first staging for the
-relocation caught 476 files and 220k insertions, including the parallel session's uncommitted
-changes. Reset and re-staged to 74. `CLAUDE.md` warns about exactly this.
-
-## Files written this session
-
-- `.claude/skills/algolia-data-enrichment/**` — 78 files (skill, docs, references, source materials)
-- `docs/operations/enrichment/plans/PROMPT-press-release-slice.md`
-- `docs/operations/enrichment/runs/20260810-skillbuild-a01/` — eval log + the Gate 2 independent checker
-- Commits: `c7dcb15` (build), `ab45f7d` (H1 content-start fix), `bb526bf` (relocation)
-- `arijit-skills`: PR #7 merged as `f664dbc`
+- **Build one complete record before launching a bulk run.** 90 minutes of fetching were wasted
+  because `health-scout` passed and I read "Scout returns a body" as "the pipeline works".
+- **Scout's hosted plan allows 5 concurrent jobs.** Measured: 4 workers → 14 pages/min, 0 errors;
+  16 workers → 20 pages/min with 10% failing. More workers buy failures, not speed.
+- **Report every dimension, not the two easy to count.** Showing only title/description made
+  complete work look half-done. An incomplete report of a complete check is indistinguishable
+  from an incomplete check.
+- **`unknown` is a legal taxonomy value** — always split real vs `unknown` when reporting coverage.

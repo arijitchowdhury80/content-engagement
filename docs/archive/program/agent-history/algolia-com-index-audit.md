@@ -6,7 +6,7 @@ Queried live: `Algolia_Prod_Copy_Vanilla` settings/schema, plus `Algolia_Prod_Co
 
 > ⚠️ **The original Section 0 below was WRONG and is retained only as an audit trail.** It claimed the index has no page content at all. That conclusion came from reading `abstract` only, on a sample skewed to the two shallowest sources (`Documentation`, `Academy`). Re-measured against 200 live records per source: `Website` and `Support` records DO carry real page bodies — `Website` in `description` (typical 2,096 chars, up to 11,319), `Support` in both fields (typical 744, up to 6,727). `Website`'s `abstract` is near-empty, which is exactly what produced the false "no content" read.
 >
-> **Canonical measured table lives in `scripts/agents/_shared_grounding_algolia.md` (§ CONTENT DEPTH VARIES BY SOURCE). That file is the SSOT — do not re-derive these numbers here.**
+> **Canonical measured table lives in `agents/definitions/_shared_grounding_algolia.md` (§ CONTENT DEPTH VARIES BY SOURCE). That file is the SSOT — do not re-derive these numbers here.**
 >
 > Consequence: the agents CAN synthesize substantive grounded answers, from `Website` and `Support` bodies. All 8 prompt files were rewritten on this corrected premise and redeployed live. `Documentation`/`Developers`/`Blog`/`Academy` remain genuinely thin (60–160 chars) — for those, titles are the API surface and the agents route/link rather than synthesize.
 >
@@ -29,7 +29,7 @@ Queried live: `Algolia_Prod_Copy_Vanilla` settings/schema, plus `Algolia_Prod_Co
 
 **AC2 already solved this exact problem.** `AC2_WWW_MULTI_NEURAL` (same parent app) has the identical metadata-only schema as our Vanilla/Enhanced pair. Its `_body` replica (`AC2_WWW_MULTI_NEURAL_body`) adds real fields: `body` (sampled 26,805 chars of actual page text), `crawled_bodyLen`, `h1`, `crawled_metaDescription`, `enriched` flag, `_snippetResult`. That's what a RAG-ready version of this exact kind of website index looks like.
 
-**Consequence for this port — SUPERSEDED, see the correction at the top of Section 0.** The paragraph below was written on the false premise and its conclusion no longer holds; the agents ARE synthesizing grounded answers from `Website`/`Support` bodies as of 2026-08-05 afternoon. Retained as audit trail: with content this thin, `Algolia_Generalist`/`Algolia_Specialist`/`Algolia_Academy` cannot give substantive grounded answers to real product/documentation/technical questions — the corpus literally doesn't contain the answer text, just a title and a one-line blurb. Answers would be either near-useless ("here's a link, I can't tell you more") or, if not carefully prompted, tempted to fabricate beyond the blurb — which breaks this project's 110%-grounded rule. This needs a decision before agent prompts get written: re-ingest/enrich this index with body content (mirroring AC2's `_body` pattern) first, or explicitly scope the agents to be link-surfacing/title-matching only (a much weaker product than what ACS does for Spectrum, which grounds on full page text).
+**Consequence for this port — SUPERSEDED, see the correction at the top of Section 0.** The paragraph below was written on the false premise and its conclusion no longer holds; the agents ARE synthesizing grounded answers from `Website`/`Support` bodies as of 2026-08-05 afternoon. Retained as audit trail: with content this thin, `Algolia_Generalist`/`Algolia_Specialist`/`Algolia_Academy` cannot give substantive grounded answers to real product/documentation/technical questions — the corpus literally doesn't contain the answer text, just a title and a one-line blurb. Answers would be either near-useless ("here's a link, I can't tell you more") or, if not carefully prompted, tempted to fabricate beyond the blurb — which breaks this project's 110%-grounded rule. This needs a decision before agent prompts get written: re-ingest/enrich this index with body content first, or explicitly scope the agents to be link-surfacing/title-matching only.
 
 ## 1. Index config comparison (the part you asked to optimize)
 
@@ -78,7 +78,7 @@ Queried live: `Algolia_Prod_Copy_Vanilla` settings/schema, plus `Algolia_Prod_Co
 
 ## 3. What this means for drafting `Algolia_Generalist`/`Algolia_Specialist`/`Algolia_Academy`
 
-- Prompts must NOT be written assuming rich retrieved passages (the way ACS's Spectrum prompts can, since that corpus has full doc/code content). They need to work with title+one-line-blurb+URL as the retrieval unit.
+- Prompts must NOT be written assuming rich retrieved passages unless the Algolia.com corpus contains them. They need to work with title+one-line-blurb+URL as the retrieval unit.
 - Realistic answer shape without a content fix: agent identifies the right page(s) by title/category match and tells the user "this page covers X, here's the link" rather than synthesizing a real in-depth answer FROM the content — because there isn't enough content to synthesize from.
 - Add `is404:false` to every agent's filter (Section 4 of the port spec doesn't currently include this).
 - Recommend fixing the two config items in Section 1 (`prefixLast`, domain synonyms) regardless of the content-depth decision — they're free wins.

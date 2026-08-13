@@ -210,26 +210,26 @@ Each of these exhausted the retry ladder rather than failing on first refusal:
 ```
 # 1. build the batch set from the prior run's quarantined rows, reusing their cached
 #    Scout bodies -- no re-fetch, so the source bytes are identical to the run that failed
-python3 docs/70-enrichment/make_quarantine_batches.py \
+python3 docs/archive/enrichment/legacy-tooling/make_quarantine_batches.py \
     --status QUARANTINED_BY_GATE --tag repair3 --expect 589
 
 # 2. enrich. --pilot writes NOTHING to Algolia.
-python3 docs/70-enrichment/run_batches.py \
-    --batches docs/70-enrichment/batches-blog-repair3 \
-    --out     docs/70-enrichment/batches-out-blog-repair3 \
-    --cache   docs/70-enrichment/cache-scout/blog-repair3-batches --workers 8
+python3 docs/archive/enrichment/legacy-tooling/run_batches.py \
+    --batches docs/operations/enrichment/batches-blog-repair3 \
+    --out     docs/operations/enrichment/batches-out-blog-repair3 \
+    --cache   docs/operations/enrichment/cache-scout/blog-repair3-batches --workers 8
 
 # 3. verify -- counts, grounding, leakage, and the seven-defect quality gate
-python3 docs/70-enrichment/verify_repair_packet.py \
+python3 docs/archive/enrichment/legacy-tooling/verify_repair_packet.py \
     --results batches-out-blog-repair3 \
     --cache   cache-scout/blog-repair3-batches --expect 589
 
 # 4. independent second opinion, using the validator that predates this work
-python3 docs/70-enrichment/validate_blog_outputs.py \
+python3 docs/archive/enrichment/legacy-tooling/validate_blog_outputs.py \
     --results batches-out-blog-repair3 \
     --cache   cache-scout/blog-repair3-batches
 
 # 5. the test suite
-python3 -m pytest docs/70-enrichment/tests -q
+python3 -m pytest docs/archive/enrichment/legacy-tooling/tests -q
 ```
 

@@ -19,7 +19,7 @@ THE QUALITY GATE IS RUN AGAIN, INDEPENDENTLY
   precisely the class of defect that a passing gate has hidden before.
 
 USAGE
-    python3 docs/70-enrichment/verify_repair_packet.py \\
+    python3 docs/operations/enrichment/verify_repair_packet.py \\
         --results batches-out-blog-repair3 \\
         --cache   cache-scout/blog-repair3-batches \\
         --expect  589 \\
@@ -327,27 +327,27 @@ def main() -> int:
     a("```")
     a("# 1. build the batch set from the prior run's quarantined rows, reusing their cached")
     a("#    Scout bodies -- no re-fetch, so the source bytes are identical to the run that failed")
-    a("python3 docs/70-enrichment/make_quarantine_batches.py \\")
+    a("python3 docs/operations/enrichment/make_quarantine_batches.py \\")
     a("    --status QUARANTINED_BY_GATE --tag repair3 --expect 589")
     a("")
     a("# 2. enrich. --pilot writes NOTHING to Algolia.")
-    a("python3 docs/70-enrichment/run_batches.py \\")
-    a("    --batches docs/70-enrichment/batches-blog-repair3 \\")
-    a("    --out     docs/70-enrichment/batches-out-blog-repair3 \\")
-    a("    --cache   docs/70-enrichment/cache-scout/blog-repair3-batches --workers 8")
+    a("python3 docs/operations/enrichment/run_batches.py \\")
+    a("    --batches docs/operations/enrichment/batches-blog-repair3 \\")
+    a("    --out     docs/operations/enrichment/batches-out-blog-repair3 \\")
+    a("    --cache   docs/operations/enrichment/cache-scout/blog-repair3-batches --workers 8")
     a("")
     a("# 3. verify -- counts, grounding, leakage, and the seven-defect quality gate")
-    a("python3 docs/70-enrichment/verify_repair_packet.py \\")
+    a("python3 docs/operations/enrichment/verify_repair_packet.py \\")
     a("    --results batches-out-blog-repair3 \\")
     a("    --cache   cache-scout/blog-repair3-batches --expect 589")
     a("")
     a("# 4. independent second opinion, using the validator that predates this work")
-    a("python3 docs/70-enrichment/validate_blog_outputs.py \\")
+    a("python3 docs/operations/enrichment/validate_blog_outputs.py \\")
     a("    --results batches-out-blog-repair3 \\")
     a("    --cache   cache-scout/blog-repair3-batches")
     a("")
     a("# 5. the test suite")
-    a("python3 -m pytest docs/70-enrichment/tests -q")
+    a("python3 -m pytest docs/operations/enrichment/tests -q")
     a("```")
     a("")
     out_path = HERE / args.out

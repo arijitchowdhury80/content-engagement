@@ -24,12 +24,12 @@ recorded here rather than glossed over.**
 
 | field | value |
 |---|---|
-| what | `docs/70-enrichment/batches-out-cal200/` — cal200 run, stopped at **63 of 200** records |
+| what | `docs/operations/enrichment/batches-out-cal200/` — cal200 run, stopped at **63 of 200** records |
 | contents at deletion | partial `results.jsonl` (63 rows), run logs, and `INVALID-DO-NOT-USE.md` |
 | body source | `cache-batches/doc-md-twin-*` — void under rule 11 regardless of completeness |
 | what happened | deleted earlier on 2026-08-09, in the same session that stopped the run, on the reasoning that void output is safer absent than present |
 | when the instruction arrived | Arijit's quarantine instruction came **after** the deletion |
-| recoverable? | not in git (never tracked), not in `~/.Trash` (removed with `rm`). **Dropbox version history is the only path** — this repo lives under Dropbox, which retains deleted files for 30 days. Restorable via the Dropbox web UI → Deleted files → `AI-Development/algolia-com/docs/70-enrichment/batches-out-cal200/` |
+| recoverable? | not in git (never tracked), not in `~/.Trash` (removed with `rm`). **Dropbox version history is the only path** — this repo lives under Dropbox, which retains deleted files for 30 days. Restorable via the Dropbox web UI → Deleted files → `AI-Development/algolia-com/docs/operations/enrichment/batches-out-cal200/` |
 | cost of the loss | low but non-zero. The 63 rows were void as gate evidence, but they were the only sample of pipeline behaviour on batches 002–005 and could have been read diagnostically |
 | policy change | **from now on, void output is moved into `quarantine/`, never removed.** Deleting evidence removes the option to re-read it; a label does not |
 

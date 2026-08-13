@@ -1,43 +1,59 @@
-# Algolia.com Content Engagement
+# Algolia.com Concierge
 
-This repository is the public project record for the Search-First Algolia.com program. It holds
-Agent Studio configuration, evidence, research, operating records, and the static search-first
-prototype. Start with [PROJECT-INDEX.md](PROJECT-INDEX.md) and [SESSION.md](SESSION.md).
+This repository is the working home for the Algolia.com discovery concierge: Agent Studio
+configuration and prompts, the Jahia chat widget JavaScript, visitor-intelligence work,
+corpus enrichment tooling, validation evidence, and project documentation.
 
-## Where Work Belongs
+Start here for the folder map. Read `SESSION.md` next for the current state of the active
+workstreams.
 
-| Surface | Source of truth | Purpose |
-|---|---|---|
-| Program, agent definitions, evidence, and operations | This repository | Project control plane and durable evidence |
-| Static search-first prototype | `frontend/search-first-demo/` | Prototype only; it is not the deployed chat widget |
-| Production-style chat widget source | [`smomin/algolia-central-chat-widget`](https://github.com/smomin/algolia-central-chat-widget) | Separate implementation repository owned by the widget team |
-| Development host | Jahia Drift custom-code block | Published integration surface; see the operating contract |
+## Current Runtime
 
-The active development Jahia host is
-`https://tmp-content-eng-algolia.cloud.jahia.com`. Its allowed edit surface, release marker, and
-verification rules are in
-[the discovery-engagement operating contract](docs/design/search-experience/discovery-engagement/OPERATING-CONTRACT.md).
+- Agent Studio app: `0EXRPAXB56`
+- Primary development agent: `www Chat - Orchestrator`
+- Retrieval index: `Algolia_Prod_Copy_Enhanced`
+- Production Ask Algolia is read-only comparison evidence. Do not mutate it from this repo.
+- Jahia development surface: `/sites/www/home/drift/custom-code-block`
 
-## Repository Map
+## Folder Map
 
-- `agents/definitions/`: Agent Studio configuration, prompts, and provisioning scripts.
-- `agents/probes/`: Read-only live checks and spikes.
-- `frontend/search-first-demo/`: Static prototype.
-- `docs/design/`: Designs, product proposals, and implementation plans.
-- `docs/evidence/`: Browser, API, and deployment evidence.
-- `docs/operations/`: Current enrichment runs, state, plans, and reports.
-- `docs/archive/`: Historical material; not active operating instruction.
-- `.claude/skills/algolia-data-enrichment/`: Supported enrichment CLI and tests.
+| Path | What lives there |
+|---|---|
+| `agents/prompts/` | Versioned prompt files and judge prompts that belong in Git. |
+| `agents/admin/` | Agent Studio config builders and patch/provisioning scripts. |
+| `agents/checks/` | Read-only live Agent Studio dump, spot-check, and sweep scripts. |
+| `frontend/chat-widget/` | Current project-owned chat widget JavaScript files. Keep source files flat here; create `dist/` only for generated packages. |
+| `frontend/search-first-demo/` | Local prototype/demo code. This is not the Jahia deployment source of truth. |
+| `skills/algolia-data-enrichment/` | Project-local enrichment skill, CLI, tests, references, and runbooks. |
+| `tools/inspection/` | Small inspection/probe scripts used by workstream validation. |
+| `config/` | Public configuration notes only. Secrets stay in ignored local env files. |
+| `docs/customer-documentation/` | Narrative documentation chapters written for the project/customer record. |
+| `docs/design/` | Durable architecture, design, and implementation contracts. |
+| `docs/evidence/` | Compact validation evidence and reports that should remain reviewable in Git. |
+| `docs/operations/` | Active operational plans, state, prompts, and incident notes. Generated run payloads are ignored. |
+| `docs/archive/` | Historical plans, legacy scripts, and retired material. Do not use as current source unless explicitly reviving them. |
 
-## Deployment Boundary
+## Important Boundaries
 
-There is no automatic GitHub-to-Jahia deployment and no automatic synchronization from the widget
-repository into this repository. A widget release is complete only when all three facts are
-recorded:
+- `agents/checks/` replaced the old `agents/probes/` idea. These scripts inspect live systems; they are not prompt source.
+- `agents/prompts/` replaced the old `agents/definitions/` naming. Prompts and judges belong here.
+- `skills/algolia-data-enrichment/` is the project-local skill. Do not use a global `.claude/skills/algolia-data-enrichment` copy for this project.
+- `docs/customer-documentation/enrichment/` replaced `docs/reference/enrichment/`.
+- `docs/operations/enrichment/runs/`, batches, caches, snapshots, and work queues are generated execution payloads. They are intentionally ignored and should not be committed.
 
-1. The widget source revision is committed in its own repository.
-2. The built asset hashes match the uploaded Jahia assets.
-3. The Jahia page is published, read back, and browser-verified.
+## Common Commands
 
-The latest verified Jahia asset comparison is recorded in
-[Jahia release sync evidence](docs/evidence/agent-studio/jahia-release-sync-2026-08-12.md).
+```bash
+# Agent Studio inventory
+node agents/admin/build_algolia_com_agents.mjs --list
+
+# One live Agent Studio spot check
+node agents/checks/spotcheck-live.mjs <agentId> "What is Algolia?"
+
+# Enrichment CLI
+PYTHONPATH=skills/algolia-data-enrichment/scripts \
+python3 skills/algolia-data-enrichment/scripts/algolia_enrich.py <command> --workspace .
+```
+
+Before any Agent Studio or index mutation: snapshot the target, record rollback, dry-run where
+possible, get approval when required, apply the smallest payload, read back, and save evidence.

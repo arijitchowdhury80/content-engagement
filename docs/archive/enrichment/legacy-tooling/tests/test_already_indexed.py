@@ -18,7 +18,7 @@ THE APPROACH
   selectable. Labelling it [ALREADY INDEXED] removes it from the unmarked set the prompt is allowed
   to choose from, so the failure becomes unrepresentable rather than discouraged.
 
-    python3 -m pytest docs/70-enrichment/tests/test_already_indexed.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_already_indexed.py -q
 """
 
 import os

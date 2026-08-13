@@ -18,8 +18,8 @@ CONTRACT
   * Refuses to overwrite an existing snapshot for the same day unless --force.
   * Read-only against Algolia. Writes one local file.
 
-  python3 docs/70-enrichment/snapshot_enhanced.py
-  python3 docs/70-enrichment/snapshot_enhanced.py --index Algolia_Prod_Copy_Enhanced --out <dir>
+  python3 docs/operations/enrichment/snapshot_enhanced.py
+  python3 docs/operations/enrichment/snapshot_enhanced.py --index Algolia_Prod_Copy_Enhanced --out <dir>
 
 TLS NOTE
   Uses curl via subprocess, not urllib. Python's certifi cannot reach the Algolia API from this
@@ -43,7 +43,7 @@ from pathlib import Path
 
 DEFAULT_INDEX = "Algolia_Prod_Copy_Enhanced"
 ENV_CANDIDATES = [
-    Path.home() / "Dropbox/AI-Development/RAG/Algolia-Central-Spectrum/.env.local",
+    Path.home() / "Dropbox/AI-Development/algolia-com/.env.local",
     Path(__file__).resolve().parents[2] / ".env.local",
 ]
 

@@ -27,7 +27,7 @@ THE FIX
   Scale by the length of the text actually handed to the model, passed in explicitly. No argument,
   no scaling -- silence must not invent a multiplier.
 
-    python3 -m pytest docs/70-enrichment/tests/test_span_spread_scaling.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_span_spread_scaling.py -q
 """
 
 import os

@@ -14,7 +14,7 @@ WHY THIS FILE EXISTS
   correctly did not fire. The test was wrong, not the checker, and only writing the case down
   found that out.
 
-    python3 -m pytest docs/70-enrichment/tests/test_repair_packet_checker.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_repair_packet_checker.py -q
 """
 
 import os

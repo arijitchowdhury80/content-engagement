@@ -71,7 +71,7 @@ been claimed already and none of them is this.
 - Phase 1 gate **has no approvable result under Rule 11.** Earlier doc-md-twin gates are diagnostic
   only; the next approvable artefact is the Scout-only Phase 1 plan.
 - ~3,400 `.md` pages cached from the aborted Phase 2 are **quarantined diagnostic material**. Do not
-  delete them; see `docs/70-enrichment/QUARANTINE.md`.
+  delete them; see `docs/operations/enrichment/QUARANTINE.md`.
 - Snapshot `Algolia_Prod_Copy_Enhanced-20260808-125143.jsonl`, 12,036 records — the rollback floor.
 
 ## THE LOOP
@@ -111,13 +111,13 @@ three times, in which case stop and say so rather than trying a fourth.
 
 ```
 plan      ~/.claude/plans/then-what-the-hell-zippy-squid.md
-review    docs/70-enrichment/EXTERNAL-REVIEW-PROMPT.md
+review    docs/operations/enrichment/EXTERNAL-REVIEW-PROMPT.md
 state     SESSION.md
 gate      NONE APPROVABLE — doc-md-twin gate files are quarantined diagnostic-only under Rule 11
-next      docs/70-enrichment/PLAN-scout-only-phase1-calibration.md
+next      docs/operations/enrichment/plans/PLAN-scout-only-phase1-calibration.md
 baselines DIAGNOSTIC until provenance-checked under Rule 11:
-          docs/70-enrichment/reports/fresh50-run1|run2 (noise floor), fresh50-v12 (best)
-human     docs/70-enrichment/reports/review-pack-verdicts-filled1|2.md
-code      docs/70-enrichment/{candidates,span_gate,enrich_run,fetch_router,make_batches,run_batches,write_enrichment,verify_written}.py
-tests     cd <repo> && python3 -m pytest docs/70-enrichment/tests/ -q
+          docs/evidence/enrichment/20260810-blog/fresh50-run1|run2 (noise floor), fresh50-v12 (best)
+human     docs/evidence/enrichment/20260810-blog/review-pack-verdicts-filled1|2.md
+code      docs/operations/enrichment/{candidates,span_gate,enrich_run,fetch_router,make_batches,run_batches,write_enrichment,verify_written}.py
+tests     cd <repo> && python3 -m pytest docs/archive/enrichment/legacy-tooling/tests/ -q
 ```

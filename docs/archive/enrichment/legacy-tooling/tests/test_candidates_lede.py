@@ -19,9 +19,9 @@ WHAT IS BEING GUARANTEED
   en/de/fr/es/it/pt alike (see the monolingual-regex lesson: capital-start + period-end defeats
   every shape check).
 
-  Fixtures are copied from docs/70-enrichment/cache-batches/doc-md-twin-reference-001/.
+  Fixtures are copied from docs/operations/enrichment/cache-batches/doc-md-twin-reference-001/.
 
-    python3 -m pytest docs/70-enrichment/tests/test_candidates_lede.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_candidates_lede.py -q
 """
 
 import os
