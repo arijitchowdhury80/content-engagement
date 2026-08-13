@@ -1,0 +1,130 @@
+{
+  "is_bounded_subset": true,
+  "language_split": {
+    "de": 4,
+    "en": 3,
+    "fr": 3
+  },
+  "live_slice_count": 237,
+  "objectIDs": [
+    "de_4b49b086-f35c-48c9-a072-8d1d6681d737_5_0",
+    "de_7ec2610c-3ed8-485c-addb-f3039005802a_4_0",
+    "de_a92f12bd-cae6-4245-9138-4437c477f526",
+    "de_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext",
+    "en_351f8d88-abeb-487b-b96c-cc159fe37de1_3_0",
+    "en_d851224c-922e-4f33-8f0b-b92995bc8682",
+    "en_e6deb45c-7ecf-479c-9b42-3a03841e4068_4_0",
+    "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe",
+    "fr_9a1f8335-3451-40ac-9e56-162d5721916c_4_0",
+    "fr_c7700c1c-b36f-4868-9dd8-327f033787ed_4_0"
+  ],
+  "page_type": "case-study",
+  "planned_at": "2026-08-11T05:36:17.120868+00:00",
+  "planned_count": 10,
+  "profile_version": "case-study:a491e7de8230",
+  "projection": {
+    "concurrency": 4,
+    "measured_s_per_record": 80.0,
+    "note": "projected from measured queue-inclusive elapsed time per record, not from the scrape duration. Queue wait dominates; scrape duration would promise ~7x faster.",
+    "projected_wall_clock_h": 0.06,
+    "projected_wall_clock_s": 200,
+    "records": 10
+  },
+  "records": [
+    {
+      "description": "<blockquote>&ldquo;Das Kundenerlebnis von Algolia Search ist wirklich sehr gut, und diese Art von Erfahrung wollten wir auf unseren Websites haben.&rdquo;</blockquote>\n",
+      "language_code": "de",
+      "objectID": "de_4b49b086-f35c-48c9-a072-8d1d6681d737_5_0",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "Die Hager Group treibt mit Algolia ihre digitale Transformation voran",
+      "url": "/de/customers/hagergroup"
+    },
+    {
+      "description": "<blockquote>&ldquo;Wir haben nun die Kontrolle &uuml;ber das Erscheinungsbild der Suchergebnisse, und f&uuml;r ein Unternehmen wie das unsere, in dem wir viel Wert auf das Erscheinungsbild der Website legen, ist es wichtig, dass die Benutzererfahrung in den verschiedenen Bereichen der Website so konsistent wie m&ouml;glich ist. Das war uns sehr wichtig.&rdquo;</blockquote>\n",
+      "language_code": "de",
+      "objectID": "de_7ec2610c-3ed8-485c-addb-f3039005802a_4_0",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "King Arthur Baking Co. nutzt die Suchfunktion, um Kunden zu helfen, die Freude am Backen zu entdecken",
+      "url": "/de/customers/kingarthur"
+    },
+    {
+      "description": "Find out how Zenni simplified its search capabilities with Algolia while improving speed and uptime, resulting in a 44% increase in search traffic, a 34% increase in search revenue, and more.",
+      "language_code": "de",
+      "objectID": "de_a92f12bd-cae6-4245-9138-4437c477f526",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "Global online eyewear company sees exceptional results with Algolia AI Search | Algolia",
+      "url": "/de/customers/Zenni"
+    },
+    {
+      "description": "<blockquote>\n<p>&quot;Wir hatten ein Suchprodukt, das aus technischer Sicht - und auch aus der Produktperspektive - schwierig zu verwalten war. &Auml;nderungen daran vorzunehmen, war f&uuml;r das Ingenieursteam wirklich schwer. Es war viel effizienter, zu Algolia zu wechseln, nicht nur im Hinblick auf den Zeitaufwand, sondern auch auf das Produkt selbst.&quot;</p>\n</blockquote>\n",
+      "language_code": "de",
+      "objectID": "de_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "EdX wählt Algolia, um Lernenden den Zugang zu Bildung zu erleichtern",
+      "url": "/de/customers/edx"
+    },
+    {
+      "description": "Club Med partnered with Algolia to power faster, more relevant search across its global website helping boost online conversions and simplifying the vacation booking journey. ",
+      "language_code": "en",
+      "objectID": "en_351f8d88-abeb-487b-b96c-cc159fe37de1_3_0",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "How Club Med help travelers find their dream vacations faster",
+      "url": "/customers/club-med"
+    },
+    {
+      "description": "<blockquote>\n<p>&quot;We had a search product that was difficult to manage from an engineer perspective &mdash; and from a product perspective as well. Making changes to it was really difficult for the engineering team. It was much more efficient to switch to Algolia, not just for the use of our time, but for the product itself.&quot;</p>\n</blockquote>\n",
+      "language_code": "en",
+      "objectID": "en_d851224c-922e-4f33-8f0b-b92995bc8682",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "EdX chooses Algolia to help learners access education",
+      "url": "/customers/edx"
+    },
+    {
+      "description": "Find out how Algolia has improved the customer experience at Plieger Groep through better search relevance, and backend through greater visibility into search data.",
+      "language_code": "en",
+      "objectID": "en_e6deb45c-7ecf-479c-9b42-3a03841e4068_4_0",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "Century-old wholesaler in digital transition uses Algolia to improve search and discovery",
+      "url": "/customers/plieger"
+    },
+    {
+      "description": "Case study: How Algolia Optimizes E-merchandising for Maisons du Monde",
+      "language_code": "fr",
+      "objectID": "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "Comment Algolia optimise le e-merch pour Maisons du Monde",
+      "url": "/fr/customers/maisons-du-monde"
+    },
+    {
+      "description": "<blockquote>&ldquo;&nbsp;Lorsque nous avons effectu&eacute; deux recherches, l&rsquo;une &agrave; l&rsquo;aide d&rsquo;Algolia Search et l&rsquo;autre &agrave; l&rsquo;aide d&rsquo;Elasticsearch, lequel des deux r&eacute;sultats &eacute;tait le plus pr&eacute;cis&nbsp;? Environ 90&nbsp;% du temps, Algolia &eacute;tait la meilleure solution. Non seulement les r&eacute;sultats de la recherche &eacute;taient plus pertinents, mais ils &eacute;taient &eacute;galement multilingues. Algolia a &eacute;t&eacute; un choix facile &agrave; faire pour nous.&rdquo;</blockquote>\n",
+      "language_code": "fr",
+      "objectID": "fr_9a1f8335-3451-40ac-9e56-162d5721916c_4_0",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "Algolia fournit des résultats de recherche plus rapides et plus pertinents pour les sites multilingues de Wizbii.",
+      "url": "/fr/customers/wizbii"
+    },
+    {
+      "description": "<p>&ldquo;Algolia nous apporte beaucoup de valeur. Il facilite le r&eacute;f&eacute;rencement des produits. C&rsquo;est &eacute;galement bon pour le comportement des utilisateurs, car nous pouvons adapter la barre de recherche en fonction de leur comportement. C&rsquo;est encore plus important selon le type de clients. Nous savons que sur mobile, c&rsquo;est tr&egrave;s important car ils doivent se fier &agrave; la barre de recherche plus souvent.&rdquo;</p>\n",
+      "language_code": "fr",
+      "objectID": "fr_c7700c1c-b36f-4868-9dd8-327f033787ed_4_0",
+      "page_type": "case-study",
+      "source": "Customer Stories",
+      "title": "Comment le distributeur de pièces détachées automobiles en ligne Mister-Auto a augmenté son taux de clics et ses conversions grâce à Algolia",
+      "url": "/fr/customers/mister-auto"
+    }
+  ],
+  "replay_of": null,
+  "run_id": "20260811-customer-stories-case-study-a20",
+  "source": "Customer Stories",
+  "source_index": "Algolia_Prod_Copy_Enhanced",
+  "target_index": "Algolia_Prod_Copy_Enhanced_Parallel"
+}

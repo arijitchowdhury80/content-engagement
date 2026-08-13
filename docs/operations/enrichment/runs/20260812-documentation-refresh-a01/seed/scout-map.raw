@@ -1,0 +1,24 @@
+[INIT].... → Crawl4AI 0.7.7
+[SEED].... ℹ Starting URL seeding for domain: www.algolia.com
+[URL_SEED] ℹ Loading latest CC index from cache:
+/Users/arijitchowdhury/.crawl4ai/.crawl4ai/seeder_cache/latest_cc_index.txt
+[URL_SEED] ℹ Starting URL seeding for www.algolia.com with source=sitemap
+[URL_SEED] ℹ Fetching from sitemaps...
+[URL_SEED] ℹ Loading sitemap URLs for www.algolia.com from cache:
+/Users/arijitchowdhury/.crawl4ai/.crawl4ai/seeder_cache/sitemap_www.algolia.com_
+3389dae3.jsonl
+[URL_SEED] ℹ Filtered out nonsense URL:
+https://www.algolia.com/fr/blog/product/search-your-knowledge-base-quickly-and-e
+asily-with-algolia-for-zendesk-1
+[URL_SEED] ℹ Producer finished.
+[URL_SEED] ℹ Finished URL seeding for www.algolia.com. Total URLs: 51
+2026-08-12 19:10:49 [info     ] [scout/map] sitemap discovery  domain=www.algolia.com filtered=0 raw=51
+2026-08-12 19:10:49 [info     ] [scout/map] complete           start_url=https://www.algolia.com/doc urls=0
+{
+  "success": true,
+  "start_url": "https://www.algolia.com/doc",
+  "urls": [],
+  "total": 0,
+  "error": "",
+  "duration_ms": 7226
+}

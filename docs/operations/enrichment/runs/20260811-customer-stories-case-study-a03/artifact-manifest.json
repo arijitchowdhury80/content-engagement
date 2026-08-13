@@ -25,6 +25,9 @@
   "plan-slice": [
     "manifest.json"
   ],
+  "promote-to-source": [
+    "validation/promotion.json"
+  ],
   "repair": [
     "outputs/repair/results.jsonl"
   ],

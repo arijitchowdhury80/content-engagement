@@ -1,0 +1,26 @@
+{
+  "build-final": [
+    "final/results.jsonl",
+    "final/payloads.jsonl",
+    "final/human-review-queue.jsonl",
+    "validation/coverage.json"
+  ],
+  "enrich": [
+    "outputs/base/results.jsonl"
+  ],
+  "fetch": [
+    "cache-scout/",
+    "fetch-manifest.json"
+  ],
+  "plan-slice": [
+    "validation/taxonomy-conformance.json",
+    "manifest.json"
+  ],
+  "repair": [
+    "outputs/repair/results.jsonl"
+  ],
+  "validate": [
+    "validation/artifact-validation.json",
+    "validation/method-check.json"
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "coverage": {
+    "all_accounted_for": true,
+    "coverage_target_pct": 0.75,
+    "human_review_open": 7,
+    "human_review_pct": 0.2333,
+    "max_human_review_open_pct": 0.05,
+    "meets_coverage": false,
+    "outcome_coverage_pct": 1.0,
+    "planned_target_count": 30,
+    "target_written": 3,
+    "terminal_unwritable": 20,
+    "unattempted": 0,
+    "within_human_review_cap": false,
+    "writable_coverage_pct": 0.1
+  },
+  "gates_loaded": [
+    "G-blacklist",
+    "G-context-language-mix",
+    "G-context-quotation",
+    "G-context-reversal",
+    "G-context-section",
+    "G-context-sections-spread",
+    "G-id-only-selection",
+    "G-information-gain",
+    "G-integrity",
+    "G-judge",
+    "G-method-agreement",
+    "G-pool-filter",
+    "G-pool-reversal",
+    "G-pool-static-ban",
+    "G-repair-incomplete",
+    "G-subject-present",
+    "G-terminal-verdict",
+    "V-grounding-offset-free",
+    "V-grounding-offset-slice",
+    "V-grounding-zero-spans",
+    "V-live-byte-match",
+    "V-live-no-extra-records",
+    "V-live-no-metadata",
+    "V-live-proof-of-life",
+    "V-payload-allowed-fields",
+    "V-payload-in-manifest",
+    "V-payload-no-duplicate-ids",
+    "V-payload-no-null",
+    "V-quality-chrome",
+    "V-quality-duplicate-description",
+    "V-quality-incomplete",
+    "V-quality-leakage",
+    "V-quality-template",
+    "V-source-index-unchanged"
+  ],
+  "grounding": {
+    "failures": [],
+    "located": 10,
+    "missing_body": [],
+    "modes": {
+      "canonical": 8,
+      "exact": 2
+    },
+    "offset_drift": [],
+    "ok": true,
+    "rows": 3,
+    "spans_checked": 10
+  },
+  "language_census": {
+    "en": {
+      "abstract_span_chars": {
+        "max": 127,
+        "mean": 87.5,
+        "min": 52,
+        "n": 12,
+        "p50": 87
+      },
+      "abstract_span_count": {
+        "max": 2,
+        "mean": 1.5,
+        "min": 1,
+        "n": 8,
+        "p50": 2
+      },
+      "candidates": {
+        "max": 127,
+        "mean": 58.5,
+        "min": 32,
+        "n": 30,
+        "p50": 45
+      },
+      "highlight_chars": {
+        "max": 148,
+        "mean": 86.3,
+        "min": 50,
+        "n": 11,
+        "p50": 85
+      },
+      "highlight_count": {
+        "max": 2,
+        "mean": 1.4,
+        "min": 1,
+        "n": 8,
+        "p50": 1
+      },
+      "records": 30,
+      "statuses": {
+        "JUDGE_HUMAN_REVIEW": 5,
+        "NO_ABSTRACT_THIN": 20,
+        "PASS": 3,
+        "QUARANTINED_BY_GATE": 2
+      }
+    }
+  },
+  "method_check": {
+    "disagreements": 0,
+    "ok": true,
+    "rate": 0.0,
+    "threshold": 0.1
+  },
+  "payload": {
+    "duplicate_object_ids": [],
+    "fields": [
+      "abstract_enriched",
+      "keyhighlights_enriched",
+      "objectID"
+    ],
+    "forbidden_fields_present": [],
+    "ok": true,
+    "payloads": 3
+  },
+  "profile_version": "doc-sdk:21193958fcec",
+  "quality": {
+    "chrome": [],
+    "duplicate_description": [],
+    "incomplete_spans": [],
+    "leakage": [],
+    "ok": true,
+    "rows": 3,
+    "spans_checked": 10,
+    "template_collisions": {}
+  },
+  "run_id": "20260811-documentation-doc-sdk-a03",
+  "validated_at": "2026-08-11T06:34:44.075980+00:00"
+}

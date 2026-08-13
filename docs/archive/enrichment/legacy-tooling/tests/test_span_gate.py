@@ -6,7 +6,7 @@ The important tests are the ADVERSARIAL ones: a paraphrase, an invented number, 
 invented customer name. Those must be impossible to get through, and the test suite is
 the only thing that proves the claim rather than asserting it.
 
-    python3 -m pytest docs/70-enrichment/tests/test_span_gate.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_span_gate.py -q
 """
 
 import os

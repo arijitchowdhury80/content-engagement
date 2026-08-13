@@ -16,7 +16,7 @@ WHY A CI AND NOT JUST A PERCENTAGE
   expected outcome if the true rate really is near the bar, and it is a legitimate finding -- it
   means the bar cannot be adjudicated by more sampling at this scale.
 
-    python3 docs/70-enrichment/cal200_report.py --out-dir <dir> --batches <dir> --cache <dir>
+    python3 docs/operations/enrichment/cal200_report.py --out-dir <dir> --batches <dir> --cache <dir>
 """
 
 from __future__ import annotations

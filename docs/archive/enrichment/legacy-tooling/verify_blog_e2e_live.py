@@ -20,7 +20,7 @@ TWO COUNTING TRAPS THIS FILE HANDLES EXPLICITLY
      shard totals are reconciled against the facet count. A silent truncation would show up as a
      shard sum that does not match.
 
-    python3 docs/70-enrichment/verify_blog_e2e_live.py --out reports/blog-e2e-live-20260810.json
+    python3 docs/operations/enrichment/verify_blog_e2e_live.py --out reports/blog-e2e-live-20260810.json
 """
 
 from __future__ import annotations

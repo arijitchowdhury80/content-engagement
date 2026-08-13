@@ -93,10 +93,10 @@ Two fabricated URLs → HTTP 404, 11,530 bytes each. No soft-404 (200 + not-foun
 
 ## Decisions
 
-### D-001 · Content enrichment is Chapter 3, work unit WU-11.4 (to create)
+### D-001 · Content enrichment is Chapter 3, work unit WS5.4 (to create)
 
 Chapter 3 doc task is Asana `1217211621995392`. Chapters 1 and 2 have work subtasks
-(`WU-11.1`, `WU-11.2`); Chapter 3 has none. WU-11.3 is the URL liveness census.
+(`WS5.1`, `WS5.2`); Chapter 3 has none. WS5.3 is the URL liveness census.
 **Not WU-05** — that is the superseded algolia.com crawl.
 
 ### D-002 · Abstracts are verbatim spans, not generated prose
@@ -297,8 +297,8 @@ pass, an invented sentence (`"Algolia serves 1.7 trillion searches a year"`) is 
 
 ## Still to build
 
-- `WU-11.4` Asana subtask under WU-11
-- `docs/briefs/WU-11.4.md` execution brief
+- `WS5.4` Asana subtask under WS5
+- `docs/program/work-units/WS5.4.md` execution brief
 - the loop script, the 9 gates, the quarantine queue
 - snapshot of all 12,114 records before the first write — **there is no snapshot and never was**
 
@@ -467,7 +467,7 @@ Remaining quarantines are the writer picking title-restating spans (a prompt fix
 | 5 | Two tracked payload files untracked via `git rm --cached`; still in git history. Rewrite or leave? | Arijit |
 | 6 | Rotate: Resend SMTP password (printed to a transcript by my careless env grep), both Scout keys. | Arijit |
 | 7 | **Set all Agent Studio agents to glm-5.2 `large`** — Arijit asked. NOT done: 51 agents on the account, some are a colleague's live `www Chat`; yours run `medium`. Needs scope (your 7 vs all 51). Different repo (`RAG/Algolia-Central2`). | Arijit |
-| 8 | WU-11.4 Asana subtask + `docs/briefs/WU-11.4.md` still not created. | next session |
+| 8 | WS5.4 Asana subtask + `docs/program/work-units/WS5.4.md` still not created. | next session |
 
 ---
 
@@ -605,7 +605,7 @@ model returns: {"verdict":"REAL","abstract":[12,15],"highlights":[18,22]}
 ```
 
 **The model emits no content.** Fabrication is unrepresentable rather than detected: an integer is
-in range or it is not. `docs/70-enrichment/candidates.py`.
+in range or it is not. `docs/archive/enrichment/legacy-tooling/candidates.py`.
 
 Measured on the same 60 pilot records:
 

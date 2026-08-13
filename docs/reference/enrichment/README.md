@@ -20,8 +20,15 @@ two later chapters shifted down.
 | 3 — Content Enrichment | Not started | [chapter-3-content-enrichment.md](./enrichment/chapter-3-content-enrichment.md) |
 | 4 — Enrichment Validation | Not started — next | [chapter-4-enrichment-validation.md](./enrichment/chapter-4-enrichment-validation.md) |
 
-**Index state:** `Algolia_Prod_Copy_Enhanced` holds **12,114 records**, one per distinct URL, as of
-Chapter 2. Never rebuild it by copying `Algolia_Prod_Copy_Vanilla` — see Chapter 2 §10.
+## Current Enrichment Addendum
+
+**Canonical URL normalization** is tracked as a data-enrichment category because it changes the
+retrieval record contract, not agent wording. The deterministic plan and current read-only audit
+live at [PLAN-url-normalization.md](../../operations/enrichment/plans/PLAN-url-normalization.md).
+
+Current measured state for that work: `Algolia_Prod_Copy_Enhanced` has **11,928** records,
+**10,091** relative `url` values, and **1,837** already-absolute Support/Academy URLs. No mutation
+is approved until the script has HTTP-verified all 11,928 rows and produced the approval packet.
 
 ## Rules for this documentation
 

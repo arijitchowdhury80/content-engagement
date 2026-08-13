@@ -6,7 +6,7 @@
 
 **Architecture:** Validation is split into three gates: accounting/grounding, quality/completeness, and search impact. The first gate is deterministic and must run across all 2,800 records. The second gate combines deterministic checks, source-limited LLM judging, and human review. The third gate tests whether the enriched fields improve retrieval and conversational-search usefulness before any live write or searchable-attributes change.
 
-**Tech Stack:** Python 3.13 scripts under `docs/70-enrichment/`, Algolia browse/search APIs, Scout-only page bodies, GLM/Gemini only as source-limited judges, pytest.
+**Tech Stack:** Python 3.13 scripts under `docs/operations/enrichment/`, Algolia browse/search APIs, Scout-only page bodies, GLM/Gemini only as source-limited judges, pytest.
 
 ## Global Constraints
 
@@ -82,12 +82,12 @@ ps -o pid,etime,command -ax \
 - [ ] Run the full enrichment test suite:
 
 ```bash
-python3 -m pytest docs/70-enrichment/tests/ -q
+python3 -m pytest docs/archive/enrichment/legacy-tooling/tests/ -q
 ```
 
 - [ ] Record exact output in the packet.
 - [ ] Fail the packet if any test fails.
-- [ ] Run `git status --short docs/70-enrichment` and record modified/new validation files, because uncommitted code is part of the evidence.
+- [ ] Run `git status --short docs/operations/enrichment` and record modified/new validation files, because uncommitted code is part of the evidence.
 
 **Pass gate:** test suite passes; known xfails are named.
 

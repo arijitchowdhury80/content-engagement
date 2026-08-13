@@ -183,7 +183,7 @@ the component under promotion is the weakest admissible evidence for promoting i
 
 **Required before `validate/grounding.py` is trusted:** re-run the grounding check with an
 independently written implementation against the existing cache
-(`docs/70-enrichment/cache-scout/`, 9,579 bodies, 243 MB, confirmed present 2026-08-10). If
+(`docs/operations/enrichment/cache-scout/`, 9,579 bodies, 243 MB, confirmed present 2026-08-10). If
 it reproduces 21,790/21,790, the baseline argument is solid. If it does not, the difference
 is the most important number in the project.
 
@@ -803,7 +803,7 @@ part of v0.
 All outputs for one slice must live under exactly one run folder:
 
 ```text
-docs/70-enrichment/runs/<run-id>/
+docs/operations/enrichment/runs/<run-id>/
   manifest.json
   census-before.json
   scout-health.json
@@ -830,7 +830,7 @@ docs/70-enrichment/runs/<run-id>/
 
 Rules:
 
-- no writing reports directly into `docs/70-enrichment/reports/` during new runs
+- no writing reports directly into `docs/operations/enrichment/reports/` during new runs
 - no validating by globbing historical roots
 - no using cache outside the run folder unless explicitly imported into the run manifest
 - no overwriting `final/results.jsonl` without `rerun-approved.json`
@@ -881,8 +881,8 @@ runs/<run-id>/
 
 Exceptions:
 
-- `handoff` may write `docs/70-enrichment/HANDOFF-current.md`
-- final human-facing summaries may be copied to `docs/70-enrichment/reports/` only after run is `CLOSED`
+- `handoff` may write `docs/operations/enrichment/HANDOFF-current.md`
+- final human-facing summaries may be copied to `docs/operations/enrichment/reports/` only after run is `CLOSED`
 
 The package must include a test that monkeypatches filesystem writes and fails if a command writes outside the run folder.
 
@@ -924,7 +924,7 @@ is pending, and what needs human review?"
 Required file:
 
 ```text
-docs/70-enrichment/CORPUS-STATE.json
+docs/operations/enrichment/state/CORPUS-STATE.json
 ```
 
 Schema:
@@ -1893,7 +1893,7 @@ Required body sections:
 
 ```text
 Run `python scripts/algolia_enrich.py <command> ...`.
-Do not run loose scripts from `docs/70-enrichment/*.py`.
+Do not run loose scripts from `docs/operations/enrichment/*.py`.
 ```
 
 2. **Required read order**
@@ -1977,7 +1977,7 @@ test_verdicts.py
 
 `test_validate_blog_outputs.py` is the real filename on disk. Earlier drafts listed
 `test_validate_outputs.py`, which does not exist. Verified:
-`ls docs/70-enrichment/tests/` — `test_validate_blog_outputs.py` EXISTS,
+`ls docs/archive/enrichment/legacy-tooling/tests/` — `test_validate_blog_outputs.py` EXISTS,
 `test_validate_outputs.py` does not.
 
 `tests/live_path.py` is a shared helper, not a test. It must be packaged: both
@@ -2065,9 +2065,9 @@ SESSION.md
 MEMORY.md
 memory/*.md
 .claude/plans/*
-docs/70-enrichment/HANDOFF*.md
-docs/70-enrichment/session/*.md
-docs/70-enrichment/PACKET*.md
+docs/operations/enrichment/HANDOFF*.md
+docs/operations/enrichment/session/*.md
+docs/operations/enrichment/plans/PACKET*.md
 ```
 
 ## Persist / Handoff / Clear
@@ -2077,8 +2077,8 @@ docs/70-enrichment/PACKET*.md
 Write:
 
 ```text
-docs/70-enrichment/session/CURRENT.md
-docs/70-enrichment/session/YYYYMMDD-HHMM-persist.md
+docs/operations/enrichment/session/CURRENT.md
+docs/operations/enrichment/session/YYYYMMDD-HHMM-persist.md
 ```
 
 Include objective, live counts, target slice, run folder, commands, writes, validation, blockers, next step, disagreements.
@@ -2088,7 +2088,7 @@ Include objective, live counts, target slice, run folder, commands, writes, vali
 Write:
 
 ```text
-docs/70-enrichment/HANDOFF-current.md
+docs/operations/enrichment/HANDOFF-current.md
 ```
 
 It must be restartable by fresh Codex or Claude.
@@ -2235,7 +2235,7 @@ is true.
 Codex and Claude revised the `algolia-corpus-enrichment` skill plan into v0 implementation scope after Arijit corrected the project boundary.
 
 Plan file:
-/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/70-enrichment/PLAN-skill-algolia-corpus-enrichment.md
+/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/operations/enrichment/plans/PLAN-skill-algolia-corpus-enrichment.md
 
 Please review it as an operational design.
 

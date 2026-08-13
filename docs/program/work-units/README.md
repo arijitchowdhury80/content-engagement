@@ -7,7 +7,7 @@ Three artifacts, three jobs, no field duplicated between them.
 | Artifact | Owns | Do not put here |
 |---|---|---|
 | `docs/05-execution-plan.md` | **WHY.** Reasoning, dependencies, critical path, coverage ledger, Asana GID table. | Execution steps. |
-| `docs/briefs/WU-NN.md` | **HOW.** Inputs with real paths, method, skill routing, output schema, verify commands, DoD. | Reasoning — link to the plan instead. |
+| `docs/program/work-units/WU-NN.md` | **HOW.** Inputs with real paths, method, skill routing, output schema, verify commands, DoD. | Reasoning — link to the plan instead. |
 | Asana | **STATUS.** Done/not-done, per-unit progress comments, the human gate. | Method — except in the rich `html_notes` detail view, which may restate the brief's key constraints. See WU-05 for the exemplar. |
 | **Vault** `Projects/Search-First-Algolia-com/` | **KNOWLEDGE.** Durable findings that outlive the project: `index.md`, `log.md`, `wiki/`. | Status. |
 
@@ -23,7 +23,7 @@ Starting a unit, in this order:
    (`1217199861767750`) → find the lowest-numbered unblocked unit.
 2. Read that unit's Asana comments. Prior sessions record findings there; they may
    have already answered part of the unit or changed its scope.
-3. Read `docs/briefs/WU-NN.md` — this is the executable brief.
+3. Read `docs/program/work-units/WU-NN.md` — this is the executable brief.
 4. Read the plan section for the unit only if the *why* is unclear.
 5. Execute. Write artifacts to the paths in the brief.
 6. Run the brief's **Verify** block. Paste real output.
@@ -86,9 +86,9 @@ brief's Method.** This step is not optional and it is where the value has actual
 ## Facts established so far, that every later unit should reuse
 
 **Corpus (WU-05, verified 2026-08-05):**
-`docs/50-prototype/corpus/records.jsonl` — 2323 lines, 2322 `fetch_ok`, 56 MB,
+`frontend/search-first-demo/corpus/records.jsonl` — 2323 lines, 2322 `fetch_ok`, 56 MB,
 55.6 MB body text, median 23,719 chars/page. 28 page types.
-Driver: `docs/50-prototype/crawl_corpus.py` (resumable, `--resume`).
+Driver: `frontend/search-first-demo/crawl_corpus.py` (resumable, `--resume`).
 Fields per record: `url, fetch_ok, status_code, title, meta_title, meta_description,
 page_type, page_type_source, breadcrumb, breadcrumb_source, cta{text,href,matched},
 body, body_chars, chrome_removed_chars, search_overlay_present`.

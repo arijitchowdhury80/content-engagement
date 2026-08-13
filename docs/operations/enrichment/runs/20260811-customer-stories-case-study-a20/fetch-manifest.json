@@ -1,0 +1,88 @@
+{
+  "body_source": "ScoutRefetch",
+  "entries": {
+    "de_4b49b086-f35c-48c9-a072-8d1d6681d737_5_0": {
+      "chars": 13394,
+      "content_hash": "b1155e6e773a79c2ebed8a8688321a7128e6d327cbc08f3afcb1efd65af25ae8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/hagergroup"
+    },
+    "de_7ec2610c-3ed8-485c-addb-f3039005802a_4_0": {
+      "chars": 8336,
+      "content_hash": "f57d92d7210fd78f70115758b78a9c9b3d6e7ca3d781235ce72d3905a436c764",
+      "fetch_error": "",
+      "http_status": 301,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/kingarthur"
+    },
+    "de_a92f12bd-cae6-4245-9138-4437c477f526": {
+      "chars": 13822,
+      "content_hash": "84e036c7312f1cc941be47e8a13a956673c772854ed6e23ca8ad711865b44230",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/Zenni"
+    },
+    "de_d851224c-922e-4f33-8f0b-b92995bc8682_2_wotext": {
+      "chars": 13233,
+      "content_hash": "0ddfec84a587d45631e1992530d46defcda4a2790d4ae80a811a609891462f9c",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/customers/edx"
+    },
+    "en_351f8d88-abeb-487b-b96c-cc159fe37de1_3_0": {
+      "chars": 10669,
+      "content_hash": "29c1fc3d27ccc001173d82c30144ec81f5b176a83dc2f5107f1ac0dcac310375",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/club-med"
+    },
+    "en_d851224c-922e-4f33-8f0b-b92995bc8682": {
+      "chars": 11545,
+      "content_hash": "c4b616d582fee4f6ce5d12188abf63ea894b3462a60273fe7857299f950fbf19",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/edx"
+    },
+    "en_e6deb45c-7ecf-479c-9b42-3a03841e4068_4_0": {
+      "chars": 12048,
+      "content_hash": "1304fb574fbed6ee5953e6387924b9d1827db6c5d5bec53498a57894e879a3d5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/plieger"
+    },
+    "fr_7e543149-b0ab-4a08-b35c-ba343512dbbe": {
+      "chars": 11168,
+      "content_hash": "cd1d0e956e5485c9f7a87dc09dd1d9b3fa7b717b677690d8beeba2599a3fc7d1",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/maisons-du-monde"
+    },
+    "fr_9a1f8335-3451-40ac-9e56-162d5721916c_4_0": {
+      "chars": 12160,
+      "content_hash": "88032d90b6dea4250af58d8be19543772cb337cc0dd42c2f0a40e76cd32aa006",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/wizbii"
+    },
+    "fr_c7700c1c-b36f-4868-9dd8-327f033787ed_4_0": {
+      "chars": 12088,
+      "content_hash": "eff25efb6be7b429ba3e77c75152e4b5dd668f95fad518697646dced256f29b2",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/customers/mister-auto"
+    }
+  },
+  "fetched": 10,
+  "planned": 10,
+  "run_id": "20260811-customer-stories-case-study-a20"
+}

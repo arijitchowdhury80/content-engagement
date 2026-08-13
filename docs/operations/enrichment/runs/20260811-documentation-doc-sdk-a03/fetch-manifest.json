@@ -1,0 +1,249 @@
+{
+  "body_source": "SealedScoutReplay",
+  "entries": {
+    "https://www.algolia.com/doc/api-client/methods/recommend/-0": {
+      "chars": 8256,
+      "content_hash": "7d1abfe3338a592e4e908cac30b3fc2a3efefe16af789138843e400459ba57f4",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/api-client/methods/recommend"
+    },
+    "https://www.algolia.com/doc/api-client/methods/search/-0": {
+      "chars": 8256,
+      "content_hash": "7d1abfe3338a592e4e908cac30b3fc2a3efefe16af789138843e400459ba57f4",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/api-client/methods/search"
+    },
+    "https://www.algolia.com/doc/libraries/csharp/v7/methods/analytics/get-searches-count/": {
+      "chars": 3863,
+      "content_hash": "2d384ec496ce87915bd0b0c1625c714ff637d5f2af55af8f1ac340e340c2c3f6",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/csharp/v7/methods/analytics/get-searches-count"
+    },
+    "https://www.algolia.com/doc/libraries/csharp/v7/methods/ingestion/create-task/": {
+      "chars": 5231,
+      "content_hash": "7a49c1fadcb10b18dfc10db06ce3c9b4fce5bbdd39e674e2c99e8fcfd89d40df",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/csharp/v7/methods/ingestion/create-task"
+    },
+    "https://www.algolia.com/doc/libraries/csharp/v7/methods/query-suggestions/get-log-file/": {
+      "chars": 3931,
+      "content_hash": "2ce61625f7b5743d1d45ae9bccc14cb5a25181884783ae252c6312b4420635ea",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/csharp/v7/methods/query-suggestions/get-log-file"
+    },
+    "https://www.algolia.com/doc/libraries/csharp/v7/methods/search/batch-assign-user-ids/": {
+      "chars": 4992,
+      "content_hash": "d52a4624445cdf1997d26af4b0a5d4695e9c69e026bb80d9a0503dbd39073a8e",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/csharp/v7/methods/search/batch-assign-user-ids"
+    },
+    "https://www.algolia.com/doc/libraries/dart/v1/methods/search/get-app-task/": {
+      "chars": 3435,
+      "content_hash": "cde488b313e0bd7efc36b9bb6e200c9afedbfe7c9270e08d472daf5b62a80270",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/dart/v1/methods/search/get-app-task"
+    },
+    "https://www.algolia.com/doc/libraries/dart/v1/methods/search/get-dictionary-languages/": {
+      "chars": 3578,
+      "content_hash": "7c47610e0def90fa5ca5110a438faba82b685243e5f8cab289695f5c7fca412e",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/dart/v1/methods/search/get-dictionary-languages"
+    },
+    "https://www.algolia.com/doc/libraries/dart/v1/methods/search/get-object/": {
+      "chars": 4484,
+      "content_hash": "56a0a0b55d944d25f3e5b6d63e489e37cf0bddb2dbb7ead16294128fc1f00fe6",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/dart/v1/methods/search/get-object"
+    },
+    "https://www.algolia.com/doc/libraries/dart/v1/methods/search/multiple-batch/": {
+      "chars": 6002,
+      "content_hash": "0104926b12394bf4ef0c00a90b4a25b9e690958e706d32d1bc0484e76fa6075a",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/dart/v1/methods/search/multiple-batch"
+    },
+    "https://www.algolia.com/doc/libraries/go/v4/methods/ingestion/list-transformations/": {
+      "chars": 3994,
+      "content_hash": "6937cf4b49bde9e9428b3cb8bcf4792fc8576dfcd47443b4e82911145bee3f07",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/go/v4/methods/ingestion/list-transformations"
+    },
+    "https://www.algolia.com/doc/libraries/go/v4/methods/search/assign-user-id/": {
+      "chars": 4343,
+      "content_hash": "b02eb8a1bb3671d2d29df7dfc3b2cbcaee702fd9478accb78be5409080e52ca0",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/go/v4/methods/search/assign-user-id"
+    },
+    "https://www.algolia.com/doc/libraries/go/v4/methods/search/get-objects/": {
+      "chars": 5034,
+      "content_hash": "8ed006fd2d227489a27c3a2760cd14b4522376830efe1dc658c6ff720e220434",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/go/v4/methods/search/get-objects"
+    },
+    "https://www.algolia.com/doc/libraries/java/v4/methods/abtesting/list-ab-tests/": {
+      "chars": 3577,
+      "content_hash": "fa37a6688bcc54544ec82411d1b79b57468f8aaf9b7a1dc42532667bfc93c1eb",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/java/v4/methods/abtesting/list-ab-tests"
+    },
+    "https://www.algolia.com/doc/libraries/java/v4/methods/ingestion/get-run/": {
+      "chars": 4295,
+      "content_hash": "001250da2b1e88e03f544833de26ad484280c86810fa7e796e41836faa85ce51",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/java/v4/methods/ingestion/get-run"
+    },
+    "https://www.algolia.com/doc/libraries/java/v4/methods/monitoring/get-indexing-time/": {
+      "chars": 3736,
+      "content_hash": "fd75138b8fc18244bffd97c3b35c08ebd18a070443a86edb45b2d299061a5f9e",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/java/v4/methods/monitoring/get-indexing-time"
+    },
+    "https://www.algolia.com/doc/libraries/java/v4/methods/recommend/get-recommend-status/": {
+      "chars": 4660,
+      "content_hash": "4f057ee24f5cc2e3dc5b926e95f052a495db2a52bbb17c6e519c6c1bccace8b7",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/java/v4/methods/recommend/get-recommend-status"
+    },
+    "https://www.algolia.com/doc/libraries/java/v4/methods/search/search-single-index/": {
+      "chars": 3930,
+      "content_hash": "add58ec195cf37a6a911fb6ddb6e2215568b17b9d60778fe5c23a2b4ced0fa9d",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/java/v4/methods/search/search-single-index"
+    },
+    "https://www.algolia.com/doc/libraries/javascript/v5/methods/ingestion/": {
+      "chars": 11088,
+      "content_hash": "7e84f291e63ae2af8df8f80f1c946cefacdb479a85259f581c743285192bf25f",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/javascript/v5/methods/ingestion"
+    },
+    "https://www.algolia.com/doc/libraries/javascript/v5/methods/search/replace-sources/": {
+      "chars": 4377,
+      "content_hash": "edf1f2b8e5c6d3e6adb84ecbfb3ab188d73823f5bbab7f8878a5f7dcfdb9967c",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/javascript/v5/methods/search/replace-sources"
+    },
+    "https://www.algolia.com/doc/libraries/kotlin/v3/methods/search/search-synonyms/": {
+      "chars": 3662,
+      "content_hash": "63b106c9a99411ba03dae34d53425ae7706035561237bc754204b7d1a24a464d",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/kotlin/v3/methods/search/search-synonyms"
+    },
+    "https://www.algolia.com/doc/libraries/python/v4/methods/insights/delete-user-token/": {
+      "chars": 3657,
+      "content_hash": "fba2031f0856ccbadd778e36688d11b9bf93e013950604a5a3559ff257bb7117",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/python/v4/methods/insights/delete-user-token"
+    },
+    "https://www.algolia.com/doc/libraries/ruby/v3/methods/ingestion/search-transformations/": {
+      "chars": 6353,
+      "content_hash": "c7d5dadbe3f82f9e8692380798a8484dcebbfbc88f8d66d27d11096caf13c90d",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/ruby/v3/methods/ingestion/search-transformations"
+    },
+    "https://www.algolia.com/doc/libraries/ruby/v3/methods/ingestion/update-task/": {
+      "chars": 5148,
+      "content_hash": "d1d358fc9791faac816d4c898fad2dd13efb11fabf1c6a3871cea1cadc643807",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/ruby/v3/methods/ingestion/update-task"
+    },
+    "https://www.algolia.com/doc/libraries/ruby/v3/methods/recommend/search-recommend-rules/": {
+      "chars": 4367,
+      "content_hash": "e998a0b9f21e0d7452c398ff84d7b6064b2707e6146a51fdb4897cd6e938fa9f",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/ruby/v3/methods/recommend/search-recommend-rules"
+    },
+    "https://www.algolia.com/doc/libraries/scala/v2/methods/analytics/": {
+      "chars": 11091,
+      "content_hash": "f88982430a4e7b09b4470c4218b324ac2c5e0799892cca6489ed969ea3297989",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/scala/v2/methods/analytics"
+    },
+    "https://www.algolia.com/doc/libraries/scala/v2/methods/ingestion/create-source/": {
+      "chars": 9047,
+      "content_hash": "ce50f6669dad0d7238e447246d60cbd71ed28acd1e9d1d194e2f5ed1fbde9ebe",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/scala/v2/methods/ingestion/create-source"
+    },
+    "https://www.algolia.com/doc/libraries/scala/v2/methods/search/save-synonym/": {
+      "chars": 5849,
+      "content_hash": "66db09e2a1caa58bddb60634c0b12146d2592f0781b63710efe851b0b6c24a3c",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/scala/v2/methods/search/save-synonym"
+    },
+    "https://www.algolia.com/doc/libraries/swift/v9/methods/ingestion/validate-source/": {
+      "chars": 7980,
+      "content_hash": "da05fdfa012af9685e276da004871b3805c160e69bb34c346c31dcb25a96ba78",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/swift/v9/methods/ingestion/validate-source"
+    },
+    "https://www.algolia.com/doc/libraries/swift/v9/methods/search/replace-sources/": {
+      "chars": 4377,
+      "content_hash": "edf1f2b8e5c6d3e6adb84ecbfb3ab188d73823f5bbab7f8878a5f7dcfdb9967c",
+      "fetch_error": "",
+      "http_status": 308,
+      "redirect_mismatch": false,
+      "served_url": "/doc/libraries/swift/v9/methods/search/replace-sources"
+    }
+  },
+  "fetched": 30,
+  "planned": 30,
+  "replayed_from_run": "20260811-documentation-doc-sdk-a02",
+  "run_id": "20260811-documentation-doc-sdk-a03"
+}

@@ -58,7 +58,7 @@ was binary (real or designed), the evidence was one live query away, and answeri
 downstream units immediately.
 
 This task was planned as `[43]` in `docs/05-execution-plan.md` and referenced throughout
-`docs/briefs/WU-17.md`, but was **never created in Asana** — which is why the global subtask
+`docs/program/work-units/WU-17.md`, but was **never created in Asana** — which is why the global subtask
 sequence had a hole at 43. Created and closed 2026-08-06 during the numbering restructure.
 
 ## Still open, and owed by WU-17

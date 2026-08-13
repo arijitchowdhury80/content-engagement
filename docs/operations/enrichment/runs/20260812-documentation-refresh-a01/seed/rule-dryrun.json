@@ -1,0 +1,17 @@
+{
+  "paths": 1890,
+  "matched": 1890,
+  "unmatched": 0,
+  "page_type_counts": {
+    "doc-hub": 1,
+    "doc-api-reference": 308,
+    "doc-framework-integration": 44,
+    "doc-guide": 547,
+    "doc-integration": 120,
+    "doc-sdk-unified": 394,
+    "doc-rest-api": 265,
+    "doc-tool": 152,
+    "doc-ui-library": 59
+  },
+  "unmatched_sample": []
+}

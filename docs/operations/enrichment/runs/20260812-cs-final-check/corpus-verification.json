@@ -1,0 +1,56 @@
+{
+  "canonicalise_idempotent": {
+    "checked": 226,
+    "offenders": [],
+    "ok": true
+  },
+  "content_drift": {
+    "compared": 226,
+    "drifted": [],
+    "ok": true
+  },
+  "corpus": "Customer Stories/case-study",
+  "coverage": {
+    "records_in_index": 226,
+    "records_with_cached_body": 226,
+    "records_without_cached_body": 0
+  },
+  "fetch_provenance": {
+    "defects": [],
+    "missing_body": [],
+    "ok": true,
+    "rows": 226
+  },
+  "grounding": {
+    "failures": [],
+    "located": 1722,
+    "missing_body": [],
+    "modes": {
+      "canonical": 414,
+      "exact": 1308
+    },
+    "offset_drift": [],
+    "ok": true,
+    "rows": 226,
+    "spans_checked": 1722
+  },
+  "grounding_triage": {
+    "canonicalisation_artifacts": [],
+    "genuine_absences": [],
+    "ok": true,
+    "reported": 0
+  },
+  "index": "Algolia_Prod_Copy_Enhanced",
+  "ok": true,
+  "quality": {
+    "chrome": [],
+    "duplicate_description": [],
+    "incomplete_spans": [],
+    "leakage": [],
+    "ok": true,
+    "rows": 226,
+    "spans_checked": 1722,
+    "template_collisions": {}
+  },
+  "taken_at": "2026-08-12T05:27:44.991522+00:00"
+}

@@ -226,7 +226,7 @@ design is approved and Asana 2.2.1 has the contract checklist.
 | Create `tests/query-metering.spec.ts` | Playwright wire probe with network classification and source-pill/follow-up assertions |
 | Modify `chat-central/src/__tests__/agentStudio.test.ts` | Cover callback metadata, response headers, and no raw-content persistence |
 | Modify `chat-central/src/__tests__/turnRunner.discovery.test.ts` | Cover primary, Person, specialist, retry, and reset attribution |
-| Modify `docs/30-models/agent-studio-usage-telemetry-rd-proposal.md` | Link final browser evidence and R&D API findings after validation |
+| Modify `docs/design/agent-studio/models/agent-studio-usage-telemetry-rd-proposal.md` | Link final browser evidence and R&D API findings after validation |
 
 ## 8. Execution Plan
 
@@ -235,7 +235,7 @@ design is approved and Asana 2.2.1 has the contract checklist.
 **Files:**
 - Modify: Asana task 2.2.1
 - Modify: Asana task 2.2.2
-- Reference: `docs/30-models/agent-studio-usage-telemetry-rd-proposal.md`
+- Reference: `docs/design/agent-studio/models/agent-studio-usage-telemetry-rd-proposal.md`
 - Reference: this plan
 
 **Interfaces:**

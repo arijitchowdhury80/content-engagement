@@ -20,7 +20,7 @@ Two corpora were re-verified against the **live index**, one record at a time, n
 | Customer Stories/case-study | 225 | 1,714 | **1,714** | **0** | 0 | 0 |
 
 Command: `algolia_enrich.py verify-corpus --source <S> --page-type <P>`.
-Artifacts: `docs/70-enrichment/runs/20260812-blog-verify-final/` and `…-cs-verify-final/`, each
+Artifacts: `docs/operations/enrichment/runs/20260812-blog-verify-final/` and `…-cs-verify-final/`, each
 carrying a per-record JSONL line. Commit `e97f0c8`.
 
 ### Why this needed new code

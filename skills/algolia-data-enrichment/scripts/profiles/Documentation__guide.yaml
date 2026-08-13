@@ -1,18 +1,16 @@
-# Documentation guide/prose family -- 923 records (21.3%).
-# Routes: doc-guide 586, doc-tool 175, doc-integration 119, doc-framework-integration 43.
-#
-# The abstract must say what the page ENABLES or EXPLAINS, not restate its title.
-strategy: editorial
-abstract_shape: editorial_summary
+# Documentation guides are also definitive technical material. Audit metadata only; do not
+# generate an abstract or key highlights from them.
+strategy: no_abstract
+abstract_shape: none
 language_policy: must_match_record
 min_body_chars: 600
 abstract_span_count: [2, 3]
 highlight_count: [3, 5]
 max_span_distance: 8000
 allowed_code_comments: false
-duplicate_description_policy: ban
-judge_required: true
-coverage_target_pct: 0.85
+duplicate_description_policy: no_abstract
+judge_required: false
+coverage_target_pct: 0.0
 minimum_review_sample: 20
 forbidden_patterns:
   - "^(Prerequisites|Before you begin|Next steps|Related)$"

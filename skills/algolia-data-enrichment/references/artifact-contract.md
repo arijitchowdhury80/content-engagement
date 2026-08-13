@@ -3,7 +3,7 @@
 Everything a slice produces lives under exactly one run folder:
 
 ```
-docs/70-enrichment/runs/<run-id>/
+docs/operations/enrichment/runs/<run-id>/
   .lock  state.json  manifest.json  census-before.json  effective-config.json
   artifact-manifest.json  ledger.jsonl  metrics.json  fetch-manifest.json
   cache-scout/          bodies this run's own fetch produced

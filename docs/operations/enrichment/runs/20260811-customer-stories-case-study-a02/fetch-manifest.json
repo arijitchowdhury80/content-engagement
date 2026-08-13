@@ -2,24 +2,24 @@
   "body_source": "ScoutRefetch",
   "entries": {
     "de_2f84bc0e-3fed-48c1-88e9-48aff3f6654e": {
-      "chars": 15711,
-      "content_hash": "0455dc0eb71e0930aa393bbe42c1ef480249321d61f2161aef5aed2f0bd71acc",
+      "chars": 15615,
+      "content_hash": "539e11e8a82e0a2d815bb9c13bf298896c74eaff48d7e7a779ff64027479add4",
       "fetch_error": "",
       "http_status": 200,
       "redirect_mismatch": false,
       "served_url": "/de/customers/CredibleMind"
     },
     "de_3e911e64-945a-48c0-a8bb-82402e447990_3_0": {
-      "chars": 12275,
-      "content_hash": "1abee100809324687e33181e420b54bc6bf55057c8a67a8daacc1464d8872cce",
+      "chars": 12362,
+      "content_hash": "e450e9ee3b66f931e280d5935111b6d020348890689968dd80a9bf8775e03abc",
       "fetch_error": "",
       "http_status": 200,
       "redirect_mismatch": false,
       "served_url": "/de/customers/swedol"
     },
     "de_cf058e1a-76ff-463a-ab45-08e937f6ec35": {
-      "chars": 14592,
-      "content_hash": "530232ddb9ec548479313b6aedb77ea8476a5a41882e5ca1cc0261554982f8ec",
+      "chars": 14679,
+      "content_hash": "b894502b3bd9f0ba569bbc93da3a4fcf00fbfd12ec74fabaee9d80916ef5b8d7",
       "fetch_error": "",
       "http_status": 200,
       "redirect_mismatch": false,
@@ -34,12 +34,20 @@
       "served_url": "/de/customers/plieger"
     },
     "en_2d11146a-88a1-4c0a-90d2-e53bd636c815_3_0": {
-      "chars": 10560,
-      "content_hash": "592e8b751df3c666edd493771e33ba37157113e4a48db7f11994bacf373038c8",
+      "chars": 10646,
+      "content_hash": "d6846ba115de342d5db72e2e18b0fcf11ebc0172576e100b21dcd700cbfa53d1",
       "fetch_error": "",
       "http_status": 200,
       "redirect_mismatch": false,
       "served_url": "/customers/gametime"
+    },
+    "en_4d1663e7-981e-44a4-8733-4d15b6edfb14_4_0": {
+      "chars": 11023,
+      "content_hash": "b80c6af79651ee51d70a0b1857607c8c9520133cde7e924b7b008981773003af",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/customers/apotek1"
     },
     "en_cf058e1a-76ff-463a-ab45-08e937f6ec35_4_0": {
       "chars": 12559,
@@ -50,20 +58,12 @@
       "served_url": "/customers/live-platforms"
     },
     "fr_2f84bc0e-3fed-48c1-88e9-48aff3f6654e": {
-      "chars": 15414,
-      "content_hash": "85dd40bd0651f036af064a1505cf8cf7f119dbc6d4aa291c68785e72f6fde89f",
+      "chars": 15499,
+      "content_hash": "ca533356fde0795d10f516e3ccac5c3185ace12c1048399b9f2f33281d8e265d",
       "fetch_error": "",
       "http_status": 200,
       "redirect_mismatch": false,
       "served_url": "/fr/customers/CredibleMind"
-    },
-    "fr_351f8d88-abeb-487b-b96c-cc159fe37de1": {
-      "chars": 13171,
-      "content_hash": "e39addec6bdfc066bef9bf4ac3c67bc863efbfe03b6a26e87af07e7a90e4f895",
-      "fetch_error": "",
-      "http_status": 200,
-      "redirect_mismatch": false,
-      "served_url": "/fr/customers/club-med"
     },
     "fr_7ec2610c-3ed8-485c-addb-f3039005802a_4_0": {
       "chars": 8250,
@@ -74,8 +74,8 @@
       "served_url": "/fr/customers/kingarthur"
     },
     "fr_a2892dee-4f74-416a-957c-8e920cabd0aa": {
-      "chars": 12687,
-      "content_hash": "87efb25236491689fda820705aeb9309e48f89424b7f3f877137f74870322551",
+      "chars": 12774,
+      "content_hash": "a59ebf7b217589446aca97388f26150e5e60d79c71a2dcbc7a690a60a4c1fe80",
       "fetch_error": "",
       "http_status": 200,
       "redirect_mismatch": false,

@@ -13,7 +13,7 @@ Status: DRAFT — 2 open decisions (Section 4) before any build step runs. App/i
 
 | Piece | ACS reference | Reuse plan |
 |---|---|---|
-| Classifier/handoff | `scripts/agents/instructions_classifier.md`, `ACS-classifier-neural` — internal-only, no search tool, decides the `SPECIALIST:` deep-dive offer synchronously | Same mechanism, new agent instance. Agent Studio agents are app-scoped — cannot share the live ACS classifier across apps, must create a new one in Algolia.com's app. |
+| Classifier/handoff | `agents/definitions/instructions_classifier.md`, `ACS-classifier-neural` — internal-only, no search tool, decides the `SPECIALIST:` deep-dive offer synchronously | Same mechanism, new agent instance. Agent Studio agents are app-scoped — cannot share the live ACS classifier across apps, must create a new one in Algolia.com's app. |
 | Judge | `lab/judge` (advocate/skeptic/referee, ≥2-of-3 corroboration gate, deterministic grounding gate in `detGround.ts`) | Reused with ~zero code change. One known coupling: `detGround.ts` has a hardcoded domain-term allowlist (`ReactSpectrum`, `SpectrumTwo`) used for grounding/negation heuristics — Spectrum-specific, extend or leave alone depending on whether Algolia.com content needs its own technical-term list. |
 | Provisioning script | `agentConfig.mjs` + `build_acs_agents.mjs` (`PERSONAS` array, clone-base bootstrap, PATCH-in-place-never-delete, two-sided suggestions hard gate) | Reused as a **pattern**, not a shared parameterized module. `INDEX` is a module-level constant baked directly into `scopeTools()` — not an argument today. Forking into new files (Section 3) is lower-risk than parameterizing the existing ones in place, since ACS and Algolia.com are permanently separate apps with no shared runtime to protect by sharing code. |
 
@@ -76,7 +76,7 @@ All 7 agents created and published in app `0EXRPAXB56`, verified live (agent cou
 | `Algolia_Judge_Referee` | `30f60755-adb6-41fc-899d-b5418f41867b` |
 | `Algolia_Judge_Skeptic` | `6dfd4a1e-8549-4771-998c-5a8ac233c3ae` |
 
-Built via `scripts/agents/build_algolia_com_agents.mjs` (forked from `build_acs_agents.mjs`, config in `scripts/agents/algoliaComConfig.mjs`). Prompts: `scripts/agents/instructions_algolia_{generalist,specialist,academy,classifier}.md`, `scripts/agents/suggestions_algolia_{generalist,specialist,academy}.md`, `scripts/agents/_shared_grounding_algolia.md`. Judges reuse ACS's existing `scripts/agents/judge/instructions_judge_{advocate,referee,skeptic}.md` verbatim (confirmed no Spectrum/Adobe/React references). Not yet done: bait-query verification harness (Section 5 step 3).
+Built via `agents/definitions/build_algolia_com_agents.mjs` (forked from `build_acs_agents.mjs`, config in `agents/definitions/algoliaComConfig.mjs`). Prompts: `agents/definitions/instructions_algolia_{generalist,specialist,academy,classifier}.md`, `agents/definitions/suggestions_algolia_{generalist,specialist,academy}.md`, `agents/definitions/_shared_grounding_algolia.md`. Judges reuse ACS's existing `agents/definitions/judge/instructions_judge_{advocate,referee,skeptic}.md` verbatim (confirmed no Spectrum/Adobe/React references). Not yet done: bait-query verification harness (Section 5 step 3).
 
 ## 4b. Confirmed requirement for `instructions_algolia_generalist.md` (2026-08-05)
 
@@ -86,11 +86,11 @@ Real Gong call data (`docs/sample_questions.md`) shows the #1 and #2 most-asked 
 
 1. **No new env vars needed** — same app, so the existing `ALGOLIA_APP_ID` / `ALGOLIA_ADMIN_API_KEY` in `.env.local` already work for provisioning.
 2. New files, mirroring the existing pattern 1:1 (fork, don't parameterize — `INDEX` is baked into `scopeTools()` as a module constant in the current code, and ACS/Algolia.com must never risk sharing that constant):
-   - `scripts/agents/algoliaComConfig.mjs` — mirrors `agentConfig.mjs`: `INDEX = 'Algolia_Prod_Copy_Vanilla'`, `CLONE_BASE`, `MAIN_MODEL`, `PERSONAS` (`Algolia_Classifier`/`Algolia_Generalist`/`Algolia_Specialist`/`Algolia_Academy` with the filters from Section 3), `RETIRE = []`.
-   - `scripts/agents/build_algolia_com_agents.mjs` — mirrors `build_acs_agents.mjs`, same `ALGOLIA_APP_ID`/`ALGOLIA_ADMIN_API_KEY`, different `PERSONAS` source.
+   - `agents/definitions/algoliaComConfig.mjs` — mirrors `agentConfig.mjs`: `INDEX = 'Algolia_Prod_Copy_Vanilla'`, `CLONE_BASE`, `MAIN_MODEL`, `PERSONAS` (`Algolia_Classifier`/`Algolia_Generalist`/`Algolia_Specialist`/`Algolia_Academy` with the filters from Section 3), `RETIRE = []`.
+   - `agents/definitions/build_algolia_com_agents.mjs` — mirrors `build_acs_agents.mjs`, same `ALGOLIA_APP_ID`/`ALGOLIA_ADMIN_API_KEY`, different `PERSONAS` source.
    - New prompt files: `instructions_algolia_generalist.md`, `instructions_algolia_specialist.md`, `instructions_algolia_academy.md`, `instructions_algolia_classifier.md` (3-way decision tree — see Section 2), `suggestions_algolia_generalist.md`, `suggestions_algolia_specialist.md`, `suggestions_algolia_academy.md` — written fresh, grounded in Algolia.com's real content (confirmed categories: Documentation, Engineering, Product, AI, Ecommerce integrations, Crawler, Security, etc.).
-   - Judge prompts (`scripts/agents/judge/instructions_judge_{advocate,skeptic,referee}.md`) — rubric is grounding-agnostic; port with zero or near-zero edits.
-3. Run `node scripts/agents/build_algolia_com_agents.mjs`, verify via `--list`, then smoke-test with a bait-query harness (this project's standing rule: grounding is enforced by agent instructions and verified via bait-query, not custom client code — port the `agent_admin.mjs bait` pattern from AC2/ACS).
+   - Judge prompts (`agents/definitions/judge/instructions_judge_{advocate,skeptic,referee}.md`) — rubric is grounding-agnostic; port with zero or near-zero edits.
+3. Run `node agents/definitions/build_algolia_com_agents.mjs`, verify via `--list`, then smoke-test with a bait-query harness (this project's standing rule: grounding is enforced by agent instructions and verified via bait-query, not custom client code — port the `agent_admin.mjs bait` pattern from AC2/ACS).
 4. No frontend change. Agents are provisioned and left for whatever existing or future Algolia.com surface calls them.
 
 ## 6. Explicitly not doing (per scope answers, 2026-08-04)

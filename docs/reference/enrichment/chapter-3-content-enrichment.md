@@ -315,16 +315,16 @@ a candidate with no content parts.
 ## 12. Reproduce it
 
 ```bash
-python3 -m pytest docs/70-enrichment/tests/test_span_gate.py -q     # 66 passed
-python3 docs/70-enrichment/fetch_router.py --verify-families        # 42 types, sums to 12,035
-python3 docs/70-enrichment/snapshot_enhanced.py                     # the only rollback
-python3 docs/70-enrichment/fetch_router.py --build-queue
-python3 docs/70-enrichment/enrich_run.py --pilot --out reports/run  # writes NOTHING to Algolia
-python3 docs/70-enrichment/make_review_pack.py                      # human-readable review
-python3 docs/70-enrichment/write_enrichment.py --results reports/run          # dry run
-python3 docs/70-enrichment/write_enrichment.py --results reports/run --apply --yes
-python3 docs/70-enrichment/verify_written.py                        # must report 0 not-on-page
-python3 docs/70-enrichment/test_reproducibility.py --n 8            # must report REPRODUCIBLE
+python3 -m pytest docs/archive/enrichment/legacy-tooling/tests/test_span_gate.py -q     # 66 passed
+python3 docs/archive/enrichment/legacy-tooling/fetch_router.py --verify-families        # 42 types, sums to 12,035
+python3 docs/archive/enrichment/legacy-tooling/snapshot_enhanced.py                     # the only rollback
+python3 docs/archive/enrichment/legacy-tooling/fetch_router.py --build-queue
+python3 docs/archive/enrichment/legacy-tooling/enrich_run.py --pilot --out reports/run  # writes NOTHING to Algolia
+python3 docs/archive/enrichment/legacy-tooling/make_review_pack.py                      # human-readable review
+python3 docs/archive/enrichment/legacy-tooling/write_enrichment.py --results reports/run          # dry run
+python3 docs/archive/enrichment/legacy-tooling/write_enrichment.py --results reports/run --apply --yes
+python3 docs/archive/enrichment/legacy-tooling/verify_written.py                        # must report 0 not-on-page
+python3 docs/archive/enrichment/legacy-tooling/test_reproducibility.py --n 8            # must report REPRODUCIBLE
 ```
 
 ## 13. Still to do
@@ -337,7 +337,52 @@ python3 docs/70-enrichment/test_reproducibility.py --n 8            # must repor
 4. Run the remaining ~10,300 records.
 5. **Re-run Chapter 1's classifier on the new text.** `product` and `feature` should lift materially.
    This is the reason the chapter exists and it is untouched.
-6. Create `WU-11.4` in Asana and its brief — Chapter 3 has no work subtask, unlike Chapters 1 and 2.
+6. Create `WS5.4` in Asana and its brief — Chapter 3 has no work subtask, unlike Chapters 1 and 2.
+
+## 13.5 Description is missing on a real, bounded subset of the corpus — 2026-08-11
+
+Found while diagnosing why the `algolia-data-enrichment` skill's judge routes far more
+`Website/press-release` records to human review than `Customer Stories/case-study` (44% vs 1.3%
+on matched-size runs). The judge scores `information_gain` by comparing the written abstract
+against the record's own `title` and `description` fields — and for a large share of press-release
+records, `description` does not exist to compare against.
+
+**Verified against the full live source index (`Algolia_Prod_Copy_Enhanced`, all 11,928 records,
+not a sample):**
+
+```
+title:       11,928 / 11,928 (100.0%) real content -- every record, no exceptions
+description: 10,225 / 11,928 (85.7%)  real content
+               938  / 11,928 (7.9%)   empty string
+               754  / 11,928 (6.3%)   literal "…" placeholder
+                11  / 11,928 (0.1%)   missing entirely
+```
+
+By source/page_type, where the gap actually concentrates:
+
+```
+source/page_type                    total   no-description   %
+Website/press-release                 690        401        58.1%
+Blog/blog-post                       2,694        887        32.9%
+Resources/resource                     835        291        34.9%
+Documentation/doc-rest-api             333         23         6.9%
+Customer Stories/case-study            237          7         3.0%
+Documentation/doc-guide                586          6         1.0%
+```
+
+**This is a real, bounded, source-level fact — not a pipeline bug.** These records genuinely never
+had a meta description authored on the live site; it isn't being dropped or lost anywhere in
+fetch/enrich (title, for comparison, is 100% present everywhere — verified against the same full
+index, no exceptions — an earlier read of `results.jsonl` that suggested title was also missing
+was checking the wrong artifact: that file never persists `title` as an output field at all,
+regardless of what the judge actually receives at runtime).
+
+**Implication for scope, not yet built:** any judge criterion (or future gate) that compares
+against `description` cannot assume it exists. For `Website/press-release`, `Blog/blog-post`, and
+`Resources/resource` specifically — the three families with a real gap — backfilling or generating
+a usable description needs to become part of what the enrichment pipeline does for those records,
+not an input it assumes is already there. `Customer Stories/case-study` and
+`Documentation/doc-guide` do not have this problem and don't need it.
 
 ## 14. What this unblocks
 

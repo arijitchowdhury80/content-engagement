@@ -1,0 +1,233 @@
+{
+  "coverage": {
+    "all_accounted_for": true,
+    "coverage_target_pct": 0.85,
+    "human_review_open": 13,
+    "human_review_pct": 0.4333,
+    "max_human_review_open_pct": 0.05,
+    "meets_coverage": false,
+    "outcome_coverage_pct": 1.0,
+    "planned_target_count": 30,
+    "target_written": 17,
+    "terminal_unwritable": 0,
+    "unattempted": 0,
+    "within_human_review_cap": false,
+    "writable_coverage_pct": 0.5667
+  },
+  "gates_loaded": [
+    "G-blacklist",
+    "G-context-language-mix",
+    "G-context-quotation",
+    "G-context-reversal",
+    "G-context-section",
+    "G-context-sections-spread",
+    "G-id-only-selection",
+    "G-information-gain",
+    "G-integrity",
+    "G-judge",
+    "G-method-agreement",
+    "G-pool-filter",
+    "G-pool-reversal",
+    "G-pool-static-ban",
+    "G-repair-incomplete",
+    "G-subject-present",
+    "G-terminal-verdict",
+    "V-grounding-offset-free",
+    "V-grounding-offset-slice",
+    "V-grounding-zero-spans",
+    "V-live-byte-match",
+    "V-live-no-extra-records",
+    "V-live-no-metadata",
+    "V-live-proof-of-life",
+    "V-payload-allowed-fields",
+    "V-payload-in-manifest",
+    "V-payload-no-duplicate-ids",
+    "V-payload-no-null",
+    "V-quality-chrome",
+    "V-quality-duplicate-description",
+    "V-quality-incomplete",
+    "V-quality-leakage",
+    "V-quality-template",
+    "V-source-index-unchanged"
+  ],
+  "grounding": {
+    "failures": [],
+    "located": 104,
+    "missing_body": [],
+    "modes": {
+      "canonical": 46,
+      "exact": 58
+    },
+    "offset_drift": [
+      {
+        "field": "keyhighlights_enriched",
+        "objectID": "en_9b38203f-0e3c-4371-8136-4f851abf12e7_text_3",
+        "offsets": [
+          24262,
+          24339
+        ]
+      }
+    ],
+    "ok": true,
+    "rows": 17,
+    "spans_checked": 104
+  },
+  "language_census": {
+    "de": {
+      "abstract_span_chars": {
+        "max": 389,
+        "mean": 207.2,
+        "min": 44,
+        "n": 22,
+        "p50": 200
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.2,
+        "min": 2,
+        "n": 10,
+        "p50": 2
+      },
+      "candidates": {
+        "max": 77,
+        "mean": 55.3,
+        "min": 17,
+        "n": 10,
+        "p50": 57
+      },
+      "highlight_chars": {
+        "max": 295,
+        "mean": 203.5,
+        "min": 104,
+        "n": 35,
+        "p50": 207
+      },
+      "highlight_count": {
+        "max": 4,
+        "mean": 3.5,
+        "min": 3,
+        "n": 10,
+        "p50": 4
+      },
+      "records": 10,
+      "statuses": {
+        "JUDGE_HUMAN_REVIEW": 6,
+        "PASS": 4
+      }
+    },
+    "en": {
+      "abstract_span_chars": {
+        "max": 370,
+        "mean": 163.7,
+        "min": 47,
+        "n": 23,
+        "p50": 149
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.3,
+        "min": 2,
+        "n": 10,
+        "p50": 2
+      },
+      "candidates": {
+        "max": 253,
+        "mean": 67.8,
+        "min": 33,
+        "n": 10,
+        "p50": 54
+      },
+      "highlight_chars": {
+        "max": 267,
+        "mean": 175.8,
+        "min": 50,
+        "n": 38,
+        "p50": 178
+      },
+      "highlight_count": {
+        "max": 5,
+        "mean": 3.8,
+        "min": 3,
+        "n": 10,
+        "p50": 4
+      },
+      "records": 10,
+      "statuses": {
+        "JUDGE_HUMAN_REVIEW": 4,
+        "PASS": 6
+      }
+    },
+    "fr": {
+      "abstract_span_chars": {
+        "max": 386,
+        "mean": 218.2,
+        "min": 113,
+        "n": 21,
+        "p50": 200
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.1,
+        "min": 2,
+        "n": 10,
+        "p50": 2
+      },
+      "candidates": {
+        "max": 63,
+        "mean": 54.0,
+        "min": 41,
+        "n": 10,
+        "p50": 56
+      },
+      "highlight_chars": {
+        "max": 296,
+        "mean": 174.2,
+        "min": 74,
+        "n": 38,
+        "p50": 183
+      },
+      "highlight_count": {
+        "max": 5,
+        "mean": 3.8,
+        "min": 3,
+        "n": 10,
+        "p50": 4
+      },
+      "records": 10,
+      "statuses": {
+        "JUDGE_HUMAN_REVIEW": 3,
+        "PASS": 7
+      }
+    }
+  },
+  "method_check": {
+    "disagreements": 0,
+    "ok": true,
+    "rate": 0.0,
+    "threshold": 0.1
+  },
+  "payload": {
+    "duplicate_object_ids": [],
+    "fields": [
+      "abstract_enriched",
+      "keyhighlights_enriched",
+      "objectID"
+    ],
+    "forbidden_fields_present": [],
+    "ok": true,
+    "payloads": 17
+  },
+  "profile_version": "press-release:a2073f0ff974",
+  "quality": {
+    "chrome": [],
+    "duplicate_description": [],
+    "incomplete_spans": [],
+    "leakage": [],
+    "ok": true,
+    "rows": 17,
+    "spans_checked": 104,
+    "template_collisions": {}
+  },
+  "run_id": "20260811-website-press-release-pilot-a04",
+  "validated_at": "2026-08-11T14:31:26.122972+00:00"
+}

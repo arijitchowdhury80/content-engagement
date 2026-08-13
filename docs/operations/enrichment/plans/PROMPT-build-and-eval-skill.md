@@ -18,12 +18,12 @@ deterministic Python that must be identically reproducible on a re-run.
 
 ## Read first, in this order. Do not re-derive any of it.
 
-1. `docs/70-enrichment/PLAN-skill-algolia-corpus-enrichment.md` — the build spec. Sections
+1. `docs/operations/enrichment/plans/PLAN-skill-algolia-corpus-enrichment.md` — the build spec. Sections
    that are binding: *Arijit's Scope Correction For v0*, *Script Promotion Audit* (the
    measured carry list), *Command Contracts*, *Command Test Requirements*, *Enforcement
    Primitives*, *Body Source*, *Strategy Dispatch*, *Grounding Contract*, *Writer And Judge
    Contract*, *Source Profiles*, *v0 Definition of Done*, *SKILL.md Contract*.
-2. `docs/70-enrichment/REVIEW-v3-recommendations-for-codex.md` — the reasoning behind the
+2. `docs/operations/enrichment/plans/REVIEW-v3-recommendations-for-codex.md` — the reasoning behind the
    constraints. Read when a constraint looks arbitrary; it is not.
 3. `CLAUDE.md` — project hard constraints. **Note it is stale on one point:** it says the
    enriched fields are not searchable. They are. Verified 2026-08-10.
@@ -45,8 +45,8 @@ case-study      237 records | en 83, de 78, fr 76 | 226 usable
                 2 return 200 but redirect: /customers/bringmeister -> /customers,
                                            /customers/kingarthur   -> /customer-hub
 documentation   4,337 across 12 real doc-* page_types; 3 profile groups already written
-scout cache     docs/70-enrichment/cache-scout/  9,579 bodies, 243 MB
-already built   docs/70-enrichment/skill/algolia_enrichment/{__init__,errors,state,lock,
+scout cache     docs/operations/enrichment/cache-scout/  9,579 bodies, 243 MB
+already built   docs/operations/enrichment/skill/algolia_enrichment/{__init__,errors,state,lock,
                 artifacts}.py  + skill/tests/  -> 16 tests passing. Extend, do not rewrite.
 already fixed   candidates.py `_SENT_END` now Unicode-uppercase aware (was ASCII-only)
 ```
@@ -64,7 +64,7 @@ already fixed   candidates.py `_SENT_END` now Unicode-uppercase aware (was ASCII
    `keyhighlights_enriched`. No provenance, no metadata, no verdicts, no offsets.
 6. Never write to `Algolia_Prod_Copy_Enhanced`. Never copy, rename, swap, or merge an index.
 7. No command prints PASS after checking zero records or zero spans. Zero work is failure.
-8. All output lands under `docs/70-enrichment/runs/<run-id>/`. Nothing loose in the repo.
+8. All output lands under `docs/operations/enrichment/runs/<run-id>/`. Nothing loose in the repo.
 9. One canonicalisation function, in `canonical.py`, shared by candidate slicing, repair,
    validation and live verification. Two implementations is the defect that caused both
    Blog grounding failures.
@@ -100,8 +100,8 @@ Run these as literal commands and paste real output. A gate with no output is a 
 
 **Gate 1 — unit and refusal tests**
 ```bash
-cd docs/70-enrichment && python3 -m pytest skill/tests -q
-cd docs/70-enrichment && python3 -m pytest tests -q     # must stay 472 passed, 1 xfailed
+cd docs/operations/enrichment && python3 -m pytest skill/tests -q
+cd docs/operations/enrichment && python3 -m pytest tests -q     # must stay 472 passed, 1 xfailed
 ```
 Pass: skill tests all green; the pre-existing 472 unchanged. A drop means the promotion lost
 something. All 17 commands have a passing refusal test.

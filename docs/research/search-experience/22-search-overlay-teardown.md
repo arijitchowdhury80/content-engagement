@@ -301,7 +301,7 @@ performed on algolia.com.
 
 ## 7. The 8-journey baseline
 
-**Rubric** (agreed with Arijit 2026-08-07, `docs/briefs/WU-06.md`): **PASS** = canonical
+**Rubric** (agreed with Arijit 2026-08-07, `docs/program/work-units/WU-06.md`): **PASS** = canonical
 destination is result #1 · **PARTIAL** = in the top 5 · **FAIL** = anything else, including
 not present.
 

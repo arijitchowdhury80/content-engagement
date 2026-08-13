@@ -2,7 +2,7 @@
 title: "Chapter 5 — Blog Content Enrichment: Execution, Repair and Live Validation"
 description: "The first of eight sources, taken from design to live and validated against the index rather than the artifact."
 status: live-validated, 30/30 gates pass
-asana: "WU-11.4 — Content enrichment (Blog)"
+asana: "WS5.4 — Content enrichment (Blog)"
 ---
 
 # Chapter 5 — Blog Content Enrichment: Execution, Repair and Live Validation
@@ -573,27 +573,27 @@ looked decisive was an artefact of how it was measured.
 
 ```bash
 # tests
-python3 -m pytest docs/70-enrichment/tests/ -q
+python3 -m pytest docs/archive/enrichment/legacy-tooling/tests/ -q
 # -> 472 passed, 1 xfailed
 
 # full-corpus census of the local artifact, no sampling
-python3 docs/70-enrichment/census_blog_quality.py \
+python3 docs/archive/enrichment/legacy-tooling/census_blog_quality.py \
     --out reports/blog-corpus-census-20260810.json
 
 # live E2E validation, read-only, 30 gates
-python3 docs/70-enrichment/verify_blog_e2e_live.py \
+python3 docs/archive/enrichment/legacy-tooling/verify_blog_e2e_live.py \
     --out reports/blog-e2e-live-20260810.json
 ```
 
 | artifact | what |
 |---|---|
-| `docs/70-enrichment/PACKET-blog-e2e-live-20260810.md` | the live validation packet, verbatim outputs |
-| `docs/70-enrichment/reports/blog-e2e-live-20260810.json` | all 30 gates, every failure with objectIDs |
-| `docs/70-enrichment/reports/blog-corpus-census-20260810.json` | full-corpus census |
-| `docs/70-enrichment/PACKET-blog-quarantine-repair-20260810.md` | the 589-record repair, 10 before/after |
-| `docs/70-enrichment/pool_gates.py` | gates as pre-selection bans |
-| `docs/70-enrichment/tests/test_pool_gates_live_path.py` | drives `process()`, not the helper |
-| `docs/70-enrichment/tests/test_canonicalise_idempotent.py` | the idempotence guard |
+| `docs/operations/enrichment/plans/PACKET-blog-e2e-live-20260810.md` | the live validation packet, verbatim outputs |
+| `docs/operations/enrichment/reports/blog-e2e-live-20260810.json` | all 30 gates, every failure with objectIDs |
+| `docs/operations/enrichment/reports/blog-corpus-census-20260810.json` | full-corpus census |
+| `docs/operations/enrichment/plans/PACKET-blog-quarantine-repair-20260810.md` | the 589-record repair, 10 before/after |
+| `docs/archive/enrichment/legacy-tooling/pool_gates.py` | gates as pre-selection bans |
+| `docs/archive/enrichment/legacy-tooling/tests/test_pool_gates_live_path.py` | drives `process()`, not the helper |
+| `docs/archive/enrichment/legacy-tooling/tests/test_canonicalise_idempotent.py` | the idempotence guard |
 
 ---
 

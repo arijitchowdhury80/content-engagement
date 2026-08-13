@@ -1,0 +1,20 @@
+{
+  "index": "Algolia_Prod_Copy_Enhanced",
+  "source": "Documentation",
+  "records_probed": 4337,
+  "status_counts": {
+    "200": 4229,
+    "404": 108
+  },
+  "not_200_count": 108,
+  "dead_by_page_type": {
+    "doc-api-reference": 14,
+    "doc-sdk": 17,
+    "doc-guide": 8,
+    "doc-integration": 2,
+    "doc-rest-api": 67
+  },
+  "dead_with_description": 86,
+  "dead_without_description": 22,
+  "elapsed_s": 218.0
+}

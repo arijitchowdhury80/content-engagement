@@ -1,0 +1,16 @@
+{
+  "enrich": [
+    {
+      "elapsed_s": 90.47,
+      "records": 30,
+      "s_per_record": 3.016
+    }
+  ],
+  "fetch": [
+    {
+      "elapsed_s": 102.6,
+      "records": 30,
+      "s_per_record": 3.42
+    }
+  ]
+}

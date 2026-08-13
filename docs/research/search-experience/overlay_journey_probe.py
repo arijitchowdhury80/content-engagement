@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """WU-06 — score the 8 non-negotiable journeys against the CURRENT algolia.com overlay.
 
-Rubric agreed with Arijit 2026-08-07 (docs/briefs/WU-06.md § journey scoring rubric):
+Rubric agreed with Arijit 2026-08-07 (docs/program/work-units/WU-06.md § journey scoring rubric):
     PASS    canonical destination is result #1
     PARTIAL canonical destination is in the top 5
     FAIL    anything else, including not in the index at all

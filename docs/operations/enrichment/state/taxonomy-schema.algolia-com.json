@@ -1,7 +1,7 @@
 {
   "version": "algolia-com-taxonomy-v1-20260805",
   "target_index": "Algolia_Prod_Copy_Enhanced",
-  "generated_from": "docs/70-enrichment/enhanced-pre-taxonomy-20260805.jsonl",
+  "generated_from": "docs/operations/enrichment/enhanced-pre-taxonomy-20260805.jsonl",
   "record_count": 12114,
   "owner": null,
   "revalidate_on": "Algolia product launch or rename",

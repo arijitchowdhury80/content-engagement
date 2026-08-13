@@ -30,7 +30,7 @@ NOT IN THIS MODULE
   G5 language match, G8 whole-corpus template collision (needs every record), the judge.
   Those live in the runner. This file is only the part that carries the guarantee.
 
-  python3 -m pytest docs/70-enrichment/tests/test_span_gate.py -q
+  python3 -m pytest docs/operations/enrichment/tests/test_span_gate.py -q
 """
 
 from __future__ import annotations

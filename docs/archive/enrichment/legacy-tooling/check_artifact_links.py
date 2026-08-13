@@ -2,7 +2,7 @@
 """
 Check that every disk path an Asana task names actually exists.
 
-    ASANA_PAT=... python3 docs/70-enrichment/check_artifact_links.py
+    ASANA_PAT=... python3 docs/operations/enrichment/check_artifact_links.py
 
 Asana is the status SSOT and the repo holds the artifacts. Nothing keeps those
 two in step on its own: a file gets renamed or deleted and the task that cites
@@ -32,7 +32,7 @@ REPO = os.path.expanduser("~/Dropbox/AI-Development/algolia-com")
 PATH_RX = re.compile(r"docs/[A-Za-z0-9_./\-]+\.[a-z]{2,5}")
 
 # A literal placeholder in prose, never a real file.
-PLACEHOLDERS = {"docs/briefs/WU-NN.md"}
+PLACEHOLDERS = {"docs/program/work-units/WU-NN.md"}
 
 
 def api_get(path, token):

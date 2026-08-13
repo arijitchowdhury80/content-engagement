@@ -27,8 +27,8 @@ WHAT GETS WRITTEN
   in external run artifacts. Arijit, 2026-08-09: the live records stay lean and should not be polluted
   with audit metadata.
 
-  python3 docs/70-enrichment/write_enrichment.py --results <dir> [<dir> ...]
-  python3 docs/70-enrichment/write_enrichment.py --results <dir> --apply --yes
+  python3 docs/operations/enrichment/write_enrichment.py --results <dir> [<dir> ...]
+  python3 docs/operations/enrichment/write_enrichment.py --results <dir> --apply --yes
 """
 
 from __future__ import annotations

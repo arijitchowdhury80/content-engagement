@@ -20,7 +20,7 @@ PERFORMANCE NOTE
   pages -- and does not finish. `canonicalise` is pure, so the projection is cached per objectID.
   Same numbers, and it runs in a couple of minutes.
 
-    python3 docs/70-enrichment/census_blog_quality.py --out reports/blog-corpus-census-20260810.json
+    python3 docs/operations/enrichment/census_blog_quality.py --out reports/blog-corpus-census-20260810.json
 """
 
 from __future__ import annotations

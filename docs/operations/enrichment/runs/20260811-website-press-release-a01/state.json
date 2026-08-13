@@ -1,0 +1,16 @@
+{
+  "closed": false,
+  "failed_reason": null,
+  "page_type": "press-release",
+  "run_id": "20260811-website-press-release-a01",
+  "source": "Website",
+  "target_index": "Algolia_Prod_Copy_Enhanced_Parallel",
+  "tracks": {
+    "enrich": "NONE",
+    "fetch": "NONE",
+    "final": "NONE",
+    "repair": "NONE",
+    "validate": "NONE",
+    "write": "NONE"
+  }
+}

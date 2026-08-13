@@ -16,7 +16,7 @@ THE DEFECT THIS LOCKS DOWN -- 2026-08-10
   guarantees a stored span can be found in its own page, so it is asserted directly rather than
   only on the one example that failed.
 
-    python3 -m pytest docs/70-enrichment/tests/test_canonicalise_idempotent.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_canonicalise_idempotent.py -q
 """
 
 import os

@@ -6,7 +6,7 @@ Queried live: `Algolia_Prod_Copy_Vanilla` settings/schema, plus `Algolia_Prod_Co
 
 > ⚠️ **The original Section 0 below was WRONG and is retained only as an audit trail.** It claimed the index has no page content at all. That conclusion came from reading `abstract` only, on a sample skewed to the two shallowest sources (`Documentation`, `Academy`). Re-measured against 200 live records per source: `Website` and `Support` records DO carry real page bodies — `Website` in `description` (typical 2,096 chars, up to 11,319), `Support` in both fields (typical 744, up to 6,727). `Website`'s `abstract` is near-empty, which is exactly what produced the false "no content" read.
 >
-> **Canonical measured table lives in `scripts/agents/_shared_grounding_algolia.md` (§ CONTENT DEPTH VARIES BY SOURCE). That file is the SSOT — do not re-derive these numbers here.**
+> **Canonical measured table lives in `agents/definitions/_shared_grounding_algolia.md` (§ CONTENT DEPTH VARIES BY SOURCE). That file is the SSOT — do not re-derive these numbers here.**
 >
 > Consequence: the agents CAN synthesize substantive grounded answers, from `Website` and `Support` bodies. All 8 prompt files were rewritten on this corrected premise and redeployed live. `Documentation`/`Developers`/`Blog`/`Academy` remain genuinely thin (60–160 chars) — for those, titles are the API surface and the agents route/link rather than synthesize.
 >

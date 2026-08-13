@@ -1,7 +1,7 @@
 [
   {
     "state": "pre-query",
-    "screenshot": "docs/20-research/screenshots/overlay-pre-query.png",
+    "screenshot": "docs/research/search-experience/screenshots/overlay-pre-query.png",
     "url": "https://www.algolia.com/",
     "facets": [
       {
@@ -136,7 +136,7 @@
   },
   {
     "state": "autocomplete",
-    "screenshot": "docs/20-research/screenshots/overlay-autocomplete.png",
+    "screenshot": "docs/research/search-experience/screenshots/overlay-autocomplete.png",
     "url": "https://www.algolia.com/",
     "facets": [
       {
@@ -268,7 +268,7 @@
   },
   {
     "state": "post-query",
-    "screenshot": "docs/20-research/screenshots/overlay-post-query.png",
+    "screenshot": "docs/research/search-experience/screenshots/overlay-post-query.png",
     "url": "https://www.algolia.com/",
     "facets": [
       {
@@ -456,7 +456,7 @@
   },
   {
     "state": "ai-mode",
-    "screenshot": "docs/20-research/screenshots/overlay-ai-mode.png",
+    "screenshot": "docs/research/search-experience/screenshots/overlay-ai-mode.png",
     "url": "https://www.algolia.com/",
     "facets": [
       {
@@ -672,7 +672,7 @@
   },
   {
     "state": "zero-result",
-    "screenshot": "docs/20-research/screenshots/overlay-zero-result.png",
+    "screenshot": "docs/research/search-experience/screenshots/overlay-zero-result.png",
     "url": "https://www.algolia.com/",
     "facets": [],
     "hits": [],

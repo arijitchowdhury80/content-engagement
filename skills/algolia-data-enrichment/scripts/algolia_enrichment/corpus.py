@@ -19,6 +19,7 @@ import json
 from pathlib import Path
 
 CORPUS_STATE = "CORPUS-STATE.json"
+ACCEPTED_WRITE_STATES = frozenset({"APPLIED", "LIVE_VERIFIED"})
 
 
 def live_slice_counts(client, index: str) -> dict[str, int]:
@@ -42,7 +43,7 @@ def target_enriched_ids(client, index: str) -> set[str]:
 
 
 def load_state(workspace: Path) -> dict:
-    p = Path(workspace) / "docs" / "70-enrichment" / CORPUS_STATE
+    p = Path(workspace) / "docs" / "operations" / "enrichment" / "state" / CORPUS_STATE
     return json.loads(p.read_text()) if p.exists() else {}
 
 
@@ -55,41 +56,56 @@ def build_status(client, source_index: str, target_index: str, runs_dir: Path,
     _, target_records = client.record_count(target_index) if target_exists else (0, 0)
 
     slices: dict[str, dict] = {}
-    # A slice can have multiple attempts (a01, a02, ... a retry or a re-methodology run). They
-    # are re-tries of ONE slice, not independent slices, so "live for this slice" has to be the
-    # union of every attempt's planned objectIDs intersected with the target index -- not just
-    # the last-processed attempt's. Keying target_written_live off a single manifest silently
-    # drops an earlier attempt's real, verified write the moment a later attempt (even an
-    # incomplete one) sorts after it.
-    planned_by_key: dict[str, set[str]] = {}
+    # A run that only planned, fetched, or validated is evidence, not a target-index contract.
+    # Counting every historical smoke manifest here made an unwritten 20-record Blog test turn a
+    # valid 30-record target write red. Reconcile target rows only to payloads from an accepted
+    # write state; keep unfinished attempts visible without making them a false blocker.
+    expected_by_key: dict[str, set[str]] = {}
+    artifact_errors: list[str] = []
     for manifest_path in sorted(Path(runs_dir).glob("*/manifest.json")):
         run_dir = manifest_path.parent
         manifest = json.loads(manifest_path.read_text())
         key = f"{manifest['source']}/{manifest['page_type']}"
-        cov_path = run_dir / "validation" / "coverage.json"
-        coverage = json.loads(cov_path.read_text()) if cov_path.exists() else {}
         planned_ids = set(manifest.get("objectIDs") or [])
-        planned_by_key.setdefault(key, set()).update(planned_ids)
         entry = slices.setdefault(key, {
             "source": manifest["source"], "page_type": manifest["page_type"],
-            "runs": [], "planned_target_count": 0,
+            "runs": [], "accepted_write_runs": [], "nonterminal_runs": [],
+            "planned_target_count": 0,
         })
         entry["runs"].append(manifest["run_id"])
         entry["planned_target_count"] = max(entry["planned_target_count"], len(planned_ids))
         entry["last_run_id"] = manifest["run_id"]
         entry["profile_version"] = manifest.get("profile_version")
-        if coverage:
-            entry["coverage"] = coverage
+        state_path = run_dir / "state.json"
+        tracks = json.loads(state_path.read_text()).get("tracks", {}) if state_path.exists() else {}
+        write_state = tracks.get("write", "NONE")
+        if write_state not in ACCEPTED_WRITE_STATES:
+            entry["nonterminal_runs"].append({"run_id": manifest["run_id"],
+                                               "write_state": write_state})
+            continue
+        payload_path = run_dir / "final" / "payloads.jsonl"
+        if not payload_path.exists():
+            artifact_errors.append(f"{manifest['run_id']}: {write_state} but payloads are missing")
+            continue
+        payload_ids = {json.loads(line)["objectID"] for line in payload_path.read_text().splitlines()
+                       if line.strip()}
+        if not payload_ids:
+            artifact_errors.append(f"{manifest['run_id']}: {write_state} but payloads are empty")
+            continue
+        expected_by_key.setdefault(key, set()).update(payload_ids)
+        entry["accepted_write_runs"].append(manifest["run_id"])
 
     for key, entry in slices.items():
-        entry["target_written_live"] = len(planned_by_key[key] & written_ids)
-        if "coverage" in entry:
-            # RECONCILIATION, not restatement. The run artifact's claim and the live index's
-            # count are two independent sources; if they disagree, one of them is wrong and the
-            # status is red rather than whichever number is nicer.
-            entry["reconciles"] = entry["coverage"].get("target_written") == entry["target_written_live"]
+        expected = expected_by_key.get(key, set())
+        entry["expected_target_written"] = len(expected)
+        entry["target_written_live"] = len(expected & written_ids)
+        # Reconcile sets, not an artifact's own count: a target record from another run cannot
+        # make this green merely because the counts happen to match.
+        entry["reconciles"] = expected == (expected & written_ids)
 
     unreconciled = [k for k, v in slices.items() if v.get("reconciles") is False]
+    expected_any = set().union(*expected_by_key.values()) if expected_by_key else set()
+    untracked_target_ids = sorted(written_ids - expected_any)
     return {
         "source_index": source_index,
         "target_index": target_index,
@@ -103,11 +119,16 @@ def build_status(client, source_index: str, target_index: str, runs_dir: Path,
         "unprofiled_page_types": [u["key"] for u in lint_report.get("uncovered", [])],
         "excluded": lint_report.get("excluded", {}),
         "unreconciled_slices": unreconciled,
-        "ok": not lint_report.get("uncovered") and not unreconciled,
+        "untracked_target_count": len(untracked_target_ids),
+        "untracked_target_ids": untracked_target_ids,
+        "artifact_errors": artifact_errors,
+        "ok": (not lint_report.get("uncovered") and not unreconciled and
+               not untracked_target_ids and not artifact_errors),
     }
 
 
 def write_state(workspace: Path, status: dict) -> Path:
-    p = Path(workspace) / "docs" / "70-enrichment" / CORPUS_STATE
+    p = Path(workspace) / "docs" / "operations" / "enrichment" / "state" / CORPUS_STATE
+    p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(status, indent=2, sort_keys=True))
     return p

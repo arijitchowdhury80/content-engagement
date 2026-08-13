@@ -9,7 +9,7 @@ import json
 import os
 import sys
 
-sys.path.insert(0, ".claude/skills/algolia-data-enrichment/scripts")
+sys.path.insert(0, "skills/algolia-data-enrichment/scripts")
 from pathlib import Path  # noqa: E402
 
 from algolia_enrichment import docmerge, docrefresh, seed, taxonomy  # noqa: E402
@@ -20,7 +20,7 @@ from algolia_enrichment.errors import EnrichmentError  # noqa: E402
 RUN = Path("docs/operations/enrichment/runs/20260812-documentation-refresh-a01")
 TOTAL = 1934
 SCHEMA = taxonomy.load_schema(
-    Path(".claude/skills/algolia-data-enrichment/references/taxonomy-schema.algolia-com.json"))
+    Path("skills/algolia-data-enrichment/references/taxonomy-schema.algolia-com.json"))
 COMPILED = tc.compile_rules(SCHEMA)
 AXES = ("page_type", "feature", "product", "language_platform", "integration_platform")
 

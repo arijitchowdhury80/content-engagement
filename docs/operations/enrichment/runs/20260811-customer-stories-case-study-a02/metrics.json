@@ -4,6 +4,11 @@
       "elapsed_s": 32.75,
       "records": 10,
       "s_per_record": 3.275
+    },
+    {
+      "elapsed_s": 73.06,
+      "records": 10,
+      "s_per_record": 7.306
     }
   ],
   "fetch": [
@@ -11,6 +16,11 @@
       "elapsed_s": 32.26,
       "records": 10,
       "s_per_record": 3.226
+    },
+    {
+      "elapsed_s": 31.4,
+      "records": 10,
+      "s_per_record": 3.14
     }
   ]
 }

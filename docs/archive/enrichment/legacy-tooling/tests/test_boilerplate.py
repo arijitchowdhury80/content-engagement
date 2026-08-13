@@ -21,7 +21,7 @@ THE TRAP THIS ENCODES, measured on the 50 cached pages
   HTTPS.") sat at 3. An absolute threshold of 9 works there and is badly wrong at 6,000 paths,
   where 9 pages is 0.15% -- a shared section, not site-wide furniture.
 
-    python3 -m pytest docs/70-enrichment/tests/test_boilerplate.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_boilerplate.py -q
 """
 
 import os

@@ -37,8 +37,8 @@ WHAT A FAILURE MEANS
   content hash changed  -> the page was edited since enrichment. The abstract is stale, not
                            wrong. Re-enrich that record; do not treat it as a defect.
 
-  python3 docs/70-enrichment/verify_written.py            # every enriched record
-  python3 docs/70-enrichment/verify_written.py --limit 10
+  python3 docs/operations/enrichment/verify_written.py            # every enriched record
+  python3 docs/operations/enrichment/verify_written.py --limit 10
 """
 
 from __future__ import annotations

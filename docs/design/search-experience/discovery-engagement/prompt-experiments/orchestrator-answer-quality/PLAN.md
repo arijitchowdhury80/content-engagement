@@ -19,13 +19,13 @@ The winning answer-quality prompt becomes the foundation prompt for the next spr
 
 Create the canonical experiment folder:
 
-`docs/discovery-engagement/prompt-experiments/orchestrator-answer-quality/`
+`docs/design/search-experience/discovery-engagement/prompt-experiments/orchestrator-answer-quality/`
 
 Blocking first step:
 
 - Write the pasted Algolia Website Assistant prompt to `prod-prompt-baseline.md`.
 - Snapshot `www Chat – Orchestrator` to `target-agent-snapshot.json`.
-- Verify and link the existing 4-run baseline at `docs/discovery-engagement/baselines/ask-ai-2026-08-10/`.
+- Verify and link the existing 4-run baseline at `docs/design/search-experience/discovery-engagement/baselines/ask-ai-2026-08-10/`.
 
 Required files:
 

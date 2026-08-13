@@ -2,7 +2,7 @@
 
 Unit: WU-07 · Covers `[WU-07.1] [WU-07.2] [WU-07.3] [WU-07.4] [WU-07.5]` (+ `[WU-05.2]` as `mega-menu.json`)
 Date: 2026-08-05 · Source: WU-05 corpus, 2322 records
-Brief: `docs/briefs/WU-07.md` · Asana: `1217199862117010`
+Brief: `docs/program/work-units/WU-07.md` · Asana: `1217199862117010`
 
 Derived artifacts in this directory are **generated**, not hand-authored:
 `build_ia_artifacts.py` → `ia-map.json` + `sitemap-inventory.csv`. Re-run it after any

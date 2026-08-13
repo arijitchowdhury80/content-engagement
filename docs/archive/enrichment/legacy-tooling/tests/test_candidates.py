@@ -5,7 +5,7 @@ Tests for candidate construction — the menu the model chooses from.
 WHY THESE FIXTURES ARE REAL PAGE TEXT
   SESSION.md, failure pattern #1: "31 fixture tests passed while a live bug was active. Tests
   written from the same wrong assumptions as the code cannot catch it. Only a real page did."
-  So every fixture below is copied out of docs/70-enrichment/cache-fresh50/ — the same 50 pages
+  So every fixture below is copied out of docs/operations/enrichment/cache-fresh50/ — the same 50 pages
   the two baseline runs used — and each one is annotated with the judge complaint it reproduces.
 
 WHAT IS BEING GUARANTEED
@@ -14,7 +14,7 @@ WHAT IS BEING GUARANTEED
   a fragment, and nothing is silently thrown away (Arijit: "I need every single record to be
   enriched").
 
-    python3 -m pytest docs/70-enrichment/tests/test_candidates.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_candidates.py -q
 """
 
 import os

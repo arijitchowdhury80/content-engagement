@@ -1,0 +1,31 @@
+[fetch-documentation] workspace=/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com
+[fetch-documentation] source-index=Algolia_Prod_Copy_Enhanced  target-index=Algolia_Prod_Copy_Enhanced_Parallel
+[fetch-documentation] run-id=20260812-documentation-refresh-a01  run-dir=/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/operations/enrichment/runs/20260812-documentation-refresh-a01
+  100/1934 fetched  errors=0
+  200/1934 fetched  errors=0
+  300/1934 fetched  errors=0
+  400/1934 fetched  errors=0
+  500/1934 fetched  errors=0
+  600/1934 fetched  errors=0
+  700/1934 fetched  errors=2
+  800/1934 fetched  errors=2
+  900/1934 fetched  errors=2
+  1000/1934 fetched  errors=2
+  1100/1934 fetched  errors=2
+  1200/1934 fetched  errors=2
+  1300/1934 fetched  errors=2
+  1400/1934 fetched  errors=2
+  1500/1934 fetched  errors=3
+  1600/1934 fetched  errors=3
+  1700/1934 fetched  errors=3
+  1800/1934 fetched  errors=3
+  1900/1934 fetched  errors=3
+{
+  "total": 1934,
+  "succeeded": 1931,
+  "failed": 3,
+  "redirect_mismatch": 0,
+  "success_share": 0.9984,
+  "ok": true
+}
+PASS: fetch represents the live site; derive may proceed from cache.

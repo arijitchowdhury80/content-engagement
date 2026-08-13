@@ -32,7 +32,7 @@ WHY THE OBVIOUS FIX IS WRONG
   page's own voice. Everything else keeps the label. Real speech keeps the label even in the lede
   slot, which is why `is_speech` is shared with G10 rather than duplicated.
 
-    python3 -m pytest docs/70-enrichment/tests/test_quoted_lede.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_quoted_lede.py -q
 """
 
 import os

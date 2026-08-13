@@ -44,8 +44,8 @@ from .validate import grounding, quality
 # Where Scout leaves fetched pages. Both layouts are real and both are read: the top-level cache
 # built by the historical pilot runs, and the per-run cache the skill writes.
 CACHE_GLOBS = (
-    "docs/70-enrichment/cache-scout/**/*.json",
-    "docs/70-enrichment/runs/*/cache-scout/*.json",
+    "docs/operations/enrichment/cache-scout/**/*.json",
+    "docs/operations/enrichment/runs/*/cache-scout/*.json",
 )
 
 

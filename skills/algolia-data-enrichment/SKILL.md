@@ -15,7 +15,7 @@ the Scout-fetched page body.
 python3 scripts/algolia_enrich.py <command> --workspace <repo root> --run-id <id> ...
 ```
 
-Do not run loose scripts from `docs/70-enrichment/*.py` (the historical scripts). Measured by walking the import graph on
+Do not run loose scripts from `docs/operations/enrichment/*.py` (the historical scripts). Measured by walking the import graph on
 2026-08-10: 25 of those 40 files do not belong in this pipeline at all, and two of the ones that
 do — `enrich_run.py` and `span_gate.py` — contain gate code paths the runner never reached. A
 gate was "fixed" in one of them twice, with every unit test green and the pipeline unchanged.
@@ -43,7 +43,7 @@ connector or a bridging word. Adding a full stop the page does not have is writi
 ## The command sequence
 
 ```
-census → profile-lint → health-scout → plan-slice → fetch → enrich → repair
+census → profile-lint → taxonomy-preflight → health-scout → plan-slice → fetch → enrich → repair
        → build-final → validate → review-pack
        → prepare-target-index → dry-run-write → apply-write → verify-live
        → corpus-status → cleanup → handoff
@@ -51,6 +51,12 @@ census → profile-lint → health-scout → plan-slice → fetch → enrich →
 
 `repair` is optional; every other step is ordered and the state machine enforces it.
 `prepare-target-index` can run at any point before `dry-run-write`.
+
+`taxonomy-preflight` is a hard contract gate. It validates all eight taxonomy axes against the
+versioned Chapter 1 schema before a slice can be planned: required axes, controlled vocabularies,
+array shape, empty/null values, and provenance/confidence consistency. It proves **conformance**,
+not editorial meaning; every source still requires the documented sampled taxonomy review for
+semantic correctness.
 
 ## Forbidden actions
 

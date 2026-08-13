@@ -20,11 +20,11 @@ THE OUTCOME TAXONOMY -- this is the headline, not the percentage
   as a failure on purpose: Arijit's ruling, 2026-08-08 -- "Do not count duplicate-description
   abstracts as success."
 
-    python3 docs/70-enrichment/phase1_packet.py \
-        --results  docs/70-enrichment/reports/gate-ABC-quotedlede-20260808-2311.jsonl \
-        --baseline docs/70-enrichment/reports/gate-baseline-clean-20260808-2230.jsonl \
-        --batch    docs/70-enrichment/batches/doc-md-twin-reference-001.json \
-        --cache    docs/70-enrichment/cache-batches/doc-md-twin-reference-001 \
+    python3 docs/operations/enrichment/phase1_packet.py \
+        --results  docs/operations/enrichment/reports/gate-ABC-quotedlede-20260808-2311.jsonl \
+        --baseline docs/operations/enrichment/reports/gate-baseline-clean-20260808-2230.jsonl \
+        --batch    docs/operations/enrichment/batches/doc-md-twin-reference-001.json \
+        --cache    docs/operations/enrichment/cache-batches/doc-md-twin-reference-001 \
         --expect 50
 """
 

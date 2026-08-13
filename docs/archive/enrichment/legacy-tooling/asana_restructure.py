@@ -269,7 +269,7 @@ def main():
     sweep_files(mapping, roots, apply=False)
 
     mapfile = os.path.expanduser("~/Dropbox/AI-Development/algolia-com/"
-                                 "docs/70-enrichment/asana-number-map.json")
+                                 "docs/operations/enrichment/asana-number-map.json")
     print(f"\n=== 6. RESOLVER — old [NN] -> new label, for the excluded archive ===")
     print(f"  {sorted(EXCLUDE_FILES)} keeps its original numbers by design")
     print(f"  map -> {mapfile}")

@@ -1,0 +1,217 @@
+{
+  "gates_loaded": [
+    "G-blacklist",
+    "G-context-language-mix",
+    "G-context-quotation",
+    "G-context-reversal",
+    "G-context-section",
+    "G-context-sections-spread",
+    "G-id-only-selection",
+    "G-information-gain",
+    "G-integrity",
+    "G-judge",
+    "G-method-agreement",
+    "G-pool-filter",
+    "G-pool-reversal",
+    "G-pool-static-ban",
+    "G-repair-incomplete",
+    "G-subject-present",
+    "G-terminal-verdict",
+    "V-grounding-offset-free",
+    "V-grounding-offset-slice",
+    "V-grounding-zero-spans",
+    "V-live-byte-match",
+    "V-live-no-extra-records",
+    "V-live-no-metadata",
+    "V-live-proof-of-life",
+    "V-payload-allowed-fields",
+    "V-payload-in-manifest",
+    "V-payload-no-duplicate-ids",
+    "V-payload-no-null",
+    "V-quality-chrome",
+    "V-quality-duplicate-description",
+    "V-quality-incomplete",
+    "V-quality-leakage",
+    "V-quality-template",
+    "V-source-index-unchanged"
+  ],
+  "grounding": {
+    "failures": [],
+    "located": 47,
+    "missing_body": [],
+    "modes": {
+      "canonical": 30,
+      "exact": 17
+    },
+    "offset_drift": [
+      {
+        "field": "keyhighlights_enriched",
+        "objectID": "de_a7d58669-7426-4e7d-90eb-25eda68c6cb6",
+        "offsets": [
+          2615,
+          2917
+        ]
+      }
+    ],
+    "ok": true,
+    "rows": 6,
+    "spans_checked": 47
+  },
+  "language_census": {
+    "de": {
+      "abstract_span_chars": {
+        "max": 228,
+        "mean": 149.8,
+        "min": 58,
+        "n": 15,
+        "p50": 142
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.1,
+        "min": 1,
+        "n": 7,
+        "p50": 2
+      },
+      "candidates": {
+        "max": 120,
+        "mean": 103.6,
+        "min": 89,
+        "n": 7,
+        "p50": 107
+      },
+      "highlight_chars": {
+        "max": 290,
+        "mean": 138.0,
+        "min": 25,
+        "n": 35,
+        "p50": 142
+      },
+      "highlight_count": {
+        "max": 6,
+        "mean": 5.0,
+        "min": 4,
+        "n": 7,
+        "p50": 5
+      },
+      "records": 7,
+      "statuses": {
+        "JUDGE_HUMAN_REVIEW": 6,
+        "PASS": 1
+      }
+    },
+    "en": {
+      "abstract_span_chars": {
+        "max": 256,
+        "mean": 161.4,
+        "min": 100,
+        "n": 16,
+        "p50": 158
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.3,
+        "min": 2,
+        "n": 7,
+        "p50": 2
+      },
+      "candidates": {
+        "max": 129,
+        "mean": 95.3,
+        "min": 47,
+        "n": 7,
+        "p50": 94
+      },
+      "highlight_chars": {
+        "max": 275,
+        "mean": 156.8,
+        "min": 55,
+        "n": 40,
+        "p50": 152
+      },
+      "highlight_count": {
+        "max": 7,
+        "mean": 5.7,
+        "min": 5,
+        "n": 7,
+        "p50": 5
+      },
+      "records": 7,
+      "statuses": {
+        "JUDGE_HUMAN_REVIEW": 2,
+        "PASS": 5
+      }
+    },
+    "fr": {
+      "abstract_span_chars": {
+        "max": 246,
+        "mean": 150.3,
+        "min": 58,
+        "n": 15,
+        "p50": 146
+      },
+      "abstract_span_count": {
+        "max": 3,
+        "mean": 2.5,
+        "min": 2,
+        "n": 6,
+        "p50": 3
+      },
+      "candidates": {
+        "max": 206,
+        "mean": 143.8,
+        "min": 37,
+        "n": 6,
+        "p50": 172
+      },
+      "highlight_chars": {
+        "max": 298,
+        "mean": 160.8,
+        "min": 29,
+        "n": 30,
+        "p50": 153
+      },
+      "highlight_count": {
+        "max": 6,
+        "mean": 5.0,
+        "min": 4,
+        "n": 6,
+        "p50": 5
+      },
+      "records": 6,
+      "statuses": {
+        "JUDGE_HUMAN_REVIEW": 6
+      }
+    }
+  },
+  "method_check": {
+    "disagreements": 0,
+    "ok": true,
+    "rate": 0.0,
+    "threshold": 0.1
+  },
+  "payload": {
+    "duplicate_object_ids": [],
+    "fields": [
+      "abstract_enriched",
+      "keyhighlights_enriched",
+      "objectID"
+    ],
+    "forbidden_fields_present": [],
+    "ok": true,
+    "payloads": 6
+  },
+  "profile_version": "blog-post:2946b4b57a45",
+  "quality": {
+    "chrome": [],
+    "duplicate_description": [],
+    "incomplete_spans": [],
+    "leakage": [],
+    "ok": true,
+    "rows": 6,
+    "spans_checked": 47,
+    "template_collisions": {}
+  },
+  "run_id": "20260811-blog-blog-post-a12",
+  "validated_at": "2026-08-11T05:13:18.298787+00:00"
+}

@@ -27,6 +27,31 @@ prints PASS after checking zero records or zero spans.
 
 ## Read-only
 
+### Canonical URL normalization
+Dedicated utility:
+
+```bash
+PYTHONPATH=skills/algolia-data-enrichment/scripts \
+python3 skills/algolia-data-enrichment/scripts/url_normalize.py audit \
+  --workspace . \
+  --index Algolia_Prod_Copy_Enhanced \
+  --out-dir docs/operations/enrichment/runs/20260812-url-normalization-a01 \
+  --expected-total 11928
+```
+
+Modes:
+
+- `audit` — read-only full-index snapshot, settings export, non-URL hashes, and candidate plan.
+- `verify-http` — read-only HTTP verification for every planned URL; `--limit` is debug-only and
+  exits non-zero so partial coverage cannot be approved.
+- `apply` — writes only `{ objectID, url }` with `partialUpdateObjectNoCreate`; requires
+  `approvals/url-normalization-approved.json`.
+- `verify-readback` — read-only post-write proof that counts, URLs, objectIDs, and every non-URL
+  hash match the approved plan.
+
+This utility is separate from abstract/highlight enrichment because it intentionally updates the
+live `url` field, which is both `attributeForDistinct` and a searchable attribute.
+
 ### `census`
 Browse the source index, count every `source/page_type`, reconcile the scan against the index's
 own record count. Writes `census-before.json` when a run id is given.
@@ -43,6 +68,35 @@ module implements; a missing required field.
 
 > Linting against the files instead of the index is how you ship a profile set that covers 40 of
 > 44 page_types and find out mid-run.
+
+### `taxonomy-preflight`
+Read the source index and validate the full eight-axis taxonomy contract using the versioned
+schema under `references/`. It is a hard prerequisite of `plan-slice` and writes
+`validation/taxonomy-conformance.json`.
+
+Checks: required-axis presence, ordered array shape, controlled vocabularies, no null/empty
+values, taxonomy version, and matching provenance/confidence keys.
+
+Refuses: any contract violation or zero-record source index. It proves **conformance**, not
+editorial correctness; a sampled taxonomy review is still required.
+
+### `audit-documentation`
+Read only the `Documentation` source records. Check required metadata, language, all twelve
+Documentation profiles, and pre-existing enrichment fields. Never fetches, calls a model, or
+writes an index.
+
+Writes: `validation/documentation-metadata-audit.json`.
+
+Refuses: missing required metadata, language mismatch, or a Documentation profile that permits
+LLM enrichment.
+
+### `prepare-documentation-copy`
+Prepare the exact safe Documentation transformation: existing nonblank `description` becomes
+`abstract_enriched`. It never creates `keyhighlights_enriched` and never invokes Scout, writer,
+or judge.
+
+Writes: `documentation-copy/payloads.jsonl`, `documentation-copy/human-review-queue.jsonl`, and
+`documentation-copy/report.json`.
 
 ### `health-scout`
 Run a **real** fetch job and require a non-empty body.

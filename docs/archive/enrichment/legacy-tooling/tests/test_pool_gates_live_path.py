@@ -16,7 +16,7 @@ WHAT IS BEING GUARDED
   whole record. These tests assert the pipeline now removes or repairs the offending CANDIDATE and
   still produces an enriched record.
 
-    python3 -m pytest docs/70-enrichment/tests/test_pool_gates_live_path.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_pool_gates_live_path.py -q
 """
 
 import os

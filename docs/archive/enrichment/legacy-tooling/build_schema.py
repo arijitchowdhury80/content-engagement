@@ -21,8 +21,8 @@ import json
 import os
 import re
 
-CORPUS = "docs/70-enrichment/enhanced-pre-taxonomy-20260805.jsonl"
-OUT = "docs/70-enrichment/taxonomy-schema.algolia-com.json"
+CORPUS = "docs/operations/enrichment/enhanced-pre-taxonomy-20260805.jsonl"
+OUT = "docs/operations/enrichment/taxonomy-schema.algolia-com.json"
 VERSION = "algolia-com-taxonomy-v1-20260805"
 
 # --- axes -------------------------------------------------------------------

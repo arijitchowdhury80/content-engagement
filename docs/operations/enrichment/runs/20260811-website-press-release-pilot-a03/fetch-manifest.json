@@ -1,0 +1,248 @@
+{
+  "body_source": "ScoutRefetch",
+  "entries": {
+    "de_03ca2ef6-1407-4a93-9353-09e3bbfbcfcf": {
+      "chars": 11549,
+      "content_hash": "df3cd596ea81cec8fd09539267b182038126d829dc76bc35a10ad4a3226d53b5",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-triples-nuts-com-s-customer-conversion-rates-and-increases-average-order-value-by-15-among-users-that-search"
+    },
+    "de_1091e87a-85af-452e-a709-7416a6be5d8f": {
+      "chars": 8616,
+      "content_hash": "f53fc2965ba134c92ab3c8cf7ca17ccd641b7a8d6e23a5533071ea338b4f2902",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-gives-your-app-mobile-search-super-powers"
+    },
+    "de_3f1355cc-6e0d-439a-a57d-219b9a6c95db": {
+      "chars": 11354,
+      "content_hash": "7d374d6b7021894f17c61577a7a1ef082dafad2d19b3a33f88768cd993b918da",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-strengthens-world-class-executive-team-with-addition-of-new-chief-people-officer-and-chief-financial-officer"
+    },
+    "de_4ff837f0-901f-4d5b-b691-14d3f2683987": {
+      "chars": 7925,
+      "content_hash": "016a43f6441e5d3899f1b676cdf3f9c89995214f2c41502a8143db0dbd530ec9",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-chief-executive-officer-to-speak-at-etail-boston-2025"
+    },
+    "de_8b701d57-5da8-413b-8c38-47ce15afc11b": {
+      "chars": 10489,
+      "content_hash": "31b85057eb9c5b365e1ff4acaf80e378576ecc8d2ef28fe7f3c15290e5a332a6",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-s-ai-search-enables-jd-sports-to-elevate-e-commerce-experience"
+    },
+    "de_9b378aa5-adb9-4d93-aa28-231bac845b49": {
+      "chars": 11656,
+      "content_hash": "89505dad2681cbb67e219ccf50c1061c3bb4115de14d691b27f5bfc60b590f1f",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-takes-in-app-search-to-new-places"
+    },
+    "de_b3deb774-70e2-4ce9-9424-d9b2b9cb758f": {
+      "chars": 8624,
+      "content_hash": "508a072b53524a69b2c9e839e435a9bc6eb501ff10925650b8c70f264156aff6",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-welcomes-lorena-scott-as-new-chief-people-officer"
+    },
+    "de_b5356a29-1597-4ce4-84f6-8f3ee07897bf": {
+      "chars": 10637,
+      "content_hash": "bd56ac7f016c3d46b9e90e181fef2d6bcbc126feb902b7bcafef0941d18543e8",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-going-global-to-compete-with-google"
+    },
+    "de_cf16d26a-2a13-4f74-a243-ae1b0d1a6dd3": {
+      "chars": 8305,
+      "content_hash": "ad827c8342b7b283ed027b7cbda80bb79447c65093d021caa92fbdef17209e82",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/la-chasse-aux-licornes-a-commenc-dans-la-french-tech"
+    },
+    "de_e4adea97-43e2-42e3-bd81-36bcb6031df2": {
+      "chars": 11416,
+      "content_hash": "65f71b7261594a70a7cf1aa4edc0afcf8c893dba3a7d797fe2df28b9d0d66d6d",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/de/about/news/algolia-helps-mister-auto-boost-scalability-and-speed-optimizing-the-ecommerce-experience-for-3-million-unique-customers-a-month"
+    },
+    "en_2e629f1f-06bd-4dbb-b6bd-d57f5044fc69": {
+      "chars": 9613,
+      "content_hash": "0b91205f6a3413a71f97ae19112a75e0fa5f1faab6a2fd28a32f05bcb4f28399",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/algolia-introduces-new-developer-friendly-build-pricing-plan-with-one-million-free-records-for-its-search-and-discovery-platform-slashes-api-pricing-by-50"
+    },
+    "en_545d3f8a-58b6-4761-a14b-4d54e8992e80": {
+      "chars": 8583,
+      "content_hash": "01bbe2eabbe19c9791caa3d5b21409b2ba5cc370ea8ba8543405754a7e1c91b9",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/1-7bn-lost-by-online-retailers-as-shoppers-struggle-to-search-for-latest-fashion-trends"
+    },
+    "en_5832d54a-6c6c-43a7-bdb9-603b504902c5": {
+      "chars": 7970,
+      "content_hash": "e8c004fde27e86515e675441572a6f49467556c016ac2e7ba763c9fdccb94ddb",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/20vc-nicolas-dessaigne-founder-ceo-algolia"
+    },
+    "en_60f06959-2fe1-4b52-975e-be3ec933ebed": {
+      "chars": 11055,
+      "content_hash": "15fd84ef2630f72d4029b54836a3cdd97c3f625834922959a5093bdce66de52a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/shoe-carnival-revolutionizing-retail-using-a-new-composable-headless-commerce-strategy-with-algolia-and-amplience"
+    },
+    "en_7b54f22b-4b4d-4a78-a5d1-fc5d54f410bb": {
+      "chars": 6106,
+      "content_hash": "0554c2b7f0f11163b1e6f8bcf678b5c1ef4613f62486ff8d4c038023fa9daa27",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/the-french-candidates-who-knock-on-the-door"
+    },
+    "en_829e82c3-123d-48c3-b590-28cdddecbd7a": {
+      "chars": 7715,
+      "content_hash": "56c26115cecbc44d97a73ff827869b4146fb1ee0d0c339490f7820a9ccfb76ab",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/algolia-heads-to-shoptalk-europe-2026-to-discuss-smarter-shopping-experiences"
+    },
+    "en_99e9bcd4-1a99-45ad-bdcc-b49690a65a45": {
+      "chars": 11597,
+      "content_hash": "71f412d7a143c275286b2e6ca3d02276520b6f29cc627af8769ff435539a213e",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/algolia-to-provide-scalable-enterprise-grade-search-and-discovery-experience-on-microsoft-azure"
+    },
+    "en_9b378aa5-adb9-4d93-aa28-231bac845b49": {
+      "chars": 9846,
+      "content_hash": "6ab83a0c78543227645f63f646b25d2a0c5fbcfa6847a68573c0b7bf2dbba6cf",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/algolia-takes-in-app-search-to-new-places"
+    },
+    "en_a28d1e8f-f7bf-40ef-a9e3-5c4906b86999": {
+      "chars": 9738,
+      "content_hash": "61148596f2ffe109bacdc93dda0325b287f85e0e5a52f4e433e096e1c8ab1bfd",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/algolia-powers-12-billion-searches-with-e-commerce-customers-on-cyber-weekend-a-5-increase-yoy-despite-national-decrease-in-online-spending"
+    },
+    "en_bb51c28c-2af4-4ba8-82aa-237d8849d976_text_1": {
+      "chars": 14051,
+      "content_hash": "854262c58ed2058eeb9eb6fe2bd6c5b494aee044a635fcdd45aa4bc9b5872e72",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/about/news/algolia-doubles-down-on-developer-first-innovation-to-build-the-future-of-agentic-ai-experiences"
+    },
+    "fr_28bd5884-742e-47fb-bf78-04e4cbdf6df4": {
+      "chars": 8803,
+      "content_hash": "71243942200785be12d278be6773f3830b58e180fabc9a48459d10940ecf7721",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/algolia-recognized-in-trustradius-2025-tech-cares-award"
+    },
+    "fr_51380c96-9939-433b-b328-9014af5dcdfe": {
+      "chars": 13917,
+      "content_hash": "91cdbf29668f6ba494fee766df31b219db8197d6ffbde9f42fc89510b8d83060",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/algolia-announces-general-availability-of-ai-powered-search-products"
+    },
+    "fr_5203fa56-7522-4392-a61d-cf6afb486195": {
+      "chars": 9471,
+      "content_hash": "9a24c1d7a708e7659f68ed3455a997be48f92ca0791426a3dd95db0d4df183db",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/algolia-names-jason-mcclelland-as-new-chief-marketing-officer"
+    },
+    "fr_829e82c3-123d-48c3-b590-28cdddecbd7a": {
+      "chars": 9389,
+      "content_hash": "fe9d9517ea6f56bf23d0bf894ce0cc10e6dab224cb6f7784f077ac1e29cbbf57",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/algolia-heads-to-shoptalk-europe-2026-to-discuss-smarter-shopping-experiences"
+    },
+    "fr_8930abb8-2e1c-4cb5-a030-02566c0533f3": {
+      "chars": 9199,
+      "content_hash": "237fcf0846548dbe4a3efc051c3209c551fbdd4466a52500f78fb21bf248bfb6",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/fashion-meets-ai-oh-polly-shoppers-find-what-they-love-faster-with-algolias-ai-search"
+    },
+    "fr_940ae123-d190-4025-96eb-801813a08d09": {
+      "chars": 14076,
+      "content_hash": "3f021d1e6793cde46d4b54cc1b10125d61275fc5891b0b78b4ed233a6a126f06",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/algolia-launches-additional-ai-models-in-its-recommend-spring-release-2022-to-supercharge-businesses-ability-to-engage-with-users"
+    },
+    "fr_9a419bba-ab62-4a9a-a4a4-9adeaf60a2e0": {
+      "chars": 9409,
+      "content_hash": "7234b8f65830027d31439cdfef93ca1b3b002ee80a5d187d2916f8a996db678a",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/algolia-updates-pricing-for-aws-customers"
+    },
+    "fr_d4f89b90-1b8b-4314-921e-9efc6b5dd3a6": {
+      "chars": 10628,
+      "content_hash": "9cd7a9ddc59b66455bef30ae7a85a1def39b8b8f786abcaab52630592ed45713",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/first-of-its-kind-algolia-report-a-comprehensive-overview-of-operationalized-search"
+    },
+    "fr_e5298fab-5fbc-44a0-b431-9b625a2af7ab": {
+      "chars": 9746,
+      "content_hash": "133f8b2a17ab2670cdc28c075e5252c85deab5cfba11f3e80b654cc19dda3dda",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/algolia-named-top-enterprise-search-software-on-g2-grid-report-for-13th-consecutive-time"
+    },
+    "fr_f8600017-c60a-4146-b5c8-b1345577fe46": {
+      "chars": 10858,
+      "content_hash": "f1d463f7e10ef5c533ff240cfc54383990c7f12a0c95d64bcde62819c10c26ee",
+      "fetch_error": "",
+      "http_status": 200,
+      "redirect_mismatch": false,
+      "served_url": "/fr/about/news/brazilian-home-decor-leader-madeiramadeira-powers-ecommerce-with-algolia"
+    }
+  },
+  "fetched": 30,
+  "planned": 30,
+  "run_id": "20260811-website-press-release-pilot-a03"
+}

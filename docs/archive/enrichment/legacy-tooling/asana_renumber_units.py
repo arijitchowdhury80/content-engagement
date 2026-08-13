@@ -30,7 +30,7 @@ BLAST RADIUS — all of it handled here, in one pass
   * every subtask name (WU-<old>.<n> -> WU-<new>.<n>)
   * every "WU-NN" inside task notes
   * every "WU-NN" in the repo and vault markdown
-  * the brief FILENAMES, docs/briefs/WU-NN.md, via a two-phase git mv so a
+  * the brief FILENAMES, docs/program/work-units/WU-NN.md, via a two-phase git mv so a
     rename never collides with a file that still holds the target name
 
 SAFETY
@@ -237,7 +237,7 @@ def main():
     json.dump({"generated": time.strftime("%Y-%m-%d"),
                "note": "work-unit renumber so number == phase position",
                "old_to_new": {f"WU-{k:02d}": f"WU-{v:02d}" for k, v in sorted(m.items())}},
-              open(os.path.join(REPO, "docs/70-enrichment/wu-renumber-map.json"), "w"),
+              open(os.path.join(REPO, "docs/operations/enrichment/wu-renumber-map.json"), "w"),
               indent=2)
 
     print("\n--- VERIFY (re-read from Asana) ---")

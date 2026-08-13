@@ -139,7 +139,7 @@ If capability research supports it, the layer could route visitors to specialist
 - support specialist for troubleshooting and existing-customer needs
 - sales or solution consultant for pricing, enterprise readiness, procurement, demo, and contact-sales journeys
 
-The full agent taxonomy belongs in the research artifacts (`docs/30-models/33-agent-taxonomy-and-routing.md`). The manifesto only needs the scope line: the agentic layer is researched now and built only after the search-led website demo stands on its own.
+The full agent taxonomy belongs in the research artifacts (`docs/design/agent-studio/models/33-agent-taxonomy-and-routing.md`). The manifesto only needs the scope line: the agentic layer is researched now and built only after the search-led website demo stands on its own.
 
 ## Not Just Chat
 

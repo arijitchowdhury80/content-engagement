@@ -1,0 +1,12 @@
+{
+  "enrich": [
+    "outputs/base/results.jsonl"
+  ],
+  "fetch": [
+    "cache-scout/",
+    "fetch-manifest.json"
+  ],
+  "plan-slice": [
+    "manifest.json"
+  ]
+}

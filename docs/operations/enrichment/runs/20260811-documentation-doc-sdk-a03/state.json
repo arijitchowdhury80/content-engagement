@@ -1,0 +1,16 @@
+{
+  "closed": false,
+  "failed_reason": null,
+  "page_type": "doc-sdk",
+  "run_id": "20260811-documentation-doc-sdk-a03",
+  "source": "Documentation",
+  "target_index": "Algolia_Prod_Copy_Enhanced_Parallel",
+  "tracks": {
+    "enrich": "DONE",
+    "fetch": "DONE",
+    "final": "BUILT",
+    "repair": "DONE",
+    "validate": "FAILED",
+    "write": "NONE"
+  }
+}

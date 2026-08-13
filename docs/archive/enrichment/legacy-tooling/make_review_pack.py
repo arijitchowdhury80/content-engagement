@@ -14,7 +14,7 @@ This version fixes all three:
     sentence sitting in it. That is the same proof the offsets carried, without the arithmetic.
   * every key highlight gets the same treatment as the abstract
 
-  python3 docs/70-enrichment/make_review_pack.py
+  python3 docs/operations/enrichment/make_review_pack.py
 """
 
 from __future__ import annotations
@@ -50,12 +50,12 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--lang", default="en")
     ap.add_argument("--runs", nargs="+",
-                    default=["docs/70-enrichment/reports/glm-30a",
-                             "docs/70-enrichment/reports/glm-30b"])
+                    default=["docs/operations/enrichment/reports/glm-30a",
+                             "docs/operations/enrichment/reports/glm-30b"])
     ap.add_argument("--caches", nargs="+",
-                    default=["docs/70-enrichment/cache/pilot-manifest.json",
-                             "docs/70-enrichment/cache2/pilot-manifest.json"])
-    ap.add_argument("--out", default="docs/70-enrichment/reports/REVIEW-english.md")
+                    default=["docs/operations/enrichment/cache/pilot-manifest.json",
+                             "docs/operations/enrichment/cache2/pilot-manifest.json"])
+    ap.add_argument("--out", default="docs/operations/enrichment/reports/REVIEW-english.md")
     args = ap.parse_args()
 
     cache: dict[str, dict] = {}

@@ -1,0 +1,6 @@
+{
+  "verify-corpus": [
+    "corpus-verification.json",
+    "corpus-verification-per-record.jsonl"
+  ]
+}

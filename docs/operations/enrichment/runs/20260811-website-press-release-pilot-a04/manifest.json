@@ -1,0 +1,736 @@
+{
+  "is_bounded_subset": true,
+  "language_split": {
+    "de": 10,
+    "en": 10,
+    "fr": 10
+  },
+  "live_slice_count": 690,
+  "objectIDs": [
+    "de_1256cdcd-1425-4ba9-a35d-5978bfa8fbdb_text_1",
+    "de_369f50ee-26b7-44ef-be0b-b9d7494e6ba2",
+    "de_839c2ff0-2d7a-4084-ad9e-d0818a8460e0",
+    "de_940ae123-d190-4025-96eb-801813a08d09",
+    "de_9be7bf2c-e9da-45ce-8113-7455716aa1c9",
+    "de_c4284c55-c6c3-4902-b65f-081827fc6d4c",
+    "de_c618e3f9-1e89-4cf2-a335-a05d5e492e19",
+    "de_d62e68d8-b945-4a16-b093-03940a60e583",
+    "de_dc574fbf-ee95-4899-ada3-9f83f08da5c5",
+    "de_fc24eddf-1fc3-43ed-a3e7-b19f74de3f2d",
+    "en_0ce56864-ef10-4cc7-8089-c513e8ffdb80",
+    "en_336d66ba-e0a3-43ed-ba3e-3b87fd9a9040",
+    "en_36532346-77b8-4e1b-bf0e-88bc9fe80025",
+    "en_60f06959-2fe1-4b52-975e-be3ec933ebed",
+    "en_6fa09086-7357-4bb6-bc05-567035a6a46e",
+    "en_8930abb8-2e1c-4cb5-a030-02566c0533f3",
+    "en_99e9bcd4-1a99-45ad-bdcc-b49690a65a45",
+    "en_9b38203f-0e3c-4371-8136-4f851abf12e7_text_3",
+    "en_dfcc0f11-7f9c-46e7-ae23-f3c55a101bd5_text_1",
+    "en_fbb1b275-f14c-482b-aed3-b8fb4a248466",
+    "fr_0d8426ef-3d38-489e-b170-30e851253818",
+    "fr_33f3107b-14dd-4c25-9e70-490e2541ef69",
+    "fr_60f06959-2fe1-4b52-975e-be3ec933ebed",
+    "fr_676de8a5-062a-4c93-a059-63a93f69d723",
+    "fr_87344328-f19c-4489-9a03-ab16c5f0a3a0",
+    "fr_b5356a29-1597-4ce4-84f6-8f3ee07897bf",
+    "fr_c9d6ba24-b658-4e1a-8810-19afbf20029b",
+    "fr_cd90f7c5-3738-4355-90cf-20e0ec45b897",
+    "fr_cfcb617d-07af-406a-8c88-0572eec5aaf0",
+    "fr_ea3fee96-ec29-436b-b217-1f587c2cf05c"
+  ],
+  "page_type": "press-release",
+  "planned_at": "2026-08-11T14:27:43.038764+00:00",
+  "planned_count": 30,
+  "profile_version": "press-release:a2073f0ff974",
+  "projection": {
+    "concurrency": 4,
+    "measured_s_per_record": 80.0,
+    "note": "projected from measured queue-inclusive elapsed time per record, not from the scrape duration. Queue wait dominates; scrape duration would promise ~7x faster.",
+    "projected_wall_clock_h": 0.17,
+    "projected_wall_clock_s": 600,
+    "records": 30
+  },
+  "records": [
+    {
+      "description": "…",
+      "language_code": "de",
+      "objectID": "de_1256cdcd-1425-4ba9-a35d-5978bfa8fbdb_text_1",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Raises $110 Million in Funding | Algolia",
+      "url": "/de/about/news/algolia-raises-110-million-in-funding"
+    },
+    {
+      "description": "Listen now our podcasts",
+      "language_code": "de",
+      "objectID": "de_369f50ee-26b7-44ef-be0b-b9d7494e6ba2",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Podcasts",
+      "url": "/de/about/news/podcasts"
+    },
+    {
+      "description": "<p>Employees cite the five core values of trust, humility, grit, candor and care as reasons for the company’s strong work culture</p>",
+      "language_code": "de",
+      "objectID": "de_839c2ff0-2d7a-4084-ad9e-d0818a8460e0",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Named UK’s Best Work Places in Tech for the First Time | Algolia",
+      "url": "/de/about/news/algolia-named-uk-s-best-work-places-in-tech-for-the-first-time"
+    },
+    {
+      "description": "…",
+      "feature": [
+        "recommend-models"
+      ],
+      "language_code": "de",
+      "objectID": "de_940ae123-d190-4025-96eb-801813a08d09",
+      "page_type": "press-release",
+      "product": [
+        "ai-recommendations"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high",
+        "product": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path",
+        "product": "legacy-field"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Launches Additional AI Models in its Recommend Spring Release 2022 to Supercharge Businesses Ability to Engage with Users | Algolia",
+      "url": "/de/about/news/algolia-launches-additional-ai-models-in-its-recommend-spring-release-2022-to-supercharge-businesses-ability-to-engage-with-users"
+    },
+    {
+      "description": "…",
+      "language_code": "de",
+      "objectID": "de_9be7bf2c-e9da-45ce-8113-7455716aa1c9",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia’s Chief Ecosystem Officer to Share AI Strategy on a Travel and Leisure Panel at Adobe Summit 2024 | Algolia",
+      "url": "/de/about/news/algolia-s-chief-ecosystem-officer-to-share-ai-strategy-on-a-travel-and-leisure-panel-at-adobe-summit-2024"
+    },
+    {
+      "description": "<p>Forbes again acknowledges Algolia among the world&rsquo;s most distinguished private cloud companies, celebrating its enduring leadership, growth, culture</p>\n",
+      "language_code": "de",
+      "objectID": "de_c4284c55-c6c3-4902-b65f-081827fc6d4c",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Recognized on Forbes Cloud 100 for the Fourth Consecutive Time",
+      "url": "/de/about/news/algolia-recognized-on-forbes-cloud-list"
+    },
+    {
+      "description": "…",
+      "language_code": "de",
+      "objectID": "de_c618e3f9-1e89-4cf2-a335-a05d5e492e19",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Ranked Number 125 Fastest Growing Company in North America on Deloitte’s 2019 Technology Fast 500™ | Algolia",
+      "url": "/de/about/news/algolia-ranked-number-125-fastest-growing-company-in-north-america-on-deloitte-s-2019-technology-fast-500"
+    },
+    {
+      "description": "<p>Achievements in developing Algolia NeuralSearch recognized alongside OpenAI’s ChatGPT and GPT-4</p>",
+      "feature": [
+        "neuralsearch"
+      ],
+      "language_code": "de",
+      "objectID": "de_d62e68d8-b945-4a16-b093-03940a60e583",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "low",
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "text-match",
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia NeuralSearch Named a Finalist for Ventana Research’s Digital Innovation Awards | Algolia",
+      "url": "/de/about/news/algolia-neuralsearch-named-a-finalist-for-ventana-research-s-digital-innovation-awards"
+    },
+    {
+      "description": "…",
+      "integration_platform": [
+        "commercetools"
+      ],
+      "language_code": "de",
+      "objectID": "de_dc574fbf-ee95-4899-ada3-9f83f08da5c5",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "integration_platform": "low",
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "integration_platform": "text-match",
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Partners and Builds New Integration Connectors with commercetools to Deliver World-Class Shopping Experiences | Algolia",
+      "url": "/de/about/news/algolia-partners-and-builds-new-integration-connectors-with-commercetools-to-deliver-world-class-shopping-experiences"
+    },
+    {
+      "description": "<p>With the launch of its MCP Server, Algolia provides AI agents with secure, real-time access to business context</p>\n",
+      "feature": [
+        "personalization",
+        "recommend-models"
+      ],
+      "language_code": "de",
+      "objectID": "de_fc24eddf-1fc3-43ed-a3e7-b19f74de3f2d",
+      "page_type": "press-release",
+      "product": [
+        "ai-recommendations",
+        "agent-studio"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high",
+        "product": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path",
+        "product": "legacy-field"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Introduces Context-Aware Retrieval for the Agentic Era",
+      "url": "/de/about/news/algolia-introduces-context-aware-retrieval-for-the-agentic-era"
+    },
+    {
+      "description": "…",
+      "language_code": "en",
+      "objectID": "en_0ce56864-ef10-4cc7-8089-c513e8ffdb80",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia wants to bring transparency to service-level agreements | Algolia",
+      "url": "/about/news/algolia-wants-to-bring-transparency-to-service-level-agreements"
+    },
+    {
+      "description": "",
+      "feature": [
+        "personalization"
+      ],
+      "language_code": "en",
+      "objectID": "en_336d66ba-e0a3-43ed-ba3e-3b87fd9a9040",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Introduces ‘Shopping Guides’: A Generative AI Tool to Elevate the Online Shopping Experience",
+      "url": "/about/news/algolia-introduces-shopping-guides"
+    },
+    {
+      "description": "",
+      "feature": [
+        "personalization"
+      ],
+      "language_code": "en",
+      "objectID": "en_36532346-77b8-4e1b-bf0e-88bc9fe80025",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Wins 2025 Adobe Digital Experience Content Supply Chain Technology Partner of the Year Award",
+      "url": "/about/news/algolia-wins-2025-adobe-digital-experience-content-supply-chain-technology-partner-of-the-year-award"
+    },
+    {
+      "customer": [
+        "shoe-carnival"
+      ],
+      "description": "",
+      "feature": [
+        "personalization"
+      ],
+      "language_code": "en",
+      "objectID": "en_60f06959-2fe1-4b52-975e-be3ec933ebed",
+      "page_type": "press-release",
+      "solution": [
+        "headless-commerce"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "customer": "low",
+        "feature": "high",
+        "page_type": "high",
+        "solution": "low"
+      },
+      "taxonomy_provenance": {
+        "customer": "text-match",
+        "feature": "legacy-field",
+        "page_type": "url-path",
+        "solution": "text-match"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Shoe Carnival: Revolutionizing Retail using a new composable, headless commerce strategy with Algolia and Amplience ",
+      "url": "/about/news/shoe-carnival-revolutionizing-retail-using-a-new-composable-headless-commerce-strategy-with-algolia-and-amplience"
+    },
+    {
+      "description": "",
+      "feature": [
+        "personalization",
+        "recommend-models"
+      ],
+      "industry": [
+        "media"
+      ],
+      "language_code": "en",
+      "objectID": "en_6fa09086-7357-4bb6-bc05-567035a6a46e",
+      "page_type": "press-release",
+      "product": [
+        "ai-recommendations"
+      ],
+      "solution": [
+        "retail-media-network"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "industry": "low",
+        "page_type": "high",
+        "product": "high",
+        "solution": "low"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "industry": "text-match",
+        "page_type": "url-path",
+        "product": "legacy-field",
+        "solution": "text-match"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "New Algolia Market Report Explores How Retail Media Networks Are Redefining Digital Discovery",
+      "url": "/about/news/new-algolia-market-report-explores-how-retail-media-networks-are-redefining-digital-discovery"
+    },
+    {
+      "description": "<p>Algolia-powered search converts Oh Polly online shoppers at a 3.5 times higher rate; search sessions now drive 20% of revenue</p>\n",
+      "industry": [
+        "fashion"
+      ],
+      "language_code": "en",
+      "objectID": "en_8930abb8-2e1c-4cb5-a030-02566c0533f3",
+      "page_type": "press-release",
+      "product": [
+        "ai-search"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "industry": "low",
+        "page_type": "high",
+        "product": "low"
+      },
+      "taxonomy_provenance": {
+        "industry": "text-match",
+        "page_type": "url-path",
+        "product": "text-match"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Fashion Meets AI: Oh Polly Shoppers Find What They Love Faster with Algolia’s AI Search",
+      "url": "/about/news/fashion-meets-ai-oh-polly-shoppers-find-what-they-love-faster-with-algolias-ai-search"
+    },
+    {
+      "description": "…",
+      "feature": [
+        "personalization"
+      ],
+      "integration_platform": [
+        "azure"
+      ],
+      "language_code": "en",
+      "objectID": "en_99e9bcd4-1a99-45ad-bdcc-b49690a65a45",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "integration_platform": "low",
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "integration_platform": "text-match",
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia to Provide Scalable, Enterprise-Grade Search and Discovery Experience on Microsoft Azure | Algolia",
+      "url": "/about/news/algolia-to-provide-scalable-enterprise-grade-search-and-discovery-experience-on-microsoft-azure"
+    },
+    {
+      "description": "…",
+      "feature": [
+        "recommend-models"
+      ],
+      "integration_platform": [
+        "adobe-commerce-magento",
+        "shopify"
+      ],
+      "language_code": "en",
+      "objectID": "en_9b38203f-0e3c-4371-8136-4f851abf12e7_text_3",
+      "page_type": "press-release",
+      "product": [
+        "ai-recommendations"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "integration_platform": "low",
+        "page_type": "high",
+        "product": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "integration_platform": "text-match",
+        "page_type": "url-path",
+        "product": "legacy-field"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "From Magento to Shopify Plus: How to move your money-maker to another platform | Algolia",
+      "url": "/about/news/from-magento-to-shopify-plus-how-to-move-your-money-maker-to-another-platform"
+    },
+    {
+      "description": "…",
+      "feature": [
+        "personalization",
+        "recommend-models"
+      ],
+      "language_code": "en",
+      "objectID": "en_dfcc0f11-7f9c-46e7-ae23-f3c55a101bd5_text_1",
+      "page_type": "press-release",
+      "product": [
+        "ai-recommendations"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high",
+        "product": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path",
+        "product": "legacy-field"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Launches Algolia Recommend — A New API-First Product to Generate Blazing Fast, Highly Relevant Recommendations at Scale for Retailers | Algolia",
+      "url": "/about/news/algolia-launches-algolia-recommend-a-new-api-first-product-to-generate-blazing-fast-highly-relevant-recommendations-at-scale-for-retailers"
+    },
+    {
+      "description": "<p>Bernadette Nixon leads panel discussion on GenAI&rsquo;s impact on personalization at Retail&rsquo;s Big Show in New York on January 13&nbsp;</p>\n",
+      "feature": [
+        "personalization"
+      ],
+      "language_code": "en",
+      "objectID": "en_fbb1b275-f14c-482b-aed3-b8fb4a248466",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia’s CEO to Host Panel with Global Retailers  at NRF 2025 ",
+      "url": "/about/news/algolia-ceo-to-host-panel-at-nrf-2025"
+    },
+    {
+      "description": "…",
+      "language_code": "fr",
+      "objectID": "fr_0d8426ef-3d38-489e-b170-30e851253818",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia moves beyond web search to place search | Algolia",
+      "url": "/fr/about/news/algolia-moves-beyond-web-search-to-place-search"
+    },
+    {
+      "description": "…",
+      "language_code": "fr",
+      "objectID": "fr_33f3107b-14dd-4c25-9e70-490e2541ef69",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Unveils New Search & Discovery Tools for Developers at DevCon 2022 | Algolia",
+      "url": "/fr/about/news/algolia-unveils-new-search-discovery-tools-for-developers-at-devcon-2022"
+    },
+    {
+      "customer": [
+        "shoe-carnival"
+      ],
+      "description": "",
+      "feature": [
+        "personalization"
+      ],
+      "language_code": "fr",
+      "objectID": "fr_60f06959-2fe1-4b52-975e-be3ec933ebed",
+      "page_type": "press-release",
+      "solution": [
+        "headless-commerce"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "customer": "low",
+        "feature": "high",
+        "page_type": "high",
+        "solution": "low"
+      },
+      "taxonomy_provenance": {
+        "customer": "text-match",
+        "feature": "legacy-field",
+        "page_type": "url-path",
+        "solution": "text-match"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Shoe Carnival: Revolutionizing Retail using a new composable, headless commerce strategy with Algolia and Amplience ",
+      "url": "/fr/about/news/shoe-carnival-revolutionizing-retail-using-a-new-composable-headless-commerce-strategy-with-algolia-and-amplience"
+    },
+    {
+      "description": "…",
+      "feature": [
+        "personalization"
+      ],
+      "language_code": "fr",
+      "objectID": "fr_676de8a5-062a-4c93-a059-63a93f69d723",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Report: Search Technologies Drive Revenue, Personalization Remains Integral | Algolia",
+      "url": "/fr/about/news/algolia-report-search-technologies-drive-revenue-personalization-remains-integral"
+    },
+    {
+      "customer": [
+        "gametime"
+      ],
+      "description": "<p>Algolia powers real-time discovery For Gametime&rsquo;s mobile-first, last-minute ticketing marketplace helping fans find an event instantly and driving measurable conversion gains&nbsp;</p>\n",
+      "industry": [
+        "marketplaces"
+      ],
+      "language_code": "fr",
+      "objectID": "fr_87344328-f19c-4489-9a03-ab16c5f0a3a0",
+      "page_type": "press-release",
+      "product": [
+        "ai-search"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "customer": "low",
+        "industry": "low",
+        "page_type": "high",
+        "product": "low"
+      },
+      "taxonomy_provenance": {
+        "customer": "text-match",
+        "industry": "text-match",
+        "page_type": "url-path",
+        "product": "text-match"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Gametime Accelerates Growth with AI Search: Surpasses Conversion Goals in Under Three Months with Algolia",
+      "url": "/fr/about/news/gametime-accelerates-growth-with-ai-search-with-algolia"
+    },
+    {
+      "description": "…",
+      "language_code": "fr",
+      "objectID": "fr_b5356a29-1597-4ce4-84f6-8f3ee07897bf",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia: Going Global to Compete with Google | Algolia",
+      "url": "/fr/about/news/algolia-going-global-to-compete-with-google"
+    },
+    {
+      "description": "<p>FKA Brands Integrates Algolia AI Search with BigCommerce; Drives Fast-Time-To-Value and Superior Shopper Experience</p>",
+      "integration_platform": [
+        "bigcommerce"
+      ],
+      "language_code": "fr",
+      "objectID": "fr_c9d6ba24-b658-4e1a-8810-19afbf20029b",
+      "page_type": "press-release",
+      "product": [
+        "ai-search"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "integration_platform": "low",
+        "page_type": "high",
+        "product": "low"
+      },
+      "taxonomy_provenance": {
+        "integration_platform": "text-match",
+        "page_type": "url-path",
+        "product": "text-match"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Named a BigCommerce Preferred Technology Partner | Algolia",
+      "url": "/fr/about/news/algolia-named-a-bigcommerce-preferred-technology-partner"
+    },
+    {
+      "description": "<p>These accolades add to a growing list of G2 distinctions for the AI search leader, including its inclusion on G2&rsquo;s 2026 Best Software Awards</p>\n",
+      "feature": [
+        "recommend-models"
+      ],
+      "language_code": "fr",
+      "objectID": "fr_cd90f7c5-3738-4355-90cf-20e0ec45b897",
+      "page_type": "press-release",
+      "product": [
+        "ai-recommendations",
+        "ai-search"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high",
+        "product": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path",
+        "product": "legacy-field"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Dominates G2 Spring 2026 Grid® Reports, Earning 12 Badges for its Customer-Centric AI Innovation",
+      "url": "/fr/about/news/algolia-dominates-g2-spring-2026"
+    },
+    {
+      "description": "…",
+      "language_code": "fr",
+      "objectID": "fr_cfcb617d-07af-406a-8c88-0572eec5aaf0",
+      "page_type": "press-release",
+      "source": "Website",
+      "taxonomy_confidence": {
+        "page_type": "high"
+      },
+      "taxonomy_provenance": {
+        "page_type": "url-path"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Revolutionizing Retail: Algolia Unveils Groundbreaking Generative AI for Shopping Experiences | Algolia",
+      "url": "/fr/about/news/revolutionizing-retail-algolia-unveils-groundbreaking-generative-ai-for-shopping-experiences"
+    },
+    {
+      "description": "…",
+      "feature": [
+        "recommend-models"
+      ],
+      "language_code": "fr",
+      "objectID": "fr_ea3fee96-ec29-436b-b217-1f587c2cf05c",
+      "page_type": "press-release",
+      "product": [
+        "ai-recommendations"
+      ],
+      "source": "Website",
+      "taxonomy_confidence": {
+        "feature": "high",
+        "page_type": "high",
+        "product": "high"
+      },
+      "taxonomy_provenance": {
+        "feature": "legacy-field",
+        "page_type": "url-path",
+        "product": "legacy-field"
+      },
+      "taxonomy_version": "algolia-com-taxonomy-v1-20260805",
+      "title": "Algolia Appoints Sean Mullaney as New Chief Technology Officer | Algolia",
+      "url": "/fr/about/news/algolia-appoints-sean-mullaney-as-new-chief-technology-officer"
+    }
+  ],
+  "replay_of": null,
+  "run_id": "20260811-website-press-release-pilot-a04",
+  "source": "Website",
+  "source_index": "Algolia_Prod_Copy_Enhanced",
+  "target_index": "Algolia_Prod_Copy_Enhanced_Parallel"
+}

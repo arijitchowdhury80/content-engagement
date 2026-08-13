@@ -1,0 +1,298 @@
+{
+  "copy_ready": 4308,
+  "invalid_language": [],
+  "legacy_enriched_count": 4,
+  "legacy_enriched_objectIDs": [
+    "https://www.algolia.com/doc/ui-libraries",
+    "https://www.algolia.com/doc/tools/cli/get-started",
+    "https://www.algolia.com/doc/tools/cli/examples",
+    "https://www.algolia.com/doc/rest-api/search/set-dictionary-settings"
+  ],
+  "missing_required_fields": [
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://www.algolia.com/doc/rest-api/abtesting/schedule-ab-test",
+      "page_type": "doc-rest-api",
+      "title": "Schedule an A/B test",
+      "url": "/doc/rest-api/abtesting/schedule-ab-test"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://www.algolia.com/doc/rest-api/abtesting-v3/schedule-ab-test",
+      "page_type": "doc-rest-api",
+      "title": "Schedule an A/B test",
+      "url": "/doc/rest-api/abtesting-v3/schedule-ab-test"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://www.algolia.com/doc/guides/algolia-recommend/analytics/recommend-analytics",
+      "page_type": "doc-guide",
+      "title": "Recommend analytics",
+      "url": "/doc/guides/algolia-recommend/analytics/recommend-analytics"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://www.algolia.com/doc/guides/algolia-recommend/analytics/metrics",
+      "page_type": "doc-guide",
+      "title": "Recommend analytics metrics",
+      "url": "/doc/guides/algolia-recommend/analytics/metrics"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://www.algolia.com/doc/guides/compositions/solutions/search/sponsored-products",
+      "page_type": "doc-guide",
+      "title": "Place sponsored products in search results",
+      "url": "/doc/guides/compositions/solutions/search/sponsored-products"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://www.algolia.com/doc/guides/personalization/advanced-personalization/configure/setup/enable-real-time-personalization",
+      "page_type": "doc-guide",
+      "title": "Enable real-time personalization",
+      "url": "/doc/guides/personalization/advanced-personalization/configure/setup/enable-real-time-personalization"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://www.algolia.com/doc/guides/personalization/advanced-personalization/what-is-advanced-personalization/in-depth/real-time-personalization-and-historical-personalization",
+      "page_type": "doc-guide",
+      "title": "Real-time personalization and historical personalization",
+      "url": "/doc/guides/personalization/advanced-personalization/what-is-advanced-personalization/in-depth/real-time-personalization-and-historical-personalization"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/secret-keys/patch-secret-key",
+      "page_type": "doc-rest-api",
+      "title": "Patch Secret Key",
+      "url": "/doc/rest-api/agent-studio/secret-keys/patch-secret-key"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/secret-keys/list-secret-keys",
+      "page_type": "doc-rest-api",
+      "title": "List Secret Keys",
+      "url": "/doc/rest-api/agent-studio/secret-keys/list-secret-keys"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/secret-keys/get-secret-key",
+      "page_type": "doc-rest-api",
+      "title": "Get Secret Key",
+      "url": "/doc/rest-api/agent-studio/secret-keys/get-secret-key"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/secret-keys/delete-secret-key",
+      "page_type": "doc-rest-api",
+      "title": "Delete Secret Key",
+      "url": "/doc/rest-api/agent-studio/secret-keys/delete-secret-key"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/secret-keys/create-secret-key",
+      "page_type": "doc-rest-api",
+      "title": "Create Secret Key",
+      "url": "/doc/rest-api/agent-studio/secret-keys/create-secret-key"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/providers/update-provider",
+      "page_type": "doc-rest-api",
+      "title": "Update Provider",
+      "url": "/doc/rest-api/agent-studio/providers/update-provider"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/providers/list-providers",
+      "page_type": "doc-rest-api",
+      "title": "List Providers",
+      "url": "/doc/rest-api/agent-studio/providers/list-providers"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/providers/get-provider-models",
+      "page_type": "doc-rest-api",
+      "title": "Get Provider Models",
+      "url": "/doc/rest-api/agent-studio/providers/get-provider-models"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/providers/get-provider",
+      "page_type": "doc-rest-api",
+      "title": "Get Provider",
+      "url": "/doc/rest-api/agent-studio/providers/get-provider"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/providers/delete-provider",
+      "page_type": "doc-rest-api",
+      "title": "Delete Provider",
+      "url": "/doc/rest-api/agent-studio/providers/delete-provider"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/providers/create-provider",
+      "page_type": "doc-rest-api",
+      "title": "Create Provider",
+      "url": "/doc/rest-api/agent-studio/providers/create-provider"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/configurations/patch-configuration",
+      "page_type": "doc-rest-api",
+      "title": "Patch Configuration",
+      "url": "/doc/rest-api/agent-studio/configurations/patch-configuration"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/agent-studio/configurations/get-configuration",
+      "page_type": "doc-rest-api",
+      "title": "Get Configuration",
+      "url": "/doc/rest-api/agent-studio/configurations/get-configuration"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/providers/update-provider",
+      "page_type": "doc-rest-api",
+      "title": "Update Provider",
+      "url": "/doc/rest-api/providers/update-provider"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/providers/list-providers",
+      "page_type": "doc-rest-api",
+      "title": "List Providers",
+      "url": "/doc/rest-api/providers/list-providers"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/providers/get-provider-models",
+      "page_type": "doc-rest-api",
+      "title": "Get Provider Models",
+      "url": "/doc/rest-api/providers/get-provider-models"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/providers/get-provider",
+      "page_type": "doc-rest-api",
+      "title": "Get Provider",
+      "url": "/doc/rest-api/providers/get-provider"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/providers/delete-provider",
+      "page_type": "doc-rest-api",
+      "title": "Delete Provider",
+      "url": "/doc/rest-api/providers/delete-provider"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/providers/create-provider",
+      "page_type": "doc-rest-api",
+      "title": "Create Provider",
+      "url": "/doc/rest-api/providers/create-provider"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/configurations/patch-configuration",
+      "page_type": "doc-rest-api",
+      "title": "Patch Configuration",
+      "url": "/doc/rest-api/configurations/patch-configuration"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/rest-api/configurations/get-configuration",
+      "page_type": "doc-rest-api",
+      "title": "Get Configuration",
+      "url": "/doc/rest-api/configurations/get-configuration"
+    },
+    {
+      "missing": [
+        "description"
+      ],
+      "objectID": "https://algolia.com/doc/guides/scaling/distributed-search-network-dsn",
+      "page_type": "doc-guide",
+      "title": "Distributed Search Network (DSN)",
+      "url": "/doc/guides/scaling/distributed-search-network-dsn"
+    }
+  ],
+  "needs_metadata_remediation": 29,
+  "page_type_counts": {
+    "doc-api-reference": 418,
+    "doc-changelog": 1,
+    "doc-framework-integration": 43,
+    "doc-glossary": 1,
+    "doc-guide": 586,
+    "doc-hub": 1,
+    "doc-integration": 119,
+    "doc-rest-api": 333,
+    "doc-sdk": 2203,
+    "doc-sdk-unified": 398,
+    "doc-tool": 175,
+    "doc-ui-library": 59
+  },
+  "payload_fields": [
+    "objectID",
+    "abstract_enriched"
+  ],
+  "profiles_not_no_abstract": [],
+  "records": 4337,
+  "source": "Documentation",
+  "source_index": "Algolia_Prod_Copy_Enhanced",
+  "writer_or_judge_called": false
+}

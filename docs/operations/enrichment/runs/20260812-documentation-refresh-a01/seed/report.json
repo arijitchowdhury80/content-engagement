@@ -1,0 +1,12 @@
+{
+  "discovered_input": 4229,
+  "provenance": {
+    "both": 1876,
+    "discovered": 44,
+    "sitemap": 14
+  },
+  "rejected_out_of_scope": 1,
+  "scope_prefix": "/doc",
+  "sitemap_input": 1890,
+  "total": 1934
+}

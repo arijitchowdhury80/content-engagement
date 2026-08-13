@@ -13,7 +13,7 @@ WHAT HAPPENED
   A gate parameter that exists in one path and not the other is not a fix. These tests fail if
   the two paths drift apart again.
 
-    python3 -m pytest docs/70-enrichment/tests/test_gate_wiring.py -q
+    python3 -m pytest docs/operations/enrichment/tests/test_gate_wiring.py -q
 """
 
 import inspect

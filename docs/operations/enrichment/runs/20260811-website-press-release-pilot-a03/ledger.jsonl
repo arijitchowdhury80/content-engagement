@@ -1,0 +1,62 @@
+{"chars": 8616, "objectID": "de_1091e87a-85af-452e-a709-7416a6be5d8f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 7925, "objectID": "de_4ff837f0-901f-4d5b-b691-14d3f2683987", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11549, "objectID": "de_03ca2ef6-1407-4a93-9353-09e3bbfbcfcf", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11354, "objectID": "de_3f1355cc-6e0d-439a-a57d-219b9a6c95db", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8624, "objectID": "de_b3deb774-70e2-4ce9-9424-d9b2b9cb758f", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10637, "objectID": "de_b5356a29-1597-4ce4-84f6-8f3ee07897bf", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10489, "objectID": "de_8b701d57-5da8-413b-8c38-47ce15afc11b", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11656, "objectID": "de_9b378aa5-adb9-4d93-aa28-231bac845b49", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11416, "objectID": "de_e4adea97-43e2-42e3-bd81-36bcb6031df2", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9613, "objectID": "en_2e629f1f-06bd-4dbb-b6bd-d57f5044fc69", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8305, "objectID": "de_cf16d26a-2a13-4f74-a243-ae1b0d1a6dd3", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8583, "objectID": "en_545d3f8a-58b6-4761-a14b-4d54e8992e80", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 7970, "objectID": "en_5832d54a-6c6c-43a7-bdb9-603b504902c5", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11055, "objectID": "en_60f06959-2fe1-4b52-975e-be3ec933ebed", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 6106, "objectID": "en_7b54f22b-4b4d-4a78-a5d1-fc5d54f410bb", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 7715, "objectID": "en_829e82c3-123d-48c3-b590-28cdddecbd7a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 11597, "objectID": "en_99e9bcd4-1a99-45ad-bdcc-b49690a65a45", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9846, "objectID": "en_9b378aa5-adb9-4d93-aa28-231bac845b49", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14051, "objectID": "en_bb51c28c-2af4-4ba8-82aa-237d8849d976_text_1", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 8803, "objectID": "fr_28bd5884-742e-47fb-bf78-04e4cbdf6df4", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9738, "objectID": "en_a28d1e8f-f7bf-40ef-a9e3-5c4906b86999", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9389, "objectID": "fr_829e82c3-123d-48c3-b590-28cdddecbd7a", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9199, "objectID": "fr_8930abb8-2e1c-4cb5-a030-02566c0533f3", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 14076, "objectID": "fr_940ae123-d190-4025-96eb-801813a08d09", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9409, "objectID": "fr_9a419bba-ab62-4a9a-a4a4-9adeaf60a2e0", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 13917, "objectID": "fr_51380c96-9939-433b-b328-9014af5dcdfe", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9471, "objectID": "fr_5203fa56-7522-4392-a61d-cf6afb486195", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10628, "objectID": "fr_d4f89b90-1b8b-4314-921e-9efc6b5dd3a6", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 9746, "objectID": "fr_e5298fab-5fbc-44a0-b431-9b625a2af7ab", "outcome": "FETCHED", "stage": "fetch"}
+{"chars": 10858, "objectID": "fr_f8600017-c60a-4146-b5c8-b1345577fe46", "outcome": "FETCHED", "stage": "fetch"}
+{"objectID": "en_99e9bcd4-1a99-45ad-bdcc-b49690a65a45", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "de_b3deb774-70e2-4ce9-9424-d9b2b9cb758f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_b3deb774-70e2-4ce9-9424-d9b2b9cb758f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_51380c96-9939-433b-b328-9014af5dcdfe", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_d4f89b90-1b8b-4314-921e-9efc6b5dd3a6", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_7b54f22b-4b4d-4a78-a5d1-fc5d54f410bb", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_99e9bcd4-1a99-45ad-bdcc-b49690a65a45", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "de_9b378aa5-adb9-4d93-aa28-231bac845b49", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_60f06959-2fe1-4b52-975e-be3ec933ebed", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_b5356a29-1597-4ce4-84f6-8f3ee07897bf", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_1091e87a-85af-452e-a709-7416a6be5d8f", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_e5298fab-5fbc-44a0-b431-9b625a2af7ab", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "de_cf16d26a-2a13-4f74-a243-ae1b0d1a6dd3", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_5832d54a-6c6c-43a7-bdb9-603b504902c5", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_9a419bba-ab62-4a9a-a4a4-9adeaf60a2e0", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "fr_940ae123-d190-4025-96eb-801813a08d09", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "fr_5203fa56-7522-4392-a61d-cf6afb486195", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_829e82c3-123d-48c3-b590-28cdddecbd7a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_28bd5884-742e-47fb-bf78-04e4cbdf6df4", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "de_03ca2ef6-1407-4a93-9353-09e3bbfbcfcf", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "en_9b378aa5-adb9-4d93-aa28-231bac845b49", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_545d3f8a-58b6-4761-a14b-4d54e8992e80", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_e4adea97-43e2-42e3-bd81-36bcb6031df2", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "en_bb51c28c-2af4-4ba8-82aa-237d8849d976_text_1", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "en_2e629f1f-06bd-4dbb-b6bd-d57f5044fc69", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "de_8b701d57-5da8-413b-8c38-47ce15afc11b", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_a28d1e8f-f7bf-40ef-a9e3-5c4906b86999", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "en_829e82c3-123d-48c3-b590-28cdddecbd7a", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "de_3f1355cc-6e0d-439a-a57d-219b9a6c95db", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "fr_8930abb8-2e1c-4cb5-a030-02566c0533f3", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}
+{"objectID": "de_4ff837f0-901f-4d5b-b691-14d3f2683987", "outcome": "PASS", "stage": "enrich"}
+{"objectID": "fr_f8600017-c60a-4146-b5c8-b1345577fe46", "outcome": "JUDGE_HUMAN_REVIEW", "stage": "enrich"}

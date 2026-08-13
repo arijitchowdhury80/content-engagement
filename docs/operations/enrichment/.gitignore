@@ -1,5 +1,6 @@
 __pycache__/
 .pytest_cache/
+*.lock
 
 # Never commit an Asana state dump: task notes carry competitor strategy,
 # pricing governance, legal boundaries and the threat model, and this repo is

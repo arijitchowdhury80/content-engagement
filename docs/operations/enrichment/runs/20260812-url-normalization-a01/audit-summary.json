@@ -1,0 +1,29 @@
+{
+  "absolute": 1837,
+  "changed": 10091,
+  "distinct_count": 11928,
+  "expected_total": 11928,
+  "hosts": {
+    "academy.algolia.com": 142,
+    "support.algolia.com": 1695,
+    "www.algolia.com": 10091
+  },
+  "index": "Algolia_Prod_Copy_Enhanced",
+  "plan_hash": "f937f92545768d89f6a2b099d234b740d7f7f6437ed3f515abe2b8d0a68862b3",
+  "raw_count": 11928,
+  "redirects": {
+    "unverified": 11928
+  },
+  "relative": 10091,
+  "sources": {
+    "Academy": 142,
+    "Blog": 2694,
+    "Customer Stories": 237,
+    "Developers": 865,
+    "Documentation": 4337,
+    "Resources": 835,
+    "Support": 1695,
+    "Website": 1123
+  },
+  "total": 11928
+}

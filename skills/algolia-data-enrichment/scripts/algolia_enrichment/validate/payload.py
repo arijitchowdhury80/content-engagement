@@ -1,10 +1,12 @@
-"""Payload shape. Exactly three fields, no nulls, no duplicates, no metadata.
+"""Payload shape. At most three fields, no nulls, no duplicates, no metadata.
 
 THE THREE FIELDS ARE THE WHOLE ALLOWANCE.
 
     objectID, abstract_enriched, keyhighlights_enriched
 
-  Everything else -- provenance, offsets, hashes, verdicts, model ids, run ids -- lives in run
+  A payload may omit `keyhighlights_enriched` when a source is deliberately abstract-only, such
+  as definitive Documentation. Everything else -- provenance, offsets, hashes, verdicts, model
+  ids, run ids -- lives in run
   artifacts. Arijit, 2026-08-09: the live records stay lean. Five Blog records once carried 12
   `enrichment_*` bookkeeping fields and had to be cleaned off the live index afterwards.
 

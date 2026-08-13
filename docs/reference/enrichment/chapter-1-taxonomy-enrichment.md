@@ -49,7 +49,7 @@ That is what this chapter does. No crawling, no model calls, no new content — 
 | `taxonomy_confidence` | `object` | Per axis: high / medium / low |
 | `taxonomy_version` | `string` | Which schema generation produced it |
 
-**Four files**, in `docs/70-enrichment/`:
+**Four files**, in `docs/operations/enrichment/`:
 
 | File | Role |
 |---|---|
@@ -119,20 +119,20 @@ Error is not uniform across this corpus, so estimating one error rate by samplin
 #    Verified 16,967 entries / 15.9 MB, identical to source.
 
 # 2. Emit the schema from the corpus + declared vocabularies
-python3 docs/70-enrichment/build_schema.py
+python3 docs/archive/enrichment/legacy-tooling/build_schema.py
 
 # 3. Classify every distinct URL
-python3 docs/70-enrichment/classify.py \
-  --schema      docs/70-enrichment/taxonomy-schema.algolia-com.json \
-  --records     docs/70-enrichment/enhanced-pre-taxonomy-20260805.jsonl \
-  --out         docs/70-enrichment/taxonomy-assignments.jsonl \
-  --candidates  docs/70-enrichment/candidates.jsonl
+python3 docs/archive/enrichment/legacy-tooling/classify.py \
+  --schema      docs/operations/enrichment/state/taxonomy-schema.algolia-com.json \
+  --records     docs/operations/enrichment/enhanced-pre-taxonomy-20260805.jsonl \
+  --out         docs/operations/enrichment/taxonomy-assignments.jsonl \
+  --candidates  docs/operations/enrichment/candidates.jsonl
 
 # 4. Write to the index and set facet config
-python3 docs/70-enrichment/apply_taxonomy.py \
+python3 docs/archive/enrichment/legacy-tooling/apply_taxonomy.py \
   --index Algolia_Prod_Copy_Enhanced \
-  --records     docs/70-enrichment/enhanced-pre-taxonomy-20260805.jsonl \
-  --assignments docs/70-enrichment/taxonomy-assignments.jsonl \
+  --records     docs/operations/enrichment/enhanced-pre-taxonomy-20260805.jsonl \
+  --assignments docs/operations/enrichment/taxonomy-assignments.jsonl \
   --replace --batch 500 --settings
 ```
 

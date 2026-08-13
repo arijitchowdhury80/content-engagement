@@ -217,7 +217,7 @@ scoped at about two hours; it would have fixed nothing the demo experiences and 
 
 ## Two findings for the frontend session, not actioned here
 
-`docs/50-prototype/demo/` belongs to the frontend session, so these are reported rather than changed:
+`frontend/search-first-demo/demo/` belongs to the frontend session, so these are reported rather than changed:
 
 1. `attributesToSnippet` is `["abstract:32","description:26"]` — it does **not** include
    `abstract_enriched`. The field now drives ranking but the demo will not display or highlight the
@@ -257,7 +257,7 @@ none running
 
 ### Gate 2 — full test suite
 ```
-$ python3 -m pytest docs/70-enrichment/tests/ -q
+$ python3 -m pytest docs/archive/enrichment/legacy-tooling/tests/ -q
 472 passed, 1 xfailed
 ```
 
@@ -266,7 +266,7 @@ prose, so shape-based detection cannot separate them.
 
 ### Gates 3–9 — live validation
 ```
-$ python3 docs/70-enrichment/verify_blog_e2e_live.py \
+$ python3 docs/archive/enrichment/legacy-tooling/verify_blog_e2e_live.py \
       --out reports/blog-e2e-live-20260810-postquarantine.json
 [PASS] A1 artifact row count — 2800 rows, 2800 distinct, 0 duplicates
 [PASS] A2 artifact writable count — 2694 writable (expected 2694); status {'JUDGE_REVISE': 341, 'PASS': 2353, 'DEAD_PAGE': 104, 'NO_ABSTRACT_THIN': 2}
