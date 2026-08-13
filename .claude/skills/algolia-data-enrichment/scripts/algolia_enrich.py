@@ -33,7 +33,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from algolia_enrichment import (approvals, corpus, docapply, docrefresh, human_review,
+from algolia_enrichment import (approvals, corpus, docapply, docmerge, docrefresh, human_review,
                                 live_corpus, profile_lint, promote, quarantine, reconcile, seed,
                                 selection_registry, strategies, taxonomy, taxonomy_correctness,
                                 write)
@@ -545,6 +545,15 @@ def cmd_build_documentation(ctx: Ctx) -> int:
     schema = taxonomy.load_schema(TAXONOMY_SCHEMA)
     compiled = taxonomy_correctness.compile_rules(schema)
 
+    # The write is a full-record replace, so the rebuilt record is merged OVER the record already
+    # in the index. Writing only the rebuilt fields would delete the rest -- `abstract` is
+    # populated on 4,317 Documentation records and is a searchable attribute, so losing it would
+    # degrade retrieval while the run reported success.
+    existing_by_id = {r["objectID"]: r for r in ctx.algolia().browse(ctx.cfg.source_index)
+                      if r.get("source") == docapply.SOURCE}
+    existing_by_key = {seed.canonical_key(r.get("url") or ""): r
+                       for r in existing_by_id.values()}
+
     records, review, failures = [], [], []
     for path in sorted(cache.glob("*.json")):
         got = json.loads(path.read_text())
@@ -563,7 +572,11 @@ def cmd_build_documentation(ctx: Ctx) -> int:
                            "title": record["title"],
                            "missing": [f for f in ("title", "description")
                                        if not str(record.get(f) or "").strip()]})
-        records.append(record)
+        prior = existing_by_key.get(seed.canonical_key(record["url"]))
+        merged = docmerge.merge_record(prior, record)
+        if prior:
+            docmerge.assert_no_field_lost(prior, merged)
+        records.append(merged)
 
     if not records:
         raise ZeroWorkError("build produced zero records.")
