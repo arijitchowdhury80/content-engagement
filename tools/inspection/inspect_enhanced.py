@@ -5,7 +5,7 @@ import json, os, ssl, urllib.request
 
 CA = "/etc/ssl/cert.pem"
 SSL_CTX = ssl.create_default_context(cafile=CA if os.path.exists(CA) else None)
-ENV = "/Users/arijitchowdhury/Dropbox/AI-Development/RAG/Algolia-Central-Spectrum/.env.local"
+ENV = "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/.env.local"
 env = {}
 for line in open(ENV):
     line = line.strip()

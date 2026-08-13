@@ -10,7 +10,7 @@ The behavioral architecture source of truth is [CONCIERGE-BEHAVIOR-ARCHITECTURE.
 ## Hard Boundaries
 
 1. Work is for **algolia.com only**.
-2. Do not touch, use, or validate against Spectrum.
+2. Do not touch, use, or validate against non-algolia.com surfaces.
 3. Do not change production Ask Algolia. It is a read-only competitive benchmark.
 4. The only permitted app is `0EXRPAXB56`.
 5. The only permitted retrieval index is `Algolia_Prod_Copy_Enhanced`.

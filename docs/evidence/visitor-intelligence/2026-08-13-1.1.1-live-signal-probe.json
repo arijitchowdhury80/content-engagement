@@ -1,0 +1,1023 @@
+{
+  "after": {
+    "href": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?widgetFinal=20260812&algoliaChatDebug=1&signalProbe=20260813#probe-navigation",
+    "snapshot": {
+      "events": [
+        {
+          "name": "page_view",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          },
+          "ts": 1786600591043
+        },
+        {
+          "name": "probe_custom_event",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "email": "must-not-be-stored@example.com",
+            "harmless": true,
+            "password": "must-not-be-stored",
+            "phone": "555-0100",
+            "source": "workstream-1.1.1"
+          },
+          "ts": 1786600593703
+        },
+        {
+          "name": "cta_click",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "cta": "request-demo-probe",
+            "label": "Request demo probe"
+          },
+          "ts": 1786600593706
+        },
+        {
+          "name": "page_view",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          },
+          "ts": 1786600593710
+        },
+        {
+          "name": "page_read",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "trigger": "scroll"
+          },
+          "ts": 1786600593720
+        }
+      ],
+      "profile": {
+        "firstSeen": 1786600591043,
+        "tokenSource": "ephemeral",
+        "userToken": "6c67bd355848f205926ac054",
+        "visits": 1
+      },
+      "session": {
+        "lastSeenAt": 1786600593710,
+        "pages": [
+          {
+            "dwellMs": 0,
+            "enteredAt": 1786600591043,
+            "path": "/cms/render/live/en/sites/www/home.html",
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          }
+        ],
+        "sessionId": "b18122e5e46540be8bd4556c",
+        "startedAt": 1786600589759
+      }
+    },
+    "storage": {
+      "acs_events": [
+        {
+          "name": "page_view",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          },
+          "ts": 1786600591043
+        },
+        {
+          "name": "probe_custom_event",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "email": "must-not-be-stored@example.com",
+            "harmless": true,
+            "password": "must-not-be-stored",
+            "phone": "555-0100",
+            "source": "workstream-1.1.1"
+          },
+          "ts": 1786600593703
+        },
+        {
+          "name": "cta_click",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "cta": "request-demo-probe",
+            "label": "Request demo probe"
+          },
+          "ts": 1786600593706
+        },
+        {
+          "name": "page_view",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          },
+          "ts": 1786600593710
+        },
+        {
+          "name": "page_read",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "trigger": "scroll"
+          },
+          "ts": 1786600593720
+        }
+      ],
+      "acs_pending_greeting": null,
+      "acs_profile": {
+        "firstSeen": 1786600591043,
+        "tokenSource": "ephemeral",
+        "userToken": "6c67bd355848f205926ac054",
+        "visits": 1
+      },
+      "acs_session": {
+        "lastSeenAt": 1786600593710,
+        "pages": [
+          {
+            "dwellMs": 0,
+            "enteredAt": 1786600591043,
+            "path": "/cms/render/live/en/sites/www/home.html",
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          }
+        ],
+        "sessionId": "b18122e5e46540be8bd4556c",
+        "startedAt": 1786600589759
+      }
+    }
+  },
+  "before": {
+    "chatAttributes": {
+      "auto-engage": "true",
+      "auto-engage-toggle": "",
+      "brand-name": "Algolia",
+      "canonical-base-url": "https://www.algolia.com",
+      "corpus-name": "Algolia documentation, guides and API reference",
+      "default-open-mode": "docked",
+      "disclaimer": "Fully grounded - every answer cites its sources.",
+      "discovery-enabled": "true",
+      "launcher-icon": "/files/live/sites/algolia-assets/files/icons/algolia-logo-for-favicon.svg",
+      "logo": "/files/live/sites/algolia-assets/files/icons/algolia-logo-for-favicon.svg",
+      "powered-by-label": "Powered by Algolia",
+      "powered-by-logo": "/files/live/sites/algolia-assets/files/icons/algolia-logo-for-favicon.svg",
+      "product-title": "Algolia Assistant",
+      "sample-questions-group-cap": "0",
+      "show-welcome": "true",
+      "theme": "algolia"
+    },
+    "consentGlobals": {
+      "OnetrustActiveGroups": ",C0001,C0002,C0003,C0004,",
+      "OptanonActiveGroups": ",C0001,C0002,C0003,C0004,",
+      "globalPrivacyControl": false,
+      "hasAlgoliaCookieUtils": false,
+      "hasAlgoliaCookieUtilsConsent": false,
+      "hasOneTrust": true
+    },
+    "contextEngineConfig": {
+      "analysisDelayMs": 3000,
+      "conciergeAgentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+      "greetingTtlMs": 600000,
+      "minPages": 2,
+      "widgetTimeoutMs": 25000
+    },
+    "engageAttributes": {
+      "concierge-agent-id": "0f290529-629a-48fe-9424-f93e5894d8f3",
+      "delay-ms": "3000",
+      "greeting-ttl-ms": "600000",
+      "min-pages": "2",
+      "style": "display: none;",
+      "widget-timeout-ms": "25000"
+    },
+    "engageInstalled": true,
+    "hasTrackEvent": true,
+    "hasTrackSearch": false,
+    "href": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?widgetFinal=20260812&algoliaChatDebug=1&signalProbe=20260813",
+    "scripts": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/header.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codeExchangeSearch.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/generated-resources/fc4a4183b54590192fb182298b01347.min.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/CsrfServlet",
+      "https://cdn.jsdelivr.net/npm/algoliasearch@5.29.0/dist/lite/builds/browser.umd.js",
+      "https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-tracker.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/anonymousUser.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/hideBlankTag.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/bannerAnimation.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/startupsTracking.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/jquery.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/slick.min.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/accordion.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/customslick.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/prism.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/theme.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/requestDemoModal.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codepen.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/forrester.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/blogNavigation.js"
+    ],
+    "snapshot": {
+      "events": [
+        {
+          "name": "page_view",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          },
+          "ts": 1786600591043
+        }
+      ],
+      "profile": {
+        "firstSeen": 1786600591043,
+        "tokenSource": "ephemeral",
+        "userToken": "6c67bd355848f205926ac054",
+        "visits": 1
+      },
+      "session": {
+        "lastSeenAt": 1786600591043,
+        "pages": [
+          {
+            "dwellMs": 0,
+            "enteredAt": 1786600591043,
+            "path": "/cms/render/live/en/sites/www/home.html",
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          }
+        ],
+        "sessionId": "b18122e5e46540be8bd4556c",
+        "startedAt": 1786600589759
+      }
+    },
+    "storage": {
+      "acs_events": [
+        {
+          "name": "page_view",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "props": {
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          },
+          "ts": 1786600591043
+        }
+      ],
+      "acs_pending_greeting": null,
+      "acs_profile": {
+        "firstSeen": 1786600591043,
+        "tokenSource": "ephemeral",
+        "userToken": "6c67bd355848f205926ac054",
+        "visits": 1
+      },
+      "acs_session": {
+        "lastSeenAt": 1786600591043,
+        "pages": [
+          {
+            "dwellMs": 0,
+            "enteredAt": 1786600591043,
+            "path": "/cms/render/live/en/sites/www/home.html",
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search"
+          }
+        ],
+        "sessionId": "b18122e5e46540be8bd4556c",
+        "startedAt": 1786600589759
+      }
+    },
+    "title": "The AI search and retrieval platform - Agentic | Generative | Search",
+    "trackerInstalled": true,
+    "trackerMethods": [
+      "configure",
+      "identify",
+      "refreshProfile",
+      "reset",
+      "setConsentAdapter",
+      "snapshot",
+      "trackEvent"
+    ],
+    "visitorConfig": {
+      "cookieName": "_ALGOLIA",
+      "region": "us"
+    }
+  },
+  "console": [
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "type": "error"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] configured {cookieName: _ALGOLIA, region: us}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] profile initialised {userToken: 89af445dd5a4443ed188597a, tokenSource: ephemeral, visits: 1, firstSeen: 1786600589759}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] event: page_view {title: The AI search and retrieval platform - Agentic | Generative | Search}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Engage] configured {minPages: 2, minEvents: 3, analysisDelayMs: 3000, widgetTimeoutMs: 25000, greetingTtlMs: 600000}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Engage] configured {minPages: 2, minEvents: 3, analysisDelayMs: 3000, widgetTimeoutMs: 25000, greetingTtlMs: 600000}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Form Tool] configured {toolName: submit_lead_form, title: Get in touch, submitLabel: Submit, cancelLabel: Cancel, fields: Array(3)}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Form Tool] registered tool 'submit_lead_form'",
+      "type": "log"
+    },
+    {
+      "text": "null",
+      "type": "log"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871",
+      "type": "warning"
+    },
+    {
+      "text": "Client IP Address: 172.126.44.66",
+      "type": "log"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943",
+      "type": "warning"
+    },
+    {
+      "text": "Access to fetch at 'https://dashboard.algolia.com/static/current_user' from origin 'https://tmp-content-eng-algolia.cloud.jahia.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+      "type": "error"
+    },
+    {
+      "text": "Failed to load resource: net::ERR_FAILED",
+      "type": "error"
+    },
+    {
+      "text": "There was a problem with the fetch operation: TypeError: Failed to fetch\n    at HTMLDocument.<anonymous> (https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js:4:16)",
+      "type": "error"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] configured {cookieName: _ALGOLIA, region: us}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] profile initialised {userToken: 6c67bd355848f205926ac054, tokenSource: ephemeral, visits: 1, firstSeen: 1786600591043}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] event: page_view {title: The AI search and retrieval platform - Agentic | Generative | Search}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Engage] configured {minPages: 2, minEvents: 3, analysisDelayMs: 3000, widgetTimeoutMs: 25000, greetingTtlMs: 600000}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Engage] configured {minPages: 2, minEvents: 3, analysisDelayMs: 3000, widgetTimeoutMs: 25000, greetingTtlMs: 600000}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Form Tool] configured {toolName: submit_lead_form, title: Get in touch, submitLabel: Submit, cancelLabel: Cancel, fields: Array(3)}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Form Tool] registered tool 'submit_lead_form'",
+      "type": "log"
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "type": "error"
+    },
+    {
+      "text": "null",
+      "type": "log"
+    },
+    {
+      "text": "Access to fetch at 'https://dashboard.algolia.com/static/current_user' from origin 'https://tmp-content-eng-algolia.cloud.jahia.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+      "type": "error"
+    },
+    {
+      "text": "Failed to load resource: net::ERR_FAILED",
+      "type": "error"
+    },
+    {
+      "text": "There was a problem with the fetch operation: TypeError: Failed to fetch\n    at HTMLDocument.<anonymous> (https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js:4:16)",
+      "type": "error"
+    },
+    {
+      "text": "Amplitude Logger [Warn]: `options.defaultTracking` is set to undefined. This implicitly configures your Amplitude instance to track Page Views, Sessions, File Downloads, and Form Interactions. You can suppress this warning by explicitly setting a value to `options.defaultTracking`. The value must either be a boolean, to enable and disable all default events, or an object, for advanced configuration. For example:\n\namplitude.init(<YOUR_API_KEY>, {\n  defaultTracking: true,\n});\n\nVisit https://www.docs.developers.amplitude.com/data/sdks/browser-2/#tracking-default-events for more details.",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147364591",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147364591",
+      "type": "warning"
+    },
+    {
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff2",
+      "type": "warning"
+    },
+    {
+      "text": "OTS parsing error: invalid sfntVersion: -2147364591",
+      "type": "warning"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] event: probe_custom_event {source: workstream-1.1.1, harmless: true, email: must-not-be-stored@example.com, phone: 555-0100, password: must-not-be-stored}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] event: cta_click {cta: request-demo-probe, label: Request demo probe}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] event: page_view {title: The AI search and retrieval platform - Agentic | Generative | Search}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Tracker] event: page_read {trigger: scroll}",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Engage] signal check \u2192 ENOUGH | pages=1 (min 2) events=5",
+      "type": "log"
+    },
+    {
+      "text": "[Algolia Chat \u2013 Engage] calling concierge with context {currentPage: Object, pagesViewed: Array(1), pageCount: 1, sessionDurationMs: 4286, events: Array(5)}",
+      "type": "log"
+    }
+  ],
+  "network": [
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/startupsTracking.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/jquery.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/slick.min.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/accordion.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/customslick.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/prism.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/theme.js"
+    },
+    {
+      "contentType": "text/html;charset=UTF-8",
+      "status": 404,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/cdn-cgi/trace"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/requestDemoModal.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codepen.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/forrester.js"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/blogNavigation.js"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/cropped-foreground-analyst-recognition.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/overlay-gartner-magic-quadrant.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/cropped-foreground-gartner-magic-quadrant.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/overlay-forrester-tei.png"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/person_blue.svg"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/overlay-idc-marketscape.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/cropped-foreground-idc-marketscape.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/cropped-foreground-forrester-tei.png"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/Check%20Square.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/search.svg"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/overlay-paradigm-b2b-combine.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/cropped-foreground-paradigm-b2b-combine.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/huckberry.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/DocMorris-thumbnail.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/bike-totaal-case-study-thumbnail.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/Club-Med-web-thumbnail.png"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/ai.svg"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/donorschoose.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/Arcteryx-thumbnail.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/fern.png"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/intelligence.svg"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/PetSmart-Thumbnail.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/leroy-merlin-thumbnail.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/customer-hub/customer-success/shoe-carnival.png"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage/icon-NL.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/infra.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/industry_icon.svg"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/homepage/blur-big-mock-size%201.png"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/usecase_icon.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/team_icon.svg"
+    },
+    {
+      "contentType": "video/webm",
+      "status": 206,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/homepage/bg-video%20(1)%20(1).webm"
+    },
+    {
+      "contentType": "video/mp4",
+      "status": 206,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage/ai-retrieval-hp-video-bottom-layer.mp4"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/codeexchange/technologiesicon/adobeexperiencemanager.png"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/developerdetailsassets/147-1479730_bigcommerce-bigcommerce-logo-hd-png-download.png"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/codeexchange/technologiesicon/commercetools.png"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/developerdetailsassets/supabase-logo-icon.png"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/developerdetailsassets/shopify.svg"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/onboarding-img/Salesforce-Logo.png"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/plans-icon.png"
+    },
+    {
+      "contentType": "application/font-woff2",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/links_icon.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/get-started_icon.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/resources_iconv2.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/discover_icon.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/resources_icon.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/navigation/tools_icon.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/apartment_blue.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/handshake_blue.svg"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/support_blue.svg"
+    },
+    {
+      "contentType": "",
+      "status": 304,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage/command-line-graphic.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage/agentic-top-layer-carousel-spot1-latest%20(1).png"
+    },
+    {
+      "contentType": "application/font-woff2",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage/color-blur-middle-layer.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage/generative-top-layer-carousel-spot2.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage/search-top-layer-carousel-spot3.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/homepage/brag-section-backgorund-video-overlay-image.png"
+    },
+    {
+      "contentType": "image/jpeg",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/ad-banners/Nav-1080x1080_v1.jpg"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/overlay-analyst-recognition.png"
+    },
+    {
+      "contentType": "image/png",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/homepage/solutions-section-image-wider-1x%20(2).png"
+    },
+    {
+      "contentType": "video/mp4",
+      "status": 206,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/homepage-carousel/ai-retrieval-carousel-bg-720.mp4"
+    },
+    {
+      "contentType": "image/svg+xml",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/icons/algolia-logo-for-favicon.svg"
+    },
+    {
+      "contentType": "application/font-woff2",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "contentType": "application/font-woff",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff"
+    },
+    {
+      "contentType": "application/font-woff2",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff2"
+    },
+    {
+      "contentType": "application/font-woff",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff"
+    },
+    {
+      "contentType": "application/font-woff",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff"
+    },
+    {
+      "contentType": "application/font-woff",
+      "status": 200,
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff"
+    },
+    {
+      "contentType": "text/event-stream",
+      "status": 200,
+      "url": "https://0exrpaxb56.algolia.net/agent-studio/1/agents/0f290529-629a-48fe-9424-f93e5894d8f3/completions?compatibilityMode=ai-sdk-5"
+    }
+  ],
+  "page_errors": [],
+  "started_at": "2026-08-13T05:56:19Z",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?widgetFinal=20260812&algoliaChatDebug=1&signalProbe=20260813"
+}

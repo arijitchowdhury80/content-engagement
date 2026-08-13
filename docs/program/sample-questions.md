@@ -104,7 +104,7 @@ Citation count = number of transcript snippets Gong tagged as supporting that qu
 
 ## Canonical location
 
-**This file is the source of truth for the sample questions.** It replaces the earlier copy in `RAG/Algolia-Central-Spectrum/docs/plans/sample_questions.md`, which is Adobe Spectrum's repo and no longer owns any Algolia.com work.
+**This file is the source of truth for the sample questions.** It replaces an earlier legacy copy outside this repo. This repo now owns Algolia.com sample-question work.
 
 ## Test results against these questions
 

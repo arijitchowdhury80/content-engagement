@@ -18,6 +18,8 @@ frontend/search-first-demo/corpus/records-doc.jsonl
 docs/operations/enrichment/enhanced-pre-taxonomy-*.jsonl
 docs/operations/enrichment/taxonomy-assignments.jsonl
 docs/operations/enrichment/snapshots/
+docs/operations/enrichment/runs/
+docs/operations/enrichment/quarantine/
 docs/operations/enrichment/work-queue.jsonl
 docs/operations/enrichment/cache*/
 

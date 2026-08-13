@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Scope is Algolia.com only. Do not inspect, use, or modify Spectrum.
+- Scope is Algolia.com only. Do not inspect, use, or modify non-algolia.com surfaces.
 - Do not modify host HTML. The widget/runtime owns behavior and UI.
 - Production Ask Algolia is read-only comparison evidence.
 - Use App ID `0EXRPAXB56` and the existing `www Chat - Orchestrator` test path only.

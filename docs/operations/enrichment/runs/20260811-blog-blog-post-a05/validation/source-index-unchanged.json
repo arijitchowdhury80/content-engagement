@@ -1,8 +1,0 @@
-{
-  "expected_records": 11928,
-  "index": "Algolia_Prod_Copy_Enhanced",
-  "ok": true,
-  "records": 11928,
-  "records_unchanged": true,
-  "settings_changed": []
-}

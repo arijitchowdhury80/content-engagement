@@ -830,7 +830,7 @@ docs/operations/enrichment/runs/<run-id>/
 
 Rules:
 
-- no writing reports directly into `docs/operations/enrichment/reports/` during new runs
+- no writing reports directly into `docs/evidence/enrichment/20260810-blog/` during new runs
 - no validating by globbing historical roots
 - no using cache outside the run folder unless explicitly imported into the run manifest
 - no overwriting `final/results.jsonl` without `rerun-approved.json`
@@ -882,7 +882,7 @@ runs/<run-id>/
 Exceptions:
 
 - `handoff` may write `docs/operations/enrichment/HANDOFF-current.md`
-- final human-facing summaries may be copied to `docs/operations/enrichment/reports/` only after run is `CLOSED`
+- final human-facing summaries may be copied to `docs/evidence/enrichment/20260810-blog/` only after run is `CLOSED`
 
 The package must include a test that monkeypatches filesystem writes and fails if a command writes outside the run folder.
 

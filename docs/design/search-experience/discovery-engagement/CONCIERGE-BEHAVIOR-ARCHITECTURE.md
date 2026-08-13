@@ -69,4 +69,4 @@ The GA4/Looker research stream must deliver:
 - Do not expose raw telemetry, identifiers, URLs with query parameters, or consent-restricted data to an agent.
 - Do not greet or interrupt every visitor.
 - Do not build prompt-only personalization.
-- Do not modify Spectrum, production Ask Algolia, any non-`www` agent, or any retrieval index other than `Algolia_Prod_Copy_Enhanced`.
+- Do not modify non-algolia.com surfaces, production Ask Algolia, any non-`www` agent, or any retrieval index other than `Algolia_Prod_Copy_Enhanced`.

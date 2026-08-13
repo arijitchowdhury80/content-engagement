@@ -32,6 +32,7 @@ snapshots/
 # SESSION.md calls the reports "(gitignored)"; that was not true. They are the baseline control
 # for the v1.2 comparison, so I have not removed them. Your call, alongside Open item 5.
 reports/*/
+runs/
 
 # Full-corpus run artefacts, all regenerable from work-queue.jsonl:
 #   batches/       208 queue manifests
@@ -50,6 +51,8 @@ reports/*/
 # Verify with `git check-ignore -v <path>` before believing any new directory is ignored.
 batches*/
 cache-batches/
+_archive/
+quarantine/
 
 # Fetched page markdown and the work queue. Bulk page content, regenerable.
 # GLOB, not literal names. `cache/` and `cache2/` were listed literally and a third dir,

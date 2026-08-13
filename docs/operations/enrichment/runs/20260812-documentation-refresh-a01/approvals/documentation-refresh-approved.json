@@ -1,8 +1,0 @@
-{
-  "target_index": "Algolia_Prod_Copy_Enhanced",
-  "expected_write_count": 1933,
-  "expected_delete_count": 2440,
-  "approved_by": "arijit",
-  "approved_at": "2026-08-13",
-  "note": "Arijit approved the Documentation refresh in session on 2026-08-12 against 1,934 write / 2,433 delete. Measured counts are 1,933 / 2,440: one page (/doc/onboarding) could not be fetched and is protected from deletion, and 8 malformed objectIDs are additionally retired. End state is identical to what was approved: Documentation 4,337 -> 1,934, Enhanced 11,928 -> 9,525."
-}

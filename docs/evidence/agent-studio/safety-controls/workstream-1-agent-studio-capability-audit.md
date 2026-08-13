@@ -9,7 +9,7 @@ Captured: 2026-08-12
 - Live Agent Studio target found: `www Chat - Orchestrator` in the handoff corresponds to `www Chat – Orchestrator` in the API, ID `e2c8596a-4420-41d2-80bb-5cd4aaeffda6`.
 - Production `[Prod] Algolia.com Website Search/Chatbot` screenshots are read-only comparison evidence only.
 - No Agent Studio config was changed.
-- Spectrum and host HTML were not touched.
+- Only Algolia.com-owned surfaces were inspected; host HTML was not touched.
 
 ## Evidence
 

@@ -72,7 +72,7 @@ validate → review-pack → write`) and written to the parallel proving-ground 
   Customer Stories/case-study            237          7         3.0%
   Documentation/doc-guide                586          6         1.0%
   ```
-  Also documented in `docs/reference/enrichment/chapter-3-content-enrichment.md` §13.5
+  Also documented in `docs/customer-documentation/enrichment/chapter-3-content-enrichment.md` §13.5
   (that file's frontmatter links to a live Asana task, GID `1217211621995392` — see §6 below on
   why that push never happened).
 - **Implication, not yet built:** any judge criterion that compares an abstract against
@@ -143,7 +143,7 @@ Repo `arijitchowdhury80/content-engagement` (this repo, public) has 2 open alert
   `https://github.com/arijitchowdhury80/content-engagement/security/secret-scanning/1` and `/2`.
 
 ### 7. Asana push — blocked, not done
-- `docs/reference/enrichment/chapter-3-content-enrichment.md` §13.5 has the full write-up
+- `docs/customer-documentation/enrichment/chapter-3-content-enrichment.md` §13.5 has the full write-up
   of the title/description finding (§3 above), committed to disk, not yet pushed to Asana.
 - Its frontmatter links to Asana task GID `1217211621995392`.
 - No live Asana MCP connection exists in this session (checked directly, zero Asana tools
@@ -161,7 +161,7 @@ Repo `arijitchowdhury80/content-engagement` (this repo, public) has 2 open alert
 - **Working tree has real uncommitted changes from TWO different sources, tangled together:**
   - Mine, this session: `scripts/algolia_enrichment/filters.py` (the section-check addition, §2),
     `scripts/profiles/Website__press-release.yaml` (the boilerplate fix, §2), plus
-    `docs/reference/enrichment/chapter-3-content-enrichment.md` (§3 write-up).
+    `docs/customer-documentation/enrichment/chapter-3-content-enrichment.md` (§3 write-up).
   - **Someone/something else, concurrently, not me**: `algolia_enrich.py`, `algolia_enrichment/
     corpus.py, model_io.py, pipeline.py, selection_registry.py, validate/payload.py`, several
     `profiles/Documentation__*.yaml` files, new files `docs/USER-GUIDE.md` and

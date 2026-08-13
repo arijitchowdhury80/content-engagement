@@ -116,8 +116,8 @@ state     SESSION.md
 gate      NONE APPROVABLE — doc-md-twin gate files are quarantined diagnostic-only under Rule 11
 next      docs/operations/enrichment/plans/PLAN-scout-only-phase1-calibration.md
 baselines DIAGNOSTIC until provenance-checked under Rule 11:
-          docs/operations/enrichment/reports/fresh50-run1|run2 (noise floor), fresh50-v12 (best)
-human     docs/operations/enrichment/reports/review-pack-verdicts-filled1|2.md
+          docs/evidence/enrichment/20260810-blog/fresh50-run1|run2 (noise floor), fresh50-v12 (best)
+human     docs/evidence/enrichment/20260810-blog/review-pack-verdicts-filled1|2.md
 code      docs/operations/enrichment/{candidates,span_gate,enrich_run,fetch_router,make_batches,run_batches,write_enrichment,verify_written}.py
 tests     cd <repo> && python3 -m pytest docs/archive/enrichment/legacy-tooling/tests/ -q
 ```

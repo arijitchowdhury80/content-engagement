@@ -46,7 +46,7 @@ case-study      237 records | en 83, de 78, fr 76 | 226 usable
                                            /customers/kingarthur   -> /customer-hub
 documentation   4,337 across 12 real doc-* page_types; 3 profile groups already written
 scout cache     docs/operations/enrichment/cache-scout/  9,579 bodies, 243 MB
-already built   docs/operations/enrichment/skill/algolia_enrichment/{__init__,errors,state,lock,
+already built   skills/algolia-data-enrichment/scripts/algolia_enrichment/{__init__,errors,state,lock,
                 artifacts}.py  + skill/tests/  -> 16 tests passing. Extend, do not rewrite.
 already fixed   candidates.py `_SENT_END` now Unicode-uppercase aware (was ASCII-only)
 ```
@@ -100,8 +100,8 @@ Run these as literal commands and paste real output. A gate with no output is a 
 
 **Gate 1 — unit and refusal tests**
 ```bash
-cd docs/operations/enrichment && python3 -m pytest skill/tests -q
-cd docs/operations/enrichment && python3 -m pytest tests -q     # must stay 472 passed, 1 xfailed
+PYTHONPATH=skills/algolia-data-enrichment/scripts python3 -m pytest skills/algolia-data-enrichment/scripts/tests -q
+python3 -m pytest docs/archive/enrichment/legacy-tooling/tests -q     # must stay 472 passed, 1 xfailed
 ```
 Pass: skill tests all green; the pre-existing 472 unchanged. A drop means the promotion lost
 something. All 17 commands have a passing refusal test.

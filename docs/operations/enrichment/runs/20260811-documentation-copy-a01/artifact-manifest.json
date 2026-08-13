@@ -1,7 +1,0 @@
-{
-  "prepare-documentation-copy": [
-    "documentation-copy/payloads.jsonl",
-    "documentation-copy/human-review-queue.jsonl",
-    "documentation-copy/report.json"
-  ]
-}

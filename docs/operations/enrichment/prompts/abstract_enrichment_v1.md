@@ -1,7 +1,7 @@
 ---
 title: "Abstract enrichment prompt — v1"
 status: draft, not yet run
-chapter: docs/reference/enrichment/chapter-3-content-enrichment.md
+chapter: docs/customer-documentation/enrichment/chapter-3-content-enrichment.md
 produces: verdict · abstract_enriched · keyhighlights_enriched
 guarantee: zero hallucination by construction — output is verbatim spans only
 ---

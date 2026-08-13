@@ -43,7 +43,7 @@ from pathlib import Path
 
 DEFAULT_INDEX = "Algolia_Prod_Copy_Enhanced"
 ENV_CANDIDATES = [
-    Path.home() / "Dropbox/AI-Development/RAG/Algolia-Central-Spectrum/.env.local",
+    Path.home() / "Dropbox/AI-Development/algolia-com/.env.local",
     Path(__file__).resolve().parents[2] / ".env.local",
 ]
 

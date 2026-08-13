@@ -4,7 +4,7 @@ This directory contains project-owned Agent Studio prompts, admin scripts, and l
 The active app is `0EXRPAXB56`; the primary development chat agent is `www Chat - Orchestrator`.
 
 Production Ask Algolia is comparison evidence only. Do not modify production Ask Algolia,
-Spectrum, or host HTML from this project.
+non-algolia.com surfaces, or host HTML from this project.
 
 ## Files
 
@@ -12,6 +12,9 @@ Spectrum, or host HTML from this project.
 - `admin/algoliaComConfig.mjs` — shared constants and Agent Studio payload builders.
 - `admin/build_algolia_com_agents.mjs` — create/list/patch script for configured agents.
 - `checks/` — read-only live Agent Studio inspection and smoke-test scripts.
+
+Do not reintroduce the old names `agents/definitions/` or `agents/probes/`. Prompt source belongs
+in `agents/prompts/`; diagnostics belong in `agents/checks/`.
 
 ## Usage
 

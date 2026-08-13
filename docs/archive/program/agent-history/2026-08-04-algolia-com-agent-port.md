@@ -14,7 +14,7 @@ Status: DRAFT — 2 open decisions (Section 4) before any build step runs. App/i
 | Piece | ACS reference | Reuse plan |
 |---|---|---|
 | Classifier/handoff | `agents/definitions/instructions_classifier.md`, `ACS-classifier-neural` — internal-only, no search tool, decides the `SPECIALIST:` deep-dive offer synchronously | Same mechanism, new agent instance. Agent Studio agents are app-scoped — cannot share the live ACS classifier across apps, must create a new one in Algolia.com's app. |
-| Judge | `lab/judge` (advocate/skeptic/referee, ≥2-of-3 corroboration gate, deterministic grounding gate in `detGround.ts`) | Reused with ~zero code change. One known coupling: `detGround.ts` has a hardcoded domain-term allowlist (`ReactSpectrum`, `SpectrumTwo`) used for grounding/negation heuristics — Spectrum-specific, extend or leave alone depending on whether Algolia.com content needs its own technical-term list. |
+| Judge | `lab/judge` (advocate/skeptic/referee, ≥2-of-3 corroboration gate, deterministic grounding gate in `detGround.ts`) | Reused with ~zero code change. One known coupling: `detGround.ts` had a hardcoded domain-term allowlist from a prior project used for grounding/negation heuristics. Replace it with Algolia.com-specific technical terms if this path is revived. |
 | Provisioning script | `agentConfig.mjs` + `build_acs_agents.mjs` (`PERSONAS` array, clone-base bootstrap, PATCH-in-place-never-delete, two-sided suggestions hard gate) | Reused as a **pattern**, not a shared parameterized module. `INDEX` is a module-level constant baked directly into `scopeTools()` — not an argument today. Forking into new files (Section 3) is lower-risk than parameterizing the existing ones in place, since ACS and Algolia.com are permanently separate apps with no shared runtime to protect by sharing code. |
 
 ## 2. New agent identities (names + index confirmed by Arijit, 2026-08-04)
@@ -42,7 +42,7 @@ No collision: checked live — none of these 6 names exist among the app's 43 ag
 - **`environment`** (multiple snapshot values coexist in the SAME index: `prod20260722` 14394, `nonprod20260220` 2133, `prod20260621` 191, `nonprod9` 130, `prod03042026` 96, `nonprod` 22) — **open decision, see Section 4**: without an environment filter, both agents will retrieve stale/nonprod snapshots mixed with current content.
 - **`language_code`**: `en` (12931), `fr` (2044), `de` (1992) — **open decision, see Section 4**.
 
-Proposed filter split (mirrors ACS's Generic/no-filter vs. Technical/`source:"ReactSpectrumS2" OR "ReactSpectrumV3"` pattern, now 3-way):
+Proposed filter split (mirrors ACS's Generic/no-filter vs. Technical source filter pattern, now 3-way):
 - `Algolia_Generalist`: no `source` filter — full index (all 8 sources, including Academy — Academy content isn't excluded from Generalist, it's just ALSO independently reachable via its own agent).
 - `Algolia_Specialist` ("Algolia Product Specialist"): `source:"Documentation" OR source:"Developers"` — the technical/product-reference slice.
 - `Algolia_Academy`: `source:"Academy"` only (142 records).
@@ -76,7 +76,7 @@ All 7 agents created and published in app `0EXRPAXB56`, verified live (agent cou
 | `Algolia_Judge_Referee` | `30f60755-adb6-41fc-899d-b5418f41867b` |
 | `Algolia_Judge_Skeptic` | `6dfd4a1e-8549-4771-998c-5a8ac233c3ae` |
 
-Built via `agents/definitions/build_algolia_com_agents.mjs` (forked from `build_acs_agents.mjs`, config in `agents/definitions/algoliaComConfig.mjs`). Prompts: `agents/definitions/instructions_algolia_{generalist,specialist,academy,classifier}.md`, `agents/definitions/suggestions_algolia_{generalist,specialist,academy}.md`, `agents/definitions/_shared_grounding_algolia.md`. Judges reuse ACS's existing `agents/definitions/judge/instructions_judge_{advocate,referee,skeptic}.md` verbatim (confirmed no Spectrum/Adobe/React references). Not yet done: bait-query verification harness (Section 5 step 3).
+Built via `agents/definitions/build_algolia_com_agents.mjs` (forked from `build_acs_agents.mjs`, config in `agents/definitions/algoliaComConfig.mjs`). Prompts: `agents/definitions/instructions_algolia_{generalist,specialist,academy,classifier}.md`, `agents/definitions/suggestions_algolia_{generalist,specialist,academy}.md`, `agents/definitions/_shared_grounding_algolia.md`. Judges reuse ACS's existing `agents/definitions/judge/instructions_judge_{advocate,referee,skeptic}.md` verbatim (confirmed no non-Algolia product references). Not yet done: bait-query verification harness (Section 5 step 3).
 
 ## 4b. Confirmed requirement for `instructions_algolia_generalist.md` (2026-08-05)
 

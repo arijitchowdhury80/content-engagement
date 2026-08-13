@@ -10,13 +10,20 @@ This contract overrides stale demos, old WIP bundles, and historical notes.
 
 - **Index:** `Algolia_Prod_Copy_Enhanced` is the only permitted chat/retrieval index. `Algolia_Prod_Copy_Vanilla` is obsolete and must never be deployed, copied, or suggested.
 - **App and agents:** work only in app `0EXRPAXB56`. The primary chat agent is `www Chat - Orchestrator`; visitor-intelligence agents are `www Person - *`; execution/specialist agents are `www Chat - *`; and the judge layer is distinct answer evaluation: root judge `4479f02f-d5d0-4fce-a875-dafda15de166` with Skeptic `a4c3846b-e538-4c9c-8e39-1bb15a21f2c2`, Referee `c43d7374-801a-4d0f-aa09-ca12830565c3`, and Advocate `f14b8ddf-2285-422c-89e5-180d7fa0b3bf`.
-- **Scope:** algolia.com only. Never use, change, validate against, or deploy Spectrum. Never modify production Ask Algolia or its Agent Studio configuration.
+- **Scope:** algolia.com only. Never use, change, validate against, or deploy any non-algolia.com surface. Never modify production Ask Algolia or its Agent Studio configuration.
 - **Jahia test surface:** deploy only to the development Jahia Drift custom-code block at `/sites/www/home/drift/custom-code-block`, then publish its parent `/sites/www/home/drift` with its subtree. This is the shared template block, not a local host HTML file.
 - **Current deployment:** published on 2026-08-12 with `data-release="enhanced-local-visual-parity-20260812"`. It uses the Enhanced index, Algolia theme, visitor/person configuration, concierge engagement, specialist routing declarations, judges, and form tool. The chat bundle is versioned as `algolia-chat.js?citationFallback=20260812`; its source-link guard guarantees visible canonical evidence when the model omits Markdown citations. Test URL: `https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?widgetFinal=20260812`.
 - **Deployment discipline:** confirm the target index, app, agent IDs, current live block, before-state, and rollback method before every publish. Read the live JCR block back after publishing and browser-test the actual Jahia page. Do not rely on an old local demo as the deployment source of truth.
 - **Status honesty:** the Jahia widget was verified to open and answer a live question with sources. Proactive engagement, visitor intelligence freshness, specialist handoff, judge reliability, and answer-quality superiority each still require their own end-to-end validation; do not claim them complete because their assets/configuration are present. Judge output is diagnostic evidence, never a substitute for source grounding.
 
 ## ENRICHMENT LANE — Status (2026-08-13)
+
+**Session closed 2026-08-13 ~01:50. State verified at close, read back from the live account:**
+`Algolia_Prod_Copy_Enhanced` **9,525** · Quarantine **2,548** ·
+snapshot `Algolia_Prod_Copy_Enhanced_SNAPSHOT_20260813_prerefresh` **11,928** (rollback intact) ·
+**376 tests passing** · working tree clean at `76856e2`, all 11 session commits on the remote.
+
+**Resume action:** read this file top to bottom, then start at *NEXT TASK* below.
 
 **Documentation refreshed and live. Third corpus closed.** Index **11,928 → 9,525**.
 
@@ -127,11 +134,11 @@ python3 skills/algolia-data-enrichment/scripts/algolia_enrich.py <command> --wor
 
 | Thing | Path |
 |---|---|
-| **Documentation refresh write-up** | `docs/reference/enrichment/chapter-7-documentation-refresh.md` |
-| Blog + Case Study write-up | `docs/reference/enrichment/chapter-6-blog-and-case-study-enrichment.md` |
-| Taxonomy chapter | `docs/reference/enrichment/chapter-1-taxonomy-enrichment.md` |
-| Run artefacts | `docs/operations/enrichment/runs/20260812-documentation-refresh-a01/` |
-| Full-dimension status tool | `.../20260812-documentation-refresh-a01/status.py` |
+| **Documentation refresh write-up** | `docs/customer-documentation/enrichment/chapter-7-documentation-refresh.md` |
+| Blog + Case Study write-up | `docs/customer-documentation/enrichment/chapter-6-blog-and-case-study-enrichment.md` |
+| Taxonomy chapter | `docs/customer-documentation/enrichment/chapter-1-taxonomy-enrichment.md` |
+| Compact verification evidence | `docs/evidence/enrichment/` |
+| Generated run payloads | intentionally local/ignored under `docs/operations/enrichment/runs/` |
 | Enrichment skill (USE THIS) | `skills/algolia-data-enrichment/` |
 | Asana — enrichment SSOT | project `Algolia.com` `1217389830976091`, task 4.1 (4.1.14 now ✅) |
 

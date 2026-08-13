@@ -4,11 +4,11 @@ This directory is the project home for Algolia.com chat widget JavaScript.
 
 ## Current State
 
-These files were recovered from the previous ignored `.tmp-jahia-upload/` working directory so the
-deployed Jahia widget artifacts are no longer only local temp files.
+These are the project-owned JavaScript files for the current Jahia chat widget work. Keep the
+editable files directly in this folder so they are easy to find and review.
 
-This is not yet a proper source tree. The durable source needs to be restored into this directory
-as readable modules, with a build script that creates `dist/` only when packaging is needed.
+Use `dist/` only for generated packages, zips, or dated release bundles. Do not put the editable
+source under a dated `dist/<date>/local-reference/` tree again.
 
 ## Recovered Artifacts
 
@@ -18,4 +18,4 @@ as readable modules, with a build script that creates `dist/` only when packagin
 - `algolia-chat-form-tool.js` — lead form client tool.
 - `algolia-chat-theme-algolia.js` — Algolia brand theme.
 - `algolia-confidence-badge.js` — confidence badge bundle.
-- `algolia-chat-jahia-20260812-wip.js` — combined Jahia WIP bundle.
+- `algolia-chat-jahia-20260812-wip.js` — combined Jahia WIP bundle retained for comparison.
