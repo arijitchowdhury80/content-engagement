@@ -147,3 +147,58 @@ def test_assert_no_field_lost_ignores_fields_that_were_already_empty():
     merged = merge_record(existing(), fresh())
     merged.pop("keywords", None)
     assert_no_field_lost(existing(), merged)
+
+
+SCHEMA_REQ = {
+    "version": "v1",
+    "axes": [
+        {"name": "page_type", "required_on": ["*"]},
+        {"name": "feature", "required_on": ["doc-sdk-unified"]},
+        {"name": "product", "required_on": ["doc-rest-api"]},
+    ],
+    "vocabularies": {"page_type": {"doc-sdk-unified": {}}, "feature": {"indexing": {}},
+                     "product": {"ai-search": {}}},
+}
+
+
+def test_a_required_axis_no_rule_can_decide_becomes_the_schemas_unknown():
+    """`/doc/libraries/sdk/methods/search/assign-user-id` is a multi-cluster method and the
+    feature vocabulary has no term for it, so no rule supplies one -- but feature is required on
+    doc-sdk-unified. `unknown` is the schema's own answer: the conformance checker accepts it on a
+    required axis, and the old per-language versions of these same methods already carry it."""
+    from algolia_enrichment.docmerge import fill_required_axes
+    rec = {"objectID": "x", "page_type": "doc-sdk-unified",
+           "taxonomy_provenance": {"page_type": "url-rule"},
+           "taxonomy_confidence": {"page_type": "high"}}
+    out = fill_required_axes(rec, SCHEMA_REQ)
+    assert out["feature"] == ["unknown"]
+    assert out["taxonomy_provenance"]["feature"] == "unresolved-no-rule"
+    assert out["taxonomy_confidence"]["feature"] == "low"
+
+
+def test_an_axis_that_is_not_required_is_left_absent():
+    """Filling a non-required axis with `unknown` would FAIL conformance -- the checker rejects
+    `unknown` anywhere it is not required."""
+    from algolia_enrichment.docmerge import fill_required_axes
+    rec = {"objectID": "x", "page_type": "doc-sdk-unified"}
+    out = fill_required_axes(rec, SCHEMA_REQ)
+    assert "product" not in out
+
+
+def test_a_populated_axis_is_never_replaced_by_unknown():
+    from algolia_enrichment.docmerge import fill_required_axes
+    rec = {"objectID": "x", "page_type": "doc-sdk-unified", "feature": ["indexing"],
+           "taxonomy_provenance": {"feature": "url-rule"},
+           "taxonomy_confidence": {"feature": "high"}}
+    out = fill_required_axes(rec, SCHEMA_REQ)
+    assert out["feature"] == ["indexing"]
+    assert out["taxonomy_provenance"]["feature"] == "url-rule"
+
+
+def test_page_type_is_never_filled_with_unknown():
+    """`unknown` is explicitly invalid for page_type -- a record with no page_type is a real
+    failure and must not be papered over."""
+    from algolia_enrichment.docmerge import fill_required_axes
+    rec = {"objectID": "x", "page_type": "doc-sdk-unified"}
+    out = fill_required_axes(rec, SCHEMA_REQ)
+    assert out["page_type"] == "doc-sdk-unified"

@@ -91,8 +91,8 @@ class ScoutClient:
         self._key = api_key
         self.poll_seconds = poll_seconds
 
-    def _scrape(self, absolute: str) -> tuple[str, int, str]:
-        """POST a job, poll it, return (markdown, http_status, served_url)."""
+    def _scrape(self, absolute: str) -> tuple[str, int, str, dict]:
+        """POST a job, poll it, return (markdown, http_status, served_url, metadata)."""
         body = json.dumps({"url": absolute, "formats": ["markdown"]})
         proc = secret_curl(
             ["-s", "--max-time", "60", "-X", "POST", f"{self.base}/v1/hosted/scrape",
@@ -130,12 +130,17 @@ class ScoutClient:
                 if not markdown.strip():
                     raise FetchFailed(f"scout returned empty markdown (http {status})", status)
                 served = (scrape.get("url") or scrape.get("final_url") or "")
-                return markdown, status, served
+                # Scout returns 23 fields; this client used to read three and discard the rest,
+                # including `metadata` -- which carries the page's own title and description.
+                # Downstream code then tried to recover them by parsing the markdown body, and
+                # failed on 852 of 882 pages because Scout's markdown has no frontmatter and
+                # usually no H1. The data was never missing; it was being thrown away here.
+                return markdown, status, served, (scrape.get("metadata") or {})
             if data.get("status") in ("failed", "error"):
                 raise FetchFailed(f"scout job failed: {str(data)[:160]}")
         raise FetchFailed(f"scout job {job} did not finish in {self.poll_seconds}s")
 
-    def _with_backoff(self, absolute: str) -> tuple[str, int, str]:
+    def _with_backoff(self, absolute: str) -> tuple[str, int, str, dict]:
         """Retry ONLY a rate-limit rejection. Everything else fails immediately -- retrying a 404
         or an empty body turns a real finding about the corpus into a slow one."""
         for attempt in range(1, _RATE_LIMIT_ATTEMPTS + 1):
@@ -165,9 +170,15 @@ class ScoutClient:
             "truncated": False,
             "original_length": 0,
             "fetch_error": "",
+            # Scout's own metadata for the page. Carried because the page's title and description
+            # live here and nowhere else in the response.
+            "page_title": "",
+            "page_description": "",
+            "page_language": "",
+            "word_count": "",
         }
         try:
-            markdown, status, served = self._with_backoff(absolute)
+            markdown, status, served, meta = self._with_backoff(absolute)
         except FetchFailed as exc:
             out["fetch_error"] = exc.reason
             out["http_status"] = exc.status
@@ -180,6 +191,10 @@ class ScoutClient:
 
         served = served or served_url_from(markdown)
         out.update({
+            "page_title": str(meta.get("title") or "").strip(),
+            "page_description": str(meta.get("description") or "").strip(),
+            "page_language": str(meta.get("language") or "").strip(),
+            "word_count": str(meta.get("word_count") or "").strip(),
             "served_url": path_of(served),
             "redirect_mismatch": bool(path_of(served)) and path_of(served) != path_of(absolute),
             "markdown": markdown,

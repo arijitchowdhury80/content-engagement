@@ -55,14 +55,26 @@ def _frontmatter_field(block: str, key: str) -> str:
     return match.group(1).strip().strip('"').strip("'")
 
 
-def title_and_description(markdown: str) -> tuple[str, str]:
-    """The page's own title and meta description, verbatim. Never synthesised."""
-    title = description = ""
+def title_and_description(markdown: str, metadata: dict | None = None) -> tuple[str, str]:
+    """The page's own title and meta description, verbatim. Never synthesised.
+
+    SCOUT'S `metadata` IS THE SOURCE, not the markdown body. Scout returns the page's <title> and
+    <meta name="description"> in a `metadata` object; its markdown carries neither -- there is no
+    frontmatter and 293 of 300 sampled pages have no H1 at all. Parsing the body for them found a
+    title on 30 of 882 pages and a description on none. The frontmatter and heading paths below
+    remain only as a fallback for bodies that genuinely carry them.
+    """
+    meta = metadata or {}
+    title = str(meta.get("title") or "").strip()
+    description = str(meta.get("description") or "").strip()
+    if title and description:
+        return title, description
+
     front = _FRONTMATTER.search(markdown or "")
     if front:
         block = front.group(1)
-        title = _frontmatter_field(block, "title")
-        description = _frontmatter_field(block, "description")
+        title = title or _frontmatter_field(block, "title")
+        description = description or _frontmatter_field(block, "description")
     if not title:
         heading = _HEADING.search(markdown or "")
         title = heading.group(1).strip() if heading else ""
@@ -84,15 +96,43 @@ def derive_taxonomy(url: str, schema: dict, compiled=None) -> dict:
             f"fails taxonomy-preflight only after it is already in the index.")
 
     axis_names = {axis["name"] for axis in schema["axes"]}
+    vocabularies = schema.get("vocabularies", {})
+
+    def in_vocabulary(axis: str, values):
+        """Keep only values the controlled vocabulary actually allows.
+
+        A capture group takes whatever the URL happens to contain, and on
+        `/doc/api-reference/api-parameters/(?P<feature>[\\w-]+)` that is an API PARAMETER NAME --
+        `advancedSyntax`, `distinct`, `minProximity`. Those are not product features and are not
+        in the 30-value feature vocabulary. Emitting them is worse than emitting nothing: the
+        merge treats a populated value as authoritative and would overwrite a correct stored
+        feature with a parameter name on 90 records. An axis the rules cannot legitimately fill
+        is left absent, so the merge keeps what is already there.
+        """
+        was_scalar = not isinstance(values, list)
+        items = [values] if was_scalar else values
+        allowed = vocabularies.get(axis)
+        kept = [v for v in items if v and (not allowed or v in allowed)]
+        # page_type is stored as a scalar and every other axis as an ordered array. Filtering
+        # must not silently change an axis's shape -- a list where a string belongs fails the
+        # taxonomy contract just as surely as a wrong value.
+        if was_scalar:
+            return kept[0] if kept else None
+        return kept
+
     out: dict = {}
     for key, value in rule.items():
         if key in ("host", "path") or key not in axis_names:
             continue
-        out[key] = value
+        kept = in_vocabulary(key, value)
+        if kept:
+            out[key] = kept
     # Named capture groups let one rule carry a per-URL value, e.g. the SDK language.
     for key, value in (match.groupdict() if match else {}).items():
         if key in axis_names and value:
-            out[key] = [value]
+            kept = in_vocabulary(key, [value])
+            if kept:
+                out[key] = kept
 
     provenance = {axis: "url-rule" for axis in out}
     confidence = {axis: "high" for axis in out}
@@ -104,10 +144,11 @@ def derive_taxonomy(url: str, schema: dict, compiled=None) -> dict:
     }
 
 
-def build_record(url: str, markdown: str, schema: dict, compiled=None) -> dict:
+def build_record(url: str, markdown: str, schema: dict, compiled=None,
+                 metadata: dict | None = None) -> dict:
     """One complete Documentation record, built in a single pass from the page and its URL."""
     absolute = to_absolute(url)
-    title, description = title_and_description(markdown)
+    title, description = title_and_description(markdown, metadata)
     taxonomy_fields = derive_taxonomy(absolute, schema, compiled)
     return {
         "objectID": absolute,

@@ -562,8 +562,11 @@ def cmd_build_documentation(ctx: Ctx) -> int:
                              "redirect_mismatch": got.get("redirect_mismatch")})
             continue
         try:
-            record = docrefresh.build_record(got.get("url") or got.get("key"),
-                                             got.get("markdown") or "", schema, compiled)
+            record = docrefresh.build_record(
+                got.get("url") or got.get("key"), got.get("markdown") or "", schema, compiled,
+                metadata={"title": got.get("page_title"),
+                          "description": got.get("page_description"),
+                          "language": got.get("page_language")})
         except EnrichmentError as exc:
             failures.append({"key": got.get("key"), "error": str(exc)})
             continue
@@ -574,6 +577,7 @@ def cmd_build_documentation(ctx: Ctx) -> int:
                                        if not str(record.get(f) or "").strip()]})
         prior = existing_by_key.get(seed.canonical_key(record["url"]))
         merged = docmerge.merge_record(prior, record)
+        merged = docmerge.fill_required_axes(merged, schema)
         if prior:
             docmerge.assert_no_field_lost(prior, merged)
         records.append(merged)
