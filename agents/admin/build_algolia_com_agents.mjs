@@ -15,6 +15,7 @@ import { dirname, join } from 'node:path';
 import { PERSONAS, INDEX, CLONE_BASE, RETIRE, MAIN_MODEL, buildAgentName, buildSuggestionsConfig, buildAgentBody, assertSuggestionsEnabled, scopeTools } from './algoliaComConfig.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const PROMPTS_DIR = join(__dirname, '..', 'prompts');
 const envPath = [process.env.ACS_ENV, join(process.cwd(), '.env.local'), join(__dirname, '..', '..', '.env.local')].filter(Boolean).find((p) => existsSync(p));
 const ENV = {}; for (const l of readFileSync(envPath, 'utf8').split('\n')) { const t = l.trim(); if (!t || t.startsWith('#') || !t.includes('=')) continue; const i = t.indexOf('='); ENV[t.slice(0, i).trim()] = t.slice(i + 1).trim(); }
 const APP = ENV.ALGOLIA_APP_ID, KEY = ENV.ALGOLIA_ADMIN_API_KEY;
@@ -27,7 +28,13 @@ async function listAgents() { const r = await call('GET', '/agents?limit=100'); 
 // this suffix so a test run never touches the real names. Empty → default (live names).
 const SUFFIX = process.env.ALGOLIA_COM_AGENT_SUFFIX ?? '';
 
-function loadPrompt(file) { let s = readFileSync(join(__dirname, file), 'utf8'); if (s.includes('[[SHARED_GROUNDING]]')) s = s.replace('[[SHARED_GROUNDING]]', readFileSync(join(__dirname, '_shared_grounding_algolia.md'), 'utf8').trim()); return s; }
+function loadPrompt(file) {
+  let s = readFileSync(join(PROMPTS_DIR, file), 'utf8');
+  if (s.includes('[[SHARED_GROUNDING]]')) {
+    s = s.replace('[[SHARED_GROUNDING]]', readFileSync(join(PROMPTS_DIR, '_shared_grounding_algolia.md'), 'utf8').trim());
+  }
+  return s;
+}
 
 const mode = process.argv[2];
 const existing = await listAgents();

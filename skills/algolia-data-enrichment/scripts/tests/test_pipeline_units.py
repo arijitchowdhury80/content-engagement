@@ -280,7 +280,7 @@ def test_dispatch_disagreement_refuses_to_write(run_cli, wire, workspace):
     assert run_cli("plan-slice", "--run-id", run, *sl) == 0
     assert run_cli("fetch", "--run-id", run, *sl) == 0
     assert run_cli("enrich", "--run-id", run, *sl) == 0
-    rows = [json.loads(l) for l in (Path(workspace) / "docs" / "70-enrichment" / "runs" / run /
+    rows = [json.loads(l) for l in (Path(workspace) / "docs" / "operations" / "enrichment" / "runs" / run /
                                     "outputs" / "base" / "results.jsonl").read_text().splitlines()]
     assert rows[0]["status"] == "METHOD_DISAGREEMENT"
     assert not rows[0]["abstract_spans_stored"]

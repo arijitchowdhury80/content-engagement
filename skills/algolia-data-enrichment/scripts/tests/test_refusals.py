@@ -30,7 +30,7 @@ SLICE = ["--source", "Customer Stories", "--page-type", "case-study"]
 
 
 def _run_dir(workspace):
-    return Path(workspace) / "docs" / "70-enrichment" / "runs" / RUN
+    return Path(workspace) / "docs" / "operations" / "enrichment" / "runs" / RUN
 
 
 def _approval(workspace, name, **fields):
@@ -145,7 +145,7 @@ def test_plan_slice_refuses_an_empty_target_set(run_cli, wire, workspace):
 
 def test_plan_slice_replays_exact_objectids_but_reads_current_source_records(run_cli, wire, workspace):
     records = make_records(4, source="Blog", page_type="blog-post")
-    prior = Path(workspace) / "docs" / "70-enrichment" / "runs" / "prior" / "manifest.json"
+    prior = Path(workspace) / "docs" / "operations" / "enrichment" / "runs" / "prior" / "manifest.json"
     prior.parent.mkdir(parents=True)
     prior.write_text(json.dumps({"source": "Blog", "page_type": "blog-post",
                                  "objectIDs": ["rec-3", "rec-1"]}))
@@ -214,6 +214,19 @@ def test_enrich_refuses_free_written_model_output(run_cli, wire, workspace):
     assert all(not r.get("abstract_spans_stored") for r in rows)
 
 
+def test_enrich_echoes_the_sealed_replay_source_not_a_fresh_fetch(run_cli, wire, workspace):
+    """The real CLI must not relabel sealed Scout replay bodies as a fresh Scout fetch."""
+    _plan_and_fetch(run_cli, wire, workspace)
+    fetch_manifest = _run_dir(workspace) / "fetch-manifest.json"
+    manifest = json.loads(fetch_manifest.read_text())
+    manifest["body_source"] = "SealedScoutReplay"
+    fetch_manifest.write_text(json.dumps(manifest))
+
+    assert run_cli("enrich", "--run-id", RUN, *SLICE) == 0
+    effective = json.loads((_run_dir(workspace) / "effective-config.json").read_text())
+    assert effective["body_source"] == "SealedScoutReplay"
+
+
 def test_freeze_selections_reaches_validated_cli_output(run_cli, wire, workspace):
     # This command consumes an already validated artifact. Use that contract directly rather
     # than a generic fixture whose fake body cannot meet the Case Study cohesion threshold.
@@ -231,7 +244,7 @@ def test_freeze_selections_reaches_validated_cli_output(run_cli, wire, workspace
         "selected_candidate_ids": {"abstract": [1, 2], "highlights": [3, 4, 5]},
     }) + "\n")
     assert run_cli("freeze-selections", "--run-id", RUN, *SLICE) == 0
-    registry = Path(workspace) / "docs" / "70-enrichment" / "selection-registry.jsonl"
+    registry = Path(workspace) / "docs" / "operations" / "enrichment" / "state" / "selection-registry.jsonl"
     assert registry.exists() and registry.read_text().strip()
 
 
@@ -241,6 +254,55 @@ def test_enrich_refuses_a_judge_that_is_the_writer(run_cli, wire, workspace):
          scout_client=FakeScout({f"rec-{i}": body_for(i) for i in range(4)}),
          inference=FakeInference(_writer(), served={"large": "glm-5.2", "small": "glm-5.2"}))
     assert run_cli("enrich", "--run-id", RUN, *SLICE) == 2
+
+
+def test_documentation_no_abstract_profile_never_initialises_an_inference_client(
+        run_cli, wire, workspace):
+    """Documentation is a metadata audit target, never an LLM writing target."""
+    records = make_records(2, source="Documentation", page_type="doc-sdk")
+
+    class InferenceMustNotBeCalled:
+        def served_models(self):
+            raise AssertionError("no_abstract Documentation must not initialise inference")
+
+    bodies = {r["objectID"]: body_for(i) for i, r in enumerate(records)}
+    wire(algolia=FakeAlgolia(records), scout_client=FakeScout(bodies),
+         inference=InferenceMustNotBeCalled())
+    doc_slice = ["--source", "Documentation", "--page-type", "doc-sdk"]
+    assert run_cli("plan-slice", "--run-id", RUN, *doc_slice) == 0
+    assert run_cli("fetch", "--run-id", RUN, *doc_slice) == 0
+    assert run_cli("enrich", "--run-id", RUN, *doc_slice) == 0
+    rows = [json.loads(line) for line in
+            (_run_dir(workspace) / "outputs" / "base" / "results.jsonl").read_text().splitlines()
+            if line.strip()]
+    assert {r["status"] for r in rows} == {"NO_ABSTRACT_BY_PROFILE"}
+
+
+def test_audit_documentation_refuses_missing_required_metadata(run_cli, wire, workspace):
+    """A Documentation audit must fail closed, rather than silently accept an empty title."""
+    record = make_records(1, source="Documentation", page_type="doc-sdk")[0]
+    record["title"] = ""
+    wire(algolia=FakeAlgolia([record]))
+    assert run_cli("audit-documentation", "--run-id", RUN) == 2
+
+
+def test_prepare_documentation_copy_uses_only_existing_description(run_cli, wire, workspace):
+    """Documentation abstract payloads are a deterministic description copy, never LLM output."""
+    complete, missing = make_records(2, source="Documentation", page_type="doc-sdk")
+    missing["description"] = ""
+    stack = wire(algolia=FakeAlgolia([complete, missing]))
+
+    assert run_cli("prepare-documentation-copy", "--run-id", RUN) == 0
+    run = _run_dir(workspace)
+    payloads = [json.loads(line) for line in
+                (run / "documentation-copy" / "payloads.jsonl").read_text().splitlines()]
+    queue = [json.loads(line) for line in
+             (run / "documentation-copy" / "human-review-queue.jsonl").read_text().splitlines()]
+    assert payloads == [{"objectID": complete["objectID"],
+                         "abstract_enriched": [complete["description"]]}]
+    assert queue[0]["objectID"] == missing["objectID"]
+    assert queue[0]["suggested_action"] == "supply_description"
+    assert stack["algolia"].writes == []
 
 
 # ---------------------------------------------------------------------------
@@ -363,6 +425,21 @@ def test_validate_refuses_when_the_effective_config_disagrees_with_the_profile(
     st["tracks"].update({"enrich": "DONE", "final": "BUILT"})
     (rd / "state.json").write_text(json.dumps(st))
     wire(algolia=FakeAlgolia(make_records(4)))
+    assert run_cli("validate", "--run-id", RUN, *SLICE) == 2
+
+
+def test_validate_refuses_when_profile_coverage_and_review_caps_fail(run_cli, wire, workspace):
+    """A grounded singleton cannot pass a profile that required broad usable coverage."""
+    _plan_and_fetch(run_cli, wire, workspace)
+    assert run_cli("enrich", "--run-id", RUN, *SLICE) == 0
+    rd = _run_dir(workspace)
+    base = rd / "outputs" / "base" / "results.jsonl"
+    rows = [json.loads(line) for line in base.read_text().splitlines()]
+    for row in rows[1:]:
+        row.update({"status": "JUDGE_HUMAN_REVIEW", "abstract_enriched": "",
+                    "abstract_spans_stored": [], "keyhighlights_enriched": []})
+    base.write_text("".join(json.dumps(row) + "\n" for row in rows))
+    assert run_cli("build-final", "--run-id", RUN, *SLICE) == 0
     assert run_cli("validate", "--run-id", RUN, *SLICE) == 2
 
 
@@ -582,5 +659,5 @@ def test_handoff_names_the_next_step(run_cli, wire, workspace):
     _plan_and_fetch(run_cli, wire, workspace)
     wire(algolia=FakeAlgolia(make_records(4)))
     assert run_cli("handoff", "--run-id", RUN) == 0
-    text = (Path(workspace) / "docs" / "70-enrichment" / "HANDOFF-current.md").read_text()
+    text = (Path(workspace) / "docs" / "operations" / "enrichment" / "HANDOFF-current.md").read_text()
     assert "## Next step" in text and "enrich" in text

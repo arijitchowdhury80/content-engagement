@@ -27,6 +27,7 @@ THE AGGREGATE GATE EXISTS BECAUSE PER-RECORD CHECKS CANNOT SEE A BROKEN RULE.
 
 from __future__ import annotations
 
+import json
 import re
 
 from .errors import EnrichmentError
@@ -162,6 +163,44 @@ def build_record(url: str, markdown: str, schema: dict, compiled=None,
         "needs_title": not title.strip(),
         **taxonomy_fields,
     }
+
+
+# Algolia refuses any record over 100,000 bytes and rejects the WHOLE batch it appears in, so a
+# single oversized page blocks every record travelling with it. Budgeted slightly under the hard
+# limit: JSON escaping can expand a body after measurement, and being 200 bytes under costs
+# nothing while being 200 over costs the batch.
+MAX_RECORD_BYTES = 95_000
+BODY_TRUNCATION_MARKER = "\n\n[... body truncated to fit the index record size limit ...]"
+
+
+def fit_record_size(record: dict, max_bytes: int = MAX_RECORD_BYTES) -> dict:
+    """Trim an oversized record's BODY until it fits, and say so on the record.
+
+    Only the body is trimmed: it is the one field that is long by nature and the one whose tail
+    matters least. Truncation is declared both in the text and in `body_truncated`, because a
+    silently shortened body reads exactly like a complete one.
+    """
+    if len(json.dumps(record).encode("utf-8")) <= max_bytes:
+        return record
+
+    body = record.get("body") or ""
+    without_body = dict(record)
+    without_body["body"] = ""
+    overhead = len(json.dumps(without_body).encode("utf-8")) + len(BODY_TRUNCATION_MARKER)
+    room = max_bytes - overhead
+    if room <= 0:
+        raise EnrichmentError(
+            f"record {record.get('objectID')!r} exceeds {max_bytes} bytes even with no body; "
+            f"trimming cannot save it and it must not be written as though it were fine.")
+
+    keep = body
+    while len(json.dumps({**record, "body": keep + BODY_TRUNCATION_MARKER}).encode("utf-8")) > max_bytes:
+        keep = keep[: max(0, int(len(keep) * 0.9)) or 0]
+        if not keep:
+            break
+    record["body"] = keep + BODY_TRUNCATION_MARKER
+    record["body_truncated"] = True
+    return record
 
 
 def fetch_report(rows: list[dict]) -> dict:

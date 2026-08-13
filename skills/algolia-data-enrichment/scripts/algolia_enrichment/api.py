@@ -23,7 +23,9 @@ THE SOURCE INDEX IS READ-ONLY.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import tempfile
 from pathlib import Path
 
 from .config import env_values
@@ -75,10 +77,23 @@ class AlgoliaClient:
         args = ["-s", "--max-time", "120", "-X", method,
                 f"https://{self._app}-dsn.algolia.net{path}",
                 "-H", "Content-Type: application/json"]
+        # The body goes through a FILE, never argv. Passing it as `-d <json>` worked only while
+        # records were small: once each record carried the page body (~8kB), a 100-record batch
+        # became an ~800kB argument and the OS refused it -- "Argument list too long". A temp
+        # file has no such ceiling and keeps the payload out of the process argument list, which
+        # `ps auxww` exposes to every local process. Credentials continue to travel on stdin.
+        payload = None
         if body is not None:
-            args += ["-d", json.dumps(body)]
-        proc = secret_curl(args, {"X-Algolia-Application-Id": self._app,
-                                  "X-Algolia-API-Key": self._key})
+            payload = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+            json.dump(body, payload)
+            payload.close()
+            args += ["--data-binary", f"@{payload.name}"]
+        try:
+            proc = secret_curl(args, {"X-Algolia-Application-Id": self._app,
+                                      "X-Algolia-API-Key": self._key})
+        finally:
+            if payload is not None:
+                os.unlink(payload.name)
         if proc.returncode != 0:
             raise EnrichmentError(f"curl failed ({proc.returncode}) on {path}: {proc.stderr[:300]}")
         try:

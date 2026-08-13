@@ -57,7 +57,7 @@ Runtime evidence:
 Repo contradiction found:
 
 - `docs/design/search-experience/discovery-engagement/OPERATING-CONTRACT.md` says relative record paths must resolve against `https://www.algolia.com`.
-- `agents/definitions/_shared_grounding_algolia.md` says URLs should be copied exactly as stored and not normalized.
+- `agents/prompts/_shared_grounding_algolia.md` says URLs should be copied exactly as stored and not normalized.
 
 ## Root Cause
 

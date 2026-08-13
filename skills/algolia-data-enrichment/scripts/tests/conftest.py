@@ -22,6 +22,29 @@ from algolia_enrichment import api, model_io, scout  # noqa: E402
 
 SOURCE_INDEX = "Test_Source"
 TARGET_INDEX = "Test_Target"
+TAXONOMY_SCHEMA = json.loads(
+    (Path(__file__).resolve().parents[2] / "references" / "taxonomy-schema.algolia-com.json").read_text())
+
+
+def taxonomy_fields(page_type: str) -> dict:
+    """A contract-valid taxonomy baseline for CLI fixtures.
+
+    `plan-slice` now checks live taxonomy before reaching its own behavior. Test records must
+    therefore be contract-valid by default; individual taxonomy tests deliberately override this.
+    """
+    provenance = {"page_type": "url-path"}
+    confidence = {"page_type": "high"}
+    fields = {"taxonomy_version": TAXONOMY_SCHEMA["version"],
+              "taxonomy_provenance": provenance, "taxonomy_confidence": confidence}
+    for axis in TAXONOMY_SCHEMA["axes"]:
+        name = axis["name"]
+        if name == "page_type":
+            continue
+        if "*" in axis.get("required_on", []) or page_type in axis.get("required_on", []):
+            fields[name] = ["unknown"]
+            provenance[name] = "unknown"
+            confidence[name] = "low"
+    return fields
 
 
 class FakeAlgolia:
@@ -151,7 +174,7 @@ def workspace(tmp_path):
         "ALGOLIA_APP_ID=test\nALGOLIA_ADMIN_API_KEY=test\n"
         "SCOUT_HOSTED_API_KEY=test\nALGOLIA_INFERENCE_BASE_URL=http://x\n"
         "ALGOLIA_INFERENCE_API_KEY=test\n")
-    (tmp_path / "docs" / "70-enrichment" / "runs").mkdir(parents=True)
+    (tmp_path / "docs" / "operations" / "enrichment" / "runs").mkdir(parents=True)
     return tmp_path
 
 
@@ -191,6 +214,7 @@ def make_records(n=4, source="Customer Stories", page_type="case-study", langs=(
             "title": f"Acme {i} customer story",
             "description": f"How Acme {i} rebuilt discovery.",
             "source": source, "page_type": page_type, "language_code": lang,
+            **taxonomy_fields(page_type),
         })
     return out
 

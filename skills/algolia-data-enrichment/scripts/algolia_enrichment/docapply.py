@@ -68,6 +68,22 @@ def assert_records_sane(records: list[dict]) -> None:
         seen.add(record["objectID"])
 
 
+def delete_set(existing_ids: set[str], written_ids: set[str],
+               unfetched: set[str]) -> list[str]:
+    """Records to remove: present in the index, not being written, and NOT merely unfetchable.
+
+    The third term is the one that matters. Deletion is derived from `existing - written`, and a
+    page whose fetch failed never reaches `written` -- so without excluding it, a transient
+    network error turns into a deleted record. Measured on this run: /doc/onboarding 302-redirects
+    to its trailing-slash form, Scout returned no body, and the record for it is a real live page
+    titled "Interactive Tutorial". It would have been deleted for being unreachable for ten
+    seconds.
+
+    Not knowing what a page contains is never evidence that the page is gone.
+    """
+    return sorted(existing_ids - written_ids - unfetched)
+
+
 def read_refresh_approval(run_dir, *, target_index: str, write_count: int,
                           delete_count: int) -> dict:
     """Arijit's explicit yes, naming the index and BOTH counts. Nobody else writes this file."""

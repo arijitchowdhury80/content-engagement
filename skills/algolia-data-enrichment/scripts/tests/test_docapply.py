@@ -164,3 +164,30 @@ def test_verify_after_refresh_passes_when_everything_reconciles():
     report = verify_after_refresh(FakeClient(stored, 10), "Enhanced", records,
                                   deleted_ids=[], expected_total=10)
     assert report["ok"] is True
+
+
+from algolia_enrichment.docapply import delete_set
+
+
+def test_a_page_that_failed_to_fetch_is_never_deleted():
+    """The delete set is `existing - written`. A page whose fetch failed never enters the written
+    set, so without this guard a transient fetch error silently becomes a deletion. Measured live:
+    /doc/onboarding 302-redirects to a trailing-slash URL, Scout returned no body, and the record
+    -- a real, live page titled "Interactive Tutorial" -- would have been removed."""
+    existing = {"a", "b", "unfetchable"}
+    written = {"a", "b"}
+    assert delete_set(existing, written, unfetched={"unfetchable"}) == []
+
+
+def test_a_page_absent_from_the_live_site_is_still_deleted():
+    existing = {"a", "gone"}
+    written = {"a"}
+    assert delete_set(existing, written, unfetched=set()) == ["gone"]
+
+
+def test_delete_set_is_sorted_for_reproducibility():
+    assert delete_set({"z", "a", "m"}, set(), unfetched=set()) == ["a", "m", "z"]
+
+
+def test_a_record_being_rewritten_is_never_in_the_delete_set():
+    assert delete_set({"a"}, {"a"}, unfetched=set()) == []

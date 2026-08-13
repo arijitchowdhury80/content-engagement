@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import pytest
 
 from algolia_enrichment.docrefresh import (
@@ -219,3 +221,48 @@ def test_a_valid_capture_group_value_is_still_kept():
     }
     record = build_record("https://www.algolia.com/doc/libraries/java/v4/methods/x", "b", schema)
     assert record["language_platform"] == ["java"]
+
+
+from algolia_enrichment.docrefresh import MAX_RECORD_BYTES, fit_record_size
+
+
+def test_a_record_within_the_limit_is_untouched():
+    rec = {"objectID": "x", "body": "short body", "title": "t"}
+    out = fit_record_size(dict(rec))
+    assert out == rec
+
+
+def test_an_oversized_record_is_trimmed_to_fit_algolias_hard_limit():
+    """Algolia refuses any record over 100,000 bytes. Two of 1,933 Documentation pages exceed it
+    once the page body is stored -- a changelog and a composition API page. The whole batch is
+    rejected, not just the offender, so one page over the line blocks the entire write."""
+    rec = {"objectID": "x", "title": "t", "body": "A" * 200_000}
+    out = fit_record_size(dict(rec))
+    assert len(json.dumps(out).encode()) <= MAX_RECORD_BYTES
+    assert len(out["body"]) < 200_000
+
+
+def test_truncation_is_declared_in_the_body_and_flagged_on_the_record():
+    """A silently shortened body reads as the whole page. The marker and the flag make it
+    obvious that the stored text stops early."""
+    rec = {"objectID": "x", "title": "t", "body": "A" * 200_000}
+    out = fit_record_size(dict(rec))
+    assert out["body_truncated"] is True
+    assert "truncated" in out["body"].lower()
+
+
+def test_trimming_never_touches_anything_but_the_body():
+    rec = {"objectID": "x", "title": "keep me", "description": "keep me too",
+           "page_type": "doc-guide", "body": "A" * 200_000}
+    out = fit_record_size(dict(rec))
+    assert out["title"] == "keep me"
+    assert out["description"] == "keep me too"
+    assert out["page_type"] == "doc-guide"
+
+
+def test_a_record_oversized_without_any_body_is_refused_rather_than_silently_shipped():
+    """If the non-body fields alone blow the limit, trimming the body cannot save it and the
+    record must not be sent as though it were fine."""
+    rec = {"objectID": "x", "title": "T" * 200_000, "body": "b"}
+    with pytest.raises(EnrichmentError):
+        fit_record_size(dict(rec))

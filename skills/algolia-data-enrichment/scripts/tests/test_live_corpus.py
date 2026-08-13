@@ -39,7 +39,7 @@ def _record(oid, spans, highlights=(), source="Blog", page_type="blog-post", url
 
 
 def _cache(tmp_path, entries):
-    d = tmp_path / "docs" / "70-enrichment" / "cache-scout" / "batch" / "001"
+    d = tmp_path / "docs" / "operations" / "enrichment" / "cache-scout" / "batch" / "001"
     d.mkdir(parents=True, exist_ok=True)
     for i, e in enumerate(entries):
         (d / f"{i}.json").write_text(json.dumps(e))
@@ -231,10 +231,10 @@ def test_a_legacy_string_abstract_is_read_as_one_span_not_skipped():
 def test_both_cache_layouts_are_read(tmp_path):
     """The top-level pilot cache and the per-run cache are both real. Reading only one is how
     2,586 cached Blog bodies were reported as missing."""
-    top = tmp_path / "docs" / "70-enrichment" / "cache-scout" / "b" / "1"
+    top = tmp_path / "docs" / "operations" / "enrichment" / "cache-scout" / "b" / "1"
     top.mkdir(parents=True)
     (top / "x.json").write_text(json.dumps({"objectID": "a", "url": "/a", "markdown": PAGE}))
-    run = tmp_path / "docs" / "70-enrichment" / "runs" / "r1" / "cache-scout"
+    run = tmp_path / "docs" / "operations" / "enrichment" / "runs" / "r1" / "cache-scout"
     run.mkdir(parents=True)
     (run / "y.json").write_text(json.dumps({"objectID": "b", "url": "/b", "markdown": PAGE}))
     cache = load_cached_bodies(tmp_path)

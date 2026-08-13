@@ -9,10 +9,10 @@ integers. Fabrication is not detected, it is unrepresentable: an integer either 
 sentence from that page or it is out of range.
 
 ```
-Status   v0, method proven on 20 records across 2 sources and 3 languages.
-Scale    Designed for a 11,928-record corpus; largest slice run so far is 10.
-Writes   Only to a named parallel index. Zero production search results changed.
-Tests    163, all green. Plus 4 evaluation gates — see docs/source/EVAL-LOG.md.
+Surface  21 CLI commands; one supported executable entry point.
+Workflow Source taxonomy → Scout body → ID-only selection → validation → human review → approved parallel write.
+Safety   Source index is structurally read-only; only enriched fields can reach the parallel index.
+Tests    368 passing skill tests.
 ```
 
 ---
@@ -46,16 +46,16 @@ same result on a re-run.
 
 ---
 
-## Install
+## Project-local use
 
 ```bash
-git clone https://github.com/arijitchowdhury80/arijit-skills.git
-cd arijit-skills/skills/algolia-data-enrichment
-./install-skill.sh
+cd /Users/arijitchowdhury/Dropbox/AI-Development/algolia-com
+PYTHONPATH=skills/algolia-data-enrichment/scripts \
+python3 skills/algolia-data-enrichment/scripts/algolia_enrich.py --help
 ```
 
-Then restart Claude Code. The installer copies the skill to `~/.claude/skills/`, checks Python
-and PyYAML, and runs the test suite so you find out immediately if something is wrong.
+This skill is scoped to this repository. Do not install or maintain it from a global
+`.claude/skills` location for this project.
 
 **Requirements**
 
@@ -82,18 +82,20 @@ is world-readable and a corpus run spawns one curl per page.
 ## Quickstart
 
 ```bash
-cd .claude/.claude/skills/algolia-data-enrichment/scripts
+SKILL=/path/to/algolia-data-enrichment
+cd "$SKILL/scripts"
 WS=/path/to/your/project
 
 # 1. What is in the index, and is every page_type profiled?
 python3 algolia_enrich.py census       --workspace $WS
 python3 algolia_enrich.py profile-lint --workspace $WS
+RUN=20260810-blog-blog-post-a01
+python3 algolia_enrich.py taxonomy-preflight --workspace $WS --run-id $RUN
 
 # 2. Is the fetcher actually working? (a real job — /health lies)
 python3 algolia_enrich.py health-scout --workspace $WS --probe-url /blog/some-post
 
 # 3. Plan a bounded slice
-RUN=20260810-blog-blog-post-a01
 python3 algolia_enrich.py plan-slice --workspace $WS --run-id $RUN \
         --source Blog --page-type blog-post --limit 10
 
@@ -120,7 +122,7 @@ Full command reference: **[docs/COMMANDS.md](docs/COMMANDS.md)**.
 ```mermaid
 flowchart TD
     subgraph READ["read-only"]
-        C1[census] --> C2[profile-lint] --> C3[health-scout] --> C4[plan-slice]
+        C1[census] --> C2[profile-lint] --> CT[taxonomy-preflight] --> C3[health-scout] --> C4[plan-slice]
     end
     subgraph BUILD["local artifacts — nothing leaves the run folder"]
         F[fetch] --> E[enrich] --> R[repair] --> BF[build-final] --> V[validate] --> RP[review-pack]
@@ -171,8 +173,9 @@ reported success.
 
 | Read this | When |
 |---|---|
+| **[docs/USER-GUIDE.md](docs/USER-GUIDE.md)** | choosing a workflow and running the CLI safely |
 | **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** | understanding the module map and data flow |
-| **[docs/COMMANDS.md](docs/COMMANDS.md)** | running anything — all 17 commands, inputs, outputs, refusals |
+| **[docs/COMMANDS.md](docs/COMMANDS.md)** | running anything — all 21 commands, inputs, outputs, refusals |
 | **[docs/OPERATIONS.md](docs/OPERATIONS.md)** | running a real slice: approvals, run folders, failure recovery |
 | **[docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)** | asking "why is it done this way" — every answer is a defect that happened |
 | **[references/](references/)** | loaded on demand by the agent, one file per concern |

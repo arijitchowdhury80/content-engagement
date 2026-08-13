@@ -580,6 +580,8 @@ def cmd_build_documentation(ctx: Ctx) -> int:
         merged = docmerge.fill_required_axes(merged, schema)
         if prior:
             docmerge.assert_no_field_lost(prior, merged)
+        # Algolia rejects the whole batch if any single record exceeds 100kB.
+        merged = docrefresh.fit_record_size(merged)
         records.append(merged)
 
     if not records:
@@ -642,7 +644,25 @@ def cmd_apply_documentation_refresh(ctx: Ctx) -> int:
     existing_ids = {r["objectID"] for r in client.browse(index, attributes=["objectID", "source"])
                     if r.get("source") == docapply.SOURCE}
     new_ids = {r["objectID"] for r in records}
-    delete_ids = sorted(existing_ids - new_ids)
+
+    # A page we could not fetch is a page we know nothing about -- and not knowing is never
+    # evidence that it is gone. Without this, /doc/onboarding (a live page that 302-redirects to
+    # its trailing-slash form, so Scout returned no body) would have been DELETED for being
+    # briefly unreachable.
+    unfetched = set()
+    manifest = ctx.run_dir / "fetch-manifest.jsonl"
+    if manifest.exists():
+        for line in manifest.read_text().splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            if row.get("fetch_error") or row.get("redirect_mismatch"):
+                key = seed.canonical_key(row.get("url") or row.get("key") or "")
+                unfetched |= {oid for oid in existing_ids if seed.canonical_key(oid) == key}
+    if unfetched:
+        print(f"protected from deletion (fetch failed, liveness unknown): {len(unfetched)}")
+
+    delete_ids = docapply.delete_set(existing_ids, new_ids, unfetched)
     create_ids = new_ids - existing_ids
     expected_total = before_raw - len(delete_ids) + len(create_ids)
     print(f"existing={len(existing_ids)} writing={len(records)} deleting={len(delete_ids)} "
