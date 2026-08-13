@@ -16,10 +16,11 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
+from urllib.parse import unquote, urljoin, urlparse
 
 from .api import AlgoliaClient
 from .errors import EnrichmentError, ZeroWorkError
+from .scout import path_of
 
 BASE_URL = "https://www.algolia.com"
 ALLOWED_HOSTS = {
@@ -107,6 +108,23 @@ def classify_url(record: dict, base_url: str = BASE_URL) -> dict:
     }
 
 
+def _document_path(url: str) -> str:
+    """The path that identifies the document, via Scout's own `path_of`.
+
+    Deliberately CALLS scout.path_of rather than reimplementing it. A second copy of this
+    rule is what caused the defect it guards against: scout.py enforced served-URL identity
+    from 2026-08-10 while this module judged on the status code, and the two never agreed.
+    A paraphrase here would rebuild that split -- an earlier draft of this function
+    lowercased the path, which would have silently accepted a /Foo -> /foo redirect that
+    Scout rejects.
+
+    Only percent-escaping is added on top, because curl reports `url_effective` escaped
+    while Scout reports the page's own unescaped URL. Host is excluded on purpose:
+    /hc/... legitimately resolves onto support.algolia.com.
+    """
+    return unquote(path_of(url))
+
+
 def _assert_unique(values: list[str], label: str) -> None:
     seen: dict[str, str] = {}
     for row in values:
@@ -156,6 +174,16 @@ def verify_http_results(plan: UrlPlan, http_results: dict[str, dict]) -> UrlPlan
         content_type = (result.get("content_type") or "").split(";")[0].strip().lower()
         if content_type and content_type not in {"text/html", "application/xhtml+xml"}:
             raise EnrichmentError(f"{object_id}: unexpected content type {content_type!r}")
+        # IDENTITY, NEVER STATUS. scout.py has enforced this on the body fetcher since
+        # 2026-08-10; this path checked only the status code, so a soft-404 that Scout
+        # refuses would have been written into the live `url` field as canonical.
+        # Measured on Blog + Customer Stories 2026-08-13: 15 of 2,908 "live" URLs land on
+        # a different document, including /customers/bringmeister -> /customers and
+        # /customers/kingarthur -> /customer-hub.
+        if _document_path(final_url) != _document_path(row["candidate_url"]):
+            raise EnrichmentError(
+                f"{object_id}: redirected to a different document: "
+                f"{row['candidate_url']} -> {final_url}")
         out = dict(row)
         out.update({
             "final_url": final_url,
@@ -519,8 +547,15 @@ def cli(argv: list[str] | None = None) -> int:
         for row in rows:
             result = results.get(row["objectID"], {})
             verdict = result.get("verdict", "unresolved")
+            # A 200 that landed somewhere else is not a live record, it is a soft-404.
+            # Counting it as `live` is how the wrong document gets written as canonical.
+            if result.get("ok") and _document_path(result.get("final_url", "")) != \
+                    _document_path(row["candidate_url"]):
+                verdict = "redirected-elsewhere"
+                result = {**result, "verdict": verdict,
+                          "error": f"redirected to {result.get('final_url')}"}
             by_verdict[verdict] = by_verdict.get(verdict, 0) + 1
-            if not result.get("ok"):
+            if verdict != "live":
                 exceptions.append({**row, **result})
         write_jsonl(out_dir / "http-exceptions.jsonl", exceptions)
         write_json(out_dir / "http-verdicts.json", {

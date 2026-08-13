@@ -259,3 +259,71 @@ def test_resolve_rows_labels_a_404_as_dead_and_a_200_as_live():
     results = resolve_rows(rows, workers=2, resolver=mixed, retries=2, retry_sleep_s=0)
     assert results["a"]["verdict"] == "dead"
     assert results["b"]["verdict"] == "live"
+
+
+# --- identity, never status (ported from scout.py's rule) ---------------------------------
+
+
+def test_verify_http_refuses_a_200_that_redirected_to_a_different_document():
+    """`/customers/bringmeister` -> `/customers` is HTTP 200 and the wrong page.
+
+    scout.py has asserted served-URL == requested-URL since 2026-08-10. This path only
+    ever checked the status code, so the same soft-404 that Scout refuses would have been
+    written into the live `url` field as if it were canonical.
+    """
+    plan = build_plan([rec("a", "/customers/bringmeister")], expected_total=1)
+    with pytest.raises(EnrichmentError, match="redirected to a different document"):
+        verify_http_results(plan, {
+            "a": {"ok": True, "status": 200, "content_type": "text/html", "redirects": 1,
+                  "final_url": "https://www.algolia.com/customers"},
+        })
+
+
+def test_verify_http_allows_a_redirect_that_lands_on_the_requested_document():
+    """Trailing slash and percent-escaping may move; the document may not.
+
+    Case is NOT normalised, matching scout.path_of exactly.
+    """
+    plan = build_plan([rec("a", "/customers/crocs")], expected_total=1)
+    verified = verify_http_results(plan, {
+        "a": {"ok": True, "status": 200, "content_type": "text/html", "redirects": 1,
+              "final_url": "https://www.algolia.com/customers/crocs/"},
+    })
+    assert verified.rows[0]["final_url"] == "https://www.algolia.com/customers/crocs/"
+
+
+def test_verify_http_allows_a_cross_host_redirect_to_the_same_path():
+    plan = build_plan([rec("a", "/hc/en-us/articles/1")], expected_total=1)
+    verified = verify_http_results(plan, {
+        "a": {"ok": True, "status": 200, "content_type": "text/html", "redirects": 1,
+              "final_url": "https://support.algolia.com/hc/en-us/articles/1"},
+    })
+    assert verified.rows[0]["final_host"] == "support.algolia.com"
+
+
+def test_verify_http_reports_the_hub_soft_404_by_name_not_just_as_a_mismatch():
+    plan = build_plan([rec("a", "/customers/kingarthur")], expected_total=1)
+    with pytest.raises(EnrichmentError, match="/customer-hub"):
+        verify_http_results(plan, {
+            "a": {"ok": True, "status": 200, "content_type": "text/html", "redirects": 2,
+                  "final_url": "https://www.algolia.com/customer-hub"},
+        })
+
+
+def test_document_identity_is_case_sensitive_exactly_like_scouts_path_of():
+    """One rule, one implementation. A paraphrase here is how the original split began."""
+    from algolia_enrichment.scout import path_of
+    from algolia_enrichment.url_normalization import _document_path
+
+    for url in ("https://www.algolia.com/customers/WeightWatchers",
+                "https://www.algolia.com/customers/weightwatchers",
+                "https://www.algolia.com/customers/crocs/",
+                "https://support.algolia.com/hc/en-us/articles/1"):
+        assert _document_path(url) == path_of(url)
+
+    plan = build_plan([rec("a", "/customers/WeightWatchers")], expected_total=1)
+    with pytest.raises(EnrichmentError, match="redirected to a different document"):
+        verify_http_results(plan, {
+            "a": {"ok": True, "status": 200, "content_type": "text/html", "redirects": 1,
+                  "final_url": "https://www.algolia.com/customers/weightwatchers"},
+        })
