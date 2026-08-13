@@ -7,10 +7,8 @@ scope: "Agent Studio product proposal, informed by the Algolia.com chat widget s
 related_asana: "2.2 Algolia Query Metering; 2.3 Token & Cost Economics; 2.4 End-to-End Turn Observability & Traceability"
 asana_task_2_2: "https://app.asana.com/0/0/1217389911359035/f"
 asana_task_2_2_1: "https://app.asana.com/0/0/1217389989753201/f"
-asana_task_2_2_2: "https://app.asana.com/0/0/1217389911594494/f"
 asana_task_2_3: "https://app.asana.com/0/0/1217389957695997/f"
 asana_task_2_3_1: "https://app.asana.com/0/0/1217389831395535/f"
-asana_task_2_3_2: "https://app.asana.com/0/0/1217389911611814/f"
 ---
 
 # Agent Studio Usage Telemetry
@@ -71,12 +69,18 @@ The screenshots and live API evidence change the delivery shape. Most aggregate 
 conversation persistence already exist in Agent Studio. We should extend those surfaces, not build a
 second telemetry service beside them.
 
-| Asana task | Already in Agent Studio | Still needed in the Algolia.com spike | Still needed from Agent Studio R&D |
-|---|---|---|---|
-| [2.2.1 Boundary and contract](https://app.asana.com/0/0/1217389989753201/f) | Analytics defines a Search call as a built-in Search-tool invocation; Conversations persist tool calls and metadata | Record the exact unit labels and prove source pills/suggestions do not create a request | Publish the same definitions in API schemas and analytics help text |
-| [2.2.2 Instrument and reconcile](https://app.asana.com/0/0/1217389911594494/f) | Aggregate Search calls by date and agent; per-conversation Search-query total; conversation ID response header | Capture safe browser completion observations, retain the conversation ID, and run the negative network proofs | Persist per-turn Search-tool, logical-query-plan, actual Search API request, cache/retry, index, and billing-reconciliation trace |
-| [2.3.1 Token capture and prices](https://app.asana.com/0/0/1217389831395535/f) | Aggregate input/output tokens and averages; conversation and message token totals; cached-input/reasoning fields when supplied | Verify the response/header and conversation fields on real widget turns; do not invent a client tokenizer | Persist token provenance and resolved provider/model version; maintain a versioned price registry with effective dates |
-| [2.3.2 Economics and reconciliation](https://app.asana.com/0/0/1217389911611814/f) | Analytics overview, per-agent token totals, conversation JSON export | Reconcile the widget turn to the stored conversation and show only values with an authority | Add per-turn/per-agent cost, reported-versus-estimated basis, price version, CSV/usage export, estimator error, and supported Analytics API |
+| R&D recommendation | Already in Agent Studio | Still needed from Agent Studio R&D |
+|---|---|---|
+| [2.2.1 Query-metering boundary](https://app.asana.com/0/0/1217389989753201/f) | Analytics defines a Search call as a built-in Search-tool invocation; Conversations persist tool calls and metadata | Publish the same labels in API schemas and Analytics help text; add per-turn Search-tool, query-plan, request, cache/retry, and billing-reconciliation fields where the server can authoritatively provide them |
+| [2.3.1 Token and cost economics](https://app.asana.com/0/0/1217389831395535/f) | Aggregate input/output tokens and averages; conversation and message token totals; cached-input/reasoning fields when supplied; Analytics overview and JSON export | Persist token provenance and resolved provider/model version; maintain a versioned price registry; add per-turn/per-agent costs, reported-versus-estimated basis, price version, supported Analytics API, and export/reconciliation fields |
+
+### Scope consolidation
+
+The Algolia.com spike does not build a parallel telemetry collector or dashboard. The original
+implementation subtasks, 2.2.2 and 2.3.2, are therefore retired. Their valid Agent Studio product
+requirements are incorporated in this proposal: 2.2.1 records the query-metering boundary, and
+2.3.1 records the complete token-and-cost economics recommendation. This keeps the program focused
+on one R&D handoff rather than leaving duplicate implementation tasks open.
 
 ### What is already solved
 
