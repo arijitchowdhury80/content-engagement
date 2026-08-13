@@ -33,9 +33,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
-from algolia_enrichment import (approvals, corpus, docrefresh, human_review, live_corpus,
-                                profile_lint, promote, reconcile, seed, selection_registry,
-                                strategies, taxonomy, taxonomy_correctness, write)
+from algolia_enrichment import (approvals, corpus, docapply, docrefresh, human_review,
+                                live_corpus, profile_lint, promote, quarantine, reconcile, seed,
+                                selection_registry, strategies, taxonomy, taxonomy_correctness,
+                                write)
 from algolia_enrichment.api import AlgoliaClient
 from algolia_enrichment.artifacts import RunFolder
 from algolia_enrichment.batching import (DEFAULT_MODEL_CONCURRENCY, DEFAULT_SCOUT_CONCURRENCY,
@@ -592,6 +593,88 @@ def cmd_build_documentation(ctx: Ctx) -> int:
             f"{json.dumps(distribution['divergences'])}. A rule is mis-tagging a whole section; "
             f"fix the rule and re-run build (the fetch cache is reused, nothing is re-fetched).")
     print("PASS: every record conforms, and the derived distribution matches the live site.")
+    return 0
+
+
+def cmd_apply_documentation_refresh(ctx: Ctx) -> int:
+    """Write the rebuilt Documentation corpus and retire the stale records. DESTRUCTIVE.
+
+    Order is deliberate and is the whole safety argument: quarantine first, verify the quarantine
+    by reading it back, write second, delete last, then re-read the index to prove all three
+    happened. Nothing is deleted while its copy is unaccounted for.
+    """
+    ctx.banner("apply-documentation-refresh")
+    index = ctx.cfg.source_index
+
+    records = [json.loads(l) for l in
+               (ctx.run_dir / "final" / "records.jsonl").read_text().splitlines() if l.strip()]
+    retire = [json.loads(l) for l in
+              (ctx.run_dir / "validation" / "retire.jsonl").read_text().splitlines() if l.strip()]
+    docapply.assert_records_sane(records)
+    if not retire:
+        raise ZeroWorkError("no records to retire; expected the reconcile output.")
+
+    client = ctx.algolia()
+    before_distinct, before_raw = client.record_count(index)
+
+    # The delete set is derived by SET ARITHMETIC against what is actually in the index, not read
+    # off the reconcile buckets. The refresh normalises objectIDs, and 8 refresh records carry an
+    # old objectID (a stray `-0` suffix, a trailing slash) that differs from its normalised form.
+    # Writing the new id without removing the old would leave orphan duplicates -- precisely the
+    # duplication this refresh exists to remove. Deriving the set from the index cannot miss them.
+    existing_ids = {r["objectID"] for r in client.browse(index, attributes=["objectID", "source"])
+                    if r.get("source") == docapply.SOURCE}
+    new_ids = {r["objectID"] for r in records}
+    delete_ids = sorted(existing_ids - new_ids)
+    create_ids = new_ids - existing_ids
+    expected_total = before_raw - len(delete_ids) + len(create_ids)
+    print(f"existing={len(existing_ids)} writing={len(records)} deleting={len(delete_ids)} "
+          f"creating={len(create_ids)} predicted_total={expected_total}")
+
+    snapshot = promote.assert_snapshot_exists(client, index)
+    approval = docapply.read_refresh_approval(
+        ctx.run_dir, target_index=index, write_count=len(records), delete_count=len(delete_ids))
+    print(f"snapshot={snapshot}  approved_by={approval['approved_by']}")
+
+    # Quarantine copies are taken from the INDEX, so every deleted record has a complete copy
+    # whatever bucket it came from -- including the objectID-normalisation casualties, which are
+    # in no retire bucket at all.
+    reasons = {r["objectID"]: r.get("reason", "") for r in retire}
+    originals = client.get_objects(index, delete_ids)
+    doomed = []
+    for object_id in delete_ids:
+        original = originals.get(object_id)
+        if not original:
+            raise EnrichmentError(
+                f"{object_id} is scheduled for deletion but cannot be read back from {index}; "
+                f"refusing to delete a record we cannot copy first.")
+        doomed.append({**original,
+                       "reason": reasons.get(object_id) or "superseded-objectid-normalised"})
+
+    stamp = dt.datetime.now(dt.timezone.utc).isoformat()
+    payloads = quarantine.build_quarantine_payloads(doomed, from_index=index, stamp=stamp)
+    qindex = ctx.args.quarantine_index or f"{index}_Quarantine"
+    for response in client.save_objects(qindex, payloads, action="updateObject"):
+        client.wait_task(qindex, response["taskID"])
+    qreport = quarantine.verify_quarantined(client, qindex, payloads)
+    ctx.emit("validation/quarantine-report.json", qreport, "apply-documentation-refresh")
+    print(f"quarantined and byte-verified: {qreport['verified']} records in {qindex}")
+
+    for response in client.save_objects(index, records, action="updateObject"):
+        client.wait_task(index, response["taskID"])
+    print(f"wrote {len(records)} records")
+
+    for response in client.save_objects(
+            index, [{"objectID": o} for o in delete_ids], action="deleteObject"):
+        client.wait_task(index, response["taskID"])
+    print(f"deleted {len(delete_ids)} records")
+
+    report = docapply.verify_after_refresh(client, index, records, delete_ids, expected_total)
+    report.update({"snapshot": snapshot, "quarantine_index": qindex,
+                   "before_raw": before_raw, "expected_total": expected_total})
+    ctx.emit("validation/refresh-applied.json", report, "apply-documentation-refresh")
+    print(json.dumps(report, indent=2))
+    print("PASS: written records read back, deleted records are gone, total matches prediction.")
     return 0
 
 
@@ -1627,6 +1710,7 @@ COMMANDS = {
     "reconcile-documentation": (cmd_reconcile_documentation, True),
     "fetch-documentation": (cmd_fetch_documentation, True),
     "build-documentation": (cmd_build_documentation, True),
+    "apply-documentation-refresh": (cmd_apply_documentation_refresh, True),
     "prepare-documentation-copy": (cmd_prepare_documentation_copy, True),
     "health-scout": (cmd_health_scout, False),
     "corpus-status": (cmd_corpus_status, False),
@@ -1669,6 +1753,7 @@ def build_parser() -> argparse.ArgumentParser:
                     help="stratified subset, e.g. 'de:4,fr:4,en:2'")
     ap.add_argument("--concurrency", type=int, default=DEFAULT_SCOUT_CONCURRENCY)
     ap.add_argument("--probe-url", default="")
+    ap.add_argument("--quarantine-index", default="")
     ap.add_argument("--liveness-census", default="",
                     help="path to a liveness-census jsonl (status + final URL per record). Names "
                          "the verified 404s and the live pages the sitemap omits.")
