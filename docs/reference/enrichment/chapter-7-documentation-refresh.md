@@ -1,7 +1,7 @@
 ---
 chapter: 7
 title: Documentation refresh — rebuilding a corpus that had gone stale
-status: IN PROGRESS (fetch running 2026-08-12)
+status: COMPLETE — applied and live-verified 2026-08-13
 asana: "4.1.14 Enrich Documentation corpus, 4.1.3 URL liveness census, 4.1.1 taxonomy correctness"
 ---
 
@@ -163,20 +163,77 @@ This is why the page list is built from two sources rather than trusting the sit
   across the corpus are in this state.
 - **Body text**: the page's own words. No AI wrote or rewrote any of it.
 
-## Numbers
-
-Recorded at the point the fetch was running; final figures to be added on completion.
+## Numbers — final, read back from the live index
 
 | Step | Result |
 |---|---|
-| Page list built | 1,934 addresses (1,876 from both sources, 44 sitemap-only, 14 found by following links) |
-| Compared against index | keep 1,904 · add 30 · retire 2,433 |
-| Retire reasons | 2,325 moved · 108 dead |
-| Predicted final size | 1,934 Documentation records |
-| Tag rule coverage | 1,934 / 1,934 addresses matched a rule |
-| Tag violations after build | 0 |
-| Addresses in full form | 1,934 / 1,934 |
-| Tests | 364 passing |
+| Page list built | 1,934 addresses (1,876 from both sources, 44 found only by following links, 14 sitemap-only) |
+| Fetched via Scout | 1,933 of 1,934 (99.95%) |
+| Written | 1,933 |
+| Deleted | 2,440 (2,325 moved · 108 dead · 8 malformed IDs cleaned up, minus 1 protected) |
+| Quarantined and byte-verified BEFORE deletion | 2,440 |
+| **Index total** | **11,928 → 9,525** |
+| **Documentation corpus** | **4,337 → 1,934** |
+| Title | 1,934 / 1,934 |
+| Description | 1,927 / 1,934 (7 pages genuinely have none) |
+| Body | 1,933 / 1,934, averaging 8,325 characters (was 0–300) |
+| Web address in full form | 1,933 / 1,934 (was **0** of 4,337) |
+| Tag violations, whole index | 0 across 9,525 records |
+| Tests | 376 passing |
+
+The one record short of each total is `/doc/onboarding`. It redirects to its trailing-slash form,
+so the fetcher received no content. It was **protected from deletion** and left exactly as it was:
+not knowing what a page contains is not evidence that the page is gone.
+
+## The honest state of the tagging
+
+The headline "99.9% of records have a `feature` tag" is true and misleading, so here is the real
+split. `unknown` is a legal value in the tag vocabulary, and counting it as "tagged" overstates
+what we know.
+
+| Tag | Real value | `unknown` | Not applicable |
+|---|---:|---:|---:|
+| page_type | 1,934 | 0 | 0 |
+| feature | 1,340 | **592** | 2 |
+| product | 180 | 161 | 1,593 |
+| language_platform | 371 | 0 | 1,563 |
+| integration_platform | 121 | 2 | 1,811 |
+
+**Nearly a third of records carry `feature: unknown`**, and the proportion is slightly worse than
+before the refresh (27.1% → 30.6%). The refresh preserved every existing tag faithfully but did
+not improve feature coverage, because the pages that carried real rule-derived features — the
+per-language SDK pages — are precisely the ones the site consolidated away.
+
+This passed the conformance check because that check asks whether every required tag is present
+and drawn from the approved list. `unknown` satisfies both. The check was correct; the claim built
+on it was too strong.
+
+The gap is concentrated, not scattered, which makes it fixable:
+
+| URL prefix | records tagged `unknown` |
+|---|---:|
+| `/doc/libraries/sdk` | 248 |
+| `/doc/tools/cli` | 57 |
+| `/doc/api-reference/api-parameters` | 56 |
+| `/doc/rest-api/agent-studio` | 36 |
+| `/doc/rest-api/search` | 26 |
+| everything else | 169 |
+
+The largest block has an obvious deterministic fix. Rules already map the OLD per-language paths —
+`methods/analytics` → analytics, `methods/ingestion` → data-transformation, `methods/monitoring` →
+monitoring, and six more. The site moved those same method groups to `/doc/libraries/sdk/methods/`,
+and no rule covers the new shape. Mirroring the existing mappings onto the new path would resolve
+roughly 131 of the 248 immediately, with `agent-studio` (38) needing genuinely new vocabulary.
+
+## Which tags apply to documentation at all
+
+Three of the eight tags are **always empty here, correctly**: `solution` belongs to use-case pages,
+`industry` to industry pages, `customer` to customer stories. A documentation page never triggers
+them, so sampling a record and seeing two or three populated tags is expected, not a defect.
+
+Whether a documentation page *should* be able to carry an industry — the Shopify integration guide
+being tagged retail, say — is a question about the tag schema, not about this refresh. It would be
+a schema change and is not attempted here.
 
 ## What was deliberately not done
 
