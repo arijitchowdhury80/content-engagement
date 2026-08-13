@@ -36,7 +36,7 @@ sys.path.insert(0, str(HERE))
 from algolia_enrichment import (approvals, corpus, docapply, docmerge, docrefresh, human_review,
                                 live_corpus, profile_lint, promote, quarantine, reconcile, seed,
                                 selection_registry, strategies, taxonomy, taxonomy_correctness,
-                                write)
+                                waits, write)
 from algolia_enrichment.api import AlgoliaClient
 from algolia_enrichment.artifacts import RunFolder
 from algolia_enrichment.batching import (DEFAULT_MODEL_CONCURRENCY, DEFAULT_SCOUT_CONCURRENCY,
@@ -692,18 +692,18 @@ def cmd_apply_documentation_refresh(ctx: Ctx) -> int:
     payloads = quarantine.build_quarantine_payloads(doomed, from_index=index, stamp=stamp)
     qindex = ctx.args.quarantine_index or f"{index}_Quarantine"
     for response in client.save_objects(qindex, payloads, action="updateObject"):
-        client.wait_task(qindex, response["taskID"])
+        waits.wait_or_fail(client, qindex, response["taskID"], "quarantine copy")
     qreport = quarantine.verify_quarantined(client, qindex, payloads)
     ctx.emit("validation/quarantine-report.json", qreport, "apply-documentation-refresh")
     print(f"quarantined and byte-verified: {qreport['verified']} records in {qindex}")
 
     for response in client.save_objects(index, records, action="updateObject"):
-        client.wait_task(index, response["taskID"])
+        waits.wait_or_fail(client, index, response["taskID"], "record write")
     print(f"wrote {len(records)} records")
 
     for response in client.save_objects(
             index, [{"objectID": o} for o in delete_ids], action="deleteObject"):
-        client.wait_task(index, response["taskID"])
+        waits.wait_or_fail(client, index, response["taskID"], "record delete")
     print(f"deleted {len(delete_ids)} records")
 
     report = docapply.verify_after_refresh(client, index, records, delete_ids, expected_total)

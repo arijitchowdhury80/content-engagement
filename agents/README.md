@@ -1,6 +1,6 @@
 # Agents
 
-This directory contains project-owned Agent Studio prompts, admin scripts, and read-only probes.
+This directory contains project-owned Agent Studio prompts, admin scripts, and live checks.
 The active app is `0EXRPAXB56`; the primary development chat agent is `www Chat - Orchestrator`.
 
 Production Ask Algolia is comparison evidence only. Do not modify production Ask Algolia,
@@ -11,7 +11,7 @@ Spectrum, or host HTML from this project.
 - `prompts/` — versioned agent prompts, judge prompts, and shared prompt fragments.
 - `admin/algoliaComConfig.mjs` — shared constants and Agent Studio payload builders.
 - `admin/build_algolia_com_agents.mjs` — create/list/patch script for configured agents.
-- `probes/agent-tool-handoff/` — read-only live inspection and smoke-test tools.
+- `checks/` — read-only live Agent Studio inspection and smoke-test scripts.
 
 ## Usage
 
@@ -35,21 +35,21 @@ and validation evidence. Get approval for Agent Studio configuration mutations.
 
 ```
 # one query against one agent
-node agents/probes/agent-tool-handoff/spotcheck-live.mjs <agentId> "your question"
+node agents/checks/spotcheck-live.mjs <agentId> "your question"
 
 # whole question set, classified SYNTHESIS / LINK-LIST / THIN
-node agents/probes/agent-tool-handoff/sweep-sample-questions.mjs <agentId> <questionsFile> <outJsonl>
+node agents/checks/sweep-sample-questions.mjs <agentId> <questionsFile> <outJsonl>
 
 # dump a live agent's full config
-node agents/probes/agent-tool-handoff/dump-agent.mjs <agentId> <outFile>
+node agents/checks/dump-agent.mjs <agentId> <outFile>
 ```
 
 **Vary the wording when repeat-testing.** Agent Studio caches completions keyed on exact query text — verified 2026-08-05, two identical requests returned byte-identical output. A failure cached against a string replays forever, which has silently broken this project's testing twice before (2026-07-03, 2026-07-09). Corollary: a fix can look like it did nothing if you retest with the exact string that failed pre-fix.
 
-## Probes
+## Live Checks
 
-`probes` means read-only diagnostic scripts. They inspect or test live Agent Studio agents; they
-are not prompt source and they should not mutate configuration.
+These scripts inspect or test live Agent Studio agents. They are not prompt source, not frontend
+runtime code, and they must not mutate configuration.
 
 - `dump-agent.mjs` — dump a live agent config.
 - `spotcheck-live.mjs` — ask one live question.

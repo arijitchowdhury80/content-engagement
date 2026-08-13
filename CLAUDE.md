@@ -13,7 +13,7 @@ those disagree, verify live systems and update the stale file before acting.
 | Enrichment skill | `skills/algolia-data-enrichment/` | Project-local skill, Python CLI, profiles, tests, and runbooks |
 | Agent prompts | `agents/prompts/` | Versioned agent prompts, judge prompts, and shared prompt fragments |
 | Agent admin | `agents/admin/` | Agent Studio config builders and provisioning scripts |
-| Agent probes | `agents/probes/` | Read-only Agent Studio inspection, spot-check, and sweep scripts |
+| Agent checks | `agents/checks/` | Read-only Agent Studio inspection, spot-check, and sweep scripts |
 | Chat widget | `frontend/chat-widget/` | Recovered Jahia widget JavaScript artifacts; source gap must be closed |
 | Frontend prototype | `frontend/search-first-demo/` | Search-first demo and local build helpers |
 | Runtime/config notes | `config/` | Public, non-secret configuration documentation |
@@ -52,7 +52,7 @@ python3 skills/algolia-data-enrichment/scripts/algolia_enrich.py <command> --wor
 - `agents/prompts/judge/` contains judge prompts.
 - `agents/admin/algoliaComConfig.mjs` contains shared agent constants and builders.
 - `agents/admin/build_algolia_com_agents.mjs` creates or patches configured agents.
-- `agents/probes/agent-tool-handoff/` contains read-only live dump, spot-check, and sweep tools.
+- `agents/checks/` contains read-only live dump, spot-check, and sweep tools.
 
 ## Documentation Discipline
 

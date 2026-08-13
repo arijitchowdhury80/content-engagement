@@ -113,4 +113,4 @@ Citation count = number of transcript snippets Gong tagged as supporting that qu
 - `docs/agents/2026-08-05-sweep40-generalist-results.md`
 - `docs/evidence/2026-08-05-sweep40-generalist.jsonl`
 
-Re-run with: `node scripts/spikes/agent-tool-handoff/sweep-sample-questions.mjs <agentId> <questionsFile> <outJsonl>`
+Re-run with: `node agents/checks/sweep-sample-questions.mjs <agentId> <questionsFile> <outJsonl>`
