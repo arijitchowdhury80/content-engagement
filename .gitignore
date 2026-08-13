@@ -48,6 +48,7 @@ skills/*/.pytest_cache/
 .development-loop/
 .tmp-jahia-upload/
 .pytest_cache/
+SESSION.md
 
 # Regenerable local analysis and enrichment residue.
 docs/research/search-experience/.cache-enhanced-census.jsonl
