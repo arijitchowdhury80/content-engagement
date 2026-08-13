@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from algolia_enrichment.errors import EnrichmentError
+from algolia_enrichment.errors import EnrichmentError, ZeroWorkError
 from algolia_enrichment.url_normalization import (
     ALLOWED_HOSTS,
     Approval,
@@ -15,6 +15,8 @@ from algolia_enrichment.url_normalization import (
     make_apply_payloads,
     read_approval,
     read_jsonl,
+    resolve_rows,
+    select_source_records,
     summarize,
     verify_http_results,
     verify_readback,
@@ -168,3 +170,92 @@ def test_jsonl_round_trip_survives_unicode_line_separator(tmp_path: Path):
     write_jsonl(path, [{"objectID": "a", "title": "Unlock the power of\u2028agentic AI"}])
     assert len(path.read_text().split("\n")) == 2
     assert read_jsonl(path)[0]["title"] == "Unlock the power of\u2028agentic AI"
+
+
+# --- source scoping and transient-failure retry -------------------------------------------
+
+
+def test_select_source_records_keeps_only_named_sources_and_counts_them():
+    records = [rec("a", "/blog/x", source="Blog"),
+               rec("b", "/customers/y", source="Customer Stories"),
+               rec("c", "/doc/z", source="Documentation")]
+    selected, counts = select_source_records(records, ["Blog", "Customer Stories"])
+    assert [r["objectID"] for r in selected] == ["a", "b"]
+    assert counts == {"Blog": 1, "Customer Stories": 1}
+
+
+def test_select_source_records_refuses_a_source_that_matches_nothing():
+    records = [rec("a", "/blog/x", source="Blog")]
+    with pytest.raises(ZeroWorkError, match="Custmer Stories"):
+        select_source_records(records, ["Blog", "Custmer Stories"])
+
+
+def test_select_source_records_refuses_an_empty_selection():
+    with pytest.raises(ZeroWorkError):
+        select_source_records([rec("a", "/blog/x", source="Blog")], [])
+
+
+def test_resolve_rows_retries_a_transient_failure_before_calling_a_page_dead():
+    """status 0 is 'we did not get an answer', never 'the page is gone'.
+
+    Regression guard for the defect that recorded 3,580 blocked requests as dead pages
+    against a true 108.
+    """
+    calls = {"n": 0}
+
+    def flaky(url, timeout_s=30):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return {"ok": False, "status": 0, "final_url": url, "content_type": "",
+                    "redirects": 0, "error": "connection reset"}
+        return {"ok": True, "status": 200, "final_url": url,
+                "content_type": "text/html", "redirects": 0, "error": ""}
+
+    rows = [{"objectID": "a", "candidate_url": "https://www.algolia.com/blog/x"}]
+    results = resolve_rows(rows, workers=1, resolver=flaky, retries=2, retry_sleep_s=0)
+    assert results["a"]["ok"] is True
+    assert results["a"]["attempts"] == 2
+    assert calls["n"] == 2
+
+
+def test_resolve_rows_does_not_retry_a_definitive_404():
+    calls = {"n": 0}
+
+    def dead(url, timeout_s=30):
+        calls["n"] += 1
+        return {"ok": False, "status": 404, "final_url": url, "content_type": "text/html",
+                "redirects": 0, "error": "HTTP 404"}
+
+    rows = [{"objectID": "a", "candidate_url": "https://www.algolia.com/blog/gone"}]
+    results = resolve_rows(rows, workers=1, resolver=dead, retries=3, retry_sleep_s=0)
+    assert results["a"]["ok"] is False
+    assert results["a"]["status"] == 404
+    assert calls["n"] == 1, "a clean 404 is an answer; retrying it wastes the budget"
+
+
+def test_resolve_rows_marks_a_row_that_never_answered_as_unresolved_not_dead():
+    def never(url, timeout_s=30):
+        return {"ok": False, "status": 0, "final_url": url, "content_type": "",
+                "redirects": 0, "error": "timeout"}
+
+    rows = [{"objectID": "a", "candidate_url": "https://www.algolia.com/blog/x"}]
+    results = resolve_rows(rows, workers=1, resolver=never, retries=3, retry_sleep_s=0)
+    assert results["a"]["ok"] is False
+    assert results["a"]["status"] == 0
+    assert results["a"]["attempts"] == 3
+    assert results["a"]["verdict"] == "unresolved"
+
+
+def test_resolve_rows_labels_a_404_as_dead_and_a_200_as_live():
+    def mixed(url, timeout_s=30):
+        if url.endswith("gone"):
+            return {"ok": False, "status": 404, "final_url": url,
+                    "content_type": "text/html", "redirects": 0, "error": "HTTP 404"}
+        return {"ok": True, "status": 200, "final_url": url,
+                "content_type": "text/html", "redirects": 0, "error": ""}
+
+    rows = [{"objectID": "a", "candidate_url": "https://www.algolia.com/blog/gone"},
+            {"objectID": "b", "candidate_url": "https://www.algolia.com/blog/here"}]
+    results = resolve_rows(rows, workers=2, resolver=mixed, retries=2, retry_sleep_s=0)
+    assert results["a"]["verdict"] == "dead"
+    assert results["b"]["verdict"] == "live"

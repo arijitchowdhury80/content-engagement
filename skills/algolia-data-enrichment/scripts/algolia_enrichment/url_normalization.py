@@ -303,14 +303,96 @@ def curl_resolve(url: str, timeout_s: int = 30) -> dict:
             "error": "" if 200 <= status_int < 400 else f"HTTP {status_int}"}
 
 
+def select_source_records(records: list[dict], sources: list[str]) -> tuple[list[dict], dict]:
+    """Scope a whole-index browse down to named `source` values.
+
+    A whole-index URL run is hostage to its worst corpus: the 2026-08-12 attempt died on
+    Academy's login wall and Support's blocking, and Blog and Customer Stories -- which
+    between them had 23 exceptions out of 2,931 -- were never written. Scoping lets a
+    healthy corpus land without waiting for a sick one.
+
+    A source that selects zero records is a typo or a renamed corpus, never an empty
+    corpus worth proceeding on, so it raises instead of silently narrowing the run.
+    """
+    if not sources:
+        raise ZeroWorkError("no sources requested; an empty selection is a failure")
+    wanted = list(dict.fromkeys(sources))
+    counts = {name: 0 for name in wanted}
+    selected: list[dict] = []
+    for record in records:
+        name = record.get("source")
+        if name in counts:
+            counts[name] += 1
+            selected.append(record)
+    empty = [name for name, n in counts.items() if n == 0]
+    if empty:
+        available = sorted({str(r.get("source")) for r in records})
+        raise ZeroWorkError(
+            f"source(s) matched zero records: {', '.join(empty)}; index has {available}")
+    if not selected:
+        raise ZeroWorkError("zero records selected is a failure, never a pass")
+    return selected, counts
+
+
+#: A resolver answered. Retrying these only burns budget and rate limit.
+DEFINITIVE_STATUSES = frozenset({200, 201, 203, 204, 301, 302, 303, 307, 308, 401, 403, 404, 410})
+
+
+def _verdict_for(result: dict) -> str:
+    """Name what we actually learned, so a non-answer can never be read as a dead page."""
+    if result.get("ok"):
+        return "live"
+    status = int(result.get("status") or 0)
+    if status in (404, 410):
+        return "dead"
+    if status in DEFINITIVE_STATUSES:
+        return "blocked" if status in (401, 403) else "unexpected-status"
+    return "unresolved"
+
+
+def _resolve_one(url: str, *, resolver, timeout_s: int, retries: int,
+                 retry_sleep_s: float) -> dict:
+    attempts = 0
+    result: dict = {}
+    for attempt in range(1, max(1, retries) + 1):
+        attempts = attempt
+        try:
+            result = resolver(url, timeout_s)
+        except Exception as exc:  # pragma: no cover - defensive around subprocess/threading.
+            result = {"ok": False, "status": 0, "final_url": url, "content_type": "",
+                      "redirects": 0, "elapsed_s": 0, "error": repr(exc)}
+        if result.get("ok"):
+            break
+        if int(result.get("status") or 0) in DEFINITIVE_STATUSES:
+            break
+        if attempt < max(1, retries) and retry_sleep_s:
+            time.sleep(retry_sleep_s * attempt)
+    out = dict(result)
+    out["attempts"] = attempts
+    out["verdict"] = _verdict_for(out)
+    return out
+
+
 def resolve_rows(rows: list[dict], *, workers: int = 12, timeout_s: int = 30,
-                 progress_every: int = 500) -> dict[str, dict]:
+                 progress_every: int = 500, resolver=curl_resolve, retries: int = 3,
+                 retry_sleep_s: float = 2.0) -> dict[str, dict]:
+    """Resolve every candidate URL, retrying only non-answers.
+
+    `status == 0` means curl never got a reply -- a timeout, a reset, a rate limit. It is
+    NOT evidence that the page is gone, and treating it as such is how a prior liveness
+    probe reported 3,580 dead pages against a true 108. Definitive statuses are accepted
+    on the first attempt; everything else is retried before it is allowed to count.
+    """
     if workers <= 0:
         raise EnrichmentError("workers must be positive")
+    if retries <= 0:
+        raise EnrichmentError("retries must be positive")
     results: dict[str, dict] = {}
     with ThreadPoolExecutor(max_workers=workers) as pool:
         future_map = {
-            pool.submit(curl_resolve, row["candidate_url"], timeout_s): row["objectID"]
+            pool.submit(_resolve_one, row["candidate_url"], resolver=resolver,
+                        timeout_s=timeout_s, retries=retries,
+                        retry_sleep_s=retry_sleep_s): row["objectID"]
             for row in rows
         }
         total = len(future_map)
@@ -320,8 +402,9 @@ def resolve_rows(rows: list[dict], *, workers: int = 12, timeout_s: int = 30,
                 results[object_id] = future.result()
             except Exception as exc:  # pragma: no cover - defensive around subprocess/threading.
                 results[object_id] = {"ok": False, "status": 0, "final_url": "",
-                                      "content_type": "", "redirects": 0,
-                                      "elapsed_s": 0, "error": repr(exc)}
+                                      "content_type": "", "redirects": 0, "attempts": 0,
+                                      "elapsed_s": 0, "error": repr(exc),
+                                      "verdict": "unresolved"}
             if progress_every and (checked % progress_every == 0 or checked == total):
                 print(f"verify-http progress {checked}/{total}", file=sys.stderr, flush=True)
     return results
@@ -356,11 +439,19 @@ def summarize(rows: list[dict]) -> dict:
     return out
 
 
-def audit(client: AlgoliaClient, index: str, out_dir: Path, expected_total: int | None) -> UrlPlan:
+def audit(client: AlgoliaClient, index: str, out_dir: Path, expected_total: int | None,
+          sources: list[str] | None = None) -> UrlPlan:
     distinct_count, raw_count = client.record_count(index)
-    expected = expected_total or raw_count
-    records = list(client.browse(index, attributes=None))
+    all_records = list(client.browse(index, attributes=None))
+    source_counts: dict = {}
+    if sources:
+        records, source_counts = select_source_records(all_records, sources)
+        expected = expected_total or len(records)
+    else:
+        records = all_records
+        expected = expected_total or raw_count
     plan = build_plan(records, expected_total=expected, index=index)
+    # The snapshot is the rollback, so it holds the records this run may touch and no others.
     write_jsonl(out_dir / "snapshot.jsonl", records)
     write_json(out_dir / "settings-before.json", client.get_settings(index))
     write_jsonl(out_dir / "url-normalization-plan.jsonl", plan.rows)
@@ -368,6 +459,8 @@ def audit(client: AlgoliaClient, index: str, out_dir: Path, expected_total: int 
         "index": index,
         "distinct_count": distinct_count,
         "raw_count": raw_count,
+        "scoped_sources": sources or None,
+        "scoped_source_counts": source_counts or None,
         "expected_total": expected,
         "plan_hash": plan.plan_hash,
         **summarize(plan.rows),
@@ -387,33 +480,63 @@ def cli(argv: list[str] | None = None) -> int:
     parser.add_argument("--workspace", default=".")
     parser.add_argument("--index", default=DEFAULT_INDEX)
     parser.add_argument("--out-dir", required=True)
-    parser.add_argument("--expected-total", type=int, default=11928)
+    parser.add_argument("--expected-total", type=int, default=0,
+                        help="0 derives it from the scoped browse; never guess a stale count")
+    parser.add_argument("--sources", default="",
+                        help="comma-separated `source` values, e.g. 'Blog,Customer Stories'")
     parser.add_argument("--limit", type=int, default=0,
                         help="debug only for verify-http; production must be 0")
     parser.add_argument("--workers", type=int, default=12)
     parser.add_argument("--http-timeout", type=int, default=30)
+    parser.add_argument("--retries", type=int, default=3,
+                        help="attempts per non-answering URL before it counts as unresolved")
     args = parser.parse_args(argv)
 
     workspace = Path(args.workspace)
     out_dir = Path(args.out_dir)
     client = AlgoliaClient.from_env(workspace)
+    sources = [s.strip() for s in args.sources.split(",") if s.strip()] or None
 
     if args.mode == "audit":
-        plan = audit(client, args.index, out_dir, args.expected_total)
+        plan = audit(client, args.index, out_dir, args.expected_total or None, sources)
         print(json.dumps({"ok": True, "mode": "audit", "plan_hash": plan.plan_hash,
-                          "rows": len(plan.rows)}, sort_keys=True))
+                          "sources": sources, "rows": len(plan.rows)}, sort_keys=True))
         return 0
 
     if args.mode == "verify-http":
-        plan = load_plan(out_dir / "url-normalization-plan.jsonl", args.index,
-                         args.expected_total)
+        plan_rows = read_jsonl(out_dir / "url-normalization-plan.jsonl")
+        expected = args.expected_total or len(plan_rows)
+        plan = load_plan(out_dir / "url-normalization-plan.jsonl", args.index, expected)
         rows = plan.rows if not args.limit else plan.rows[:args.limit]
-        results = resolve_rows(rows, workers=args.workers, timeout_s=args.http_timeout)
+        results = resolve_rows(rows, workers=args.workers, timeout_s=args.http_timeout,
+                               retries=args.retries)
         write_json(out_dir / "http-results.json", results)
+
+        # Triage BEFORE the strict gate, so one bad URL yields a report instead of a stack
+        # trace over 2,931 records. `unresolved` is held apart from `dead` on purpose.
+        by_verdict: dict[str, int] = {}
+        exceptions = []
+        for row in rows:
+            result = results.get(row["objectID"], {})
+            verdict = result.get("verdict", "unresolved")
+            by_verdict[verdict] = by_verdict.get(verdict, 0) + 1
+            if not result.get("ok"):
+                exceptions.append({**row, **result})
+        write_jsonl(out_dir / "http-exceptions.jsonl", exceptions)
+        write_json(out_dir / "http-verdicts.json", {
+            "index": args.index, "sources": sources, "checked": len(rows),
+            "by_verdict": by_verdict, "exception_count": len(exceptions)})
         if args.limit:
             print(json.dumps({"ok": False, "mode": "verify-http", "checked": len(rows),
+                              "by_verdict": by_verdict,
                               "reason": "limit used; not valid for approval"}, sort_keys=True))
             return 2
+        if exceptions:
+            print(json.dumps({"ok": False, "mode": "verify-http", "checked": len(rows),
+                              "by_verdict": by_verdict, "exception_count": len(exceptions),
+                              "reason": "unresolved/dead URLs must be adjudicated before apply"},
+                             sort_keys=True))
+            return 3
         verified = verify_http_results(plan, results)
         write_jsonl(out_dir / "url-normalization-verified.jsonl", verified.rows)
         payloads = make_apply_payloads(verified)
