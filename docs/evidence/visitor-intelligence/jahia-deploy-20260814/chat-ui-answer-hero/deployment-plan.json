@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-08-14T16:27:51.323164+00:00",
+  "release": "chat-ui-answer-hero-20260814a",
+  "version": "20260814-chat-ui-answer-hero-a",
+  "targets": {
+    "block": "/sites/www/home/drift/custom-code-block",
+    "chat": "/sites/www/files/algolia-chat.js",
+    "theme": "/sites/www/files/algolia-chat-theme-algolia.js"
+  },
+  "localSha256": {
+    "chat": "6cc3c93d30a8211a6316cff9158524aa20dbc6112bb0c5c90085002ec9b2657c",
+    "theme": "6a85359dd82200af25f43ecad0fae60e080998847d3e7bdce8f223a2a185f301"
+  },
+  "currentReleaseMarkers": [
+    "chat-ui-signal-trace-20260814a"
+  ],
+  "intendedChecks": [
+    "answer trace hidden once answer text exists",
+    "live cachebuster updated",
+    "HTTP asset sha matches local"
+  ]
+}

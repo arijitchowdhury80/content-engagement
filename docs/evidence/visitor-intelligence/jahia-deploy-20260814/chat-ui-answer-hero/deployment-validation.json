@@ -1,0 +1,34 @@
+{
+  "capturedAt": "2026-08-14T16:28:21.073339+00:00",
+  "release": "chat-ui-answer-hero-20260814a",
+  "version": "20260814-chat-ui-answer-hero-a",
+  "urls": {
+    "chat": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?groundingGate=20260814-chat-ui-answer-hero-a&validate=1786724899",
+    "theme": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia.js?theme=20260814-chat-ui-answer-hero-a&validate=1786724899",
+    "page": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?answerHero=20260814-chat-ui-answer-hero-a&validate=1786724899"
+  },
+  "sha256": {
+    "localChat": "6cc3c93d30a8211a6316cff9158524aa20dbc6112bb0c5c90085002ec9b2657c",
+    "httpChat": "6cc3c93d30a8211a6316cff9158524aa20dbc6112bb0c5c90085002ec9b2657c",
+    "localTheme": "6a85359dd82200af25f43ecad0fae60e080998847d3e7bdce8f223a2a185f301",
+    "httpTheme": "6a85359dd82200af25f43ecad0fae60e080998847d3e7bdce8f223a2a185f301"
+  },
+  "checks": {
+    "editBlockHasRelease": true,
+    "liveBlockHasRelease": false,
+    "pageHasRelease": false,
+    "editBlockHasChatVersion": true,
+    "liveBlockHasChatVersion": false,
+    "pageHasChatVersion": false,
+    "editBlockHasThemeVersion": true,
+    "liveBlockHasThemeVersion": false,
+    "pageHasThemeVersion": false,
+    "httpChatShaMatchesLocal": true,
+    "httpThemeShaMatchesLocal": true,
+    "httpChatHasAnswerHeroGate": true,
+    "httpChatOmitsOldTraceGate": true,
+    "httpChatStillHasTraceComponent": true,
+    "httpChatStillHasSourcePills": true,
+    "pass": false
+  }
+}
