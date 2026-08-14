@@ -15,7 +15,7 @@
     "proactiveControllerReferenced": true,
     "handoffToOrchestratorReferenced": true,
     "releaseMarkers": [
-      "judge-review-20260814a"
+      "chat-ui-single-trace-line-20260814a"
     ],
     "newTrackerExists": true,
     "contextCompilerExists": true,
