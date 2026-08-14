@@ -1,8 +1,8 @@
-# Handoff To Orchestrator Client Tool
+# Handoff To Orchestrator JavaScript Client Tool
 
 ## Purpose
 
-`handoff-to-orchestrator.js` executes the Greetings Agent's `handoff_to_orchestrator` client-side tool.
+This document is the build spec for `frontend/chat-widget/handoff-to-orchestrator.js`, the JavaScript file that executes the Greetings Agent's `handoff_to_orchestrator` client-side tool.
 
 It forwards the first engaged proactive user turn to `www Chat - Orchestrator` with the original opportunity packet, latest compiled context, greeting shown, and user reply or selected chip.
 

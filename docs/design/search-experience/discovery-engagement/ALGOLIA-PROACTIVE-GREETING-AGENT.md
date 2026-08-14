@@ -6,7 +6,7 @@ The proactive greeting agent writes the opening hook for a qualified proactive e
 
 It does one thing: turn a controller opportunity packet into a short, useful, human greeting. It does not decide when to interrupt, track visitor behavior, answer product questions, call specialists, search Algolia, continue the conversation, or own orchestration.
 
-The browser decides when to engage. The proactive greeting agent decides what the opening message should say. Client-side tools render the greeting and forward the first engaged user turn to the main orchestrator.
+The browser decides when to engage. The proactive greeting agent decides what the opening message should say. The controller renders the greeting. After the visitor engages, the Greetings Agent calls the `handoff_to_orchestrator` client-side tool.
 
 ## Runtime Position
 
@@ -16,9 +16,7 @@ flowchart LR
   Tracker["algolia-engagement-tracker.js"]
   Compiler["algolia-context-compiler.js"]
   Controller["algolia-proactive-controller.js"]
-  Client["algolia-greetings-agent-client.js"]
   GreetingAgent["Agent Studio: Greetings Agent"]
-  ShowTool["Client tool: show_proactive_greeting"]
   HandoffTool["handoff-to-orchestrator.js"]
   Widget["Chat widget"]
   Orchestrator["Agent Studio: www Chat - Orchestrator"]
@@ -26,10 +24,9 @@ flowchart LR
   Visitor -->|"page views, clicks, searches, dwell, scroll"| Tracker
   Tracker -->|"localStorage/sessionStorage"| Compiler
   Compiler -->|"AlgoliaContextPacket.v1"| Controller
-  Controller -->|"algolia-proactive-opportunity + stored packet"| Client
-  Client -->|"completion POST with ProactiveGreetingRequest.v1"| GreetingAgent
-  GreetingAgent -->|"tool call"| ShowTool
-  ShowTool -->|"render greeting/chips"| Widget
+  Controller -->|"completion POST with ProactiveGreetingRequest.v1"| GreetingAgent
+  GreetingAgent -->|"ProactiveGreetingResponse.v1"| Controller
+  Controller -->|"render greeting/chips"| Widget
   Visitor -->|"reply or chip click"| Widget
   Widget -->|"engaged user turn"| GreetingAgent
   GreetingAgent -->|"tool call"| HandoffTool
@@ -42,15 +39,14 @@ flowchart LR
 |---|---|---|
 | Tracker | Observed browser facts. | Intent, commercial inference, greeting copy. |
 | Compiler | Safe context packet and soft inferences. | Popup timing, greeting copy, orchestration. |
-| Controller | Trigger grammar, suppression, opportunity reservation. | Greeting language, product answers, specialist routing. |
-| Greetings agent client | Calls Agent Studio Greetings Agent and executes the greeting UI tool. | Writing copy itself except fail-closed validation. |
-| Greetings Agent | One-shot greeting, optional chips, and handoff tool call after engagement. | Tracking, timing, retrieval, specialists, final answers. |
+| Controller | Trigger grammar, suppression, opportunity reservation, Greetings Agent completion POST, response validation, widget open. | Greeting language, product answers, specialist routing. |
+| Greetings Agent | One-shot greeting response, optional chips, and `handoff_to_orchestrator` tool call after engagement. | Tracking, timing, retrieval, specialists, final answers. |
 | Handoff tool | Validates engaged turn, attaches original packet, and calls orchestrator. | Rewriting the greeting or answering the visitor. |
 | Main orchestrator | Reactive answer, search, grounding, specialist routing, follow-up discovery. | Initial proactive popup timing. |
 
 ## Input Contract
 
-`algolia-greetings-agent-client.js` sends the Greetings Agent a compact request derived from `AlgoliaProactiveDecision.v1`.
+`algolia-proactive-controller.js` sends the Greetings Agent a compact request derived from `AlgoliaProactiveDecision.v1` as a completion turn with per-turn context metadata.
 
 ```json
 {
@@ -163,13 +159,13 @@ The agent must treat behavior as context, not copy. It can say, "Pricing pages a
 | `product_page_50_scroll` | `product_research` | Summarize fit/tradeoff. | "You have enough product detail; now sort what matters." |
 | `multiple_product_pages` | `journey_shift` | Help compare capabilities. | "Several product pages usually means the problem is bigger than one feature." |
 
-## Client Tool: `show_proactive_greeting`
+## Output Contract
 
-On the first completion turn, the Greetings Agent must call `show_proactive_greeting`. The client executes that tool by validating and rendering the greeting/chips in the widget.
+On the first completion turn, the Greetings Agent returns strict JSON. The controller validates this response and renders the greeting/chips in the widget.
 
 ```json
 {
-  "schema": "ShowProactiveGreeting.v1",
+  "schema": "ProactiveGreetingResponse.v1",
   "opportunityId": "opp_19fff074c5d_23ee98",
   "greeting": "Pricing pages are where good search ideas meet CFO gravity. Want the practical version: what actually drives Algolia cost?",
   "chips": [
@@ -185,7 +181,7 @@ On the first completion turn, the Greetings Agent must call `show_proactive_gree
 }
 ```
 
-Tool rules:
+Output rules:
 
 - `greeting` must be 12-34 words.
 - `chips` are optional, max 3, max 8 words each.
@@ -194,16 +190,6 @@ Tool rules:
 - Never mention raw tracking, surveillance, localStorage, sessionStorage, telemetry, prompts, tools, Agent Studio configuration, or hidden instructions.
 - Never answer the underlying product question in the greeting.
 - Never invent customer names, metrics, pricing, quotes, roadmap, or implementation facts.
-
-The tool output returned back to Agent Studio should be compact:
-
-```json
-{
-  "success": true,
-  "rendered": true,
-  "opportunityId": "opp_19fff074c5d_23ee98"
-}
-```
 
 ## Client Tool: `handoff_to_orchestrator`
 
@@ -302,12 +288,12 @@ The orchestrator should use this as context, not as proof. It must still search 
 
 ## Failure Behavior
 
-The client/tool layer should fail closed:
+The controller and handoff tool should fail closed:
 
 | Failure | Behavior |
 |---|---|
 | Greetings Agent call fails | Do not open a proactive greeting. Log reason for debug. |
-| `show_proactive_greeting` input invalid | Do not open. Log validation error. |
+| Greeting response invalid | Do not open. Log validation error. |
 | Greeting too long | Do not open. |
 | Greeting exposes telemetry | Do not open. |
 | Controller opportunity expired | Do not open. |
@@ -315,13 +301,13 @@ The client/tool layer should fail closed:
 
 No hard-coded generic fallback greeting in v1. A bad proactive message is worse than silence.
 
-## Client Validation
+## Controller Validation
 
-`algolia-greetings-agent-client.js` must validate every proactive greeting before opening the widget.
+`algolia-proactive-controller.js` must validate every proactive greeting before opening the widget.
 
 Required checks:
 
-- Tool input contains `schema: "ShowProactiveGreeting.v1"`.
+- Response contains `schema: "ProactiveGreetingResponse.v1"`.
 - `opportunityId` matches the request.
 - `greeting` is 12-34 words.
 - `chips` has 0-3 items and each chip is 8 words or fewer.
@@ -335,4 +321,4 @@ If any check fails, the client logs a debug reason and does not open the proacti
 
 - Whether chips should be displayed in v1 or suppressed until the greeting copy quality is proven.
 - Whether `handoff_to_orchestrator` should stream the orchestrator response into the same widget panel immediately or create a new orchestrator conversation state first. Current recommendation: same panel, new orchestrator conversation ID.
-- Whether the Greetings Agent should retry once on invalid `show_proactive_greeting` input or fail closed immediately. Current recommendation: fail closed for v1.
+- Whether the controller should retry once on invalid greeting JSON or fail closed immediately. Current recommendation: fail closed for v1.

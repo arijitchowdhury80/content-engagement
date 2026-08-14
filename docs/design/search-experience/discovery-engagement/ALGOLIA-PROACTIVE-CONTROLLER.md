@@ -2,11 +2,11 @@
 
 ## Purpose
 
-The proactive controller decides when the concierge has earned the right to interrupt.
+The proactive controller decides when the concierge has earned the right to interrupt, sends the qualified opportunity packet to the Agent Studio Greetings Agent, and renders the returned greeting.
 
-It does not write greeting copy, search Algolia, call Agent Studio, or open the chat with a hard-coded message. Its job is to read the visitor context packet, evaluate deterministic journey triggers, reserve one eligible opportunity, and emit a structured decision for the next layer.
+It does not write greeting copy, search Algolia, or call the main orchestrator. Its job is to read the visitor context packet, evaluate deterministic journey triggers, reserve one eligible opportunity, POST the packet to the Greetings Agent, validate the greeting response, and open the widget with that returned greeting.
 
-Agent Studio owns the greeting language. The browser owns the timing.
+Agent Studio owns the greeting language. The browser owns the timing, validation, and rendering.
 
 ## Runtime Files
 
@@ -14,7 +14,8 @@ Agent Studio owns the greeting language. The browser owns the timing.
 |---|---|---|
 | Collector | `frontend/chat-widget/algolia-engagement-tracker.js` | Captures page views, clicks, searches, scroll, dwell, CTA/form signals, persona selection, and chat interactions. |
 | Compiler | `frontend/chat-widget/algolia-context-compiler.js` | Compiles tracker state into `AlgoliaContextPacket.v1` and Agent Studio `metadata.turnContext`. |
-| Controller | `frontend/chat-widget/algolia-proactive-controller.js` | Evaluates trigger grammar and emits `algolia-proactive-opportunity`. |
+| Controller | `frontend/chat-widget/algolia-proactive-controller.js` | Evaluates trigger grammar, stores opportunity packets, POSTs to the Greetings Agent, validates its response, and opens the widget. |
+| Handoff client tool | `frontend/chat-widget/handoff-to-orchestrator.js` | Executes `handoff_to_orchestrator` after the visitor engages and POSTs the engaged turn to the main orchestrator. |
 | Engage shell | `frontend/chat-widget/algolia-chat-engage.js` | Visual acknowledgement and existing widget integration. |
 
 ## Storage Contract
@@ -117,6 +118,78 @@ When a trigger is eligible, the controller emits:
 
 Downstream greeting generation should use this packet as input. The greeting must never expose raw telemetry such as “I saw you click X.” It should translate the moment into useful concierge help.
 
+## Greetings Agent Call
+
+After reserving an eligible opportunity, the controller calls the Agent Studio Greetings Agent directly.
+
+POST:
+
+```text
+https://{appId}.algolia.net/agent-studio/1/agents/{greetingsAgentId}/completions?compatibilityMode=ai-sdk-5&stream=false&cache=false&memory=false
+```
+
+Body:
+
+```json
+{
+  "id": "alg_cnv_proactive_opp_19fff074c5d_23ee98",
+  "messages": [
+    {
+      "id": "alg_msg_proactive_opp_19fff074c5d_23ee98",
+      "role": "user",
+      "parts": [
+        {
+          "type": "text",
+          "text": "PROACTIVE_GREETING_REQUEST\n{...ProactiveGreetingRequest.v1...}"
+        }
+      ],
+      "metadata": {
+        "turnContext": {
+          "schema": "AlgoliaTurnContext.v1"
+        }
+      }
+    }
+  ]
+}
+```
+
+The controller expects strict JSON from the Greetings Agent:
+
+```json
+{
+  "schema": "ProactiveGreetingResponse.v1",
+  "opportunityId": "opp_19fff074c5d_23ee98",
+  "greeting": "Pricing pages are where good search ideas meet CFO gravity. Want the practical version of what actually drives cost?",
+  "chips": ["What drives cost?", "How are API calls counted?", "Which plan fits?"],
+  "handoffSummary": {
+    "moment": "commercial_evaluation",
+    "trigger": "product_to_pricing",
+    "messageGoal": "explain_cost_drivers"
+  }
+}
+```
+
+Validation gates:
+
+- `schema` equals `ProactiveGreetingResponse.v1`.
+- `opportunityId` matches the reserved opportunity.
+- `greeting` is 12-34 words.
+- `chips` has 0-3 items and each chip is 8 words or fewer.
+- `handoffSummary` matches the reserved opportunity.
+- Greeting does not expose telemetry or raw behavior.
+- Greeting does not include unsupported pricing values, customer metrics, roadmap claims, links, or hidden/internal language.
+
+On pass, the controller calls:
+
+```js
+document.querySelector("algolia-chat")?.engage({
+  greeting,
+  suggestions: chips
+});
+```
+
+On fail, the controller does not open the widget.
+
 ## Event Flow
 
 ```mermaid
@@ -125,17 +198,21 @@ sequenceDiagram
   participant Tracker as algolia-engagement-tracker.js
   participant Compiler as algolia-context-compiler.js
   participant Controller as algolia-proactive-controller.js
-  participant Greeting as Greeting/Agent Studio layer
+  participant Greeting as Agent Studio Greetings Agent
+  participant Widget as Chat widget
   Visitor->>Tracker: page view, click, search, scroll, dwell, CTA
   Tracker->>Tracker: update localStorage/sessionStorage
   Tracker-->>Controller: algolia-engagement-signal
   Controller->>Compiler: compile current context
   Compiler-->>Controller: AlgoliaContextPacket.v1
   Controller->>Controller: evaluate triggers and suppression
-  Controller-->>Greeting: algolia-proactive-opportunity
-  Greeting->>Greeting: generate/open personalized greeting
+  Controller->>Controller: reserve opportunity packet
+  Controller->>Greeting: POST ProactiveGreetingRequest.v1
+  Greeting-->>Controller: ProactiveGreetingResponse.v1
+  Controller->>Controller: validate response
+  Controller->>Widget: render greeting/chips
 ```
 
 ## Build Boundary
 
-This module is complete when it can deterministically emit or suppress proactive opportunities from real tracker/compiler state. The next module consumes `algolia-proactive-opportunity`, asks Agent Studio for the greeting, and opens the chat with that returned greeting.
+This module is complete when it can deterministically emit or suppress proactive opportunities from real tracker/compiler state, call the Greetings Agent, validate the returned greeting, and open the chat with that returned greeting.
