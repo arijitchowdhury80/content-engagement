@@ -113,6 +113,51 @@ The future bridge sends the proactive greeting agent a compact request derived f
 }
 ```
 
+## Greeting Method
+
+The greeting agent receives a qualified opportunity, not raw browsing history. Its job is to turn that opportunity into one strong opening line.
+
+The agent should use this order:
+
+1. Identify the visitor's current moment from `moment`, `trigger`, and `messageGoal`.
+2. Use confirmed `persona` when present, but never pretend an inferred persona is fact.
+3. Use `currentPage`, the last meaningful page in `journey`, and `friction` to choose the hook angle.
+4. Write one greeting that makes the next helpful conversation obvious.
+5. Add up to three chips only when they make the next click easier.
+
+The agent must treat behavior as context, not copy. It can say, "Pricing pages are where good search ideas meet CFO gravity." It must not say, "I saw you click Pricing after AI Recommendations."
+
+## Copy Variables
+
+| Field | Use | Do not use for |
+|---|---|---|
+| `moment` | Primary copy lane. | A factual claim about the visitor. |
+| `trigger` | Specific reason this is the right time. | Exposing the event sequence. |
+| `messageGoal` | What the greeting should offer. | A full answer. |
+| `persona` | Tune language for developer, executive, merchandiser, or consultant when confirmed. | Stating inferred identity as fact. |
+| `currentPage.topic` | Make the greeting feel page-specific. | Unsupported product claims. |
+| `journey` | Understand path shape: product to pricing, docs to pricing, product to proof. | Raw narration of clicks. |
+| `friction` | Name the likely unresolved question softly. | Diagnosis with certainty. |
+| `constraints` | Keep the response short and safe. | Creative exceptions. |
+
+## Trigger Copy Playbook
+
+| Trigger | Moment | Greeting job | Strong angle |
+|---|---|---|---|
+| `product_to_pricing` | `commercial_evaluation` | Connect product interest to cost drivers. | "You are now asking whether the shiny thing is worth the money." |
+| `implementation_to_pricing` | `commercial_evaluation` | Tie implementation effort to commercial decision. | "Separate build effort from platform cost before those two get tangled." |
+| `pricing_to_implementation` | `implementation_research` | Help validate whether the plan is technically realistic. | "Now pressure-test whether the pricing path matches the build path." |
+| `product_to_customer_story` | `customer_proof` | Map proof to the visitor's likely problem. | "Proof only matters if it matches your problem." |
+| `search_to_docs` | `implementation_research` | Turn a search/docs path into a practical implementation route. | "Skip the tab maze and find the shortest working path." |
+| `pricing_8s_dwell` | `commercial_evaluation` | Offer cost-driver explanation. | "Pricing hesitation usually means the real question is usage and value." |
+| `developer_page_15s_dwell` | `implementation_research` | Offer implementation-path clarification. | "Developer pages can hide the real effort behind tidy diagrams." |
+| `developer_page_60_scroll` | `implementation_research` | Offer architecture or integration guidance. | "A deep scroll means it may be time to turn docs into a plan." |
+| `customer_story_12s_dwell` | `customer_proof` | Help translate proof into evaluation criteria. | "Customer stories should answer 'does this look like us?'" |
+| `customer_story_60_scroll` | `customer_proof` | Offer comparison to similar evidence. | "If the proof is interesting, the next question is what pattern repeats." |
+| `product_page_10s_dwell` | `product_research` | Clarify fit and use case. | "Product pages are better when translated into your actual use case." |
+| `product_page_50_scroll` | `product_research` | Summarize fit/tradeoff. | "You have enough product detail; now sort what matters." |
+| `multiple_product_pages` | `journey_shift` | Help compare capabilities. | "Several product pages usually means the problem is bigger than one feature." |
+
 ## Output Contract
 
 The greeting agent returns strict JSON. The bridge opens the chat only when the JSON is valid and the greeting passes client validation.
@@ -219,6 +264,22 @@ The bridge should fail closed:
 | Controller opportunity expired | Do not open. |
 
 No hard-coded generic fallback greeting in v1. A bad proactive message is worse than silence.
+
+## Bridge Validation
+
+The bridge must validate every proactive greeting before opening the widget.
+
+Required checks:
+
+- JSON parses and contains `schema: "ProactiveGreetingResponse.v1"`.
+- `opportunityId` matches the request.
+- `greeting` is 12-34 words.
+- `chips` has 0-3 items and each chip is 8 words or fewer.
+- `handoffSummary.moment`, `handoffSummary.trigger`, and `handoffSummary.messageGoal` match the request.
+- Greeting does not contain banned telemetry phrases: `tracking`, `telemetry`, `localStorage`, `sessionStorage`, `clickstream`, `I noticed`, `I saw`, `based on your browsing`, `based on your behavior`.
+- Greeting does not contain unsupported customer names, pricing values, roadmap claims, metrics, or links.
+
+If any check fails, the bridge logs a debug reason and does not open the proactive greeting.
 
 ## Open Decisions
 

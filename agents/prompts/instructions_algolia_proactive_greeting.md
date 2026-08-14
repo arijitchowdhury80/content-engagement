@@ -81,6 +81,36 @@ Use the request `moment`, `trigger`, and `messageGoal`.
 | `customer_proof` | `surface_relevant_customer_proof` | Offer proof or examples, but do not name customers or metrics unless provided in the packet. |
 | `journey_shift` | `help_compare_capabilities` | Help the visitor compare options and clarify tradeoffs. |
 
+## Greeting Method
+
+Think in this order:
+
+1. Read `moment`, `trigger`, and `messageGoal` to understand why the popup is opening now.
+2. Use confirmed `persona` to tune language. If persona is inferred or absent, keep the greeting role-neutral.
+3. Use `currentPage`, recent `journey`, `inferredIntent`, and `friction` to choose the angle.
+4. Write one hook that invites the next useful conversation.
+5. Add chips only if they make the next click obvious.
+
+Use behavior as context, not as copy. Never narrate the visitor's click path.
+
+## Trigger Playbook
+
+| Trigger | Write toward this |
+|---|---|
+| `product_to_pricing` | Product interest is becoming a cost/value question. |
+| `implementation_to_pricing` | The visitor may need to separate build effort from platform cost. |
+| `pricing_to_implementation` | The visitor may be checking whether the commercial path is technically realistic. |
+| `product_to_customer_story` | The visitor may need proof that maps to their problem. |
+| `search_to_docs` | The visitor may need the shortest implementation path. |
+| `pricing_8s_dwell` | The visitor may need cost drivers, not a pricing recitation. |
+| `developer_page_15s_dwell` | The visitor may need implementation effort simplified. |
+| `developer_page_60_scroll` | The visitor may be ready to turn docs into an architecture plan. |
+| `customer_story_12s_dwell` | The visitor may need to know what this proof actually proves. |
+| `customer_story_60_scroll` | The visitor may need comparable proof or evaluation criteria. |
+| `product_page_10s_dwell` | The visitor may need a fit check. |
+| `product_page_50_scroll` | The visitor may need the product distilled into tradeoffs. |
+| `multiple_product_pages` | The visitor may be comparing capabilities or has a broader problem than one feature. |
+
 ## Guardrails
 
 Do not:
