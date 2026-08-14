@@ -123,9 +123,9 @@
     space: {
       '1': '4px', '2': '8px', '3': '12px', '4': '16px', '5': '20px',
       '6': '24px', '7': '32px', '8': '40px', '9': '48px', '10': '64px',
-      gutter: '16px', measure: '72ch', maxWidth: '1120px',
+      gutter: '16px', measure: '72ch', maxWidth: '100%',
       controlMin: '34px', controlSm: '24px',
-      sourceNameMaxW: '240px', msgMaxW: '760px', thinkingBarMaxW: '320px',
+      sourceNameMaxW: '240px', msgMaxW: 'min(920px, calc(100% - 56px))', thinkingBarMaxW: '320px',
     },
 
     // Marketing-site radius scale (kept; Satellite uses 4px).
@@ -176,8 +176,8 @@
       '[part="header"] > div button:hover { background: transparent !important; color: var(--algolia-text-secondary); }',
       '[part="header"] > div button svg, [part="header"] > div button img { width: 17px !important; height: 17px !important; }',
       '[part="chat-content"] { padding: 16px 18px !important; background: linear-gradient(180deg, #f8f9fd 0%, var(--algolia-bg) 60%, #ffffff 100%); }',
-      '[part="composer"] { margin: 8px 16px 12px !important; padding: 4px 5px 4px 16px !important; gap: 8px !important; min-height: 50px; border: 1px solid var(--algolia-border); border-radius: var(--algolia-radius-full); background: #ffffff; box-shadow: 0 10px 28px -22px rgba(35,38,59,0.8), 0 1px 0 rgba(255,255,255,0.95) inset; }',
-      '[part="composer-input"] { min-height: 40px; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; font-size: var(--algolia-fs-base); box-shadow: none !important; }',
+      '[part="composer"] { margin: 2px 0 4px !important; padding: 4px 5px 4px 16px !important; gap: 8px !important; min-height: 46px; border: 1px solid var(--algolia-border); border-radius: var(--algolia-radius-full); background: #ffffff; box-shadow: 0 10px 28px -22px rgba(35,38,59,0.8), 0 1px 0 rgba(255,255,255,0.95) inset; }',
+      '[part="composer-input"] { min-height: 38px; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; font-size: var(--algolia-fs-base); box-shadow: none !important; }',
       '[part="composer-send"] { position: relative; width: 40px; min-width: 40px; height: 40px; min-height: 40px; padding: 0 !important; border: 0; border-radius: var(--algolia-radius-full); background: #050505; color: transparent; font-size: 0; box-shadow: none; }',
       '/* Generated from local Algolia logo pack: /Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG/Algolia-mark-white.svg */',
       `[part="composer-send"]::before { content: ""; position: absolute; inset: 10px; background-image: ${algoliaMarkWhite}; background-repeat: no-repeat; background-position: center; background-size: contain; }`,
@@ -185,6 +185,9 @@
       '[part="message-user-bubble"] { padding: 10px 18px !important; border: 1px solid color-mix(in srgb, var(--algolia-accent) 72%, #ffffff); box-shadow: 0 14px 34px -24px rgba(0,61,255,0.9); font-size: var(--algolia-fs-base); }',
       '.bg-algolia-surface.p-6.shadow-algolia-2 { position: relative; overflow: visible; padding: 10px 2px 12px !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }',
       '.uppercase.tracking-algolia-caps { display: inline-flex; width: fit-content; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; letter-spacing: var(--algolia-tracking-caps); color: var(--algolia-text-muted) !important; box-shadow: none !important; }',
+      '.mx-auto.flex.w-full.max-w-algolia-maxw.flex-1.flex-col.overflow-hidden { max-width: 100% !important; }',
+      '.shrink-0.border-t.border-algolia-border.bg-algolia-surface > .mx-auto { max-width: 100% !important; padding: 6px 14px 8px !important; gap: 6px !important; }',
+      '.flex.items-center.justify-between.gap-3.py-2.text-algolia-xs.text-algolia-text-muted { display: none !important; }',
       '.acs-reasoning { margin: 2px 0 10px !important; padding: 0 0 8px !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }',
       '.acs-reasoning__header { font-weight: var(--algolia-fw-medium) !important; color: var(--algolia-text-muted) !important; }',
       '.acs-step__label { font-size: var(--algolia-fs-2xs) !important; font-weight: var(--algolia-fw-medium) !important; color: color-mix(in srgb, var(--algolia-text-muted) 78%, #ffffff) !important; }',
