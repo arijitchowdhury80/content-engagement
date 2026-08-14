@@ -1,7 +1,7 @@
 # Algolia.com Discovery Engagement - Operating Contract
 
 **Status:** Active
-**Last updated:** 2026-08-12
+**Last updated:** 2026-08-14
 
 This is the deployment and runtime source of truth for the algolia.com discovery concierge.
 
@@ -13,8 +13,8 @@ The behavioral architecture source of truth is [CONCIERGE-BEHAVIOR-ARCHITECTURE.
 2. Do not touch, use, or validate against non-algolia.com surfaces.
 3. Do not change production Ask Algolia. It is a read-only competitive benchmark.
 4. The only permitted app is `0EXRPAXB56`.
-5. The only permitted retrieval index is `Algolia_Prod_Copy_Enhanced`.
-6. `Algolia_Prod_Copy_Vanilla` is retired. It must not appear in deployment markup, scripts, tests, or recommendations.
+5. The permitted retrieval index for the current comparison/demo lane is `Algolia_Prod_Copy_Vanilla`.
+6. `Algolia_Prod_Copy_Enhanced` is historical enrichment evidence only. It must not be used by active `www Chat*` or `www Person*` demo agents unless Arijit explicitly changes the comparison strategy again.
 
 ## Agent Naming And Ownership
 
@@ -39,9 +39,9 @@ the current runtime binding.
 | Environment | `https://tmp-content-eng-algolia.cloud.jahia.com` |
 | Shared template parent | `/sites/www/home/drift` |
 | Custom-code block | `/sites/www/home/drift/custom-code-block` |
-| Release marker | `enhanced-local-visual-parity-20260812` |
-| Current chat bundle | `algolia-chat.js?citationFallback=20260812` |
-| Test URL | `https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?widgetFinal=20260812` |
+| Release marker | `proactive-handoff-20260814a` |
+| Current chat bundle | `algolia-chat.js?handoff=20260814a` |
+| Test URL | `https://tmp-content-eng-algolia.cloud.jahia.com/?algoliaChatDebug=1&algoliaProactiveDebug=1&cb=trigger-permutation-visible` |
 
 The custom-code block is the only allowed host-page edit surface. Do not modify the local `/tmp` host page or unrelated Jahia page content.
 
@@ -49,10 +49,10 @@ The custom-code block is the only allowed host-page edit surface. Do not modify 
 
 The 2026-08-12 deployment contains:
 
-- `Algolia_Prod_Copy_Enhanced` retrieval configuration;
+- `Algolia_Prod_Copy_Vanilla` retrieval configuration;
 - Algolia visual theme and branded logo;
-- `discovery-enabled="true"` and auto-engagement configuration;
-- `algolia-chat-visitor`, `algolia-chat-person`, `algolia-chat-engage`, confidence judges, specialist declarations, and form-tool wiring;
+- `algolia-engagement-tracker`, `algolia-context-compiler`, `algolia-proactive-controller`, and `handoff-to-orchestrator` runtime scripts;
+- `discovery-enabled="true"`, proactive debug controls, confidence judges, specialist declarations, and form-tool wiring;
 - JavaScript assets uploaded and published under the Jahia development site's `/files/live/sites/www/files/` path.
 
 It was browser-verified to open and produce a sourced answer to `What is Algolia?`.
@@ -79,7 +79,7 @@ Before every Jahia publish:
 2. Confirm the target is the development Drift block above.
 3. Update only the HTML property unless a separately approved change requires another property.
 4. Publish `/sites/www/home/drift` with `includeSubTree: true`.
-5. Read the LIVE JCR block back and assert: Enhanced present, Vanilla absent, expected release marker present.
+5. Read the LIVE JCR block back and assert: Vanilla present, Enhanced absent from active script/config references, expected release marker present.
 6. Browser-test the rendered Jahia page with a cache-busting query string.
 7. Ask a source-seeking question and assert one or more answer-body anchors;
    assert every retrieved-link destination is an Algolia-owned live host, never

@@ -106,9 +106,6 @@ Body:
       "metadata": {
         "turnContext": {
           "schema": "AlgoliaTurnContext.v1"
-        },
-        "turnContext": {
-          "schema": "AlgoliaTurnContext.v1"
         }
       }
     }

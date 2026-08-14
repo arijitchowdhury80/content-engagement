@@ -4,6 +4,9 @@
 *.env
 
 .DS_Store
+**/.DS_Store
+**/__pycache__/
+**/.pytest_cache/
 node_modules/
 .playwright-mcp/
 
@@ -34,9 +37,6 @@ docs/research/search-experience/workstream-1-completion-smoke-stream.txt
 
 # VPS connection params — project-local, never commit
 .env.vps
-
-# python bytecode from the WU-06 research scripts
-__pycache__/
 
 # Skill build residue — pattern, not instances (see docs/operations/enrichment/.gitignore for why)
 skills/*/scripts/**/__pycache__/

@@ -1,7 +1,7 @@
 /**
  * algoliaComConfig — pure, static configuration for the Algolia.com agent panel
  * (Generalist / Specialist / Academy / Classifier + 3 judges), against
- * Algolia_Prod_Copy_Enhanced in the SAME parent app as ACS (0EXRPAXB56).
+ * Algolia_Prod_Copy_Vanilla in the SAME parent app as ACS (0EXRPAXB56).
  * Forked from agentConfig.mjs rather than parameterizing it — ACS and this
  * panel are permanently separate agent sets with no shared runtime, so
  * sharing the module-level INDEX constant across both would be a real risk
@@ -9,7 +9,7 @@
  * tests without touching the live Agent Studio API.
  */
 
-export const INDEX = 'Algolia_Prod_Copy_Enhanced';
+export const INDEX = 'Algolia_Prod_Copy_Vanilla';
 export const CLONE_BASE = 'Algolia_Generalist'; // self-hosting; falls back to any *-neural agent on this app (e.g. an ACS agent) if the panel isn't built yet — used only to bootstrap tool scaffold/model/provider
 
 // Same shared inference infra as the rest of Algolia-Central (see
@@ -44,14 +44,14 @@ const HITS_PER_PAGE = 15;
 // reached only after Generalist answers — Academy is NOT a standalone front door,
 // same handoff mechanism as Specialist. Judges score independently, no search tool.
 export const PERSONAS = [
-  { name: 'Algolia_Generalist', prompt: 'instructions_algolia_generalist.md', filters: BASE_FILTER, desc: 'Algolia_Prod_Copy_Enhanced — full Algolia.com corpus (all 8 sources), current prod snapshot, English only.', extraTools: [] },
-  { name: 'Algolia_Specialist', prompt: 'instructions_algolia_specialist.md', filters: `(source:"Documentation" OR source:"Developers") AND ${BASE_FILTER}`, desc: 'Algolia_Prod_Copy_Enhanced scoped to Documentation + Developers (product/technical slice).', extraTools: [] },
-  { name: 'Algolia_Academy', prompt: 'instructions_algolia_academy.md', filters: `source:"Academy" AND ${BASE_FILTER}`, desc: 'Algolia_Prod_Copy_Enhanced scoped to Academy training content.', extraTools: [] },
+  { name: 'Algolia_Generalist', prompt: 'instructions_algolia_generalist.md', filters: BASE_FILTER, desc: 'Algolia_Prod_Copy_Vanilla — full Algolia.com corpus (all sources), current prod copy, English only.', extraTools: [] },
+  { name: 'Algolia_Specialist', prompt: 'instructions_algolia_specialist.md', filters: `(source:"Documentation" OR source:"Developers") AND ${BASE_FILTER}`, desc: 'Algolia_Prod_Copy_Vanilla scoped to Documentation + Developers (product/technical slice).', extraTools: [] },
+  { name: 'Algolia_Academy', prompt: 'instructions_algolia_academy.md', filters: `source:"Academy" AND ${BASE_FILTER}`, desc: 'Algolia_Prod_Copy_Vanilla scoped to Academy training content.', extraTools: [] },
   {
     name: 'Algolia_Classifier',
     prompt: 'instructions_algolia_classifier.md',
     filters: null,
-    desc: 'Algolia_Prod_Copy_Enhanced classifier — no independent search, classifies from supplied context only.',
+    desc: 'Algolia_Prod_Copy_Vanilla classifier — no independent search, classifies from supplied context only.',
     extraTools: [],
     noSearchTool: true,
     expectSuggestions: false,

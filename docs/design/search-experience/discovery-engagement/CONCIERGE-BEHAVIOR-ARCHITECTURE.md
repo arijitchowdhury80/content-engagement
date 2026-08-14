@@ -1,8 +1,8 @@
 # Algolia.com Concierge Behavior Architecture
 
-**Status:** Accepted architecture direction; event taxonomy and thresholds pending GA4/Looker evidence.
-**Date:** 2026-08-12
-**Scope:** algolia.com only; app `0EXRPAXB56`; index `Algolia_Prod_Copy_Enhanced`.
+**Status:** Accepted architecture direction; v1 tracker, compiler, controller, and handoff runtime deployed to Jahia dev.
+**Date:** 2026-08-14
+**Scope:** algolia.com only; app `0EXRPAXB56`; index `Algolia_Prod_Copy_Vanilla`.
 
 ## Mission
 
@@ -16,8 +16,8 @@ The concierge is a layered browser-and-agent system. Agent Studio `turnContext` 
 Browser signal collector
   -> consent-aware session intelligence store
   -> deterministic context compiler
-  -> proactive decision engine -> widget engagement
-  -> native turnContext -> www Chat - Orchestrator
+  -> proactive controller -> Agent Studio Greetings Agent -> widget engagement
+  -> handoff context -> www Chat - Orchestrator
   -> discovery ledger -> specialist handoff
 ```
 
@@ -29,7 +29,8 @@ Browser signal collector
 | Session intelligence store | Browser runtime | Retain ordered, consent-aware session events and shared state for both reactive and proactive experiences. Raw telemetry stays here. |
 | Context compiler | Browser/runtime code | Produce a versioned safe packet: observed facts, confidence-labelled hypotheses, unknowns, stage, suppression state, and eligible action. |
 | Proactive decision engine | Browser/runtime code | Evaluate every meaningful event and decide `engage`, `wait`, or `suppress` using deterministic policy, timing, caps, consent, active-form/chat, dismissal, and frustration rules. |
-| Concierge delivery | Widget JavaScript + optional concierge agent | Open the widget through `chat.engage(...)` only after code declares the moment eligible. An agent may draft wording; it does not unilaterally interrupt. |
+| Concierge delivery | Widget JavaScript + `www Chat - Proactive Concierge` | Open the widget only after code declares the moment eligible. The Greetings Agent drafts greeting copy and chips; it does not decide timing. |
+| Handoff transport | `handoff-to-orchestrator.js` + native Agent Studio turn metadata | Attach the proactive handoff context and latest safe context to the first real orchestrator turn after the visitor engages. |
 | Reactive chat transport | Native Agent Studio `turnContext` | Attach the latest safe context to every visitor question, leaving the question itself intact. |
 | Discovery and handoff | Conversation ledger + `www Chat - *` specialists | Record confirmed visitor facts, cautious inferences, unanswered slots, suppression, and evidence. Send a concise context packet to specialists. |
 
@@ -69,4 +70,4 @@ The GA4/Looker research stream must deliver:
 - Do not expose raw telemetry, identifiers, URLs with query parameters, or consent-restricted data to an agent.
 - Do not greet or interrupt every visitor.
 - Do not build prompt-only personalization.
-- Do not modify non-algolia.com surfaces, production Ask Algolia, any non-`www` agent, or any retrieval index other than `Algolia_Prod_Copy_Enhanced`.
+- Do not modify non-algolia.com surfaces, production Ask Algolia, any non-`www` agent, or any retrieval index other than `Algolia_Prod_Copy_Vanilla`.

@@ -20,7 +20,7 @@ function roleJudgeChiefPromptBranch(bundle) {
   return bundle.slice(start, end);
 }
 
-for (const bundleName of ['algolia-chat.js', 'algolia-chat-jahia-20260812-wip.js']) {
+for (const bundleName of ['algolia-chat.js']) {
   test(`${bundleName} includes retrieved sources in chief judge prompt when role judges are enabled`, () => {
     const branch = roleJudgeChiefPromptBranch(readBundle(bundleName));
 
@@ -28,6 +28,18 @@ for (const bundleName of ['algolia-chat.js', 'algolia-chat-jahia-20260812-wip.js
     assert.match(branch, /ANSWER:/);
     assert.match(branch, /SOURCES:/);
     assert.match(branch, /JSON\.stringify\([^)]*\.sources\)/);
+  });
+
+  test(`${bundleName} tells judges to distinguish hallucination from semantic paraphrase`, () => {
+    const bundle = readBundle(bundleName);
+    const branch = roleJudgeChiefPromptBranch(bundle);
+
+    assert.match(bundle, /Treat semantically equivalent paraphrases as grounded/);
+    assert.match(bundle, /Judge semantic support, not exact wording/);
+    assert.match(bundle, /Exact values, prices, dates, limits, version names, API names/);
+    assert.match(bundle, /gateTripped=true only for critical or material unsupported factual claims/);
+    assert.match(bundle, /harmless paraphrases, headings, transitions/);
+    assert.match(branch, /section labels, connective phrasing, or generic advice/);
   });
 
   test(`${bundleName} highlights unsupported answer spans without blocking the answer`, () => {
@@ -47,7 +59,7 @@ for (const bundleName of ['algolia-chat.js', 'algolia-chat-jahia-20260812-wip.js
     assert.doesNotMatch(bundle, /function acShouldBlockAnswer/);
     assert.match(bundle, /function acHighlightUnsupported/);
     assert.match(bundle, /text-algolia-negative/);
-    assert.match(bundle, /not verified against the retrieved sources/);
+    assert.match(bundle, /needs source review/);
     assert.match(bundle, /unsupportedTerms/);
     assert.ok(renderer.includes(visibleTextGate), 'successful answer should remain visible');
     assert.match(renderer, /unsupportedTerms:/);
@@ -56,6 +68,21 @@ for (const bundleName of ['algolia-chat.js', 'algolia-chat-jahia-20260812-wip.js
     assert.match(renderer, /name:"thinking"/);
     assert.match(renderer, /&&!\s*R&&w\.jsx\([^,]+,\{name:"thinking"/);
   });
+
+  test(`${bundleName} presents grounding as review instead of a hard unsupported verdict`, () => {
+    const bundle = readBundle(bundleName);
+
+    assert.match(bundle, /Grounding review/);
+    assert.match(bundle, /NEEDS REVIEW/);
+    assert.match(bundle, /grounding needs review/);
+    assert.match(bundle, /material source support needs review/);
+    assert.match(bundle, /term\(s\) need review|term(?:\(s\)|s)? to review/);
+    assert.doesNotMatch(bundle, /Grounding verdict/);
+    assert.doesNotMatch(bundle, /UNSUPPORTED/);
+    assert.doesNotMatch(bundle, /floored to/);
+    assert.doesNotMatch(bundle, /hard-floor/);
+  });
+
 
   test(`${bundleName} defines markdown cleanup regexes used by the answer renderer`, () => {
     const bundle = readBundle(bundleName);

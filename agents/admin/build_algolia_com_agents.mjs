@@ -1,7 +1,7 @@
 /**
  * build_algolia_com_agents — the Algolia.com agent panel (Generalist / Specialist /
- * Academy / Classifier + 3 judges) over Algolia_Prod_Copy_Enhanced, SAME parent app
- * as ACS (0EXRPAXB56) — see docs/plans/2026-08-04-algolia-com-agent-port.md.
+ * Academy / Classifier + 3 judges) over Algolia_Prod_Copy_Vanilla, SAME parent app
+ * as the www agents (0EXRPAXB56).
  * Forked from build_acs_agents.mjs, not parameterized — same reasoning as
  * algoliaComConfig.mjs. No new env vars: reuses ALGOLIA_APP_ID/ALGOLIA_ADMIN_API_KEY.
  *
