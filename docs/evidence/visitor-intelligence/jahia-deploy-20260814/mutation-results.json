@@ -65,6 +65,28 @@
       }
     }
   },
+  "upsertHandoffToOrchestrator": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/handoff-to-orchestrator.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/handoff-to-orchestrator.js"
+          }
+        }
+      }
+    }
+  },
   "upsertEngage": {
     "data": {
       "jcr": {
@@ -140,6 +162,18 @@
       }
     }
   },
+  "publishHandoffToOrchestrator": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/handoff-to-orchestrator.js"
+          }
+        }
+      }
+    }
+  },
   "publishEngage": {
     "data": {
       "jcr": {
@@ -189,30 +223,6 @@
     }
   },
   "publishBlock": {
-    "data": {
-      "jcr": {
-        "target": {
-          "publish": true,
-          "node": {
-            "path": "/sites/www/home/drift/custom-code-block"
-          }
-        }
-      }
-    }
-  },
-  "republishDriftSubtreeAfterStaleLiveReadback": {
-    "data": {
-      "jcr": {
-        "target": {
-          "publish": true,
-          "node": {
-            "path": "/sites/www/home/drift"
-          }
-        }
-      }
-    }
-  },
-  "republishBlockAfterStaleLiveReadback": {
     "data": {
       "jcr": {
         "target": {

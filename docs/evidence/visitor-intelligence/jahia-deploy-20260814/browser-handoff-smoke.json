@@ -1,0 +1,128 @@
+{
+  "loaded": {
+    "tracker": true,
+    "compiler": true,
+    "controller": true,
+    "handoff": true,
+    "chatRegisterTool": true,
+    "handoffScript": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=20260814a",
+    "oldTrackerScript": false
+  },
+  "hasMarker": true,
+  "visiblePrefixOk": true,
+  "handoff": {
+    "schema": "ProactiveHandoffContext.v1",
+    "opportunityId": "opp_browser_smoke_1",
+    "capturedAt": 1786742492523,
+    "userResponse": "API calls and usage",
+    "selectedChip": "API calls and usage",
+    "greeting": "Pricing pages are where shiny ideas meet budget gravity. I can break down the real cost drivers without the plan-name soup.",
+    "chips": [
+      "Break down cost drivers",
+      "API calls and usage",
+      "Which plan fits?"
+    ],
+    "handoffSummary": {
+      "moment": "commercial_evaluation",
+      "trigger": "product_to_pricing",
+      "messageGoal": "explain_cost_drivers"
+    },
+    "requestPacket": {
+      "schema": "ProactiveGreetingRequest.v1",
+      "opportunityId": "opp_browser_smoke_1",
+      "moment": "commercial_evaluation",
+      "trigger": "product_to_pricing",
+      "messageGoal": "explain_cost_drivers"
+    },
+    "contextPacket": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1786742492524,
+      "profile": {
+        "visitorId": "visitor_da5658d353129a597353017f",
+        "visits": 1,
+        "persona": {
+          "value": "unknown",
+          "state": "unknown",
+          "confidence": 0,
+          "source": "insufficient_signal"
+        }
+      },
+      "session": {
+        "sessionId": "sess_66ef2426faa227981a685cc1",
+        "startedAt": 1786742492353,
+        "pageCount": 1,
+        "engagementHistory": []
+      },
+      "currentPage": {
+        "pageId": "page_eea88d8935fe8ca99af463a1",
+        "path": "/",
+        "title": "The AI search and retrieval platform - Agentic | Generative | Search",
+        "pageGroup": "home",
+        "topic": "homepage",
+        "dwellMs": 0,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "homepage",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_394b37ca42b071359d0b62c3",
+          "name": "page_view",
+          "ts": 1786742492353,
+          "pageId": "page_eea88d8935fe8ca99af463a1",
+          "path": "/",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/",
+            "title": "The AI search and retrieval platform - Agentic | Generative | Search",
+            "pageGroup": "home",
+            "topic": "homepage"
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "unknown",
+          "state": "unknown",
+          "confidence": 0,
+          "source": "insufficient_signal"
+        },
+        "intent": {
+          "value": "ai_recommendations_evaluation",
+          "state": "inferred",
+          "confidence": 0.72,
+          "evidence": [
+            "current_page:The AI search and retrieval platform - Agentic | Generative | Search / homepage"
+          ]
+        },
+        "friction": {
+          "value": "fit_and_value_unclear",
+          "state": "inferred",
+          "confidence": 0.62,
+          "evidence": [
+            "current_page:The AI search and retrieval platform - Agentic | Generative | Search / homepage"
+          ]
+        },
+        "nextBestAction": {
+          "value": "explain_feature_fit_with_example",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "instruction": "This was a proactive engagement. Use the context softly, never expose telemetry, answer the user's response directly, then continue normal discovery."
+  },
+  "opportunityStatus": "handoff_sent",
+  "selectedChip": "API calls and usage",
+  "hasTurnContext": true,
+  "pass": true,
+  "consoleErrorCount": 1
+}

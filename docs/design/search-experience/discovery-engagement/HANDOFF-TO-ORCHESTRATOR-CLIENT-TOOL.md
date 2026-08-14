@@ -4,7 +4,7 @@
 
 This document is the build spec for `frontend/chat-widget/handoff-to-orchestrator.js`, the JavaScript file that executes the Greetings Agent's `handoff_to_orchestrator` client-side tool.
 
-It forwards the first engaged proactive user turn to `www Chat - Orchestrator` with the original opportunity packet, latest compiled context, greeting shown, and user reply or selected chip.
+It carries the first engaged proactive user turn to `www Chat - Orchestrator` with the original opportunity packet, latest compiled context, greeting shown, chips, and user reply or selected chip.
 
 The tool does not generate copy, decide triggers, or answer the visitor. It is transport and validation.
 
@@ -20,72 +20,49 @@ sequenceDiagram
   participant Orchestrator as www Chat - Orchestrator
 
   Visitor->>Widget: Reply or chip click
-  Widget->>Agent: Engaged user turn
-  Agent-->>Tool: handoff_to_orchestrator tool call
-  Tool->>Tool: Validate args
-  Tool->>Tool: Read stored opportunity by opportunityId
+  Widget->>Orchestrator: Existing chat submit path
+  Tool->>Tool: Intercept primary orchestrator completion request
+  Tool->>Tool: Read latest shown opportunity
   Tool->>Compiler: Compile latest AlgoliaTurnContext.v1
-  Tool->>Orchestrator: POST completion
+  Tool->>Orchestrator: Attach PROACTIVE_HANDOFF_CONTEXT
   Orchestrator-->>Widget: Stream main answer
 ```
+
+The Agent Studio tool schema still exists on the Greetings Agent so a native `handoff_to_orchestrator` tool call can be supported when the widget routes an engaged response back through the Greeting Agent. The deployed v1 path also decorates the next primary orchestrator request because the current chat widget owns the visible conversation with the primary orchestrator.
 
 ## Agent Studio Tool Schema
 
 Tool name: `handoff_to_orchestrator`
 
-Strict JSON schema:
+Agent Studio's dashboard follows the function-calling pattern, but the management API stores client-side tools with `type: "client_side"` and `inputSchema`:
 
 ```json
 {
-  "type": "function",
-  "function": {
-    "name": "handoff_to_orchestrator",
-    "description": "Forward the visitor's first engaged proactive reply to the main Algolia.com orchestrator. Use this after the visitor replies to a proactive greeting or clicks one of its chips. Do not answer the visitor yourself.",
-    "strict": true,
-    "parameters": {
-      "type": "object",
-      "properties": {
-        "schema": {
-          "type": "string",
-          "enum": ["HandoffToOrchestrator.v1"]
+  "name": "handoff_to_orchestrator",
+  "type": "client_side",
+  "description": "Hands an engaged proactive visitor to the main Algolia.com orchestrator. Use only after PROACTIVE_USER_ENGAGEMENT. Do not answer the visitor yourself.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "schema": { "type": "string", "enum": ["ProactiveHandoffToolInput.v1"] },
+      "opportunityId": { "type": "string" },
+      "greeting": { "type": "string" },
+      "chips": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
+      "selectedChip": { "type": ["string", "null"] },
+      "userResponse": { "type": "string" },
+      "handoffSummary": {
+        "type": "object",
+        "properties": {
+          "moment": { "type": "string" },
+          "trigger": { "type": "string" },
+          "messageGoal": { "type": "string" }
         },
-        "opportunityId": {
-          "type": "string",
-          "description": "The proactive opportunity identifier from the original greeting request."
-        },
-        "userMessage": {
-          "type": "string",
-          "description": "The visitor's exact typed reply or clicked chip text."
-        },
-        "selectedChip": {
-          "type": ["string", "null"],
-          "description": "The chip text if a chip was clicked, otherwise null."
-        },
-        "greetingShown": {
-          "type": "string",
-          "description": "The exact proactive greeting shown to the visitor."
-        },
-        "handoffSummary": {
-          "type": "object",
-          "properties": {
-            "moment": { "type": "string" },
-            "trigger": { "type": "string" },
-            "messageGoal": { "type": "string" }
-          },
-          "required": ["moment", "trigger", "messageGoal"],
-          "additionalProperties": false
-        }
-      },
-      "required": [
-        "schema",
-        "opportunityId",
-        "userMessage",
-        "selectedChip",
-        "greetingShown",
-        "handoffSummary"
-      ],
-      "additionalProperties": false
-    }
+        "required": ["moment", "trigger", "messageGoal"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["schema", "opportunityId", "greeting", "chips", "selectedChip", "userResponse", "handoffSummary"],
+    "additionalProperties": false
   }
 }
 ```
@@ -103,9 +80,9 @@ The model passes the interaction fields. The JavaScript adds the trusted browser
 
 This is deliberate. The model should not be trusted to echo the original opportunity packet perfectly.
 
-## Orchestrator Completion Request
+## Orchestrator Completion Decoration
 
-POST:
+The current implementation does not create a separate orchestrator POST. It decorates the existing widget POST to the primary orchestrator:
 
 ```text
 https://{appId}.algolia.net/agent-studio/1/agents/{orchestratorAgentId}/completions?compatibilityMode=ai-sdk-5&stream=true&cache=false
@@ -123,20 +100,15 @@ Body:
       "parts": [
         {
           "type": "text",
-          "text": "The visitor engaged with a proactive greeting.\n\nUser message:\nHow are API calls counted?\n\nGreeting shown:\nPricing pages are where good search ideas meet CFO gravity. Want the practical version of what actually drives cost?\n\nUse the hidden turn context and proactive handoff context. Answer the user directly."
+          "text": "How are API calls counted?\n\nPROACTIVE_HANDOFF_CONTEXT\n{\"schema\":\"ProactiveHandoffContext.v1\",\"opportunityId\":\"opp_...\",\"userResponse\":\"How are API calls counted?\",\"selectedChip\":\"How are API calls counted?\",\"greeting\":\"Pricing pages are where shiny ideas meet budget gravity...\",\"chips\":[\"Break down cost drivers\",\"API calls and usage\",\"Which plan fits?\"],\"handoffSummary\":{\"moment\":\"commercial_evaluation\",\"trigger\":\"product_to_pricing\",\"messageGoal\":\"explain_cost_drivers\"},\"requestPacket\":{},\"contextPacket\":{}}"
         }
       ],
       "metadata": {
         "turnContext": {
           "schema": "AlgoliaTurnContext.v1"
         },
-        "proactiveHandoff": {
-          "schema": "AlgoliaProactiveHandoff.v1",
-          "opportunityId": "opp_...",
-          "moment": "commercial_evaluation",
-          "trigger": "product_to_pricing",
-          "messageGoal": "explain_cost_drivers",
-          "selectedChip": "How are API calls counted?"
+        "turnContext": {
+          "schema": "AlgoliaTurnContext.v1"
         }
       }
     }
@@ -144,7 +116,7 @@ Body:
 }
 ```
 
-The user-visible text must be natural and concise. Raw event arrays belong in metadata, not visible text.
+The visible user text remains the visitor's message. The appended `PROACTIVE_HANDOFF_CONTEXT` is an internal instruction block for the orchestrator; the orchestrator must never quote or expose it.
 
 ## Validation Gates
 
@@ -170,13 +142,12 @@ The user-visible text must be natural and concise. Raw event arrays belong in me
 
 Unit tests must prove:
 
-- It accepts a valid `handoff_to_orchestrator` call.
-- It rejects mismatched `opportunityId` and `handoffSummary`.
+- It registers a valid `handoff_to_orchestrator` handler.
 - It reads the original opportunity packet from session storage.
 - It attaches latest `AlgoliaTurnContext.v1`.
-- It POSTs to the configured orchestrator endpoint.
-- It does not expose raw telemetry in visible user text.
-- It preserves user input on orchestrator failure.
+- It decorates only primary orchestrator completion requests.
+- It does not decorate unrelated agent requests.
+- It marks the opportunity as `handoff_sent` after decoration.
 
 ## Documentation Evidence
 

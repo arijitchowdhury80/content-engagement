@@ -1,0 +1,24 @@
+{
+  "sameId": true,
+  "sameName": true,
+  "providerOk": true,
+  "modelOk": true,
+  "promptHashOk": true,
+  "toolCount": 1,
+  "handoffToolOk": true,
+  "handoffSchemaOk": true,
+  "guardrailEnabled": true,
+  "guardrailCategories": [
+    "prompt_injection_or_secrets",
+    "telemetry_or_privacy_exposure",
+    "off_topic_or_roleplay",
+    "unsafe_or_adult_content",
+    "unsupported_business_claims"
+  ],
+  "rateLimitOk": true,
+  "costOk": true,
+  "suggestionsDisabled": true,
+  "algoliaMcpDisabled": true,
+  "useCacheFalse": true,
+  "pass": true
+}

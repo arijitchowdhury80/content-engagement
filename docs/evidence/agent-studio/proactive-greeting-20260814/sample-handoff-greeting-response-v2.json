@@ -1,0 +1,17 @@
+{
+  "status": 200,
+  "ok": true,
+  "json": {
+    "id": "alg_msg_XdNfISAAW2r9RXMM",
+    "role": "assistant",
+    "parts": [
+      {
+        "type": "step-start"
+      },
+      {
+        "type": "text",
+        "text": "{\n  \"schema\": \"ProactiveGreetingResponse.v1\",\n  \"opportunityId\": \"opp_validation_commercial_2\",\n  \"greeting\": \"Pricing pages are where shiny ideas meet budget gravity. I can break down the real cost drivers without the plan-name soup.\",\n  \"chips\": [\"Break down cost drivers\", \"AI Recommendation costs\", \"Which plan fits?\"],\n  \"handoffSummary\": {\n    \"moment\": \"commercial_evaluation\",\n    \"trigger\": \"product_to_pricing\",\n    \"messageGoal\": \"explain_cost_drivers\"\n  }\n}"
+      }
+    ]
+  }
+}

@@ -4,6 +4,7 @@
     "newTracker": "/sites/www/files/algolia-engagement-tracker.js",
     "contextCompiler": "/sites/www/files/algolia-context-compiler.js",
     "proactiveController": "/sites/www/files/algolia-proactive-controller.js",
+    "handoffToOrchestrator": "/sites/www/files/handoff-to-orchestrator.js",
     "oldTracker": "/sites/www/files/algolia-chat-tracker.js",
     "engage": "/sites/www/files/algolia-chat-engage.js"
   },
@@ -12,25 +13,30 @@
     "newTrackerReferenced": true,
     "contextCompilerReferenced": true,
     "proactiveControllerReferenced": true,
+    "handoffToOrchestratorReferenced": true,
     "releaseMarkers": [
-      "chat-ui-header-icons-20260814a"
+      "judge-review-20260814a"
     ],
     "newTrackerExists": true,
     "contextCompilerExists": true,
-    "proactiveControllerExists": true
+    "proactiveControllerExists": true,
+    "handoffToOrchestratorExists": true
   },
   "intended": {
     "oldTrackerReferenced": false,
     "newTrackerReferenced": true,
     "contextCompilerReferenced": true,
     "proactiveControllerReferenced": true,
+    "handoffToOrchestratorReferenced": true,
     "trackerVersion": "20260814d",
     "contextCompilerVersion": "20260814a",
     "proactiveControllerVersion": "20260814c",
+    "handoffToOrchestratorVersion": "20260814a",
     "engageVersion": "20260814d",
     "trackerSha256": "c56bdcfaa890a667961bbd0e566a8cf58500e7986a4368982952b68e3386cf87",
     "contextCompilerSha256": "9c2dd559df5c3e5df6a122592c2e07670eb360386c7e1540604f0d03222ae71f",
     "proactiveControllerSha256": "feb00a72ce36aa2ca4e31232f52d2070aa410ac50d7623047a5e51b1a53c256f",
+    "handoffToOrchestratorSha256": "8ac8041a135b0ca9c4c4bcaa2ebd0578da300fbec19875f167f775a4221fa7ce",
     "engageSha256": "927868c7f6eb065fb35e09532002bf426f736ad67b8ca948456d2fa7ad0ea711"
   },
   "rollback": {
@@ -38,6 +44,7 @@
     "restoreOldTrackerFrom": "before-snapshot.json edit.oldTrackerNode children[0].properties[jcr:data]",
     "restoreOrRemoveContextCompilerFrom": "before-snapshot.json edit.contextCompilerNode children[0].properties[jcr:data]",
     "restoreOrRemoveProactiveControllerFrom": "before-snapshot.json edit.proactiveControllerNode children[0].properties[jcr:data]",
+    "restoreOrRemoveHandoffToOrchestratorFrom": "before-snapshot.json edit.handoffToOrchestratorNode children[0].properties[jcr:data]",
     "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]"
   }
 }

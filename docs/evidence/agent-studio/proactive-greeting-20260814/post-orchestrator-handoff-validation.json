@@ -1,0 +1,16 @@
+{
+  "sameId": true,
+  "sameName": true,
+  "promptHashOk": true,
+  "hasHandoffSection": true,
+  "toolNames": [
+    "algolia_search_index",
+    "ask_specialist",
+    "get_visitor_profile"
+  ],
+  "toolsPreserved": true,
+  "guardrailStillOn": true,
+  "rateLimitStillOn": true,
+  "suggestionsStillOff": true,
+  "pass": true
+}

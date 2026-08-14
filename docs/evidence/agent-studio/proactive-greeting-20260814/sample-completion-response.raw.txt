@@ -1,0 +1,161 @@
+data: {"type": "start", "messageId": "alg_msg_WSkrWKpUN5ZHK85d", "messageMetadata": {}}
+
+data: {"type": "start-step"}
+
+data: {"type": "text-start", "id": "alg_msg_WSkrWKpUN5ZHK85d"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "{"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\n  "}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\"schema"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\": \""}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "Proactive"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "GreetingResponse"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": ".v"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "1\","}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\n  "}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\"opportunity"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "Id\":"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " \"opp"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "_validation"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "_2"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "02"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "60"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "81"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "4_"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "v2"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\",\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "  \""}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "greeting\":"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " \"Pricing"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " pages often"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " leave"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " the actual"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " cost"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " drivers a"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " bit"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " mysterious"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": ". Want"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " the executive"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " summary"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " of how"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " your usage"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " translates"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " into a"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " budget"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " line"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "?\",\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "  \""}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "chips\":"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " [\"What"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " drives cost"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "?\", \""}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "Scale"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " implications"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\", \""}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "Pricing model"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " overview\"],"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\n  "}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\"hando"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "ffSummary"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\": {"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\n    "}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\"moment"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\": \""}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "commercial_"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "evaluation\","}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\n    "}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\"trigger"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\": \""}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "product_"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "to_"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "pricing\","}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\n    "}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\"message"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "Goal\":"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": " \"explain"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "_cost"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "_drivers"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\"\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "  }"}
+
+data: {"type": "text-delta", "id": "alg_msg_WSkrWKpUN5ZHK85d", "delta": "\n}"}
+
+data: {"type": "text-end", "id": "alg_msg_WSkrWKpUN5ZHK85d"}
+
+data: {"type": "finish-step"}
+
+data: {"type": "finish"}
+
+data: [DONE]

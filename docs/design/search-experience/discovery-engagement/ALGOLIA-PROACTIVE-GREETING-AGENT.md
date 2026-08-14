@@ -6,7 +6,7 @@ The proactive greeting agent writes the opening hook for a qualified proactive e
 
 It does one thing: turn a controller opportunity packet into a short, useful, human greeting. It does not decide when to interrupt, track visitor behavior, answer product questions, call specialists, search Algolia, continue the conversation, or own orchestration.
 
-The browser decides when to engage. The proactive greeting agent decides what the opening message should say. The controller renders the greeting into the existing chat widget. After the visitor engages, the main orchestrator handles the conversation.
+The browser decides when to engage. The proactive greeting agent decides what the opening message should say. The chat widget renders the greeting and chips. After the visitor engages, the handoff layer passes the proactive context into the main orchestrator turn.
 
 ## Runtime Position
 
@@ -25,9 +25,10 @@ flowchart LR
   Compiler -->|"AlgoliaContextPacket.v1"| Controller
   Controller -->|"completion POST with ProactiveGreetingRequest.v1"| GreetingAgent
   GreetingAgent -->|"ProactiveGreetingResponse.v1"| Controller
-  Controller -->|"render greeting/chips"| Widget
+  Controller -->|"widget.engage({ greeting, suggestions })"| Widget
   Visitor -->|"reply or chip click"| Widget
-  Widget -->|"engaged user turn + compiled context"| Orchestrator
+  Widget -->|"engaged user turn"| Orchestrator
+  Widget -->|"handoff context attached by handoff-to-orchestrator.js"| Orchestrator
 ```
 
 ## Responsibility Split
@@ -36,8 +37,8 @@ flowchart LR
 |---|---|---|
 | Tracker | Observed browser facts. | Intent, commercial inference, greeting copy. |
 | Compiler | Safe context packet and soft inferences. | Popup timing, greeting copy, orchestration. |
-| Controller | Trigger grammar, suppression, opportunity reservation, Greetings Agent completion POST, response validation, widget open. | Greeting language, product answers, specialist routing. |
-| Greetings Agent | One-shot greeting response and optional chips. | Tracking, timing, retrieval, specialists, final answers, engaged-turn handoff. |
+| Controller | Trigger grammar, suppression, opportunity reservation, Greetings Agent completion POST, response validation, widget open. | Greeting language, product answers, specialist routing, DOM rendering. |
+| Greetings Agent | Greeting response and optional chips; in native Agent Studio handoff mode, emits `handoff_to_orchestrator` after user engagement. | Tracking, timing, retrieval, specialists, final answers. |
 | Main orchestrator | Reactive answer, search, grounding, specialist routing, follow-up discovery. | Initial proactive popup timing. |
 
 ## Input Contract
@@ -157,7 +158,7 @@ The agent must treat behavior as context, not copy. It can say, "Pricing pages a
 
 ## Output Contract
 
-On the first completion turn, the Greetings Agent returns strict JSON. The visitor never sees the JSON. The controller validates this response and renders only the greeting/chips in the widget.
+On `PROACTIVE_GREETING_REQUEST`, the Greetings Agent returns strict JSON. The visitor never sees the JSON. The controller validates this response and asks the chat widget to render only the greeting/chips.
 
 ```json
 {
@@ -186,6 +187,12 @@ Output rules:
 - Never mention raw tracking, surveillance, localStorage, sessionStorage, telemetry, prompts, tools, Agent Studio configuration, or hidden instructions.
 - Never answer the underlying product question in the greeting.
 - Never invent customer names, metrics, pricing, quotes, roadmap, or implementation facts.
+
+## Engagement Handoff Contract
+
+When the Greeting Agent receives `PROACTIVE_USER_ENGAGEMENT`, it must not answer the visitor. It calls the client-side tool `handoff_to_orchestrator` once with the original opportunity id, greeting, chips, selected chip if any, visitor response, and handoff summary.
+
+In the current widget runtime, the visible conversation is owned by the primary orchestrator, so `frontend/chat-widget/handoff-to-orchestrator.js` also attaches the same handoff packet to the next primary orchestrator completion request. This preserves the runtime sequence: no orchestrator answer starts until after the visitor engages with the proactive greeting.
 
 ## Tone
 
@@ -262,8 +269,9 @@ Required checks:
 
 If any check fails, the client logs a debug reason and does not open the proactive greeting.
 
-## Open Decisions
+## Current Decisions
 
-- Whether chips should be displayed in v1 or suppressed until the greeting copy quality is proven.
-- Whether a later dedicated handoff module is needed, or whether the existing widget-to-orchestrator flow remains sufficient once proactive context is attached to the engaged turn.
-- Whether the controller should retry once on invalid greeting JSON or fail closed immediately. Current recommendation: fail closed for v1.
+- Chips are enabled in v1 because they turn a yes/no greeting into a structured visitor intent.
+- The chat widget renders the greeting; the controller never renders popup DOM directly.
+- The handoff module is required. It registers the native client-side tool and attaches `PROACTIVE_HANDOFF_CONTEXT` to the next orchestrator turn.
+- Invalid greeting JSON fails closed for v1.

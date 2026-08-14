@@ -2,11 +2,11 @@
 
 ## Purpose
 
-The proactive controller decides when the concierge has earned the right to interrupt, sends the qualified opportunity packet to the Agent Studio Greetings Agent, and renders the returned greeting.
+The proactive controller decides when the concierge has earned the right to interrupt and sends the qualified opportunity packet to the Agent Studio Greetings Agent.
 
-It does not write greeting copy, search Algolia, or call the main orchestrator. Its job is to read the visitor context packet, evaluate deterministic journey triggers, reserve one eligible opportunity, POST the packet to the Greetings Agent, validate the greeting response, and open the widget with that returned greeting.
+It does not write greeting copy, search Algolia, render UI, or call the main orchestrator. Its job is to read the visitor context packet, evaluate deterministic journey triggers, reserve one eligible opportunity, POST the packet to the Greetings Agent, validate the greeting response, and ask the chat widget to open with that returned greeting.
 
-Agent Studio owns the greeting language. The browser owns the timing, validation, and rendering.
+Agent Studio owns the greeting language. The browser controller owns timing and validation. The chat widget owns rendering and the eventual orchestrator conversation.
 
 ## Runtime Files
 
@@ -15,7 +15,7 @@ Agent Studio owns the greeting language. The browser owns the timing, validation
 | Collector | `frontend/chat-widget/algolia-engagement-tracker.js` | Captures page views, clicks, searches, scroll, dwell, CTA/form signals, persona selection, and chat interactions. |
 | Compiler | `frontend/chat-widget/algolia-context-compiler.js` | Compiles tracker state into `AlgoliaContextPacket.v1` and Agent Studio `metadata.turnContext`. |
 | Controller | `frontend/chat-widget/algolia-proactive-controller.js` | Evaluates trigger grammar, stores opportunity packets, POSTs to the Greetings Agent, validates its response, and opens the widget. |
-| Handoff client tool | `frontend/chat-widget/handoff-to-orchestrator.js` | Executes `handoff_to_orchestrator` after the visitor engages and POSTs the engaged turn to the main orchestrator. |
+| Handoff client tool | `frontend/chat-widget/handoff-to-orchestrator.js` | Registers `handoff_to_orchestrator` and attaches the proactive handoff packet to the next primary orchestrator turn after the visitor engages. |
 | Engage shell | `frontend/chat-widget/algolia-chat-engage.js` | Visual acknowledgement and existing widget integration. |
 
 ## Storage Contract
@@ -210,7 +210,7 @@ Validation gates:
 - Greeting does not expose telemetry or raw behavior.
 - Greeting does not include unsupported pricing values, customer metrics, roadmap claims, links, or hidden/internal language.
 
-On pass, the controller calls:
+On pass, the controller asks the chat widget to render the greeting:
 
 ```js
 document.querySelector("algolia-chat")?.engage({
@@ -218,6 +218,8 @@ document.querySelector("algolia-chat")?.engage({
   suggestions: chips
 });
 ```
+
+The controller does not paint DOM for the popup. `algolia-chat` renders the greeting and chips, and the normal chat submit path sends the engaged visitor response to the primary orchestrator.
 
 The widget API currently names the clickable chips `suggestions`; project docs and prompts call them `chips`. The mapping happens only at this widget API boundary.
 

@@ -27,15 +27,18 @@ OLD_TRACKER = "/sites/www/files/algolia-chat-tracker.js"
 NEW_TRACKER = "/sites/www/files/algolia-engagement-tracker.js"
 CONTEXT_COMPILER = "/sites/www/files/algolia-context-compiler.js"
 PROACTIVE_CONTROLLER = "/sites/www/files/algolia-proactive-controller.js"
+HANDOFF_TO_ORCHESTRATOR = "/sites/www/files/handoff-to-orchestrator.js"
 ENGAGE = "/sites/www/files/algolia-chat-engage.js"
 TRACKER_SRC = ROOT / "frontend/chat-widget/algolia-engagement-tracker.js"
 CONTEXT_COMPILER_SRC = ROOT / "frontend/chat-widget/algolia-context-compiler.js"
 PROACTIVE_CONTROLLER_SRC = ROOT / "frontend/chat-widget/algolia-proactive-controller.js"
+HANDOFF_TO_ORCHESTRATOR_SRC = ROOT / "frontend/chat-widget/handoff-to-orchestrator.js"
 ENGAGE_SRC = ROOT / "frontend/chat-widget/algolia-chat-engage.js"
 EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260814"
 TRACKER_VERSION = "20260814d"
 CONTEXT_COMPILER_VERSION = "20260814a"
 PROACTIVE_CONTROLLER_VERSION = "20260814c"
+HANDOFF_TO_ORCHESTRATOR_VERSION = "20260814a"
 ENGAGE_VERSION = "20260814d"
 
 
@@ -131,6 +134,7 @@ def snapshot() -> dict:
             "newTrackerNode": node(NEW_TRACKER, "EDIT"),
             "contextCompilerNode": node(CONTEXT_COMPILER, "EDIT"),
             "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "EDIT"),
+            "handoffToOrchestratorNode": node(HANDOFF_TO_ORCHESTRATOR, "EDIT"),
             "engageNode": node(ENGAGE, "EDIT"),
         },
         "live": {
@@ -139,6 +143,7 @@ def snapshot() -> dict:
             "newTrackerNode": node(NEW_TRACKER, "LIVE"),
             "contextCompilerNode": node(CONTEXT_COMPILER, "LIVE"),
             "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "LIVE"),
+            "handoffToOrchestratorNode": node(HANDOFF_TO_ORCHESTRATOR, "LIVE"),
             "engageNode": node(ENGAGE, "LIVE"),
         },
     }
@@ -211,6 +216,10 @@ def update_block_html(current: str) -> str:
         '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
         f'algolia-proactive-controller.js?proactive={PROACTIVE_CONTROLLER_VERSION}"></script>'
     )
+    handoff_tag = (
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'handoff-to-orchestrator.js?handoff={HANDOFF_TO_ORCHESTRATOR_VERSION}"></script>'
+    )
     engage_tag = (
         '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
         f'algolia-chat-engage.js?engage={ENGAGE_VERSION}"></script>'
@@ -235,6 +244,11 @@ def update_block_html(current: str) -> str:
         proactive_controller_tag,
         next_html,
     )
+    next_html = re.sub(
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/handoff-to-orchestrator\.js(?:\?[^"]*)?"></script>',
+        handoff_tag,
+        next_html,
+    )
     if "algolia-engagement-tracker.js" not in next_html:
         next_html = next_html.replace(engage_tag, tracker_tag + "\n" + engage_tag)
     if "algolia-context-compiler.js" not in next_html:
@@ -250,6 +264,14 @@ def update_block_html(current: str) -> str:
             )
         else:
             next_html = next_html.replace(engage_tag, proactive_controller_tag + "\n" + engage_tag)
+    if "handoff-to-orchestrator.js" not in next_html:
+        if proactive_controller_tag in next_html:
+            next_html = next_html.replace(
+                proactive_controller_tag,
+                proactive_controller_tag + "\n" + handoff_tag,
+            )
+        else:
+            next_html = next_html.replace(engage_tag, handoff_tag + "\n" + engage_tag)
     return next_html
 
 
@@ -301,6 +323,7 @@ def validate(snapshot_after: dict) -> dict:
     live_tracker = snapshot_after["live"]["newTrackerNode"]
     live_context_compiler = snapshot_after["live"]["contextCompilerNode"]
     live_proactive_controller = snapshot_after["live"]["proactiveControllerNode"]
+    live_handoff = snapshot_after["live"]["handoffToOrchestratorNode"]
     live_engage = snapshot_after["live"]["engageNode"]
     live_old_tracker = snapshot_after["live"]["oldTrackerNode"]
     edit_old_tracker = snapshot_after["edit"]["oldTrackerNode"]
@@ -311,11 +334,14 @@ def validate(snapshot_after: dict) -> dict:
         "liveHtmlReferencesContextCompilerVersion": f"context={CONTEXT_COMPILER_VERSION}" in live_html,
         "liveHtmlReferencesProactiveController": "algolia-proactive-controller.js" in live_html,
         "liveHtmlReferencesProactiveControllerVersion": f"proactive={PROACTIVE_CONTROLLER_VERSION}" in live_html,
+        "liveHtmlReferencesHandoffToOrchestrator": "handoff-to-orchestrator.js" in live_html,
+        "liveHtmlReferencesHandoffToOrchestratorVersion": f"handoff={HANDOFF_TO_ORCHESTRATOR_VERSION}" in live_html,
         "liveHtmlReferencesEngageVersion": f"engage={ENGAGE_VERSION}" in live_html,
         "liveHtmlOmitsOldTracker": "algolia-chat-tracker.js" not in live_html,
         "liveNewTrackerExists": live_tracker is not None,
         "liveContextCompilerExists": live_context_compiler is not None,
         "liveProactiveControllerExists": live_proactive_controller is not None,
+        "liveHandoffToOrchestratorExists": live_handoff is not None,
         "liveEngageExists": live_engage is not None,
         "oldTrackerAbsentFromEdit": edit_old_tracker is None,
         "oldTrackerAbsentFromLive": live_old_tracker is None,
@@ -333,6 +359,8 @@ def edit_has_expected_html(snapshot_after: dict) -> bool:
             f"context={CONTEXT_COMPILER_VERSION}" in edit_html,
             "algolia-proactive-controller.js" in edit_html,
             f"proactive={PROACTIVE_CONTROLLER_VERSION}" in edit_html,
+            "handoff-to-orchestrator.js" in edit_html,
+            f"handoff={HANDOFF_TO_ORCHESTRATOR_VERSION}" in edit_html,
             f"engage={ENGAGE_VERSION}" in edit_html,
         ]
     )
@@ -351,6 +379,7 @@ def main() -> int:
     tracker_content = TRACKER_SRC.read_text(encoding="utf-8")
     context_compiler_content = CONTEXT_COMPILER_SRC.read_text(encoding="utf-8")
     proactive_controller_content = PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")
+    handoff_content = HANDOFF_TO_ORCHESTRATOR_SRC.read_text(encoding="utf-8")
     engage_content = ENGAGE_SRC.read_text(encoding="utf-8")
     plan = {
         "target": {
@@ -358,6 +387,7 @@ def main() -> int:
             "newTracker": NEW_TRACKER,
             "contextCompiler": CONTEXT_COMPILER,
             "proactiveController": PROACTIVE_CONTROLLER,
+            "handoffToOrchestrator": HANDOFF_TO_ORCHESTRATOR,
             "oldTracker": OLD_TRACKER,
             "engage": ENGAGE,
         },
@@ -366,23 +396,28 @@ def main() -> int:
             "newTrackerReferenced": "algolia-engagement-tracker.js" in current_html,
             "contextCompilerReferenced": "algolia-context-compiler.js" in current_html,
             "proactiveControllerReferenced": "algolia-proactive-controller.js" in current_html,
+            "handoffToOrchestratorReferenced": "handoff-to-orchestrator.js" in current_html,
             "releaseMarkers": re.findall(r'data-release="([^"]+)"', current_html),
             "newTrackerExists": before["edit"]["newTrackerNode"] is not None,
             "contextCompilerExists": before["edit"]["contextCompilerNode"] is not None,
             "proactiveControllerExists": before["edit"]["proactiveControllerNode"] is not None,
+            "handoffToOrchestratorExists": before["edit"]["handoffToOrchestratorNode"] is not None,
         },
         "intended": {
             "oldTrackerReferenced": False,
             "newTrackerReferenced": True,
             "contextCompilerReferenced": True,
             "proactiveControllerReferenced": True,
+            "handoffToOrchestratorReferenced": True,
             "trackerVersion": TRACKER_VERSION,
             "contextCompilerVersion": CONTEXT_COMPILER_VERSION,
             "proactiveControllerVersion": PROACTIVE_CONTROLLER_VERSION,
+            "handoffToOrchestratorVersion": HANDOFF_TO_ORCHESTRATOR_VERSION,
             "engageVersion": ENGAGE_VERSION,
             "trackerSha256": sha256(tracker_content),
             "contextCompilerSha256": sha256(context_compiler_content),
             "proactiveControllerSha256": sha256(proactive_controller_content),
+            "handoffToOrchestratorSha256": sha256(handoff_content),
             "engageSha256": sha256(engage_content),
         },
         "rollback": {
@@ -390,6 +425,7 @@ def main() -> int:
             "restoreOldTrackerFrom": "before-snapshot.json edit.oldTrackerNode children[0].properties[jcr:data]",
             "restoreOrRemoveContextCompilerFrom": "before-snapshot.json edit.contextCompilerNode children[0].properties[jcr:data]",
             "restoreOrRemoveProactiveControllerFrom": "before-snapshot.json edit.proactiveControllerNode children[0].properties[jcr:data]",
+            "restoreOrRemoveHandoffToOrchestratorFrom": "before-snapshot.json edit.handoffToOrchestratorNode children[0].properties[jcr:data]",
             "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]",
         },
     }
@@ -403,12 +439,14 @@ def main() -> int:
         "upsertNewTracker": upsert_file(NEW_TRACKER, tracker_content),
         "upsertContextCompiler": upsert_file(CONTEXT_COMPILER, context_compiler_content),
         "upsertProactiveController": upsert_file(PROACTIVE_CONTROLLER, proactive_controller_content),
+        "upsertHandoffToOrchestrator": upsert_file(HANDOFF_TO_ORCHESTRATOR, handoff_content),
         "upsertEngage": upsert_file(ENGAGE, engage_content),
         "setBlockHtml": set_block_html(next_html),
         "deleteOldTrackerEdit": delete_old_tracker(),
         "publishNewTracker": publish(NEW_TRACKER),
         "publishContextCompiler": publish(CONTEXT_COMPILER),
         "publishProactiveController": publish(PROACTIVE_CONTROLLER),
+        "publishHandoffToOrchestrator": publish(HANDOFF_TO_ORCHESTRATOR),
         "publishEngage": publish(ENGAGE),
         "publishFilesSubtree": publish(FILES_PATH, subtree=True),
         "publishDriftSubtree": publish("/sites/www/home/drift", subtree=True),

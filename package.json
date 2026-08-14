@@ -1,0 +1,27 @@
+{
+  "name": "algolia-com",
+  "version": "1.0.0",
+  "description": "This repository is the working home for the Algolia.com discovery concierge: Agent Studio configuration and prompts, the Jahia chat widget JavaScript, visitor-intelligence work, corpus enrichment tooling, validation evidence, and project documentation.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arijitchowdhury80/content-engagement.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arijitchowdhury80/content-engagement/issues"
+  },
+  "homepage": "https://github.com/arijitchowdhury80/content-engagement#readme",
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  }
+}

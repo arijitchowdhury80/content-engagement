@@ -1,0 +1,33 @@
+{
+  "httpStatus": 200,
+  "ok": true,
+  "content": "{\n  \"schema\": \"ProactiveGreetingResponse.v1\",\n  \"opportunityId\": \"opp_validation_20260814_v2\",\n  \"greeting\": \"Pricing pages often leave the actual cost drivers a bit mysterious. Want the executive summary of how your usage translates into a budget line?\",\n  \"chips\": [\"What drives cost?\", \"Scale implications\", \"Pricing model overview\"],\n  \"handoffSummary\": {\n    \"moment\": \"commercial_evaluation\",\n    \"trigger\": \"product_to_pricing\",\n    \"messageGoal\": \"explain_cost_drivers\"\n  }\n}",
+  "parsed": {
+    "schema": "ProactiveGreetingResponse.v1",
+    "opportunityId": "opp_validation_20260814_v2",
+    "greeting": "Pricing pages often leave the actual cost drivers a bit mysterious. Want the executive summary of how your usage translates into a budget line?",
+    "chips": [
+      "What drives cost?",
+      "Scale implications",
+      "Pricing model overview"
+    ],
+    "handoffSummary": {
+      "moment": "commercial_evaluation",
+      "trigger": "product_to_pricing",
+      "messageGoal": "explain_cost_drivers"
+    }
+  },
+  "parseError": null,
+  "rawJsonOnly": true,
+  "schemaOk": true,
+  "opportunityIdOk": true,
+  "greetingWords": 24,
+  "greetingWordCountOk": true,
+  "chipsCount": 3,
+  "chipsCountOk": true,
+  "chipsWordCountOk": true,
+  "handoffSummaryOk": true,
+  "bannedTermsOk": true,
+  "unsupportedClaimsOk": true,
+  "pass": true
+}

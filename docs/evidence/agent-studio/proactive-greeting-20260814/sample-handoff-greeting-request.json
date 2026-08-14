@@ -1,0 +1,24 @@
+{
+  "id": "alg_cnv_test_1786742157508",
+  "messages": [
+    {
+      "id": "alg_msg_test_1786742157508",
+      "role": "user",
+      "parts": [
+        {
+          "type": "text",
+          "text": "PROACTIVE_GREETING_REQUEST\n{\"schema\":\"ProactiveGreetingRequest.v1\",\"opportunityId\":\"opp_validation_commercial_1\",\"moment\":\"commercial_evaluation\",\"trigger\":\"product_to_pricing\",\"priority\":88,\"persona\":{\"value\":\"executive\",\"state\":\"confirmed\",\"source\":\"demo_selector\"},\"currentPage\":{\"path\":\"/pricing\",\"pageGroup\":\"pricing\",\"topic\":\"pricing_and_usage\",\"title\":\"Pricing\"},\"journey\":[{\"path\":\"/products/ai-recommendations\",\"pageGroup\":\"product\",\"topic\":\"ai_recommendations\",\"dwellMs\":12000,\"maxScrollDepth\":50}],\"observedSignals\":[{\"name\":\"page_view\",\"path\":\"/pricing\"},{\"name\":\"page_dwell\",\"path\":\"/pricing\",\"props\":{\"dwellSeconds\":8}}],\"inferredIntent\":{\"value\":\"pricing_or_demo_evaluation\",\"state\":\"inferred\",\"confidence\":0.74},\"friction\":{\"value\":\"pricing_or_cost_unclear\",\"state\":\"inferred\",\"confidence\":0.64},\"messageGoal\":\"explain_cost_drivers\",\"tone\":\"sharp, useful, warm, lightly witty\",\"constraints\":{\"maxWords\":34,\"noTelemetryExposure\":true,\"includeQuestionChips\":true}}"
+        }
+      ],
+      "metadata": {
+        "turnContext": {
+          "schema": "AlgoliaTurnContext.v1",
+          "persona": {
+            "value": "executive",
+            "state": "confirmed"
+          }
+        }
+      }
+    }
+  ]
+}

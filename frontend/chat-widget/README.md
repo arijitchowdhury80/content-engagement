@@ -16,8 +16,8 @@ source under a dated `dist/<date>/local-reference/` tree again.
 - `algolia-chat-engage.js` — proactive engagement script.
 - `algolia-engagement-tracker.js` — engagement tracker for profile, session, and event signals.
 - `algolia-context-compiler.js` — compiles tracker state into Agent Studio per-turn context.
-- `algolia-proactive-controller.js` — evaluates journey triggers, stores opportunity packets, calls the Agent Studio Greetings Agent, and renders the returned greeting.
-- Future `handoff-to-orchestrator.js` — will execute the Greetings Agent's `handoff_to_orchestrator` client-side tool and POST engaged turns to the main orchestrator.
+- `algolia-proactive-controller.js` — evaluates journey triggers, stores opportunity packets, calls the Agent Studio Greetings Agent, and asks the chat widget to render the returned greeting.
+- `handoff-to-orchestrator.js` — registers the Greetings Agent's `handoff_to_orchestrator` client-side tool and attaches proactive handoff context to the next primary orchestrator turn.
 - `algolia-chat-form-tool.js` — lead form client tool.
 - `algolia-chat-theme-algolia.js` — Algolia brand theme.
 - `algolia-confidence-badge.js` — confidence badge bundle.

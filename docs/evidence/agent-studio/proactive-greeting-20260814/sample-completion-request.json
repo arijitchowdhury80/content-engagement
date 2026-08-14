@@ -1,0 +1,26 @@
+{
+  "url": "https://0EXRPAXB56.algolia.net/agent-studio/1/agents/0f290529-629a-48fe-9424-f93e5894d8f3/completions?compatibilityMode=ai-sdk-5&cache=false&memory=false",
+  "body": {
+    "id": "alg_cnv_proactive_validation_20260814_v2",
+    "messages": [
+      {
+        "id": "alg_msg_proactive_validation_20260814_v2",
+        "role": "user",
+        "parts": [
+          {
+            "type": "text",
+            "text": "PROACTIVE_GREETING_REQUEST\n{\"schema\":\"ProactiveGreetingRequest.v1\",\"opportunityId\":\"opp_validation_20260814_v2\",\"moment\":\"commercial_evaluation\",\"trigger\":\"product_to_pricing\",\"messageGoal\":\"explain_cost_drivers\",\"reasonCodes\":[\"journey_product_to_pricing\",\"pricing_page_view\"],\"persona\":{\"value\":\"executive\",\"state\":\"confirmed\",\"source\":\"demo_selector\"},\"currentPage\":{\"path\":\"/pricing\",\"pageGroup\":\"pricing\",\"topic\":\"pricing_and_usage\",\"title\":\"Pricing\"},\"journey\":[{\"path\":\"/products/ai-recommendations\",\"pageGroup\":\"product\",\"topic\":\"ai_search\",\"dwellMs\":12000,\"maxScrollDepth\":50},{\"path\":\"/pricing\",\"pageGroup\":\"pricing\",\"topic\":\"pricing_and_usage\",\"dwellMs\":9000,\"maxScrollDepth\":0}],\"observedSignals\":[{\"name\":\"page_view\",\"path\":\"/products/ai-recommendations\"},{\"name\":\"page_dwell\",\"path\":\"/pricing\",\"props\":{\"dwellSeconds\":8}}],\"inferredIntent\":{\"value\":\"pricing_or_demo_evaluation\",\"state\":\"inferred\",\"confidence\":0.74},\"friction\":{\"value\":\"pricing_or_cost_unclear\",\"state\":\"inferred\",\"confidence\":0.64},\"constraints\":{\"maxWords\":34,\"noTelemetryExposure\":true,\"includeQuestionChips\":true}}"
+          }
+        ],
+        "metadata": {
+          "turnContext": {
+            "context_schema": "AlgoliaTurnContext.v1",
+            "persona": "executive",
+            "journeyMoment": "commercial_evaluation",
+            "currentTopic": "pricing_and_usage"
+          }
+        }
+      }
+    ]
+  }
+}

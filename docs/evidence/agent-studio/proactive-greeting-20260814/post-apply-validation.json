@@ -1,0 +1,12 @@
+{
+  "sameId": true,
+  "providerUnchanged": true,
+  "modelUnchanged": true,
+  "instructionsSha256": "d95b83371978fb6b70eba996c76d0d1d5527a2280af83883290a9178020cf524",
+  "instructionsHashMatches": true,
+  "toolsRemoved": true,
+  "enableAlgoliaMcpFalse": true,
+  "useCacheFalse": true,
+  "suggestionsDisabled": true,
+  "pass": true
+}

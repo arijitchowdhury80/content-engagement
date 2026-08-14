@@ -1,0 +1,14 @@
+{
+  "status": 422,
+  "ok": false,
+  "contentPreview": "turn_context_invalid_shape",
+  "parseOk": false,
+  "schemaOk": false,
+  "opportunityOk": false,
+  "wordCount": 0,
+  "wordCountOk": false,
+  "chipsOk": false,
+  "handoffOk": false,
+  "bannedTelemetry": true,
+  "pass": false
+}
