@@ -1,0 +1,56 @@
+{
+  "profileSchema": "AlgoliaEngagementProfile.v1",
+  "persona": {
+    "value": "developer",
+    "state": "confirmed",
+    "source": "demo_selector",
+    "updatedAt": 1786680124202
+  },
+  "sessionPageCount": 5,
+  "engagementHistoryCount": 1,
+  "eventCount": 26,
+  "events": [
+    "page_view",
+    "persona_select",
+    "nav_click",
+    "page_view",
+    "nav_click",
+    "site_search",
+    "site_search",
+    "page_view",
+    "cta_click",
+    "search_result_click",
+    "page_view",
+    "cta_click",
+    "page_view",
+    "engagement_exposed",
+    "form_view",
+    "form_start",
+    "form_error",
+    "form_submit",
+    "form_success",
+    "chat_open",
+    "chat_question",
+    "scroll_depth",
+    "scroll_depth",
+    "scroll_depth",
+    "page_dwell",
+    "page_dwell"
+  ],
+  "scrollDepths": [
+    50,
+    75,
+    100
+  ],
+  "dwellSeconds": [
+    5,
+    10
+  ],
+  "localStorageKeys": [
+    "algolia_profile"
+  ],
+  "sessionStorageKeys": [
+    "algolia_session",
+    "algolia_events"
+  ]
+}

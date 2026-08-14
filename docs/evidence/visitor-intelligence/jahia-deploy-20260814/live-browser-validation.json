@@ -1,0 +1,347 @@
+{
+  "capturedAt": "2026-08-14T04:19:54.192865+00:00",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1",
+  "checks": {
+    "newTrackerScriptLoaded": true,
+    "oldTrackerScriptAbsent": true,
+    "releaseMarkerUpdated": true,
+    "trackerInstalled": true,
+    "oldTrackerNotInstalled": true,
+    "profileInLocalStorage": true,
+    "sessionInSessionStorage": true,
+    "eventsInSessionStorage": true,
+    "noAcsKeys": true,
+    "capturedPageView": true,
+    "capturedSiteSearch": true,
+    "capturedChatOpen": true,
+    "capturedChatQuestion": true,
+    "capturedDwell": true,
+    "capturedEngagementHistory": true,
+    "pass": true
+  },
+  "state": {
+    "href": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1",
+    "releaseMarkers": [
+      "engagement-tracker-20260814"
+    ],
+    "scripts": [
+      "https://www.youtube.com/s/player/b0d2d49a/www-widgetapi.vflset/www-widgetapi.js",
+      "https://cdn.cookielaw.org/scripttemplates/otSDKStub.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/header.js",
+      "https://cdn.cookielaw.org/scripttemplates/202512.1.0/otBannerSdk.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codeExchangeSearch.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/generated-resources/fc4a4183b54590192fb182298b01347.min.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/CsrfServlet",
+      "https://cdn.amplitude.com/script/9fa03fe145137b598626150731335817.experiment.js",
+      "https://cdn.amplitude.com/libs/plugin-ga-events-forwarder-browser-0.4.2-min.js.gz",
+      "https://cdn.amplitude.com/libs/analytics-browser-2.11.0-min.js.gz",
+      "https://cdn.jsdelivr.net/npm/algoliasearch@5.29.0/dist/lite/builds/browser.umd.js",
+      "https://cdn.jsdelivr.net/npm/instantsearch.js@4.79.0/dist/instantsearch.production.min.js",
+      "https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js",
+      "https://cdn.jsdelivr.net/npm/marked@18.0.7/lib/marked.umd.js",
+      "https://cdn.jsdelivr.net/npm/dompurify@3.4.12/dist/purify.min.js",
+      "https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js",
+      "https://cdn.jsdelivr.net/npm/@splidejs/splide-extension-auto-scroll@0.5.3/dist/js/splide-extension-auto-scroll.min.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260814",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/anonymousUser.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/hideBlankTag.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/bannerAnimation.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/startupsTracking.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/jquery.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/slick.min.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/accordion.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/customslick.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/prism.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/theme.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/requestDemoModal.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codepen.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/forrester.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/blogNavigation.js",
+      "https://cdn.weglot.com/weglot.min.js",
+      "https://www.youtube.com/iframe_api",
+      "https://cdn.jsdelivr.net/npm/search-insights@2.17.2/dist/search-insights.min.js"
+    ],
+    "installed": true,
+    "oldTrackerInstalled": false,
+    "apiPresent": true,
+    "localStorageKeys": [
+      "algolia-client-js-5.29.0-1QDAWL72TQ",
+      "algolia_profile",
+      "algoliaChatWireDebugLog"
+    ],
+    "sessionStorageKeys": [
+      "algolia_session",
+      "algolia_events",
+      "algolia_token"
+    ],
+    "profile": {
+      "schema": "AlgoliaEngagementProfile.v1",
+      "visitorId": "visitor_7f8d6151dd4a548cd54bbc22",
+      "userToken": "tok_99dbf8a502fe652d19b138de",
+      "tokenSource": "ephemeral",
+      "firstSeenAt": 1786681182933,
+      "lastSeenAt": 1786681183138,
+      "visits": 1,
+      "persona": {
+        "value": "developer",
+        "state": "confirmed",
+        "source": "demo_selector",
+        "updatedAt": 1786681183138
+      },
+      "traits": {}
+    },
+    "session": {
+      "schema": "AlgoliaEngagementSession.v1",
+      "sessionId": "sess_867731938b43cf7ac6f96256",
+      "startedAt": 1786681182933,
+      "lastSeenAt": 1786681192935,
+      "currentPageId": "page_c754bfd3efd17ba8e41d4118",
+      "pages": [
+        {
+          "pageId": "page_c754bfd3efd17ba8e41d4118",
+          "path": "/cms/render/live/en/sites/www/home.html",
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html",
+          "title": "The AI search and retrieval platform - Agentic | Generative | Search",
+          "enteredAt": 1786681182933,
+          "dwellMs": 10002,
+          "maxScrollDepth": 100,
+          "pageGroup": "other",
+          "topic": "ai_search"
+        }
+      ],
+      "engagementHistory": [
+        {
+          "id": "eng_488d90139ba451161d766e85",
+          "pageId": "page_c754bfd3efd17ba8e41d4118",
+          "messageGoal": "live_validation",
+          "shownAt": 1786681183138,
+          "status": "shown_no_action"
+        }
+      ]
+    },
+    "eventNames": [
+      "page_view",
+      "persona_select",
+      "site_search",
+      "engagement_exposed",
+      "chat_open",
+      "chat_question",
+      "scroll_depth",
+      "scroll_depth",
+      "scroll_depth",
+      "page_dwell",
+      "page_dwell"
+    ],
+    "eventCount": 11,
+    "engagementHistoryCount": 1,
+    "pageCount": 1
+  },
+  "console": [
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event site_search {query: instantsearch implementation, source: live_validation}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event engagement_exposed {engagementId: eng_488d90139ba451161d766e85, messageGoal: live_validation, status: shown_no_action}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event chat_open {open: true}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event chat_question {source: live_validation}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event scroll_depth {depth: 50, pageGroup: other, topic: ai_search}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event scroll_depth {depth: 75, pageGroup: other, topic: ai_search}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event scroll_depth {depth: 100, pageGroup: other, topic: ai_search}"
+    },
+    {
+      "type": "error",
+      "text": "Access to fetch at 'https://dashboard.algolia.com/static/current_user' from origin 'https://tmp-content-eng-algolia.cloud.jahia.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "There was a problem with the fetch operation: TypeError: Failed to fetch\n    at window.fetch (https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1:4878:21)\n    at HTMLDocument.<anonymous> (https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js:4:16)"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+      "type": "warning",
+      "text": "Amplitude Logger [Warn]: `options.defaultTracking` is set to undefined. This implicitly configures your Amplitude instance to track Page Views, Sessions, File Downloads, and Form Interactions. You can suppress this warning by explicitly setting a value to `options.defaultTracking`. The value must either be a boolean, to enable and disable all default events, or an object, for advanced configuration. For example:\n\namplitude.init(<YOUR_API_KEY>, {\n  defaultTracking: true,\n});\n\nVisit https://www.do"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147364591"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Chat – Engage] signal check → ENOUGH | pages=1 (min 2) events=9"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Chat – Engage] calling concierge with context {currentPage: Object, pagesViewed: Array(1), pageCount: 1, sessionDurationMs: 3003, events: Array(9)}"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio request"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…3e5894d8f3/completions?compatibilityMode=ai-sdk-5, method: POST, headers: Object, body: Object}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Chat – Engage] concierge raw response: {\"engage\":false,\"greeting\":\"\",\"suggestions\":[]}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Chat – Engage] concierge decided not to engage {engage: false, greeting: , suggestions: Array(0)}"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio response"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…3e5894d8f3/completions?compatibilityMode=ai-sdk-5, status: 200, ok: true, durationMs: 1836, contentLength: 831}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event page_dwell {dwellSeconds: 5, pageGroup: other, topic: ai_search}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event page_dwell {dwellSeconds: 10, pageGroup: other, topic: ai_search}"
+    }
+  ]
+}

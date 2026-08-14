@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Pricing and API Usage</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        min-height: 2600px;
+      }
+
+      header,
+      main,
+      footer {
+        padding: 24px;
+      }
+
+      nav a,
+      button,
+      input {
+        display: inline-block;
+        margin: 8px;
+      }
+
+      .spacer {
+        min-height: 2200px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      window.algoliaChatDebug = "1";
+    </script>
+    <script src="/algolia-engagement-tracker.js"></script>
+
+    <header>
+      <nav data-nav="top">
+        <a id="nav-products" href="/products/ai-search">Products</a>
+        <a id="nav-developers" href="/developers">Developers</a>
+        <a id="nav-pricing" href="/pricing">Pricing</a>
+        <div data-nav="solutions-submenu">
+          <a id="subnav-fashion" href="/industries/fashion-ecommerce">Fashion ecommerce</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <button id="persona-developer" type="button">Developer persona</button>
+      <a id="demo-cta" data-cta="demo" href="/demo">Book a demo</a>
+
+      <section role="search">
+        <input id="site-search" type="search" aria-label="Search" />
+        <div class="ais-Hits">
+          <a id="search-result" data-search-result href="/doc/guides/building-search-ui/what-is-instantsearch/js/">
+            React InstantSearch result
+          </a>
+        </div>
+      </section>
+
+      <form id="lead-form" data-form="demo_request">
+        <input id="work-email" type="email" required />
+        <button id="submit-form" type="submit">Submit</button>
+      </form>
+
+      <section class="spacer">Long pricing page content</section>
+    </main>
+
+    <footer>
+      <button id="manual-engagement" type="button">Manual engagement</button>
+    </footer>
+
+    <script>
+      document.querySelectorAll("a[href]").forEach((anchor) => {
+        anchor.addEventListener("click", (event) => {
+          event.preventDefault();
+          history.pushState({}, "", anchor.getAttribute("href"));
+        });
+      });
+
+      document.getElementById("persona-developer").addEventListener("click", () => {
+        window.algoliaEngagementTracker.setPersona("developer");
+      });
+
+      document.getElementById("manual-engagement").addEventListener("click", () => {
+        window.algoliaEngagementTracker.recordEngagement({
+          messageGoal: "pricing_cost_help",
+          status: "shown_no_action",
+        });
+      });
+
+      document.getElementById("lead-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>

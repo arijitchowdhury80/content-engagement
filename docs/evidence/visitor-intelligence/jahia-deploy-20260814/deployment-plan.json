@@ -1,0 +1,28 @@
+{
+  "target": {
+    "block": "/sites/www/home/drift/custom-code-block",
+    "newTracker": "/sites/www/files/algolia-engagement-tracker.js",
+    "oldTracker": "/sites/www/files/algolia-chat-tracker.js",
+    "engage": "/sites/www/files/algolia-chat-engage.js"
+  },
+  "current": {
+    "oldTrackerReferenced": true,
+    "newTrackerReferenced": false,
+    "releaseMarkers": [
+      "enhanced-local-visual-parity-20260812"
+    ],
+    "newTrackerExists": true
+  },
+  "intended": {
+    "oldTrackerReferenced": false,
+    "newTrackerReferenced": true,
+    "release": "engagement-tracker-20260814",
+    "trackerSha256": "4b69e7aa616928fbe996621142ead280c41f8e26b6136e94c99f5d1f70ced3aa",
+    "engageSha256": "750f2e3714bc79107f7d7d7fd1b11c98a9345216719d9946e3e0c3b9862f323f"
+  },
+  "rollback": {
+    "restoreBlockHtmlFrom": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260814/before-snapshot.json",
+    "restoreOldTrackerFrom": "before-snapshot.json edit.oldTrackerNode children[0].properties[jcr:data]",
+    "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]"
+  }
+}

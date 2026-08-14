@@ -14,7 +14,7 @@ source under a dated `dist/<date>/local-reference/` tree again.
 
 - `algolia-chat.js` — chat custom element bundle.
 - `algolia-chat-engage.js` — proactive engagement script.
-- `algolia-chat-tracker.js` — visitor/person tracking script.
+- `algolia-engagement-tracker.js` — engagement tracker for profile, session, and event signals.
 - `algolia-chat-form-tool.js` — lead form client tool.
 - `algolia-chat-theme-algolia.js` — Algolia brand theme.
 - `algolia-confidence-badge.js` — confidence badge bundle.

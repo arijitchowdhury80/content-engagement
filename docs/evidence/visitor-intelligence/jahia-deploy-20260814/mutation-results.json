@@ -1,0 +1,115 @@
+{
+  "upsertNewTracker": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-engagement-tracker.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-engagement-tracker.js"
+          }
+        }
+      }
+    }
+  },
+  "upsertEngage": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-chat-engage.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-chat-engage.js"
+          }
+        }
+      }
+    }
+  },
+  "setBlockHtml": {
+    "data": {
+      "jcr": {
+        "block": {
+          "html": {
+            "setValue": true
+          },
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "deleteOldTrackerEdit": {
+    "data": {
+      "jcr": {
+        "deleteNode": true
+      }
+    }
+  },
+  "publishNewTracker": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-engagement-tracker.js"
+          }
+        }
+      }
+    }
+  },
+  "publishEngage": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-engage.js"
+          }
+        }
+      }
+    }
+  },
+  "publishFilesSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "publishDriftSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  }
+}
