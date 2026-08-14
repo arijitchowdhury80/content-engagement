@@ -15,6 +15,7 @@
 - 2026-08-14: Expanded the trace copy deck from 37 to 72 label/detail pairs and added a per-answer random offset. Product principle: source honest, wildly alive. The pipeline stays factual and consistent, but every loading turn can open on a different slice of the personality deck.
 - 2026-08-14: Replaced hard-coded stage timing with signal-derived stage state and added a Codex-like `Working for Ns` elapsed counter. The UI keeps timing honest: search stays open until source signals arrive, reading stays open until answer text starts streaming, and writing reflects the observed answer stream.
 - 2026-08-14: Simplified the waiting trace header: removed the duplicate assistant badge, removed `Reasoning...`, removed the chevron marker, and moved the timer left as a compact `Work Ns` label.
+- 2026-08-14: Restored answer hierarchy: the processing trace now renders only before answer text exists. As soon as answer text starts streaming, the trace unmounts so the answer is the hero and the wait UI returns to supporting-cast status.
 - Current phase: verification complete for compact UI, dynamic processing trace, and unframed assistant-answer pass.
 - Notes: The trace is an observable product status derived from available chat state, not hidden chain-of-thought. Synthesis/composition copy remains personality/status language until backend instrumentation emits real sub-stage events; the UI no longer pretends those durations are independently measured, and it no longer changes trace text on timer ticks.
 
@@ -92,3 +93,4 @@
 - Current full suite: `node --test frontend/chat-widget/tests/*.test.mjs` passes 45/45.
 - Current syntax: `node --check frontend/chat-widget/algolia-chat.js && node --check frontend/chat-widget/algolia-chat-jahia-20260812-wip.js && node --check frontend/chat-widget/algolia-chat-theme-algolia.js` passes.
 - Current visual proof: Playwright screenshots captured at `test-results/chat-ui-tightening/mobile-honest-trace.png` and `test-results/chat-ui-tightening/desktop-honest-trace.png`; the fixture shows three reached stages, three hidden future stages, stable stage copy, lower-only source pills, and a neutral progress line.
+- Answer-hierarchy RED/GREEN: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` first failed against the renderer contract, then passed 16/16 after gating the waiting trace behind empty answer text. `node --test frontend/chat-widget/tests/*.test.mjs` passes 45/45, and syntax/diff checks pass.

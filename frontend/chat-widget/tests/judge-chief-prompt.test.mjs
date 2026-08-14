@@ -54,7 +54,7 @@ for (const bundleName of ['algolia-chat.js', 'algolia-chat-jahia-20260812-wip.js
     assert.doesNotMatch(renderer, /acUnsupportedAnswerMessage/);
     assert.match(renderer, /text:[te]\.text/);
     assert.match(renderer, /name:"thinking"/);
-    assert.doesNotMatch(renderer, /&&!\s*R\)&&w\.jsx\([^,]+,\{name:"thinking"/);
+    assert.match(renderer, /&&!\s*R&&w\.jsx\([^,]+,\{name:"thinking"/);
   });
 
   test(`${bundleName} defines markdown cleanup regexes used by the answer renderer`, () => {
@@ -164,7 +164,7 @@ for (const bundleName of ['algolia-chat.js', 'algolia-chat-jahia-20260812-wip.js
     assert.match(renderer, /status:[te]\.status/);
     assert.match(renderer, /text:[te]\.text/);
     assert.doesNotMatch(renderer, /inline-flex items-center rounded-algolia-full border px-2\.5 py-1 text-algolia-2xs/);
-    assert.doesNotMatch(renderer, /&&!\s*R\)&&w\.jsx\([^,]+,\{name:"thinking"/);
+    assert.match(renderer, /&&!\s*R&&w\.jsx\([^,]+,\{name:"thinking"/);
     assert.doesNotMatch(bundle, /acs-step--active \.acs-step__dot\{background:var\(--algolia-accent\)/);
     assert.doesNotMatch(bundle, /acs-progress__fill[^"]*background:var\(--algolia-accent\)/);
   });
