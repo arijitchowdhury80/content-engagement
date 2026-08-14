@@ -1,0 +1,89 @@
+# Chat UI Tightening Status
+
+- 2026-08-14: Started compact visual refresh for `frontend/chat-widget/algolia-chat-theme-algolia.js`.
+- 2026-08-14: Revised composer to match the simple reference: one thin rounded input with a circular black Algolia-mark button.
+- 2026-08-14: Added an observable answer-building trace to the shipped chat bundles: planning retrieval, searching, reading sources, synthesizing, composing, and writing.
+- 2026-08-14: Corrected rejected visual pass: replaced fake CSS-drawn logo marks with the official Algolia mark path, separated title/subtitle spacing, removed the blue/purple assistant rail, and changed the trace progress styling from blue to neutral.
+- 2026-08-14: Shifted assistant turns to Codex-like transcript styling: the user prompt remains framed, while assistant answers and reasoning render as unframed document flow.
+- 2026-08-14: Re-sourced logo assets from the local canonical pack at `/Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG/`; fixture header uses `Algolia-mark-blue.svg`, composer send mark data URI is generated from `Algolia-mark-white.svg`.
+- 2026-08-14: Tightened the second visual pass: header title/subtitle no longer collide on mobile, header controls have clearer spacing, and reasoning source chips now show grouped counts like `Documentation 03`, `Support 04`, `Blogs 03` from the same grouped source data used by existing source pills.
+- 2026-08-14: Removed the confusing fixture-only draft sentence under the reasoning trace; the trace itself is the observable "what the system is doing" surface.
+- 2026-08-14: Subdued the background processing trace: smaller type, lighter color, italic details, and only the active row gets stronger contrast.
+- 2026-08-14: Made the processing trace live during loading/streaming with a reduced-motion-aware stage ticker; the active row advances through reading, synthesizing, composing, and writing until richer backend stage events are available.
+- 2026-08-14: Removed duplicate source pills from the reasoning trace; source-category pills now appear only in the real source section below the trace/answer.
+- 2026-08-14: Reworked the processing trace copy system into a dynamic, source-aware copy deck. The structural stages stay consistent for trust, while labels/details rotate through precise, playful, and multilingual variants such as French, Hindi/Bengali romanization, Spanish, and Italian.
+- 2026-08-14: Expanded the trace copy deck from 37 to 72 label/detail pairs and added a per-answer random offset. Product principle: source honest, wildly alive. The pipeline stays factual and consistent, but every loading turn can open on a different slice of the personality deck.
+- 2026-08-14: Replaced hard-coded stage timing with signal-derived stage state and added a Codex-like `Working for Ns` elapsed counter. The UI keeps timing honest: search stays open until source signals arrive, reading stays open until answer text starts streaming, and writing reflects the observed answer stream.
+- 2026-08-14: Simplified the waiting trace header: removed the duplicate assistant badge, removed `Reasoning...`, removed the chevron marker, and moved the timer left as a compact `Work Ns` label.
+- Current phase: verification complete for compact UI, dynamic processing trace, and unframed assistant-answer pass.
+- Notes: The trace is an observable product status derived from available chat state, not hidden chain-of-thought. Synthesis/composition copy remains personality/status language until backend instrumentation emits real sub-stage events; the UI no longer pretends those durations are independently measured.
+
+## Checklist
+
+- [x] Design thinking note written.
+- [x] UI/UX constraints noted.
+- [x] Theme contract test added and watched fail.
+- [x] Theme CSS/tokens updated.
+- [x] Processing trace added to chat bundles.
+- [x] Processing trace visual fixture added.
+- [x] Dynamic multilingual processing copy added.
+- [x] Randomized opening offset added so repeated waits do not start with the same visible copy.
+- [x] Codex-like elapsed working counter added.
+- [x] Hard-coded stage timing removed from the shipped trace component.
+- [x] Waiting trace header simplified to left-aligned `Work Ns`.
+- [x] Verification run.
+
+## Verification
+
+- RED: `node --test frontend/chat-widget/tests/algolia-chat-theme.test.mjs` failed on current `sm` type scale (`14px !== 12px`) before the theme change.
+- GREEN: `node --test frontend/chat-widget/tests/algolia-chat-theme.test.mjs` passed after the theme change.
+- Syntax: `node --check frontend/chat-widget/algolia-chat-theme-algolia.js` passed.
+- Visual: `npx --yes playwright screenshot` captured desktop and mobile fixtures at `test-results/chat-ui-tightening/desktop.png` and `test-results/chat-ui-tightening/mobile.png`.
+- Full widget suite: `node --test frontend/chat-widget/tests/*.test.mjs` ran 27 tests: 25 passed, 2 failed in `frontend/chat-widget/tests/judge-chief-prompt.test.mjs` against the already-modified minified bundles. Those failures do not involve the theme file changed in this pass.
+- Composer revision: updated the theme contract so the composer must remain a rounded pill with a `40px` black circular Algolia button and no visible `Powered by Algolia` text.
+- Current verification: `node --test frontend/chat-widget/tests/*.test.mjs` passes 27/27; `node --check frontend/chat-widget/algolia-chat-theme-algolia.js` passes; desktop/mobile Playwright fixture screenshots were regenerated.
+- Processing trace RED: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` initially failed because the bundles did not contain `Reasoning...`, the stage labels, or the source buckets.
+- Processing trace GREEN: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` passes 12/12 after adding the trace and debug segment-state logging.
+- Current full suite: `node --test frontend/chat-widget/tests/*.test.mjs` passes 31/31.
+- Current syntax: `node --check frontend/chat-widget/algolia-chat.js && node --check frontend/chat-widget/algolia-chat-jahia-20260812-wip.js && node --check frontend/chat-widget/algolia-chat-theme-algolia.js` passes.
+- Visual: desktop and mobile Playwright fixture screenshots were regenerated at `test-results/chat-ui-tightening/desktop.png` and `test-results/chat-ui-tightening/mobile.png`.
+- Visual correction: `node --test frontend/chat-widget/tests/*.test.mjs` passes 31/31 after removing fake logo geometry and assistant-side blue bar treatments; desktop/mobile fixture screenshots regenerated again.
+- Transcript correction RED: `node --test frontend/chat-widget/tests/algolia-chat-theme.test.mjs` failed while the assistant wrapper still had a border, radius, and shadow.
+- Transcript correction GREEN: `node --test frontend/chat-widget/tests/*.test.mjs` passes 31/31 after making assistant answers transparent/unframed and making the reasoning trace divider-only.
+- Current syntax: `node --check frontend/chat-widget/algolia-chat.js && node --check frontend/chat-widget/algolia-chat-jahia-20260812-wip.js && node --check frontend/chat-widget/algolia-chat-theme-algolia.js` passes.
+- Responsive visual coverage: Playwright screenshots regenerated at 390px mobile, 768px tablet, 1024px laptop, and 1524px desktop.
+- Local logo source correction: `node --test frontend/chat-widget/tests/*.test.mjs` passes 31/31, and the theme contract now checks that the local logo pack SVGs exist and that the send-button mark matches the encoded local `Algolia-mark-white.svg`.
+- Source-count trace RED: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` failed after adding assertions for `acTraceGroups`, zero-padded source counts, and renderer-level `sources` plumbing.
+- Source-count trace GREEN: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` passes 12/12 after routing segment `sources` into `acProcessingTrace` in both chat bundles.
+- Header/chip visual GREEN: `node --test frontend/chat-widget/tests/algolia-chat-theme.test.mjs` passes after adding header spacing, non-wrapping title text, mobile control sizing, and raised counted source chip styling.
+- Current full suite: `node --test frontend/chat-widget/tests/*.test.mjs` passes 31/31.
+- Current syntax: `node --check frontend/chat-widget/algolia-chat.js`, `node --check frontend/chat-widget/algolia-chat-jahia-20260812-wip.js`, and `node --check frontend/chat-widget/algolia-chat-theme-algolia.js` pass.
+- Current visual coverage: Playwright screenshots regenerated at 390px mobile, 768px tablet, and 1524px desktop in `test-results/chat-ui-tightening/`.
+- Processing animation RED: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` failed after adding assertions for `acTraceStageIndex`, `setInterval`, and reduced-motion support.
+- Processing animation GREEN: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` passes 12/12 after adding the live stage ticker in both chat bundles.
+- Subdued trace visual GREEN: `node --test frontend/chat-widget/tests/algolia-chat-theme.test.mjs` passes after enforcing smaller, lighter, italic trace styling.
+- Current full suite: `node --test frontend/chat-widget/tests/*.test.mjs` passes 31/31.
+- Current syntax: `node --check frontend/chat-widget/algolia-chat.js`, `node --check frontend/chat-widget/algolia-chat-jahia-20260812-wip.js`, and `node --check frontend/chat-widget/algolia-chat-theme-algolia.js` pass.
+- Animation visual proof: timed Playwright screenshots at `test-results/chat-ui-tightening/mobile-frame-early.png` and `test-results/chat-ui-tightening/mobile-frame-late.png` show the active stage moving from `Reading retrieved sources` to `Synthesizing evidence`.
+- Duplicate-source RED: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` and `node --test frontend/chat-widget/tests/algolia-chat-theme.test.mjs` failed after adding assertions that the reasoning trace must not render `acs-source-chips` / `acs-source-chip__count`.
+- Duplicate-source GREEN: `node --test frontend/chat-widget/tests/*.test.mjs` passes 33/33 after removing trace-level source chips while preserving the lower `source-pill` renderer.
+- Current visual coverage: Playwright desktop and mobile screenshots regenerated; the fixture shows no source pills in the reasoning trace and a single source-pill section below.
+- Dynamic-copy RED: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` failed after adding assertions for `acTraceCopyDecks`, `acTracePickLine`, `acTraceSourceFocus`, and multilingual copy markers.
+- Dynamic-copy GREEN: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` passes 16/16 after adding rotating trace copy decks and passing real segment `sources` into `acProcessingTrace` without rendering duplicate source pills.
+- Current full suite: `node --test frontend/chat-widget/tests/*.test.mjs` passes 35/35.
+- Current syntax: `node --check frontend/chat-widget/algolia-chat.js && node --check frontend/chat-widget/algolia-chat-jahia-20260812-wip.js && node --check frontend/chat-widget/algolia-chat-theme-algolia.js` passes.
+- Dynamic visual proof: Playwright screenshots regenerated at `test-results/chat-ui-tightening/desktop.png`, `test-results/chat-ui-tightening/mobile.png`, and `test-results/chat-ui-tightening/mobile-frame-late.png`; timed mobile frames show the copy and active stage changing.
+- Large-corpus RED: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` failed after adding assertions for `acTraceRandomOffset`, `useMemo(() => acTraceRandomOffset(), [])`, and at least 72 trace copy entries.
+- Large-corpus GREEN: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` passes 16/16 after expanding both chat bundles to 72 trace entries and adding the per-answer random copy offset.
+- Current full suite: `node --test frontend/chat-widget/tests/*.test.mjs` passes 42/42.
+- Random visual proof: `test-results/chat-ui-tightening/mobile-random-a.png` and `test-results/chat-ui-tightening/mobile-random-b.png` were captured from separate fixture loads and show different initial trace copy.
+- Signal-timing RED: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` failed after replacing old `acTraceStageIndex` expectations with assertions for `acTraceStageFromSignals`, `acTraceFormatElapsed`, `Working for`, and no fixed `1400` stage delay.
+- Signal-timing GREEN: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` passes 16/16 after deriving active stage from source/text signals and using the interval only for the elapsed counter/copy refresh.
+- Current full suite: `node --test frontend/chat-widget/tests/*.test.mjs` passes 42/42.
+- Current syntax: `node --check frontend/chat-widget/algolia-chat.js && node --check frontend/chat-widget/algolia-chat-jahia-20260812-wip.js && node --check frontend/chat-widget/algolia-chat-theme-algolia.js` passes.
+- Working-counter visual proof: Playwright screenshots captured at `test-results/chat-ui-tightening/mobile-working-counter.png` and `test-results/chat-ui-tightening/desktop-working-counter.png`.
+- Trace-header RED: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` failed after asserting the waiting trace uses `Work Ns`, left-aligns the timer, removes visible `Reasoning...`, removes the chevron, and removes the duplicate assistant badge from the assistant turn renderer.
+- Trace-header GREEN: `node --test frontend/chat-widget/tests/judge-chief-prompt.test.mjs` passes 16/16 after simplifying the trace header in both chat bundles.
+- Current full suite: `node --test frontend/chat-widget/tests/*.test.mjs` passes 42/42.
+- Current syntax: `node --check frontend/chat-widget/algolia-chat.js && node --check frontend/chat-widget/algolia-chat-jahia-20260812-wip.js && node --check frontend/chat-widget/algolia-chat-theme-algolia.js` passes.
+- Visual proof: Playwright screenshots captured at `test-results/chat-ui-tightening/mobile-work-left.png` and `test-results/chat-ui-tightening/desktop-work-left.png`.

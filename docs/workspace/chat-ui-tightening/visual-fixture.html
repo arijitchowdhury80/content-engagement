@@ -1,0 +1,467 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Algolia Chat UI Tightening Fixture</title>
+<script>
+  window.algoliaChat = {
+    registerTheme(name, theme) {
+      window.__algoliaTheme = theme;
+    },
+  };
+</script>
+<script src="../../../frontend/chat-widget/algolia-chat-theme-algolia.js"></script>
+<style id="theme-vars"></style>
+<style id="theme-css"></style>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: #dde2f5;
+    font-family: var(--algolia-font-sans);
+    color: var(--algolia-text);
+  }
+  .panel {
+    width: min(96vw, 1168px);
+    height: min(92vh, 760px);
+    display: flex;
+    flex-direction: column;
+    background: var(--algolia-bg);
+  }
+  [part="header"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--algolia-border);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .algolia-mark {
+    width: 40px;
+    height: 40px;
+    display: block;
+    flex: 0 0 auto;
+  }
+  h1 { margin: 0; font-size: 20px; line-height: 1.2; }
+  .tools { display: flex; align-items: center; gap: 6px; color: var(--algolia-text-muted); }
+  .tools button {
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: 1;
+  }
+  [part="chat-content"] {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow: hidden;
+  }
+  [part="message-user-bubble"] {
+    align-self: flex-end;
+    max-width: var(--algolia-msg-max-w);
+    margin-left: auto;
+    border-radius: var(--algolia-radius-xl) var(--algolia-radius-xl) var(--algolia-radius-md);
+    background: var(--algolia-accent);
+    color: var(--algolia-text-on-accent);
+  }
+  .assistant {
+    max-width: calc(100% - 14px);
+    background: transparent;
+  }
+  .agent-label {
+    display: inline-flex;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    color: var(--algolia-text-muted);
+    font-size: var(--algolia-fs-2xs);
+    font-weight: var(--algolia-fw-bold);
+    text-transform: uppercase;
+  }
+  .empty { margin: 16px 0 0; color: var(--algolia-text-muted); font-size: var(--algolia-fs-base); }
+  .retry { margin-left: 14px; min-height: 34px; border-radius: var(--algolia-radius-full); border: 1px solid var(--algolia-border); background: white; padding: 0 14px; }
+  .acs-reasoning {
+    margin: 2px 0 12px;
+    border: 0;
+    border-bottom: 1px solid var(--algolia-border);
+    border-radius: 0;
+    background: transparent;
+    padding: 0 0 12px;
+    box-shadow: none;
+    color: var(--algolia-text-secondary);
+  }
+  .acs-reasoning__header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    font-size: var(--algolia-fs-2xs);
+    font-weight: var(--algolia-fw-medium);
+    color: var(--algolia-text-muted);
+  }
+  .acs-reasoning__timer { font-variant-numeric: tabular-nums; }
+  .acs-trace {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+  }
+  .acs-step {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    gap: 8px;
+    min-height: 32px;
+    transition: opacity 220ms var(--algolia-ease, ease), transform 220ms var(--algolia-ease, ease);
+  }
+  .acs-step__rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+  }
+  .acs-step__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--algolia-border-strong, var(--algolia-border));
+    transition: background 220ms var(--algolia-ease, ease), box-shadow 220ms var(--algolia-ease, ease), transform 220ms var(--algolia-ease, ease);
+  }
+  .acs-step--active .acs-step__dot {
+    background: var(--algolia-text-secondary);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--algolia-text-secondary) 12%, transparent);
+    transform: scale(1.08);
+  }
+  .acs-step--done .acs-step__dot { background: #00a648; }
+  .acs-step__line {
+    flex: 1;
+    width: 2px;
+    margin-top: 4px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--algolia-border), transparent);
+  }
+  .acs-step__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 3px 0 7px;
+  }
+  .acs-step__label {
+    font-size: var(--algolia-fs-2xs);
+    font-weight: var(--algolia-fw-medium);
+    color: color-mix(in srgb, var(--algolia-text-muted) 78%, #ffffff);
+  }
+  .acs-step__detail {
+    font-size: var(--algolia-fs-2xs);
+    font-style: italic;
+    line-height: 1.4;
+    color: color-mix(in srgb, var(--algolia-text-muted) 70%, #ffffff);
+  }
+  .acs-step--active .acs-step__label { color: var(--algolia-text-secondary); }
+  .acs-step--active .acs-step__detail { color: var(--algolia-text-muted); }
+  .acs-progress {
+    display: none;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--algolia-surface-hover);
+  }
+  .acs-progress__fill {
+    position: relative;
+    height: 100%;
+    width: 50%;
+    border-radius: inherit;
+    background: var(--algolia-text-secondary);
+  }
+  .source-section {
+    margin-top: 8px;
+    padding-top: 10px;
+  }
+  .source-heading {
+    margin: 0 0 8px;
+    color: var(--algolia-text-muted);
+    font-size: var(--algolia-fs-2xs);
+    font-weight: var(--algolia-fw-bold);
+    letter-spacing: var(--algolia-tracking-caps);
+    text-transform: uppercase;
+  }
+  .real-source-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .real-source-pills span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid var(--algolia-border);
+    border-radius: var(--algolia-radius-full);
+    background: white;
+    padding: 2px 9px;
+    color: var(--algolia-text-secondary);
+    font-size: var(--algolia-fs-2xs);
+    font-weight: var(--algolia-fw-bold);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .real-source-pills b {
+    min-width: 16px;
+    color: var(--algolia-accent);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+  [part="composer"] {
+    display: flex;
+    align-items: center;
+  }
+  [part="composer-input"] {
+    flex: 1;
+    border: 1px solid var(--algolia-border);
+    background: white;
+    color: var(--algolia-text-muted);
+    display: flex;
+    align-items: center;
+  }
+  [part="composer-send"] {
+    border-radius: var(--algolia-radius-full);
+  }
+</style>
+<main class="panel" part="panel">
+  <header part="header">
+    <div class="brand">
+      <img class="algolia-mark" src="file:///Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG/Algolia-mark-blue.svg" alt="">
+      <h1>Algolia Assistant</h1>
+    </div>
+    <div class="tools" aria-hidden="true">
+      <button type="button">○</button>
+      <button type="button">✦</button>
+      <button type="button">↙</button>
+      <button type="button">×</button>
+    </div>
+  </header>
+  <section part="chat-content">
+    <div part="message-user-bubble">What counts as an API call: keystrokes, filters applied, or page loads, and does that change how I should configure rate limiting to control cost?</div>
+    <article class="assistant flex flex-col gap-3 rounded-algolia-xl bg-algolia-surface p-6 shadow-algolia-2">
+      <div class="acs-reasoning" role="status" aria-label="Work 0s. Reading Blog. Checking Blog and keeping the answer honest.">
+        <div class="acs-reasoning__header">
+          <span class="acs-reasoning__timer">Work 0s</span>
+        </div>
+        <div class="acs-trace">
+          <div class="acs-step acs-step--done" data-stage="0">
+            <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span><span class="acs-step__line"></span></span>
+            <span class="acs-step__copy"><span class="acs-step__label">French company mode</span><span class="acs-step__detail">Je lis la question, puis je reviens avec les preuves.</span></span>
+          </div>
+          <div class="acs-step acs-step--done" data-stage="1">
+            <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span><span class="acs-step__line"></span></span>
+            <span class="acs-step__copy"><span class="acs-step__label">Andiamo through the index</span><span class="acs-step__detail">Found 21 sources; the useful ones are raising their hands.</span></span>
+          </div>
+          <div class="acs-step acs-step--active" data-stage="2">
+            <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span><span class="acs-step__line"></span></span>
+            <span class="acs-step__copy"><span class="acs-step__label">Cholo, receipts dekhi</span><span class="acs-step__detail">Checking Blog and keeping the answer honest.</span></span>
+          </div>
+          <div class="acs-step" data-stage="3">
+            <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span><span class="acs-step__line"></span></span>
+            <span class="acs-step__copy"><span class="acs-step__label">Tiny courtroom, global edition</span><span class="acs-step__detail">French charm, Indian scrutiny, boringly solid evidence.</span></span>
+          </div>
+          <div class="acs-step" data-stage="4">
+            <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span><span class="acs-step__line"></span></span>
+            <span class="acs-step__copy"><span class="acs-step__label">Making it demo-worthy</span><span class="acs-step__detail">Readable, cited, and allergic to vague hand-waving.</span></span>
+          </div>
+          <div class="acs-step" data-stage="5">
+            <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span></span>
+            <span class="acs-step__copy"><span class="acs-step__label">Et voila, with citations</span><span class="acs-step__detail">The answer is coming back with the receipts close behind.</span></span>
+          </div>
+        </div>
+        <div class="acs-progress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="Reading 21 sources">
+          <div class="acs-progress__fill"></div>
+        </div>
+      </div>
+      <div class="source-section">
+        <p class="source-heading">Sources</p>
+        <div class="real-source-pills" aria-label="Retrieved source groups">
+          <span>Blog <b>10</b></span>
+          <span>Documentation <b>4</b></span>
+          <span>Support <b>1</b></span>
+          <span>Developers <b>6</b></span>
+        </div>
+      </div>
+    </article>
+  </section>
+  <footer part="composer">
+    <div part="composer-input">Ask a question...</div>
+    <button part="composer-send" aria-label="Send message">Send</button>
+  </footer>
+</main>
+<script>
+  const theme = window.__algoliaTheme;
+  const vars = [
+    ['--algolia-bg', theme.color.bg],
+    ['--algolia-surface', theme.color.surface],
+    ['--algolia-surface-2', theme.color.surface2],
+    ['--algolia-surface-hover', theme.color.surfaceHover],
+    ['--algolia-border', theme.color.border],
+    ['--algolia-text', theme.color.text],
+    ['--algolia-text-secondary', theme.color.textSecondary],
+    ['--algolia-text-muted', theme.color.textMuted],
+    ['--algolia-text-on-accent', theme.color.textOnAccent],
+    ['--algolia-accent', theme.color.accent],
+    ['--algolia-accent-tint', theme.color.accentTint],
+    ['--algolia-agent-primary', theme.color.agentPrimary],
+    ['--algolia-agent-specialist', theme.color.agentSpecialist],
+    ['--algolia-font-sans', theme.typography.sans],
+    ['--algolia-fs-2xs', theme.typography.scale['2xs']],
+    ['--algolia-fs-xs', theme.typography.scale.xs],
+    ['--algolia-fs-sm', theme.typography.scale.sm],
+    ['--algolia-fs-base', theme.typography.scale.base],
+    ['--algolia-fw-medium', theme.typography.weight.medium],
+    ['--algolia-fw-bold', theme.typography.weight.bold],
+    ['--algolia-tracking-caps', theme.typography.trackingCaps],
+    ['--algolia-radius-md', theme.radius.md],
+    ['--algolia-radius-xl', theme.radius.xl],
+    ['--algolia-radius-full', theme.radius.full],
+    ['--algolia-header-h', theme.layout.headerHeight],
+    ['--algolia-panel-h', theme.layout.panelHeight],
+    ['--algolia-msg-max-w', theme.space.msgMaxW],
+    ['--algolia-shadow-1', theme.shadow['1']],
+    ['--algolia-shadow-2', theme.shadow['2']],
+  ];
+  document.getElementById('theme-vars').textContent = `:root { ${vars.map(([key, value]) => `${key}: ${value};`).join(' ')} }`;
+  document.getElementById('theme-css').textContent = theme.css;
+
+  const traceCopyDecks = {
+    planning: [
+      { label: 'Planning retrieval', detail: 'Break the question into source checks' },
+      { label: 'Warming up the gray cells', detail: 'Turning the ask into answerable source checks.' },
+      { label: 'Drawing the retrieval map', detail: 'Splitting the question into lanes the sources can actually cover.' },
+      { label: 'Finding the sharp edge', detail: 'Separating the real question from the polite small talk.' },
+      { label: 'French company mode', detail: 'Je lis la question, puis je reviens avec les preuves.' },
+      { label: 'Chalo, source map banate hain', detail: 'Turning the ask into a clean route before the evidence walk begins.' },
+      { label: 'Bengali brain stretch', detail: 'Chinta korchi first, answer ta pore evidence diye ashbe.' },
+      { label: 'Opening the notebook', detail: 'Writing down what must be proven before I touch the answer.' },
+      { label: 'Question surgery', detail: 'Finding the part that actually needs an answer, carefully.' },
+      { label: 'Setting the chessboard', detail: 'Putting the question, sources, and citations in their squares.' },
+      { label: 'Quietly plotting usefulness', detail: 'Deciding which claims need receipts and which can sit down.' },
+      { label: 'Pre-flight for facts', detail: 'Checking the route before the answer leaves the runway.' },
+    ],
+    searching: [
+      { label: 'Searching', detail: 'Looking across Algolia for useful evidence.' },
+      { label: 'Opening the evidence parade', detail: 'Found 21 sources; now sorting signal from confetti.' },
+      { label: 'Checking the shelves', detail: 'Pulling candidate sources before they start giving speeches.' },
+      { label: 'Gathering receipts', detail: 'Found 21 sources; keeping the ones that can stand up in daylight.' },
+      { label: 'Vamos por pruebas', detail: 'Found 21 sources; now checking what actually holds.' },
+      { label: 'Andiamo through the index', detail: 'Found 21 sources; the useful ones are raising their hands.' },
+      { label: 'Bonjour, documentation desk', detail: 'Asking Algolia where the boring but correct facts live.' },
+      { label: 'Signal fishing', detail: 'Found 21 sources; throwing back the decorative noise.' },
+      { label: 'Evidence shopping, no impulse buys', detail: 'Picking sources that can pay rent in the final answer.' },
+      { label: 'Running the aisle scan', detail: 'Looking for docs, support notes, and blog bits that agree under pressure.' },
+      { label: 'Search party with standards', detail: 'Found 21 sources; nobody gets in without a citation.' },
+      { label: 'Index whispering session', detail: 'Listening for the sources that sound specific, current, and useful.' },
+    ],
+    reading: [
+      { label: 'Reading retrieved sources', detail: 'Reading 21 retrieved sources.' },
+      { label: 'Reading {sourceFocus}', detail: 'Checking {sourceFocus} now, then cross-checking the rest.' },
+      { label: 'Following the paper trail', detail: '{sourceFocus} is under the lamp; citations are not optional.' },
+      { label: 'Interrogating the snippets', detail: 'Reading 21 sources without letting any one source get too confident.' },
+      { label: 'French reading mode', detail: 'Je lis {sourceFocus}; elegance is nice, citations are better.' },
+      { label: 'Saboot dekhte hain', detail: 'Reading {sourceFocus} first; no receipt, no claim.' },
+      { label: 'Cholo, receipts dekhi', detail: 'Checking {sourceFocus} and keeping the answer honest.' },
+      { label: 'Reading with a raised eyebrow', detail: 'Checking {sourceFocus}; if it sounds vague, it gets benched.' },
+      { label: 'Source tea, carefully poured', detail: 'Reading {sourceFocus} slowly enough to catch the important bit.' },
+      { label: 'Line-by-line diplomacy', detail: 'Letting {sourceFocus} speak, then asking the other sources if they agree.' },
+      { label: 'Citation audition', detail: '{sourceFocus} is trying out for the final answer. Tough room.' },
+      { label: 'Receipts on the table', detail: 'Reading {sourceFocus}; beautiful claims still need paperwork.' },
+    ],
+    synthesizing: [
+      { label: 'Synthesizing evidence', detail: 'Compare retrieved snippets against the question' },
+      { label: 'Cross-examining evidence', detail: 'Putting claims in a tiny courtroom before they reach the answer.' },
+      { label: 'Reconciling the receipts', detail: 'Comparing source snippets and trimming anything unsupported.' },
+      { label: 'Making the facts behave', detail: 'Matching the answer shape to what the sources actually say.' },
+      { label: 'Tiny courtroom, global edition', detail: 'French charm, Indian scrutiny, boringly solid evidence.' },
+      { label: 'Verdict rehearsal', detail: 'Letting every claim try the microphone before it reaches you.' },
+      { label: 'No-vibes committee meeting', detail: 'Only sourced claims are allowed to speak. Very strict agenda.' },
+      { label: 'Fact yoga', detail: 'Stretching the evidence just enough, not enough to pull something.' },
+      { label: 'Sorting the useful from the loud', detail: 'The confident sentence still has to show ID.' },
+      { label: 'Putting claims on mute', detail: 'Unsupported bits are being politely escorted out.' },
+      { label: 'Evidence duet check', detail: 'Seeing which sources harmonize and which are just humming nearby.' },
+      { label: 'The receipts are debating', detail: 'Letting the strongest source win, with citations as referees.' },
+    ],
+    composing: [
+      { label: 'Composing grounded answer', detail: 'Build answer structure and citations' },
+      { label: 'Drafting the spine', detail: 'Building the answer around the strongest evidence.' },
+      { label: 'Arranging citations', detail: 'Putting the receipts where future-you can inspect them.' },
+      { label: 'Tightening the answer', detail: 'Keeping useful detail and asking fluff to leave quietly.' },
+      { label: 'Making it demo-worthy', detail: 'Readable, cited, and allergic to vague hand-waving.' },
+      { label: 'Polishing without perfume', detail: 'A little style, zero unsupported sparkle.' },
+      { label: 'French tailoring pass', detail: 'Making the answer fitted, not fancy for no reason.' },
+      { label: 'Turning notes into music', detail: 'Same facts, better rhythm, citations in tune.' },
+      { label: 'Answer architecture', detail: 'Putting the conclusion first and the proof close enough to touch.' },
+      { label: 'No fluff customs desk', detail: 'Every sentence is declaring its purpose before entry.' },
+      { label: 'Making the boring part beautiful', detail: 'Structure first, charm second, evidence always.' },
+      { label: 'Drafting with a spine', detail: 'A clear answer, not a fog machine wearing a blazer.' },
+    ],
+    writing: [
+      { label: 'Writing answer', detail: 'Stream the answer when evidence is ready' },
+      { label: 'Sharpening the last line', detail: 'Turning the grounded version into something readable.' },
+      { label: 'Bringing it home', detail: 'Answer first, receipts close behind.' },
+      { label: 'Et voila, with citations', detail: 'The answer is coming back with the receipts close behind.' },
+      { label: 'Bas, now writing', detail: 'Turning checked evidence into a clean answer.' },
+      { label: 'Writing with receipts', detail: 'Streaming the response once the evidence has stopped arguing.' },
+      { label: 'Final pass, no drama', detail: 'Sending the answer out with its sources buttoned up.' },
+      { label: 'Typing the useful version', detail: 'Less fog, more answer, citations in the margins.' },
+      { label: 'Bringing receipts to the stage', detail: 'The answer is walking out with proof in its pocket.' },
+      { label: 'Almost there, promise', detail: 'The claims behaved, the sources showed up, now I am writing.' },
+      { label: 'Clean answer loading', detail: 'Readable enough for humans, grounded enough for skeptics.' },
+      { label: 'Last polish before landing', detail: 'Making it concise without shaving off the evidence.' },
+    ],
+  };
+  const sourceFocuses = ['Blog', 'Documentation', 'Support', 'Developers'];
+  const stageKeys = ['planning', 'searching', 'reading', 'synthesizing', 'composing', 'writing'];
+  const steps = Array.from(document.querySelectorAll('[data-stage]'));
+  const reasoning = document.querySelector('.acs-reasoning');
+  const timer = document.querySelector('.acs-reasoning__timer');
+  const startedAt = Date.now();
+  let activeStage = 2;
+  let traceTick = Math.floor(Math.random() * 1000000);
+
+  function formatElapsed(ms) {
+    const seconds = Math.max(0, Math.floor(ms / 1000));
+    if (seconds < 60) return `${seconds}s`;
+    return `${Math.floor(seconds / 60)}m ${String(seconds % 60).padStart(2, '0')}s`;
+  }
+
+  function templateLine(value) {
+    return value.replace(/\{sourceFocus\}/g, sourceFocuses[traceTick % sourceFocuses.length]);
+  }
+
+  function pickedLine(stageKey, index) {
+    const deck = traceCopyDecks[stageKey];
+    return deck[(traceTick + index) % deck.length];
+  }
+
+  function renderStage() {
+    let activeLine = null;
+    const elapsed = formatElapsed(Date.now() - startedAt);
+    if (timer) timer.textContent = `Work ${elapsed}`;
+    steps.forEach((step, index) => {
+      const line = pickedLine(stageKeys[index], index);
+      const label = templateLine(line.label);
+      const detail = templateLine(line.detail);
+      step.querySelector('.acs-step__label').textContent = label;
+      step.querySelector('.acs-step__detail').textContent = detail;
+      step.classList.toggle('acs-step--done', index < activeStage);
+      step.classList.toggle('acs-step--active', index === activeStage);
+      if (index === activeStage) activeLine = { label, detail };
+    });
+    if (activeLine) {
+      reasoning?.setAttribute('aria-label', `Work ${elapsed}. ${activeLine.label}. ${activeLine.detail}`);
+    }
+  }
+
+  renderStage();
+  window.setInterval(() => {
+    traceTick += 1;
+    renderStage();
+  }, 1000);
+</script>

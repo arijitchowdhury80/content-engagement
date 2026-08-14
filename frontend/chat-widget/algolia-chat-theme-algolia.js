@@ -35,8 +35,13 @@
  *   notice   ≥ 5    → color.notice   / color.noticeBg
  *   negative < 5    → color.negative / color.negativeBg
  *   These three token pairs are now visible product surface on every answer.
+ *
+ * Logo assets:
+ *   /Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG/
  */
 (() => {
+  const algoliaMarkWhite = 'url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20500%20500.34%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3A%23fff%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cpath%20class%3D%22cls-1%22%20d%3D%22M250%2C0C113.38%2C0%2C2%2C110.16%2C.03%2C246.32c-2%2C138.29%2C110.19%2C252.87%2C248.49%2C253.67%2C42.71%2C.25%2C83.85-10.2%2C120.38-30.05%2C3.56-1.93%2C4.11-6.83%2C1.08-9.52l-23.39-20.74c-4.75-4.22-11.52-5.41-17.37-2.92-25.5%2C10.85-53.21%2C16.39-81.76%2C16.04-111.75-1.37-202.04-94.35-200.26-206.1%2C1.76-110.33%2C92.06-199.55%2C202.8-199.55h202.83V407.68l-115.08-102.25c-3.72-3.31-9.43-2.66-12.43%2C1.31-18.47%2C24.46-48.56%2C39.67-81.98%2C37.36-46.36-3.2-83.92-40.52-87.4-86.86-4.15-55.28%2C39.65-101.58%2C94.07-101.58%2C49.21%2C0%2C89.74%2C37.88%2C93.97%2C86.01%2C.38%2C4.28%2C2.31%2C8.28%2C5.53%2C11.13l29.97%2C26.57c3.4%2C3.01%2C8.8%2C1.17%2C9.63-3.3%2C2.16-11.55%2C2.92-23.6%2C2.07-35.95-4.83-70.39-61.84-127.01-132.26-131.35-80.73-4.98-148.23%2C58.18-150.37%2C137.35-2.09%2C77.15%2C61.12%2C143.66%2C138.28%2C145.36%2C32.21%2C.71%2C62.07-9.42%2C86.2-26.97l150.36%2C133.29c6.45%2C5.71%2C16.62%2C1.14%2C16.62-7.48V9.49C500%2C4.25%2C495.75%2C0%2C490.51%2C0H250Z%22%2F%3E%3C%2Fsvg%3E")';
+
   const theme = {
     colorScheme: 'light',
 
@@ -102,13 +107,13 @@
       mono: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
       scale: {
         '2xs': '10px',
-        xs: '12px',
-        sm: '14px',
-        base: '16px',
-        lg: '18px',
-        xl: '22px',
-        '2xl': '28px',
-        hero: '36px',
+        xs: '11px',
+        sm: '12px',
+        base: '14px',
+        lg: '16px',
+        xl: '20px',
+        '2xl': '24px',
+        hero: '32px',
       },
       trackingCaps: '0.04em',
       weight: { regular: 400, medium: 600, bold: 600 },
@@ -118,9 +123,9 @@
     space: {
       '1': '4px', '2': '8px', '3': '12px', '4': '16px', '5': '20px',
       '6': '24px', '7': '32px', '8': '40px', '9': '48px', '10': '64px',
-      gutter: '24px', measure: '72ch', maxWidth: '1120px',
-      controlMin: '32px', controlSm: '24px',
-      sourceNameMaxW: '240px', msgMaxW: '640px', thinkingBarMaxW: '320px',
+      gutter: '16px', measure: '72ch', maxWidth: '1120px',
+      controlMin: '34px', controlSm: '24px',
+      sourceNameMaxW: '240px', msgMaxW: '760px', thinkingBarMaxW: '320px',
     },
 
     // Marketing-site radius scale (kept; Satellite uses 4px).
@@ -129,8 +134,8 @@
     // Satellite shadow formula: rgba(35,38,59,·) matches $stl-grey-900.
     shadow: {
       '1': '0px 0px 0px 1px rgba(35,38,59,0.05), 0px 1px 3px 0px rgba(35,38,59,0.15)',
-      '2': '0px 0px 0px 1px rgba(35,38,59,0.05), 0px 4px 8px -2px rgba(35,38,59,0.25)',
-      '3': '0px 0px 0px 1px rgba(35,38,59,0.05), 0px 8px 16px -4px rgba(35,38,59,0.25)',
+      '2': '0px 0px 0px 1px rgba(35,38,59,0.06), 0px 10px 24px -18px rgba(35,38,59,0.45)',
+      '3': '0px 0px 0px 1px rgba(35,38,59,0.06), 0px 18px 42px -26px rgba(35,38,59,0.5)',
       focus: '0 0 0 2px #ffffff, 0 0 0 4px #003dff',
     },
 
@@ -141,10 +146,10 @@
 
     layout: {
       // Header height matches the md:h-20 (80px) sticky nav used on the site.
-      headerHeight: '80px',
+      headerHeight: '72px',
       // Panel geometry (docked and normal).
       panelWidth: '75vw', panelHeight: '75vh',
-      dockedWidth: '420px', dockedHeight: '600px',
+      dockedWidth: '420px', dockedHeight: '560px',
       dockedMinWidth: '320px', dockedMinHeight: '400px',
       dockedOffsetBottom: '88px', dockedOffsetRight: '24px',
       dockedMarginX: '16px', dockedMarginY: '16px',
@@ -162,15 +167,37 @@
       // The launcher button's background is the accent colour and the icon is
       // rendered as a plain <img>. Invert it to white so it reads on Xenon blue.
       '[part="launcher"] img { filter: brightness(0) invert(1); }',
+      '[part="panel"] { border-radius: 20px; border: 1px solid color-mix(in srgb, var(--algolia-border) 88%, #ffffff); box-shadow: 0 24px 80px -52px rgba(35,38,59,0.72), 0 0 0 1px rgba(35,38,59,0.04); }',
+      '[part="header"] { position: relative; min-height: var(--algolia-header-h); gap: 16px; padding: 13px 18px 12px !important; align-items: center !important; background: rgba(255,255,255,0.98); }',
+      '[part="header"] h1 { line-height: 1.15; margin-bottom: 4px; white-space: nowrap; }',
+      '[part="header"]::after { content: "Fully grounded: every answer cites its source."; position: absolute; left: 80px; top: 46px; max-width: calc(100% - 190px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--algolia-text-muted); font-size: var(--algolia-fs-xs); line-height: 1.35; }',
+      '[part="header"] button { width: 32px; min-width: 32px; height: 32px; min-height: 32px; margin-left: 6px; }',
+      '[part="chat-content"] { padding: 16px 18px !important; background: linear-gradient(180deg, #f8f9fd 0%, var(--algolia-bg) 60%, #ffffff 100%); }',
+      '[part="composer"] { margin: 8px 16px 12px !important; padding: 4px 5px 4px 16px !important; gap: 8px !important; min-height: 50px; border: 1px solid var(--algolia-border); border-radius: var(--algolia-radius-full); background: #ffffff; box-shadow: 0 10px 28px -22px rgba(35,38,59,0.8), 0 1px 0 rgba(255,255,255,0.95) inset; }',
+      '[part="composer-input"] { min-height: 40px; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; font-size: var(--algolia-fs-base); box-shadow: none !important; }',
+      '[part="composer-send"] { position: relative; width: 40px; min-width: 40px; height: 40px; min-height: 40px; padding: 0 !important; border: 0; border-radius: var(--algolia-radius-full); background: #050505; color: transparent; font-size: 0; box-shadow: none; }',
+      '/* Generated from local Algolia logo pack: /Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG/Algolia-mark-white.svg */',
+      `[part="composer-send"]::before { content: ""; position: absolute; inset: 10px; background-image: ${algoliaMarkWhite}; background-repeat: no-repeat; background-position: center; background-size: contain; }`,
+      '[part="composer-send"]:hover { background: #1b1b1b; }',
+      '[part="message-user-bubble"] { padding: 10px 18px !important; border: 1px solid color-mix(in srgb, var(--algolia-accent) 72%, #ffffff); box-shadow: 0 14px 34px -24px rgba(0,61,255,0.9); font-size: var(--algolia-fs-base); }',
+      '.bg-algolia-surface.p-6.shadow-algolia-2 { position: relative; overflow: visible; padding: 10px 2px 12px !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }',
+      '.uppercase.tracking-algolia-caps { display: inline-flex; width: fit-content; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; letter-spacing: var(--algolia-tracking-caps); color: var(--algolia-text-muted) !important; box-shadow: none !important; }',
+      '.acs-reasoning { margin: 2px 0 12px !important; padding: 0 0 12px !important; background: transparent !important; border: 0 !important; border-bottom: 1px solid var(--algolia-border) !important; border-radius: 0 !important; box-shadow: none !important; }',
+      '.acs-reasoning__header { font-weight: var(--algolia-fw-medium) !important; color: var(--algolia-text-muted) !important; }',
+      '.acs-step__label { font-size: var(--algolia-fs-2xs) !important; font-weight: var(--algolia-fw-medium) !important; color: color-mix(in srgb, var(--algolia-text-muted) 78%, #ffffff) !important; }',
+      '.acs-step__detail { font-size: var(--algolia-fs-2xs) !important; font-style: italic; color: color-mix(in srgb, var(--algolia-text-muted) 70%, #ffffff) !important; }',
+      '.acs-step--active .acs-step__label { color: var(--algolia-text-secondary) !important; }',
+      '.acs-step--active .acs-step__detail { color: var(--algolia-text-muted) !important; }',
+      '.acs-progress { display: none !important; }',
       // On mobile viewports the 75vw normal-mode panel would be too narrow.
       // Override to near-full-width below 640px.
-      '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } }',
+      '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="header"] { gap: 10px; padding-left: 16px !important; padding-right: 12px !important; } [part="header"] h1 { font-size: 18px; } [part="header"] button { width: 28px; min-width: 28px; height: 28px; min-height: 28px; margin-left: 2px; } [part="header"]::after { content: "Grounded answers cite sources."; left: 70px; top: 46px; max-width: calc(100% - 142px); } [part="composer"] { margin: 8px 14px 12px !important; } }',
       // The sample-questions popup uses `position:absolute; bottom:100%` and
       // expands upward. The panel has `overflow:hidden` for its rounded corners,
       // so a tall popup gets clipped at the panel top. Cap the popup height and
       // make it scrollable so it always fits within the visible panel area.
-      // Subtract: header + ~10 rem (composer + button row + powered-by + padding).
-      '[role="dialog"].absolute { max-height: calc(var(--algolia-panel-h) - var(--algolia-header-h) - 10rem); overflow-y: auto; }',
+      // Subtract: header + compact composer + sample trigger row.
+      '[role="dialog"].absolute { max-height: calc(var(--algolia-panel-h) - var(--algolia-header-h) - 8rem); overflow-y: auto; }',
     ].join('\n'),
   };
 
