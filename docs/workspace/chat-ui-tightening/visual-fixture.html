@@ -162,11 +162,12 @@
   .acs-step--active .acs-step__label { color: var(--algolia-text-secondary); }
   .acs-step--active .acs-step__detail { color: var(--algolia-text-muted); }
   .acs-progress {
-    display: none;
-    height: 3px;
+    display: block;
+    margin-top: 8px;
+    height: 2px;
     overflow: hidden;
     border-radius: 999px;
-    background: var(--algolia-surface-hover);
+    background: color-mix(in srgb, var(--algolia-border) 70%, transparent);
   }
   .acs-progress__fill {
     position: relative;
@@ -174,6 +175,10 @@
     width: 50%;
     border-radius: inherit;
     background: var(--algolia-text-secondary);
+    transition: width 450ms var(--algolia-ease, ease);
+  }
+  .acs-step[hidden] {
+    display: none;
   }
   .source-section {
     margin-top: 8px;
@@ -258,18 +263,18 @@
             <span class="acs-step__copy"><span class="acs-step__label">Andiamo through the index</span><span class="acs-step__detail">Found 21 sources; the useful ones are raising their hands.</span></span>
           </div>
           <div class="acs-step acs-step--active" data-stage="2">
-            <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span><span class="acs-step__line"></span></span>
+            <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span></span>
             <span class="acs-step__copy"><span class="acs-step__label">Cholo, receipts dekhi</span><span class="acs-step__detail">Checking Blog and keeping the answer honest.</span></span>
           </div>
-          <div class="acs-step" data-stage="3">
+          <div class="acs-step" data-stage="3" hidden>
             <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span><span class="acs-step__line"></span></span>
             <span class="acs-step__copy"><span class="acs-step__label">Tiny courtroom, global edition</span><span class="acs-step__detail">French charm, Indian scrutiny, boringly solid evidence.</span></span>
           </div>
-          <div class="acs-step" data-stage="4">
+          <div class="acs-step" data-stage="4" hidden>
             <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span><span class="acs-step__line"></span></span>
             <span class="acs-step__copy"><span class="acs-step__label">Making it demo-worthy</span><span class="acs-step__detail">Readable, cited, and allergic to vague hand-waving.</span></span>
           </div>
-          <div class="acs-step" data-stage="5">
+          <div class="acs-step" data-stage="5" hidden>
             <span class="acs-step__rail" aria-hidden="true"><span class="acs-step__dot"></span></span>
             <span class="acs-step__copy"><span class="acs-step__label">Et voila, with citations</span><span class="acs-step__detail">The answer is coming back with the receipts close behind.</span></span>
           </div>
@@ -421,9 +426,11 @@
   const steps = Array.from(document.querySelectorAll('[data-stage]'));
   const reasoning = document.querySelector('.acs-reasoning');
   const timer = document.querySelector('.acs-reasoning__timer');
+  const progress = document.querySelector('.acs-progress');
+  const progressFill = document.querySelector('.acs-progress__fill');
   const startedAt = Date.now();
   let activeStage = 2;
-  let traceTick = Math.floor(Math.random() * 1000000);
+  const traceSeed = Math.floor(Math.random() * 1000000);
 
   function formatElapsed(ms) {
     const seconds = Math.max(0, Math.floor(ms / 1000));
@@ -432,12 +439,30 @@
   }
 
   function templateLine(value) {
-    return value.replace(/\{sourceFocus\}/g, sourceFocuses[traceTick % sourceFocuses.length]);
+    return value
+      .replace(/\{sourceFocus\}/g, sourceFocuses[traceSeed % sourceFocuses.length])
+      .replace(/\{count\}/g, '21')
+      .replace(/\{sourceWord\}/g, 'sources')
+      .replace(/\{product\}/g, 'Algolia');
   }
 
   function pickedLine(stageKey, index) {
     const deck = traceCopyDecks[stageKey];
-    return deck[(traceTick + index) % deck.length];
+    return deck[(traceSeed + index) % deck.length];
+  }
+
+  function syncRailLine(step, index) {
+    const rail = step.querySelector('.acs-step__rail');
+    if (!rail) return;
+    const existing = rail.querySelector('.acs-step__line');
+    const shouldShowLine = index < activeStage;
+    if (shouldShowLine && !existing) {
+      const line = document.createElement('span');
+      line.className = 'acs-step__line';
+      rail.append(line);
+    } else if (!shouldShowLine && existing) {
+      existing.remove();
+    }
   }
 
   function renderStage() {
@@ -445,6 +470,8 @@
     const elapsed = formatElapsed(Date.now() - startedAt);
     if (timer) timer.textContent = `Work ${elapsed}`;
     steps.forEach((step, index) => {
+      step.hidden = index > activeStage;
+      if (index > activeStage) return;
       const line = pickedLine(stageKeys[index], index);
       const label = templateLine(line.label);
       const detail = templateLine(line.detail);
@@ -452,16 +479,24 @@
       step.querySelector('.acs-step__detail').textContent = detail;
       step.classList.toggle('acs-step--done', index < activeStage);
       step.classList.toggle('acs-step--active', index === activeStage);
+      syncRailLine(step, index);
       if (index === activeStage) activeLine = { label, detail };
     });
+    const progressValue = Math.round(((activeStage + 1) / stageKeys.length) * 100);
+    progress?.setAttribute('aria-valuenow', String(progressValue));
+    progress?.setAttribute('aria-label', `${activeLine?.label ?? 'Work'} ${elapsed}`);
+    if (progressFill) progressFill.style.width = `${progressValue}%`;
     if (activeLine) {
       reasoning?.setAttribute('aria-label', `Work ${elapsed}. ${activeLine.label}. ${activeLine.detail}`);
     }
   }
 
   renderStage();
+  window.setFixtureTraceStage = (stage) => {
+    activeStage = Math.max(0, Math.min(stageKeys.length - 1, Number(stage) || 0));
+    renderStage();
+  };
   window.setInterval(() => {
-    traceTick += 1;
     renderStage();
   }, 1000);
 </script>

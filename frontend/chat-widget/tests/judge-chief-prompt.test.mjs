@@ -142,11 +142,15 @@ for (const bundleName of ['algolia-chat.js', 'algolia-chat-jahia-20260812-wip.js
     assert.match(bundle, /Cholo/);
     assert.match(bundle, /acTraceStageFromSignals/);
     assert.match(bundle, /acTraceFormatElapsed/);
+    assert.match(bundle, /acTraceVisibleSteps/);
     assert.match(traceBlock, /Work /);
     assert.doesNotMatch(traceBlock, /Working for/);
     assert.doesNotMatch(traceBlock, /Reasoning/);
     assert.doesNotMatch(traceBlock, /acs-reasoning__chevron/);
     assert.match(traceBlock, /justify-content:flex-start/);
+    assert.doesNotMatch(traceBlock, /acTraceLine\(N,l\+d,O,b\)/);
+    assert.doesNotMatch(traceBlock, /acTraceSourceFocus\(p,l\+d\)/);
+    assert.doesNotMatch(traceBlock, /"pending"/);
     assert.match(bundle, /answerStarted/);
     assert.match(traceBlock, /setInterval/);
     assert.doesNotMatch(traceBlock, /1400/);
