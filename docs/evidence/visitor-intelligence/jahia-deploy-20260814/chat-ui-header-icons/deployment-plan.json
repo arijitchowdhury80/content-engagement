@@ -1,0 +1,13 @@
+{
+  "capturedAt": "2026-08-14T19:45:23.239362+00:00",
+  "release": "chat-ui-header-icons-20260814a",
+  "version": "20260814-chat-ui-header-icons-a",
+  "target": {
+    "theme": "/sites/www/files/algolia-chat-theme-algolia.js",
+    "block": "/sites/www/home/drift/custom-code-block"
+  },
+  "localThemeSha256": "21ef3dee4a02e840d62cded9f09120f04fc6286c6794b0c03c50d07a77d856e0",
+  "currentReleaseMarkers": [
+    "chat-ui-answer-hero-20260814a"
+  ]
+}

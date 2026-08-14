@@ -1,0 +1,27 @@
+{
+  "capturedAt": "2026-08-14T19:46:09.770797+00:00",
+  "release": "chat-ui-header-icons-20260814a",
+  "version": "20260814-chat-ui-header-icons-a",
+  "urls": {
+    "theme": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia.js?theme=20260814-chat-ui-header-icons-a&validate=1786736769",
+    "page": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?headerIcons=20260814-chat-ui-header-icons-a&validate=1786736769"
+  },
+  "sha256": {
+    "localTheme": "21ef3dee4a02e840d62cded9f09120f04fc6286c6794b0c03c50d07a77d856e0",
+    "httpTheme": "21ef3dee4a02e840d62cded9f09120f04fc6286c6794b0c03c50d07a77d856e0"
+  },
+  "checks": {
+    "editBlockHasRelease": true,
+    "liveBlockHasRelease": true,
+    "pageHasRelease": true,
+    "editBlockHasThemeVersion": true,
+    "liveBlockHasThemeVersion": true,
+    "pageHasThemeVersion": true,
+    "httpThemeShaMatchesLocal": true,
+    "httpThemeHasActionRailGap": true,
+    "httpThemeHasCompactIconButtons": true,
+    "httpThemeSizesHeaderIcons": true,
+    "httpThemeOmitsBroadHeaderMargin": true,
+    "pass": true
+  }
+}
