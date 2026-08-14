@@ -407,7 +407,27 @@
     writeEventsEnvelope(envelope);
     writeSession(session);
     debug("event", name, event.props);
+    emitEngagementSignal(event);
     return event;
+  }
+
+  function emitEngagementSignal(event) {
+    try {
+      document.dispatchEvent(
+        new CustomEvent("algolia-engagement-signal", {
+          detail: {
+            eventId: event.eventId,
+            name: event.name,
+            ts: event.ts,
+            pageId: event.pageId,
+            path: event.path,
+            props: event.props,
+          },
+        })
+      );
+    } catch {
+      // The storage write is the source of truth; visual listeners are best effort.
+    }
   }
 
   function trackPageView() {

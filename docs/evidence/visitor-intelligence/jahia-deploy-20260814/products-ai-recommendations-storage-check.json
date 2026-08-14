@@ -1,0 +1,142 @@
+{
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations?manualVerify=20260814",
+  "checks": {
+    "newTrackerInstalled": true,
+    "oldTrackerInstalledFalse": true,
+    "newTrackerScriptLoaded": true,
+    "oldTrackerScriptAbsent": true,
+    "noAcsKeys": true,
+    "algoliaProfilePresent": true,
+    "algoliaSessionPresent": true,
+    "algoliaEventsPresent": true,
+    "pageViewCaptured": true,
+    "dwellCaptured": true,
+    "chatOpenCaptured": true,
+    "pass": true
+  },
+  "state": {
+    "href": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations?manualVerify=20260814",
+    "newTrackerInstalled": true,
+    "oldTrackerInstalled": false,
+    "hasNewTrackerScript": true,
+    "hasOldTrackerScript": false,
+    "releaseMarkers": [
+      "engagement-tracker-20260814"
+    ],
+    "localStorageKeys": [
+      "algolia-client-js-5.29.0-1QDAWL72TQ",
+      "algolia_profile"
+    ],
+    "sessionStorageKeys": [
+      "algolia_session",
+      "algolia_events",
+      "algolia_token"
+    ],
+    "profile": {
+      "schema": "AlgoliaEngagementProfile.v1",
+      "visitorId": "visitor_004665bb8daa5b5c6cd682c0",
+      "userToken": "tok_38dc657b4549a1473009829b",
+      "tokenSource": "ephemeral",
+      "firstSeenAt": 1786681956996,
+      "lastSeenAt": 1786681957163,
+      "visits": 1,
+      "persona": {
+        "value": "developer",
+        "state": "confirmed",
+        "source": "demo_selector",
+        "updatedAt": 1786681957163
+      },
+      "traits": {}
+    },
+    "sessionSummary": {
+      "schema": "AlgoliaEngagementSession.v1",
+      "pages": [
+        {
+          "path": "/products/ai-recommendations",
+          "title": "AI recommendation engine for products and content | Algolia",
+          "dwellMs": 10001,
+          "maxScrollDepth": 100,
+          "pageGroup": "product",
+          "topic": "ai_search"
+        }
+      ],
+      "engagementHistory": []
+    },
+    "eventNames": [
+      "page_view",
+      "persona_select",
+      "site_search",
+      "chat_open",
+      "chat_question",
+      "scroll_depth",
+      "scroll_depth",
+      "scroll_depth",
+      "page_dwell",
+      "page_dwell"
+    ],
+    "acsLocal": {},
+    "acsSession": {}
+  },
+  "console": [
+    {
+      "type": "log",
+      "text": "null"
+    },
+    {
+      "type": "log",
+      "text": "Client IP Address: 172.126.44.66"
+    },
+    {
+      "type": "error",
+      "text": "Access to fetch at 'https://dashboard.algolia.com/static/current_user' from origin 'https://tmp-content-eng-algolia.cloud.jahia.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "There was a problem with the fetch operation: TypeError: Failed to fetch\n    at HTMLDocument.<anonymous> (https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js:4:16)"
+    },
+    {
+      "type": "warning",
+      "text": "Amplitude Logger [Warn]: `options.defaultTracking` is set to undefined. This implicitly configures your Amplitude instance to track Page Views, Sessions, File Downloads, and Form Interactions. You can suppress this warning by explicitly setting a value to `options.defaultTracking`. The value must either be a boolean, to enable and disable all default events, or an object, for advanced configuration. For example:\n\namplitude.init(<YOUR_API_KEY>, {\n  defaultTracking: true,\n});\n\nVisit https://www.do"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 ()"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147364591"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+    }
+  ]
+}

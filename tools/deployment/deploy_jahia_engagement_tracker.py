@@ -29,7 +29,9 @@ ENGAGE = "/sites/www/files/algolia-chat-engage.js"
 TRACKER_SRC = ROOT / "frontend/chat-widget/algolia-engagement-tracker.js"
 ENGAGE_SRC = ROOT / "frontend/chat-widget/algolia-chat-engage.js"
 EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260814"
-RELEASE = "engagement-tracker-20260814"
+RELEASE = "engagement-tracker-pulse-20260814"
+TRACKER_VERSION = "20260814b"
+ENGAGE_VERSION = "20260814b"
 
 
 def load_token() -> str:
@@ -180,9 +182,11 @@ def upsert_file(path: str, content: str) -> dict:
 
 
 def update_block_html(current: str) -> str:
-    next_html = current.replace(
-        'data-release="enhanced-local-visual-parity-20260812"',
+    next_html = re.sub(
+        r'data-release="[^"]+"',
         f'data-release="{RELEASE}"',
+        current,
+        count=1,
     )
     next_html = re.sub(
         r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-chat-tracker\.js"></script>\n?',
@@ -191,9 +195,22 @@ def update_block_html(current: str) -> str:
     )
     tracker_tag = (
         '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
-        f'algolia-engagement-tracker.js?tracker=20260814"></script>'
+        f'algolia-engagement-tracker.js?tracker={TRACKER_VERSION}"></script>'
     )
-    engage_tag = '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js"></script>'
+    engage_tag = (
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-chat-engage.js?engage={ENGAGE_VERSION}"></script>'
+    )
+    next_html = re.sub(
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-engagement-tracker\.js(?:\?[^"]*)?"></script>',
+        tracker_tag,
+        next_html,
+    )
+    next_html = re.sub(
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-chat-engage\.js(?:\?[^"]*)?"></script>',
+        engage_tag,
+        next_html,
+    )
     if "algolia-engagement-tracker.js" not in next_html:
         next_html = next_html.replace(engage_tag, tracker_tag + "\n" + engage_tag)
     return next_html

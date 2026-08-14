@@ -58,11 +58,7 @@
     }
   },
   "deleteOldTrackerEdit": {
-    "data": {
-      "jcr": {
-        "deleteNode": true
-      }
-    }
+    "skipped": "old tracker not present in EDIT"
   },
   "publishNewTracker": {
     "data": {
@@ -107,6 +103,30 @@
           "publish": true,
           "node": {
             "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "versionBlock": {
+    "data": {
+      "jcr": {
+        "block": {
+          "createVersion": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
           }
         }
       }

@@ -1,0 +1,86 @@
+{
+  "capturedAt": "2026-08-14T04:47:05.040484+00:00",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations?pulseCheck=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1",
+  "checks": {
+    "newTrackerScriptLoaded": true,
+    "engageScriptCacheBusted": true,
+    "oldTrackerScriptAbsent": true,
+    "releaseMarkerUpdated": true,
+    "trackerInstalled": true,
+    "oldTrackerNotInstalled": true,
+    "noAcsKeys": true,
+    "capturedNavClick": true,
+    "capturedAnalyzingPulse": true,
+    "pass": true
+  },
+  "state": {
+    "releaseMarkers": [
+      "engagement-tracker-pulse-20260814"
+    ],
+    "scripts": [
+      "https://cdn.cookielaw.org/scripttemplates/otSDKStub.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/header.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codeExchangeSearch.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/generated-resources/e849456d451f92345b21d8c310a1b6c5.min.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/CsrfServlet",
+      "https://cdn.cookielaw.org/scripttemplates/202512.1.0/otBannerSdk.js",
+      "https://cdn.amplitude.com/script/9fa03fe145137b598626150731335817.experiment.js",
+      "https://cdn.amplitude.com/libs/plugin-ga-events-forwarder-browser-0.4.2-min.js.gz",
+      "https://cdn.amplitude.com/libs/analytics-browser-2.11.0-min.js.gz",
+      "https://cdn.jsdelivr.net/npm/algoliasearch@5.29.0/dist/lite/builds/browser.umd.js",
+      "https://cdn.jsdelivr.net/npm/instantsearch.js@4.79.0/dist/instantsearch.production.min.js",
+      "https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js",
+      "https://cdn.jsdelivr.net/npm/marked@18.0.7/lib/marked.umd.js",
+      "https://cdn.jsdelivr.net/npm/dompurify@3.4.12/dist/purify.min.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260814b",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260814b",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/anonymousUser.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/hideBlankTag.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/bannerAnimation.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/startupsTracking.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/jquery.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/slick.min.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/accordion.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/customslick.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/prism.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/theme.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/requestDemoModal.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codepen.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/forrester.js",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/blogNavigation.js",
+      "https://cdn.weglot.com/weglot.min.js",
+      "https://cdn.jsdelivr.net/npm/search-insights@2.17.2/dist/search-insights.min.js"
+    ],
+    "localStorageKeys": [
+      "algolia-client-js-5.29.0-1QDAWL72TQ",
+      "algolia_profile",
+      "algoliaChatWireDebugLog"
+    ],
+    "sessionStorageKeys": [
+      "algolia_session",
+      "algolia_events",
+      "algolia_token"
+    ],
+    "eventNames": [
+      "page_view",
+      "nav_click"
+    ],
+    "analyzingCalls": [
+      {
+        "value": true,
+        "ts": 1786682823998
+      },
+      {
+        "value": false,
+        "ts": 1786682824900
+      }
+    ],
+    "trackerInstalled": true,
+    "oldTrackerInstalled": false
+  }
+}

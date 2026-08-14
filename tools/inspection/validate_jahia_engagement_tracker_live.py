@@ -16,6 +16,7 @@ URL = (
     "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html"
     "?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1"
 )
+RELEASE = "engagement-tracker-pulse-20260814"
 
 
 def main() -> int:
@@ -27,6 +28,22 @@ def main() -> int:
         page.on("console", lambda msg: console_messages.append({"type": msg.type, "text": msg.text[:500]}))
         page.goto(URL, wait_until="domcontentloaded", timeout=60000)
         page.wait_for_function("window.algoliaEngagementTracker && window.__algoliaEngagementTrackerInstalled", timeout=30000)
+        page.evaluate(
+            """
+            () => {
+              const chat = document.querySelector('algolia-chat');
+              window.__algoliaAnalyzingCalls = [];
+              if (chat && typeof chat.setAnalyzing === 'function' && !chat.__pulseValidationWrapped) {
+                const original = chat.setAnalyzing.bind(chat);
+                chat.setAnalyzing = (value) => {
+                  window.__algoliaAnalyzingCalls.push({ value: Boolean(value), ts: Date.now() });
+                  return original(value);
+                };
+                chat.__pulseValidationWrapped = true;
+              }
+            }
+            """
+        )
         page.evaluate(
             """
             () => {
@@ -45,9 +62,17 @@ def main() -> int:
               document.dispatchEvent(new CustomEvent('algolia-chat-question', {
                 detail: { source: 'live_validation' }
               }));
+              window.algoliaEngagementTracker.track('nav_click', {
+                label: 'Pulse validation',
+                source: 'live_validation'
+              });
               window.scrollTo(0, Math.max(0, document.body.scrollHeight));
             }
             """
+        )
+        page.wait_for_function(
+            "window.__algoliaAnalyzingCalls && window.__algoliaAnalyzingCalls.some((entry) => entry.value === true)",
+            timeout=10000,
         )
         page.wait_for_timeout(11000)
         state = page.evaluate(
@@ -79,6 +104,7 @@ def main() -> int:
                 session,
                 eventNames: events.map((event) => event.name),
                 eventCount: events.length,
+                analyzingCalls: window.__algoliaAnalyzingCalls || [],
                 engagementHistoryCount: Array.isArray(session?.engagementHistory) ? session.engagementHistory.length : 0,
                 pageCount: Array.isArray(session?.pages) ? session.pages.length : 0
               };
@@ -90,7 +116,7 @@ def main() -> int:
     checks = {
         "newTrackerScriptLoaded": any("algolia-engagement-tracker.js" in src for src in state["scripts"]),
         "oldTrackerScriptAbsent": not any("algolia-chat-tracker.js" in src for src in state["scripts"]),
-        "releaseMarkerUpdated": "engagement-tracker-20260814" in state["releaseMarkers"],
+        "releaseMarkerUpdated": RELEASE in state["releaseMarkers"],
         "trackerInstalled": state["installed"] is True,
         "oldTrackerNotInstalled": state["oldTrackerInstalled"] is False,
         "profileInLocalStorage": "algolia_profile" in state["localStorageKeys"],
@@ -103,6 +129,7 @@ def main() -> int:
         "capturedChatQuestion": "chat_question" in state["eventNames"],
         "capturedDwell": "page_dwell" in state["eventNames"],
         "capturedEngagementHistory": state["engagementHistoryCount"] >= 1,
+        "capturedAnalyzingPulse": any(call.get("value") is True for call in state.get("analyzingCalls", [])),
     }
     checks["pass"] = all(checks.values())
     payload = {

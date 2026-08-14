@@ -1,3 +1,419 @@
-(function(){"use strict";const f="[Algolia Chat – Engage]",I=new URLSearchParams(location.search).get("algoliaChatDebug")==="1",r=(...e)=>{I&&console.log(f,...e)},v="algolia_profile",_="algolia_events",S="algolia_session",c="algolia_pending_greeting",y=600*1e3;let o={minPages:2,minEvents:3,analysisDelayMs:3e3,widgetTimeoutMs:25e3,greetingTtlMs:y},h=!1;function N(){try{const e=window.ALGOLIA_CONTEXT_ENGINE_CONFIG;return e&&typeof e=="object"?e:{}}catch{return{}}}function m(e){if(!e)return;const t=Number(e);return Number.isFinite(t)?t:void 0}function T(){try{const e=new URLSearchParams(location.search),t={},n=e.get("concierge")??e.get("conciergeAgentId");n&&(t.conciergeAgentId=n);const a=m(e.get("minPages"));a!==void 0&&(t.minPages=a);const s=m(e.get("minEvents"));s!==void 0&&(t.minEvents=s);const i=m(e.get("delayMs")??e.get("analysisDelayMs"));return i!==void 0&&(t.analysisDelayMs=i),t}catch{return{}}}function d(e){o={...o,...e},r("configured",o)}function g(e,t,n=localStorage){try{const a=n.getItem(e);return a?JSON.parse(a):t}catch{return t}}function w(e,t){try{t===null?localStorage.removeItem(e):localStorage.setItem(e,JSON.stringify(t))}catch{}}function C(){const e=g(v,{}),t=g(S,{},sessionStorage),n=g(_,{},sessionStorage),a=Array.isArray(t.pages)?t.pages:[],i=Array.isArray(n)?n:Array.isArray(n.events)?n.events:[],s={currentPage:{path:location.pathname,title:document.title},pagesViewed:a.map(k=>({path:k.path,title:k.title,dwellMs:k.dwellMs})),pageCount:a.length,sessionDurationMs:t.startedAt?Date.now()-t.startedAt:0,events:i.slice(-15),affinities:Array.isArray(e.topAffinities)?e.topAffinities:[],affinitySource:e.tokenSource||"none"};return o.enrichContext?o.enrichContext(s):s}function D(e){const{minPages:t=2,minEvents:n=3}=o;if(e.pageCount===0&&e.events.length===0)return r("no visitor data — is algolia-engagement-tracker.js installed? The concierge will not be called."),!1;const a=e.pageCount>=t||e.events.length>=n;return r(`signal check → ${a?"ENOUGH":"not enough"} | pages=${e.pageCount} (min ${t}) events=${e.events.length}`),a}function l(){return document.querySelector("algolia-chat")}function u(e){l()?.setAnalyzing?.(e)}function b(e){const t=l();return t&&typeof t.engage=="function"?Promise.resolve(!0):new Promise(n=>{const a=Date.now()+e,s=setInterval(()=>{const i=l();i&&typeof i.engage=="function"?(clearInterval(s),n(!0)):Date.now()>a&&(clearInterval(s),n(!1))},250)})}function O(e){const t=e.trim();if(!t.startsWith("data:"))return"";const n=t.slice(5).trim();if(!n)return"";try{const a=JSON.parse(n);return a.type==="text-delta"&&typeof a.delta=="string"?a.delta:""}catch{return""}}async function P(e){const t=e.getReader(),n=new TextDecoder;let a="",s="";for(;;){const{done:i,value:k}=await t.read();if(i)break;a+=n.decode(k,{stream:!0});const A=a.split(`
-`);a=A.pop()??"";for(const F of A)s+=O(F)}return s}function M(){const e=document.querySelector("algolia-instant-search");return{appId:o.appId??e?.getAttribute("app-id")??null,apiKey:o.apiKey??e?.getAttribute("api-key")??null}}async function G(e){const{appId:t,apiKey:n}=M();if(!t||!n)throw new Error("no Algolia credentials found on the page");const a=o.conciergeAgentId;if(!a)throw new Error("no conciergeAgentId configured");const s=`https://${t}.algolia.net/agent-studio/1/agents/${a}/completions?compatibilityMode=ai-sdk-5`,i=await fetch(s,{method:"POST",headers:{"Content-Type":"application/json","X-Algolia-Application-Id":t,"X-Algolia-API-Key":n},body:JSON.stringify({messages:[{role:"user",parts:[{type:"text",text:e}]}]})});if(!i.ok)throw new Error(`concierge call failed: ${i.status}`);return P(i.body)}function x(e){const t=e.indexOf("{"),n=e.lastIndexOf("}");if(t===-1||n===-1)return null;try{return JSON.parse(e.slice(t,n+1))}catch{return null}}function J(){const e=g(c,null);if(!e)return!1;const t=o.greetingTtlMs??y;return Date.now()-e.ts>t?(w(c,null),!1):(w(c,null),r("showing greeting cached by previous page"),E(e.greeting,e.suggestions??[]))}function E(e,t){const n=l();if(!n||typeof n.engage!="function")return!1;const a=n.engage({greeting:e,suggestions:t});return h=!!a,r(a?"engaged":"engage() refused — auto-engage is off"),h}function L(e){if(h)return r("already engaged on this page"),!1;const t=l();if(!t)return r("no <algolia-chat> on the page"),!1;if(t.autoEngage===!1)return r("visitor switched auto-engage off"),!1;const n=o.greetingTtlMs??y,a=g(c,null);return a&&Date.now()-a.ts<n?(r("greeting already pending"),!1):o.conciergeAgentId?D(e):(console.warn(f,'no conciergeAgentId — the chat stays click-to-open. Set <algolia-chat-engage concierge-agent-id="...">'),!1)}function K(e){if(!e?.engage){r("concierge decided not to engage",e??"(unparseable response)"),u(!1);return}const t=(typeof e.greeting=="string"?e.greeting:"").trim();if(!t){r("engage:true but empty greeting — ignoring"),u(!1);return}const n=Array.isArray(e.suggestions)?e.suggestions.filter(a=>typeof a=="string"&&!!a.trim()):[];if(document.hidden){r("page hidden — caching greeting for next page"),w(c,{greeting:t,suggestions:n,ts:Date.now()}),u(!1);return}E(t,n)}async function $(){const e=C();if(L(e)){r("calling concierge with context",e),u(!0);try{const t=await G(`CONTEXT:
-`+JSON.stringify(e,null,2));r("concierge raw response:",t.slice(0,500)),K(x(t))}catch(t){console.warn(f,"proactive analysis failed:",t instanceof Error?t.message:t),u(!1)}}}async function R(){const{widgetTimeoutMs:e=25e3,analysisDelayMs:t=3e3}=o;if(!await b(e)){r(`<algolia-chat> never became ready within ${e}ms`);return}J()||(await new Promise(a=>setTimeout(a,t)),await $())}const p=window;if(!p.__algoliaChat_engageInstalled){p.__algoliaChat_engageInstalled=!0,d(T()),d(N());const e=p.algoliaEngage;if(p.algoliaEngage={configure:d},Array.isArray(e?._queue))for(const[t]of e._queue)d(t);R().catch(t=>{console.warn(f,"init failed:",t instanceof Error?t.message:t)})}})();
+(function () {
+  "use strict";
+
+  const LABEL = "[Algolia Chat – Engage]";
+  const DEBUG = new URLSearchParams(location.search).get("algoliaChatDebug") === "1";
+
+  const PROFILE_KEY = "algolia_profile";
+  const EVENTS_KEY = "algolia_events";
+  const SESSION_KEY = "algolia_session";
+  const PENDING_GREETING_KEY = "algolia_pending_greeting";
+
+  const DEFAULT_GREETING_TTL_MS = 600 * 1000;
+  const DEFAULT_SIGNAL_PULSE_MS = 900;
+  const DEFAULT_SIGNAL_DEBOUNCE_MS = 700;
+  const DEFAULT_MIN_ANALYSIS_INTERVAL_MS = 5000;
+
+  let config = {
+    minPages: 2,
+    minEvents: 3,
+    analysisDelayMs: 3000,
+    widgetTimeoutMs: 25000,
+    greetingTtlMs: DEFAULT_GREETING_TTL_MS,
+    signalPulseMs: DEFAULT_SIGNAL_PULSE_MS,
+    signalDebounceMs: DEFAULT_SIGNAL_DEBOUNCE_MS,
+    minAnalysisIntervalMs: DEFAULT_MIN_ANALYSIS_INTERVAL_MS,
+  };
+
+  let engaged = false;
+  let analysisInFlight = false;
+  let signalAnalysisTimer = null;
+  let signalPulseTimer = null;
+  let lastAnalysisAt = 0;
+
+  function debug(...args) {
+    if (DEBUG) console.log(LABEL, ...args);
+  }
+
+  function readWindowConfig() {
+    try {
+      const value = window.ALGOLIA_CONTEXT_ENGINE_CONFIG;
+      return value && typeof value === "object" ? value : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function parseNumber(value) {
+    if (!value) return undefined;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : undefined;
+  }
+
+  function readQueryConfig() {
+    try {
+      const params = new URLSearchParams(location.search);
+      const next = {};
+      const conciergeAgentId = params.get("concierge") ?? params.get("conciergeAgentId");
+      if (conciergeAgentId) next.conciergeAgentId = conciergeAgentId;
+
+      const minPages = parseNumber(params.get("minPages"));
+      if (minPages !== undefined) next.minPages = minPages;
+
+      const minEvents = parseNumber(params.get("minEvents"));
+      if (minEvents !== undefined) next.minEvents = minEvents;
+
+      const analysisDelayMs = parseNumber(params.get("delayMs") ?? params.get("analysisDelayMs"));
+      if (analysisDelayMs !== undefined) next.analysisDelayMs = analysisDelayMs;
+
+      return next;
+    } catch {
+      return {};
+    }
+  }
+
+  function configure(nextConfig) {
+    config = { ...config, ...(nextConfig || {}) };
+    debug("configured", config);
+  }
+
+  function readJson(key, fallback, storage = localStorage) {
+    try {
+      const value = storage.getItem(key);
+      return value ? JSON.parse(value) : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function writeJson(key, value) {
+    try {
+      if (value === null) localStorage.removeItem(key);
+      else localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // Best effort only; pending greetings should never break the host page.
+    }
+  }
+
+  function buildContext() {
+    const profile = readJson(PROFILE_KEY, {});
+    const session = readJson(SESSION_KEY, {}, sessionStorage);
+    const eventEnvelope = readJson(EVENTS_KEY, {}, sessionStorage);
+    const pages = Array.isArray(session.pages) ? session.pages : [];
+    const events = Array.isArray(eventEnvelope)
+      ? eventEnvelope
+      : Array.isArray(eventEnvelope.events)
+        ? eventEnvelope.events
+        : [];
+
+    const context = {
+      currentPage: { path: location.pathname, title: document.title },
+      pagesViewed: pages.map((page) => ({
+        path: page.path,
+        title: page.title,
+        dwellMs: page.dwellMs,
+      })),
+      pageCount: pages.length,
+      sessionDurationMs: session.startedAt ? Date.now() - session.startedAt : 0,
+      events: events.slice(-15),
+      affinities: Array.isArray(profile.topAffinities) ? profile.topAffinities : [],
+      affinitySource: profile.tokenSource || "none",
+    };
+
+    return config.enrichContext ? config.enrichContext(context) : context;
+  }
+
+  function hasEnoughSignals(context) {
+    const { minPages = 2, minEvents = 3 } = config;
+    if (context.pageCount === 0 && context.events.length === 0) {
+      debug("no visitor data — is algolia-engagement-tracker.js installed?");
+      return false;
+    }
+
+    const enough = context.pageCount >= minPages || context.events.length >= minEvents;
+    debug(
+      `signal check → ${enough ? "ENOUGH" : "not enough"} | pages=${context.pageCount} (min ${minPages}) events=${context.events.length}`
+    );
+    return enough;
+  }
+
+  function chatElement() {
+    return document.querySelector("algolia-chat");
+  }
+
+  function setAnalyzing(value) {
+    chatElement()?.setAnalyzing?.(value);
+  }
+
+  function waitForWidget(timeoutMs) {
+    const current = chatElement();
+    if (current && typeof current.engage === "function") return Promise.resolve(true);
+
+    return new Promise((resolve) => {
+      const deadline = Date.now() + timeoutMs;
+      const interval = setInterval(() => {
+        const next = chatElement();
+        if (next && typeof next.engage === "function") {
+          clearInterval(interval);
+          resolve(true);
+        } else if (Date.now() > deadline) {
+          clearInterval(interval);
+          resolve(false);
+        }
+      }, 250);
+    });
+  }
+
+  function parseSseTextDelta(line) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("data:")) return "";
+    const payload = trimmed.slice(5).trim();
+    if (!payload) return "";
+
+    try {
+      const event = JSON.parse(payload);
+      return event.type === "text-delta" && typeof event.delta === "string" ? event.delta : "";
+    } catch {
+      return "";
+    }
+  }
+
+  async function readSseText(stream) {
+    const reader = stream.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let text = "";
+
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+      for (const line of lines) text += parseSseTextDelta(line);
+    }
+
+    return text;
+  }
+
+  function credentials() {
+    const search = document.querySelector("algolia-instant-search");
+    return {
+      appId: config.appId ?? search?.getAttribute("app-id") ?? null,
+      apiKey: config.apiKey ?? search?.getAttribute("api-key") ?? null,
+    };
+  }
+
+  async function callConcierge(prompt) {
+    const { appId, apiKey } = credentials();
+    if (!appId || !apiKey) throw new Error("no Algolia credentials found on the page");
+
+    const agentId = config.conciergeAgentId;
+    if (!agentId) throw new Error("no conciergeAgentId configured");
+
+    const url = `https://${appId}.algolia.net/agent-studio/1/agents/${agentId}/completions?compatibilityMode=ai-sdk-5`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Algolia-Application-Id": appId,
+        "X-Algolia-API-Key": apiKey,
+      },
+      body: JSON.stringify({
+        messages: [{ role: "user", parts: [{ type: "text", text: prompt }] }],
+      }),
+    });
+
+    if (!response.ok) throw new Error(`concierge call failed: ${response.status}`);
+    return readSseText(response.body);
+  }
+
+  function extractJsonObject(text) {
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start === -1 || end === -1) return null;
+
+    try {
+      return JSON.parse(text.slice(start, end + 1));
+    } catch {
+      return null;
+    }
+  }
+
+  function showPendingGreeting() {
+    const pending = readJson(PENDING_GREETING_KEY, null);
+    if (!pending) return false;
+
+    const ttlMs = config.greetingTtlMs ?? DEFAULT_GREETING_TTL_MS;
+    if (Date.now() - pending.ts > ttlMs) {
+      writeJson(PENDING_GREETING_KEY, null);
+      return false;
+    }
+
+    writeJson(PENDING_GREETING_KEY, null);
+    debug("showing greeting cached by previous page");
+    return showGreeting(pending.greeting, pending.suggestions ?? []);
+  }
+
+  function showGreeting(greeting, suggestions) {
+    const widget = chatElement();
+    if (!widget || typeof widget.engage !== "function") return false;
+
+    const shown = widget.engage({ greeting, suggestions });
+    engaged = !!shown;
+    debug(shown ? "engaged" : "engage() refused — auto-engage is off");
+    return engaged;
+  }
+
+  function canAnalyze(context) {
+    if (engaged) {
+      debug("already engaged on this page");
+      return false;
+    }
+
+    const widget = chatElement();
+    if (!widget) {
+      debug("no <algolia-chat> on the page");
+      return false;
+    }
+
+    if (widget.autoEngage === false) {
+      debug("visitor switched auto-engage off");
+      return false;
+    }
+
+    const ttlMs = config.greetingTtlMs ?? DEFAULT_GREETING_TTL_MS;
+    const pending = readJson(PENDING_GREETING_KEY, null);
+    if (pending && Date.now() - pending.ts < ttlMs) {
+      debug("greeting already pending");
+      return false;
+    }
+
+    if (!config.conciergeAgentId) {
+      console.warn(
+        LABEL,
+        'no conciergeAgentId — the chat stays click-to-open. Set <algolia-chat-engage concierge-agent-id="...">'
+      );
+      return false;
+    }
+
+    return hasEnoughSignals(context);
+  }
+
+  function applyDecision(decision) {
+    if (!decision?.engage) {
+      debug("concierge decided not to engage", decision ?? "(unparseable response)");
+      setAnalyzing(false);
+      return;
+    }
+
+    const greeting = (typeof decision.greeting === "string" ? decision.greeting : "").trim();
+    if (!greeting) {
+      debug("engage:true but empty greeting — ignoring");
+      setAnalyzing(false);
+      return;
+    }
+
+    const suggestions = Array.isArray(decision.suggestions)
+      ? decision.suggestions.filter((suggestion) => typeof suggestion === "string" && !!suggestion.trim())
+      : [];
+
+    if (document.hidden) {
+      debug("page hidden — caching greeting for next page");
+      writeJson(PENDING_GREETING_KEY, { greeting, suggestions, ts: Date.now() });
+      setAnalyzing(false);
+      return;
+    }
+
+    showGreeting(greeting, suggestions);
+  }
+
+  async function analyze() {
+    const context = buildContext();
+    if (!canAnalyze(context)) return;
+
+    debug("calling concierge with context", context);
+    analysisInFlight = true;
+    lastAnalysisAt = Date.now();
+    setAnalyzing(true);
+
+    try {
+      const raw = await callConcierge(`CONTEXT:\n${JSON.stringify(context, null, 2)}`);
+      debug("concierge raw response:", raw.slice(0, 500));
+      applyDecision(extractJsonObject(raw));
+    } catch (error) {
+      console.warn(LABEL, "proactive analysis failed:", error instanceof Error ? error.message : error);
+      setAnalyzing(false);
+    } finally {
+      analysisInFlight = false;
+    }
+  }
+
+  function pulseLauncher() {
+    const widget = chatElement();
+    if (!widget || widget.autoEngage === false || engaged) return;
+
+    setAnalyzing(true);
+    if (signalPulseTimer !== null) clearTimeout(signalPulseTimer);
+    signalPulseTimer = setTimeout(() => {
+      signalPulseTimer = null;
+      if (!analysisInFlight) setAnalyzing(false);
+    }, config.signalPulseMs ?? DEFAULT_SIGNAL_PULSE_MS);
+  }
+
+  function scheduleSignalAnalysis() {
+    if (engaged || analysisInFlight) return;
+
+    const minIntervalMs = config.minAnalysisIntervalMs ?? DEFAULT_MIN_ANALYSIS_INTERVAL_MS;
+    if (Date.now() - lastAnalysisAt < minIntervalMs) return;
+
+    if (signalAnalysisTimer !== null) clearTimeout(signalAnalysisTimer);
+    signalAnalysisTimer = setTimeout(() => {
+      signalAnalysisTimer = null;
+      analyze().catch((error) => {
+        console.warn(LABEL, "signal analysis failed:", error instanceof Error ? error.message : error);
+        setAnalyzing(false);
+      });
+    }, config.signalDebounceMs ?? DEFAULT_SIGNAL_DEBOUNCE_MS);
+  }
+
+  function handleEngagementSignal(event) {
+    const name = event?.detail?.name;
+    if (!name) return;
+
+    pulseLauncher();
+    scheduleSignalAnalysis();
+  }
+
+  async function init() {
+    const { widgetTimeoutMs = 25000, analysisDelayMs = 3000 } = config;
+    if (!(await waitForWidget(widgetTimeoutMs))) {
+      debug(`<algolia-chat> never became ready within ${widgetTimeoutMs}ms`);
+      return;
+    }
+
+    if (!showPendingGreeting()) {
+      await new Promise((resolve) => setTimeout(resolve, analysisDelayMs));
+      await analyze();
+    }
+  }
+
+  const root = window;
+  if (!root.__algoliaChat_engageInstalled) {
+    root.__algoliaChat_engageInstalled = true;
+    configure(readQueryConfig());
+    configure(readWindowConfig());
+
+    const previous = root.algoliaEngage;
+    root.algoliaEngage = { configure };
+    if (Array.isArray(previous?._queue)) {
+      for (const [nextConfig] of previous._queue) configure(nextConfig);
+    }
+
+    document.addEventListener("algolia-engagement-signal", handleEngagementSignal);
+    init().catch((error) => {
+      console.warn(LABEL, "init failed:", error instanceof Error ? error.message : error);
+    });
+  }
+})();

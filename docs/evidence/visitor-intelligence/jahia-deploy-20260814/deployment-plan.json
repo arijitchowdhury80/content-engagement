@@ -6,19 +6,19 @@
     "engage": "/sites/www/files/algolia-chat-engage.js"
   },
   "current": {
-    "oldTrackerReferenced": true,
-    "newTrackerReferenced": false,
+    "oldTrackerReferenced": false,
+    "newTrackerReferenced": true,
     "releaseMarkers": [
-      "enhanced-local-visual-parity-20260812"
+      "engagement-tracker-20260814"
     ],
     "newTrackerExists": true
   },
   "intended": {
     "oldTrackerReferenced": false,
     "newTrackerReferenced": true,
-    "release": "engagement-tracker-20260814",
-    "trackerSha256": "4b69e7aa616928fbe996621142ead280c41f8e26b6136e94c99f5d1f70ced3aa",
-    "engageSha256": "750f2e3714bc79107f7d7d7fd1b11c98a9345216719d9946e3e0c3b9862f323f"
+    "release": "engagement-tracker-pulse-20260814",
+    "trackerSha256": "c56bdcfaa890a667961bbd0e566a8cf58500e7986a4368982952b68e3386cf87",
+    "engageSha256": "c9b801b28e4ae779ad5089f9a0e9f33835a5092b2fc8e3882116a4fd8eed8605"
   },
   "rollback": {
     "restoreBlockHtmlFrom": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260814/before-snapshot.json",

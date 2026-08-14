@@ -26,6 +26,7 @@ class MemoryStorage {
 function createHarness() {
   const listeners = new Map();
   const documentListeners = new Map();
+  const documentDispatches = [];
   const localStorage = new MemoryStorage();
   const sessionStorage = new MemoryStorage();
   const chatElement = {
@@ -46,6 +47,12 @@ function createHarness() {
       return fn();
     },
     clearTimeout() {},
+    CustomEvent: class CustomEvent {
+      constructor(type, options = {}) {
+        this.type = type;
+        this.detail = options.detail;
+      }
+    },
     crypto: {
       getRandomValues(array) {
         for (let i = 0; i < array.length; i += 1) array[i] = i + 1;
@@ -80,6 +87,11 @@ function createHarness() {
       addEventListener(name, handler) {
         documentListeners.set(name, handler);
       },
+      dispatchEvent(event) {
+        documentDispatches.push(event);
+        documentListeners.get(event.type)?.(event);
+        return true;
+      },
       dispatchDocumentEvent(name, event) {
         documentListeners.get(name)?.(event);
       },
@@ -92,7 +104,7 @@ function createHarness() {
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(trackerPath, 'utf8'), context);
 
-  return { context, localStorage, sessionStorage, chatElement };
+  return { context, localStorage, sessionStorage, chatElement, documentDispatches };
 }
 
 function parse(storage, key) {
@@ -206,4 +218,17 @@ test('registers with existing chat widget visitor data source and legacy bridge'
   assert.equal(chatElement.source.getProfile().schema, 'AlgoliaEngagementProfile.v1');
   assert.ok(Array.isArray(chatElement.source.getEvents()));
   assert.ok(Array.isArray(chatElement.source.getSessionPages()));
+});
+
+test('emits an in-page engagement signal whenever activity is tracked', () => {
+  const { context, documentDispatches } = createHarness();
+
+  context.algoliaEngagementTracker.track('nav_click', { label: 'Products' });
+
+  const signals = documentDispatches.filter(
+    (event) => event.type === 'algolia-engagement-signal'
+  );
+  assert.ok(signals.length >= 1, 'expected at least one engagement signal');
+  assert.equal(signals.at(-1).detail.name, 'nav_click');
+  assert.equal(signals.at(-1).detail.path, '/pricing');
 });
