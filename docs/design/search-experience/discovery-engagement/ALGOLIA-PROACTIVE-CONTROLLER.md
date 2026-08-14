@@ -83,22 +83,39 @@ Defaults:
 }
 ```
 
+Greetings Agent configuration:
+
+```js
+window.ALGOLIA_PROACTIVE_CONFIG = {
+  greetingsAgentId: "<Agent Studio Greetings Agent ID>",
+  appId: "0EXRPAXB56",
+  apiKey: "<search-only key>",
+  compatibilityMode: "ai-sdk-5",
+  cache: false,
+  memory: false
+};
+```
+
 ## Decision Packet
 
-When a trigger is eligible, the controller emits:
+When a trigger is eligible, the controller generates an `opportunityId` and builds:
 
 ```json
 {
   "schema": "AlgoliaProactiveDecision.v1",
   "engage": true,
+  "opportunityId": "opp_19fff074c5d_23ee98",
   "moment": "commercial_evaluation",
   "trigger": "product_to_pricing",
   "priority": 88,
   "messageGoal": "explain_cost_drivers",
   "reasonCodes": ["journey_product_to_pricing", "pricing_page_view"],
   "agentPromptPacket": {
+    "schema": "ProactiveGreetingRequest.v1",
+    "opportunityId": "opp_19fff074c5d_23ee98",
     "moment": "commercial_evaluation",
     "trigger": "product_to_pricing",
+    "priority": 88,
     "persona": "developer",
     "currentPage": {},
     "journey": [],
@@ -117,6 +134,8 @@ When a trigger is eligible, the controller emits:
 ```
 
 Downstream greeting generation should use this packet as input. The greeting must never expose raw telemetry such as “I saw you click X.” It should translate the moment into useful concierge help.
+
+The full `agentPromptPacket` is stored in `sessionStorage.algolia_proactive_state` under the generated `opportunityId`. `handoff-to-orchestrator.js` later reads the same packet for downstream orchestrator handoff.
 
 ## Greetings Agent Call
 
@@ -169,6 +188,13 @@ The controller expects strict JSON from the Greetings Agent:
 }
 ```
 
+The JSON is not shown to the visitor. It is a browser/controller contract. The visitor sees only `greeting` and clickable chips.
+
+The controller accepts either:
+
+- plain JSON text;
+- Agent Studio streamed text deltas that reconstruct the same JSON.
+
 Validation gates:
 
 - `schema` equals `ProactiveGreetingResponse.v1`.
@@ -187,6 +213,8 @@ document.querySelector("algolia-chat")?.engage({
   suggestions: chips
 });
 ```
+
+The widget API currently names the clickable chips `suggestions`; project docs and prompts call them `chips`. The mapping happens only at this widget API boundary.
 
 On fail, the controller does not open the widget.
 
@@ -216,3 +244,16 @@ sequenceDiagram
 ## Build Boundary
 
 This module is complete when it can deterministically emit or suppress proactive opportunities from real tracker/compiler state, call the Greetings Agent, validate the returned greeting, and open the chat with that returned greeting.
+
+## Tests
+
+Runtime tests prove:
+
+- all deterministic trigger permutations still work;
+- hover-only activity never triggers proactive engagement;
+- the controller POSTs `ProactiveGreetingRequest.v1` to the configured Greetings Agent;
+- `metadata.turnContext` is attached to the completion request;
+- valid `ProactiveGreetingResponse.v1` renders in the widget;
+- `chips` map to the existing widget API's `suggestions`;
+- invalid or telemetry-exposing greetings are rejected;
+- streamed Agent Studio text deltas are parsed.

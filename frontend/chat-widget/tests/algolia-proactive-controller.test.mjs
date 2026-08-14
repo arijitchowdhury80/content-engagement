@@ -71,6 +71,8 @@ function createHarness({
   currentPageId = 'page_current',
   locationPath,
   state,
+  proactiveConfig,
+  fetchImpl,
 } = {}) {
   const currentPath = locationPath || pages?.at(-1)?.path || '/products/ai-recommendations';
   const localStorage = new MemoryStorage({
@@ -114,6 +116,14 @@ function createHarness({
   });
   const documentListeners = new Map();
   const documentEvents = [];
+  const chatEngagements = [];
+  const chatElement = {
+    autoEngage: true,
+    engage(payload) {
+      chatEngagements.push(payload);
+      return true;
+    },
+  };
   const context = {
     console,
     localStorage,
@@ -125,6 +135,7 @@ function createHarness({
       return fn();
     },
     clearTimeout() {},
+    fetch: fetchImpl,
     location: {
       href: `https://www.algolia.com${currentPath}`,
       origin: 'https://www.algolia.com',
@@ -141,7 +152,16 @@ function createHarness({
       hidden: false,
       title: pages?.at(-1)?.title || 'AI Recommendations',
       querySelector(selector) {
-        if (selector === 'algolia-chat') return { autoEngage: true };
+        if (selector === 'algolia-chat') return chatElement;
+        if (selector === 'algolia-instant-search') {
+          return {
+            getAttribute(name) {
+              if (name === 'app-id') return '0EXRPAXB56';
+              if (name === 'api-key') return 'search_key';
+              return null;
+            },
+          };
+        }
         return null;
       },
       addEventListener(type, handler) {
@@ -155,14 +175,21 @@ function createHarness({
     },
   };
   context.window = context;
+  if (proactiveConfig) context.window.ALGOLIA_PROACTIVE_CONFIG = proactiveConfig;
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(compilerPath, 'utf8'), context);
   vm.runInContext(fs.readFileSync(controllerPath, 'utf8'), context);
-  return { context, localStorage, sessionStorage, documentEvents };
+  return { context, localStorage, sessionStorage, documentEvents, chatEngagements };
 }
 
 function opportunity(context) {
   return context.algoliaProactiveController.evaluate();
+}
+
+async function flushAsyncControllerWork() {
+  for (let index = 0; index < 5; index += 1) {
+    await new Promise((resolve) => setImmediate(resolve));
+  }
 }
 
 test('product research triggers on product page dwell after 10 seconds', () => {
@@ -610,4 +637,171 @@ test('faq to pricing falls back to generic pricing dwell only after the pricing 
 
   assert.equal(opportunity(belowThreshold.context).engage, false);
   assert.equal(opportunity(atThreshold.context).trigger, 'pricing_8s_dwell');
+});
+
+test('configured controller posts a proactive greeting request and renders validated greeting chips', async () => {
+  const fetchCalls = [];
+  const { context, chatEngagements, sessionStorage } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({
+        pageId: 'page_product',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 12000,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 1000,
+      }),
+    ],
+    fetchImpl: async (url, init) => {
+      fetchCalls.push({ url: String(url), init });
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            schema: 'ProactiveGreetingResponse.v1',
+            opportunityId: packet.opportunityId,
+            greeting:
+              'Pricing pages are where good search ideas meet CFO gravity. Want the practical version of what actually drives cost?',
+            chips: ['What drives cost?', 'API call counting', 'Which plan fits?'],
+            handoffSummary: {
+              moment: 'commercial_evaluation',
+              trigger: 'product_to_pricing',
+              messageGoal: 'explain_cost_drivers',
+            },
+          }),
+      };
+    },
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_view', path: '/pricing' },
+    })
+  );
+  await flushAsyncControllerWork();
+
+  assert.equal(fetchCalls.length, 1);
+  assert.match(fetchCalls[0].url, /0EXRPAXB56\.algolia\.net\/agent-studio\/1\/agents\/greeting_agent_123\/completions/);
+  const body = JSON.parse(fetchCalls[0].init.body);
+  const text = body.messages[0].parts[0].text;
+  assert.match(text, /^PROACTIVE_GREETING_REQUEST\n/);
+  const packet = JSON.parse(text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  const opportunityId = state.opportunities[0].id;
+
+  assert.equal(packet.schema, 'ProactiveGreetingRequest.v1');
+  assert.equal(packet.opportunityId, opportunityId);
+  assert.equal(packet.trigger, 'product_to_pricing');
+  assert.equal(body.messages[0].metadata.turnContext.context_schema, 'AlgoliaTurnContext.v1');
+  assert.equal(chatEngagements.length, 1);
+  assert.equal(chatEngagements[0].greeting, 'Pricing pages are where good search ideas meet CFO gravity. Want the practical version of what actually drives cost?');
+  assert.deepEqual(Array.from(chatEngagements[0].suggestions), ['What drives cost?', 'API call counting', 'Which plan fits?']);
+
+  const updatedState = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(updatedState.opportunities[0].status, 'shown');
+  assert.equal(updatedState.opportunities[0].greetingResponse.schema, 'ProactiveGreetingResponse.v1');
+});
+
+test('controller refuses invalid greeting responses and does not open the widget', async () => {
+  const { context, chatEngagements, sessionStorage } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000 }),
+      page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+    ],
+    fetchImpl: async () => ({
+      ok: true,
+      text: async () =>
+        JSON.stringify({
+          schema: 'ProactiveGreetingResponse.v1',
+          opportunityId: 'wrong',
+          greeting: 'I noticed your browsing behavior and tracking says you need pricing help.',
+          chips: ['one', 'two', 'three', 'four'],
+          handoffSummary: {
+            moment: 'commercial_evaluation',
+            trigger: 'product_to_pricing',
+            messageGoal: 'explain_cost_drivers',
+          },
+        }),
+    }),
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_view', path: '/pricing' },
+    })
+  );
+  await flushAsyncControllerWork();
+
+  assert.equal(chatEngagements.length, 0);
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'greeting_rejected');
+  assert.equal(state.opportunities[0].failureReason, 'opportunity_mismatch');
+});
+
+test('controller parses streamed text deltas from the greetings agent', async () => {
+  const { context, chatEngagements } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000 }),
+      page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+    ],
+    fetchImpl: async (_url, init) => {
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      const payload = JSON.stringify({
+        schema: 'ProactiveGreetingResponse.v1',
+        opportunityId: packet.opportunityId,
+        greeting: 'Pricing can look like spreadsheet fog. Want the clean version of what actually drives Algolia cost?',
+        chips: ['What drives cost?'],
+        handoffSummary: {
+          moment: 'commercial_evaluation',
+          trigger: 'product_to_pricing',
+          messageGoal: 'explain_cost_drivers',
+        },
+      });
+      return {
+        ok: true,
+        text: async () =>
+          payload
+            .match(/.{1,40}/g)
+            .map((delta) => `data: ${JSON.stringify({ type: 'text-delta', delta })}\n`)
+            .join(''),
+      };
+    },
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_view', path: '/pricing' },
+    })
+  );
+  await flushAsyncControllerWork();
+
+  assert.equal(chatEngagements.length, 1);
+  assert.equal(chatEngagements[0].greeting, 'Pricing can look like spreadsheet fog. Want the clean version of what actually drives Algolia cost?');
 });

@@ -9,6 +9,13 @@
   const STATE_KEY = "algolia_proactive_state";
   const SCHEMA = "AlgoliaProactiveDecision.v1";
   const STATE_SCHEMA = "AlgoliaProactiveState.v1";
+  const GREETING_REQUEST_SCHEMA = "ProactiveGreetingRequest.v1";
+  const GREETING_RESPONSE_SCHEMA = "ProactiveGreetingResponse.v1";
+  const COMPLETIONS_COMPATIBILITY_MODE = "ai-sdk-5";
+  const BANNED_GREETING_RE =
+    /\b(I noticed|I saw|based on your browsing|based on your behavior|tracking|telemetry|localStorage|sessionStorage|clickstream|hidden prompt|Agent Studio configuration)\b/i;
+  const UNSUPPORTED_CLAIM_RE =
+    /\b\d+%|\$\d+|\broadmap\b|\bguarantee\b|customer quote|case study:|https?:\/\//i;
 
   const DEFAULTS = {
     enabled: true,
@@ -21,6 +28,9 @@
     pricingDwellMs: 8000,
     customerProofDwellMs: 12000,
     customerProofScrollDepth: 60,
+    compatibilityMode: COMPLETIONS_COMPATIBILITY_MODE,
+    cache: false,
+    memory: false,
   };
 
   let config = { ...DEFAULTS };
@@ -68,10 +78,29 @@
     });
   }
 
+  function updateOpportunity(opportunityId, patch) {
+    const state = readState();
+    const index = state.opportunities.findIndex((item) => item.id === opportunityId);
+    if (index === -1) return false;
+    state.opportunities[index] = {
+      ...state.opportunities[index],
+      ...patch,
+      updatedAt: Date.now(),
+    };
+    writeState(state);
+    return true;
+  }
+
   function compilerPacket() {
     const compiler = window.algoliaContextCompiler;
     if (!compiler || typeof compiler.compile !== "function") return null;
     return compiler.compile();
+  }
+
+  function compilerTurnContext() {
+    const compiler = window.algoliaContextCompiler;
+    if (!compiler || typeof compiler.compileTurnContext !== "function") return {};
+    return compiler.compileTurnContext();
   }
 
   function currentPage(packet) {
@@ -120,6 +149,28 @@
     return events.some((event) => event.name === name);
   }
 
+  function chatElement() {
+    return document.querySelector("algolia-chat");
+  }
+
+  function credentials() {
+    const search = document.querySelector("algolia-instant-search");
+    return {
+      appId: config.appId || search?.getAttribute?.("app-id") || null,
+      apiKey: config.apiKey || config.searchKey || search?.getAttribute?.("api-key") || null,
+      greetingsAgentId: config.greetingsAgentId || config.greetingAgentId || null,
+    };
+  }
+
+  function agentCompletionUrl(agentId, appId) {
+    const params = new URLSearchParams({
+      compatibilityMode: config.compatibilityMode || COMPLETIONS_COMPATIBILITY_MODE,
+      cache: String(config.cache === true),
+      memory: String(config.memory === true),
+    });
+    return `https://${appId}.algolia.net/agent-studio/1/agents/${agentId}/completions?${params.toString()}`;
+  }
+
   function hasSearchWithTerms(events, terms) {
     return events.some((event) => {
       if (event.name !== "site_search") return false;
@@ -148,8 +199,10 @@
       source: "browser_deterministic",
       reasonCodes: [],
       agentPromptPacket: {
+        schema: GREETING_REQUEST_SCHEMA,
         moment: fields.moment,
         trigger: fields.trigger,
+        priority: fields.priority,
         persona: packet?.profile?.persona || null,
         currentPage: page,
         journey: sessionPages(packet).map((item) => ({
@@ -167,6 +220,7 @@
         inferredIntent: packet?.inferences?.intent || null,
         friction: packet?.inferences?.friction || null,
         messageGoal: fields.messageGoal,
+        source: "browser_deterministic",
         tone: "sharp, useful, warm, lightly witty",
         constraints: {
           maxWords: 34,
@@ -420,8 +474,20 @@
     if (reason) return empty(reason);
     if (!reserve) return decision;
 
+    const opportunityId = `opp_${Date.now().toString(16)}_${Math.random().toString(16).slice(2, 8)}`;
+    const requestPacket = {
+      ...decision.agentPromptPacket,
+      schema: GREETING_REQUEST_SCHEMA,
+      opportunityId,
+      createdAt: Date.now(),
+      moment: decision.moment,
+      trigger: decision.trigger,
+      priority: decision.priority,
+      messageGoal: decision.messageGoal,
+      reasonCodes: decision.reasonCodes,
+    };
     const opportunity = {
-      id: `opp_${Date.now().toString(16)}_${Math.random().toString(16).slice(2, 8)}`,
+      id: opportunityId,
       status: "eligible",
       pageId: decision.pageId,
       pagePath: decision.pagePath,
@@ -431,14 +497,183 @@
       messageGoal: decision.messageGoal,
       reasonCodes: decision.reasonCodes,
       createdAt: Date.now(),
+      requestPacket,
     };
     state.opportunities.push(opportunity);
     state.lastOpportunityAt = opportunity.createdAt;
     writeState(state);
-    return { ...decision, opportunityId: opportunity.id };
+    return {
+      ...decision,
+      opportunityId: opportunity.id,
+      agentPromptPacket: requestPacket,
+    };
   }
 
-  function handleSignal(event) {
+  function textFromSse(raw) {
+    if (!String(raw || "").includes("data:")) return raw;
+    let text = "";
+    for (const line of String(raw).split("\n")) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith("data:")) continue;
+      const payload = trimmed.slice(5).trim();
+      if (!payload || payload === "[DONE]") continue;
+      try {
+        const event = JSON.parse(payload);
+        if (event.type === "text-delta" && typeof event.delta === "string") text += event.delta;
+        else if (event.type === "text" && typeof event.text === "string") text += event.text;
+      } catch {
+        // Non-JSON SSE data is ignored; we only trust structured text deltas.
+      }
+    }
+    return text || raw;
+  }
+
+  function extractJsonObject(raw) {
+    const text = textFromSse(raw);
+    if (!text) return null;
+    try {
+      return JSON.parse(text);
+    } catch {
+      const start = text.indexOf("{");
+      const end = text.lastIndexOf("}");
+      if (start === -1 || end === -1 || end <= start) return null;
+      try {
+        return JSON.parse(text.slice(start, end + 1));
+      } catch {
+        return null;
+      }
+    }
+  }
+
+  function wordCount(text) {
+    return String(text || "").trim().split(/\s+/).filter(Boolean).length;
+  }
+
+  function sameHandoffSummary(response, decision) {
+    const summary = response?.handoffSummary || {};
+    return (
+      summary.moment === decision.moment &&
+      summary.trigger === decision.trigger &&
+      summary.messageGoal === decision.messageGoal
+    );
+  }
+
+  function validateGreetingResponse(response, decision) {
+    if (!response || typeof response !== "object") return "invalid_json";
+    if (response.schema !== GREETING_RESPONSE_SCHEMA) return "invalid_schema";
+    if (response.opportunityId !== decision.opportunityId) return "opportunity_mismatch";
+    if (!sameHandoffSummary(response, decision)) return "handoff_summary_mismatch";
+
+    const greeting = typeof response.greeting === "string" ? response.greeting.trim() : "";
+    const greetingWords = wordCount(greeting);
+    if (greetingWords < 12 || greetingWords > 34) return "invalid_greeting_length";
+    if (BANNED_GREETING_RE.test(greeting)) return "telemetry_exposure";
+    if (UNSUPPORTED_CLAIM_RE.test(greeting)) return "unsupported_claim";
+
+    const chips = Array.isArray(response.chips) ? response.chips : [];
+    if (chips.length > 3) return "too_many_chips";
+    for (const chip of chips) {
+      if (typeof chip !== "string" || !chip.trim()) return "invalid_chip";
+      if (wordCount(chip) > 8) return "chip_too_long";
+      if (BANNED_GREETING_RE.test(chip) || UNSUPPORTED_CLAIM_RE.test(chip)) return "invalid_chip";
+    }
+    return null;
+  }
+
+  function renderGreeting(response, decision) {
+    const widget = chatElement();
+    if (!widget || typeof widget.engage !== "function") {
+      updateOpportunity(decision.opportunityId, { status: "widget_unavailable" });
+      return false;
+    }
+    const chips = Array.isArray(response.chips)
+      ? response.chips.map((chip) => chip.trim()).filter(Boolean)
+      : [];
+    const shown = widget.engage({
+      greeting: response.greeting.trim(),
+      suggestions: chips,
+    });
+    updateOpportunity(decision.opportunityId, {
+      status: shown ? "shown" : "render_refused",
+      shownAt: shown ? Date.now() : undefined,
+      greetingResponse: {
+        schema: GREETING_RESPONSE_SCHEMA,
+        opportunityId: response.opportunityId,
+        greeting: response.greeting.trim(),
+        chips,
+        handoffSummary: response.handoffSummary,
+      },
+    });
+    return !!shown;
+  }
+
+  async function requestGreeting(decision) {
+    const { appId, apiKey, greetingsAgentId } = credentials();
+    if (!appId || !apiKey || !greetingsAgentId || typeof fetch !== "function") {
+      debug("greetings agent not configured; emitted opportunity only");
+      return false;
+    }
+
+    updateOpportunity(decision.opportunityId, { status: "greeting_requested" });
+    const body = {
+      id: `alg_cnv_proactive_${decision.opportunityId}`,
+      messages: [
+        {
+          id: `alg_msg_proactive_${decision.opportunityId}`,
+          role: "user",
+          parts: [
+            {
+              type: "text",
+              text: `PROACTIVE_GREETING_REQUEST\n${JSON.stringify(decision.agentPromptPacket)}`,
+            },
+          ],
+          metadata: {
+            turnContext: compilerTurnContext(),
+          },
+        },
+      ],
+    };
+
+    try {
+      const response = await fetch(agentCompletionUrl(greetingsAgentId, appId), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Algolia-Application-Id": appId,
+          "X-Algolia-API-Key": apiKey,
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        updateOpportunity(decision.opportunityId, {
+          status: "greeting_failed",
+          failureReason: `http_${response.status}`,
+        });
+        return false;
+      }
+
+      const parsed = extractJsonObject(await response.text());
+      const validationError = validateGreetingResponse(parsed, decision);
+      if (validationError) {
+        updateOpportunity(decision.opportunityId, {
+          status: "greeting_rejected",
+          failureReason: validationError,
+          rejectedGreetingResponse: parsed || null,
+        });
+        return false;
+      }
+
+      return renderGreeting(parsed, decision);
+    } catch (error) {
+      updateOpportunity(decision.opportunityId, {
+        status: "greeting_failed",
+        failureReason: error instanceof Error ? error.message : String(error),
+      });
+      return false;
+    }
+  }
+
+  async function handleSignal(event) {
     const name = event?.detail?.name;
     if (!name || name === "nav_hover" || name === "hover") return;
 
@@ -454,6 +689,7 @@
         detail: decision,
       })
     );
+    await requestGreeting(decision);
   }
 
   function debugState() {

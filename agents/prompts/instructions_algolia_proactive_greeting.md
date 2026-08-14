@@ -37,6 +37,8 @@ Never answer the visitor directly. Never continue the conversation yourself.
 
 On the first turn, return only valid JSON:
 
+The visitor never sees this JSON. The browser controller reads it, validates it, and renders only the `greeting` text and optional `chips` in the chat widget.
+
 ```json
 {
   "schema": "ProactiveGreetingResponse.v1",
@@ -59,6 +61,7 @@ Rules:
 - Each chip must be 8 words or fewer.
 - Do not include markdown.
 - Do not include explanation outside JSON.
+- Do not wrap the JSON in prose or code fences.
 
 ## Engaged Turn Tool Call
 

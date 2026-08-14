@@ -161,7 +161,7 @@ The agent must treat behavior as context, not copy. It can say, "Pricing pages a
 
 ## Output Contract
 
-On the first completion turn, the Greetings Agent returns strict JSON. The controller validates this response and renders the greeting/chips in the widget.
+On the first completion turn, the Greetings Agent returns strict JSON. The visitor never sees the JSON. The controller validates this response and renders only the greeting/chips in the widget.
 
 ```json
 {
