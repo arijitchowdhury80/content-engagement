@@ -1,0 +1,20 @@
+{
+  "capturedAt": "2026-08-14T05:29:01.742Z",
+  "pageUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations?algoliaContextDebug=1",
+  "storedEventNames": [
+    "page_view",
+    "page_dwell",
+    "page_dwell",
+    "nav_click",
+    "nav_hover"
+  ],
+  "compiledEventNames": [
+    "page_view",
+    "page_dwell",
+    "page_dwell",
+    "nav_click"
+  ],
+  "recentEventsContext": "page_view:/products/ai-recommendations | page_dwell:/products/ai-recommendations | page_dwell:/products/ai-recommendations | nav_click:Products",
+  "hasHoverInCompiled": false,
+  "hasNavClickInCompiled": true
+}

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Deploy the engagement tracker assets to the Jahia dev surface.
+"""Deploy the visitor intelligence assets to the Jahia dev surface.
 
-This is intentionally narrow: it updates only the tracker asset, the proactive
-engage asset, and the Drift custom-code block script reference.
+This is intentionally narrow: it updates only the tracker asset, the context
+compiler asset, the engage asset, and the Drift custom-code block script references.
 """
 
 from __future__ import annotations
@@ -25,12 +25,15 @@ BLOCK_PATH = "/sites/www/home/drift/custom-code-block"
 FILES_PATH = "/sites/www/files"
 OLD_TRACKER = "/sites/www/files/algolia-chat-tracker.js"
 NEW_TRACKER = "/sites/www/files/algolia-engagement-tracker.js"
+CONTEXT_COMPILER = "/sites/www/files/algolia-context-compiler.js"
 ENGAGE = "/sites/www/files/algolia-chat-engage.js"
 TRACKER_SRC = ROOT / "frontend/chat-widget/algolia-engagement-tracker.js"
+CONTEXT_COMPILER_SRC = ROOT / "frontend/chat-widget/algolia-context-compiler.js"
 ENGAGE_SRC = ROOT / "frontend/chat-widget/algolia-chat-engage.js"
 EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260814"
-TRACKER_VERSION = "20260814c"
-ENGAGE_VERSION = "20260814c"
+TRACKER_VERSION = "20260814d"
+CONTEXT_COMPILER_VERSION = "20260814a"
+ENGAGE_VERSION = "20260814d"
 
 
 def load_token() -> str:
@@ -117,17 +120,20 @@ def snapshot() -> dict:
         "capturedAt": datetime.now(timezone.utc).isoformat(),
         "target": BLOCK_PATH,
         "trackerVersion": TRACKER_VERSION,
+        "contextCompilerVersion": CONTEXT_COMPILER_VERSION,
         "engageVersion": ENGAGE_VERSION,
         "edit": {
             "blockHtml": block_html("EDIT"),
             "oldTrackerNode": node(OLD_TRACKER, "EDIT"),
             "newTrackerNode": node(NEW_TRACKER, "EDIT"),
+            "contextCompilerNode": node(CONTEXT_COMPILER, "EDIT"),
             "engageNode": node(ENGAGE, "EDIT"),
         },
         "live": {
             "blockHtml": block_html("LIVE"),
             "oldTrackerNode": node(OLD_TRACKER, "LIVE"),
             "newTrackerNode": node(NEW_TRACKER, "LIVE"),
+            "contextCompilerNode": node(CONTEXT_COMPILER, "LIVE"),
             "engageNode": node(ENGAGE, "LIVE"),
         },
     }
@@ -192,6 +198,10 @@ def update_block_html(current: str) -> str:
         '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
         f'algolia-engagement-tracker.js?tracker={TRACKER_VERSION}"></script>'
     )
+    context_compiler_tag = (
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-context-compiler.js?context={CONTEXT_COMPILER_VERSION}"></script>'
+    )
     engage_tag = (
         '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
         f'algolia-chat-engage.js?engage={ENGAGE_VERSION}"></script>'
@@ -206,8 +216,18 @@ def update_block_html(current: str) -> str:
         engage_tag,
         next_html,
     )
+    next_html = re.sub(
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-context-compiler\.js(?:\?[^"]*)?"></script>',
+        context_compiler_tag,
+        next_html,
+    )
     if "algolia-engagement-tracker.js" not in next_html:
         next_html = next_html.replace(engage_tag, tracker_tag + "\n" + engage_tag)
+    if "algolia-context-compiler.js" not in next_html:
+        if tracker_tag in next_html:
+            next_html = next_html.replace(tracker_tag, tracker_tag + "\n" + context_compiler_tag)
+        else:
+            next_html = next_html.replace(engage_tag, context_compiler_tag + "\n" + engage_tag)
     return next_html
 
 
@@ -257,21 +277,37 @@ def delete_old_tracker() -> dict:
 def validate(snapshot_after: dict) -> dict:
     live_html = snapshot_after["live"]["blockHtml"]
     live_tracker = snapshot_after["live"]["newTrackerNode"]
+    live_context_compiler = snapshot_after["live"]["contextCompilerNode"]
     live_engage = snapshot_after["live"]["engageNode"]
     live_old_tracker = snapshot_after["live"]["oldTrackerNode"]
     edit_old_tracker = snapshot_after["edit"]["oldTrackerNode"]
     checks = {
         "liveHtmlReferencesNewTracker": "algolia-engagement-tracker.js" in live_html,
         "liveHtmlReferencesTrackerVersion": f"tracker={TRACKER_VERSION}" in live_html,
+        "liveHtmlReferencesContextCompiler": "algolia-context-compiler.js" in live_html,
+        "liveHtmlReferencesContextCompilerVersion": f"context={CONTEXT_COMPILER_VERSION}" in live_html,
         "liveHtmlReferencesEngageVersion": f"engage={ENGAGE_VERSION}" in live_html,
         "liveHtmlOmitsOldTracker": "algolia-chat-tracker.js" not in live_html,
         "liveNewTrackerExists": live_tracker is not None,
+        "liveContextCompilerExists": live_context_compiler is not None,
         "liveEngageExists": live_engage is not None,
         "oldTrackerAbsentFromEdit": edit_old_tracker is None,
         "oldTrackerAbsentFromLive": live_old_tracker is None,
     }
     checks["pass"] = all(checks.values())
     return checks
+
+
+def edit_has_expected_html(snapshot_after: dict) -> bool:
+    edit_html = snapshot_after["edit"]["blockHtml"]
+    return all(
+        [
+            f"tracker={TRACKER_VERSION}" in edit_html,
+            "algolia-context-compiler.js" in edit_html,
+            f"context={CONTEXT_COMPILER_VERSION}" in edit_html,
+            f"engage={ENGAGE_VERSION}" in edit_html,
+        ]
+    )
 
 
 def main() -> int:
@@ -285,31 +321,39 @@ def main() -> int:
     current_html = before["edit"]["blockHtml"]
     next_html = update_block_html(current_html)
     tracker_content = TRACKER_SRC.read_text(encoding="utf-8")
+    context_compiler_content = CONTEXT_COMPILER_SRC.read_text(encoding="utf-8")
     engage_content = ENGAGE_SRC.read_text(encoding="utf-8")
     plan = {
         "target": {
             "block": BLOCK_PATH,
             "newTracker": NEW_TRACKER,
+            "contextCompiler": CONTEXT_COMPILER,
             "oldTracker": OLD_TRACKER,
             "engage": ENGAGE,
         },
         "current": {
             "oldTrackerReferenced": "algolia-chat-tracker.js" in current_html,
             "newTrackerReferenced": "algolia-engagement-tracker.js" in current_html,
+            "contextCompilerReferenced": "algolia-context-compiler.js" in current_html,
             "releaseMarkers": re.findall(r'data-release="([^"]+)"', current_html),
             "newTrackerExists": before["edit"]["newTrackerNode"] is not None,
+            "contextCompilerExists": before["edit"]["contextCompilerNode"] is not None,
         },
         "intended": {
             "oldTrackerReferenced": False,
             "newTrackerReferenced": True,
+            "contextCompilerReferenced": True,
             "trackerVersion": TRACKER_VERSION,
+            "contextCompilerVersion": CONTEXT_COMPILER_VERSION,
             "engageVersion": ENGAGE_VERSION,
             "trackerSha256": sha256(tracker_content),
+            "contextCompilerSha256": sha256(context_compiler_content),
             "engageSha256": sha256(engage_content),
         },
         "rollback": {
             "restoreBlockHtmlFrom": str(EVIDENCE_DIR / "before-snapshot.json"),
             "restoreOldTrackerFrom": "before-snapshot.json edit.oldTrackerNode children[0].properties[jcr:data]",
+            "restoreOrRemoveContextCompilerFrom": "before-snapshot.json edit.contextCompilerNode children[0].properties[jcr:data]",
             "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]",
         },
     }
@@ -321,10 +365,12 @@ def main() -> int:
 
     mutations = {
         "upsertNewTracker": upsert_file(NEW_TRACKER, tracker_content),
+        "upsertContextCompiler": upsert_file(CONTEXT_COMPILER, context_compiler_content),
         "upsertEngage": upsert_file(ENGAGE, engage_content),
         "setBlockHtml": set_block_html(next_html),
         "deleteOldTrackerEdit": delete_old_tracker(),
         "publishNewTracker": publish(NEW_TRACKER),
+        "publishContextCompiler": publish(CONTEXT_COMPILER),
         "publishEngage": publish(ENGAGE),
         "publishFilesSubtree": publish(FILES_PATH, subtree=True),
         "publishDriftSubtree": publish("/sites/www/home/drift", subtree=True),
@@ -342,8 +388,16 @@ def main() -> int:
     }
     write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
     after = snapshot()
-    write_json(EVIDENCE_DIR / "after-readback.json", after)
     checks = validate(after)
+    if not checks["pass"] and edit_has_expected_html(after):
+        mutations["republishDriftSubtreeAfterStaleLiveReadback"] = publish(
+            "/sites/www/home/drift", subtree=True
+        )
+        mutations["republishBlockAfterStaleLiveReadback"] = publish(BLOCK_PATH, subtree=True)
+        after = snapshot()
+        checks = validate(after)
+        write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
+    write_json(EVIDENCE_DIR / "after-readback.json", after)
     write_json(EVIDENCE_DIR / "deployment-validation.json", checks)
     print(json.dumps(checks, indent=2))
     return 0 if checks["pass"] else 1

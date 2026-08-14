@@ -1,0 +1,116 @@
+{
+  "capturedAt": "2026-08-14T05:28:45.627Z",
+  "pageUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations?algoliaContextDebug=1",
+  "pageTitle": "AI recommendation engine for products and content | Algolia",
+  "scripts": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/header.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codeExchangeSearch.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/generated-resources/e849456d451f92345b21d8c310a1b6c5.min.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/CsrfServlet",
+    "https://cdn.jsdelivr.net/npm/algoliasearch@5.29.0/dist/lite/builds/browser.umd.js",
+    "https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=20260814-empty-final-guard-d",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260814d",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260814a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260814d",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/anonymousUser.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/hideBlankTag.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/bannerAnimation.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/startupsTracking.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/jquery.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/slick.min.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/accordion.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/customslick.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/prism.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/theme.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/requestDemoModal.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codepen.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/forrester.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/blogNavigation.js"
+  ],
+  "hasTracker": true,
+  "hasCompiler": true,
+  "localKeys": [
+    "acs_events",
+    "acs_profile",
+    "acs_session",
+    "algolia-client-js-5.29.0-1QDAWL72TQ",
+    "algolia_profile"
+  ],
+  "sessionKeys": [
+    "algolia_events",
+    "algolia_session",
+    "algolia_token"
+  ],
+  "profileSchema": "AlgoliaEngagementProfile.v1",
+  "sessionSchema": "AlgoliaEngagementSession.v1",
+  "eventsSchema": "AlgoliaEngagementEvents.v1",
+  "turnContext": {
+    "context_schema": "AlgoliaTurnContext.v1",
+    "persona": "inferred:merchandiser:0.56",
+    "current_page": "/products/ai-recommendations",
+    "current_page_group": "product",
+    "current_topic": "observed:ai_search",
+    "current_dwell_seconds": "10",
+    "current_scroll_depth": "0",
+    "session_page_count": "1",
+    "recent_events": "page_view:/products/ai-recommendations | page_dwell:/products/ai-recommendations | page_dwell:/products/ai-recommendations",
+    "intent": "inferred:ai_recommendations_evaluation:0.72",
+    "friction": "inferred:fit_and_value_unclear:0.62",
+    "next_best_action": "inferred:explain_feature_fit_with_example:0.66",
+    "instruction": "Use confirmed/observed context as context, phrase inferred context softly, never expose telemetry."
+  },
+  "compiled": {
+    "schema": "AlgoliaContextPacket.v1",
+    "currentPage": {
+      "pageId": "page_bde6143fd5e32c1f810288bb",
+      "path": "/products/ai-recommendations",
+      "title": "AI recommendation engine for products and content | Algolia",
+      "pageGroup": "product",
+      "topic": "ai_search",
+      "dwellMs": 10001,
+      "maxScrollDepth": 0
+    },
+    "intent": {
+      "value": "ai_recommendations_evaluation",
+      "state": "inferred",
+      "confidence": 0.72,
+      "evidence": [
+        "current_page:AI recommendation engine for products and content | Algolia /products/ai-recommendations ai_search",
+        "page_dwell:/products/ai-recommendations",
+        "page_dwell:/products/ai-recommendations",
+        "page_view:/products/ai-recommendations"
+      ]
+    },
+    "persona": {
+      "value": "merchandiser",
+      "state": "inferred",
+      "confidence": 0.56,
+      "source": "behavior"
+    },
+    "recentEventNames": [
+      "page_view",
+      "page_dwell",
+      "page_dwell"
+    ]
+  },
+  "injectedTurnContext": {
+    "context_schema": "AlgoliaTurnContext.v1",
+    "persona": "inferred:merchandiser:0.56",
+    "current_page": "/products/ai-recommendations",
+    "current_page_group": "product",
+    "current_topic": "observed:ai_search",
+    "current_dwell_seconds": "10",
+    "current_scroll_depth": "0",
+    "session_page_count": "1",
+    "recent_events": "page_view:/products/ai-recommendations | page_dwell:/products/ai-recommendations | page_dwell:/products/ai-recommendations",
+    "intent": "inferred:ai_recommendations_evaluation:0.72",
+    "friction": "inferred:fit_and_value_unclear:0.62",
+    "next_best_action": "inferred:explain_feature_fit_with_example:0.66",
+    "instruction": "Use confirmed/observed context as context, phrase inferred context softly, never expose telemetry."
+  }
+}

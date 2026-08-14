@@ -1,0 +1,542 @@
+(function () {
+  "use strict";
+
+  const LABEL = "[Algolia Context Compiler]";
+  const DEBUG =
+    new URLSearchParams(location.search).get("algoliaChatDebug") === "1" ||
+    new URLSearchParams(location.search).get("algoliaContextDebug") === "1";
+
+  const PROFILE_KEY = "algolia_profile";
+  const SESSION_KEY = "algolia_session";
+  const EVENTS_KEY = "algolia_events";
+
+  const PACKET_SCHEMA = "AlgoliaContextPacket.v1";
+  const MAX_RECENT_EVENTS = 15;
+  const MAX_TURN_CONTEXT_KEYS = 32;
+  const MAX_TURN_CONTEXT_BYTES = 4096;
+  const MAX_TURN_CONTEXT_VALUE_BYTES = 1024;
+  const AGENT_STUDIO_COMPLETIONS_RE = /\/agent-studio\/1\/agents\/[^/]+\/completions/;
+  const SENSITIVE_PROP_RE =
+    /email|phone|password|passwd|token|secret|api[_-]?key|credential|name|company|value/i;
+  const REDACT_EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
+  const REDACT_PHONE_RE = /\b(?:\+?\d[\d .()/-]{7,}\d)\b/g;
+
+  let config = {
+    autoInstallFetchInterceptor: true,
+    maxRecentEvents: MAX_RECENT_EVENTS,
+  };
+  let originalFetch = null;
+  let patchedFetch = null;
+
+  function debugLog(...args) {
+    if (DEBUG) console.log(LABEL, ...args);
+  }
+
+  function configure(nextConfig) {
+    config = { ...config, ...(nextConfig || {}) };
+  }
+
+  function readJson(storage, key, fallback) {
+    try {
+      const raw = storage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function rawSnapshot() {
+    return {
+      profile: readJson(localStorage, PROFILE_KEY, null),
+      session: readJson(sessionStorage, SESSION_KEY, null),
+      eventsEnvelope: readJson(sessionStorage, EVENTS_KEY, { events: [] }),
+    };
+  }
+
+  function byteLength(value) {
+    const text = String(value);
+    try {
+      return new TextEncoder().encode(text).length;
+    } catch {
+      return text.length;
+    }
+  }
+
+  function clampText(value, maxLength = 180) {
+    if (value === undefined || value === null) return undefined;
+    const clean = String(value)
+      .replace(REDACT_EMAIL_RE, "[redacted-email]")
+      .replace(REDACT_PHONE_RE, "[redacted-phone]")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (!clean) return undefined;
+    return clean.length > maxLength ? `${clean.slice(0, maxLength - 1)}...` : clean;
+  }
+
+  function sanitizeProps(props) {
+    const clean = {};
+    for (const [key, value] of Object.entries(props || {})) {
+      if (SENSITIVE_PROP_RE.test(key)) continue;
+      if (value === undefined || value === null) continue;
+      if (typeof value === "string") clean[key] = clampText(value);
+      else if (typeof value === "number" || typeof value === "boolean") clean[key] = value;
+      else if (Array.isArray(value)) clean[key] = value.slice(0, 8).map((item) => clampText(item));
+      else if (typeof value === "object") clean[key] = sanitizeProps(value);
+    }
+    return clean;
+  }
+
+  function currentPath() {
+    try {
+      return location.pathname || "/";
+    } catch {
+      return "/";
+    }
+  }
+
+  function normalizeEvents(eventsEnvelope) {
+    const events = Array.isArray(eventsEnvelope?.events) ? eventsEnvelope.events : [];
+    return events
+      .filter((event) => event && event.name !== "nav_hover" && event.name !== "hover")
+      .map((event) => ({
+        eventId: clampText(event.eventId, 80),
+        name: clampText(event.name, 80),
+        ts: Number.isFinite(event.ts) ? event.ts : 0,
+        pageId: clampText(event.pageId, 80),
+        path: clampText(event.path, 160),
+        source: event.source === "inferred" ? "inferred" : "observed",
+        props: sanitizeProps(event.props),
+      }))
+      .filter((event) => event.name)
+      .sort((a, b) => a.ts - b.ts);
+  }
+
+  function classifyPath(path = currentPath(), title = "") {
+    const text = `${path} ${title}`.toLowerCase();
+    if (text.includes("/pricing")) return { pageGroup: "pricing", topic: "pricing_and_usage" };
+    if (text.includes("/demo") || text.includes("contact-sales")) {
+      return { pageGroup: "conversion", topic: "demo_request" };
+    }
+    if (text.includes("/customers")) return { pageGroup: "customer_story", topic: topicFromText(text, "customer_proof") };
+    if (text.includes("/doc/") || text.includes("/docs") || text.includes("/api")) {
+      return { pageGroup: "documentation", topic: topicFromText(text, "implementation") };
+    }
+    if (text.includes("/developers") || text.includes("/developer")) {
+      return { pageGroup: "developer", topic: topicFromText(text, "developer_experience") };
+    }
+    if (text.includes("/products")) return { pageGroup: "product", topic: topicFromText(text, "product_research") };
+    if (text.includes("/industries") || text.includes("/solutions")) {
+      return { pageGroup: "solution", topic: topicFromText(text, "industry_solution") };
+    }
+    if (text.includes("/blog") || text.includes("/resources")) return { pageGroup: "resource", topic: topicFromText(text, "education") };
+    return { pageGroup: "other", topic: topicFromText(text, "general") };
+  }
+
+  function topicFromText(text, fallback) {
+    if (/react[-\s]?instantsearch|instantsearch/.test(text)) return "instantsearch_implementation";
+    if (/recommend|personalization|ai search|neural|semantic/.test(text)) return "ai_search";
+    if (/api|sdk|integration|implementation|developer|doc/.test(text)) return "implementation";
+    if (/pricing|cost|usage|rate|api call|request/.test(text)) return "pricing_and_usage";
+    if (/fashion|retail|ecommerce|commerce|merchandising/.test(text)) return "commerce";
+    if (/customer|case stud|roi|conversion|revenue/.test(text)) return "customer_proof";
+    if (/marketplace/.test(text)) return "marketplace";
+    return fallback;
+  }
+
+  function findCurrentPage(session) {
+    const pages = Array.isArray(session?.pages) ? session.pages : [];
+    return (
+      pages.find((page) => page.pageId && page.pageId === session?.currentPageId) ||
+      [...pages].reverse().find((page) => page.path === currentPath()) ||
+      pages.at(-1) ||
+      {
+        pageId: null,
+        path: currentPath(),
+        title: typeof document !== "undefined" ? document.title : "",
+        pageGroup: classifyPath().pageGroup,
+        topic: classifyPath().topic,
+      }
+    );
+  }
+
+  function scoreFromSignals({ currentPage, recentEvents }) {
+    const text = [
+      currentPage?.path,
+      currentPage?.title,
+      currentPage?.pageGroup,
+      currentPage?.topic,
+      ...recentEvents.map((event) => [
+        event.name,
+        event.path,
+        event.props?.label,
+        event.props?.query,
+        event.props?.topic,
+        event.props?.pageGroup,
+      ].filter(Boolean).join(" ")),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    const recentNames = new Set(recentEvents.slice(-6).map((event) => event.name));
+    const hasRecentDemoSignal =
+      recentNames.has("cta_click") ||
+      recentNames.has("form_attempt") ||
+      recentNames.has("form_success") ||
+      text.includes("contact sales") ||
+      text.includes("demo");
+    const currentPageGroup = currentPage?.pageGroup || classifyPath(currentPage?.path, currentPage?.title).pageGroup;
+    const isCommercialPage = currentPageGroup === "pricing" || currentPageGroup === "conversion";
+
+    if (/recommend|personalization|ai search|neural|semantic/.test(text) && !hasRecentDemoSignal && !isCommercialPage) {
+      const pricingFriction = /pricing|cost|usage|api call|rate/.test(text);
+      return {
+        intent: {
+          value: "ai_recommendations_evaluation",
+          state: "inferred",
+          confidence: 0.72,
+          evidence: evidenceFor(recentEvents, currentPage, ["recommend", "personalization", "ai_search", "site_search", "nav_click"]),
+        },
+        friction: {
+          value: pricingFriction ? "pricing_or_cost_unclear" : "fit_and_value_unclear",
+          state: "inferred",
+          confidence: pricingFriction ? 0.68 : 0.62,
+          evidence: evidenceFor(recentEvents, currentPage, ["implementation", "api", "pricing", "cost", "site_search"]),
+        },
+        nextBestAction: {
+          value: "explain_feature_fit_with_example",
+          state: "inferred",
+          confidence: 0.66,
+        },
+      };
+    }
+
+    if (hasRecentDemoSignal || isCommercialPage || /pricing|cost|usage|api call|rate/.test(text)) {
+      return {
+        intent: {
+          value: "pricing_or_demo_evaluation",
+          state: "inferred",
+          confidence: 0.74,
+          evidence: evidenceFor(recentEvents, currentPage, ["pricing", "cost", "demo", "cta_click", "site_search"]),
+        },
+        friction: {
+          value: "pricing_or_cost_unclear",
+          state: "inferred",
+          confidence: 0.68,
+          evidence: evidenceFor(recentEvents, currentPage, ["pricing", "cost", "api call", "rate", "site_search"]),
+        },
+        nextBestAction: {
+          value: "answer_cost_or_route_to_demo",
+          state: "inferred",
+          confidence: 0.7,
+        },
+      };
+    }
+
+    if (/developer|implementation|instantsearch|api|sdk|doc/.test(text)) {
+      return {
+        intent: {
+          value: "implementation_research",
+          state: "inferred",
+          confidence: 0.69,
+          evidence: evidenceFor(recentEvents, currentPage, ["developer", "implementation", "instantsearch", "api", "sdk"]),
+        },
+        friction: {
+          value: "development_effort_unclear",
+          state: "inferred",
+          confidence: 0.64,
+          evidence: evidenceFor(recentEvents, currentPage, ["implementation", "api", "sdk", "doc"]),
+        },
+        nextBestAction: {
+          value: "answer_implementation_path",
+          state: "inferred",
+          confidence: 0.66,
+        },
+      };
+    }
+
+    return {
+      intent: {
+        value: "general_algolia_research",
+        state: "inferred",
+        confidence: 0.45,
+        evidence: evidenceFor(recentEvents, currentPage, []),
+      },
+      friction: {
+        value: "question_behind_question_unknown",
+        state: "inferred",
+        confidence: 0.38,
+        evidence: [],
+      },
+      nextBestAction: {
+        value: "answer_then_ask_discovery_question",
+        state: "inferred",
+        confidence: 0.44,
+      },
+    };
+  }
+
+  function evidenceFor(events, currentPage, terms) {
+    const evidence = [];
+    const pageText = [currentPage?.title, currentPage?.path, currentPage?.topic].filter(Boolean).join(" ");
+    if (pageText) evidence.push(`current_page:${clampText(pageText, 120)}`);
+    const loweredTerms = terms.map((term) => term.toLowerCase());
+    for (const event of [...events].reverse()) {
+      const eventText = JSON.stringify({ name: event.name, path: event.path, props: event.props }).toLowerCase();
+      if (!loweredTerms.length || loweredTerms.some((term) => eventText.includes(term))) {
+        evidence.push(`${event.name}:${clampText(event.props?.label || event.props?.query || event.path, 120)}`);
+      }
+      if (evidence.length >= 4) break;
+    }
+    return evidence;
+  }
+
+  function inferPersona(profile, recentEvents, currentPage) {
+    const confirmed = profile?.persona;
+    if (confirmed?.value) {
+      return {
+        value: clampText(confirmed.value, 60),
+        state: confirmed.state === "confirmed" ? "confirmed" : "observed",
+        source: clampText(confirmed.source || "profile", 80),
+      };
+    }
+
+    const text = [
+      currentPage?.path,
+      currentPage?.title,
+      currentPage?.pageGroup,
+      currentPage?.topic,
+      ...recentEvents.map((event) => JSON.stringify({ name: event.name, props: event.props })),
+    ].join(" ").toLowerCase();
+
+    if (/developer|doc|api|sdk|implementation|instantsearch/.test(text)) {
+      return { value: "developer", state: "inferred", confidence: 0.66, source: "behavior" };
+    }
+    if (/pricing|roi|customer|case stud|executive|value/.test(text)) {
+      return { value: "executive", state: "inferred", confidence: 0.58, source: "behavior" };
+    }
+    if (/fashion|retail|merchandising|recommend|personalization|commerce/.test(text)) {
+      return { value: "merchandiser", state: "inferred", confidence: 0.56, source: "behavior" };
+    }
+    return { value: "unknown", state: "unknown", confidence: 0, source: "insufficient_signal" };
+  }
+
+  function summarizeEvents(events) {
+    const counts = {};
+    for (const event of events) counts[event.name] = (counts[event.name] || 0) + 1;
+    return counts;
+  }
+
+  function compile() {
+    const raw = rawSnapshot();
+    const profile = raw.profile || {};
+    const session = raw.session || {};
+    const events = normalizeEvents(raw.eventsEnvelope);
+    const maxRecentEvents = Number.isFinite(config.maxRecentEvents)
+      ? config.maxRecentEvents
+      : MAX_RECENT_EVENTS;
+    const recentEvents = events.slice(-maxRecentEvents);
+    const currentPage = findCurrentPage(session);
+    const classifiedPage = {
+      ...classifyPath(currentPage?.path, currentPage?.title),
+      ...currentPage,
+    };
+    const persona = inferPersona(profile, recentEvents, classifiedPage);
+    const inferences = scoreFromSignals({ currentPage: classifiedPage, recentEvents });
+
+    return {
+      schema: PACKET_SCHEMA,
+      compiledAt: Date.now(),
+      profile: {
+        visitorId: clampText(profile.visitorId, 80),
+        visits: Number.isFinite(profile.visits) ? profile.visits : undefined,
+        persona,
+      },
+      session: {
+        sessionId: clampText(session.sessionId, 80),
+        startedAt: session.startedAt,
+        pageCount: Array.isArray(session.pages) ? session.pages.length : 0,
+        engagementHistory: Array.isArray(session.engagementHistory)
+          ? session.engagementHistory.slice(-5).map((item) => ({
+              id: clampText(item.id, 80),
+              messageGoal: clampText(item.messageGoal, 100),
+              shownAt: item.shownAt,
+              status: clampText(item.status, 80),
+            }))
+          : [],
+      },
+      currentPage: {
+        pageId: clampText(classifiedPage.pageId, 80),
+        path: clampText(classifiedPage.path || currentPath(), 160),
+        title: clampText(classifiedPage.title, 160),
+        pageGroup: clampText(classifiedPage.pageGroup, 80),
+        topic: clampText(classifiedPage.topic, 80),
+        dwellMs: Number.isFinite(classifiedPage.dwellMs) ? classifiedPage.dwellMs : 0,
+        maxScrollDepth: Number.isFinite(classifiedPage.maxScrollDepth) ? classifiedPage.maxScrollDepth : 0,
+      },
+      observedSignals: {
+        currentTopic: {
+          value: clampText(classifiedPage.topic || "general", 80),
+          state: "observed",
+          source: "current_page",
+        },
+        eventCounts: summarizeEvents(events),
+      },
+      recentEvents,
+      inferences: {
+        persona,
+        ...inferences,
+      },
+    };
+  }
+
+  function inferenceValue(signal) {
+    if (!signal?.value) return undefined;
+    if (signal.state === "inferred") {
+      const confidence = Number.isFinite(signal.confidence)
+        ? Math.round(signal.confidence * 100) / 100
+        : 0;
+      return `inferred:${signal.value}:${confidence}`;
+    }
+    return `${signal.state || "observed"}:${signal.value}`;
+  }
+
+  function compileTurnContext() {
+    const packet = compile();
+    const recentEventSummary = packet.recentEvents
+      .slice(-8)
+      .map((event) => `${event.name}:${event.props?.label || event.props?.query || event.path || ""}`)
+      .join(" | ");
+    const priorEngagements = packet.session.engagementHistory
+      .map((item) => `${item.messageGoal}:${item.status}`)
+      .join(" | ");
+
+    const context = {
+      context_schema: "AlgoliaTurnContext.v1",
+      persona: inferenceValue(packet.profile.persona),
+      current_page: packet.currentPage.path,
+      current_page_group: packet.currentPage.pageGroup,
+      current_topic: inferenceValue(packet.observedSignals.currentTopic),
+      current_dwell_seconds: String(Math.round((packet.currentPage.dwellMs || 0) / 1000)),
+      current_scroll_depth: String(packet.currentPage.maxScrollDepth || 0),
+      session_page_count: String(packet.session.pageCount || 0),
+      recent_events: recentEventSummary,
+      prior_engagements: priorEngagements || undefined,
+      intent: inferenceValue(packet.inferences.intent),
+      friction: inferenceValue(packet.inferences.friction),
+      next_best_action: inferenceValue(packet.inferences.nextBestAction),
+      instruction:
+        "Use confirmed/observed context as context, phrase inferred context softly, never expose telemetry.",
+    };
+
+    return enforceTurnContextLimits(context);
+  }
+
+  function enforceTurnContextLimits(input) {
+    const output = {};
+    for (const [key, value] of Object.entries(input)) {
+      if (!/^[a-zA-Z0-9_.-]{1,64}$/.test(key)) continue;
+      if (value === undefined || value === null) continue;
+      let text = clampText(String(value), 1000);
+      if (!text) continue;
+      while (byteLength(text) > MAX_TURN_CONTEXT_VALUE_BYTES) {
+        text = text.slice(0, Math.max(1, text.length - 20));
+      }
+      output[key] = text;
+      if (Object.keys(output).length >= MAX_TURN_CONTEXT_KEYS) break;
+      if (byteLength(JSON.stringify(output)) > MAX_TURN_CONTEXT_BYTES) {
+        delete output[key];
+        break;
+      }
+    }
+    return output;
+  }
+
+  function isAgentStudioCompletion(url) {
+    try {
+      const text = typeof url === "string" ? url : url?.url || "";
+      return AGENT_STUDIO_COMPLETIONS_RE.test(text);
+    } catch {
+      return false;
+    }
+  }
+
+  function injectTurnContextIntoBody(body) {
+    if (typeof body !== "string") return body;
+    let payload;
+    try {
+      payload = JSON.parse(body);
+    } catch {
+      return body;
+    }
+    if (!Array.isArray(payload.messages)) return body;
+
+    const index = [...payload.messages].map((message, i) => ({ message, i }))
+      .reverse()
+      .find(({ message }) => message?.role === "user")?.i;
+    if (index === undefined) return body;
+
+    const turnContext = compileTurnContext();
+    payload.messages[index] = {
+      ...payload.messages[index],
+      metadata: {
+        ...(payload.messages[index].metadata || {}),
+        turnContext: {
+          ...(payload.messages[index].metadata?.turnContext || {}),
+          ...turnContext,
+        },
+      },
+    };
+    debugLog("injected turnContext", turnContext);
+    return JSON.stringify(payload);
+  }
+
+  function installFetchInterceptor() {
+    if (typeof window.fetch !== "function") return false;
+    if (patchedFetch && window.fetch === patchedFetch) return false;
+    originalFetch = window.fetch;
+    patchedFetch = function algoliaContextFetch(input, init = {}) {
+      if (!isAgentStudioCompletion(input)) {
+        return originalFetch.apply(this, arguments);
+      }
+      const nextInit = { ...(init || {}) };
+      nextInit.body = injectTurnContextIntoBody(nextInit.body);
+      return originalFetch.call(this, input, nextInit);
+    };
+    window.fetch = patchedFetch;
+    return true;
+  }
+
+  function uninstallFetchInterceptor() {
+    if (!originalFetch || !patchedFetch) return false;
+    window.fetch = originalFetch;
+    originalFetch = null;
+    patchedFetch = null;
+    return true;
+  }
+
+  function debug() {
+    const raw = rawSnapshot();
+    const compiled = compile();
+    const turnContext = compileTurnContext();
+    const result = { raw, compiled, turnContext };
+    debugLog("debug", result);
+    return result;
+  }
+
+  const api = {
+    configure,
+    compile,
+    compileTurnContext,
+    debug,
+    installFetchInterceptor,
+    uninstallFetchInterceptor,
+    _injectTurnContextIntoBody: injectTurnContextIntoBody,
+  };
+
+  window.algoliaContextCompiler = api;
+
+  if (config.autoInstallFetchInterceptor) {
+    installFetchInterceptor();
+  }
+})();

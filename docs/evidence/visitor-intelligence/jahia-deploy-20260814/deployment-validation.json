@@ -1,9 +1,12 @@
 {
   "liveHtmlReferencesNewTracker": true,
   "liveHtmlReferencesTrackerVersion": true,
+  "liveHtmlReferencesContextCompiler": true,
+  "liveHtmlReferencesContextCompilerVersion": true,
   "liveHtmlReferencesEngageVersion": true,
   "liveHtmlOmitsOldTracker": true,
   "liveNewTrackerExists": true,
+  "liveContextCompilerExists": true,
   "liveEngageExists": true,
   "oldTrackerAbsentFromEdit": true,
   "oldTrackerAbsentFromLive": true,
