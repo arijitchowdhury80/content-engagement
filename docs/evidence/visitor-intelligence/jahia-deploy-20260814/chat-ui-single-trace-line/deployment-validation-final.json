@@ -1,0 +1,22 @@
+{
+  "release": "chat-ui-single-trace-line-20260814a",
+  "themeVersion": "20260814-chat-ui-single-trace-line-a",
+  "themeUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia.js?theme=20260814-chat-ui-single-trace-line-a",
+  "localThemeSha256": "1cbd91c9113a0d4c96ace8cba54bc62a667fa2fab67ac779a5026b24ea28706b",
+  "remoteThemeSha256": "1cbd91c9113a0d4c96ace8cba54bc62a667fa2fab67ac779a5026b24ea28706b",
+  "liveJcrThemeSha256": "1cbd91c9113a0d4c96ace8cba54bc62a667fa2fab67ac779a5026b24ea28706b",
+  "remoteThemeMatchesLocal": true,
+  "liveJcrThemeMatchesLocal": true,
+  "remoteHasNoReasoningBorderBottom": true,
+  "liveJcrHasNoReasoningBorderBottom": true,
+  "remoteKeepsProgressLine": true,
+  "liveJcrKeepsProgressLine": true,
+  "editBlockHasRelease": true,
+  "editBlockHasThemeVersion": true,
+  "liveBlockHasRelease": true,
+  "liveBlockHasThemeVersion": true,
+  "rootHtmlBytes": 292241,
+  "rootHtmlHasRelease": true,
+  "rootHtmlHasThemeVersion": true,
+  "checkedAt": "2026-08-14T21:38:03Z"
+}
