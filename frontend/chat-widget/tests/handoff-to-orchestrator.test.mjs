@@ -178,6 +178,40 @@ test('injects proactive handoff context into the next orchestrator turn', async 
   assert.equal(documentEvents[0].type, 'algolia-proactive-handoff');
 });
 
+test('cleans internal discovery control text before selecting the proactive chip', async () => {
+  const { context, fetchCalls, sessionStorage } = createHarness({
+    proactiveState: stateWithShownOpportunity(),
+    primaryAgentId: 'orchestrator_123',
+  });
+
+  await context.fetch('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      messages: [
+        {
+          role: 'user',
+          parts: [
+            {
+              type: 'text',
+              text:
+                'What drives cost?\n\n[DISCOVERY CONTROL — internal, never quote this block back to the visitor]\nDo not expose this.\n[END DISCOVERY CONTROL]',
+            },
+          ],
+        },
+      ],
+    }),
+  });
+
+  const sent = JSON.parse(fetchCalls[0].init.body);
+  const packet = JSON.parse(sent.messages[0].parts[0].text.split('PROACTIVE_HANDOFF_CONTEXT\n')[1]);
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+
+  assert.equal(packet.userResponse, 'What drives cost?');
+  assert.equal(packet.selectedChip, 'What drives cost?');
+  assert.equal(state.opportunities[0].userResponse, 'What drives cost?');
+  assert.equal(state.opportunities[0].selectedChip, 'What drives cost?');
+});
+
 test('does not inject handoff context into non-orchestrator or already-sent turns', async () => {
   const state = stateWithShownOpportunity();
   state.opportunities[0].status = 'handoff_sent';

@@ -11,6 +11,8 @@
   const TOOL_INPUT_SCHEMA = "ProactiveHandoffToolInput.v1";
   const TOOL_NAME = "handoff_to_orchestrator";
   const AGENT_STUDIO_RE = /\/agent-studio\/1\/agents\/([^/?#]+)\/completions/;
+  const DISCOVERY_CONTROL_RE = /\n*\[DISCOVERY CONTROL[^\]]*\][\s\S]*?\[END DISCOVERY CONTROL\]\s*/gi;
+  const DISCOVERY_STATE_COMMENT_RE = /\n*<!--DISCOVERY_STATE[\s\S]*?DISCOVERY_STATE-->\s*/gi;
 
   let originalFetch = null;
   let patchedFetch = null;
@@ -119,7 +121,14 @@
     const index = lastUserMessageIndex(payload);
     if (index === -1) return "";
     const part = payload.messages[index]?.parts?.find((item) => item?.type === "text" && typeof item.text === "string");
-    return part?.text || "";
+    return cleanVisitorText(part?.text || "");
+  }
+
+  function cleanVisitorText(text) {
+    return String(text || "")
+      .replace(DISCOVERY_CONTROL_RE, "")
+      .replace(DISCOVERY_STATE_COMMENT_RE, "")
+      .trim();
   }
 
   function lastUserMessageIndex(payload) {

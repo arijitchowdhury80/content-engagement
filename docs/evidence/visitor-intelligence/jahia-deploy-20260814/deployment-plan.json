@@ -15,7 +15,7 @@
     "proactiveControllerReferenced": true,
     "handoffToOrchestratorReferenced": true,
     "releaseMarkers": [
-      "chat-ui-single-trace-line-20260814a"
+      "chat-ui-wide-spacing-20260814b"
     ],
     "newTrackerExists": true,
     "contextCompilerExists": true,
@@ -30,13 +30,13 @@
     "handoffToOrchestratorReferenced": true,
     "trackerVersion": "20260814d",
     "contextCompilerVersion": "20260814a",
-    "proactiveControllerVersion": "20260814c",
-    "handoffToOrchestratorVersion": "20260814a",
+    "proactiveControllerVersion": "20260814e",
+    "handoffToOrchestratorVersion": "20260814b",
     "engageVersion": "20260814d",
     "trackerSha256": "c56bdcfaa890a667961bbd0e566a8cf58500e7986a4368982952b68e3386cf87",
     "contextCompilerSha256": "9c2dd559df5c3e5df6a122592c2e07670eb360386c7e1540604f0d03222ae71f",
-    "proactiveControllerSha256": "feb00a72ce36aa2ca4e31232f52d2070aa410ac50d7623047a5e51b1a53c256f",
-    "handoffToOrchestratorSha256": "8ac8041a135b0ca9c4c4bcaa2ebd0578da300fbec19875f167f775a4221fa7ce",
+    "proactiveControllerSha256": "076bc882229a21651a27d89b8b4cfd7ccf2025c34b69cae3eefc7fc98f34769e",
+    "handoffToOrchestratorSha256": "7808ef36eeb5f48e7e7b6db6191cb74cf4759eb701809c06eef76b66acd47eb3",
     "engageSha256": "927868c7f6eb065fb35e09532002bf426f736ad67b8ca948456d2fa7ad0ea711"
   },
   "rollback": {

@@ -702,6 +702,14 @@
     await requestGreeting(decision);
   }
 
+  function scheduleInitialEvaluation() {
+    const { appId, apiKey, greetingsAgentId } = credentials();
+    if (!appId || !apiKey || !greetingsAgentId) return;
+    setTimeout(() => {
+      handleSignal({ detail: { name: "controller_ready" } });
+    }, 0);
+  }
+
   function debugState() {
     return {
       config,
@@ -717,6 +725,7 @@
     const previous = root.ALGOLIA_PROACTIVE_CONFIG;
     if (previous && typeof previous === "object") configure(previous);
     document.addEventListener("algolia-engagement-signal", handleSignal);
+    scheduleInitialEvaluation();
   }
 
   root.algoliaProactiveController = {

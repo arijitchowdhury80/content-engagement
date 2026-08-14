@@ -776,6 +776,66 @@ test('controller uses existing engage concierge agent id as greeting agent fallb
   assert.equal(chatEngagements.length, 1);
 });
 
+test('controller evaluates once on install so initial page-view journey triggers are not missed', async () => {
+  const fetchCalls = [];
+  const { chatEngagements } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+      cooldownMs: 0,
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({
+        pageId: 'page_product',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 12000,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 1000,
+      }),
+    ],
+    events: [
+      event({ eventId: 'evt_product', name: 'page_view', path: '/products/ai-recommendations', pageId: 'page_product' }),
+      event({ eventId: 'evt_pricing', name: 'page_view', path: '/pricing', pageId: 'page_current' }),
+    ],
+    fetchImpl: async (url, init) => {
+      fetchCalls.push({ url: String(url), init });
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            schema: 'ProactiveGreetingResponse.v1',
+            opportunityId: packet.opportunityId,
+            greeting:
+              'Looks like recommendations just met the pricing page. Want the clean version of what actually drives cost?',
+            chips: ['What drives cost?'],
+            handoffSummary: {
+              moment: 'commercial_evaluation',
+              trigger: 'product_to_pricing',
+              messageGoal: 'explain_cost_drivers',
+            },
+          }),
+      };
+    },
+  });
+
+  await flushAsyncControllerWork();
+
+  assert.equal(fetchCalls.length, 1);
+  assert.equal(chatEngagements.length, 1);
+  assert.equal(chatEngagements[0].suggestions[0], 'What drives cost?');
+});
+
 test('controller refuses invalid greeting responses and does not open the widget', async () => {
   const { context, chatEngagements, sessionStorage } = createHarness({
     proactiveConfig: {
