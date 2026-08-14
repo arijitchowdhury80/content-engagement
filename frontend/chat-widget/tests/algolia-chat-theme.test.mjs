@@ -50,8 +50,13 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\[part="header"\][^{]+{[^}]*gap: 16px/);
   assert.match(css, /\[part="header"\] h1[^{]+{[^}]*line-height: 1.15/);
   assert.match(css, /\[part="header"\]::after[^{]+{[^}]*top: 46px/);
-  assert.match(css, /\[part="header"\] button[^{]+{[^}]*width: 32px/);
-  assert.match(css, /\[part="header"\] button[^{]+{[^}]*margin-left: 6px/);
+  assert.match(css, /\[part="header"\] > div[^{]+{[^}]*gap: 12px/);
+  assert.match(css, /\[part="header"\] > div button[^{]+{[^}]*width: 28px/);
+  assert.match(css, /\[part="header"\] > div button[^{]+{[^}]*background: transparent/);
+  assert.match(css, /\[part="header"\] > div button[^{]+{[^}]*color: var\(--algolia-text-muted\)/);
+  assert.match(css, /\[part="header"\] > div button svg[^{]+{[^}]*width: 17px/);
+  assert.match(css, /\[part="header"\] > div button img[^{]+{[^}]*width: 17px/);
+  assert.doesNotMatch(css, /\[part="header"\] button[^{]+{[^}]*margin-left: 6px/);
   assert.doesNotMatch(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2::before/);
   assert.doesNotMatch(css, /linear-gradient\(180deg, var\(--algolia-agent-primary\)/);
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2[^{]+{[^}]*background: transparent !important/);
