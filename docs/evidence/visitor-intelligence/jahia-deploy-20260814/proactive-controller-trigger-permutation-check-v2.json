@@ -1,0 +1,1542 @@
+{
+  "capturedAt": "2026-08-14T07:03:01.157Z",
+  "total": 24,
+  "passed": 23,
+  "failed": [
+    {
+      "name": "faq_to_pricing_not_currently_implemented",
+      "visiblePath": "/pricing",
+      "expectedTrigger": null,
+      "actualTrigger": "pricing_8s_dwell",
+      "pass": false,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/faq",
+            "group": "faq",
+            "topic": "faq",
+            "dwellMs": 12000,
+            "scroll": 0
+          },
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/pricing",
+        "currentGroup": "pricing",
+        "currentTopic": "pricing_and_usage",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "commercial_evaluation",
+        "trigger": "pricing_8s_dwell",
+        "priority": 78,
+        "messageGoal": "explain_cost_drivers",
+        "reasonCodes": [
+          "pricing_page",
+          "pricing_dwell"
+        ]
+      }
+    }
+  ],
+  "results": [
+    {
+      "name": "product_to_pricing",
+      "visiblePath": "/pricing",
+      "expectedTrigger": "product_to_pricing",
+      "actualTrigger": "product_to_pricing",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 12000,
+            "scroll": 50
+          },
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/pricing",
+        "currentGroup": "pricing",
+        "currentTopic": "pricing_and_usage",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "commercial_evaluation",
+        "trigger": "product_to_pricing",
+        "priority": 88,
+        "messageGoal": "explain_cost_drivers",
+        "reasonCodes": [
+          "journey_product_to_pricing",
+          "pricing_page_view"
+        ]
+      }
+    },
+    {
+      "name": "implementation_to_pricing",
+      "visiblePath": "/pricing",
+      "expectedTrigger": "implementation_to_pricing",
+      "actualTrigger": "implementation_to_pricing",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+            "group": "documentation",
+            "topic": "implementation",
+            "dwellMs": 16000,
+            "scroll": 60
+          },
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/pricing",
+        "currentGroup": "pricing",
+        "currentTopic": "pricing_and_usage",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "commercial_evaluation",
+        "trigger": "implementation_to_pricing",
+        "priority": 86,
+        "messageGoal": "connect_implementation_effort_to_cost",
+        "reasonCodes": [
+          "journey_implementation_to_pricing",
+          "pricing_page_view"
+        ]
+      }
+    },
+    {
+      "name": "pricing_to_implementation",
+      "visiblePath": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+      "expectedTrigger": "pricing_to_implementation",
+      "actualTrigger": "pricing_to_implementation",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          },
+          {
+            "path": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+            "group": "documentation",
+            "topic": "implementation",
+            "dwellMs": 16000,
+            "scroll": 60
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+        "currentGroup": "documentation",
+        "currentTopic": "implementation",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "implementation_research",
+        "trigger": "pricing_to_implementation",
+        "priority": 84,
+        "messageGoal": "reduce_implementation_uncertainty",
+        "reasonCodes": [
+          "journey_pricing_to_implementation",
+          "developer_page_view"
+        ]
+      }
+    },
+    {
+      "name": "product_to_customer_story",
+      "visiblePath": "/customers/lacoste",
+      "expectedTrigger": "product_to_customer_story",
+      "actualTrigger": "product_to_customer_story",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 12000,
+            "scroll": 50
+          },
+          {
+            "path": "/customers/lacoste",
+            "group": "customer_story",
+            "topic": "customer_proof",
+            "dwellMs": 13000,
+            "scroll": 60
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/customers/lacoste",
+        "currentGroup": "customer_story",
+        "currentTopic": "customer_proof",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "ai_recommendations_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "customer_proof",
+        "trigger": "product_to_customer_story",
+        "priority": 82,
+        "messageGoal": "surface_relevant_customer_proof",
+        "reasonCodes": [
+          "journey_product_to_customer_story",
+          "customer_story_page"
+        ]
+      }
+    },
+    {
+      "name": "search_to_docs",
+      "visiblePath": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+      "expectedTrigger": "search_to_docs",
+      "actualTrigger": "search_to_docs",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/search",
+            "group": "search",
+            "topic": "site_search",
+            "dwellMs": 5000,
+            "scroll": 0
+          },
+          {
+            "path": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+            "group": "documentation",
+            "topic": "implementation",
+            "dwellMs": 1000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "site_search",
+          "page_view"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+        "currentGroup": "documentation",
+        "currentTopic": "implementation",
+        "eventCounts": {
+          "site_search": 1,
+          "page_view": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "implementation_research",
+        "friction": "development_effort_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "implementation_research",
+        "trigger": "search_to_docs",
+        "priority": 80,
+        "messageGoal": "answer_implementation_path",
+        "reasonCodes": [
+          "site_search_implementation_terms",
+          "developer_page_view"
+        ]
+      }
+    },
+    {
+      "name": "pricing_8s_dwell",
+      "visiblePath": "/pricing",
+      "expectedTrigger": "pricing_8s_dwell",
+      "actualTrigger": "pricing_8s_dwell",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 8000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/pricing",
+        "currentGroup": "pricing",
+        "currentTopic": "pricing_and_usage",
+        "eventCounts": {
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "commercial_evaluation",
+        "trigger": "pricing_8s_dwell",
+        "priority": 78,
+        "messageGoal": "explain_cost_drivers",
+        "reasonCodes": [
+          "pricing_page",
+          "pricing_dwell"
+        ]
+      }
+    },
+    {
+      "name": "developer_page_15s_dwell",
+      "visiblePath": "/developers",
+      "expectedTrigger": "developer_page_15s_dwell",
+      "actualTrigger": "developer_page_15s_dwell",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/developers",
+            "group": "developer",
+            "topic": "implementation",
+            "dwellMs": 15000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/developers",
+        "currentGroup": "developer",
+        "currentTopic": "implementation",
+        "eventCounts": {
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "implementation_research",
+        "friction": "development_effort_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "implementation_research",
+        "trigger": "developer_page_15s_dwell",
+        "priority": 76,
+        "messageGoal": "reduce_implementation_uncertainty",
+        "reasonCodes": [
+          "developer_page",
+          "implementation_dwell"
+        ]
+      }
+    },
+    {
+      "name": "developer_page_60_scroll",
+      "visiblePath": "/developers",
+      "expectedTrigger": "developer_page_60_scroll",
+      "actualTrigger": "developer_page_60_scroll",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/developers",
+            "group": "developer",
+            "topic": "implementation",
+            "dwellMs": 2000,
+            "scroll": 60
+          }
+        ],
+        "eventNames": [
+          "scroll_depth"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/developers",
+        "currentGroup": "developer",
+        "currentTopic": "implementation",
+        "eventCounts": {
+          "scroll_depth": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "implementation_research",
+        "friction": "development_effort_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "implementation_research",
+        "trigger": "developer_page_60_scroll",
+        "priority": 74,
+        "messageGoal": "reduce_implementation_uncertainty",
+        "reasonCodes": [
+          "developer_page",
+          "implementation_scroll"
+        ]
+      }
+    },
+    {
+      "name": "customer_story_12s_dwell",
+      "visiblePath": "/customers/lacoste",
+      "expectedTrigger": "customer_story_12s_dwell",
+      "actualTrigger": "customer_story_12s_dwell",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/customers/lacoste",
+            "group": "customer_story",
+            "topic": "customer_proof",
+            "dwellMs": 12000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/customers/lacoste",
+        "currentGroup": "customer_story",
+        "currentTopic": "customer_proof",
+        "eventCounts": {
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "customer_proof",
+        "trigger": "customer_story_12s_dwell",
+        "priority": 72,
+        "messageGoal": "surface_relevant_customer_proof",
+        "reasonCodes": [
+          "customer_story_page",
+          "customer_story_dwell"
+        ]
+      }
+    },
+    {
+      "name": "customer_story_60_scroll",
+      "visiblePath": "/customers/lacoste",
+      "expectedTrigger": "customer_story_60_scroll",
+      "actualTrigger": "customer_story_60_scroll",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/customers/lacoste",
+            "group": "customer_story",
+            "topic": "customer_proof",
+            "dwellMs": 1000,
+            "scroll": 60
+          }
+        ],
+        "eventNames": [
+          "scroll_depth"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/customers/lacoste",
+        "currentGroup": "customer_story",
+        "currentTopic": "customer_proof",
+        "eventCounts": {
+          "scroll_depth": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "customer_proof",
+        "trigger": "customer_story_60_scroll",
+        "priority": 70,
+        "messageGoal": "surface_relevant_customer_proof",
+        "reasonCodes": [
+          "customer_story_page",
+          "customer_story_scroll"
+        ]
+      }
+    },
+    {
+      "name": "product_page_10s_dwell",
+      "visiblePath": "/products/ai-recommendations",
+      "expectedTrigger": "product_page_10s_dwell",
+      "actualTrigger": "product_page_10s_dwell",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 10000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/products/ai-recommendations",
+        "currentGroup": "product",
+        "currentTopic": "ai_search",
+        "eventCounts": {
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "ai_recommendations_evaluation",
+        "friction": "fit_and_value_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "product_research",
+        "trigger": "product_page_10s_dwell",
+        "priority": 66,
+        "messageGoal": "explain_product_fit",
+        "reasonCodes": [
+          "product_page",
+          "product_dwell"
+        ]
+      }
+    },
+    {
+      "name": "product_page_50_scroll",
+      "visiblePath": "/products/ai-recommendations",
+      "expectedTrigger": "product_page_50_scroll",
+      "actualTrigger": "product_page_50_scroll",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 1000,
+            "scroll": 50
+          }
+        ],
+        "eventNames": [
+          "scroll_depth"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/products/ai-recommendations",
+        "currentGroup": "product",
+        "currentTopic": "ai_search",
+        "eventCounts": {
+          "scroll_depth": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "ai_recommendations_evaluation",
+        "friction": "fit_and_value_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "product_research",
+        "trigger": "product_page_50_scroll",
+        "priority": 64,
+        "messageGoal": "explain_product_fit",
+        "reasonCodes": [
+          "product_page",
+          "product_scroll"
+        ]
+      }
+    },
+    {
+      "name": "multiple_product_pages",
+      "visiblePath": "/products/ai-recommendations",
+      "expectedTrigger": "multiple_product_pages",
+      "actualTrigger": "multiple_product_pages",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/search",
+            "group": "product",
+            "topic": "search",
+            "dwellMs": 4000,
+            "scroll": 0
+          },
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 1000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/products/ai-recommendations",
+        "currentGroup": "product",
+        "currentTopic": "ai_search",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "ai_recommendations_evaluation",
+        "friction": "fit_and_value_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "journey_shift",
+        "trigger": "multiple_product_pages",
+        "priority": 62,
+        "messageGoal": "help_compare_capabilities",
+        "reasonCodes": [
+          "multiple_product_pages"
+        ]
+      }
+    },
+    {
+      "name": "priority_product_to_pricing_beats_pricing_dwell",
+      "visiblePath": "/pricing",
+      "expectedTrigger": "product_to_pricing",
+      "actualTrigger": "product_to_pricing",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 12000,
+            "scroll": 50
+          },
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/pricing",
+        "currentGroup": "pricing",
+        "currentTopic": "pricing_and_usage",
+        "eventCounts": {
+          "page_view": 1,
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "commercial_evaluation",
+        "trigger": "product_to_pricing",
+        "priority": 88,
+        "messageGoal": "explain_cost_drivers",
+        "reasonCodes": [
+          "journey_product_to_pricing",
+          "pricing_page_view"
+        ]
+      }
+    },
+    {
+      "name": "priority_implementation_to_pricing_beats_pricing_dwell",
+      "visiblePath": "/pricing",
+      "expectedTrigger": "implementation_to_pricing",
+      "actualTrigger": "implementation_to_pricing",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+            "group": "documentation",
+            "topic": "implementation",
+            "dwellMs": 16000,
+            "scroll": 60
+          },
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/pricing",
+        "currentGroup": "pricing",
+        "currentTopic": "pricing_and_usage",
+        "eventCounts": {
+          "page_view": 1,
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "commercial_evaluation",
+        "trigger": "implementation_to_pricing",
+        "priority": 86,
+        "messageGoal": "connect_implementation_effort_to_cost",
+        "reasonCodes": [
+          "journey_implementation_to_pricing",
+          "pricing_page_view"
+        ]
+      }
+    },
+    {
+      "name": "priority_pricing_to_implementation_beats_developer_dwell_scroll",
+      "visiblePath": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+      "expectedTrigger": "pricing_to_implementation",
+      "actualTrigger": "pricing_to_implementation",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          },
+          {
+            "path": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+            "group": "documentation",
+            "topic": "implementation",
+            "dwellMs": 16000,
+            "scroll": 60
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "scroll_depth"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+        "currentGroup": "documentation",
+        "currentTopic": "implementation",
+        "eventCounts": {
+          "page_view": 1,
+          "scroll_depth": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "implementation_research",
+        "trigger": "pricing_to_implementation",
+        "priority": 84,
+        "messageGoal": "reduce_implementation_uncertainty",
+        "reasonCodes": [
+          "journey_pricing_to_implementation",
+          "developer_page_view"
+        ]
+      }
+    },
+    {
+      "name": "priority_product_to_customer_beats_customer_dwell_scroll",
+      "visiblePath": "/customers/lacoste",
+      "expectedTrigger": "product_to_customer_story",
+      "actualTrigger": "product_to_customer_story",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 12000,
+            "scroll": 50
+          },
+          {
+            "path": "/customers/lacoste",
+            "group": "customer_story",
+            "topic": "customer_proof",
+            "dwellMs": 13000,
+            "scroll": 60
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "scroll_depth"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/customers/lacoste",
+        "currentGroup": "customer_story",
+        "currentTopic": "customer_proof",
+        "eventCounts": {
+          "page_view": 1,
+          "scroll_depth": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "ai_recommendations_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "customer_proof",
+        "trigger": "product_to_customer_story",
+        "priority": 82,
+        "messageGoal": "surface_relevant_customer_proof",
+        "reasonCodes": [
+          "journey_product_to_customer_story",
+          "customer_story_page"
+        ]
+      }
+    },
+    {
+      "name": "priority_product_dwell_beats_product_scroll",
+      "visiblePath": "/products/ai-recommendations",
+      "expectedTrigger": "product_page_10s_dwell",
+      "actualTrigger": "product_page_10s_dwell",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 10000,
+            "scroll": 50
+          }
+        ],
+        "eventNames": [
+          "scroll_depth",
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/products/ai-recommendations",
+        "currentGroup": "product",
+        "currentTopic": "ai_search",
+        "eventCounts": {
+          "scroll_depth": 1,
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "ai_recommendations_evaluation",
+        "friction": "fit_and_value_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "product_research",
+        "trigger": "product_page_10s_dwell",
+        "priority": 66,
+        "messageGoal": "explain_product_fit",
+        "reasonCodes": [
+          "product_page",
+          "product_dwell"
+        ]
+      }
+    },
+    {
+      "name": "priority_developer_dwell_beats_developer_scroll",
+      "visiblePath": "/developers",
+      "expectedTrigger": "developer_page_15s_dwell",
+      "actualTrigger": "developer_page_15s_dwell",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/developers",
+            "group": "developer",
+            "topic": "implementation",
+            "dwellMs": 15000,
+            "scroll": 60
+          }
+        ],
+        "eventNames": [
+          "scroll_depth",
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/developers",
+        "currentGroup": "developer",
+        "currentTopic": "implementation",
+        "eventCounts": {
+          "scroll_depth": 1,
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "implementation_research",
+        "friction": "development_effort_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "implementation_research",
+        "trigger": "developer_page_15s_dwell",
+        "priority": 76,
+        "messageGoal": "reduce_implementation_uncertainty",
+        "reasonCodes": [
+          "developer_page",
+          "implementation_dwell"
+        ]
+      }
+    },
+    {
+      "name": "priority_customer_dwell_beats_customer_scroll",
+      "visiblePath": "/customers/lacoste",
+      "expectedTrigger": "customer_story_12s_dwell",
+      "actualTrigger": "customer_story_12s_dwell",
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/customers/lacoste",
+            "group": "customer_story",
+            "topic": "customer_proof",
+            "dwellMs": 12000,
+            "scroll": 60
+          }
+        ],
+        "eventNames": [
+          "scroll_depth",
+          "page_dwell"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/customers/lacoste",
+        "currentGroup": "customer_story",
+        "currentTopic": "customer_proof",
+        "eventCounts": {
+          "scroll_depth": 1,
+          "page_dwell": 1
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "customer_proof",
+        "trigger": "customer_story_12s_dwell",
+        "priority": 72,
+        "messageGoal": "surface_relevant_customer_proof",
+        "reasonCodes": [
+          "customer_story_page",
+          "customer_story_dwell"
+        ]
+      }
+    },
+    {
+      "name": "hover_only_negative",
+      "visiblePath": "/products/ai-recommendations",
+      "expectedTrigger": null,
+      "actualTrigger": null,
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/products/ai-recommendations",
+            "group": "product",
+            "topic": "ai_search",
+            "dwellMs": 10000,
+            "scroll": 50
+          }
+        ],
+        "eventNames": [
+          "nav_hover"
+        ],
+        "opportunityCount": 0
+      },
+      "packet": {
+        "currentPage": "/products/ai-recommendations",
+        "currentGroup": "product",
+        "currentTopic": "ai_search",
+        "eventCounts": {},
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "ai_recommendations_evaluation",
+        "friction": "fit_and_value_unclear"
+      },
+      "controller": {
+        "engage": false,
+        "emitted": false,
+        "debugWouldBeEligible": {
+          "trigger": "product_page_10s_dwell",
+          "moment": "product_research"
+        },
+        "debugReason": null
+      }
+    },
+    {
+      "name": "faq_to_pricing_not_currently_implemented",
+      "visiblePath": "/pricing",
+      "expectedTrigger": null,
+      "actualTrigger": "pricing_8s_dwell",
+      "pass": false,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/faq",
+            "group": "faq",
+            "topic": "faq",
+            "dwellMs": 12000,
+            "scroll": 0
+          },
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 1
+      },
+      "packet": {
+        "currentPage": "/pricing",
+        "currentGroup": "pricing",
+        "currentTopic": "pricing_and_usage",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": true,
+        "moment": "commercial_evaluation",
+        "trigger": "pricing_8s_dwell",
+        "priority": 78,
+        "messageGoal": "explain_cost_drivers",
+        "reasonCodes": [
+          "pricing_page",
+          "pricing_dwell"
+        ]
+      }
+    },
+    {
+      "name": "pricing_to_faq_not_currently_implemented",
+      "visiblePath": "/faq",
+      "expectedTrigger": null,
+      "actualTrigger": null,
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/pricing",
+            "group": "pricing",
+            "topic": "pricing_and_usage",
+            "dwellMs": 9000,
+            "scroll": 0
+          },
+          {
+            "path": "/faq",
+            "group": "faq",
+            "topic": "faq",
+            "dwellMs": 12000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 0
+      },
+      "packet": {
+        "currentPage": "/faq",
+        "currentGroup": "faq",
+        "currentTopic": "faq",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "pricing_or_demo_evaluation",
+        "friction": "pricing_or_cost_unclear"
+      },
+      "controller": {
+        "engage": false,
+        "emitted": false,
+        "debugWouldBeEligible": null,
+        "debugReason": "no_trigger_match"
+      }
+    },
+    {
+      "name": "homepage_to_signup_not_currently_implemented",
+      "visiblePath": "/signup",
+      "expectedTrigger": null,
+      "actualTrigger": null,
+      "pass": true,
+      "storage": {
+        "profile": {
+          "schema": "AlgoliaEngagementProfile.v1",
+          "visitorId": "visible_trigger_test",
+          "persona": {
+            "value": "developer",
+            "state": "confirmed",
+            "source": "test_selector"
+          }
+        },
+        "sessionPages": [
+          {
+            "path": "/",
+            "group": "home",
+            "topic": "homepage",
+            "dwellMs": 10000,
+            "scroll": 0
+          },
+          {
+            "path": "/signup",
+            "group": "signup",
+            "topic": "conversion",
+            "dwellMs": 1000,
+            "scroll": 0
+          }
+        ],
+        "eventNames": [
+          "page_view",
+          "page_view"
+        ],
+        "opportunityCount": 0
+      },
+      "packet": {
+        "currentPage": "/signup",
+        "currentGroup": "signup",
+        "currentTopic": "conversion",
+        "eventCounts": {
+          "page_view": 2
+        },
+        "persona": {
+          "value": "developer",
+          "state": "confirmed",
+          "source": "test_selector"
+        },
+        "intent": "general_algolia_research",
+        "friction": "question_behind_question_unknown"
+      },
+      "controller": {
+        "engage": false,
+        "emitted": false,
+        "debugWouldBeEligible": null,
+        "debugReason": "no_trigger_match"
+      }
+    }
+  ]
+}

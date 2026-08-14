@@ -382,3 +382,232 @@ test('emits one opportunity per page and moment from engagement signals', () => 
   assert.equal(state.opportunities.length, 1);
   assert.equal(state.opportunities[0].status, 'eligible');
 });
+
+test('trigger grammar covers implemented journey, dwell, scroll, and priority permutations', () => {
+  const cases = [
+    {
+      name: 'product_to_pricing',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 1000 }),
+      ],
+      expected: 'product_to_pricing',
+    },
+    {
+      name: 'implementation_to_pricing',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_docs', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 18000 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 1000 }),
+      ],
+      expected: 'implementation_to_pricing',
+    },
+    {
+      name: 'pricing_to_implementation',
+      locationPath: '/developers',
+      pages: [
+        page({ pageId: 'page_pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 10000 }),
+        page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 2000 }),
+      ],
+      expected: 'pricing_to_implementation',
+    },
+    {
+      name: 'product_to_customer_story',
+      locationPath: '/customers/lacoste',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 2000 }),
+      ],
+      expected: 'product_to_customer_story',
+    },
+    {
+      name: 'search_to_docs',
+      locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
+      pages: [
+        page({ pageId: 'page_search', path: '/search', pageGroup: 'search', topic: 'site_search', dwellMs: 5000 }),
+        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 1000 }),
+      ],
+      events: [
+        event({ eventId: 'evt_search', name: 'site_search', path: '/search', pageId: 'page_search', props: { query: 'react instantsearch implementation' } }),
+        event({ eventId: 'evt_docs', name: 'page_view', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/' }),
+      ],
+      expected: 'search_to_docs',
+    },
+    {
+      name: 'pricing_8s_dwell',
+      locationPath: '/pricing',
+      pages: [page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 8000 })],
+      expected: 'pricing_8s_dwell',
+    },
+    {
+      name: 'developer_page_15s_dwell',
+      locationPath: '/developers',
+      pages: [page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 15000 })],
+      expected: 'developer_page_15s_dwell',
+    },
+    {
+      name: 'developer_page_60_scroll',
+      locationPath: '/developers',
+      pages: [page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 2000, maxScrollDepth: 60 })],
+      expected: 'developer_page_60_scroll',
+    },
+    {
+      name: 'customer_story_12s_dwell',
+      locationPath: '/customers/lacoste',
+      pages: [page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 12000 })],
+      expected: 'customer_story_12s_dwell',
+    },
+    {
+      name: 'customer_story_60_scroll',
+      locationPath: '/customers/lacoste',
+      pages: [page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 1000, maxScrollDepth: 60 })],
+      expected: 'customer_story_60_scroll',
+    },
+    {
+      name: 'product_page_10s_dwell',
+      locationPath: '/products/ai-recommendations',
+      pages: [page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000 })],
+      expected: 'product_page_10s_dwell',
+    },
+    {
+      name: 'product_page_50_scroll',
+      locationPath: '/products/ai-recommendations',
+      pages: [page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 1000, maxScrollDepth: 50 })],
+      expected: 'product_page_50_scroll',
+    },
+    {
+      name: 'multiple_product_pages',
+      locationPath: '/products/ai-recommendations',
+      pages: [
+        page({ pageId: 'page_product_1', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 4000 }),
+        page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 1000 }),
+      ],
+      expected: 'multiple_product_pages',
+    },
+    {
+      name: 'product_to_pricing_beats_pricing_dwell',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
+      ],
+      expected: 'product_to_pricing',
+    },
+    {
+      name: 'implementation_to_pricing_beats_pricing_dwell',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_docs', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 18000 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
+      ],
+      expected: 'implementation_to_pricing',
+    },
+    {
+      name: 'pricing_to_implementation_beats_developer_dwell_scroll',
+      locationPath: '/developers',
+      pages: [
+        page({ pageId: 'page_pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 10000 }),
+        page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 15000, maxScrollDepth: 60 }),
+      ],
+      expected: 'pricing_to_implementation',
+    },
+    {
+      name: 'product_to_customer_beats_customer_dwell_scroll',
+      locationPath: '/customers/lacoste',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 12000, maxScrollDepth: 60 }),
+      ],
+      expected: 'product_to_customer_story',
+    },
+    {
+      name: 'product_dwell_beats_product_scroll',
+      locationPath: '/products/ai-recommendations',
+      pages: [page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 })],
+      expected: 'product_page_10s_dwell',
+    },
+    {
+      name: 'developer_dwell_beats_developer_scroll',
+      locationPath: '/developers',
+      pages: [page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 15000, maxScrollDepth: 60 })],
+      expected: 'developer_page_15s_dwell',
+    },
+    {
+      name: 'customer_dwell_beats_customer_scroll',
+      locationPath: '/customers/lacoste',
+      pages: [page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 12000, maxScrollDepth: 60 })],
+      expected: 'customer_story_12s_dwell',
+    },
+  ];
+
+  for (const item of cases) {
+    const { context } = createHarness({
+      locationPath: item.locationPath,
+      pages: item.pages,
+      events: item.events,
+    });
+    const decision = opportunity(context);
+    assert.equal(decision.engage, true, item.name);
+    assert.equal(decision.trigger, item.expected, item.name);
+  }
+});
+
+test('unsupported journey paths do not invent path-specific triggers', () => {
+  const noSpecificTriggerCases = [
+    {
+      name: 'faq_to_pricing_before_pricing_dwell',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_faq', path: '/faq', pageGroup: 'faq', topic: 'faq', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 1000 }),
+      ],
+    },
+    {
+      name: 'pricing_to_faq',
+      locationPath: '/faq',
+      pages: [
+        page({ pageId: 'page_pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 10000 }),
+        page({ pageId: 'page_current', path: '/faq', pageGroup: 'faq', topic: 'faq', dwellMs: 1000 }),
+      ],
+    },
+    {
+      name: 'homepage_to_signup',
+      locationPath: '/signup',
+      pages: [
+        page({ pageId: 'page_home', path: '/', pageGroup: 'home', topic: 'homepage', dwellMs: 10000 }),
+        page({ pageId: 'page_current', path: '/signup', pageGroup: 'signup', topic: 'conversion', dwellMs: 1000 }),
+      ],
+    },
+  ];
+
+  for (const item of noSpecificTriggerCases) {
+    const { context } = createHarness({
+      locationPath: item.locationPath,
+      pages: item.pages,
+    });
+    const decision = opportunity(context);
+    assert.equal(decision.engage, false, item.name);
+    assert.equal(decision.reason, 'no_trigger_match', item.name);
+  }
+});
+
+test('faq to pricing falls back to generic pricing dwell only after the pricing threshold', () => {
+  const belowThreshold = createHarness({
+    locationPath: '/pricing',
+    pages: [
+      page({ pageId: 'page_faq', path: '/faq', pageGroup: 'faq', topic: 'faq', dwellMs: 12000 }),
+      page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 1000 }),
+    ],
+  });
+  const atThreshold = createHarness({
+    locationPath: '/pricing',
+    pages: [
+      page({ pageId: 'page_faq', path: '/faq', pageGroup: 'faq', topic: 'faq', dwellMs: 12000 }),
+      page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 8000 }),
+    ],
+  });
+
+  assert.equal(opportunity(belowThreshold.context).engage, false);
+  assert.equal(opportunity(atThreshold.context).trigger, 'pricing_8s_dwell');
+});
