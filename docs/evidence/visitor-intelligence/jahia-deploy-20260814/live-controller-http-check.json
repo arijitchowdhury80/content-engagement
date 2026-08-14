@@ -1,9 +1,9 @@
 {
-  "pageUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/?algoliaChatDebug=1&algoliaProactiveDebug=1&cb=deploy-verify-20260814b",
+  "pageUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/?algoliaChatDebug=1&algoliaProactiveDebug=1&cb=deploy-verify-20260814c",
   "controllerReferenceFound": true,
-  "controllerUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260814b",
+  "controllerUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260814c",
   "oldTrackerReferenceFound": false,
-  "remoteControllerSha256": "72484936604b16393097af3f4e9e141afa14ac82c34bb5c4546e8cd3edc271ee",
-  "localControllerSha256": "72484936604b16393097af3f4e9e141afa14ac82c34bb5c4546e8cd3edc271ee",
+  "remoteControllerSha256": "feb00a72ce36aa2ca4e31232f52d2070aa410ac50d7623047a5e51b1a53c256f",
+  "localControllerSha256": "feb00a72ce36aa2ca4e31232f52d2070aa410ac50d7623047a5e51b1a53c256f",
   "remoteMatchesLocal": true
 }
