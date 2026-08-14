@@ -17,6 +17,7 @@
 - 2026-08-14: Simplified the waiting trace header: removed the duplicate assistant badge, removed `Reasoning...`, removed the chevron marker, and moved the timer left as a compact `Work Ns` label.
 - 2026-08-14: Restored answer hierarchy: the processing trace now renders only before answer text exists. As soon as answer text starts streaming, the trace unmounts so the answer is the hero and the wait UI returns to supporting-cast status.
 - 2026-08-14: Restored the older header action icon treatment: the top-right controls now stay as a compact transparent four-icon rail (new chat, sparkle, resize, close) instead of inheriting broad header button chrome.
+- 2026-08-14: Removed the duplicate separator under the trace: the dark line is the real progress bar, while the pale `.acs-reasoning` bottom border was redundant and is now gone.
 - Current phase: verification complete for compact UI, dynamic processing trace, and unframed assistant-answer pass.
 - Notes: The trace is an observable product status derived from available chat state, not hidden chain-of-thought. Synthesis/composition copy remains personality/status language until backend instrumentation emits real sub-stage events; the UI no longer pretends those durations are independently measured, and it no longer changes trace text on timer ticks.
 

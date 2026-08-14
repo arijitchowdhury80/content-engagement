@@ -65,6 +65,7 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\.uppercase\.tracking-algolia-caps[^{]+{[^}]*border: 0 !important/);
   assert.match(css, /\.acs-reasoning[^{]+{[^}]*background: transparent/);
   assert.match(css, /\.acs-reasoning[^{]+{[^}]*box-shadow: none/);
+  assert.doesNotMatch(css, /\.acs-reasoning[^{]+{[^}]*border-bottom: 1px/);
   assert.doesNotMatch(css, /\.acs-progress\s*{[^}]*display: none !important/);
   assert.match(css, /\.acs-progress\s*{[^}]*height: 2px !important/);
   assert.match(css, /\.acs-progress__fill::after[^{]+{[^}]*display: none !important/);
