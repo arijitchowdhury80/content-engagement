@@ -1,0 +1,9 @@
+{
+  "pageUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/?algoliaChatDebug=1&algoliaProactiveDebug=1&cb=deploy-verify-20260814b",
+  "controllerReferenceFound": true,
+  "controllerUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260814b",
+  "oldTrackerReferenceFound": false,
+  "remoteControllerSha256": "72484936604b16393097af3f4e9e141afa14ac82c34bb5c4546e8cd3edc271ee",
+  "localControllerSha256": "72484936604b16393097af3f4e9e141afa14ac82c34bb5c4546e8cd3edc271ee",
+  "remoteMatchesLocal": true
+}
