@@ -50,6 +50,12 @@ skills/*/.pytest_cache/
 .pytest_cache/
 SESSION.md
 
+# Local widget harness. Hosts the chat custom elements against live Agent Studio for
+# local development. Pattern, not a single filename, so a rename cannot orphan the rule
+# (see the enhanced-pre-taxonomy incident above for why that matters). Any *.local.html
+# under chat-widget is a developer scratch surface, never the Jahia deployment source.
+frontend/chat-widget/*.local.html
+
 # Regenerable local analysis and enrichment residue.
 docs/research/search-experience/.cache-enhanced-census.jsonl
 docs/operations/enrichment/.selection-registry.jsonl.lock
