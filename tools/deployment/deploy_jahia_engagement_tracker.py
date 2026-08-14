@@ -29,9 +29,8 @@ ENGAGE = "/sites/www/files/algolia-chat-engage.js"
 TRACKER_SRC = ROOT / "frontend/chat-widget/algolia-engagement-tracker.js"
 ENGAGE_SRC = ROOT / "frontend/chat-widget/algolia-chat-engage.js"
 EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260814"
-RELEASE = "engagement-tracker-pulse-20260814"
-TRACKER_VERSION = "20260814b"
-ENGAGE_VERSION = "20260814b"
+TRACKER_VERSION = "20260814c"
+ENGAGE_VERSION = "20260814c"
 
 
 def load_token() -> str:
@@ -117,7 +116,8 @@ def snapshot() -> dict:
     return {
         "capturedAt": datetime.now(timezone.utc).isoformat(),
         "target": BLOCK_PATH,
-        "release": RELEASE,
+        "trackerVersion": TRACKER_VERSION,
+        "engageVersion": ENGAGE_VERSION,
         "edit": {
             "blockHtml": block_html("EDIT"),
             "oldTrackerNode": node(OLD_TRACKER, "EDIT"),
@@ -182,12 +182,7 @@ def upsert_file(path: str, content: str) -> dict:
 
 
 def update_block_html(current: str) -> str:
-    next_html = re.sub(
-        r'data-release="[^"]+"',
-        f'data-release="{RELEASE}"',
-        current,
-        count=1,
-    )
+    next_html = current
     next_html = re.sub(
         r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-chat-tracker\.js"></script>\n?',
         "",
@@ -267,8 +262,9 @@ def validate(snapshot_after: dict) -> dict:
     edit_old_tracker = snapshot_after["edit"]["oldTrackerNode"]
     checks = {
         "liveHtmlReferencesNewTracker": "algolia-engagement-tracker.js" in live_html,
+        "liveHtmlReferencesTrackerVersion": f"tracker={TRACKER_VERSION}" in live_html,
+        "liveHtmlReferencesEngageVersion": f"engage={ENGAGE_VERSION}" in live_html,
         "liveHtmlOmitsOldTracker": "algolia-chat-tracker.js" not in live_html,
-        "liveReleaseMarkerUpdated": f'data-release="{RELEASE}"' in live_html,
         "liveNewTrackerExists": live_tracker is not None,
         "liveEngageExists": live_engage is not None,
         "oldTrackerAbsentFromEdit": edit_old_tracker is None,
@@ -306,7 +302,8 @@ def main() -> int:
         "intended": {
             "oldTrackerReferenced": False,
             "newTrackerReferenced": True,
-            "release": RELEASE,
+            "trackerVersion": TRACKER_VERSION,
+            "engageVersion": ENGAGE_VERSION,
             "trackerSha256": sha256(tracker_content),
             "engageSha256": sha256(engage_content),
         },

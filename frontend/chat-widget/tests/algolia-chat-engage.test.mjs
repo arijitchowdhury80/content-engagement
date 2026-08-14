@@ -114,3 +114,19 @@ test('pulses the launcher when the tracker reports visitor activity', () => {
 
   assert.deepEqual(analyzingCalls.slice(-1), [false]);
 });
+
+test('does not schedule proactive analysis from activity signals by default', () => {
+  const { context, timers } = createHarness();
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'nav_click', path: '/products/ai-recommendations' },
+    })
+  );
+
+  assert.equal(
+    timers.some((timer) => timer.delay === 700),
+    false,
+    'activity signals should pulse only until proactive policy explicitly enables analysis'
+  );
+});

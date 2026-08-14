@@ -16,7 +16,8 @@ URL = (
     "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html"
     "?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1"
 )
-RELEASE = "engagement-tracker-pulse-20260814"
+TRACKER_VERSION = "20260814c"
+ENGAGE_VERSION = "20260814c"
 
 
 def main() -> int:
@@ -114,9 +115,15 @@ def main() -> int:
         browser.close()
 
     checks = {
-        "newTrackerScriptLoaded": any("algolia-engagement-tracker.js" in src for src in state["scripts"]),
+        "newTrackerScriptLoaded": any(
+            "algolia-engagement-tracker.js" in src and f"tracker={TRACKER_VERSION}" in src
+            for src in state["scripts"]
+        ),
+        "engageScriptLoaded": any(
+            "algolia-chat-engage.js" in src and f"engage={ENGAGE_VERSION}" in src
+            for src in state["scripts"]
+        ),
         "oldTrackerScriptAbsent": not any("algolia-chat-tracker.js" in src for src in state["scripts"]),
-        "releaseMarkerUpdated": RELEASE in state["releaseMarkers"],
         "trackerInstalled": state["installed"] is True,
         "oldTrackerNotInstalled": state["oldTrackerInstalled"] is False,
         "profileInLocalStorage": "algolia_profile" in state["localStorageKeys"],

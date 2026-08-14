@@ -23,6 +23,7 @@
     signalPulseMs: DEFAULT_SIGNAL_PULSE_MS,
     signalDebounceMs: DEFAULT_SIGNAL_DEBOUNCE_MS,
     minAnalysisIntervalMs: DEFAULT_MIN_ANALYSIS_INTERVAL_MS,
+    enableProactiveAnalysis: false,
   };
 
   let engaged = false;
@@ -383,7 +384,7 @@
     if (!name) return;
 
     pulseLauncher();
-    scheduleSignalAnalysis();
+    if (config.enableProactiveAnalysis) scheduleSignalAnalysis();
   }
 
   async function init() {
@@ -393,7 +394,7 @@
       return;
     }
 
-    if (!showPendingGreeting()) {
+    if (config.enableProactiveAnalysis && !showPendingGreeting()) {
       await new Promise((resolve) => setTimeout(resolve, analysisDelayMs));
       await analyze();
     }

@@ -1,7 +1,8 @@
 {
   "liveHtmlReferencesNewTracker": true,
+  "liveHtmlReferencesTrackerVersion": true,
+  "liveHtmlReferencesEngageVersion": true,
   "liveHtmlOmitsOldTracker": true,
-  "liveReleaseMarkerUpdated": true,
   "liveNewTrackerExists": true,
   "liveEngageExists": true,
   "oldTrackerAbsentFromEdit": true,
