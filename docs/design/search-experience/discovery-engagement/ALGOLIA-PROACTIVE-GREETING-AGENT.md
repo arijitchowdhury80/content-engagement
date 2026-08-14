@@ -6,7 +6,7 @@ The proactive greeting agent writes the opening hook for a qualified proactive e
 
 It does one thing: turn a controller opportunity packet into a short, useful, human greeting. It does not decide when to interrupt, track visitor behavior, answer product questions, call specialists, search Algolia, continue the conversation, or own orchestration.
 
-The browser decides when to engage. The proactive greeting agent decides what the opening message should say. The controller renders the greeting. After the visitor engages, the Greetings Agent calls the `handoff_to_orchestrator` client-side tool.
+The browser decides when to engage. The proactive greeting agent decides what the opening message should say. The controller renders the greeting into the existing chat widget. After the visitor engages, the main orchestrator handles the conversation.
 
 ## Runtime Position
 
@@ -17,7 +17,6 @@ flowchart LR
   Compiler["algolia-context-compiler.js"]
   Controller["algolia-proactive-controller.js"]
   GreetingAgent["Agent Studio: Greetings Agent"]
-  HandoffTool["handoff-to-orchestrator.js"]
   Widget["Chat widget"]
   Orchestrator["Agent Studio: www Chat - Orchestrator"]
 
@@ -28,9 +27,7 @@ flowchart LR
   GreetingAgent -->|"ProactiveGreetingResponse.v1"| Controller
   Controller -->|"render greeting/chips"| Widget
   Visitor -->|"reply or chip click"| Widget
-  Widget -->|"engaged user turn"| GreetingAgent
-  GreetingAgent -->|"tool call"| HandoffTool
-  HandoffTool -->|"completion POST with user turn + context"| Orchestrator
+  Widget -->|"engaged user turn + compiled context"| Orchestrator
 ```
 
 ## Responsibility Split
@@ -40,8 +37,7 @@ flowchart LR
 | Tracker | Observed browser facts. | Intent, commercial inference, greeting copy. |
 | Compiler | Safe context packet and soft inferences. | Popup timing, greeting copy, orchestration. |
 | Controller | Trigger grammar, suppression, opportunity reservation, Greetings Agent completion POST, response validation, widget open. | Greeting language, product answers, specialist routing. |
-| Greetings Agent | One-shot greeting response, optional chips, and `handoff_to_orchestrator` tool call after engagement. | Tracking, timing, retrieval, specialists, final answers. |
-| Handoff tool | Validates engaged turn, attaches original packet, and calls orchestrator. | Rewriting the greeting or answering the visitor. |
+| Greetings Agent | One-shot greeting response and optional chips. | Tracking, timing, retrieval, specialists, final answers, engaged-turn handoff. |
 | Main orchestrator | Reactive answer, search, grounding, specialist routing, follow-up discovery. | Initial proactive popup timing. |
 
 ## Input Contract
@@ -191,39 +187,6 @@ Output rules:
 - Never answer the underlying product question in the greeting.
 - Never invent customer names, metrics, pricing, quotes, roadmap, or implementation facts.
 
-## Client Tool: `handoff_to_orchestrator`
-
-After the visitor replies or clicks a chip, the Greetings Agent must call `handoff_to_orchestrator`. The tool handler lives in `handoff-to-orchestrator.js`.
-
-The tool call input should contain only the interaction and stable IDs. The tool handler retrieves the immutable original opportunity packet by `opportunityId` from session storage and attaches the latest compiled context itself, so the model cannot accidentally mutate the packet.
-
-```json
-{
-  "schema": "HandoffToOrchestrator.v1",
-  "opportunityId": "opp_19fff074c5d_23ee98",
-  "userMessage": "How are API calls counted?",
-  "selectedChip": "How are API calls counted?",
-  "greetingShown": "Pricing pages are where good search ideas meet CFO gravity. Want the practical version: what actually drives Algolia cost?",
-  "handoffSummary": {
-    "moment": "commercial_evaluation",
-    "trigger": "product_to_pricing",
-    "messageGoal": "explain_cost_drivers"
-  }
-}
-```
-
-Tool handler output:
-
-```json
-{
-  "success": true,
-  "orchestratorConversationId": "alg_cnv_...",
-  "forwarded": true
-}
-```
-
-If handoff fails, the tool returns a structured error and the widget shows a retry-safe state.
-
 ## Tone
 
 The greeting should feel like a sharp consultant casually leaning in at the right moment.
@@ -269,23 +232,6 @@ Bad patterns:
 | `customer_proof` | `surface_relevant_customer_proof` | Offer customer proof without inventing evidence. |
 | `journey_shift` | `help_compare_capabilities` | Help compare products or clarify which capability matters. |
 
-## Handoff To Orchestrator
-
-When the visitor replies or clicks a chip, the Greetings Agent calls the `handoff_to_orchestrator` client-side tool. The tool sends the user message to `www Chat - Orchestrator`.
-
-The handoff must include:
-
-- latest `AlgoliaTurnContext.v1`;
-- original immutable `AlgoliaProactiveDecision.v1`;
-- `opportunityId`;
-- proactive `moment`;
-- proactive `trigger`;
-- `messageGoal`;
-- `greeting` shown;
-- chip clicked, if any.
-
-The orchestrator should use this as context, not as proof. It must still search before making factual Algolia claims.
-
 ## Failure Behavior
 
 The controller and handoff tool should fail closed:
@@ -297,7 +243,6 @@ The controller and handoff tool should fail closed:
 | Greeting too long | Do not open. |
 | Greeting exposes telemetry | Do not open. |
 | Controller opportunity expired | Do not open. |
-| `handoff_to_orchestrator` fails | Preserve user input, show retry-safe error, and do not drop context. |
 
 No hard-coded generic fallback greeting in v1. A bad proactive message is worse than silence.
 
@@ -320,5 +265,5 @@ If any check fails, the client logs a debug reason and does not open the proacti
 ## Open Decisions
 
 - Whether chips should be displayed in v1 or suppressed until the greeting copy quality is proven.
-- Whether `handoff_to_orchestrator` should stream the orchestrator response into the same widget panel immediately or create a new orchestrator conversation state first. Current recommendation: same panel, new orchestrator conversation ID.
+- Whether a later dedicated handoff module is needed, or whether the existing widget-to-orchestrator flow remains sufficient once proactive context is attached to the engaged turn.
 - Whether the controller should retry once on invalid greeting JSON or fail closed immediately. Current recommendation: fail closed for v1.

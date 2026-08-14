@@ -96,6 +96,11 @@ window.ALGOLIA_PROACTIVE_CONFIG = {
 };
 ```
 
+On the Jahia demo surface, the controller also accepts the existing
+`window.ALGOLIA_CONTEXT_ENGINE_CONFIG.conciergeAgentId` written by
+`<algolia-chat-engage concierge-agent-id="...">` as a fallback Greetings Agent ID.
+This keeps the v1 deployment from needing a second inline config block.
+
 ## Decision Packet
 
 When a trigger is eligible, the controller generates an `opportunityId` and builds:

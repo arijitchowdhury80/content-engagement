@@ -72,6 +72,7 @@ function createHarness({
   locationPath,
   state,
   proactiveConfig,
+  contextEngineConfig,
   fetchImpl,
 } = {}) {
   const currentPath = locationPath || pages?.at(-1)?.path || '/products/ai-recommendations';
@@ -176,6 +177,7 @@ function createHarness({
   };
   context.window = context;
   if (proactiveConfig) context.window.ALGOLIA_PROACTIVE_CONFIG = proactiveConfig;
+  if (contextEngineConfig) context.window.ALGOLIA_CONTEXT_ENGINE_CONFIG = contextEngineConfig;
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(compilerPath, 'utf8'), context);
   vm.runInContext(fs.readFileSync(controllerPath, 'utf8'), context);
@@ -714,6 +716,64 @@ test('configured controller posts a proactive greeting request and renders valid
   const updatedState = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
   assert.equal(updatedState.opportunities[0].status, 'shown');
   assert.equal(updatedState.opportunities[0].greetingResponse.schema, 'ProactiveGreetingResponse.v1');
+});
+
+test('controller uses existing engage concierge agent id as greeting agent fallback', async () => {
+  const fetchCalls = [];
+  const { context, chatEngagements } = createHarness({
+    contextEngineConfig: {
+      conciergeAgentId: 'www_proactive_concierge_123',
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({
+        pageId: 'page_product',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 12000,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 1000,
+      }),
+    ],
+    fetchImpl: async (url, init) => {
+      fetchCalls.push({ url: String(url), init });
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            schema: 'ProactiveGreetingResponse.v1',
+            opportunityId: packet.opportunityId,
+            greeting:
+              'Pricing pages are where good search ideas meet CFO gravity. Want the practical version of what actually drives cost?',
+            chips: ['What drives cost?'],
+            handoffSummary: {
+              moment: 'commercial_evaluation',
+              trigger: 'product_to_pricing',
+              messageGoal: 'explain_cost_drivers',
+            },
+          }),
+      };
+    },
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_view', path: '/pricing' },
+    })
+  );
+  await flushAsyncControllerWork();
+
+  assert.equal(fetchCalls.length, 1);
+  assert.match(fetchCalls[0].url, /agents\/www_proactive_concierge_123\/completions/);
+  assert.equal(chatEngagements.length, 1);
 });
 
 test('controller refuses invalid greeting responses and does not open the widget', async () => {

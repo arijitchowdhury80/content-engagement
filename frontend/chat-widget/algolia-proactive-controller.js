@@ -155,10 +155,20 @@
 
   function credentials() {
     const search = document.querySelector("algolia-instant-search");
+    const legacyEngageConfig =
+      window.ALGOLIA_CONTEXT_ENGINE_CONFIG && typeof window.ALGOLIA_CONTEXT_ENGINE_CONFIG === "object"
+        ? window.ALGOLIA_CONTEXT_ENGINE_CONFIG
+        : {};
     return {
       appId: config.appId || search?.getAttribute?.("app-id") || null,
       apiKey: config.apiKey || config.searchKey || search?.getAttribute?.("api-key") || null,
-      greetingsAgentId: config.greetingsAgentId || config.greetingAgentId || null,
+      greetingsAgentId:
+        config.greetingsAgentId ||
+        config.greetingAgentId ||
+        legacyEngageConfig.greetingsAgentId ||
+        legacyEngageConfig.greetingAgentId ||
+        legacyEngageConfig.conciergeAgentId ||
+        null,
     };
   }
 
