@@ -1,0 +1,299 @@
+{
+  "capturedAt": "2026-08-14T06:48:28.039Z",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations?algoliaChatDebug=1&algoliaProactiveDebug=1&cb=proactive-controller-20260814a",
+  "scripts": {
+    "tracker": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260814d",
+    "compiler": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260814a",
+    "controller": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260814a",
+    "engage": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260814d"
+  },
+  "globals": {
+    "tracker": "object",
+    "compiler": "object",
+    "controller": "object"
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_19fff074c5d_23ee98",
+        "status": "eligible",
+        "pageId": "page_62ed5849e30bb33f55a5c8d8",
+        "pagePath": "/products/ai-recommendations",
+        "moment": "product_research",
+        "trigger": "product_page_10s_dwell",
+        "priority": 66,
+        "messageGoal": "explain_product_fit",
+        "reasonCodes": [
+          "product_page",
+          "product_dwell"
+        ],
+        "createdAt": 1786690096221
+      }
+    ],
+    "lastOpportunityAt": 1786690096221
+  },
+  "controllerDebug": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "implementationDwellMs": 15000,
+      "implementationScrollDepth": 60,
+      "pricingDwellMs": 8000,
+      "customerProofDwellMs": 12000,
+      "customerProofScrollDepth": 60
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_19fff074c5d_23ee98",
+          "status": "eligible",
+          "pageId": "page_62ed5849e30bb33f55a5c8d8",
+          "pagePath": "/products/ai-recommendations",
+          "moment": "product_research",
+          "trigger": "product_page_10s_dwell",
+          "priority": 66,
+          "messageGoal": "explain_product_fit",
+          "reasonCodes": [
+            "product_page",
+            "product_dwell"
+          ],
+          "createdAt": 1786690096221
+        }
+      ],
+      "lastOpportunityAt": 1786690096221
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1786690108040,
+      "profile": {
+        "visitorId": "visitor_4af5ec11063ab23028822a59",
+        "visits": 3,
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_25bc997fa18186aaf8f7b8a5",
+        "startedAt": 1786685293166,
+        "pageCount": 5,
+        "engagementHistory": []
+      },
+      "currentPage": {
+        "pageId": "page_62ed5849e30bb33f55a5c8d8",
+        "path": "/products/ai-recommendations",
+        "title": "AI recommendation engine for products and content | Algolia",
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "dwellMs": 10002,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "ai_search",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 3,
+          "page_dwell": 6,
+          "scroll_depth": 1,
+          "nav_click": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_7bda5d11a68dcfe782a0472d",
+          "name": "page_view",
+          "ts": 1786685969991,
+          "pageId": "page_58323a332333030816a04b7d",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations",
+            "title": "AI recommendation engine for products and content | Algolia",
+            "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_d1e0587ed8b143fa965cfed0",
+          "name": "page_dwell",
+          "ts": 1786685974992,
+          "pageId": "page_58323a332333030816a04b7d",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_3d24066410321bf733a8eea8",
+          "name": "page_dwell",
+          "ts": 1786685979993,
+          "pageId": "page_58323a332333030816a04b7d",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_285c944a723deaa5bdd4d6b6",
+          "name": "scroll_depth",
+          "ts": 1786685993295,
+          "pageId": "page_58323a332333030816a04b7d",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_a717b225a0b412d36261f521",
+          "name": "nav_click",
+          "ts": 1786686000864,
+          "pageId": "page_58323a332333030816a04b7d",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "label": "Products",
+            "href": "https://www.algolia.com/products/search"
+          }
+        },
+        {
+          "eventId": "evt_e2ce8de0282f312071c3eeb2",
+          "name": "page_view",
+          "ts": 1786687492802,
+          "pageId": "page_207f7147e7a5075505718c0c",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations",
+            "title": "AI recommendation engine for products and content | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_95f4c4ff5a181a3a5e14bea2",
+          "name": "page_dwell",
+          "ts": 1786687497803,
+          "pageId": "page_207f7147e7a5075505718c0c",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_c0342d6e0462e850a7f613f0",
+          "name": "page_dwell",
+          "ts": 1786687502803,
+          "pageId": "page_207f7147e7a5075505718c0c",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_ec3a9d15160092809a3f6ea6",
+          "name": "page_view",
+          "ts": 1786690061529,
+          "pageId": "page_62ed5849e30bb33f55a5c8d8",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations",
+            "title": "AI recommendation engine for products and content | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_4fe79c410ab35e8c446a5239",
+          "name": "page_dwell",
+          "ts": 1786690066532,
+          "pageId": "page_62ed5849e30bb33f55a5c8d8",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        },
+        {
+          "eventId": "evt_86b94f2a124b772a1dc27c7a",
+          "name": "page_dwell",
+          "ts": 1786690071531,
+          "pageId": "page_62ed5849e30bb33f55a5c8d8",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search"
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "ai_recommendations_evaluation",
+          "state": "inferred",
+          "confidence": 0.72,
+          "evidence": [
+            "current_page:AI recommendation engine for products and content | Algolia /products/ai-recommendations ai_search",
+            "page_dwell:/products/ai-recommendations",
+            "page_dwell:/products/ai-recommendations",
+            "page_view:/products/ai-recommendations"
+          ]
+        },
+        "friction": {
+          "value": "fit_and_value_unclear",
+          "state": "inferred",
+          "confidence": 0.62,
+          "evidence": [
+            "current_page:AI recommendation engine for products and content | Algolia /products/ai-recommendations ai_search"
+          ]
+        },
+        "nextBestAction": {
+          "value": "explain_feature_fit_with_example",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "cooldown_active",
+      "createdAt": 1786690108040
+    }
+  }
+}

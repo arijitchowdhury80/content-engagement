@@ -43,6 +43,28 @@
       }
     }
   },
+  "upsertProactiveController": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-proactive-controller.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-proactive-controller.js"
+          }
+        }
+      }
+    }
+  },
   "upsertEngage": {
     "data": {
       "jcr": {
@@ -101,6 +123,18 @@
           "publish": true,
           "node": {
             "path": "/sites/www/files/algolia-context-compiler.js"
+          }
+        }
+      }
+    }
+  },
+  "publishProactiveController": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-proactive-controller.js"
           }
         }
       }

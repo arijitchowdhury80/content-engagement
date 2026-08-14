@@ -3,6 +3,7 @@
     "block": "/sites/www/home/drift/custom-code-block",
     "newTracker": "/sites/www/files/algolia-engagement-tracker.js",
     "contextCompiler": "/sites/www/files/algolia-context-compiler.js",
+    "proactiveController": "/sites/www/files/algolia-proactive-controller.js",
     "oldTracker": "/sites/www/files/algolia-chat-tracker.js",
     "engage": "/sites/www/files/algolia-chat-engage.js"
   },
@@ -10,27 +11,33 @@
     "oldTrackerReferenced": false,
     "newTrackerReferenced": true,
     "contextCompilerReferenced": true,
+    "proactiveControllerReferenced": true,
     "releaseMarkers": [
-      "empty-final-guard-20260814d"
+      "render-crash-fix-20260814b"
     ],
     "newTrackerExists": true,
-    "contextCompilerExists": true
+    "contextCompilerExists": true,
+    "proactiveControllerExists": true
   },
   "intended": {
     "oldTrackerReferenced": false,
     "newTrackerReferenced": true,
     "contextCompilerReferenced": true,
+    "proactiveControllerReferenced": true,
     "trackerVersion": "20260814d",
     "contextCompilerVersion": "20260814a",
+    "proactiveControllerVersion": "20260814a",
     "engageVersion": "20260814d",
     "trackerSha256": "c56bdcfaa890a667961bbd0e566a8cf58500e7986a4368982952b68e3386cf87",
     "contextCompilerSha256": "9c2dd559df5c3e5df6a122592c2e07670eb360386c7e1540604f0d03222ae71f",
+    "proactiveControllerSha256": "d9735c8d4caa1b432a898e32988daa7e58ed4d453e9ed802ea0f0cb16baad883",
     "engageSha256": "927868c7f6eb065fb35e09532002bf426f736ad67b8ca948456d2fa7ad0ea711"
   },
   "rollback": {
     "restoreBlockHtmlFrom": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260814/before-snapshot.json",
     "restoreOldTrackerFrom": "before-snapshot.json edit.oldTrackerNode children[0].properties[jcr:data]",
     "restoreOrRemoveContextCompilerFrom": "before-snapshot.json edit.contextCompilerNode children[0].properties[jcr:data]",
+    "restoreOrRemoveProactiveControllerFrom": "before-snapshot.json edit.proactiveControllerNode children[0].properties[jcr:data]",
     "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]"
   }
 }
