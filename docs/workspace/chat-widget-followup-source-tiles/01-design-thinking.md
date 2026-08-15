@@ -21,7 +21,7 @@ Emotional arc:
 Flat answer builds clarity. The follow-up tile should feel intentional and concierge-like. Source pills should feel trustworthy and inspectable without shouting.
 
 Pre-mortem:
-- Risk: 3D/glass becomes noisy. Mitigation: use one soft glass tile and small pastel source chips.
+- Risk: 3D/glass becomes noisy. Mitigation: use one soft glass tile and small Algolia white-to-blue source chips.
 - Risk: follow-up competes with answer. Mitigation: place after answer, use smaller copy and restrained label.
 - Risk: source chips lose legibility. Mitigation: preserve high-contrast labels/counts and use light gradients only.
 - Risk: mobile crowding. Mitigation: flex-wrap source pills and keep follow-up full-width.

@@ -29,7 +29,7 @@ test('follow-up discovery question renders before source pills as an elevated ti
   );
 });
 
-test('source pills use pastel gradient 3D glass treatment', () => {
+test('source pills use Algolia white-to-blue 3D glass treatment', () => {
   const bundle = fs.readFileSync(chatPath, 'utf8');
 
   assert.match(
@@ -44,12 +44,12 @@ test('source pills use pastel gradient 3D glass treatment', () => {
   );
   assert.match(
     bundle,
-    /\.acs-source-group-pill\{[^}]*linear-gradient\(135deg,#fff7ed,#eef6ff 52%,#f3efff\)[^}]*box-shadow:0 8px 18px/,
-    'source category pills should have pastel gradient fill and raised depth'
+    /\.acs-source-group-pill\{[^}]*linear-gradient\(135deg,#ffffff,#edf5ff\)[^}]*box-shadow:0 8px 18px/,
+    'source category pills should have Algolia white-to-blue gradient fill and raised depth'
   );
   assert.match(
     bundle,
-    /\.acs-source-pill\{[^}]*linear-gradient\(135deg,#ffffffcc,#eff6ffcc 50%,#f8f5ffcc\)[^}]*backdrop-filter:blur\(14px\)/,
-    'individual source pills should have a glassy pastel treatment'
+    /\.acs-source-pill\{[^}]*linear-gradient\(135deg,#ffffffcc,#edf5ffcc\)[^}]*backdrop-filter:blur\(14px\)/,
+    'individual source pills should have a glassy white-to-blue treatment'
   );
 });
