@@ -124,6 +124,21 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.match(bundle, /late specialist error arrived after answer text/);
   });
 
+  test(`${bundleName} aligns header title and subtitle to the same left edge`, () => {
+    const bundle = readBundle(bundleName);
+    const headerStart = bundle.indexOf('function zx(');
+    assert.notEqual(headerStart, -1, 'default header renderer should exist');
+
+    const headerEnd = bundle.indexOf('function ', headerStart + 20);
+    assert.notEqual(headerEnd, -1, 'default header renderer should have a clear boundary');
+    const headerBlock = bundle.slice(headerStart, headerEnd);
+
+    assert.match(headerBlock, /flex min-w-0 flex-col items-start text-left leading-tight/);
+    assert.match(headerBlock, /truncate text-left font-algolia-sans text-algolia-base/);
+    assert.match(headerBlock, /truncate text-left text-algolia-xs text-algolia-text-muted/);
+    assert.doesNotMatch(headerBlock, /flex min-w-0 flex-col text-left leading-tight/);
+  });
+
   test(`${bundleName} shows an observable processing trace while building an answer`, () => {
     const bundle = readBundle(bundleName);
     const rendererName = bundleName.includes('jahia') ? 'hE' : 't1';
