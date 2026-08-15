@@ -1,0 +1,195 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "upsertChat": {
+        "data": {
+          "jcr": {
+            "file": {
+              "content": {
+                "data": {
+                  "setValue": true
+                },
+                "mime": {
+                  "setValue": true
+                },
+                "node": {
+                  "path": "/sites/www/files/algolia-chat.js/jcr:content"
+                }
+              },
+              "node": {
+                "path": "/sites/www/files/algolia-chat.js"
+              }
+            }
+          }
+        }
+      },
+      "upsertTheme": {
+        "data": {
+          "jcr": {
+            "file": {
+              "node": {
+                "path": "/sites/www/files/algolia-chat-theme-algolia-composer-shell-guard-20260815a.js"
+              }
+            }
+          }
+        }
+      },
+      "setBlockHtml": {
+        "data": {
+          "jcr": {
+            "block": {
+              "html": {
+                "setValue": true
+              },
+              "node": {
+                "path": "/sites/www/home/drift/custom-code-block"
+              }
+            }
+          }
+        }
+      },
+      "editChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+      "editThemeSha256": "2e5cffd453c08da73c284b1b37824179bb3b67eb5e32626342c9c5602907cb91",
+      "editBlockHasRelease": true,
+      "editBlockHasChatUrl": true,
+      "editBlockHasThemeUrl": true,
+      "editChatOmitsOldShell": true,
+      "editChatHasNewShell": true,
+      "editThemeHasGuard": true,
+      "editThemeHidesProgress": true
+    }
+  ],
+  "versionBlock": {
+    "data": {
+      "jcr": {
+        "block": {
+          "createVersion": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishChat": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "publishTheme": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-composer-shell-guard-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "publishFilesSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "publishDriftSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "republishChatAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "republishThemeAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-composer-shell-guard-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "republishFilesSubtreeAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "republishDriftAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "republishBlockAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  }
+}

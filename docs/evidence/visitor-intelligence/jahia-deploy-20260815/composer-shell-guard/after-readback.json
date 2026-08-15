@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-08-15T06:00:23.087287+00:00",
+  "editChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+  "liveChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+  "publicChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+  "editThemeSha256": "2e5cffd453c08da73c284b1b37824179bb3b67eb5e32626342c9c5602907cb91",
+  "liveThemeSha256": "2e5cffd453c08da73c284b1b37824179bb3b67eb5e32626342c9c5602907cb91",
+  "publicThemeSha256": "2e5cffd453c08da73c284b1b37824179bb3b67eb5e32626342c9c5602907cb91",
+  "editBlockHasRelease": true,
+  "liveBlockHasRelease": true,
+  "editBlockHasChatUrl": true,
+  "liveBlockHasChatUrl": true,
+  "editBlockHasThemeUrl": true,
+  "liveBlockHasThemeUrl": true,
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&composerShell=20260815-chat-ui-composer-shell-guard-a",
+  "themeUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-composer-shell-guard-20260815a.js?theme=20260815-chat-ui-composer-shell-guard-a"
+}
