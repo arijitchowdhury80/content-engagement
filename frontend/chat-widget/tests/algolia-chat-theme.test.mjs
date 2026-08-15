@@ -7,9 +7,15 @@ const themePath = new URL('../algolia-chat-theme-algolia.js', import.meta.url);
 const logoPackRoot = '/Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG';
 const logoPackMarkWhitePath = `${logoPackRoot}/Algolia-mark-white.svg`;
 const logoPackMarkBluePath = `${logoPackRoot}/Algolia-mark-blue.svg`;
+const legacyHeaderProgressVar = ['--a', 'cs-header-progress'].join('');
+const legacyWorkingAttr = ['data-a', 'cs-working'].join('');
 
 function cssSvgUrlFromFile(url) {
   return `url("data:image/svg+xml,${encodeURIComponent(fs.readFileSync(url, 'utf8'))}")`;
+}
+
+function literal(value) {
+  return new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 }
 
 function loadAlgoliaTheme() {
@@ -56,8 +62,10 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\[part="header"\] h1[^{]+{[^}]*line-height: 1.15/);
   assert.match(css, /\[part="header"\]::after[^{]+{[^}]*top: 36px/);
   assert.match(css, /\[part="header"\]::after[^{]+{[^}]*z-index: 1/);
-  assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*width: var\(--acs-header-progress, 0%\)/);
-  assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*linear-gradient\(90deg, rgba\(0,61,255,0\.04\), rgba\(0,61,255,0\.16\)(?:, rgba\(0,61,255,0\.08\))?\)/);
+  assert.match(css, /:host\(\[data-algolia-working\]\) \[part="header"\]::before[^{]+{[^}]*width: var\(--algolia-header-progress, 0%\)/);
+  assert.match(css, /:host\(\[data-algolia-working\]\) \[part="header"\]::before[^{]+{[^}]*linear-gradient\(90deg, rgba\(0,61,255,0\.04\), rgba\(0,61,255,0\.16\)(?:, rgba\(0,61,255,0\.08\))?\)/);
+  assert.doesNotMatch(css, literal(legacyHeaderProgressVar));
+  assert.doesNotMatch(css, literal(legacyWorkingAttr));
   assert.match(css, /\[part="header"\] > \*[^{]+{[^}]*z-index: 1/);
   assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*align-self: center/);
   assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*min-width: 0/);

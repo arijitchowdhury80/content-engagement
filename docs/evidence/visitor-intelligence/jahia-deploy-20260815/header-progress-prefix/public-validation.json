@@ -1,0 +1,30 @@
+{
+  "urls": {
+    "chat": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=20260815-header-progress-prefix-a&verify=header-progress-prefix",
+    "theme": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-analogy-canvas-b&verify=header-progress-prefix"
+  },
+  "checks": {
+    "chatHasAlgoliaHeaderProgress": true,
+    "chatOmitsAcsHeaderProgress": true,
+    "chatOmitsDataAcsWorking": true,
+    "chatHasDataAlgoliaWorking": true,
+    "themeHasAlgoliaHeaderProgress": true,
+    "themeOmitsAcsHeaderProgress": true,
+    "themeOmitsDataAcsWorking": true,
+    "themeHasDataAlgoliaWorking": true,
+    "themeHasAlgoliaHeaderProgressFlow": true,
+    "themeOmitsAcsHeaderProgressFlow": true
+  },
+  "tlsNote": "Local Python cert store could not verify chain; retried with unverified context for byte/hash comparison only.",
+  "chat": {
+    "publicSha256": "df930a637e8e9bc4aae81b2dcc39896280fedbb6339615b4dea1390e0cdd7c8e",
+    "localSha256": "df930a637e8e9bc4aae81b2dcc39896280fedbb6339615b4dea1390e0cdd7c8e",
+    "hashesMatch": true
+  },
+  "theme": {
+    "publicSha256": "d99edae85053252d1df3b0950c1c30fc8449a7e974d5fc343d32f12f6a40695a",
+    "localSha256": "d99edae85053252d1df3b0950c1c30fc8449a7e974d5fc343d32f12f6a40695a",
+    "hashesMatch": true
+  },
+  "pass": true
+}
