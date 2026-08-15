@@ -28,11 +28,21 @@ test('processing trace drives the header gradient fill from real progress state'
   assert.match(traceBlock, /=zh\(\)/);
   assert.match(traceBlock, /requestAnimationFrame/);
   assert.match(traceBlock, /acTraceProgressCeiling/);
+  assert.match(
+    bundle,
+    /function acTraceStageFromSignals\([^)]*\)\{[^}]*return [A-Za-z]\|\|[A-Za-z]==="streaming"\?5:[A-Za-z]\?2:1\}/,
+    'streaming status should force the header progress target to 100% before first text delta'
+  );
   assert.match(traceBlock, /style\.setProperty\("--algolia-header-progress",String\([A-Za-z]\)\+"%"\)/);
   assert.match(traceBlock, /toggleAttribute\("data-algolia-working",!0\)/);
   assert.doesNotMatch(traceBlock, /style\.removeProperty\("--algolia-header-progress"\)/);
   assert.doesNotMatch(traceBlock, /removeAttribute\("data-algolia-working"\)/);
   assert.match(traceBlock, /aria-valuenow/);
+  assert.doesNotMatch(
+    bundle,
+    /acs-fill-sweep|\.acs-fill::after|\.acs-progress__fill::after/,
+    'progress bars should only move by width, with no internal shimmer sweep'
+  );
   assert.doesNotMatch(traceBlock, /querySelector\?\.\("algolia-chat"\)/);
   assert.doesNotMatch(traceBlock, /setTimeout\([^)]*--algolia-header-progress/);
 });
@@ -41,15 +51,20 @@ test('header progress skin keeps moving while work is active', () => {
   const themePath = new URL('../algolia-chat-theme-algolia.js', import.meta.url);
   const theme = fs.readFileSync(themePath, 'utf8');
 
-  assert.match(
+  assert.doesNotMatch(
     theme,
     /@keyframes algolia-header-progress-flow/,
-    'header fill should have an internal motion layer for long-running stages'
+    'header progress should not have a secondary internal shimmer animation'
   );
-  assert.match(
+  assert.doesNotMatch(
     theme,
-    /animation: algolia-header-progress-flow 1\.8s linear infinite/,
-    'header fill motion should be continuous instead of stage-jump only'
+    /animation: algolia-header-progress-flow/,
+    'header progress should only move by real width progress'
+  );
+  assert.doesNotMatch(
+    theme,
+    /background-size: 220% 100%/,
+    'header progress should not carry a moving background texture'
   );
   assert.doesNotMatch(theme, literal(legacyHeaderProgressFlow));
   assert.match(

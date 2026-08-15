@@ -39,14 +39,14 @@ PROACTIVE_CONTROLLER_SRC = ROOT / "frontend/chat-widget/algolia-proactive-contro
 HANDOFF_TO_ORCHESTRATOR_SRC = ROOT / "frontend/chat-widget/handoff-to-orchestrator.js"
 ENGAGE_SRC = ROOT / "frontend/chat-widget/algolia-chat-engage.js"
 THEME_SRC = ROOT / "frontend/chat-widget/algolia-chat-theme-algolia.js"
-EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/header-progress-prefix"
-CHAT_VERSION = "20260815-header-progress-prefix-a"
+EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/header-progress-no-shimmer"
+CHAT_VERSION = "20260815-header-progress-no-shimmer-b"
 TRACKER_VERSION = "20260815a"
 CONTEXT_COMPILER_VERSION = "20260815a"
 PROACTIVE_CONTROLLER_VERSION = "20260815e"
 HANDOFF_TO_ORCHESTRATOR_VERSION = "20260814b"
 ENGAGE_VERSION = "20260814d"
-THEME_VERSION = "20260815-analogy-canvas-b"
+THEME_VERSION = "20260815-header-progress-no-shimmer-b"
 
 
 def load_token() -> str:

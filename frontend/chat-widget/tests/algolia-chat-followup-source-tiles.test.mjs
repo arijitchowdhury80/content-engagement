@@ -26,7 +26,7 @@ test('follow-up discovery question renders after source pills as a borderless ra
   );
   assert.match(
     bundle,
-    /function e1\(\{turnId:t,followUps:n,inputBlocked:i,onPickFollowUp:a\}\)\{return w\.jsxs\("div",\{className:"acs-followup-wrap flex flex-col gap-2 pt-4"/,
+    /function e1\(\{turnId:t,followUps:n,inputBlocked:i,onPickFollowUp:a\}\)\{return w\.jsxs\("div",\{className:"acs-followup-wrap flex flex-col gap-2 pt-6"/,
     'follow-up section should use a dedicated visual wrapper'
   );
   assert.match(
@@ -36,7 +36,7 @@ test('follow-up discovery question renders after source pills as a borderless ra
   );
   assert.match(
     bundle,
-    /\.acs-followup-card\{[^}]*border:0[^}]*linear-gradient\(135deg,#ffffff,#edf5ff[^}]*backdrop-filter:blur\(16px\)[^}]*box-shadow:0 12px 26px/,
+    /\.acs-followup-wrap\{[^}]*margin-top:20px[^}]*padding-top:18px[^}]*border-top:1px solid color-mix\(in srgb,var\(--algolia-border\) 74%,transparent\)[^}]*\}\.acs-followup-card\{[^}]*border:0[^}]*linear-gradient\(135deg,#ffffff,#edf5ff[^}]*backdrop-filter:blur\(16px\)[^}]*box-shadow:0 12px 26px/,
     'follow-up prompt should share the source-pill glass language without a visible border'
   );
   assert.doesNotMatch(
@@ -81,8 +81,8 @@ test('source pills use Algolia white-to-blue 3D glass treatment', () => {
   );
   assert.match(
     bundle,
-    /\.acs-source-group-pill\{[^}]*linear-gradient\(135deg,#ffffff,#edf5ff\)[^}]*box-shadow:0 8px 18px/,
-    'source category pills should have Algolia white-to-blue gradient fill and raised depth'
+    /\.acs-source-section\{[^}]*margin-top:18px[^}]*padding-top:16px[^}]*border-top:1px solid color-mix\(in srgb,var\(--algolia-border\) 74%,transparent\)[^}]*\}\.acs-source-group-pill\{[^}]*linear-gradient\(135deg,#ffffff,#edf5ff\)[^}]*box-shadow:0 8px 18px/,
+    'source section should be separated from the answer before the raised source pills'
   );
   assert.match(
     bundle,
