@@ -71,9 +71,11 @@ The controller evaluates deterministic journey moments. Examples include:
 | Customer proof | Product-to-customer-story or customer-story dwell/scroll | Surface relevant customer proof. |
 | Journey shift | Repeated movement between technical and commercial pages | Help the visitor resolve the real tradeoff behind the path. |
 
-The controller owns the trigger decision. The Greetings Agent receives the selected moment, trigger, goal, persona, current page, journey, observed signals, inferred intent, friction, and `contextualFocus`.
+The controller owns the trigger decision. The Greetings Agent receives the selected moment, trigger, goal, persona, current page, `journeySummary`, raw journey, observed signals, inferred intent, friction, and `contextualFocus`.
 
 `contextualFocus` is the most specific observed product or feature context available. On a product page it comes from the current page. On a follow-on commercial page, such as Product → Pricing, it comes from the prior product page. For example, `/products/features/personalization` followed by `/pricing` sends `contextualFocus.label = "Personalization"` so the greeting can talk about Personalization value and cost instead of generic pricing.
+
+`journeySummary` is the higher-level story layer for personalization. It contains a bounded `productTrail`, recent `pageTrail`, `currentTransition`, and a safe internal `storyHint`. For example, Search → Personalization → AI Recommendations → Pricing sends a product trail with all three product interests and a story hint that frames the greeting as a cross-capability cost/value question. The visitor should not hear the raw path narrated back; the greeting should translate the pattern into a useful hook.
 
 In debug mode, `?algoliaProactiveDebug=1` exposes the latest suppression reason in `window.__algoliaProactiveLastSuppression`, dispatches `algolia-proactive-suppressed`, and displays a small debug status badge when the DOM is available. This makes invisible blocks such as `chat_already_open`, `cooldown_active`, or `already_eligible_for_page_moment` observable during QA.
 

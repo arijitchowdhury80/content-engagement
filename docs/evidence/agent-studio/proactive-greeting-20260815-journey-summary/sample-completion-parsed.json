@@ -1,0 +1,15 @@
+{
+  "schema": "ProactiveGreetingResponse.v1",
+  "opportunityId": "opp_journey_summary_sample",
+  "greeting": "If Search, Personalization, and Recommendations are all on the table, the real question is which levers earn their keep. I can break down the actual cost drivers.",
+  "chips": [
+    "Compare cost drivers",
+    "Prioritize capabilities",
+    "Which lever matters?"
+  ],
+  "handoffSummary": {
+    "moment": "commercial_evaluation",
+    "trigger": "product_to_pricing",
+    "messageGoal": "explain_cost_drivers"
+  }
+}

@@ -277,6 +277,66 @@
     return priorFocus ? { ...priorFocus, source: "prior_product_page" } : null;
   }
 
+  function uniqueProductTrail(pages) {
+    const seen = new Set();
+    return pages
+      .filter(isProduct)
+      .map(productFocus)
+      .filter(Boolean)
+      .filter((focus) => {
+        if (seen.has(focus.value)) return false;
+        seen.add(focus.value);
+        return true;
+      })
+      .map((focus) => ({
+        value: focus.value,
+        label: focus.label,
+        pagePath: focus.pagePath,
+        pageTitle: focus.pageTitle,
+      }))
+      .slice(-5);
+  }
+
+  function humanList(items) {
+    const values = items.map((item) => item?.label || item?.value).filter(Boolean);
+    if (values.length <= 1) return values[0] || "";
+    if (values.length === 2) return `${values[0]} and ${values[1]}`;
+    return `${values.slice(0, -1).join(", ")}, and ${values.at(-1)}`;
+  }
+
+  function journeySummaryFor(packet, fields) {
+    const pages = sessionPages(packet);
+    const productTrail = uniqueProductTrail(pages);
+    const currentTransition = fields.trigger || null;
+    let storyHint = "";
+    const productList = humanList(productTrail);
+
+    if (currentTransition === "product_to_pricing" && productTrail.length > 1) {
+      storyHint = `The visitor explored ${productList} before pricing; frame this as a cost/value question across those capabilities.`;
+    } else if (currentTransition === "product_to_pricing" && productTrail.length === 1) {
+      storyHint = `The visitor moved from ${productList} into pricing; frame this as a ${productList} cost/value question.`;
+    } else if (fields.trigger === "multiple_product_pages" && productTrail.length > 1) {
+      storyHint = `The visitor is comparing ${productList}; help turn the capability spread into a clearer decision.`;
+    } else if (fields.trigger === "product_to_customer_story" && productTrail.length) {
+      storyHint = `The visitor moved from ${productList} to customer proof; connect proof back to that product interest.`;
+    }
+
+    return {
+      currentTransition,
+      productTrail,
+      pageTrail: pages
+        .map((item) => ({
+          path: item.path,
+          title: item.title,
+          pageGroup: item.pageGroup,
+          topic: item.topic,
+          productFocusLabel: item.productFocusLabel,
+        }))
+        .slice(-6),
+      storyHint,
+    };
+  }
+
   function baseDecision(packet, fields) {
     const page = currentPage(packet);
     const events = recentEvents(packet);
@@ -296,6 +356,7 @@
         persona: packet?.profile?.persona || null,
         currentPage: page,
         contextualFocus: contextualFocusFor(packet),
+        journeySummary: journeySummaryFor(packet, fields),
         journey: sessionPages(packet).map((item) => ({
           path: item.path,
           title: item.title,

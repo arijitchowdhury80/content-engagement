@@ -1,0 +1,23 @@
+{
+  "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+  "target": "www Chat - Proactive Concierge",
+  "currentInstructionsLength": 9976,
+  "currentInstructionsSha256": "4a8c165c4a9cdd5cde93ee7c6c73d45bd3af8f35a8f9fa7a8866e9335ea55d90",
+  "intendedInstructionsLength": 11517,
+  "intendedInstructionsSha256": "eecccdf719a766364fc1c5cb99d70720b55ccedb1813194ae954a5763726a42e",
+  "rollback": "before-agent.json",
+  "preservesModel": "medium",
+  "preservesProviderId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+  "preservesToolCount": 1,
+  "preservesConfigKeys": [
+    "enableAlgoliaMcp",
+    "guardrail",
+    "max_iterations",
+    "max_tokens",
+    "memory",
+    "rate_limit",
+    "suggestions",
+    "thread_depth",
+    "useCache"
+  ]
+}

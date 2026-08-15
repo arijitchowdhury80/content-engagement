@@ -1,0 +1,8 @@
+{
+  "sameAgentId": true,
+  "instructionsShaMatches": true,
+  "modelPreserved": true,
+  "providerPreserved": true,
+  "toolCountPreserved": true,
+  "pass": true
+}

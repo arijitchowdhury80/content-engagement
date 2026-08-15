@@ -316,6 +316,64 @@ test('product to pricing carries exact prior product focus for personalized gree
   assert.equal(decision.agentPromptPacket.journey[0].title, 'Search Personalization');
 });
 
+test('product to pricing summarizes multi-product journey for greeting personalization', () => {
+  const { context } = createHarness({
+    locationPath: '/pricing',
+    pages: [
+      page({
+        pageId: 'page_search',
+        path: '/products/search',
+        title: 'Search',
+        pageGroup: 'product',
+        topic: 'product_research',
+        productFocus: 'search',
+        productFocusLabel: 'Search',
+        dwellMs: 9000,
+      }),
+      page({
+        pageId: 'page_personalization',
+        path: '/products/features/personalization',
+        title: 'Personalization',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        productFocus: 'personalization',
+        productFocusLabel: 'Personalization',
+        dwellMs: 14000,
+      }),
+      page({
+        pageId: 'page_recommendations',
+        path: '/products/ai-recommendations',
+        title: 'AI Recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        productFocus: 'recommendations',
+        productFocusLabel: 'AI Recommendations',
+        dwellMs: 11000,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        title: 'Pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 1000,
+      }),
+    ],
+  });
+
+  const decision = opportunity(context);
+
+  assert.equal(decision.trigger, 'product_to_pricing');
+  assert.equal(decision.agentPromptPacket.contextualFocus.label, 'AI Recommendations');
+  assert.equal(
+    decision.agentPromptPacket.journeySummary.productTrail.map((item) => item.label).join(' > '),
+    'Search > Personalization > AI Recommendations'
+  );
+  assert.equal(decision.agentPromptPacket.journeySummary.currentTransition, 'product_to_pricing');
+  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /Search, Personalization, and AI Recommendations/);
+  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /cost\/value question/);
+});
+
 test('product to pricing overrides stale lower-priority product dwell opportunity', () => {
   const { context } = createHarness({
     locationPath: '/pricing',

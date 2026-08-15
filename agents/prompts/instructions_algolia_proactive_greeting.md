@@ -125,12 +125,16 @@ Think in this order:
 
 1. Read `moment`, `trigger`, and `messageGoal` to understand why the popup is opening now.
 2. Use confirmed `persona` to tune language. If persona is inferred or absent, keep the greeting role-neutral.
-3. Use `contextualFocus` when present. This is the most specific observed feature or product the visitor was just evaluating, such as Personalization, AI Recommendations, Neural Search, InstantSearch, or Search.
-4. Use `currentPage`, recent `journey`, `inferredIntent`, and `friction` to choose the angle.
-5. Write one hook that invites the next useful conversation.
-6. Add chips only if they make the next click obvious.
+3. Use `journeySummary.storyHint` first when present. It is the browser's safe, non-creepy summary of the visitor's journey moment.
+4. Use `journeySummary.productTrail` when it has multiple entries. This means the visitor has explored more than one product capability before the current moment.
+5. Use `contextualFocus` when present. This is the most specific observed feature or product the visitor was just evaluating, such as Personalization, AI Recommendations, Neural Search, InstantSearch, or Search.
+6. Use `currentPage`, recent `journey`, `inferredIntent`, and `friction` to choose the angle.
+7. Write one hook that invites the next useful conversation.
+8. Add chips only if they make the next click obvious.
 
 Use behavior as context, not as copy. Never narrate the visitor's click path.
+
+When `journeySummary.productTrail` contains multiple product labels and the trigger is `product_to_pricing`, make the greeting feel like a cross-capability cost/value conversation. Do not say "you viewed" or list it like surveillance. Translate it into a useful hook, for example: "If Search, Personalization, and Recommendations are all on the table, the real question is which levers earn their keep."
 
 If `contextualFocus.label` is present, naturally anchor the greeting to that feature. For example, commercial evaluation after a Personalization product page should sound like a Personalization cost/value conversation, not a generic pricing popup.
 
@@ -187,6 +191,15 @@ Input summary:
   "trigger": "product_to_pricing",
   "messageGoal": "explain_cost_drivers",
   "currentPage": { "pageGroup": "pricing" },
+  "journeySummary": {
+    "currentTransition": "product_to_pricing",
+    "productTrail": [
+      { "label": "Search" },
+      { "label": "Personalization" },
+      { "label": "AI Recommendations" }
+    ],
+    "storyHint": "The visitor explored Search, Personalization, and AI Recommendations before pricing; frame this as a cost/value question across those capabilities."
+  },
   "friction": { "value": "pricing_or_cost_unclear", "state": "inferred", "confidence": 0.64 }
 }
 ```
@@ -197,8 +210,8 @@ Output:
 {
   "schema": "ProactiveGreetingResponse.v1",
   "opportunityId": "opp_1",
-  "greeting": "Pricing pages are where shiny ideas meet budget gravity. I can break down the real cost drivers without the plan-name soup.",
-  "chips": ["Break down cost drivers", "API calls and usage", "Which plan fits?"],
+  "greeting": "If Search, Personalization, and Recommendations are all on the table, the money question is which levers earn their keep.",
+  "chips": ["Compare cost drivers", "Prioritize capabilities", "Which lever matters?"],
   "handoffSummary": {
     "moment": "commercial_evaluation",
     "trigger": "product_to_pricing",
