@@ -108,3 +108,24 @@ ${followUp}`;
   assert.doesNotMatch(result.text, /Are you optimizing for bot protection first/);
   assert.match(result.text, /Create a dedicated Search API key/);
 });
+
+test('contextual trailing discovery question is split out of the answer body', () => {
+  const { Xl, _R } = loadDiscoverySplitters();
+  const followUp =
+    "Since you're looking at this from a cost and configuration angle, are you currently seeing unexplained spikes in your logs, or are you mapping out the projected costs for a new high-traffic launch?";
+  const content = `The Tradeoff: High responsiveness (request-per-keystroke) increases conversion by making the site feel "instant," but it increases the operation count.
+Most teams find the sweet spot by debouncing at 100-300ms.
+
+${followUp}`;
+
+  const result = _R(
+    { discoveryLedgerRef: { current: null } },
+    { query: 'What counts as an API call?' },
+    { ledger: Xl(), turn: 1 },
+    content
+  );
+
+  assert.equal(result.followUp, followUp);
+  assert.doesNotMatch(result.text, /Since you're looking at this from a cost and configuration angle/);
+  assert.match(result.text, /The Tradeoff:/);
+});
