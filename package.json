@@ -7,7 +7,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "local:chat": "python3 tools/local_chat_parity_server.py",
+    "test:chat-widget": "node --test frontend/chat-widget/tests/*.test.mjs",
+    "test:local-chat-parity": "node tools/inspection/validate_local_chat_parity.mjs",
+    "test": "npm run test:chat-widget && npm run test:local-chat-parity"
   },
   "repository": {
     "type": "git",

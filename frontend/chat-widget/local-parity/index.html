@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Algolia Local Chat Parity</title>
+    <style>
+      :root {
+        color: #23263b;
+        background: #f7f8ff;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      body {
+        margin: 0;
+        min-height: 180vh;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        min-height: 72px;
+        padding: 0 48px;
+        color: #fff;
+        background: #04042c;
+        box-shadow: 0 12px 30px rgba(8, 10, 40, 0.18);
+      }
+
+      header strong {
+        font-size: 21px;
+      }
+
+      nav {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      nav a,
+      button[data-local-action] {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 14px;
+        color: inherit;
+        background: rgba(255, 255, 255, 0.11);
+        cursor: pointer;
+        font: inherit;
+        text-decoration: none;
+      }
+
+      nav a:hover,
+      button[data-local-action]:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      main {
+        width: min(980px, calc(100% - 48px));
+        margin: 56px auto 160px;
+      }
+
+      .hero {
+        padding: 44px 0 28px;
+      }
+
+      .eyebrow {
+        color: #0540f2;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 820px;
+        margin: 14px 0;
+        font-size: clamp(36px, 7vw, 76px);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      p {
+        max-width: 780px;
+        font-size: 18px;
+        line-height: 1.62;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin-top: 32px;
+      }
+
+      .tile {
+        min-height: 148px;
+        border: 1px solid rgba(80, 88, 150, 0.18);
+        border-radius: 8px;
+        padding: 22px;
+        background: #fff;
+        box-shadow: 0 18px 42px rgba(30, 38, 90, 0.08);
+      }
+
+      .tile h2 {
+        margin: 0 0 10px;
+        font-size: 20px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin: 34px 0;
+      }
+
+      .search-box {
+        width: min(560px, 100%);
+        border: 1px solid rgba(80, 88, 150, 0.26);
+        border-radius: 999px;
+        padding: 14px 18px;
+        font: inherit;
+        box-shadow: 0 10px 24px rgba(30, 38, 90, 0.08);
+      }
+
+      .debug-panel {
+        position: fixed;
+        right: 18px;
+        bottom: 94px;
+        z-index: 30;
+        width: min(420px, calc(100vw - 36px));
+        max-height: 42vh;
+        overflow: auto;
+        border: 1px solid rgba(80, 88, 150, 0.22);
+        border-radius: 8px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow: 0 18px 42px rgba(30, 38, 90, 0.18);
+        font-size: 12px;
+      }
+
+      .debug-panel pre {
+        white-space: pre-wrap;
+      }
+    </style>
+    <script>
+      window.ALGOLIA_PROACTIVE_CONFIG = {
+        appId: "0EXRPAXB56",
+        apiKey: "local_search_key",
+        greetingsAgentId: "local_greetings_agent",
+        productDwellMs: 10000,
+        productScrollDepth: 50,
+        solutionDwellMs: 10000,
+        solutionScrollDepth: 50,
+        pricingDwellMs: 8000,
+        customerProofDwellMs: 12000,
+        customerProofScrollDepth: 60,
+      };
+
+      window.ALGOLIA_VISITOR_CONFIG = {
+        cookieName: "",
+      };
+
+      const localGreetingResponse = (request) => {
+        const text = request?.messages?.[0]?.parts?.[0]?.text || "";
+        const packetText = text.replace(/^PROACTIVE_GREETING_REQUEST\s*/, "");
+        const packet = JSON.parse(packetText);
+        window.__localAgentCalls = (window.__localAgentCalls || 0) + 1;
+        return {
+          schema: "ProactiveGreetingResponse.v1",
+          opportunityId: packet.opportunityId,
+          greeting:
+            "Hello, explorer. Looks like you are comparing the path, not just admiring the scenery. Good. I can help you connect the dots, find proof, or go straight into implementation reality.",
+          chips: ["Show customer proof", "Compare tradeoffs", "Implementation reality"],
+          handoffSummary: {
+            moment: packet.moment,
+            trigger: packet.trigger,
+            messageGoal: packet.messageGoal,
+          },
+        };
+      };
+
+      const originalFetch = window.fetch?.bind(window);
+      window.fetch = async (url, options = {}) => {
+        if (String(url).includes("/agent-studio/1/agents/")) {
+          const request = JSON.parse(options.body || "{}");
+          return new Response(JSON.stringify(localGreetingResponse(request)), {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          });
+        }
+        if (originalFetch) return originalFetch(url, options);
+        return new Response("{}", { status: 200, headers: { "content-type": "application/json" } });
+      };
+    </script>
+    <script src="/chat/algolia-chat-theme-algolia.js"></script>
+    <script src="/chat/algolia-chat.js"></script>
+    <script src="/chat/algolia-engagement-tracker.js"></script>
+    <script src="/chat/algolia-context-compiler.js"></script>
+    <script src="/chat/algolia-proactive-controller.js"></script>
+    <script src="/chat/handoff-to-orchestrator.js"></script>
+    <script src="/chat/algolia-chat-engage.js"></script>
+    <script src="/chat/algolia-chat-form-tool.js"></script>
+    <script src="/chat/algolia-confidence-badge.js"></script>
+  </head>
+  <body>
+    <header>
+      <strong>Algolia</strong>
+      <nav aria-label="Local parity navigation">
+        <a href="/products/ai-search">AI Search</a>
+        <a href="/products/ai-recommendations">Recommendations</a>
+        <a href="/products/features/personalization">Personalization</a>
+        <a href="/solutions/ecommerce">Commerce Solution</a>
+        <a href="/developers">Developers</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/customers">Customers</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow" id="page-eyebrow">Local parity</div>
+        <h1 id="page-title">Algolia.com chat stack local parity harness</h1>
+        <p id="page-summary">
+          This local page loads the project-owned chat widget scripts in Jahia deploy order,
+          writes the same browser storage keys, compiles the same context packet, and lets the
+          proactive controller render a mock Agent Studio greeting without mutating Jahia.
+        </p>
+        <input class="search-box" aria-label="Site search" placeholder="Search Algolia..." />
+        <div class="actions">
+          <button data-local-action="cta_demo">Book a demo</button>
+          <button data-local-action="cta_docs">View docs</button>
+          <button data-local-action="cta_case_study">Find customer proof</button>
+        </div>
+      </section>
+
+      <section class="grid" aria-label="Content sections">
+        <article class="tile">
+          <h2>Product fit</h2>
+          <p>Explore how AI Search, Recommendations, and Personalization solve different moments.</p>
+        </article>
+        <article class="tile">
+          <h2>Implementation</h2>
+          <p>Check how the stack fits with frontend, catalog, events, and merchandising systems.</p>
+        </article>
+        <article class="tile">
+          <h2>Business value</h2>
+          <p>Move from the feature tour into outcomes, effort, proof, and next steps.</p>
+        </article>
+      </section>
+    </main>
+
+    <div class="debug-panel" aria-live="polite">
+      <strong>Local parity debug</strong>
+      <pre id="local-debug-output">Waiting for signals...</pre>
+    </div>
+
+    <algolia-chat
+      app-id="0EXRPAXB56"
+      search-api-key="local_search_key"
+      index-name="Algolia_Prod_Copy_Vanilla"
+      brand-name="Algolia Assistant"
+      product-title="Algolia Assistant"
+      subtitle="Fully grounded: every answer cites its source."
+      theme="algolia"
+      default-open-mode="docked"
+      auto-engage
+      sample-questions='[{"section":"Test questions","questions":["What counts as an API call?","Can marketers manage search without developers?","Show me customer proof for commerce search."]}]'
+    ></algolia-chat>
+    <algolia-chat-engage concierge-agent-id="local_greetings_agent"></algolia-chat-engage>
+    <algolia-chat-form tool-name="submit_lead_form" title="Get in touch"></algolia-chat-form>
+
+    <script>
+      const pathData = {
+        "/products/ai-search": ["Product", "AI Search", "You are on the AI Search product page."],
+        "/products/ai-recommendations": [
+          "Product",
+          "AI Recommendations",
+          "You are on the AI Recommendations product page.",
+        ],
+        "/products/features/personalization": [
+          "Product",
+          "Personalization",
+          "You are on the Personalization product page.",
+        ],
+        "/solutions/ecommerce": [
+          "Solution",
+          "Commerce Solution",
+          "You are on a commerce solution page.",
+        ],
+        "/developers": ["Developer", "Developer Center", "You are on a developer page."],
+        "/pricing": ["Pricing", "Pricing", "You are on the pricing page."],
+        "/customers": ["Customer proof", "Customers", "You are on the customer proof page."],
+      };
+
+      function renderLocalPage() {
+        const [eyebrow, title, summary] =
+          pathData[location.pathname] || pathData["/products/ai-search"];
+        document.title = `${title} | Local Chat Parity`;
+        document.getElementById("page-eyebrow").textContent = eyebrow;
+        document.getElementById("page-title").textContent = title;
+        document.getElementById("page-summary").textContent = summary;
+      }
+
+      function updateDebug() {
+        const output = document.getElementById("local-debug-output");
+        const tracker = window.algoliaEngagementTracker?.snapshot?.();
+        const packet = window.algoliaContextCompiler?.compile?.();
+        const proactive = window.algoliaProactiveController?.debug?.();
+        output.textContent = JSON.stringify(
+          {
+            path: location.pathname,
+            storage: {
+              profile: !!localStorage.getItem("algolia_profile"),
+              session: !!sessionStorage.getItem("algolia_session"),
+              events: !!sessionStorage.getItem("algolia_events"),
+            },
+            trackerPages: tracker?.session?.pages?.length || 0,
+            trackerEvents: tracker?.events?.length || 0,
+            packetCurrentPage: packet?.currentPage,
+            decision: proactive?.decision,
+            opportunities: proactive?.state?.opportunities || [],
+            trace: (proactive?.trace || []).slice(-6),
+          },
+          null,
+          2
+        );
+      }
+
+      document.addEventListener("click", (event) => {
+        const action = event.target?.closest?.("[data-local-action]")?.dataset?.localAction;
+        if (action) window.algoliaEngagementTracker?.track?.("cta_click", { action });
+      });
+
+      window.addEventListener("popstate", renderLocalPage);
+      document.addEventListener("algolia-engagement-signal", () => setTimeout(updateDebug, 50));
+      document.addEventListener("algolia-proactive-opportunity", () => setTimeout(updateDebug, 50));
+      renderLocalPage();
+      setInterval(updateDebug, 1000);
+    </script>
+  </body>
+</html>

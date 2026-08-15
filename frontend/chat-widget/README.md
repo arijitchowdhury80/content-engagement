@@ -21,3 +21,28 @@ source under a dated `dist/<date>/local-reference/` tree again.
 - `algolia-chat-form-tool.js` — lead form client tool.
 - `algolia-chat-theme-algolia.js` — Algolia brand theme.
 - `algolia-confidence-badge.js` — confidence badge bundle.
+
+## Local Parity Harness
+
+Use localhost as the integration lab before touching Jahia:
+
+```bash
+npm run local:chat
+```
+
+Open `http://127.0.0.1:5177/products/ai-recommendations?algoliaChatDebug=1&algoliaProactiveDebug=1`.
+
+The local harness serves `local-parity/index.html` for website routes and loads the editable
+widget files from this directory through `/chat/<file>.js`. It mocks only the Agent Studio
+Greetings Agent response; tracker storage, context compilation, proactive controller decisions,
+and widget rendering use the real project-owned scripts.
+
+Automated smoke validation:
+
+```bash
+npm run test:local-chat-parity
+```
+
+This proves the local page writes `algolia_profile`, `algolia_session`, and `algolia_events`,
+compiles an `AlgoliaContextPacket.v1`, sends one Greetings Agent completion request, and renders
+a proactive greeting without mutating Jahia.
