@@ -148,7 +148,7 @@
       // Header height matches the md:h-20 (80px) sticky nav used on the site.
       headerHeight: '72px',
       // Panel geometry (docked and normal).
-      panelWidth: '75vw', panelHeight: '75vh',
+      panelWidth: 'min(1080px, 70vw)', panelHeight: '75vh',
       dockedWidth: '420px', dockedHeight: '500px',
       dockedMinWidth: '320px', dockedMinHeight: '400px',
       dockedOffsetBottom: '88px', dockedOffsetRight: '24px',
@@ -189,6 +189,7 @@
       '.bg-algolia-surface.p-6.shadow-algolia-2 { position: relative; overflow: visible; padding: 10px 2px 12px !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }',
       '.uppercase.tracking-algolia-caps { display: inline-flex; width: fit-content; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; letter-spacing: var(--algolia-tracking-caps); color: var(--algolia-text-muted) !important; box-shadow: none !important; }',
       '.mx-auto.flex.w-full.max-w-algolia-maxw.flex-1.flex-col.overflow-hidden { max-width: 100% !important; }',
+      '.w-full.max-w-algolia-measure { max-width: var(--algolia-msg-max-w) !important; }',
       '.flex.flex-1.flex-col.items-center.overflow-y-auto.px-4.pb-8.pt-6.sm\\:px-6.sm\\:pt-10 { padding-top: 20px !important; padding-bottom: 20px !important; }',
       '.mx-auto.flex.w-full.max-w-algolia-measure.flex-col.items-center.gap-5.px-4.text-center { gap: 12px !important; }',
       '.shrink-0.border-t.border-algolia-border.bg-algolia-surface { border-top: 0 !important; }',
@@ -201,7 +202,7 @@
       '.acs-step--active .acs-step__label { color: var(--algolia-text-secondary) !important; }',
       '.acs-step--active .acs-step__detail { color: var(--algolia-text-muted) !important; }',
       '.acs-progress { display: none !important; }',
-      // On mobile viewports the 75vw normal-mode panel would be too narrow.
+      // On mobile viewports the normal-mode panel would be too narrow.
       // Override to near-full-width below 640px.
       '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="header"] { gap: 10px; padding-left: 16px !important; padding-right: 12px !important; } [part="header"] h1 { font-size: 16px; line-height: 1.1; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="header"]::after { content: "Grounded answers cite sources."; left: 64px; top: 45px; max-width: calc(100% - 182px); } [part="composer"] { margin: 8px 14px 12px !important; } [part="composer-input"] { font-size: var(--algolia-fs-sm); } }',
       // The sample-questions popup uses `position:absolute; bottom:100%` and

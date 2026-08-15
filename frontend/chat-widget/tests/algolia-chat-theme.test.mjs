@@ -39,6 +39,7 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.equal(theme.typography.scale.sm, '12px');
   assert.equal(theme.typography.scale.base, '14px');
   assert.equal(theme.layout.headerHeight, '72px');
+  assert.equal(theme.layout.panelWidth, 'min(1080px, 70vw)');
   assert.equal(theme.layout.dockedHeight, '500px');
   assert.equal(theme.space.maxWidth, '100%');
   assert.equal(theme.space.msgMaxW, 'min(920px, calc(100% - 56px))');
@@ -70,6 +71,7 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2[^{]+{[^}]*box-shadow: none !important/);
   assert.match(css, /\.uppercase\.tracking-algolia-caps[^{]+{[^}]*border: 0 !important/);
   assert.match(css, /\.mx-auto\.flex\.w-full\.max-w-algolia-maxw\.flex-1\.flex-col\.overflow-hidden[^{]+{[^}]*max-width: 100% !important/);
+  assert.match(css, /\.w-full\.max-w-algolia-measure\s*{[^}]*max-width: var\(--algolia-msg-max-w\) !important/);
   assert.match(css, /\.flex\.flex-1\.flex-col\.items-center\.overflow-y-auto\.px-4\.pb-8\.pt-6\.sm\\:px-6\.sm\\:pt-10[^{]+{[^}]*padding-top: 20px !important/);
   assert.match(css, /\.flex\.flex-1\.flex-col\.items-center\.overflow-y-auto\.px-4\.pb-8\.pt-6\.sm\\:px-6\.sm\\:pt-10[^{]+{[^}]*padding-bottom: 20px !important/);
   assert.match(css, /\.mx-auto\.flex\.w-full\.max-w-algolia-measure\.flex-col\.items-center\.gap-5\.px-4\.text-center[^{]+{[^}]*gap: 12px !important/);
