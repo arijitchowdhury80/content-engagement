@@ -13,6 +13,13 @@ non-algolia.com surfaces, or host HTML from this project.
 - `admin/build_algolia_com_agents.mjs` — create/list/patch script for configured agents.
 - `checks/` — read-only live Agent Studio inspection and smoke-test scripts.
 
+Important prompt files:
+
+- `prompts/system_algolia_arrie_concierge.md` — aRRIe personality for the proactive greeting agent.
+- `prompts/system_algolia_orchestrator.md` — aRRIe personality, source authority, and turn flow for the main orchestrator.
+- `prompts/instructions_algolia_proactive_greeting.md` — proactive greeting JSON contract and examples.
+- `prompts/instructions_algolia_orchestrator.md` — grounded answer contract, retrieval choreography, specialist routing, and proactive handoff handling.
+
 Do not reintroduce the old names `agents/definitions/` or `agents/probes/`. Prompt source belongs
 in `agents/prompts/`; diagnostics belong in `agents/checks/`.
 

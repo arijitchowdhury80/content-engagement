@@ -1,0 +1,695 @@
+data: {"type": "start", "messageId": "alg_msg_mlLQRNF38J4NoDLN", "messageMetadata": {}}
+
+data: {"type": "start-step"}
+
+data: {"type": "tool-input-start", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "toolName": "algolia_search_index_algolia_prod_copy_vanilla"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": ""}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": "{\"originalQuery\": \"I"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": " am comparing Algolia AI Search, Recommendations"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": ", and"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": " Personalization for an ecommerce site. How should I think about the tradeoff?"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": "\", \"queries\": "}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": "[{\"query\": \"Algolia AI Search vs Recommend vs Personalization ecommerce tradeoff\"}, {\"query\": \"Algolia AI Search product features ecommerce\"}, {\"query\": \"Algolia Recommend product features ecommerce\"}, {\"query\": \"Algolia AI Personalization product features ecommerce\"}], \"sessionId\": \"a"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": "-123-b-456-c-789-d-012"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": "\", \"userIntent\": \"User"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": " wants to understand the functional and strategic differences between Algolia's AI Search,"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": " Recommendations,"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": " and Personalization features to decide how to implement them for an ecommerce site."}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "inputTextDelta": "\"}"}
+
+data: {"type": "tool-input-available", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "toolName": "algolia_search_index_algolia_prod_copy_vanilla", "input": {"originalQuery": "I am comparing Algolia AI Search, Recommendations, and Personalization for an ecommerce site. How should I think about the tradeoff?", "queries": [{"query": "Algolia AI Search vs Recommend vs Personalization ecommerce tradeoff"}, {"query": "Algolia AI Search product features ecommerce"}, {"query": "Algolia Recommend product features ecommerce"}, {"query": "Algolia AI Personalization product features ecommerce"}], "sessionId": "a-123-b-456-c-789-d-012", "userIntent": "User wants to understand the functional and strategic differences between Algolia's AI Search, Recommendations, and Personalization features to decide how to implement them for an ecommerce site."}}
+
+data: {"type": "tool-output-available", "toolCallId": "chatcmpl-tool-8a80091268d0a340", "output": {"hits": [{"abstract": "Personalization features can feel overwhelming, so we've put together three areas to focus on first: mobile, discovery, and recommendations. 3 ways to improve the customer experience with AI and personalization", "environment": "prod20260722", "transform_source": "aant-blogsEntry", "category": "Ecommerce", "tags": ["E-commerce"], "url": "/de/blog/ecommerce/3-ways-to-improve-ux-with-ai-and-personalization", "is404": false, "facets": {"facet0": ["Ecommerce"]}, "source": "Blog", "language_code": "de", "lastUpdated": "2026-07-21T21:47:02.905Z", "objectID": "de_59368e29-1a70-42dc-9818-003520ef31c1", "indexed_at": 1784670422905, "published_at": 1712838780000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Catherine Dee"]}, "title": "3 ways to improve the customer experience with AI and personalization - Algolia Blog | Algolia", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/3-ways-to-improve-ux-with-ai-and-personalization.webp", "authors": [{"name": "Catherine Dee", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/catherine-dee.png", "desc": "Search and Discovery writer"}], "description": "Personalization features can feel overwhelming, so we've put together three areas to focus on first: mobile, discovery, and recommendations.", "keywords": ["e-commerce"]}, {"authors": [{"name": "Catherine Dee", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/catherine-dee.png", "desc": "Search and Discovery writer"}], "url": "/blog/ecommerce/3-ways-to-improve-ux-with-ai-and-personalization", "indexed_at": 1784670422896, "is404": false, "lastUpdated": "2026-07-21T21:47:02.896Z", "source": "Blog", "transform_source": "aant-blogsEntry", "tags": ["E-commerce"], "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Catherine Dee"]}, "objectID": "en_59368e29-1a70-42dc-9818-003520ef31c1", "description": "Personalization features can feel overwhelming, so we've put together three areas to focus on first: mobile, discovery, and recommendations.", "keywords": ["e-commerce"], "published_at": 1712838780000, "environment": "prod20260722", "facets": {"facet0": ["Ecommerce"]}, "title": "3 ways to improve the customer experience with AI and personalization - Algolia Blog | Algolia", "category": "Ecommerce", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/3-ways-to-improve-ux-with-ai-and-personalization.webp", "abstract": "Personalization features can feel overwhelming, so we've put together three areas to focus on first: mobile, discovery, and recommendations. 3 ways to improve the customer experience with AI and personalization", "language_code": "en"}, {"lastUpdated": "2026-07-21T21:47:01.428Z", "objectID": "fr_59368e29-1a70-42dc-9818-003520ef31c1", "transform_source": "aant-blogsEntry", "title": "3 ways to improve the customer experience with AI and personalization - Algolia Blog | Algolia", "category": "Ecommerce", "description": "Personalization features can feel overwhelming, so we've put together three areas to focus on first: mobile, discovery, and recommendations.", "environment": "prod20260722", "source": "Blog", "tags": ["E-commerce"], "authors": [{"name": "Catherine Dee", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/catherine-dee.png", "desc": "Search and Discovery writer"}], "url": "/fr/blog/ecommerce/3-ways-to-improve-ux-with-ai-and-personalization", "keywords": ["e-commerce"], "language_code": "fr", "facets": {"facet0": ["Ecommerce"]}, "published_at": 1712838780000, "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/3-ways-to-improve-ux-with-ai-and-personalization.webp", "abstract": "Personalization features can feel overwhelming, so we've put together three areas to focus on first: mobile, discovery, and recommendations. 3 ways to improve the customer experience with AI and personalization", "indexed_at": 1784670421428, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Catherine Dee"]}, "is404": false}, {"lastUpdated": "2026-07-21T21:47:06.290Z", "objectID": "de_a51a7df0-ac9a-4f2f-a6a7-054a928c3808", "abstract": "We surveyed 900 IT and business decision makers about their plans for ecommerce site search personalization in 2023. Ecommerce trends for 2023: Personalization", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Piyush Patel"]}, "is404": false, "environment": "prod20260722", "transform_source": "aant-blogsEntry", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/ecommerce-site-search-trends-2023.webp", "authors": [{"name": "Piyush Patel", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/piyush-patel.png", "desc": "Chief Strategic Business Development Officer"}], "language_code": "de", "facets": {"facet0": ["Ecommerce"]}, "published_at": 1718269740000, "category": "Ecommerce", "tags": ["E-commerce"], "description": "We surveyed 900 IT and business decision makers about their plans for ecommerce site search personalization in 2023.", "indexed_at": 1784670426290, "source": "Blog", "title": "Ecommerce trends for 2023: Personalization - Algolia Blog | Algolia", "url": "/de/blog/ecommerce/ecommerce-trends-for-2023-personalization", "keywords": ["e-commerce"]}, {"transform_source": "aant-blogsEntry", "tags": ["E-commerce"], "facets": {"facet0": ["Ecommerce"]}, "published_at": 1718269740000, "category": "Ecommerce", "authors": [{"name": "Piyush Patel", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/piyush-patel.png", "desc": "Chief Strategic Business Development Officer"}], "url": "/blog/ecommerce/ecommerce-trends-for-2023-personalization", "keywords": ["e-commerce"], "abstract": "We surveyed 900 IT and business decision makers about their plans for ecommerce site search personalization in 2023. Ecommerce trends for 2023: Personalization", "language_code": "en", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Piyush Patel"]}, "environment": "prod20260722", "title": "Ecommerce trends for 2023: Personalization - Algolia Blog | Algolia", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/ecommerce-site-search-trends-2023.webp", "indexed_at": 1784670426192, "is404": false, "lastUpdated": "2026-07-21T21:47:06.192Z", "objectID": "en_a51a7df0-ac9a-4f2f-a6a7-054a928c3808_0_1", "source": "Blog", "description": "We surveyed 900 IT and business decision makers about their plans for ecommerce site search personalization in 2023."}, {"url": "/fr/blog/ecommerce/ecommerce-trends-for-2023-personalization", "description": "We surveyed 900 IT and business decision makers about their plans for ecommerce site search personalization in 2023.", "keywords": ["e-commerce"], "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Piyush Patel"]}, "lastUpdated": "2026-07-21T21:47:06.119Z", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/ecommerce-site-search-trends-2023.webp", "tags": ["E-commerce"], "language_code": "fr", "published_at": 1718269740000, "is404": false, "environment": "prod20260722", "objectID": "fr_a51a7df0-ac9a-4f2f-a6a7-054a928c3808", "source": "Blog", "transform_source": "aant-blogsEntry", "authors": [{"name": "Piyush Patel", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/piyush-patel.png", "desc": "Chief Strategic Business Development Officer"}], "abstract": "We surveyed 900 IT and business decision makers about their plans for ecommerce site search personalization in 2023. Ecommerce trends for 2023: Personalization", "title": "Ecommerce trends for 2023: Personalization - Algolia Blog | Algolia", "indexed_at": 1784670426119, "facets": {"facet0": ["Ecommerce"]}, "category": "Ecommerce"}, {"source": "Blog", "tags": ["E-commerce"], "keywords": ["e-commerce"], "abstract": "E-commerce personalization is complex. Learn how to think about and implement it so you can drive engagement without losing your users\u2019 trust. E-commerce personalization: pitfalls, tradeoffs, and solutions", "language_code": "de", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"]}, "is404": false, "lastUpdated": "2026-07-21T21:44:54.118Z", "transform_source": "aant-blogsEntry", "title": "Ecommerce personalization: pitfalls &amp; solutions | Algolia", "url": "/de/blog/ecommerce/e-commerce-personalization-pitfalls-tradeoffs-solutions", "objectID": "de_e3bf7e02-50b8-4117-a3cd-d8e79ff6e48b", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/e-commerce-personalization-pitfalls.webp", "authors": [], "indexed_at": 1784670294118, "environment": "prod20260722", "category": "Ecommerce", "description": "E-commerce personalization is complex. Learn how to think about and implement it so you can drive engagement without losing your users\u2019 trust.", "facets": {"facet0": ["Ecommerce"]}, "published_at": 1690870740000}, {"url": "/de/blog/ecommerce/how-ecommerce-ai-is-reshaping-business", "environment": "prod20260722", "description": "Artificial intelligence in ecommerce: enhancing online shopping, search, recommendations, customer service, shopper happiness, and retailer success.", "keywords": ["e-commerce"], "language_code": "de", "indexed_at": 1784670425034, "published_at": 1716881520000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Vincent Caruana"]}, "lastUpdated": "2026-07-21T21:47:05.034Z", "facets": {"facet0": ["Ecommerce"]}, "source": "Blog", "transform_source": "aant-blogsEntry", "category": "Ecommerce", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-ecommerce-ai.webp", "abstract": "Artificial intelligence in ecommerce: enhancing online shopping, search, recommendations, customer service, shopper happiness, and retailer success. How ecommerce AI is reshaping business", "tags": ["E-commerce"], "is404": false, "objectID": "de_40853f49-f874-4fe5-9bc9-69ff633404d9", "title": "How ecommerce AI is reshaping business | Algolia", "authors": [{"name": "Vincent Caruana", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/vincent-caruana.jpeg", "desc": "Senior Digital Marketing Manager, SEO"}]}, {"transform_source": "aant-blogsEntry", "abstract": "Artificial intelligence in ecommerce: enhancing online shopping, search, recommendations, customer service, shopper happiness, and retailer success. How ecommerce AI is reshaping business", "facets": {"facet0": ["Ecommerce"]}, "published_at": 1716881520000, "objectID": "en_40853f49-f874-4fe5-9bc9-69ff633404d9", "source": "Blog", "title": "How ecommerce AI is reshaping business | Algolia", "url": "/blog/ecommerce/how-ecommerce-ai-is-reshaping-business", "indexed_at": 1784670425008, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Vincent Caruana"]}, "lastUpdated": "2026-07-21T21:47:05.008Z", "description": "Artificial intelligence in ecommerce: enhancing online shopping, search, recommendations, customer service, shopper happiness, and retailer success.", "is404": false, "environment": "prod20260722", "category": "Ecommerce", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-ecommerce-ai.webp", "tags": ["E-commerce"], "authors": [{"name": "Vincent Caruana", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/vincent-caruana.jpeg", "desc": "Senior Digital Marketing Manager, SEO"}], "keywords": ["e-commerce"], "language_code": "en"}, {"thumbnail": "", "tags": [], "authors": [], "url": "/competitors/compare-algolia-vs-vertex-ai", "keywords": [], "abstract": "AI Commerce Search (formerly Vertex AI) is Google&rsquo;s latest name for their retail search product, with AI features added recently. Choose Algolia for industry-leading AI search developed over 10+ years and relied on by 17k+ customers.\n", "environment": "prod20260621", "category": "Website", "language_code": "en", "published_at": 1784757546586, "lastUpdated": "2026-08-04T21:42:11.930Z", "objectID": "en_4c4ced9e-f887-4f9a-be36-1a0588196ed3", "transform_source": "jnt-page", "facets": {}, "is404": true, "title": "Algolia vs Google AI Commerce Search | Comparing Algolia & AI Commerce Search (Google)", "description": "AI Commerce Search (formerly Vertex AI) is Google&rsquo;s latest name for their retail search product, with AI features added recently. Choose Algolia for industry-leading AI search developed over 10+ years and relied on by 17k+ customers.\n", "indexed_at": 1785879731930, "hierarchicalCategories": {"lvl0": ["competitors"], "lvl1": ["compare algolia vs vertex ai"]}, "source": "Website"}, {"keywords": ["conversion rates", "search"], "abstract": "<blockquote>&ldquo;We chose Algolia as our search and discovery solution because it&#39;s not just about finding products on the website; it&#39;s about quickly connecting the right product with the right customer, which we achieved using Algolia&#39;s advanced AI features. Algolia&#39;s Merchandising automation capabilities also allowed us to off-load efforts from brands, driving overall efficiency and higher website conversions.&rdquo;</blockquote>\n", "facets": {"facet1": ["Ecommerce"], "facet6": ["Dynamic Re-Ranking", "Rules", "Query Categorization", "Search API", "Insights API", "Visual Editor", "Facets & Filters"]}, "transform_source": "aant-customerEntry", "title": "Al-Futtaim Group leverages Algolia to boost search performance and customer experience on ecommerce sites.", "tags": [], "url": "/customers/al-futtaim-group", "description": "<blockquote>&ldquo;We chose Algolia as our search and discovery solution because it&#39;s not just about finding products on the website; it&#39;s about quickly connecting the right product with the right customer, which we achieved using Algolia&#39;s advanced AI features. Algolia&#39;s Merchandising automation capabilities also allowed us to off-load efforts from brands, driving overall efficiency and higher website conversions.&rdquo;</blockquote>\n", "category": "Ecommerce", "indexed_at": 1784670307412, "published_at": 1782730830449, "hierarchicalCategories": {}, "lastUpdated": "2026-07-21T21:45:07.412Z", "environment": "prod20260722", "objectID": "en_b9b8e76d-87a8-4194-af5c-9925e48fa774_4_0", "source": "Customer Stories", "thumbnail": "/sites/algolia-assets/files/customer-stories/customer-design-assets/al-futtaim-group.png", "authors": [{"name": "Ankita Singh"}], "is404": false, "language_code": "en"}, {"url": "/fr/blog/ecommerce/how-ecommerce-ai-is-reshaping-business", "indexed_at": 1784670424873, "facets": {"facet0": ["Ecommerce"]}, "published_at": 1716881520000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Vincent Caruana"]}, "is404": false, "objectID": "fr_40853f49-f874-4fe5-9bc9-69ff633404d9", "transform_source": "aant-blogsEntry", "title": "How ecommerce AI is reshaping business | Algolia", "abstract": "Artificial intelligence in ecommerce: enhancing online shopping, search, recommendations, customer service, shopper happiness, and retailer success. How ecommerce AI is reshaping business", "environment": "prod20260722", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-ecommerce-ai.webp", "lastUpdated": "2026-07-21T21:47:04.873Z", "language_code": "fr", "category": "Ecommerce", "tags": ["E-commerce"], "authors": [{"name": "Vincent Caruana", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/vincent-caruana.jpeg", "desc": "Senior Digital Marketing Manager, SEO"}], "description": "Artificial intelligence in ecommerce: enhancing online shopping, search, recommendations, customer service, shopper happiness, and retailer success.", "keywords": ["e-commerce"], "source": "Blog"}, {"thumbnail": "/sites/www/files/ebooks/b2b-ecommerce-site-search-trends", "tags": [], "language_code": "de", "hierarchicalCategories": {"lvl0": ["Resources"], "lvl1": [["Reports"]]}, "title": "B2B Ecommerce Site Search Trends Report 2024", "authors": [], "url": "/de/resources/asset/report-b2b-site-search-trends-2024", "objectID": "de_884f1d71-b865-469e-91eb-44e71893a2a2_0_5", "category": "Reports", "description": "<p>Algolia spoke with over 700 B2B industry leaders across several global markets on where the market is heading in 2024 and how they plan to take advantage of AI search to stand out in the market to drive growth.</p>\n\n<p>Responses across the board indicate that a top strategy for B2B organizations during 2024 is to scale revenue by shifting it to ecommerce channels. Many are already building toward those aims, with 48% either recently invested in ecommerce or prioritizing it for the year ahead. Building on those investments, B2B organizations aim to stand out in a competitive marketplace, reduce costs by simplifying and automating business processes, and drive profitability.</p>\n\n<p>To achieve those aims, B2B businesses need solutions that can help boost ecommerce sales and increase market share. Many are embracing AI-powered tools and technology in the search and discovery space.</p>\n\n<h3><strong>What drives the selection process for search and discovery solutions</strong></h3>\n\n<p>B2B organizations currently face tech stack limitations that complicate or slow performance as well as front-end platform challenges, which inhibit merchandisers and business users. B2B organizations are seeking advanced search solutions and platform upgrades to:</p>\n\n<ul>\n\t<li>Accelerate performance</li>\n\t<li>Improve system integration</li>\n\t<li>Eliminate or reduce time-consuming manual work</li>\n</ul>\n\n<p>At the front-end, B2B organizations continue striving to deliver a faster, accurate, and more personalized customer experience. They&rsquo;re seeking tools and platforms that better understand user intention, leverage user preferences, and provide accurate and up-to-date product and inventory information in real-time &ndash; enhancements that improve the shopping experience and drive sales.&nbsp; A key trend emerging from the report: B2B decision makers are preparing to employ AI-powered search tools with advanced generative AI features as well as data analytics to deliver an overall better experience across the board to their customers&mdash;regardless of industry.</p>\n\n<blockquote>\n<p>Eighty-six percent of B2B organizations responded that they are likely to select a solution with AI capabilities to help drive ecommerce sales.</p>\n</blockquote>\n\n<p>Ultimately, decision-makers are looking for solutions that personalize the customer experience (46%), reduce manual labor and associated costs (42%), and improve the accuracy and relevance of search results (38%).</p>\n", "indexed_at": 1784670332058, "published_at": 1771249549395, "lastUpdated": "2026-07-21T21:45:32.058Z", "source": "Resources", "keywords": ["search", "ecommerce", "commerce"], "abstract": "<p>Algolia spoke with over 700 B2B industry leaders across several global markets on where the market is heading in 2024 and how they plan to take advantage of AI search to stand out in the market to drive growth.</p>\n\n<p>Responses across the board indicate that a top strategy for B2B organizations during 2024 is to scale revenue by shifting it to ecommerce channels. Many are already building toward those aims, with 48% either recently invested in ecommerce or prioritizing it for the year ahead. Building on those investments, B2B organizations aim to stand out in a competitive marketplace, reduce costs by simplifying and automating business processes, and drive profitability.</p>\n\n<p>To achieve those aims, B2B businesses need solutions that can help boost ecommerce sales and increase market share. Many are embracing AI-powered tools and technology in the search and discovery space.</p>\n\n<h3><strong>What drives the selection process for search and discovery solutions</strong></h3>\n\n<p>B2B organizations currently face tech stack limitations that complicate or slow performance as well as front-end platform challenges, which inhibit merchandisers and business users. B2B organizations are seeking advanced search solutions and platform upgrades to:</p>\n\n<ul>\n\t<li>Accelerate performance</li>\n\t<li>Improve system integration</li>\n\t<li>Eliminate or reduce time-consuming manual work</li>\n</ul>\n\n<p>At the front-end, B2B organizations continue striving to deliver a faster, accurate, and more personalized customer experience. They&rsquo;re seeking tools and platforms that better understand user intention, leverage user preferences, and provide accurate and up-to-date product and inventory information in real-time &ndash; enhancements that improve the shopping experience and drive sales.&nbsp; A key trend emerging from the report: B2B decision makers are preparing to employ AI-powered search tools with advanced generative AI features as well as data analytics to deliver an overall better experience across the board to their customers&mdash;regardless of industry.</p>\n\n<blockquote>\n<p>Eighty-six percent of B2B organizations responded that they are likely to select a solution with AI capabilities to help drive ecommerce sales.</p>\n</blockquote>\n\n<p>Ultimately, decision-makers are looking for solutions that personalize the customer experience (46%), reduce manual labor and associated costs (42%), and improve the accuracy and relevance of search results (38%).</p>\n", "facets": {"facet0": [["Reports"]], "facet7": ["B2B Ecommerce"]}, "is404": false, "environment": "prod20260722", "transform_source": "aant-resourceCenterContentItem"}, {"published_at": 1721899800000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Catherine Dee"]}, "lastUpdated": "2026-07-21T21:47:01.421Z", "title": "10 ways AI is transforming ecommerce | Algolia", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/10-ways-ai-is-transforming-ecommerce.webp", "abstract": "How machine learning in ecommerce is transforming the ways online shoppers interact on a website, find what they need, and rate the customer experience. 10 ways AI is transforming ecommerce", "indexed_at": 1784670421421, "url": "/de/blog/ecommerce/10-ways-ai-is-transforming-ecommerce", "environment": "prod20260722", "transform_source": "aant-blogsEntry", "category": "Ecommerce", "tags": ["E-commerce"], "authors": [{"name": "Catherine Dee", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/catherine-dee.png", "desc": "Search and Discovery writer"}], "keywords": ["e-commerce"], "facets": {"facet0": ["Ecommerce"]}, "is404": false, "objectID": "de_35e6ff9d-27dc-425e-a9b9-bb97478d70e9", "source": "Blog", "description": "How machine learning in ecommerce is transforming the ways online shoppers interact on a website, find what they need, and rate the customer experience.", "language_code": "de"}, {"title": "Algolia Recommend Demo for eCommerce", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/thumbnails/de_aa35ab85-b6c0-4e85-8d13-2be4abe929a0.png", "tags": ["eCommerce", "ecommerce"], "description": " Algolia Recommend Demo for eCommerce <p>Apply different filters and fallback strategies to visualize and customize which recommendations to display on product description or checkout pages.</p>\n", "facets": {"facet1": ["eCommerce"], "facet3": ["JavaScript"], "facet6": ["InstantSearch"]}, "hierarchicalCategories": {}, "objectID": "de_aa35ab85-b6c0-4e85-8d13-2be4abe929a0", "source": "Developers", "category": "", "authors": [{"name": "Algolia Labs"}], "abstract": " Algolia Recommend Demo for eCommerce <p>Apply different filters and fallback strategies to visualize and customize which recommendations to display on product description or checkout pages.</p>\n Technical features: InstantSearch Use cases: eCommerce", "indexed_at": 1784670496860, "is404": false, "environment": "prod20260722", "url": "/de/developers/code-exchange/algolia-recommend-demo-for-ecommerce", "keywords": ["ecommerce"], "language_code": "de", "lastUpdated": "2026-07-21T21:48:16.860Z", "transform_source": "aant-codeExchangeEntry", "published_at": 1733315610829}, {"category": "", "abstract": " Algolia Recommend Demo for eCommerce <p>Apply different filters and fallback strategies to visualize and customize which recommendations to display on product description or checkout pages.</p>\n Technical features: InstantSearch Use cases: eCommerce", "indexed_at": 1784670495553, "facets": {"facet1": ["eCommerce"], "facet3": ["JavaScript"], "facet6": ["InstantSearch"]}, "authors": [{"name": "Algolia Labs"}], "description": " Algolia Recommend Demo for eCommerce <p>Apply different filters and fallback strategies to visualize and customize which recommendations to display on product description or checkout pages.</p>\n", "keywords": ["ecommerce"], "language_code": "en", "published_at": 1733315610829, "transform_source": "aant-codeExchangeEntry", "title": "Algolia Recommend Demo for eCommerce", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/thumbnails/en_aa35ab85-b6c0-4e85-8d13-2be4abe929a0.png", "url": "/developers/code-exchange/algolia-recommend-demo-for-ecommerce", "is404": false, "lastUpdated": "2026-07-21T21:48:15.553Z", "objectID": "en_aa35ab85-b6c0-4e85-8d13-2be4abe929a0", "source": "Developers", "tags": ["eCommerce", "ecommerce"], "hierarchicalCategories": {}, "environment": "prod20260722"}, {"keywords": ["ecommerce"], "abstract": " Algolia Recommend Demo for eCommerce <p>Apply different filters and fallback strategies to visualize and customize which recommendations to display on product description or checkout pages.</p>\n Technical features: InstantSearch Use cases: eCommerce", "hierarchicalCategories": {}, "is404": false, "lastUpdated": "2026-07-21T21:48:13.098Z", "source": "Developers", "transform_source": "aant-codeExchangeEntry", "category": "", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/thumbnails/fr_aa35ab85-b6c0-4e85-8d13-2be4abe929a0.png", "published_at": 1733315610829, "environment": "prod20260722", "objectID": "fr_aa35ab85-b6c0-4e85-8d13-2be4abe929a0", "language_code": "fr", "indexed_at": 1784670493098, "title": "Algolia Recommend Demo for eCommerce", "description": " Algolia Recommend Demo for eCommerce <p>Apply different filters and fallback strategies to visualize and customize which recommendations to display on product description or checkout pages.</p>\n", "facets": {"facet1": ["eCommerce"], "facet3": ["JavaScript"], "facet6": ["InstantSearch"]}, "tags": ["eCommerce", "ecommerce"], "authors": [{"name": "Algolia Labs"}], "url": "/fr/developers/code-exchange/algolia-recommend-demo-for-ecommerce"}, {"tags": ["Product"], "abstract": "We are excited to announce that Algolia Recommend is now available for our Adobe Commerce customers. This has been a highly requested feature by retailers. Learn how you can get started right away! Algolia Recommend for Adobe Commerce", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Product"], "lvl2": ["by "]}, "environment": "prod20260722", "objectID": "de_a71071cb-a123-403b-ac4a-e90bfb6230b6", "source": "Blog", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/algolia-reco.webp", "url": "/de/blog/product/algolia-recommend-for-adobe-commerce", "published_at": 1719124560000, "is404": false, "title": "How to use Algolia Recommend in Adobe Commerce | Algolia", "authors": [{"name": "", "desc": "Global Alliances Director - Algolia"}], "description": "We are excited to announce that Algolia Recommend is now available for our Adobe Commerce customers. This has been a highly requested feature by retailers. Learn how you can get started right away!", "language_code": "de", "transform_source": "aant-blogsEntry", "category": "Product", "keywords": ["product"], "indexed_at": 1784670286160, "facets": {"facet0": ["Product"]}, "lastUpdated": "2026-07-21T21:44:46.160Z"}, {"indexed_at": 1784670286020, "facets": {"facet0": ["Product"]}, "category": "Product", "tags": ["Product"], "authors": [{"name": "Debanshi Bheda", "desc": "Global Alliances Director - Algolia"}], "keywords": ["product"], "abstract": "We are excited to announce that Algolia Recommend is now available for our Adobe Commerce customers. This has been a highly requested feature by retailers. Learn how you can get started right away! Algolia Recommend for Adobe Commerce", "language_code": "en", "transform_source": "aant-blogsEntry", "title": "How to use Algolia Recommend in Adobe Commerce | Algolia", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/algolia-reco.webp", "published_at": 1719124560000, "is404": false, "lastUpdated": "2026-07-21T21:44:46.020Z", "environment": "prod20260722", "url": "/blog/product/algolia-recommend-for-adobe-commerce", "description": "We are excited to announce that Algolia Recommend is now available for our Adobe Commerce customers. This has been a highly requested feature by retailers. Learn how you can get started right away!", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Product"], "lvl2": ["by Debanshi Bheda"]}, "source": "Blog", "objectID": "en_a71071cb-a123-403b-ac4a-e90bfb6230b6"}, {"transform_source": "aant-blogsEntry", "authors": [{"name": "", "desc": "Global Alliances Director - Algolia"}], "url": "/fr/blog/product/algolia-recommend-for-adobe-commerce", "abstract": "We are excited to announce that Algolia Recommend is now available for our Adobe Commerce customers. This has been a highly requested feature by retailers. Learn how you can get started right away! Algolia Recommend for Adobe Commerce", "is404": false, "title": "How to use Algolia Recommend in Adobe Commerce | Algolia", "indexed_at": 1784670285910, "published_at": 1719124560000, "lastUpdated": "2026-07-21T21:44:45.910Z", "source": "Blog", "description": "We are excited to announce that Algolia Recommend is now available for our Adobe Commerce customers. This has been a highly requested feature by retailers. Learn how you can get started right away!", "keywords": ["product"], "language_code": "fr", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Product"], "lvl2": ["by "]}, "environment": "prod20260722", "category": "Product", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/algolia-reco.webp", "tags": ["Product"], "facets": {"facet0": ["Product"]}, "objectID": "fr_a71071cb-a123-403b-ac4a-e90bfb6230b6"}, {"source": "Blog", "category": "Product", "description": "Algolia Recommend allows your customers to explore your ecommerce store inventory through navigation and AI-powered recommendations.", "is404": false, "transform_source": "aant-blogsEntry", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/craft-a-unique-discovery-experience.webp", "tags": ["Product"], "authors": [{"name": "Maria Lungu", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Maria-Lungu.png", "desc": "Frontend Engineer"}], "published_at": 1702466880000, "objectID": "en_051e033e-a09c-4ff9-a83d-45cc0c274b67_0_1", "url": "/blog/product/craft-a-unique-discovery-experience-with-ai-powered-recommendations", "language_code": "en", "indexed_at": 1784670450954, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Product"], "lvl2": ["by Maria Lungu"]}, "environment": "prod20260722", "title": "Craft a unique discovery experience with AI-powered recommendations - Algolia Blog | Algolia", "keywords": ["product"], "abstract": "Algolia Recommend allows your customers to explore your ecommerce store inventory through navigation and AI-powered recommendations. Craft a unique discovery experience with AI-powered recommendations", "facets": {"facet0": ["Product"]}, "lastUpdated": "2026-07-21T21:47:30.954Z"}, {"transform_source": "aant-blogsEntry", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/generative-ais-impact-on-the-ecommerce.webp", "tags": ["AI"], "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["AI"], "lvl2": ["by "]}, "category": "AI", "authors": [{"name": "", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/patrick_loomis.jpg", "desc": "Senior Manager, Product Management"}], "abstract": "Learn how Generative AI is transforming eCommerce\u2014from product discovery to personalization and increasing conversions. Explore use cases, trends, tools, and implementation tips. Generative AI\u2019s impact on the ecommerce industry", "language_code": "de", "is404": false, "lastUpdated": "2026-07-21T21:44:36.479Z", "environment": "prod20260722", "source": "Blog", "url": "/de/blog/ai/generative-ais-impact-on-the-ecommerce-industry", "description": "Learn how Generative AI is transforming eCommerce\u2014from product discovery to personalization and increasing conversions. Explore use cases, trends, tools, and implementation tips.", "published_at": 1708948680000, "objectID": "de_f7fc2c52-363c-42b0-8fc3-0de7735ed70d", "title": "Generative AI in ecommerce: potentially huge ROI booster | Algolia", "keywords": ["ai"], "indexed_at": 1784670276479, "facets": {"facet0": ["AI"]}}, {"hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["AI"], "lvl2": ["by "]}, "is404": false, "environment": "prod20260722", "transform_source": "aant-blogsEntry", "description": "Learn how Generative AI is transforming eCommerce\u2014from product discovery to personalization and increasing conversions. Explore use cases, trends, tools, and implementation tips.", "indexed_at": 1784670276151, "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/generative-ais-impact-on-the-ecommerce.webp", "tags": ["AI"], "keywords": ["ai"], "abstract": "Learn how Generative AI is transforming eCommerce\u2014from product discovery to personalization and increasing conversions. Explore use cases, trends, tools, and implementation tips. Generative AI\u2019s impact on the ecommerce industry", "objectID": "fr_f7fc2c52-363c-42b0-8fc3-0de7735ed70d", "source": "Blog", "category": "AI", "authors": [{"name": "", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/patrick_loomis.jpg", "desc": "Senior Manager, Product Management"}], "language_code": "fr", "published_at": 1708948680000, "lastUpdated": "2026-07-21T21:44:36.151Z", "title": "Generative AI in ecommerce: potentially huge ROI booster | Algolia", "url": "/fr/blog/ai/generative-ais-impact-on-the-ecommerce-industry", "facets": {"facet0": ["AI"]}}, {"lastUpdated": "2026-07-15T15:25:34.866Z", "is404": false, "category": "AI", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/generative-ais-impact-on-the-ecommerce.webp", "tags": ["AI"], "description": "From creating product copy that resonates to enticing more shoppers to buy, generative AI ecommerce tools are going above and beyond to increase sales.", "keywords": ["ai"], "indexed_at": 1784129134866, "objectID": "en_f7fc2c52-363c-42b0-8fc3-0de7735ed70d", "source": "Blog", "title": "Generative AI in ecommerce: potentially huge ROI booster | Algolia", "authors": [{"name": "Vincent Caruana", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Vincent-Caruana.jpeg", "desc": "Senior Digital Marketing Manager, SEO"}], "url": "/blog/ai/generative-ais-impact-on-the-ecommerce-industry", "published_at": 1708948680000, "environment": "nonprod20260220", "transform_source": "aant-blogsEntry", "abstract": "From creating product copy that resonates to enticing more shoppers to buy, generative AI ecommerce tools are going above and beyond to increase sales. Generative AI\u2019s impact on the ecommerce industry", "language_code": "en", "facets": {"facet0": ["AI"]}, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["AI"], "lvl2": ["by Vincent Caruana"]}}, {"objectID": "de_a6de78c6-74c7-4ef6-bc31-d89abaf397be", "source": "Blog", "tags": ["Product"], "language_code": "de", "is404": false, "title": "Introducing AI Personalization (\ud835\udefd) - Algolia Blog | Algolia", "authors": [{"name": "", "desc": "AI Product Manager"}], "indexed_at": 1784670284051, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Product"], "lvl2": ["by "]}, "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/introducing.webp", "url": "/de/blog/product/introducing-ai-personalization", "description": "Algolia AI Personalization is now available in beta. Deliver personalized experiences, tailored to each visitor, throughout their journey.", "abstract": "Algolia AI Personalization is now available in beta. Deliver personalized experiences, tailored to each visitor, throughout their journey. Introducing AI Personalization (\ud835\udefd)", "facets": {"facet0": ["Product"]}, "published_at": 1717482960000, "transform_source": "aant-blogsEntry", "category": "Product", "keywords": ["product"], "lastUpdated": "2026-07-21T21:44:44.051Z", "environment": "prod20260722"}, {"lastUpdated": "2026-07-21T21:44:43.893Z", "tags": ["Product"], "url": "/blog/product/introducing-ai-personalization", "abstract": "Algolia AI Personalization is now available in beta. Deliver personalized experiences, tailored to each visitor, throughout their journey. Introducing AI Personalization (\ud835\udefd)", "indexed_at": 1784670283893, "facets": {"facet0": ["Product"]}, "published_at": 1717482960000, "environment": "prod20260722", "category": "Product", "authors": [{"name": "Ciprian Borodescu", "desc": "AI Product Manager"}], "objectID": "en_a6de78c6-74c7-4ef6-bc31-d89abaf397be_0_1", "description": "Algolia AI Personalization is now available in beta. Deliver personalized experiences, tailored to each visitor, throughout their journey.", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Product"], "lvl2": ["by Ciprian Borodescu"]}, "source": "Blog", "transform_source": "aant-blogsEntry", "title": "Introducing AI Personalization (\ud835\udefd) - Algolia Blog | Algolia", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/introducing.webp", "keywords": ["product"], "language_code": "en", "is404": false}, {"environment": "prod20260722", "transform_source": "aant-blogsEntry", "indexed_at": 1784670283773, "lastUpdated": "2026-07-21T21:44:43.773Z", "objectID": "fr_a6de78c6-74c7-4ef6-bc31-d89abaf397be", "category": "Product", "facets": {"facet0": ["Product"]}, "source": "Blog", "authors": [{"name": "", "desc": "AI Product Manager"}], "description": "Algolia AI Personalization is now available in beta. Deliver personalized experiences, tailored to each visitor, throughout their journey.", "keywords": ["product"], "language_code": "fr", "published_at": 1717482960000, "is404": false, "title": "Introducing AI Personalization (\ud835\udefd) - Algolia Blog | Algolia", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/introducing.webp", "tags": ["Product"], "url": "/fr/blog/product/introducing-ai-personalization", "abstract": "Algolia AI Personalization is now available in beta. Deliver personalized experiences, tailored to each visitor, throughout their journey. Introducing AI Personalization (\ud835\udefd)", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Product"], "lvl2": ["by "]}}], "nbHits": 27, "facets": {"tags": {"E-commerce": 44, "AI": 36, "User Experience": 6, "eCommerce": 12, "Algolia": 3, "Marketing Automation": 3, "Product": 35, "supported": 9, "Dev Tools": 3, "algolia recommend": 10, "api": 9, "general availability": 6, "machine learning": 3, "performance": 3, "product launch": 9, "quick-install": 3, "search": 9, "Personalization": 4, "conversion": 3, "Dynamic Synonyms": 1, "Revenue": 3, "beta": 3, "scalability": 3, "search api": 1}, "is404": {"false": 100, "true": 1}, "source": {"Blog": 88, "Developers": 15, "Customer Stories": 5, "Website": 13, "Resources": 10, "Support": 4, "Documentation": 4}, "category": {"Ecommerce": 46, "AI": 33, "UX": 6, "Algolia": 3, "Product": 35, "Website": 5, "Careers": 5, "Infographics": 4, "Ebooks": 3, "News": 9, "Reports": 3, "Managing Results": 1, "Doc": 4, "Videos": 3, "Shopify": 2, "B2C Ecommerce": 1, "BigCommerce": 1}, "keywords": {"e-commerce": 44, "ai": 36, "ecommerce": 14, "user experience": 6, "algolia": 3, "customers": 3, "marketing automation": 3, "product": 35, "search": 18, "conversion rates": 3, "commerce": 10, "algolia recommend": 9, "api": 9, "dev tools": 3, "general availability": 6, "machine learning": 3, "performance": 3, "product launch": 9, "revenue": 5, "conversion": 3, "personalization": 3, "beta": 3, "scalability": 3, "retail": 2}, "environment": {"prod20260722": 97, "prod20260621": 6, "nonprod20260220": 4}, "lastUpdated": {"2026-07-21T21:44:32.927Z": 1, "2026-07-21T21:44:33.003Z": 1, "2026-07-21T21:44:33.061Z": 1, "2026-07-21T21:44:33.288Z": 1, "2026-07-21T21:44:33.370Z": 1, "2026-07-21T21:44:33.420Z": 1, "2026-07-21T21:44:35.340Z": 1, "2026-07-21T21:44:35.731Z": 1, "2026-07-21T21:44:35.917Z": 1, "2026-07-21T21:44:36.096Z": 1, "2026-07-21T21:44:36.151Z": 1, "2026-07-21T21:44:36.280Z": 1, "2026-07-21T21:44:36.479Z": 1, "2026-07-21T21:44:36.624Z": 1, "2026-07-21T21:44:36.728Z": 1, "2026-07-21T21:44:36.797Z": 1, "2026-07-21T21:44:36.860Z": 1, "2026-07-21T21:44:37.002Z": 1, "2026-07-21T21:44:37.074Z": 1, "2026-07-21T21:44:37.128Z": 1, "2026-07-21T21:44:37.137Z": 1, "2026-07-21T21:44:37.160Z": 1, "2026-07-21T21:44:38.598Z": 1, "2026-07-21T21:44:38.653Z": 1, "2026-07-21T21:44:39.703Z": 1, "2026-07-21T21:44:47.397Z": 1, "2026-07-21T21:44:47.737Z": 1, "2026-07-21T21:44:51.004Z": 1, "2026-07-21T21:44:51.872Z": 1, "2026-07-21T21:44:52.784Z": 1, "2026-07-21T21:44:53.975Z": 1, "2026-07-21T21:44:54.040Z": 1, "2026-07-21T21:44:54.118Z": 1, "2026-07-21T21:44:55.481Z": 1, "2026-07-21T21:44:55.703Z": 1, "2026-07-21T21:44:58.479Z": 1, "2026-07-21T21:44:58.597Z": 1, "2026-07-21T21:44:58.698Z": 1, "2026-07-21T21:45:05.773Z": 1, "2026-07-21T21:45:07.412Z": 1, "2026-07-21T21:46:57.506Z": 1, "2026-07-21T21:46:57.917Z": 1, "2026-07-21T21:46:59.029Z": 1, "2026-07-21T21:46:59.092Z": 1, "2026-07-21T21:46:59.133Z": 1, "2026-07-21T21:47:00.427Z": 1, "2026-07-21T21:47:00.494Z": 1, "2026-07-21T21:47:00.588Z": 1, "2026-07-21T21:47:00.808Z": 1, "2026-07-21T21:47:00.900Z": 1, "2026-07-21T21:47:00.967Z": 1, "2026-07-21T21:47:01.122Z": 1, "2026-07-21T21:47:01.176Z": 1, "2026-07-21T21:47:01.421Z": 1, "2026-07-21T21:47:01.428Z": 1, "2026-07-21T21:47:02.896Z": 1, "2026-07-21T21:47:02.905Z": 1, "2026-07-21T21:47:04.873Z": 1, "2026-07-21T21:47:05.008Z": 1, "2026-07-21T21:47:05.034Z": 1, "2026-07-21T21:47:05.404Z": 1, "2026-07-21T21:47:05.483Z": 1, "2026-07-21T21:47:05.533Z": 1, "2026-07-21T21:47:05.581Z": 1, "2026-07-21T21:47:05.633Z": 1, "2026-07-21T21:47:06.119Z": 1, "2026-07-21T21:47:06.192Z": 1, "2026-07-21T21:47:06.290Z": 1, "2026-07-21T21:47:06.483Z": 1, "2026-07-21T21:47:06.601Z": 1, "2026-07-21T21:47:06.653Z": 1, "2026-07-21T21:47:06.756Z": 1, "2026-07-21T21:47:06.969Z": 1, "2026-07-21T21:47:07.008Z": 1, "2026-07-21T21:47:07.194Z": 1, "2026-07-21T21:47:07.315Z": 1, "2026-07-21T21:47:07.381Z": 1, "2026-07-21T21:47:08.763Z": 1, "2026-07-21T21:47:08.999Z": 1, "2026-07-21T21:47:11.403Z": 1, "2026-07-21T21:47:11.566Z": 1, "2026-07-21T21:47:11.715Z": 1, "2026-07-21T21:47:11.756Z": 1, "2026-07-21T21:47:24.794Z": 1, "2026-07-21T21:47:24.915Z": 1, "2026-07-21T21:47:24.926Z": 1, "2026-07-21T21:47:25.428Z": 1, "2026-07-21T21:47:30.954Z": 1, "2026-07-21T21:48:08.311Z": 1, "2026-07-21T21:48:08.765Z": 1, "2026-07-21T21:48:10.059Z": 1, "2026-07-21T21:48:10.716Z": 1, "2026-07-21T21:48:10.763Z": 1, "2026-07-21T21:48:11.228Z": 1, "2026-07-21T21:48:13.098Z": 1, "2026-07-21T21:48:15.553Z": 1, "2026-07-21T21:48:16.860Z": 1, "2026-07-31T18:12:13.717Z": 1, "2026-07-31T19:42:12.341Z": 1, "2026-08-04T21:42:11.930Z": 1, "2026-07-21T21:45:26.310Z": 3, "2026-07-21T21:45:32.050Z": 2, "2026-07-21T21:45:32.055Z": 2, "2026-07-21T21:45:32.058Z": 2, "2026-07-21T21:51:36.150Z": 2, "2026-08-04T21:42:11.424Z": 2, "2026-04-27T15:25:30.943Z": 1, "2026-04-27T15:25:31.043Z": 1, "2026-04-27T15:33:11.135Z": 1, "2026-07-15T15:25:34.866Z": 1, "2026-07-21T21:44:32.904Z": 1, "2026-07-21T21:44:33.276Z": 1, "2026-07-21T21:44:33.470Z": 1, "2026-07-21T21:44:35.591Z": 1, "2026-07-21T21:44:35.689Z": 1, "2026-07-21T21:44:35.831Z": 1, "2026-07-21T21:44:35.921Z": 1, "2026-07-21T21:44:35.982Z": 1, "2026-07-21T21:44:36.662Z": 1, "2026-07-21T21:44:36.768Z": 1, "2026-07-21T21:44:36.995Z": 1, "2026-07-21T21:44:37.091Z": 1, "2026-07-21T21:44:37.147Z": 1, "2026-07-21T21:44:56.388Z": 1, "2026-07-21T21:44:56.536Z": 1, "2026-07-21T21:44:56.796Z": 1, "2026-07-21T21:45:05.586Z": 1, "2026-07-21T21:45:07.550Z": 1, "2026-07-21T21:45:32.064Z": 1, "2026-07-21T21:46:04.646Z": 1, "2026-07-21T21:47:01.257Z": 1, "2026-07-21T21:47:05.181Z": 1, "2026-07-21T21:47:05.250Z": 1, "2026-07-21T21:47:05.318Z": 1, "2026-07-21T21:47:05.713Z": 1, "2026-07-21T21:47:05.800Z": 1, "2026-07-21T21:47:05.884Z": 1, "2026-07-21T21:47:05.992Z": 1, "2026-07-21T21:47:06.036Z": 1, "2026-07-21T21:47:06.098Z": 1, "2026-07-21T21:47:06.660Z": 1, "2026-07-21T21:47:06.754Z": 1, "2026-07-21T21:47:06.821Z": 1, "2026-07-21T21:47:24.796Z": 1, "2026-07-21T21:47:25.013Z": 1, "2026-07-21T21:47:29.724Z": 1, "2026-07-21T21:47:29.921Z": 1, "2026-07-21T21:47:29.970Z": 1, "2026-07-21T21:47:30.103Z": 1, "2026-07-21T21:48:29.499Z": 1, "2026-07-21T21:48:31.080Z": 1, "2026-07-21T21:48:34.162Z": 1, "2026-07-21T21:49:35.077Z": 1, "2026-07-21T21:49:37.483Z": 1, "2026-07-21T21:49:40.691Z": 1, "2026-07-21T21:50:55.886Z": 1, "2026-07-21T21:50:56.905Z": 1, "2026-07-21T21:50:58.794Z": 1, "2026-07-21T21:51:21.302Z": 1, "2026-07-21T21:51:21.540Z": 1, "2026-07-21T21:51:27.587Z": 1, "2026-07-21T21:51:36.146Z": 1, "2026-07-21T21:51:36.149Z": 1, "2026-07-21T21:51:36.200Z": 1, "2026-08-04T21:42:11.425Z": 1, "2026-03-27T16:19:56.527Z": 1, "2026-07-21T21:44:42.051Z": 1, "2026-07-21T21:44:42.210Z": 1, "2026-07-21T21:44:42.278Z": 1, "2026-07-21T21:44:42.426Z": 1, "2026-07-21T21:44:42.495Z": 1, "2026-07-21T21:44:42.660Z": 1, "2026-07-21T21:44:42.917Z": 1, "2026-07-21T21:44:42.983Z": 1, "2026-07-21T21:44:43.138Z": 1, "2026-07-21T21:44:43.140Z": 1, "2026-07-21T21:44:43.354Z": 1, "2026-07-21T21:44:44.034Z": 1, "2026-07-21T21:44:45.910Z": 1, "2026-07-21T21:44:46.020Z": 1, "2026-07-21T21:44:46.160Z": 1, "2026-07-21T21:44:46.920Z": 1, "2026-07-21T21:44:47.224Z": 1, "2026-07-21T21:44:47.948Z": 1, "2026-07-21T21:44:48.112Z": 1, "2026-07-21T21:45:05.812Z": 1, "2026-07-21T21:45:06.526Z": 1, "2026-07-21T21:45:32.033Z": 1, "2026-07-21T21:45:32.038Z": 1, "2026-07-21T21:45:32.046Z": 1, "2026-07-21T21:47:11.167Z": 1, "2026-07-21T21:47:11.274Z": 1, "2026-07-21T21:47:11.390Z": 1, "2026-07-21T21:47:25.596Z": 1, "2026-07-21T21:47:25.646Z": 1, "2026-07-21T21:47:25.726Z": 1, "2026-07-21T21:47:25.731Z": 1, "2026-07-21T21:47:27.782Z": 1, "2026-07-21T21:47:29.380Z": 1, "2026-07-21T21:47:29.397Z": 1, "2026-07-21T21:47:29.569Z": 1, "2026-07-21T21:47:29.773Z": 1, "2026-07-21T21:47:29.809Z": 1, "2026-07-21T21:47:29.922Z": 1, "2026-07-21T21:47:30.126Z": 1, "2026-07-21T21:47:30.940Z": 1, "2026-07-21T21:50:23.588Z": 1, "2026-07-21T21:50:23.994Z": 1, "2026-07-21T21:50:26.427Z": 1, "2026-07-21T21:51:10.631Z": 1, "2026-07-21T21:51:10.634Z": 1, "2026-07-21T21:51:10.636Z": 1, "2026-07-21T21:51:10.648Z": 1, "2026-07-21T21:51:10.650Z": 1, "2026-07-21T21:51:10.652Z": 1, "2026-07-21T21:51:36.100Z": 1, "2026-07-21T21:51:36.124Z": 1, "2026-07-21T21:51:36.181Z": 1, "2026-07-21T21:51:36.183Z": 1, "2026-07-21T21:51:36.201Z": 1, "2026-07-21T21:51:36.202Z": 1, "2026-07-21T21:51:36.204Z": 1, "2026-03-04T21:48:24.976Z": 1, "2026-07-21T21:44:32.862Z": 1, "2026-07-21T21:44:33.295Z": 1, "2026-07-21T21:44:33.469Z": 1, "2026-07-21T21:44:43.773Z": 1, "2026-07-21T21:44:43.893Z": 1, "2026-07-21T21:44:44.051Z": 1, "2026-07-21T21:46:45.328Z": 1, "2026-07-21T21:46:45.510Z": 1, "2026-07-21T21:46:46.146Z": 1, "2026-07-21T21:46:57.495Z": 1, "2026-07-21T21:46:57.726Z": 1, "2026-07-21T21:46:57.866Z": 1, "2026-07-21T21:47:28.082Z": 1, "2026-07-21T21:47:28.210Z": 1, "2026-07-21T21:47:28.464Z": 1, "2026-07-21T21:51:10.629Z": 1, "2026-07-21T21:51:10.630Z": 1, "2026-08-04T13:12:06.716Z": 1, "2026-08-04T16:12:10.838Z": 1}, "authors.desc": {"Search and Discovery writer": 21, "Senior Digital Marketing Manager, SEO": 9, "Developer Educator": 6, "Product Manager": 6, "Sr. Product Marketing Manager": 9, "Director of Content Marketing": 4, "Chief Product Officer": 3, "Chief Strategic Business Development Officer": 3, "Director of Product Marketing, Ecommerce": 3, "Director, Digital Marketing": 3, "Solutions Engineer @ Algolia": 3, "Sr. Product Marketing Manager, Algolia": 3, "VP Product Marketing": 6, "VP, Corporate Communications and Brand": 3, "AI Product Manager": 8, "Director, Content Marketing": 2, "Fontend Engineer": 2, "Senior Manager, Product Management": 2, "VP, Corporate Communications": 2, "AI Product Manager | On a mission to help people succeed through the use of AI": 1, "Frontend Engineer": 1, "CTO @Algolia": 3, "Chief Executive Officer and Board Member at Algolia": 3, "Chief Revenue Officer at Algolia": 3, "Global Alliances Director - Algolia": 3, "Social Media Manager": 3, "Freelance Writer at Author's Collective": 5, "Director of Product Design & Research": 3, "Marketing Campaign Production Manager": 3, "Technical Writer": 3, "SR Product Marketing Manager": 1, "Director, Product Marketing": 3}, "authors.name": {"Catherine Dee": 15, "Vincent Caruana": 7, "Algolia Labs": 6, "Tanya Herman": 6, "Matthieu Blandineau": 5, "Tariq Khan": 4, "John Stewart": 3, "Jon Silvers": 3, "Matthew Foyle": 3, "Piyush Patel": 3, "Julia Seidman": 2, "Alies van Rhijn": 1, "Ankita Singh": 3, "Bharat Guruprakash": 1, "Ciprian Borodescu": 3, "Maria Lungu": 1, "Peter Nguyen": 1, "Reshma Iyer": 1, "Subrata Chakrabarti": 4, "Algolia": 9, "Bernadette Nixon": 3, "Debanshi Bheda": 3, "Rod Alvarenga": 3, "Alex Bloemendal": 1, "David Ting": 1, "Michelle Adams": 1, "Sean Mullaney": 1, "Jaden Baptista": 4, "Pauline Lafontaine": 3, "Andy Jones": 1, "Ben Pusey": 1, "Craig Williams": 1, "Ed Swain": 1, "Gareth Cottiss": 1, "Luigi Castellano": 1, "Chris Stevenson": 3, "Josh Hepworth": 3}, "facets.facet0": {"Ecommerce": 44, "AI": 33, "UX": 6, "Algolia": 3, "Product": 35, "Infographics": 4, "Ebooks": 3, "Reports": 3, "Videos": 3}, "facets.facet1": {"Ecommerce": 16, "Marketing Automation": 3, "Dev Tools": 3, "E-Commerce (B2C)": 2, "Technology": 3, "B2C Ecommerce": 1}, "facets.facet3": {"JavaScript": 9}, "facets.facet4": {"Adobe Marketo Engage": 3, "Amazon AWS": 3, "Twilio Sendgrid": 3, "BigCommerce": 3, "Shopify": 3}, "facets.facet5": {"supported": 9}, "language_code": {"en": 40, "de": 33, "fr": 33}, "authors.imgpath": {"/sites/algolia-assets/files/blogs/authorimages/catherine-dee.png": 21, "/sites/algolia-assets/files/blogs/authorimages/vincent-caruana.jpeg": 9, "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png": 6, "/sites/algolia-assets/files/blogs/authorimages/matthieu-blandineau.jpeg": 9, "/sites/algolia-assets/files/blogs/authorimages/Julia-Seidman.png": 5, "/sites/algolia-assets/files/blogs/authorimages/tariq-khan.jpeg": 4, "/sites/algolia-assets/files/blogs/authorimages/Maria-Lungu.png": 3, "/sites/algolia-assets/files/blogs/authorimages/Matthew-Foyle.jpeg": 3, "/sites/algolia-assets/files/blogs/authorimages/john-stewart.png": 3, "/sites/algolia-assets/files/blogs/authorimages/jon-silvers.png": 3, "/sites/algolia-assets/files/blogs/authorimages/piyush-patel.png": 3, "/sites/algolia-assets/files/blogs/authorimages/subrata-chakrabarti.png": 6, "/sites/algolia-assets/files/blogs/authorimages/john stewart.png": 2, "/sites/algolia-assets/files/blogs/authorimages/patrick_loomis.jpg": 2, "/sites/algolia-assets/files/blogs/authorimages/reshma-lyer.jpeg": 2, "/sites/algolia-assets/files/blogs/authorimages/Ciprian-Borodescu.jpeg": 1, "/sites/algolia-assets/files/blogs/authorimages/Julia-Seidman-2.png": 1, "/sites/algolia-assets/files/blogs/authorimages/Reshma-Iyer.jpeg": 1, "/sites/algolia-assets/files/blogs/authorimages/bharat-guruprakash.jpeg": 1, "/sites/algolia-assets/files/blogs/authorimages/Bernadette-Nixon.png": 3, "/sites/algolia-assets/files/blogs/authorimages/Michelle-Adams.png": 3, "/sites/algolia-assets/files/blogs/authorimages/debanshi-bheda.png": 3, "/sites/algolia-assets/files/blogs/authorimages/Jaden-Baptista.jpeg": 5, "/sites/algolia-assets/files/blogs/authorimages/Jaden-Baptista-2.jpeg": 3, "/sites/algolia-assets/files/blogs/authorimages/pauline-lafontaine.jpeg": 3, "/sites/algolia-assets/files/blogs/authorimages/craig-williams.jpeg": 1, "/sites/algolia-assets/files/blogs/authorimages/luigi-castellano.jpeg": 1, "/sites/algolia-assets/files/blogs/authorimages/Chris-Stevenson.jpeg": 3}, "transform_source": {"aant-blogsEntry": 88, "aant-codeExchangeEntry": 15, "aant-customerEntry": 5, "jnt-page": 5, "aant-resourceCenterContentItem": 10, "algolia-com-career-page": 5, "aant-newsEntry": 9, "zendesk-articles": 4, "algolia-com-doc": 4}, "algoliaDisabled": {"false": 4}, "facets.facet2": {"React": 3}}}}
+
+data: {"type": "data-tool-output-metadata", "data": {"toolCallId": "chatcmpl-tool-8a80091268d0a340", "metadata": {"com.algolia/resolved-search-params": [{"query": "Algolia AI Search vs Recommend vs Personalization ecommerce tradeoff", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}, {"query": "Algolia AI Search product features ecommerce", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}, {"query": "Algolia Recommend product features ecommerce", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}, {"query": "Algolia AI Personalization product features ecommerce", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}]}}, "transient": true}
+
+data: {"type": "finish-step"}
+
+data: {"type": "start-step"}
+
+data: {"type": "text-start", "id": "alg_msg_mlLQRNF38J4NoDLN"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "Think"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " of these"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " three not"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " as competing"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " tools"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ", but"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " as a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " layered strategy"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " to"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " move a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " shopper"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " from \""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "I'"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "m just"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " looking\""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " to \""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "I need"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " to"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " buy this"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " right"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " now.\""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\n\nThe"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " tradeoff is"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " essentially between"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " **intent"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "**,"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " **context"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "**, and"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " **behavior"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "**.\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "### The"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Strategi"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "c Framework\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "1."}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "  **"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "AI Search"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ":"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " The Intent"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Layer"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "**\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "    This"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " is your"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " foundation"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ". It"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " handles high"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "-intent"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " visitors"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " who know"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " exactly what"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " they want"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " ("}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "or think"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " they do"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "). The"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " goal here"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " is absolute"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " precision"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " and speed"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\u2014"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "elimin"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "ating \""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "no results"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " found"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\" and"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " ensuring the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " most relevant"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " product is"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the first"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " thing"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " they see"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ".\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "2."}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "  **"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "Alg"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "olia Recommend"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ": The"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Discovery"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Layer**"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\n    "}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "Recommendations"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " handle"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " \"what"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " else\""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " moment"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ". This"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " is for"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " users"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " who are"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " browsing a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " specific product"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " or are"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " at checkout"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ". Instead"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " of relying"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " on a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " search query"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ", it"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " uses AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " to suggest"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " complementary"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " or"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " similar"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " items ("}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "e."}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "g.,"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " \"Frequently"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Bought"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Together\")"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " to increase"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " average"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " order value"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " (A"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "OV)."}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " You"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " can explore"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " this further"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " in"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the ["}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "Algolia"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Recommend Demo"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " for"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " eCommerce](/"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "developers/"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "code-"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "exchange/"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "algolia"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "-recommend"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "-demo"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "-for"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "-ecommerce"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ").\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "3."}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "  **"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "AI Personal"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "ization:"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " The Behavioral"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Layer**"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\n    "}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "Personal"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "ization is"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the \""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "magi"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "c\" layer"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " that adjusts"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the experience"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " based on"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " who the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " user is"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ". It"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " doesn'"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "t just"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " look"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " at the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " current click"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ","}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " but at"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the user"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "'s"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " histori"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "cal behavior."}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " This"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " means"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " two"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " different"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " people searching"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " for \""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "shoes\""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " might see"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " different results"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\u2014"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "one seeing"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " running"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " sneakers"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " and the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " other seeing"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " high heels"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\u2014based"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " on their"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " past interactions"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ".\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "### Concrete"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Example"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ": The"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Sho"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "pper'"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "s Journey"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\nImagine"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " a customer"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " visiting a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " clothing"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " site"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ":\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "*   "}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "**AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Search:**"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " They type"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " \"summer"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " linen"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " dress.\""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Search ensures"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " they"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " find the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " exact"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " style"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " and size"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " available"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " in"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " stock."}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\n*"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "   **"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "Recommend:**"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Once"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " they"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " click a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " dress,"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " \"Complete"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the Look"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\" section"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " suggests a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " matching sun"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " hat and"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " sandals."}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\n*"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "   **"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "Personalization"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ":** The"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " next time"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " they visit"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the homepage"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ", the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " \"New"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Arrivals\""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " section is"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " automatically"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " sorted to"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " show linen"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " apparel"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " because the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " knows they"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " prefer that"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " material"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ".\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "### Practi"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "cal Recommendation\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "If"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " you'"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "re deciding"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " where to"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " start,"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " follow this"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " sequence"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ":\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "*   "}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "**Start"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " with AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Search.**"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " You"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " cannot personalize"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " or"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " recommend your"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " way out"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " of a"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " broken"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " search experience"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ". Get"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " your"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " relevance"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " and"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " speed"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " right first"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ".\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "*   "}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "**Add"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Recommend.**"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Once search"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " is solid"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ", implement"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " recommendations on"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " product pages"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " and carts"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " to drive"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " AOV"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ".\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "*   "}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "**Layer"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " in"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " Personalization"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ".** Use"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " this as"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " final optimization"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " to increase"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " conversion rates"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " by tailoring"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the experience"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " to individual"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " user profiles"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ".\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "Which"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " of these"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " three areas"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " is"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " currently the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " biggest friction"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " point for"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " your customers"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "\u2014"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "finding"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " the product"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ","}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " discovering"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " related items"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": ", or"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " feeling"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " like the"}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " site \""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": "gets\""}
+
+data: {"type": "text-delta", "id": "alg_msg_mlLQRNF38J4NoDLN", "delta": " them?"}
+
+data: {"type": "text-end", "id": "alg_msg_mlLQRNF38J4NoDLN"}
+
+data: {"type": "finish-step"}
+
+data: {"type": "finish"}
+
+data: [DONE]

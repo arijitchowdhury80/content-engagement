@@ -1,0 +1,32 @@
+{
+  "status": 200,
+  "ok": true,
+  "question": "We are an ecommerce team looking at AI Search, Recommendations, and Personalization. What is the practical way to decide what comes first?",
+  "rawLength": 52448,
+  "answerLength": 2571,
+  "answerPreview": "The most practical way to decide is to focus on your current friction point: if users can't find a product they know exists, fix search; if they are browsing but not converting, deploy recommendations; if you have massive traffic but low relevance, lean into personalization.\n\nTypically, the most effective sequence follows a \"Foundation to Refinement\" logic:\n\n### 1. AI Search (The Foundation)\nStart here because search is the highest-intent action a visitor takes. If your search is broken or imprecise, recommendations and personalization are just polishing a leaky bucket. AI Search (specifically [NeuralSearch](https://www.algolia.com/products/ai-search/)) ensures that regardless of how a user phrases a query, they land on the right product.\n*   **Concrete Example:** Replacing basic keyword matching with AI-powered semantic search to handle \"summer beach attire\" even if those exact words aren't in your product titles.\n\n### 2. Recommendations (The Multiplier)\nOnce your search foundation is solid, use [Algolia Recommend](https://www.algolia.com/products/recommendations/) to increase Average Order Value (AOV). Recommendations are \"passive\" discovery—they guide the user through the catalog without requiring them to type.\n*   **Best Practice:** Implement \"Frequently Bought Together\" on product pages or \"Similar Products\" in the cart to drive cross-selling.\n\n### 3. Personalization (The Optimizer)\nPersonalization is the \"white glove\" layer. It takes the search and recommendations you already have and rearranges them based on the specific user's history, location, or behavior. It is most powerful when you have enough data to make meaningful distinctions between user segments.\n*   **Practical Pattern:** Using [AI-enabled personalization](https://www.algolia.com/blog/ecommerce/ecommerce-search-ai-enabled-personalization) to boost luxury items for high-spending segments while prioritizing value items for discount-seekers in the same search result.\n\n### The Tradeoff Frame\n*   **Speed to Value:** AI Search $\\rightarrow$ Recommendations $\\rightarrow$ Personalization.\n*   **Implementation Effort:** Search is a \"set and optimize\" move; Recommendations require UI placement strategy",
+  "searchedVanilla": true,
+  "toolCalls": [
+    {
+      "name": "algolia_search_index_algolia_prod_copy_vanilla",
+      "input": {
+        "originalQuery": "We are an ecommerce team looking at AI Search, Recommendations, and Personalization. What is the practical way to decide what comes first?",
+        "queries": [
+          {
+            "query": "ecommerce AI Search Recommendations Personalization implementation order guide"
+          },
+          {
+            "query": "best practices AI search vs personalization vs recommendations ecommerce"
+          },
+          {
+            "query": "AI Search Personalization Recommendations tradeoffs ecommerce ROI"
+          }
+        ],
+        "sessionId": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+        "userIntent": "The user is an ecommerce team evaluating three core Algolia AI features and needs a strategic framework or recommended sequence for implementation to maximize impact."
+      }
+    }
+  ],
+  "hasQuestionAtEnd": true,
+  "hasArrieVoice": true
+}

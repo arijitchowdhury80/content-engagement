@@ -1,0 +1,14 @@
+{
+  "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+  "target": "www Chat – Orchestrator",
+  "fields": [
+    "systemPrompt",
+    "instructions"
+  ],
+  "systemPromptLength": 4495,
+  "systemPromptSha256": "c7d04e1952037a4ed40748135d03a46593cfaefa48e0f329fd2e69a140f1b7e7",
+  "instructionsLength": 16115,
+  "instructionsSha256": "ad697ecf5481117985446f5cb6b9dc2e843261302abfec86d42f51eb20098f2e",
+  "rollback": "Restore systemPrompt/instructions from orchestrator-before-immediate.json or orchestrator-before.json",
+  "validation": "GET readback must match local hashes and preserve agent id/status/tools/config."
+}

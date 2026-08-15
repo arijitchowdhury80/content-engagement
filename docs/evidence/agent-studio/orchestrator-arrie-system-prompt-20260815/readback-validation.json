@@ -1,0 +1,24 @@
+{
+  "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+  "name": "www Chat – Orchestrator",
+  "status": "published",
+  "systemPromptLength": 4495,
+  "systemPromptSha256": "c7d04e1952037a4ed40748135d03a46593cfaefa48e0f329fd2e69a140f1b7e7",
+  "expectedSystemPromptSha256": "c7d04e1952037a4ed40748135d03a46593cfaefa48e0f329fd2e69a140f1b7e7",
+  "systemPromptMatches": true,
+  "instructionsLength": 16115,
+  "instructionsSha256": "ad697ecf5481117985446f5cb6b9dc2e843261302abfec86d42f51eb20098f2e",
+  "expectedInstructionsSha256": "ad697ecf5481117985446f5cb6b9dc2e843261302abfec86d42f51eb20098f2e",
+  "instructionsMatches": true,
+  "toolCount": 3,
+  "configKeys": [
+    "enableAlgoliaMcp",
+    "guardrail",
+    "max_iterations",
+    "max_tokens",
+    "memory",
+    "rate_limit",
+    "suggestions",
+    "thread_depth"
+  ]
+}

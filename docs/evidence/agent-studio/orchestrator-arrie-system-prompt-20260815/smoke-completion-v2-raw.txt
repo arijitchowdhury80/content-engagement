@@ -1,0 +1,691 @@
+data: {"type": "start", "messageId": "alg_msg_ugH0l0YYcC7EhJ5K", "messageMetadata": {}}
+
+data: {"type": "start-step"}
+
+data: {"type": "tool-input-start", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "toolName": "algolia_search_index_algolia_prod_copy_vanilla"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": ""}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": "{\"originalQuery\": \"We"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": " are an ecommerce team looking at AI Search, Recommendations"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": ", and"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": " Personalization. What is the practical way to decide what comes first?"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": "\", \"queries\": "}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": "[{\"query\": \"ecommerce AI Search Recommendations Personalization implementation order guide\"}, {\"query\": \"best practices AI search vs personalization vs recommendations ecommerce\"}, {\"query\": \"AI Search Personalization Recommendations tradeoffs ecommerce ROI\"}], \"sessionId\": \"a"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": "1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": "\", \"userIntent\": \""}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": "The user is an ecommerce team evaluating three core Algolia AI features and needs a strategic framework or recommended sequence for implementation to maximize impact."}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "inputTextDelta": "\"}"}
+
+data: {"type": "tool-input-available", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "toolName": "algolia_search_index_algolia_prod_copy_vanilla", "input": {"originalQuery": "We are an ecommerce team looking at AI Search, Recommendations, and Personalization. What is the practical way to decide what comes first?", "queries": [{"query": "ecommerce AI Search Recommendations Personalization implementation order guide"}, {"query": "best practices AI search vs personalization vs recommendations ecommerce"}, {"query": "AI Search Personalization Recommendations tradeoffs ecommerce ROI"}], "sessionId": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d", "userIntent": "The user is an ecommerce team evaluating three core Algolia AI features and needs a strategic framework or recommended sequence for implementation to maximize impact."}}
+
+data: {"type": "tool-output-available", "toolCallId": "chatcmpl-tool-8d1adb5701d657be", "output": {"hits": [{"source": "Blog", "authors": [{"name": "Tanya Herman", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png", "desc": "Product Manager"}], "url": "/blog/customers/best-practices-for-ecommerce-personalization", "description": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions", "abstract": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions Best practices for eCommerce personalization", "environment": "prod20260722", "category": "", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/comp-network-white.webp", "tags": [], "published_at": 1719140460000, "is404": false, "transform_source": "aant-blogsEntry", "title": "Best practices for eCommerce personalization | Algolia", "keywords": ["customers"], "language_code": "en", "indexed_at": 1784670431715, "facets": {"facet0": [""]}, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Customers"], "lvl2": ["by Tanya Herman"]}, "lastUpdated": "2026-07-21T21:47:11.715Z", "objectID": "en_c36715bd-9db5-454c-b48c-5684bc8233ca_0_2"}, {"description": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions", "abstract": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions Best practices for eCommerce personalization", "language_code": "de", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Customers"], "lvl2": ["by Tanya Herman"]}, "title": "Best practices for eCommerce personalization - Algolia Blog | Algolia", "tags": [], "authors": [{"name": "Tanya Herman", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png", "desc": "Product Manager"}], "environment": "prod20260722", "objectID": "de_c36715bd-9db5-454c-b48c-5684bc8233ca", "source": "Blog", "category": "", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/comp-network-white.webp", "indexed_at": 1784670431756, "facets": {"facet0": [""]}, "lastUpdated": "2026-07-21T21:47:11.756Z", "transform_source": "aant-blogsEntry", "url": "/de/blog/customers/best-practices-for-ecommerce-personalization", "keywords": ["customers"], "published_at": 1719140460000, "is404": false}, {"source": "Blog", "category": "", "keywords": ["customers"], "published_at": 1719140460000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Customers"], "lvl2": ["by Tanya Herman"]}, "objectID": "fr_c36715bd-9db5-454c-b48c-5684bc8233ca", "transform_source": "aant-blogsEntry", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/comp-network-white.webp", "authors": [{"name": "Tanya Herman", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png", "desc": "Product Manager"}], "url": "/fr/blog/customers/best-practices-for-ecommerce-personalization", "description": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions", "lastUpdated": "2026-07-21T21:47:11.566Z", "title": "Best practices for eCommerce personalization - Algolia Blog | Algolia", "indexed_at": 1784670431566, "facets": {"facet0": [""]}, "is404": false, "tags": [], "abstract": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions Best practices for eCommerce personalization", "language_code": "fr", "environment": "prod20260722"}, {"objectID": "en_f0a2680b-aa4d-4bdd-8041-41638bc456ed_0_9", "source": "Blog", "language_code": "en", "published_at": 1726635060000, "title": "Leveling up ecommerce search with AI-enabled personalization", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-AI_Enabled-Personalization.jpg", "tags": ["E-commerce"], "authors": [{"name": "Tariq Khan", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tariq-Khan.jpeg", "desc": "Director of Content Marketing"}], "abstract": "Leveling up ecommerce search with AI-enabled personalization", "facets": {"facet0": ["Ecommerce"]}, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Tariq Khan"]}, "transform_source": "aant-blogsEntry", "category": "Ecommerce", "url": "/blog/ecommerce/ecommerce-search-ai-enabled-personalization", "keywords": ["e-commerce"], "is404": false, "description": "", "indexed_at": 1784670426756, "lastUpdated": "2026-07-21T21:47:06.756Z", "environment": "prod20260722"}, {"category": "Ecommerce", "url": "/de/blog/ecommerce/ecommerce-search-ai-enabled-personalization", "indexed_at": 1784670295703, "facets": {"facet0": ["Ecommerce"]}, "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-AI_Enabled-Personalization.jpg", "published_at": 1726635060000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by "]}, "title": "Leveling up ecommerce search with AI-enabled personalization", "authors": [{"name": "", "desc": "Director, Content Marketing"}], "description": "", "abstract": "Leveling up ecommerce search with AI-enabled personalization", "lastUpdated": "2026-07-21T21:44:55.703Z", "environment": "prod20260722", "objectID": "de_f0a2680b-aa4d-4bdd-8041-41638bc456ed", "source": "Blog", "transform_source": "aant-blogsEntry", "tags": ["E-commerce"], "keywords": ["e-commerce"], "language_code": "de", "is404": false}, {"tags": ["E-commerce"], "url": "/fr/blog/ecommerce/ecommerce-search-ai-enabled-personalization", "language_code": "fr", "facets": {"facet0": ["Ecommerce"]}, "source": "Blog", "title": "Leveling up ecommerce search with AI-enabled personalization", "keywords": ["e-commerce"], "abstract": "Leveling up ecommerce search with AI-enabled personalization", "published_at": 1726635060000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by "]}, "environment": "prod20260722", "category": "Ecommerce", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-AI_Enabled-Personalization.jpg", "description": "", "indexed_at": 1784670295481, "transform_source": "aant-blogsEntry", "authors": [{"name": "", "desc": "Director, Content Marketing"}], "is404": false, "lastUpdated": "2026-07-21T21:44:55.481Z", "objectID": "fr_f0a2680b-aa4d-4bdd-8041-41638bc456ed"}, {"tags": ["E-commerce"], "authors": [{"name": "Catherine Dee", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/catherine-dee.png", "desc": "Search and Discovery writer"}], "description": "Personalization features can feel overwhelming, so we've put together three areas to focus on first: mobile, discovery, and recommendations.", "keywords": ["e-commerce"], "facets": {"facet0": ["Ecommerce"]}, "language_code": "de", "indexed_at": 1784670422905, "published_at": 1712838780000, "objectID": "de_59368e29-1a70-42dc-9818-003520ef31c1", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/3-ways-to-improve-ux-with-ai-and-personalization.webp", "url": "/de/blog/ecommerce/3-ways-to-improve-ux-with-ai-and-personalization", "is404": false, "lastUpdated": "2026-07-21T21:47:02.905Z", "category": "Ecommerce", "abstract": "Personalization features can feel overwhelming, so we've put together three areas to focus on first: mobile, discovery, and recommendations. 3 ways to improve the customer experience with AI and personalization", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Catherine Dee"]}, "environment": "prod20260722", "source": "Blog", "transform_source": "aant-blogsEntry", "title": "3 ways to improve the customer experience with AI and personalization - Algolia Blog | Algolia"}, {"transform_source": "aant-blogsEntry", "authors": [{"name": "", "desc": "AI Product Manager"}], "url": "/de/blog/ai/increase-your-ecommerce-roi-by-predicting-users-next-shopping-stages", "published_at": 1690833600000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["AI"], "lvl2": ["by "]}, "objectID": "de_5d30aa6a-2166-459a-bce7-a8fe43d00258", "tags": ["AI"], "keywords": ["ai"], "indexed_at": 1784670273469, "facets": {"facet0": ["AI"]}, "is404": false, "environment": "prod20260722", "source": "Blog", "title": "Boost ecommerce ROI by predicting users\u2019 next move | Algolia", "category": "AI", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/buy-screen.webp", "description": "\u2026", "abstract": "\u2026 Increase your ecommerce ROI by predicting users\u2019 next shopping stages", "language_code": "de", "lastUpdated": "2026-07-21T21:44:33.469Z"}, {"source": "Blog", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/buy-screen.webp", "tags": ["AI"], "url": "/blog/ai/increase-your-ecommerce-roi-by-predicting-users-next-shopping-stages", "description": "\u2026", "keywords": ["ai"], "abstract": "\u2026 Increase your ecommerce ROI by predicting users\u2019 next shopping stages", "published_at": 1690833600000, "authors": [{"name": "Ciprian Borodescu", "desc": "AI Product Manager"}], "lastUpdated": "2026-07-21T21:44:33.295Z", "environment": "prod20260722", "objectID": "en_5d30aa6a-2166-459a-bce7-a8fe43d00258_0_1", "indexed_at": 1784670273295, "facets": {"facet0": ["AI"]}, "language_code": "en", "is404": false, "transform_source": "aant-blogsEntry", "title": "Boost ecommerce ROI by predicting users\u2019 next move | Algolia", "category": "AI", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["AI"], "lvl2": ["by Ciprian Borodescu"]}}, {"source": "Blog", "keywords": ["ai"], "indexed_at": 1784670272862, "facets": {"facet0": ["AI"]}, "is404": false, "objectID": "fr_5d30aa6a-2166-459a-bce7-a8fe43d00258", "transform_source": "aant-blogsEntry", "tags": ["AI"], "authors": [{"name": "", "desc": "AI Product Manager"}], "description": "\u2026", "published_at": 1690833600000, "lastUpdated": "2026-07-21T21:44:32.862Z", "title": "Boost ecommerce ROI by predicting users\u2019 next move | Algolia", "category": "AI", "language_code": "fr", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/buy-screen.webp", "url": "/fr/blog/ai/increase-your-ecommerce-roi-by-predicting-users-next-shopping-stages", "abstract": "\u2026 Increase your ecommerce ROI by predicting users\u2019 next shopping stages", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["AI"], "lvl2": ["by "]}, "environment": "prod20260722"}, {"category": "Ecommerce", "keywords": ["e-commerce"], "facets": {"facet0": ["Ecommerce"]}, "tags": ["E-commerce"], "authors": [{"name": "Brendan Cleary", "desc": "Product Marketing Manager"}], "description": "Explore how conversational AI transforms ecommerce through product discovery, personalized recommendations, and support automation, including ROI benchmarks.", "abstract": "Explore how conversational AI transforms ecommerce through product discovery, personalized recommendations, and support automation, including ROI benchmarks.", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Brendan Cleary"]}, "source": "Blog", "transform_source": "aant-blogsEntry", "title": "Conversational AI in ecommerce: use cases, ROI & implementation", "url": "/de/blog/ecommerce/conversational-ai-in-ecommerce", "language_code": "de", "indexed_at": 1784670299413, "published_at": 1782247380000, "is404": false, "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-Conversational-AI-1920x1080.webp", "lastUpdated": "2026-07-21T21:44:59.413Z", "environment": "prod20260722", "objectID": "de_1b938bbc-aff4-41ec-9cda-7b96203fc935_0_4"}], "nbHits": 11, "facets": {"tags": {"E-commerce": 57, "AI": 24, "Algolia": 3, "Product": 6, "eCommerce": 3, "Recommend": 1, "shopify": 1, "User Experience": 3}, "is404": {"false": 100}, "source": {"Blog": 88, "Resources": 18, "Developers": 3, "Academy": 1}, "category": {"Ecommerce": 57, "AI": 24, "Ebooks": 13, "Reports": 6, "Algolia": 3, "Product": 6, "guide": 1, "UX": 3, "Webinars": 3}, "keywords": {"e-commerce": 57, "ecommerce": 17, "ai": 24, "search": 15, "commerce": 14, "algolia": 3, "customers": 3, "product": 6, "user experience": 3}, "environment": {"prod20260722": 95, "prod20260621": 7, "nonprod20260220": 1, "prod03042026": 1}, "lastUpdated": {"2026-07-21T21:45:26.235Z": 3, "2026-07-21T21:45:26.310Z": 3, "2026-08-04T21:42:09.420Z": 3, "2026-07-21T21:44:33.003Z": 1, "2026-07-21T21:44:33.061Z": 1, "2026-07-21T21:44:33.288Z": 1, "2026-07-21T21:44:35.731Z": 1, "2026-07-21T21:44:36.096Z": 1, "2026-07-21T21:44:36.277Z": 1, "2026-07-21T21:44:36.280Z": 1, "2026-07-21T21:44:36.624Z": 1, "2026-07-21T21:44:38.598Z": 1, "2026-07-21T21:44:38.653Z": 1, "2026-07-21T21:44:39.703Z": 1, "2026-07-21T21:44:46.920Z": 1, "2026-07-21T21:44:47.224Z": 1, "2026-07-21T21:44:51.004Z": 1, "2026-07-21T21:44:51.872Z": 1, "2026-07-21T21:44:52.784Z": 1, "2026-07-21T21:44:53.499Z": 1, "2026-07-21T21:44:53.695Z": 1, "2026-07-21T21:44:53.975Z": 1, "2026-07-21T21:44:54.040Z": 1, "2026-07-21T21:44:54.056Z": 1, "2026-07-21T21:44:54.118Z": 1, "2026-07-21T21:44:54.133Z": 1, "2026-07-21T21:44:55.481Z": 1, "2026-07-21T21:44:55.703Z": 1, "2026-07-21T21:44:58.890Z": 1, "2026-07-21T21:44:59.048Z": 1, "2026-07-21T21:44:59.139Z": 1, "2026-07-21T21:44:59.197Z": 1, "2026-07-21T21:44:59.357Z": 1, "2026-07-21T21:44:59.519Z": 1, "2026-07-21T21:44:59.971Z": 1, "2026-07-21T21:45:00.122Z": 1, "2026-07-21T21:45:00.219Z": 1, "2026-07-21T21:45:00.253Z": 1, "2026-07-21T21:45:32.036Z": 1, "2026-07-21T21:45:32.050Z": 1, "2026-07-21T21:45:32.052Z": 1, "2026-07-21T21:45:32.055Z": 1, "2026-07-21T21:45:32.057Z": 1, "2026-07-21T21:45:32.058Z": 1, "2026-07-21T21:45:32.059Z": 1, "2026-07-21T21:45:32.063Z": 1, "2026-07-21T21:45:32.065Z": 1, "2026-07-21T21:46:13.046Z": 1, "2026-07-21T21:46:13.124Z": 1, "2026-07-21T21:46:13.129Z": 1, "2026-07-21T21:46:45.328Z": 1, "2026-07-21T21:46:45.510Z": 1, "2026-07-21T21:46:46.146Z": 1, "2026-07-21T21:46:57.506Z": 1, "2026-07-21T21:46:57.917Z": 1, "2026-07-21T21:46:59.982Z": 1, "2026-07-21T21:47:00.183Z": 1, "2026-07-21T21:47:00.231Z": 1, "2026-07-21T21:47:00.967Z": 1, "2026-07-21T21:47:01.428Z": 1, "2026-07-21T21:47:02.896Z": 1, "2026-07-21T21:47:02.905Z": 1, "2026-07-21T21:47:05.404Z": 1, "2026-07-21T21:47:05.483Z": 1, "2026-07-21T21:47:05.533Z": 1, "2026-07-21T21:47:05.581Z": 1, "2026-07-21T21:47:05.633Z": 1, "2026-07-21T21:47:06.063Z": 1, "2026-07-21T21:47:06.119Z": 1, "2026-07-21T21:47:06.192Z": 1, "2026-07-21T21:47:06.290Z": 1, "2026-07-21T21:47:06.483Z": 1, "2026-07-21T21:47:06.601Z": 1, "2026-07-21T21:47:06.653Z": 1, "2026-07-21T21:47:06.756Z": 1, "2026-07-21T21:47:06.759Z": 1, "2026-07-21T21:47:06.853Z": 1, "2026-07-21T21:47:06.892Z": 1, "2026-07-21T21:47:06.969Z": 1, "2026-07-21T21:47:06.984Z": 1, "2026-07-21T21:47:07.008Z": 1, "2026-07-21T21:47:11.566Z": 1, "2026-07-21T21:47:11.715Z": 1, "2026-07-21T21:47:11.756Z": 1, "2026-07-21T21:47:24.794Z": 1, "2026-07-21T21:47:24.915Z": 1, "2026-07-21T21:47:25.247Z": 1, "2026-07-21T21:47:25.726Z": 1, "2026-07-21T21:48:13.098Z": 1, "2026-07-21T21:48:15.553Z": 1, "2026-07-21T21:48:16.860Z": 1, "2026-07-21T21:51:36.211Z": 1, "2026-07-28T06:12:12.839Z": 1, "2026-07-29T18:42:11.179Z": 1, "2026-08-04T19:12:13.610Z": 2, "2026-04-27T15:25:36.699Z": 1, "2026-05-07T16:10:56.408Z": 1, "2026-07-21T21:44:36.728Z": 1, "2026-07-21T21:44:36.860Z": 1, "2026-07-21T21:44:37.002Z": 1, "2026-07-21T21:44:37.074Z": 1, "2026-07-21T21:44:37.137Z": 1, "2026-07-21T21:44:37.160Z": 1, "2026-07-21T21:44:40.473Z": 1, "2026-07-21T21:44:40.744Z": 1, "2026-07-21T21:44:41.096Z": 1, "2026-07-21T21:44:57.604Z": 1, "2026-07-21T21:44:57.773Z": 1, "2026-07-21T21:44:57.851Z": 1, "2026-07-21T21:44:57.984Z": 1, "2026-07-21T21:44:58.096Z": 1, "2026-07-21T21:44:58.107Z": 1, "2026-07-21T21:44:59.046Z": 1, "2026-07-21T21:44:59.211Z": 1, "2026-07-21T21:44:59.413Z": 1, "2026-07-21T21:45:12.645Z": 1, "2026-07-21T21:45:27.700Z": 1, "2026-07-21T21:45:28.283Z": 1, "2026-07-21T21:46:58.022Z": 1, "2026-07-21T21:46:58.219Z": 1, "2026-07-21T21:46:58.364Z": 1, "2026-07-21T21:47:00.327Z": 1, "2026-07-21T21:47:00.369Z": 1, "2026-07-21T21:47:00.427Z": 1, "2026-07-21T21:47:00.440Z": 1, "2026-07-21T21:47:00.494Z": 1, "2026-07-21T21:47:00.588Z": 1, "2026-07-21T21:47:00.808Z": 1, "2026-07-21T21:47:00.900Z": 1, "2026-07-21T21:47:01.176Z": 1, "2026-07-21T21:47:01.491Z": 1, "2026-07-21T21:47:02.886Z": 1, "2026-07-21T21:47:04.873Z": 1, "2026-07-21T21:47:05.008Z": 1, "2026-07-21T21:47:05.034Z": 1, "2026-07-21T21:47:06.660Z": 1, "2026-07-21T21:47:06.754Z": 1, "2026-07-21T21:47:06.821Z": 1, "2026-07-21T21:47:10.861Z": 1, "2026-07-21T21:47:10.922Z": 1, "2026-07-21T21:47:11.060Z": 1, "2026-07-22T16:42:20.099Z": 1, "2026-08-04T21:42:12.572Z": 1, "2026-07-21T21:44:52.655Z": 3, "2026-07-15T15:25:34.866Z": 1, "2026-07-21T21:44:32.862Z": 1, "2026-07-21T21:44:33.295Z": 1, "2026-07-21T21:44:33.469Z": 1, "2026-07-21T21:44:36.151Z": 1, "2026-07-21T21:44:36.479Z": 1, "2026-07-21T21:44:38.687Z": 1, "2026-07-21T21:44:38.981Z": 1, "2026-07-21T21:44:39.701Z": 1, "2026-07-21T21:45:22.575Z": 1, "2026-07-21T21:45:32.043Z": 1, "2026-07-21T21:47:01.122Z": 1, "2026-07-21T21:47:01.257Z": 1, "2026-07-21T21:47:01.421Z": 1, "2026-07-21T21:47:06.409Z": 1, "2026-07-21T21:47:06.495Z": 1, "2026-07-21T21:47:06.692Z": 1, "2026-07-21T21:47:29.724Z": 1, "2026-07-21T21:47:29.970Z": 1, "2026-07-21T21:47:30.103Z": 1}, "authors.desc": {"Search and Discovery writer": 15, "Director, Digital Marketing": 13, "Product Manager": 9, "Chief Strategic Business Development Officer": 6, "Developer Educator": 6, "Senior Digital Marketing Manager, SEO": 10, "VP, Corporate Communications and Brand": 3, "Writer at Author's Collective": 3, "AI Product Manager": 3, "Director of Content Marketing": 4, "Director, Content Marketing": 5, "VP, Product & Partnerships | Orium": 2, "AI Product Manager | On a mission to help people succeed through the use of AI": 1, "Product Marketing Manager": 4, "SR Product Marketing Manager": 1, "Senior Manager, Product Management": 2, "Senior Content Strategist": 6, "VP Product Marketing": 6, "Content Writer, Ziffity Solutions LLC": 3, "Sr. Product Marketing Manager": 3, "Partner Marketing Manager at Algolia": 1, "Chief Revenue Officer at Algolia": 3}, "authors.name": {"Jon Silvers": 13, "Catherine Dee": 13, "Tanya Herman": 7, "Piyush Patel": 6, "Vincent Caruana": 8, "Algolia Labs": 3, "John Stewart": 3, "Julia Seidman": 2, "Tariq Khan": 5, "Ashley Huynh": 1, "Brendan Cleary": 4, "Ciprian Borodescu": 1, "Luigi Castellano": 1, "Patrick Loomis": 1, "Ivana Ivanovic": 6, "Subrata Chakrabarti": 4, "Matthieu Blandineau": 3, "Ramanathan Ramakrishnamoorthy": 3, "Mackenzie Blake": 1, "Michelle Adams": 1}, "facets.facet0": {"Ecommerce": 57, "AI": 24, "Ebooks": 13, "Reports": 6, "Algolia": 3, "Product": 6, "UX": 3, "Webinars": 3}, "facets.facet1": {"Ecommerce": 16, "Technology": 4}, "facets.facet3": {"JavaScript": 3}, "language_code": {"en": 37, "de": 33, "fr": 32}, "algoliaDisabled": {"false": 1}, "authors.imgpath": {"/sites/algolia-assets/files/blogs/authorimages/catherine-dee.png": 15, "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png": 9, "/sites/algolia-assets/files/blogs/authorimages/piyush-patel.png": 6, "/sites/algolia-assets/files/blogs/authorimages/vincent-caruana.jpeg": 10, "/sites/algolia-assets/files/blogs/authorimages/Julia-Seidman.png": 5, "/sites/algolia-assets/files/blogs/authorimages/jon-silvers.png": 6, "/sites/algolia-assets/files/blogs/authorimages/john-silvers.png": 3, "/sites/algolia-assets/files/blogs/authorimages/john-stewart.png": 3, "/sites/algolia-assets/files/blogs/authorimages/tariq-khan.jpeg": 7, "/sites/algolia-assets/files/blogs/authorimages/Ciprian-Borodescu.jpeg": 1, "/sites/algolia-assets/files/blogs/authorimages/Julia-Seidman-2.png": 1, "/sites/algolia-assets/files/blogs/authorimages/luigi-castellano.jpeg": 1, "/sites/algolia-assets/files/blogs/authorimages/patrick_loomis.jpg": 2, "/sites/algolia-assets/files/blogs/authorimages/ivana-ivanovic.jpeg": 6, "/sites/algolia-assets/files/blogs/authorimages/subrata-chakrabarti.png": 6, "/sites/algolia-assets/files/blogs/authorimages/matthieu-blandineau.jpeg": 3, "/sites/algolia-assets/files/events lp-images/Headshots/Mackenzie Blake - cropped.JPEG": 1, "/sites/algolia-assets/files/blogs/authorimages/Michelle-Adams.png": 3}, "transform_source": {"aant-blogsEntry": 88, "aant-resourceCenterContentItem": 18, "aant-codeExchangeEntry": 3, "algolia-academy": 1}}}}
+
+data: {"type": "data-tool-output-metadata", "data": {"toolCallId": "chatcmpl-tool-8d1adb5701d657be", "metadata": {"com.algolia/resolved-search-params": [{"query": "ecommerce AI Search Recommendations Personalization implementation order guide", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}, {"query": "best practices AI search vs personalization vs recommendations ecommerce", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}, {"query": "AI Search Personalization Recommendations tradeoffs ecommerce ROI", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}]}}, "transient": true}
+
+data: {"type": "finish-step"}
+
+data: {"type": "start-step"}
+
+data: {"type": "text-start", "id": "alg_msg_ugH0l0YYcC7EhJ5K"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "The"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " most"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " practical way"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " to decide"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " is to"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " focus"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " on your"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " current"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " friction"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " point"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ": if"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " users"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " can"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "'t"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " find a"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " product they"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " know"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " exists"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ", fix"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " search"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ";"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " if they"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " are"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " browsing but"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " not"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " converting"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ", deploy"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " recommendations;"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " if you"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " have massive"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " traffi"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "c but low"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " relevance"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ", lean"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " into personalization"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ".\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Typically"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ", the"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " most"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " effective sequence"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " follows"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " a \""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Foundation to"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Ref"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "inement\""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " logi"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "c:\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "###"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " 1"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ". AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Search ("}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "The Foundation"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ")\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Start"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " here"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " because"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " search is"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " the highest"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-intent"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " action a"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " visitor"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " takes."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " If your"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " search"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " is broken"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " or"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " imprecise,"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " recommendations"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " and personalization"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " are"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " just polishing"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " a leaky"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " bucket"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ". AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Search ("}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "specifically"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " ["}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "NeuralSearch"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "](https"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "://www"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ".alg"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "olia."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "com/"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "products"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "/ai"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-search"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "/))"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " ensures that"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " regardless"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " of how"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " a"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " user phrases"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " a query"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ", they"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " land"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " on the"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " right product"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ".\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "*   "}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "**Concrete"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Example:**"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Replacing"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " basi"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "c keyword matching"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " with AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-powered"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " semanti"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "c search to"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " handle \""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "summer"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " beach"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " attire"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\" even"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " if"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " those"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " exact"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " words aren"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "'t"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " in your"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " product titles"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ".\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "### "}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "2."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Recommendations"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " (The"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Multi"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "plier)"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\nOnce"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " your"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " search foundation"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " is solid"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ", use"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " ["}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Algolia"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Recommend]("}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "https://"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "www."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "algolia"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ".com"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "/products"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "/recommend"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "ations"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "/) to"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " increase Average"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Order Value"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " (A"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "OV)."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Recommendations are"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " \""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "passive"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\" discovery"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\u2014they"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " guide"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " the user"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " through the"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " catalog without"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " requiring them"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " to type"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\n*"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "   **"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Best"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Practice:**"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Implement \""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Frequently Bought"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Together\""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " on"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " product pages"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " or \""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Similar"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Products"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\" in"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " the cart"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " to drive"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " cross-"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "selling."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\n\n###"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " 3"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ". Personal"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "ization ("}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "The Optimizer"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ")\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Personalization"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " is the"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " \"white"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " glove\""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " layer"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ". It"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " takes"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " the search"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " and recommendations"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " you already"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " have and"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " rearr"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "anges them"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " based on"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " the"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " specific user"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "'s"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " history"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ","}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " location"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ", or"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " behavior."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " It"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " is most"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " powerful when"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " you have"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " enough data"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " to make"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " meaningful distinctions"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " between"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " user"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " segments."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\n*"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "   **"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Practical Pattern"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ":** Using"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " [AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-enabled"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " personalization]("}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "https://"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "www."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "algolia"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ".com"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "/blog"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "/ecommerce"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "/ecommerce"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-search"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-ai"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-enabled"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-personal"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "ization)"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " to boost"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " luxury"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " items for"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " high"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-spending"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " segments"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " while"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " prioritizing"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " value"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " items"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " for discount"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-seekers"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " in"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " the same"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " search result"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ".\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "### The"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Trade"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "off Frame"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\n*"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "   **"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "Speed"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " to"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Value"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ":** AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Search $\\"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "rightarrow$"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Recommendations $\\"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "rightarrow$"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Personalization"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ".\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "*   "}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "**Implementation"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Effort:**"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Search"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " is a"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " \""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "set"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " and"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " optimize"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\" move"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "; Recommendations"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " require"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " UI placement"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " strategy"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "; Personal"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "ization requires"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " a consistent"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " data stream"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " of user"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " events."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\n\nMy"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " recommendation is"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " to audit"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " your search"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " \""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "no-"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "results\""}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " rate first"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ". If"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " that"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " number"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " is high"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": ", AI"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Search is"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " your non"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "-negoti"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "able first"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " step."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " If"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " your"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " search is"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " fine but"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " your A"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "OV is"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " stagnant,"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " jump"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " straight to"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " Recommendations."}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "\n\nWhich"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " of these"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " three"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " is"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " currently causing"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " the most"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " frustration"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " for your"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": " customers"}
+
+data: {"type": "text-delta", "id": "alg_msg_ugH0l0YYcC7EhJ5K", "delta": "?"}
+
+data: {"type": "text-end", "id": "alg_msg_ugH0l0YYcC7EhJ5K"}
+
+data: {"type": "finish-step"}
+
+data: {"type": "finish"}
+
+data: [DONE]
