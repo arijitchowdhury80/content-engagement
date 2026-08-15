@@ -94,13 +94,13 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p:first-child[^{]+{[^}]*font-weight: 400 !important/);
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p:first-child[^{]+{[^}]*text-shadow: 0 1px 0 rgba\(255,255,255,0\.92\), 0 8px 18px rgba\(35,38,59,0\.16\)/);
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p:first-child[^{]+{[^}]*margin: 2px 0 7px !important/);
-  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p:first-child \+ p[^{]+{[^}]*margin-bottom: 30px !important/);
-  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p\.font-algolia-bold[^{]+{[^}]*margin-top: 32px !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p:first-child \+ p[^{]+{[^}]*margin-bottom: 18px !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p\.font-algolia-bold[^{]+{[^}]*margin-top: 22px !important/);
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p\.font-algolia-bold[^{]+{[^}]*font-size: 18px !important/);
-  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p:not\(:first-child\):has\(> strong:first-child\)[^{]+{[^}]*margin-top: 26px !important/);
-  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > ul, \.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > ol[^{]+{[^}]*margin-bottom: 26px !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > p:not\(:first-child\):has\(> strong:first-child\)[^{]+{[^}]*margin-top: 18px !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > ul, \.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > ol[^{]+{[^}]*margin-bottom: 18px !important/);
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col li[^{]+{[^}]*font-size: 15px !important/);
-  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > table[^{]+{[^}]*margin-bottom: 28px !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col > table[^{]+{[^}]*margin-bottom: 20px !important/);
   assert.doesNotMatch(css, /aRRIe take/);
   assert.match(css, /\.uppercase\.tracking-algolia-caps[^{]+{[^}]*border: 0 !important/);
   assert.match(css, /\.mx-auto\.flex\.w-full\.max-w-algolia-maxw\.flex-1\.flex-col\.overflow-hidden[^{]+{[^}]*max-width: 100% !important/);

@@ -56,13 +56,13 @@ test('answer markdown has breathing room between sections', () => {
   );
   assert.match(
     bundle,
-    /function fS\(t,n,i,a,l=!1\)\{const u=ig\.exec\(t\),f=u\?u\[2\]:t,d=l\?"mt-7":"mt-1"/,
-    'headings after the opening answer should create a new visual section'
+    /function fS\(t,n,i,a,l=!1\)\{const u=ig\.exec\(t\),f=u\?u\[2\]:t,d=l\?"mt-5":"mt-1"/,
+    'headings after the opening answer should create a new visual section without oversized gaps'
   );
   assert.match(
     bundle,
-    /function hS\(t,n,i,a,l=!1\).*space-y-4/s,
-    'lists should breathe more between bullets'
+    /function hS\(t,n,i,a,l=!1\).*space-y-2/s,
+    'lists should breathe without adding oversized vertical gaps'
   );
 });
 
