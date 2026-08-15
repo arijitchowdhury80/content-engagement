@@ -1,0 +1,18 @@
+{
+  "release": "chat-ui-streamed-answer-20260815a",
+  "version": "20260815-chat-ui-streamed-answer-a",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&streaming=20260815-chat-ui-streamed-answer-a",
+  "committedChatSha256": "dcd761497cdd11332ffbf8b319339450bab622c6aaea88ec8fa16c659c49da5a",
+  "liveJcrChatSha256": "dcd761497cdd11332ffbf8b319339450bab622c6aaea88ec8fa16c659c49da5a",
+  "publicChatSha256": "dcd761497cdd11332ffbf8b319339450bab622c6aaea88ec8fa16c659c49da5a",
+  "liveJcrMatchesCommitted": true,
+  "publicMatchesCommitted": true,
+  "publicHasStreamingHotfix": true,
+  "publicOmitsJudgeGatedAnswer": true,
+  "editBlockHasRelease": true,
+  "liveBlockHasRelease": true,
+  "editBlockHasChatUrl": true,
+  "liveBlockHasChatUrl": true,
+  "checkedAt": "2026-08-15T05:07:46.738605+00:00",
+  "pass": true
+}
