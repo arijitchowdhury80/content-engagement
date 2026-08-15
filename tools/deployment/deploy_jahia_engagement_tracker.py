@@ -387,9 +387,17 @@ def edit_has_expected_html(snapshot_after: dict) -> bool:
 
 
 def main() -> int:
+    global EVIDENCE_DIR
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--evidence-dir", type=Path)
     args = parser.parse_args()
+    if args.evidence_dir:
+        EVIDENCE_DIR = (
+            args.evidence_dir
+            if args.evidence_dir.is_absolute()
+            else ROOT / args.evidence_dir
+        )
 
     before = snapshot()
     write_json(EVIDENCE_DIR / "before-snapshot.json", before)

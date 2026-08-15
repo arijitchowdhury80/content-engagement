@@ -1,0 +1,31 @@
+{
+  "name": "algolia-chat-stack",
+  "description": "Manifest for the Jahia chat widget assets and Agent Studio orchestrator prompts deployed to the Algolia.com development surface.",
+  "environment": {
+    "algoliaAppIdEnv": "ALGOLIA_APP_ID",
+    "algoliaAdminApiKeyEnv": "ALGOLIA_ADMIN_API_KEY",
+    "algoliaSearchApiKeyEnv": "ALGOLIA_SEARCH_API_KEY"
+  },
+  "jahia": {
+    "deployScript": "tools/deployment/deploy_jahia_engagement_tracker.py",
+    "liveUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/?algoliaChatDebug=1&algoliaProactiveDebug=1",
+    "requiredLiveMarkers": [
+      "algolia-chat-theme-algolia-modal-greeting-width-20260815a.js",
+      "algolia-chat.js",
+      "algolia-engagement-tracker.js",
+      "algolia-context-compiler.js",
+      "algolia-proactive-controller.js",
+      "handoff-to-orchestrator.js",
+      "algolia-chat-engage.js"
+    ]
+  },
+  "agentStudio": {
+    "orchestrator": {
+      "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+      "name": "www Chat - Orchestrator",
+      "instructionsPath": "agents/prompts/instructions_algolia_orchestrator.md",
+      "systemPromptPath": "agents/prompts/system_algolia_orchestrator.md",
+      "evidenceRoot": "docs/evidence/agent-studio"
+    }
+  }
+}

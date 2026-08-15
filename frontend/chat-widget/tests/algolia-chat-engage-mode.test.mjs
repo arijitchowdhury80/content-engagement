@@ -23,3 +23,20 @@ test('proactive engage opens in docked mode unless a caller explicitly overrides
     'internal engage() should apply the requested mode before opening'
   );
 });
+
+test('proactive greeting uses the same transcript lane instead of a separate avatar rail', () => {
+  const bundle = fs.readFileSync(chatPath, 'utf8');
+  const greetingStart = bundle.indexOf('function d1({greeting:t,suggestions:n,onPickSuggestion:i,personaLabel:a})');
+  const greetingEnd = bundle.indexOf('const Wl=', greetingStart);
+
+  assert.notEqual(greetingStart, -1, 'proactive greeting renderer should exist');
+  assert.notEqual(greetingEnd, -1, 'proactive greeting renderer should have a stable boundary');
+
+  const greetingBlock = bundle.slice(greetingStart, greetingEnd);
+
+  assert.doesNotMatch(greetingBlock, /w\.jsx\(f1,\{\}\)/, 'proactive greeting should not render a separate blue chat avatar');
+  assert.doesNotMatch(greetingBlock, /ml-11 flex flex-wrap gap-2/, 'suggestion chips should not be indented for a removed avatar rail');
+  assert.doesNotMatch(greetingBlock, /rounded-algolia-lg rounded-tl-sm bg-algolia-surface-2/, 'greeting should not use a separate chat-bubble visual system');
+  assert.match(greetingBlock, /className:"flex items-start gap-0"/, 'greeting row should align to the normal transcript lane');
+  assert.match(greetingBlock, /className:"flex w-full flex-col gap-2"/, 'greeting copy and suggestions should use the full transcript width');
+});
