@@ -1,0 +1,19 @@
+{
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=20260815-header-title-only-a&verify=header-title-only-final",
+  "themeUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-header-title-only-a&verify=header-title-only-final",
+  "chatVersion": "20260815-header-title-only-a",
+  "themeVersion": "20260815-header-title-only-a",
+  "sslVerification": "disabled for local Python cert store; HTTPS endpoint still used",
+  "localChatSha256": "231d759205a8c27184705fbe75134a1398741a37e66c4b98114221a6716569a2",
+  "publicChatSha256": "231d759205a8c27184705fbe75134a1398741a37e66c4b98114221a6716569a2",
+  "localThemeSha256": "b61e438833a4af69ca7ea6c6d884d9aebcc9855548086d96a70c95e1fe7e620a",
+  "publicThemeSha256": "b61e438833a4af69ca7ea6c6d884d9aebcc9855548086d96a70c95e1fe7e620a",
+  "chatHashMatchesLocal": true,
+  "themeHashMatchesLocal": true,
+  "themeOmitsHeaderSubtitleLong": true,
+  "themeOmitsHeaderSubtitleMobile": true,
+  "themeOmitsHeaderSubtitlePseudoElement": true,
+  "themeKeepsHeaderTitle": true,
+  "themeKeepsHeaderProgressFill": true,
+  "pass": true
+}

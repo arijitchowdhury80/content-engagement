@@ -36,7 +36,7 @@ test('follow-up discovery question renders after source pills as a borderless ra
   );
   assert.match(
     bundle,
-    /\.acs-followup-wrap\{[^}]*margin-top:20px[^}]*padding-top:18px[^}]*border-top:1px solid color-mix\(in srgb,var\(--algolia-border\) 74%,transparent\)[^}]*\}\.acs-followup-card\{[^}]*border:0[^}]*linear-gradient\(135deg,#ffffff,#edf5ff[^}]*backdrop-filter:blur\(16px\)[^}]*box-shadow:0 12px 26px/,
+    /\.acs-followup-wrap\{[^}]*width:100%[^}]*margin-top:24px[^}]*padding-top:20px[^}]*border-top:1px solid color-mix\(in srgb,var\(--algolia-accent\) 18%,var\(--algolia-border\)\)[^}]*\}\.acs-followup-card\{[^}]*border:0[^}]*linear-gradient\(135deg,#ffffff,#edf5ff[^}]*backdrop-filter:blur\(16px\)[^}]*box-shadow:0 12px 26px/,
     'follow-up prompt should share the source-pill glass language without a visible border'
   );
   assert.doesNotMatch(
@@ -81,7 +81,7 @@ test('source pills use Algolia white-to-blue 3D glass treatment', () => {
   );
   assert.match(
     bundle,
-    /\.acs-source-section\{[^}]*margin-top:18px[^}]*padding-top:16px[^}]*border-top:1px solid color-mix\(in srgb,var\(--algolia-border\) 74%,transparent\)[^}]*\}\.acs-source-group-pill\{[^}]*linear-gradient\(135deg,#ffffff,#edf5ff\)[^}]*box-shadow:0 8px 18px/,
+    /\.acs-source-section\{[^}]*width:100%[^}]*margin-top:22px[^}]*padding-top:18px[^}]*border-top:1px solid color-mix\(in srgb,var\(--algolia-accent\) 18%,var\(--algolia-border\)\)[^}]*\}\.acs-source-group-pill\{[^}]*linear-gradient\(135deg,#ffffff,#edf5ff\)[^}]*box-shadow:0 8px 18px/,
     'source section should be separated from the answer before the raised source pills'
   );
   assert.match(
