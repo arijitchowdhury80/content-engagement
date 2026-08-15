@@ -1,0 +1,797 @@
+data: {"type": "start", "messageId": "alg_msg_bZUUnYXvRV2eOSwc", "messageMetadata": {}}
+
+data: {"type": "start-step"}
+
+data: {"type": "tool-input-start", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "toolName": "algolia_search_index_algolia_prod_copy_vanilla"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": ""}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": "{\"originalQuery\": \"What"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": " counts as an Algolia API call,"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": " and how should an ecommerce team think about rate limiting without breaking real shoppers?"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": "\", \"queries\": "}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": "[{\"query\": \"help center billing usage limits what counts as API call\"}, {\"query\": \"docs rate limiting best practices ecommerce\"}, {\"query\": \"developer guide API quotas rate limit handling\"}], \"sessionId\": \""}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": "a-unique-session-id-12345"}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": "\", \"userIntent\": \""}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": "User wants to understand what triggers a billable API call in Algolia and seeking architectural advice on managing rate limits to avoid impacting end-user experience in an ecommerce context."}
+
+data: {"type": "tool-input-delta", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "inputTextDelta": "\"}"}
+
+data: {"type": "tool-input-available", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "toolName": "algolia_search_index_algolia_prod_copy_vanilla", "input": {"originalQuery": "What counts as an Algolia API call, and how should an ecommerce team think about rate limiting without breaking real shoppers?", "queries": [{"query": "help center billing usage limits what counts as API call"}, {"query": "docs rate limiting best practices ecommerce"}, {"query": "developer guide API quotas rate limit handling"}], "sessionId": "a-unique-session-id-12345", "userIntent": "User wants to understand what triggers a billable API call in Algolia and seeking architectural advice on managing rate limits to avoid impacting end-user experience in an ecommerce context."}}
+
+data: {"type": "tool-output-available", "toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "output": {"hits": [{"keywords": [], "language_code": "en", "indexed_at": 1784670696203, "published_at": 1690853866000, "hierarchicalCategories": {"lvl0": ["Usage, Operations and Costs"], "lvl1": ["FAQ"]}, "source": "Support", "transform_source": "zendesk-articles", "title": "How does Algolia cost the usage of analytic API", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "tags": [], "url": "https://support.algolia.com/hc/en-us/articles/17429236129425-How-does-Algolia-cost-the-usage-of-analytic-API", "is404": false, "algoliaDisabled": "false", "category": "Usage, Operations and Costs", "authors": [], "description": "The Analytics API\u00a0is only available on Premium plans and plans including the Enterprise add-on.\n\u00a0\nThis is not a metered feature and users aren\u2019t charged for using the feature. \nKeeping in mind there is a rate limit of 100 API calls per minute per app in place as a security precaution to prevent overloading Algolia's infrastructure.\n\u00a0\nIf your plan includes the analytics feature, you may use the api as much as you like within the rate limiting thresholds.\n\u00a0\n\u00a0", "abstract": "The Analytics API\u00a0is only available on Premium plans and plans including the Enterprise add-on.\n\u00a0\nThis is not a metered feature and users aren\u2019t charged for using the feature. \nKeeping in mind there is a rate limit of 100 API calls per minute per app in place as a security precaution to prevent overloading Algolia's infrastructure.\n\u00a0\nIf your plan includes the analytics feature, you may use the api as much as you like within the rate limiting thresholds.\n\u00a0\n\u00a0", "objectID": "17429236129425", "facets": {}, "lastUpdated": "2026-07-21T21:51:36.203Z", "environment": "prod20260722"}, {"is404": false, "objectID": "16306807320721", "algoliaDisabled": "false", "category": "Usage, Operations and Costs", "tags": [], "authors": [], "description": "Yes, rate limiting applies to Recommend requests just as it does to standard search requests.If you create an API key with a maxQueriesPerIPPerHour restriction, that limit will also govern requests made to the Recommend API. This helps ensure consistent usage control across both types of operations, regardless of whether the request is for search results or recommendation models.Use rate limits when you want to:\nProtect against excessive usage or abuse\nEnforce usage tiers or quotas\nApply stricter limits to public-facing frontends\nYou can configure rate limits when generating the key in the API Key settings of the Algolia Dashboard or programmatically using the API.", "lastUpdated": "2026-07-21T21:51:36.203Z", "title": "Does a rate-limited API key apply to Recommend requests?", "url": "https://support.algolia.com/hc/en-us/articles/16306807320721-Does-a-rate-limited-API-key-apply-to-Recommend-requests", "keywords": [], "published_at": 1768321739000, "environment": "prod20260722", "abstract": "Yes, rate limiting applies to Recommend requests just as it does to standard search requests.If you create an API key with a maxQueriesPerIPPerHour restriction, that limit will also govern requests made to the Recommend API. This helps ensure consistent usage control across both types of operations, regardless of whether the request is for search results or recommendation models.Use rate limits when you want to:\nProtect against excessive usage or abuse\nEnforce usage tiers or quotas\nApply stricter limits to public-facing frontends\nYou can configure rate limits when generating the key in the API Key settings of the Algolia Dashboard or programmatically using the API.", "indexed_at": 1784670696203, "facets": {}, "hierarchicalCategories": {"lvl0": ["Usage, Operations and Costs"], "lvl1": ["FAQ"]}, "source": "Support", "transform_source": "zendesk-articles", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "language_code": "en"}, {"title": "Usage API", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png", "authors": [], "url": "/doc/rest-api/usage", "published_at": 1784670696030, "transform_source": "algolia-com-doc", "keywords": [], "objectID": "https://www.algolia.com/doc/rest-api/usage/-1", "source": "Documentation", "category": "Doc", "description": "Reference documentation for the Algolia Usage API.", "abstract": "In case of errors (such as authentication, validation, or rate limit errors), the API returns a payl...", "lastUpdated": "2026-07-21T21:51:36.030Z", "environment": "prod20260722", "tags": [], "language_code": "en", "indexed_at": 1784670696030, "facets": {}}, {"lastUpdated": "2026-07-21T21:51:36.104Z", "environment": "prod20260722", "objectID": "https://www.algolia.com/doc/guides/security/api-keys/in-depth/api-key-restrictions/-1", "transform_source": "algolia-com-doc", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png", "authors": [], "source": "Documentation", "category": "Doc", "tags": [], "description": "Use API keys to control access and restrict the scope and behavior of your Algolia app.", "language_code": "en", "indexed_at": 1784670696104, "facets": {}, "published_at": 1784670696104, "title": "API key restrictions | Algolia", "url": "/doc/guides/security/api-keys/in-depth/api-key-restrictions", "keywords": [], "abstract": "For example, if you enforce rate limits on two userTokens with two secured API keys, each combinatio..."}, {"keywords": [], "published_at": 1784670696105, "tags": ["Scaling"], "url": "/doc/guides/scaling/algolia-service-limits", "language_code": "en", "environment": "prod20260722", "objectID": "https://www.algolia.com/doc/guides/scaling/algolia-service-limits/-0", "title": "Algolia service limits | Algolia", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png", "authors": [], "lastUpdated": "2026-07-21T21:51:36.105Z", "source": "Documentation", "transform_source": "algolia-com-doc", "abstract": "Algolia sets some upper limits to its services to ensure stability and performance for all users.The...", "indexed_at": 1784670696105, "facets": {}, "category": "Doc", "description": "Algolia sets some upper limits to its services to ensure stability and performance for all users."}, {"tags": [], "language_code": "en", "objectID": "12874912014097", "indexed_at": 1784670696205, "title": "Am I billed for using the Analytics REST API?", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "authors": [], "published_at": 1717668481000, "source": "Support", "transform_source": "zendesk-articles", "description": "If you are on a premium plan with access to the Analytics REST API, you are not billed for requests to the Analytics API.", "hierarchicalCategories": {"lvl0": ["Analytics"], "lvl1": ["FAQs"]}, "lastUpdated": "2026-07-21T21:51:36.205Z", "environment": "prod20260722", "algoliaDisabled": "false", "category": "Analytics", "url": "https://support.algolia.com/hc/en-us/articles/12874912014097-Am-I-billed-for-using-the-Analytics-REST-API", "keywords": [], "abstract": "If you are on a premium plan with access to the Analytics REST API, you are not billed for requests to the Analytics API.", "facets": {}, "is404": false}, {"environment": "prod20260722", "objectID": "https://www.algolia.com/doc/api-reference/api-methods/add-api-key/-2", "source": "Documentation", "transform_source": "algolia-com-doc", "title": "Add API key", "category": "Doc", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png", "authors": [], "language_code": "en", "indexed_at": 1784670696142, "url": "/doc/api-reference/api-methods/add-api-key", "description": "Add a new API Key with specific permissions and restrictions.", "abstract": "Maximum number of API calls per hour allowed from an IP address.You can set this parameter to preven...", "facets": {}, "published_at": 1784670696142, "lastUpdated": "2026-07-21T21:51:36.142Z", "tags": [], "keywords": []}, {"transform_source": "aant-blogsEntry", "title": "Best practices for eCommerce personalization - Algolia Blog | Algolia", "tags": [], "url": "/de/blog/customers/best-practices-for-ecommerce-personalization", "indexed_at": 1784670431756, "description": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions", "language_code": "de", "facets": {"facet0": [""]}, "published_at": 1719140460000, "is404": false, "environment": "prod20260722", "category": "", "authors": [{"name": "Tanya Herman", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png", "desc": "Product Manager"}], "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Customers"], "lvl2": ["by Tanya Herman"]}, "lastUpdated": "2026-07-21T21:47:11.756Z", "objectID": "de_c36715bd-9db5-454c-b48c-5684bc8233ca", "source": "Blog", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/comp-network-white.webp", "keywords": ["customers"], "abstract": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions Best practices for eCommerce personalization"}, {"language_code": "fr", "is404": false, "environment": "prod20260722", "source": "Blog", "description": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions", "facets": {"facet0": [""]}, "authors": [{"name": "Tanya Herman", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png", "desc": "Product Manager"}], "keywords": ["customers"], "abstract": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions Best practices for eCommerce personalization", "lastUpdated": "2026-07-21T21:47:11.566Z", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/comp-network-white.webp", "url": "/fr/blog/customers/best-practices-for-ecommerce-personalization", "indexed_at": 1784670431566, "published_at": 1719140460000, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Customers"], "lvl2": ["by Tanya Herman"]}, "objectID": "fr_c36715bd-9db5-454c-b48c-5684bc8233ca", "transform_source": "aant-blogsEntry", "title": "Best practices for eCommerce personalization - Algolia Blog | Algolia", "category": "", "tags": []}, {"source": "Blog", "tags": ["E-commerce"], "keywords": ["e-commerce"], "indexed_at": 1784670299519, "facets": {"facet0": ["Ecommerce"]}, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Jon Silvers"]}, "is404": false, "authors": [{"name": "Jon Silvers", "desc": "Director, Digital Marketing"}], "published_at": 1748467918926, "environment": "prod20260722", "transform_source": "aant-blogsEntry", "category": "Ecommerce", "url": "/de/blog/ecommerce/customer-experience", "lastUpdated": "2026-07-21T21:44:59.519Z", "title": "Guide to ecommerce customer experience and optimization", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-Ecommerce-Experience.jpg", "description": "Learn how to understand, improve, and measure ecommerce customer experience with strategies for personalization, loyalty, and cross-channel optimization.", "abstract": "Learn how to understand, improve, and measure ecommerce customer experience with strategies for personalization, loyalty, and cross-channel optimization.", "language_code": "de", "objectID": "de_37090bc5-f33b-423d-a179-10c12c31774b_0_4"}, {"environment": "prod20260722", "source": "Blog", "title": "Guide to ecommerce customer experience and optimization", "url": "/blog/ecommerce/customer-experience", "keywords": ["e-commerce"], "facets": {"facet0": ["Ecommerce"]}, "published_at": 1748467918926, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Jon Silvers"]}, "indexed_at": 1784670299197, "transform_source": "aant-blogsEntry", "category": "Ecommerce", "tags": ["E-commerce"], "lastUpdated": "2026-07-21T21:44:59.197Z", "objectID": "en_37090bc5-f33b-423d-a179-10c12c31774b_0_4", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-Ecommerce-Experience.jpg", "authors": [{"name": "Jon Silvers", "desc": "Director, Digital Marketing"}], "description": "Learn how to understand, improve, and measure ecommerce customer experience with strategies for personalization, loyalty, and cross-channel optimization.", "abstract": "Learn how to understand, improve, and measure ecommerce customer experience with strategies for personalization, loyalty, and cross-channel optimization.", "language_code": "en", "is404": false}, {"title": "Guide to ecommerce customer experience and optimization", "category": "Ecommerce", "tags": ["E-commerce"], "abstract": "Learn how to understand, improve, and measure ecommerce customer experience with strategies for personalization, loyalty, and cross-channel optimization.", "facets": {"facet0": ["Ecommerce"]}, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Jon Silvers"]}, "objectID": "fr_37090bc5-f33b-423d-a179-10c12c31774b_0_4", "authors": [{"name": "Jon Silvers", "desc": "Director, Digital Marketing"}], "indexed_at": 1784670299048, "published_at": 1748467918926, "source": "Blog", "transform_source": "aant-blogsEntry", "lastUpdated": "2026-07-21T21:44:59.048Z", "environment": "prod20260722", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-Ecommerce-Experience.jpg", "url": "/fr/blog/ecommerce/customer-experience", "description": "Learn how to understand, improve, and measure ecommerce customer experience with strategies for personalization, loyalty, and cross-channel optimization.", "keywords": ["e-commerce"], "language_code": "fr", "is404": false}, {"title": "Best practices for eCommerce personalization | Algolia", "abstract": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions Best practices for eCommerce personalization", "facets": {"facet0": [""]}, "environment": "prod20260722", "category": "", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/comp-network-white.webp", "language_code": "en", "lastUpdated": "2026-07-21T21:47:11.715Z", "url": "/blog/customers/best-practices-for-ecommerce-personalization", "description": "Learn how to adapt with best practices for personalization, create customer loyalty by capturing every signal from your customers behaviors and interactions", "indexed_at": 1784670431715, "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["Customers"], "lvl2": ["by Tanya Herman"]}, "is404": false, "objectID": "en_c36715bd-9db5-454c-b48c-5684bc8233ca_0_2", "source": "Blog", "transform_source": "aant-blogsEntry", "tags": [], "authors": [{"name": "Tanya Herman", "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png", "desc": "Product Manager"}], "keywords": ["customers"], "published_at": 1719140460000}, {"transform_source": "aant-blogsEntry", "category": "Ecommerce", "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/what-is-b2b-ecommerce-everything-you-need-to-know.webp", "facets": {"facet0": ["Ecommerce"]}, "published_at": 1740477660000, "lastUpdated": "2026-07-21T21:45:00.621Z", "title": "Guide to B2B ecommerce for 2025", "tags": ["E-commerce"], "url": "/blog/ecommerce/what-is-b2b-ecommerce-everything-you-need-to-know", "description": "The 2025 Guide to B2B Ecommerce dives into key trends, AI's role, and success strategies. Learn how to launch or optimize your B2B site, drive revenue, and meet evolving buyer demands. Stay ahead of the curve\u2014ecommerce is the present and future of B2B.", "abstract": "The 2025 Guide to B2B Ecommerce dives into key trends, AI's role, and success strategies. Learn how to launch or optimize your B2B site, drive revenue, and meet evolving buyer demands. Stay ahead of the curve\u2014ecommerce is the present and future of B2B. Guide to B2B ecommerce for 2025", "language_code": "en", "hierarchicalCategories": {"lvl0": ["Blog"], "lvl1": ["E-commerce"], "lvl2": ["by Jon Silvers"]}, "is404": false, "authors": [{"name": "Jon Silvers", "desc": "Director, Digital Marketing"}], "source": "Blog", "keywords": ["e-commerce"], "indexed_at": 1784670300621, "environment": "prod20260722", "objectID": "en_d9c4de1b-480b-4a3e-a43b-b5ff9ce15672_0_4"}, {"title": "Rate Limits", "tags": [], "description": "Rate limits are applied and designed to safeguard the performance and stability of customer facing production services.The rate limits cover indexing (such as records, synonyms, and rules), operations (setSettings, moveIndex), neural-specific actions, and delete by query. NeuralSearch also processes and stores additional neural embeddings and model data, where NeuralSearch is used the system enforces stricter protective thresholds to ensure consistent performance.Where rate limits applyRate limits are enforced in four key areas:\nRecords, Synonyms, Rules, and Recommend Rules\nIndex-Level Operations (e.g., setSettings, moveIndex, \u2026)\nNeural Index Requests\nDelete By Query\nWhen exceeded, requests fail with a HTTP stats code 429 &lt;too many requests&gt;. The error message will include the following information maximum &lt;Rate&gt; API requests per &lt;XXX&gt; per application.Expected behavior: success vs. failure\nSuccessful requests will return a taskID within the response body. This can also be used to wait for task completion if required.\nUnsuccessful requests will throw an error for rate limited requests the http status code will be 429.\nImplementation note: treat any 429 errors as a signal to slow down the number of requests being sent. The message will include the maximum request count and time window; use this information to guide any delay and retry logic when implementing operational requests.Best practices to avoid rate limitsBatch creating and updating records\nPrefer batching over sending single-object updates.\n\nUse the SDK\u2019s batch method over saveObjects:\n\nSave objects: https://www.algolia.com/doc/libraries/sdk/methods/search/save-objects sends 1 object per request\nBatch operations: https://www.algolia.com/doc/libraries/sdk/methods/search/batch allows sending 1,000 objects per request\n\n\nAim for a batch size of about 10\u00a0MB, sending between 1,000 and 10,000 records per batch request.\nMinimize index-level churnIndex-level operations (e.g., setSettings, moveIndex) should be made infrequently. The allowed limits are high enough for normal operation. If you encounter these limits, it usually indicates an implementation issue (e.g., repeatedly applying the same settings, or moving/creating indexes unnecessary). Refactor to reduce the frequency of operations.Use idempotency where availableWhen possible, structure your pipelines so retries won\u2019t create duplicate effects. Avoid repeatedly toggling the same index configuration, sending the same data or reindexing when unnecessary.Schedule and pace heavy jobs\nStagger large reindexing jobs or deleteByQuery runs to avoid bursts.\nFor Neural Reindex, plan windows to avoid overlapping intensive tasks, and only reindex when needed.\n", "abstract": "Rate limits are applied and designed to safeguard the performance and stability of customer facing production services.The rate limits cover indexing (such as records, synonyms, and rules), operations (setSettings, moveIndex), neural-specific actions, and delete by query. NeuralSearch also processes and stores additional neural embeddings and model data, where NeuralSearch is used the system enforces stricter protective thresholds to ensure consistent performance.Where rate limits applyRate limits are enforced in four key areas:\nRecords, Synonyms, Rules, and Recommend Rules\nIndex-Level Operations (e.g., setSettings, moveIndex, \u2026)\nNeural Index Requests\nDelete By Query\nWhen exceeded, requests fail with a HTTP stats code 429 &lt;too many requests&gt;. The error message will include the following information maximum &lt;Rate&gt; API requests per &lt;XXX&gt; per application.Expected behavior: success vs. failure\nSuccessful requests will return a taskID within the response body. This can also be used to wait for task completion if required.\nUnsuccessful requests will throw an error for rate limited requests the http status code will be 429.\nImplementation note: treat any 429 errors as a signal to slow down the number of requests being sent. The message will include the maximum request count and time window; use this information to guide any delay and retry logic when implementing operational requests.Best practices to avoid rate limitsBatch creating and updating records\nPrefer batching over sending single-object updates.\n\nUse the SDK\u2019s batch method over saveObjects:\n\nSave objects: https://www.algolia.com/doc/libraries/sdk/methods/search/save-objects sends 1 object per request\nBatch operations: https://www.algolia.com/doc/libraries/sdk/methods/search/batch allows sending 1,000 objects per request\n\n\nAim for a batch size of about 10\u00a0MB, sending between 1,000 and 10,000 records per batch request.\nMinimize index-level churnIndex-level operations (e.g., setSettings, moveIndex) should be made infrequently. The allowed limits are high enough for normal operation. If you encounter these limits, it usually indicates an implementation issue (e.g., repeatedly applying the same settings, or moving/creating indexes unnecessary). Refactor to reduce the frequency of operations.Use idempotency where availableWhen possible, structure your pipelines so retries won\u2019t create duplicate effects. Avoid repeatedly toggling the same index configuration, sending the same data or reindexing when unnecessary.Schedule and pace heavy jobs\nStagger large reindexing jobs or deleteByQuery runs to avoid bursts.\nFor Neural Reindex, plan windows to avoid overlapping intensive tasks, and only reindex when needed.\n", "language_code": "en", "facets": {}, "published_at": 1772750404000, "lastUpdated": "2026-07-21T21:51:36.200Z", "transform_source": "zendesk-articles", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "authors": [], "keywords": [], "indexed_at": 1784670696200, "is404": false, "environment": "prod20260722", "objectID": "44485795695889", "algoliaDisabled": "false", "source": "Support", "url": "https://support.algolia.com/hc/en-us/articles/44485795695889-Rate-Limits", "category": "Sending and Managing Data", "hierarchicalCategories": {"lvl0": ["Sending and Managing Data"], "lvl1": ["FAQs"]}}, {"lastUpdated": "2026-07-21T21:51:36.201Z", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "authors": [], "facets": {}, "published_at": 1772750454000, "objectID": "41253289629713", "description": "Rate limits are applied and designed to safeguard the performance and stability of customer facing production services.The rate limits cover indexing (such as records, synonyms, and rules), operations (setSettings, moveIndex), neural-specific actions, and delete by query. NeuralSearch also processes and stores additional neural embeddings and model data, where NeuralSearch is used the system enforces stricter protective thresholds to ensure consistent performance.Where rate limits applyRate limits are enforced in four key areas:\nRecords, Synonyms, Rules, and Recommend Rules\nIndex-Level Operations (e.g., setSettings, moveIndex, \u2026)\nNeural Index Requests\nDelete By Query\nWhen exceeded, requests fail with a HTTP stats code 429 &lt;too many requests&gt;. The error message will include the following information maximum &lt;Rate&gt; API requests per &lt;XXX&gt; per application.Expected behavior: success vs. failure\nSuccessful requests will return a taskID within the response body. This can also be used to wait for task completion if required.\nUnsuccessful requests will throw an error for rate limited requests the http status code will be 429.\nImplementation note: treat any 429 errors as a signal to slow down the number of requests being sent. The message will include the maximum request count and time window; use this information to guide any delay and retry logic when implementing operational requests.Best practices to avoid rate limitsBatch creating and updating records\nPrefer batching over sending single-object updates.\n\nUse the SDK\u2019s batch method over saveObjects:\n\nSave objects: https://www.algolia.com/doc/libraries/sdk/methods/search/save-objects sends 1 object per request\nBatch operations: https://www.algolia.com/doc/libraries/sdk/methods/search/batch allows sending 1,000 objects per request\n\n\nAim for a batch size of about 10\u00a0MB, sending between 1,000 and 10,000 records per batch request.\nMinimize index-level churnIndex-level operations (e.g., setSettings, moveIndex) should be made infrequently. The allowed limits are high enough for normal operation. If you encounter these limits, it usually indicates an implementation issue (e.g., repeatedly applying the same settings, or moving/creating indexes unnecessary). Refactor to reduce the frequency of operations.Use idempotency where availableWhen possible, structure your pipelines so retries won\u2019t create duplicate effects. Avoid repeatedly toggling the same index configuration, sending the same data or reindexing when unnecessary.Schedule and pace heavy jobs\nStagger large reindexing jobs or deleteByQuery runs to avoid bursts.\nFor Neural Reindex, plan windows to avoid overlapping intensive tasks, and only reindex when needed.\n", "hierarchicalCategories": {"lvl0": ["Indexing & Data Ingestion"], "lvl1": ["Rate Limits and Event Handling"]}, "is404": false, "environment": "prod20260722", "algoliaDisabled": "false", "title": "Rate Limits", "category": "Indexing & Data Ingestion", "url": "https://support.algolia.com/hc/en-us/articles/41253289629713-Rate-Limits", "abstract": "Rate limits are applied and designed to safeguard the performance and stability of customer facing production services.The rate limits cover indexing (such as records, synonyms, and rules), operations (setSettings, moveIndex), neural-specific actions, and delete by query. NeuralSearch also processes and stores additional neural embeddings and model data, where NeuralSearch is used the system enforces stricter protective thresholds to ensure consistent performance.Where rate limits applyRate limits are enforced in four key areas:\nRecords, Synonyms, Rules, and Recommend Rules\nIndex-Level Operations (e.g., setSettings, moveIndex, \u2026)\nNeural Index Requests\nDelete By Query\nWhen exceeded, requests fail with a HTTP stats code 429 &lt;too many requests&gt;. The error message will include the following information maximum &lt;Rate&gt; API requests per &lt;XXX&gt; per application.Expected behavior: success vs. failure\nSuccessful requests will return a taskID within the response body. This can also be used to wait for task completion if required.\nUnsuccessful requests will throw an error for rate limited requests the http status code will be 429.\nImplementation note: treat any 429 errors as a signal to slow down the number of requests being sent. The message will include the maximum request count and time window; use this information to guide any delay and retry logic when implementing operational requests.Best practices to avoid rate limitsBatch creating and updating records\nPrefer batching over sending single-object updates.\n\nUse the SDK\u2019s batch method over saveObjects:\n\nSave objects: https://www.algolia.com/doc/libraries/sdk/methods/search/save-objects sends 1 object per request\nBatch operations: https://www.algolia.com/doc/libraries/sdk/methods/search/batch allows sending 1,000 objects per request\n\n\nAim for a batch size of about 10\u00a0MB, sending between 1,000 and 10,000 records per batch request.\nMinimize index-level churnIndex-level operations (e.g., setSettings, moveIndex) should be made infrequently. The allowed limits are high enough for normal operation. If you encounter these limits, it usually indicates an implementation issue (e.g., repeatedly applying the same settings, or moving/creating indexes unnecessary). Refactor to reduce the frequency of operations.Use idempotency where availableWhen possible, structure your pipelines so retries won\u2019t create duplicate effects. Avoid repeatedly toggling the same index configuration, sending the same data or reindexing when unnecessary.Schedule and pace heavy jobs\nStagger large reindexing jobs or deleteByQuery runs to avoid bursts.\nFor Neural Reindex, plan windows to avoid overlapping intensive tasks, and only reindex when needed.\n", "indexed_at": 1784670696201, "source": "Support", "transform_source": "zendesk-articles", "tags": [], "keywords": [], "language_code": "en"}, {"is404": false, "title": "How can I rate limit an API key?", "authors": [], "lastUpdated": "2026-07-21T21:51:36.207Z", "algoliaDisabled": "false", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "description": "While you can't rate limit an existing Admin or Search API Key, you can create a new API Key where you can set this limit:Configuration &gt; API Keys &gt; All API KeysThen, you might need to refer to the Access control list to provide the rights and restrictions for your API Key.", "facets": {}, "hierarchicalCategories": {"lvl0": ["Security"], "lvl1": ["FAQs"]}, "objectID": "4905140190353", "source": "Support", "transform_source": "zendesk-articles", "tags": [], "url": "https://support.algolia.com/hc/en-us/articles/4905140190353-How-can-I-rate-limit-an-API-key", "abstract": "While you can't rate limit an existing Admin or Search API Key, you can create a new API Key where you can set this limit:Configuration &gt; API Keys &gt; All API KeysThen, you might need to refer to the Access control list to provide the rights and restrictions for your API Key.", "published_at": 1689800955000, "environment": "prod20260722", "category": "Security", "keywords": [], "language_code": "en", "indexed_at": 1784670696207}, {"transform_source": "zendesk-articles", "category": "Usage, Operations and Costs", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "description": "To mitigate the effect of bots on your Algolia usage you can generate a new Search API Key with limited queries per hour and per IP address: Rate Limiting an API Key. This can be used to potentially prevent overage charges. You can follow the steps on the doc How can I rate limit an API key? to set a limit.The limit is up to you; we generally recommend starting with a higher number ( to avoid limiting real users) and reducing it gradually based on the impact of bots.\u00a0The rate limit does not stop the request completely as it is hard to do so without blocking genuine traffic. If you were to block specific IP addresses the bot can change these to avoid any block put in place.The idea with a rate limit is to find a level where it's prohibitive for bots to abuse or scrape your site. As long as your site is publicly viewable, without requiring users to sign in, there will always be some bot potential where users can submit information.If you need help to implement this feature you can contact our support team through the\u00a0Support Center.\u00a0\u00a0\u00a0", "facets": {}, "hierarchicalCategories": {"lvl0": ["Usage, Operations and Costs"], "lvl1": ["FAQ"]}, "environment": "prod20260722", "algoliaDisabled": "false", "source": "Support", "title": "Why is it important to create a rate limited API Key?", "tags": [], "keywords": [], "indexed_at": 1784670696204, "published_at": 1767608144000, "authors": [], "url": "https://support.algolia.com/hc/en-us/articles/15434270755985-Why-is-it-important-to-create-a-rate-limited-API-Key", "abstract": "To mitigate the effect of bots on your Algolia usage you can generate a new Search API Key with limited queries per hour and per IP address: Rate Limiting an API Key. This can be used to potentially prevent overage charges. You can follow the steps on the doc How can I rate limit an API key? to set a limit.The limit is up to you; we generally recommend starting with a higher number ( to avoid limiting real users) and reducing it gradually based on the impact of bots.\u00a0The rate limit does not stop the request completely as it is hard to do so without blocking genuine traffic. If you were to block specific IP addresses the bot can change these to avoid any block put in place.The idea with a rate limit is to find a level where it's prohibitive for bots to abuse or scrape your site. As long as your site is publicly viewable, without requiring users to sign in, there will always be some bot potential where users can submit information.If you need help to implement this feature you can contact our support team through the\u00a0Support Center.\u00a0\u00a0\u00a0", "language_code": "en", "lastUpdated": "2026-07-21T21:51:36.204Z", "objectID": "15434270755985", "is404": false}, {"title": "How do I add rate limiting for a backend search implementation?", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "tags": [], "authors": [], "url": "https://support.algolia.com/hc/en-us/articles/38893199214481-How-do-I-add-rate-limiting-for-a-backend-search-implementation", "keywords": [], "hierarchicalCategories": {"lvl0": ["Usage, Operations and Costs"], "lvl1": ["FAQ"]}, "category": "Usage, Operations and Costs", "description": "If you're using Algolia for search from a backend server, rate limiting works differently compared to frontend implementations. Here's what you need to know.Why standard API key restrictions may not workIn backend implementations, all traffic to Algolia typically originates from a single IP address, the IP of your server. Because of this:\nApplying rate limiting via Algolia\u2019s API Key Restrictions could unintentionally impact legitimate user traffic during high-load situations (e.g., bot attacks or traffic spikes).\nAlgolia cannot distinguish between different end users behind your server's single IP.\nRecommended approach: rate limit at the server levelSince Algolia can't handle per-user rate limiting in this setup, any rate limiting or abuse filtering needs to be implemented on your server.Common approaches include:\nIntegrating with a web application firewall (WAF)Tools like Cloudflare, AWS WAF, or Fastly can detect and throttle abusive traffic based on IP, patterns, or behavior.\nCustom rate limiting logicImplement per-user limits in your backend using middleware or application logic (e.g., track API calls per IP or session).\nBot management toolsLeverage third-party solutions to identify and block bot traffic before it reaches your Algolia integration.\nSummary\nAlgolia API key restrictions are not effective for backend traffic going through a single IP.\nRate limiting should be applied on your server or edge infrastructure.\nUse tools like Cloudflare or implement custom logic to manage usage per user or session.\n", "abstract": "If you're using Algolia for search from a backend server, rate limiting works differently compared to frontend implementations. Here's what you need to know.Why standard API key restrictions may not workIn backend implementations, all traffic to Algolia typically originates from a single IP address, the IP of your server. Because of this:\nApplying rate limiting via Algolia\u2019s API Key Restrictions could unintentionally impact legitimate user traffic during high-load situations (e.g., bot attacks or traffic spikes).\nAlgolia cannot distinguish between different end users behind your server's single IP.\nRecommended approach: rate limit at the server levelSince Algolia can't handle per-user rate limiting in this setup, any rate limiting or abuse filtering needs to be implemented on your server.Common approaches include:\nIntegrating with a web application firewall (WAF)Tools like Cloudflare, AWS WAF, or Fastly can detect and throttle abusive traffic based on IP, patterns, or behavior.\nCustom rate limiting logicImplement per-user limits in your backend using middleware or application logic (e.g., track API calls per IP or session).\nBot management toolsLeverage third-party solutions to identify and block bot traffic before it reaches your Algolia integration.\nSummary\nAlgolia API key restrictions are not effective for backend traffic going through a single IP.\nRate limiting should be applied on your server or edge infrastructure.\nUse tools like Cloudflare or implement custom logic to manage usage per user or session.\n", "language_code": "en", "facets": {}, "published_at": 1767701763000, "is404": false, "environment": "prod20260722", "objectID": "38893199214481", "source": "Support", "transform_source": "zendesk-articles", "indexed_at": 1784670696201, "lastUpdated": "2026-07-21T21:51:36.201Z", "algoliaDisabled": "false"}, {"algoliaDisabled": "false", "language_code": "en", "hierarchicalCategories": {"lvl0": ["Sending and Managing Data"], "lvl1": ["FAQs"]}, "lastUpdated": "2026-07-21T21:51:36.209Z", "url": "https://support.algolia.com/hc/en-us/articles/4406975251089-Is-there-a-rate-limit-for-indexing-on-Algolia", "keywords": [], "indexed_at": 1784670696209, "environment": "prod20260722", "source": "Support", "transform_source": "zendesk-articles", "title": "Is there a rate limit for indexing on Algolia?", "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg", "description": "In short, yes. In some cases, the solution can be to add a wait time https://www.algolia.com/doc/api-reference/api-methods/wait-task/ for your operations in conjunction with altering your batchSize https://www.algolia.com/doc/guides/scaling/scaling-to-larger-datasets/#large-datasets. In addition, if you are not batching, you can optimize further by adding batching--i.e, instead of sending 1000 individual update requests, you can batch them into one request. \u00a0Read more about this below:Rate limit for indexing operationsWhenever a server starts being overloaded, Algolia first delays then rejects indexing operations, if necessary. These proactive measures aim at avoiding downtime. We call this action the rate limit.The introduced delay (or throttling) exists to avoid reaching the rejection limit. We keep on throttling or rejecting operations until the server comes back to a more manageable state.It\u2019s important to note that:\nThe rate limit doesn\u2019t slow down or impact search operations in any way. If a server gets overloaded with search requests, we rely on degraded queries to handle them.\nApplications on our current pricing model have a limit of 10,000 indexing operations per unit (or per Record Unit as applicable).\nWhen rejecting an indexing operation, the API returns an HTTP 429 error with a message specifying the exact reason (too many jobs, job queue too large, old jobs on the queue, disk almost full).\nThis limit impacts the following indexing methods: batch, saveObjects, partialUpdateObjects, deleteBy (but not deleteObjects), moveIndex, copyIndex, saveRule, setSettings, and saveSynonym.\nNote that we won't reject batch operations that only contain deleteObject operations, but we will reject batch operations that contain deleteObject as well as other indexing operations\n\u00a0When do we trigger the rate limit?We designed the Algolia servers to contain large amounts of data and to perform fast search and indexing operations. Therefore, it\u2019s unlikely (but not impossible) to reach the natural limits of a server.To avoid downtime or delay, every Algolia server has an internal \u201crate limit\u201d mechanism that is designed to stop overloading the server with too many costly indexing operations.Overloading happens when the server can no longer handle indexing operations within a reasonable time frame. We monitor our servers to avoid the following scenarios:\nA client\u2019s overall application size (the total of all index sizes) becomes too large.\nOld requests remain unprocessed, indicating a backlog of indexing requests.\nThe indexing queue has too many unprocessed requests, or the total size of queued requests is too big.\nAside from these scenarios, we also throttle and rate limit the following indexing operations because they are computationally expensive: deleteBy, clearIndex, moveIndex.Regarding these indexing operations:\nWhen you have more than 100 pending requests, we throttle your requests.\nWhen you have more than 500 pending requests, we\u2019ll ignore any new request and return an HTTP 429 error.\nThe specific limits for application size, request age, and indexing queue size depend on your plan. If your plan includes dedicated infrastructure, you can contact your success team to discuss the rate limits on your cluster.\u00a0What happens when the rate limit is reached?If any of these scenarios occur, we start slowing down incoming indexing operations, and the client needs to wait before sending new requests. This delay is mostly transparent.Throttling of operations varies depending on their type. Index operations (clearIndex, moveIndex, copyIndex, setSettings, deleteBy) are subject to stricter rules than record operations (saveObjects, partialUpdateObjects, saveRule, saveSynonym).If the server continues to be overloaded despite throttling, it starts to reject indexing requests as they come in, returning an HTTP 429 error. The error message gives more details about the cause of rejection. The Rate limit reached for file size error message indicates that your overall application size is too large. In this case, you need to remove some records or indices in order to continue sending updates. When this rate limit occurs, delete operations are still permitted. For all other limits, it\u2019s best to wait for the servers to catch up before sending any further indexing requests.\u00a0What does the rate limit term I received mean?Here is a glossary of terms you may encounter, which we will add to as needed.\u00a0Job: A job is an internal unit that is made up of many indexing operations. If you get a rate limit error message about job size, it means you are sending too many updates too fast. We can't give details about the exact rate of updates that will work-- you should calibrate as you get the rate limit message.\u00a0\u00a0\u00a0\u00a0", "abstract": "In short, yes. In some cases, the solution can be to add a wait time https://www.algolia.com/doc/api-reference/api-methods/wait-task/ for your operations in conjunction with altering your batchSize https://www.algolia.com/doc/guides/scaling/scaling-to-larger-datasets/#large-datasets. In addition, if you are not batching, you can optimize further by adding batching--i.e, instead of sending 1000 individual update requests, you can batch them into one request. \u00a0Read more about this below:Rate limit for indexing operationsWhenever a server starts being overloaded, Algolia first delays then rejects indexing operations, if necessary. These proactive measures aim at avoiding downtime. We call this action the rate limit.The introduced delay (or throttling) exists to avoid reaching the rejection limit. We keep on throttling or rejecting operations until the server comes back to a more manageable state.It\u2019s important to note that:\nThe rate limit doesn\u2019t slow down or impact search operations in any way. If a server gets overloaded with search requests, we rely on degraded queries to handle them.\nApplications on our current pricing model have a limit of 10,000 indexing operations per unit (or per Record Unit as applicable).\nWhen rejecting an indexing operation, the API returns an HTTP 429 error with a message specifying the exact reason (too many jobs, job queue too large, old jobs on the queue, disk almost full).\nThis limit impacts the following indexing methods: batch, saveObjects, partialUpdateObjects, deleteBy (but not deleteObjects), moveIndex, copyIndex, saveRule, setSettings, and saveSynonym.\nNote that we won't reject batch operations that only contain deleteObject operations, but we will reject batch operations that contain deleteObject as well as other indexing operations\n\u00a0When do we trigger the rate limit?We designed the Algolia servers to contain large amounts of data and to perform fast search and indexing operations. Therefore, it\u2019s unlikely (but not impossible) to reach the natural limits of a server.To avoid downtime or delay, every Algolia server has an internal \u201crate limit\u201d mechanism that is designed to stop overloading the server with too many costly indexing operations.Overloading happens when the server can no longer handle indexing operations within a reasonable time frame. We monitor our servers to avoid the following scenarios:\nA client\u2019s overall application size (the total of all index sizes) becomes too large.\nOld requests remain unprocessed, indicating a backlog of indexing requests.\nThe indexing queue has too many unprocessed requests, or the total size of queued requests is too big.\nAside from these scenarios, we also throttle and rate limit the following indexing operations because they are computationally expensive: deleteBy, clearIndex, moveIndex.Regarding these indexing operations:\nWhen you have more than 100 pending requests, we throttle your requests.\nWhen you have more than 500 pending requests, we\u2019ll ignore any new request and return an HTTP 429 error.\nThe specific limits for application size, request age, and indexing queue size depend on your plan. If your plan includes dedicated infrastructure, you can contact your success team to discuss the rate limits on your cluster.\u00a0What happens when the rate limit is reached?If any of these scenarios occur, we start slowing down incoming indexing operations, and the client needs to wait before sending new requests. This delay is mostly transparent.Throttling of operations varies depending on their type. Index operations (clearIndex, moveIndex, copyIndex, setSettings, deleteBy) are subject to stricter rules than record operations (saveObjects, partialUpdateObjects, saveRule, saveSynonym).If the server continues to be overloaded despite throttling, it starts to reject indexing requests as they come in, returning an HTTP 429 error. The error message gives more details about the cause of rejection. The Rate limit reached for file size error message indicates that your overall application size is too large. In this case, you need to remove some records or indices in order to continue sending updates. When this rate limit occurs, delete operations are still permitted. For all other limits, it\u2019s best to wait for the servers to catch up before sending any further indexing requests.\u00a0What does the rate limit term I received mean?Here is a glossary of terms you may encounter, which we will add to as needed.\u00a0Job: A job is an internal unit that is made up of many indexing operations. If you get a rate limit error message about job size, it means you are sending too many updates too fast. We can't give details about the exact rate of updates that will work-- you should calibrate as you get the rate limit message.\u00a0\u00a0\u00a0\u00a0", "published_at": 1781015809000, "is404": false, "category": "Sending and Managing Data", "tags": [], "authors": [], "facets": {}, "objectID": "4406975251089"}], "nbHits": 20, "facets": {"tags": {"Product": 5, "AI": 4, "Engineering": 3, "api": 3, "general availability": 3, "Scaling": 1, "Security": 1, "E-commerce": 84, "Analytics": 6, "Indexing": 6, "api client": 6, "api clients": 6, "client library": 6, "configuration": 6, "go": 6, "library": 6, "official": 6, "search api": 6, "scala": 3, "swift": 3, "API security": 1, "Algolia dashboard": 1, "Googlebot crawling": 1, "Quota": 1, "Search Optimization": 1, "bot mitigation": 1, "optimization": 1, "pacing": 1, "rate limiting": 1, "search analytics": 1, "traffic spikes": 1, "usage": 1}, "is404": {"false": 96}, "source": {"Documentation": 52, "Support": 34, "Blog": 87, "Developers": 6, "Website": 3, "Resources": 6, "Academy": 2}, "category": {"Doc": 52, "Usage, Operations and Costs": 11, "Billing and Plans": 9, "Product": 5, "Engineering": 3, "News": 3, "API Clients and Extensions": 4, "Analytics": 3, "Sending Events": 2, "Algolia AI": 1, "Algolia Support": 1, "Getting Started": 1, "Indexing & Data Ingestion": 2, "Managing Results": 1, "Scaling (Infrastructure)": 1, "Security": 4, "Sending and Managing Data": 5, "Ecommerce": 84, "Ebooks": 3, "Reports": 3, "DocSearch": 1, "Developer Resources": 6, "AI": 4, "Building Search UI": 2, "guide": 2, "Crawler": 1}, "keywords": {"product": 5, "ai": 4, "api": 3, "engineering": 3, "general availability": 3, "e-commerce": 84, "commerce": 3, "customers": 3, "ecommerce": 3, "search": 3, "analytics": 6, "api client": 6, "api clients": 6, "client library": 6, "configuration": 6, "go": 6, "indexing": 6, "library": 6, "official": 6, "search api": 6, "scala": 3, "swift": 3}, "environment": {"prod20260722": 100, "nonprod20260220": 2}, "lastUpdated": {"2026-07-21T21:51:36.203Z": 7, "2026-07-21T21:51:36.207Z": 8, "2026-07-21T21:51:36.142Z": 6, "2026-07-21T21:51:36.205Z": 5, "2026-07-21T21:51:36.209Z": 5, "2026-07-21T21:51:36.200Z": 4, "2026-07-21T21:51:36.080Z": 3, "2026-07-21T21:51:36.085Z": 3, "2026-07-21T21:51:36.030Z": 2, "2026-07-21T21:51:36.035Z": 3, "2026-07-21T21:51:36.062Z": 2, "2026-07-21T21:51:36.087Z": 2, "2026-07-21T21:51:36.093Z": 2, "2026-07-21T21:51:36.104Z": 2, "2026-07-21T21:51:36.197Z": 2, "2026-07-21T21:51:36.198Z": 2, "2026-07-21T21:51:36.201Z": 2, "2026-07-21T21:44:44.580Z": 1, "2026-07-21T21:47:17.577Z": 1, "2026-07-21T21:47:17.634Z": 1, "2026-07-21T21:47:17.801Z": 1, "2026-07-21T21:47:26.157Z": 1, "2026-07-21T21:47:26.232Z": 1, "2026-07-21T21:47:26.341Z": 1, "2026-07-21T21:47:31.360Z": 1, "2026-07-21T21:49:08.779Z": 1, "2026-07-21T21:49:09.149Z": 1, "2026-07-21T21:49:12.236Z": 1, "2026-07-21T21:51:10.624Z": 1, "2026-07-21T21:51:10.626Z": 1, "2026-07-21T21:51:10.627Z": 1, "2026-07-21T21:51:36.032Z": 1, "2026-07-21T21:51:36.036Z": 3, "2026-07-21T21:51:36.040Z": 1, "2026-07-21T21:51:36.048Z": 1, "2026-07-21T21:51:36.049Z": 2, "2026-07-21T21:51:36.055Z": 1, "2026-07-21T21:51:36.061Z": 1, "2026-07-21T21:51:36.069Z": 1, "2026-07-21T21:51:36.070Z": 1, "2026-07-21T21:51:36.071Z": 1, "2026-07-21T21:51:36.072Z": 1, "2026-07-21T21:51:36.075Z": 1, "2026-07-21T21:51:36.076Z": 1, "2026-07-21T21:51:36.077Z": 1, "2026-07-21T21:51:36.101Z": 1, "2026-07-21T21:51:36.105Z": 1, "2026-07-21T21:51:36.125Z": 1, "2026-07-21T21:51:36.138Z": 2, "2026-07-21T21:51:36.140Z": 2, "2026-07-21T21:51:36.141Z": 4, "2026-07-21T21:51:36.154Z": 1, "2026-07-21T21:51:36.159Z": 1, "2026-07-21T21:51:36.163Z": 1, "2026-07-21T21:51:36.185Z": 1, "2026-07-21T21:51:36.186Z": 1, "2026-07-21T21:51:36.190Z": 1, "2026-07-21T21:51:36.196Z": 2, "2026-07-21T21:51:36.202Z": 1, "2026-07-21T21:51:36.204Z": 2, "2026-07-21T21:51:36.206Z": 3, "2026-07-21T21:45:32.058Z": 2, "2026-04-27T15:33:11.187Z": 1, "2026-07-21T21:44:53.975Z": 1, "2026-07-21T21:44:54.040Z": 1, "2026-07-21T21:44:54.118Z": 1, "2026-07-21T21:44:57.604Z": 1, "2026-07-21T21:44:57.984Z": 1, "2026-07-21T21:44:58.096Z": 1, "2026-07-21T21:44:58.938Z": 1, "2026-07-21T21:44:59.048Z": 1, "2026-07-21T21:44:59.165Z": 1, "2026-07-21T21:44:59.197Z": 1, "2026-07-21T21:44:59.362Z": 1, "2026-07-21T21:44:59.519Z": 1, "2026-07-21T21:44:59.556Z": 1, "2026-07-21T21:44:59.766Z": 1, "2026-07-21T21:44:59.892Z": 1, "2026-07-21T21:44:59.971Z": 1, "2026-07-21T21:45:00.024Z": 1, "2026-07-21T21:45:00.042Z": 1, "2026-07-21T21:45:00.122Z": 1, "2026-07-21T21:45:00.195Z": 1, "2026-07-21T21:45:00.253Z": 1, "2026-07-21T21:45:00.279Z": 1, "2026-07-21T21:45:00.339Z": 1, "2026-07-21T21:45:00.493Z": 1, "2026-07-21T21:45:00.621Z": 1, "2026-07-21T21:45:00.810Z": 1, "2026-07-21T21:45:27.700Z": 1, "2026-07-21T21:45:28.283Z": 1, "2026-07-21T21:45:32.050Z": 1, "2026-07-21T21:45:32.051Z": 1, "2026-07-21T21:45:32.055Z": 1, "2026-07-21T21:45:32.056Z": 1, "2026-07-21T21:46:45.328Z": 1, "2026-07-21T21:46:45.510Z": 1, "2026-07-21T21:46:46.146Z": 1, "2026-07-21T21:46:57.251Z": 1, "2026-07-21T21:46:57.626Z": 1, "2026-07-21T21:46:57.790Z": 1, "2026-07-21T21:46:58.075Z": 1, "2026-07-21T21:46:58.254Z": 1, "2026-07-21T21:46:58.409Z": 1, "2026-07-21T21:46:58.752Z": 1, "2026-07-21T21:46:58.815Z": 1, "2026-07-21T21:46:58.884Z": 1, "2026-07-21T21:47:01.035Z": 1, "2026-07-21T21:47:01.140Z": 1, "2026-07-21T21:47:01.244Z": 1, "2026-07-21T21:47:01.286Z": 1, "2026-07-21T21:47:01.491Z": 1, "2026-07-21T21:47:02.886Z": 1, "2026-07-21T21:47:03.111Z": 1, "2026-07-21T21:47:03.241Z": 1, "2026-07-21T21:47:03.246Z": 1, "2026-07-21T21:47:03.288Z": 1, "2026-07-21T21:47:03.338Z": 1, "2026-07-21T21:47:03.362Z": 1, "2026-07-21T21:47:03.446Z": 1, "2026-07-21T21:47:03.478Z": 1, "2026-07-21T21:47:03.515Z": 1, "2026-07-21T21:47:03.664Z": 1, "2026-07-21T21:47:03.732Z": 1, "2026-07-21T21:47:03.841Z": 1, "2026-07-21T21:47:03.884Z": 1, "2026-07-21T21:47:03.908Z": 1, "2026-07-21T21:47:04.250Z": 1, "2026-07-21T21:47:04.650Z": 1, "2026-07-21T21:47:04.651Z": 1, "2026-07-21T21:47:04.654Z": 1, "2026-07-21T21:47:04.820Z": 1, "2026-07-21T21:47:04.917Z": 1, "2026-07-21T21:47:05.001Z": 1, "2026-07-21T21:47:05.086Z": 1, "2026-07-21T21:47:05.154Z": 1, "2026-07-21T21:47:05.177Z": 1, "2026-07-21T21:47:05.298Z": 1, "2026-07-21T21:47:05.306Z": 1, "2026-07-21T21:47:05.385Z": 1, "2026-07-21T21:47:05.404Z": 1, "2026-07-21T21:47:05.533Z": 1, "2026-07-21T21:47:05.581Z": 1, "2026-07-21T21:47:06.063Z": 1, "2026-07-21T21:47:06.119Z": 1, "2026-07-21T21:47:06.192Z": 1, "2026-07-21T21:47:06.290Z": 1, "2026-07-21T21:47:06.692Z": 1, "2026-07-21T21:47:06.759Z": 1, "2026-07-21T21:47:06.853Z": 1, "2026-07-21T21:47:06.892Z": 1, "2026-07-21T21:47:11.566Z": 1, "2026-07-21T21:47:11.715Z": 1, "2026-07-21T21:47:11.756Z": 1, "2026-07-21T21:51:36.108Z": 1, "2026-07-21T21:51:36.157Z": 1, "2026-07-21T21:51:36.208Z": 5, "2026-07-21T21:51:36.092Z": 2, "2026-04-27T15:33:11.177Z": 1, "2026-07-06T19:01:12.278Z": 1, "2026-07-21T21:44:42.641Z": 1, "2026-07-21T21:44:42.992Z": 1, "2026-07-21T21:44:43.584Z": 1, "2026-07-21T21:46:17.345Z": 1, "2026-07-21T21:46:17.407Z": 1, "2026-07-21T21:46:17.423Z": 1, "2026-07-21T21:47:24.770Z": 1, "2026-07-21T21:47:46.272Z": 1, "2026-07-21T21:47:46.319Z": 1, "2026-07-21T21:47:47.615Z": 1, "2026-07-21T21:47:47.623Z": 1, "2026-07-21T21:47:48.913Z": 1, "2026-07-21T21:47:49.363Z": 1, "2026-07-21T21:51:36.031Z": 1, "2026-07-21T21:51:36.134Z": 1, "2026-07-21T21:51:36.153Z": 1, "2026-07-21T21:51:36.168Z": 1, "2026-07-21T21:51:36.189Z": 1, "2026-07-21T21:51:36.211Z": 1, "2026-07-21T21:51:36.212Z": 1}, "authors.desc": {"Search and Discovery writer": 25, "Sr. Tech & Business Writer": 3, "Director, Digital Marketing": 21, "Senior Digital Marketing Manager, SEO": 15, "Product Manager": 9, "Chief Strategic Business Development Officer": 3, "Content Writer, Ziffity Solutions LLC": 3, "Director of Product Marketing & Strategy": 3, "VP, Corporate Communications and Brand": 3, "Product Marketing Director": 2}, "authors.name": {"Catherine Dee": 25, "Peter Villani": 3, "Jon Silvers": 19, "Vincent Caruana": 15, "Tanya Herman": 9, "Elena Moravec": 3, "John Stewart": 3, "Piyush Patel": 3, "Ramanathan Ramakrishnamoorthy": 3, "Jaden Baptista": 4}, "facets.facet0": {"Product": 5, "Engineering": 3, "Ecommerce": 84, "Ebooks": 3, "Reports": 3, "AI": 4}, "language_code": {"en": 91, "de": 32, "fr": 31}, "algoliaDisabled": {"false": 35}, "authors.imgpath": {"/sites/algolia-assets/files/blogs/authorimages/catherine-dee.png": 25, "/sites/algolia-assets/files/blogs/authorimages/peter-villani.jpeg": 3, "/sites/algolia-assets/files/blogs/authorimages/vincent-caruana.jpeg": 15, "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png": 9, "/sites/algolia-assets/files/blogs/authorimages/jon-silvers.png": 6, "/sites/algolia-assets/files/blogs/authorimages/elena-moravec.jpeg": 3, "/sites/algolia-assets/files/blogs/authorimages/piyush-patel.png": 3, "/sites/algolia-assets/files/blogs/authorimages/Jaden Baptista.png": 4}, "transform_source": {"algolia-com-doc": 52, "zendesk-articles": 34, "aant-blogsEntry": 87, "aant-codeExchangeEntry": 3, "aant-newsEntry": 3, "aant-resourceCenterContentItem": 6, "aant-developersEntry": 6, "algolia-academy": 2}, "facets.facet1": {"Ecommerce": 3}}}}
+
+data: {"type": "data-tool-output-metadata", "data": {"toolCallId": "chatcmpl-tool-8e3533ed2abba9c4", "metadata": {"com.algolia/resolved-search-params": [{"query": "help center billing usage limits what counts as API call", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}, {"query": "docs rate limiting best practices ecommerce", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}, {"query": "developer guide API quotas rate limit handling", "attributesToHighlight": [], "responseFields": ["hits", "nbHits", "page", "nbPages", "hitsPerPage", "facets"], "facets": ["*"], "clickAnalytics": true, "page": 0, "hitsPerPage": 7, "attributesToRetrieve": ["*"], "facetFilters": [], "numericFilters": []}]}}, "transient": true}
+
+data: {"type": "finish-step"}
+
+data: {"type": "start-step"}
+
+data: {"type": "text-start", "id": "alg_msg_bZUUnYXvRV2eOSwc"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Short"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " version:"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " search request"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ","}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a recommendation"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " "}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "call, or"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " an indexing"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " operation"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " counts"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " as an"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " API "}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "call\u2014"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "but the"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " way"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " you manage"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " them depends"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " on whether"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " you'"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "re worried"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " about your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " bill or"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " your site"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "'"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "s stability"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ".\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "###"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " How"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " it Works"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\nIn"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " the Alg"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "olia ecosystem"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ", API"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " calls generally"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " fall into"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " two buckets"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ": **"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Search/"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Discovery"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "** ("}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "which drive"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " the"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " shopper"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " experience)"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " and **"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Indexing/"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Operations**"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " (which"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " manage"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " data)."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\n\n-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " **Search"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " and"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Recommend"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ":** Every"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " time"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a user"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " types"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a character"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " or a"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " \""}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Related Products"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\" widget"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " loads,"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " it"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " triggers"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a request"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ". These"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " are generally"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " high"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-volume"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " and are"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " the primary"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " drivers"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " of your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " usage."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\n-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " **Indexing"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " and Operations"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ":** Adding"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " records,"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " updating"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " synonyms"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ", or"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " changing"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " index settings"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " are considered"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " indexing"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " operations."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " These are"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " computationally"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " heavier"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " and have"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " their own"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " specific ["}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "rate"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " limits]("}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "https://"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "support."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "algolia"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ".com"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "/h"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "c/en"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-us"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "/articles"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "/4"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "12"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "53"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "28"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "96"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "29"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "71"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "3-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Rate-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Limits)"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " to ensure"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " system"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " stability."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\n\n###"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Practi"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "cal Trade"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "offs"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " for Ecommerce"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Teams\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "The"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " goal"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " is to"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " stop bots"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " from"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " eating"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " your budget"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " without accidentally"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " blocking a"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " high-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "value"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " customer during"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a flash"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " sale."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\n\n**"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "1."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " The \""}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Bot vs"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ". Buyer"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\" Balance"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "**\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "If you"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " use a"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " frontend implementation"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ", you"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " can create"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a ["}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "rate"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-limited"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " API"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " key]("}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "https://"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "support."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "algolia"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ".com"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "/h"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "c/en"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-us"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "/articles"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "/1"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "54"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "34"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "27"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "07"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "55"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "98"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "5-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Why-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "is-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "it-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "important-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "to-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "create-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "a-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "rate-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "limited-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "API-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Key)"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " specifically"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " for your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " search"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " UI."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " By"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " setting"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " limit"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " on queries"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " per hour"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " per IP"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " address,"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " you make"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " it"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " expensive"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " for scrap"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "ers to"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " crawl"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " your site"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " while keeping"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " the"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " experience"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " seamless"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " for humans"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ".\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "*   "}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "**Pro"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " tip"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ":** Start"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " with a"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " high limit"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " and gradually"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " tighten"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " it based"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " on your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " analytics"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ".\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "**2"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ". Backend"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Safety"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "**\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "If your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " search is"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " routed through"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " own server"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " ("}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "backend implementation"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "), Alg"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "olia only"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " sees one"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " IP address"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\u2014y"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "ours."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Applying"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " standard"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " API key"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " restriction here"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " is"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a mistake"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " because you"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "'ll"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " accidentally rate"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-limit"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " *all"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "* your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " users at"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " once."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " In"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " this case"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ", you"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " should"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " handle rate"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " limiting at"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " the"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " server"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " level using"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a W"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "AF ("}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "like Cloud"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "flare)"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " or custom"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " middleware."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\n\n**"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "3."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Indexing"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Efficiency**"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\nTo"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " avoid `"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "4"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "29"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Too"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Many Requests"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "` errors"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " during catalog"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " updates,"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " stop"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " sending single"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-object"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " updates."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Use ["}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "batch operations"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "](https"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "://support"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ".alg"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "olia."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "com/"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "hc/"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "en-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "us/"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "articles/"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "41"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "25"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "32"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "89"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "62"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "97"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "13"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-Rate"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-Limits"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ") to"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " send up"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " to "}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "1,"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "00"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "0 objects"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " in"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a single"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " request."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\n\n"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "### Recommendation"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\nIf"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " you are"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " seeing"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " unexpected"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " spikes in"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " usage,"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " don'"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "t just"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " lower"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " the"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " limit"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " First"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ", audit"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " your \""}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "Search"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-as"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-you"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-type"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\" configuration"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " to"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " ensure you"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " aren'"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "t triggering"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " requests on"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " every"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " single keyst"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "roke for"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " very"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " short queries"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ". Once"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " the noise"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " is reduced"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ", implement"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " a per"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "-IP"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " rate limit"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " on your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Search"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " API key"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " to fence"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " off"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " the"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " bots."}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "\n\nAre"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " you currently"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " seeing"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " usage"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " spikes that"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " look like"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " bot activity"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": ", or"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " are you"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " planning your"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " infrastructure"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " for a"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " high-"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": "traffic event"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " like Black"}
+
+data: {"type": "text-delta", "id": "alg_msg_bZUUnYXvRV2eOSwc", "delta": " Friday?"}
+
+data: {"type": "text-end", "id": "alg_msg_bZUUnYXvRV2eOSwc"}
+
+data: {"type": "finish-step"}
+
+data: {"type": "finish"}
+
+data: [DONE]

@@ -1,0 +1,11 @@
+{
+  "status": 422,
+  "ok": false,
+  "question": "Fresh smoke 2026-08-15 answer voice: What counts as an Algolia API call, and how should an ecommerce team think about rate limiting without breaking real shoppers?",
+  "rawLength": 131,
+  "answerLength": 0,
+  "answerPreview": "",
+  "searchedVanilla": false,
+  "toolNames": [],
+  "hasConsultantTone": false
+}

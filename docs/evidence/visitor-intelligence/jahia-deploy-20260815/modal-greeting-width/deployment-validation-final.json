@@ -1,0 +1,29 @@
+{
+  "release": "chat-ui-modal-greeting-width-20260815a",
+  "version": "20260815-chat-ui-modal-greeting-width-a",
+  "themePath": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js",
+  "themeUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-modal-greeting-width-a",
+  "sourceCommit": "13114ae47f58d1e40deeb3811c732d33efa5ce5d",
+  "committedThemeSha256": "022d7c4d203cfdcabb142e8ed6ec5af66a8e7a27c0675aa5b78604c3e52f4b9f",
+  "blockPath": "/sites/www/home/drift/custom-code-block",
+  "checks": [
+    "normal modal panelWidth is min(1080px, 70vw)",
+    "proactive greeting max-w-algolia-measure uses --algolia-msg-max-w",
+    "block points at cache-busted release-specific theme asset"
+  ],
+  "editJcrThemeSha256": "022d7c4d203cfdcabb142e8ed6ec5af66a8e7a27c0675aa5b78604c3e52f4b9f",
+  "liveJcrThemeSha256": "022d7c4d203cfdcabb142e8ed6ec5af66a8e7a27c0675aa5b78604c3e52f4b9f",
+  "publicThemeSha256": "022d7c4d203cfdcabb142e8ed6ec5af66a8e7a27c0675aa5b78604c3e52f4b9f",
+  "editJcrMatchesCommitted": true,
+  "liveJcrMatchesCommitted": true,
+  "publicMatchesCommitted": true,
+  "publicThemeHasCompactPanelWidth": true,
+  "publicThemeHasGreetingMeasureOverride": true,
+  "publicThemeKeepsProgressHidden": true,
+  "editBlockHasRelease": true,
+  "liveBlockHasRelease": true,
+  "editBlockHasThemeUrl": true,
+  "liveBlockHasThemeUrl": true,
+  "checkedAt": "2026-08-15T08:06:10.822040+00:00",
+  "pass": true
+}

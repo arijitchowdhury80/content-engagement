@@ -1,0 +1,142 @@
+{
+  "upsertTheme": {
+    "data": {
+      "jcr": {
+        "file": {
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "setBlockHtml": {
+    "data": {
+      "jcr": {
+        "block": {
+          "html": {
+            "setValue": true
+          },
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "editThemeSha256": "022d7c4d203cfdcabb142e8ed6ec5af66a8e7a27c0675aa5b78604c3e52f4b9f",
+  "editBlockHasRelease": false,
+  "editBlockHasThemeUrl": true,
+  "versionBlock": {
+    "data": {
+      "jcr": {
+        "block": {
+          "createVersion": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishTheme": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "publishFilesSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "publishDriftSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "republishThemeAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "republishFilesSubtreeAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "republishDriftSubtreeAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "republishBlockAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "editBlockHasReleaseAfterFinalReadback": true,
+  "editBlockHasThemeUrlAfterFinalReadback": true,
+  "liveBlockHasReleaseAfterFinalReadback": true,
+  "liveBlockHasThemeUrlAfterFinalReadback": true
+}

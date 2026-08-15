@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "ok": true,
+  "rawLength": 92817,
+  "answerLength": 2738,
+  "answerPreview": "Short version: a search request, a recommendation call, or an indexing operation counts as an API call—but the way you manage them depends on whether you're worried about your bill or your site's stability.\n\n### How it Works\nIn the Algolia ecosystem, API calls generally fall into two buckets: **Search/Discovery** (which drive the shopper experience) and **Indexing/Operations** (which manage your data).\n\n- **Search and Recommend:** Every time a user types a character or a \"Related Products\" widget loads, it triggers a request. These are generally high-volume and are the primary drivers of your usage.\n- **Indexing and Operations:** Adding records, updating synonyms, or changing index settings are considered indexing operations. These are computationally heavier and have their own specific [rate limits](https://support.algolia.com/hc/en-us/articles/41253289629713-Rate-Limits) to ensure system stability.\n\n### Practical Tradeoffs for Ecommerce Teams\nThe goal is to stop bots from eating your budget without accidentally blocking a high-value customer during a flash sale.\n\n**1. The \"Bot vs. Buyer\" Balance**\nIf you use a frontend implementation, you can create a [rate-limited API key](https://support.algolia.com/hc/en-us/articles/15434270755985-Why-is-it-important-to-create-a-rate-limited-API-Key) specifically for your search UI. By setting a limit on queries per hour per IP address, you make it expensive for scrapers to crawl your site while keeping the experience seamless for humans.\n*   **Pro tip:** Start with a high limit and gradually tighten it based on your analytics.\n\n**2. Backend Safety**\nIf your search is routed through your own server (backend implementation), Algolia only sees one IP address—yours. Applying a standard API key restriction here is a mistake because you'll accidentally rate-limit *all* your users at once. In this case, you should handle rate limiting at the server level using a WAF (like Cloudflare) or custom middleware.\n\n**3. Indexing Efficiency**\n",
+  "searchedVanilla": true,
+  "toolNames": [
+    "algolia_search_index_algolia_prod_copy_vanilla"
+  ],
+  "hasConsultantTone": true,
+  "startsWithAnswerPattern": true
+}

@@ -1,0 +1,8 @@
+{
+  "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+  "targetField": "systemPrompt",
+  "intendedSystemPromptLength": 6168,
+  "intendedSystemPromptSha256": "08f3273289b41649ac8f9b25d752965997652c5aa6a5a8e59a1c8867de145e96",
+  "rollbackSystemPromptLength": 5834,
+  "rollbackSystemPromptSha256": "cc351ea5531661cc5db576c3d1ae450d073c72b7c27c115848c0587ff02dd0a5"
+}
