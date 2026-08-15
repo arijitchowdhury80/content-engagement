@@ -929,6 +929,94 @@ test('configured controller posts a proactive greeting request and renders valid
   assert.equal(updatedState.opportunities[0].greetingResponse.schema, 'ProactiveGreetingResponse.v1');
 });
 
+test('controller accepts white-glove concierge greetings that are specific and option-rich', async () => {
+  const conciergeGreeting =
+    'Hey there, explorer. AI Search, Personalization, and Recommendations can all move your store, but they solve different jobs. Want real customer examples, a practical comparison, or a deeper walkthrough? I’ll keep it useful, specific, and judgment-free.';
+  const { context, chatEngagements, sessionStorage } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({
+        pageId: 'page_ai_search',
+        path: '/products/ai-search',
+        title: 'AI Search',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        productFocus: 'ai_search',
+        productFocusLabel: 'AI Search',
+        dwellMs: 8000,
+      }),
+      page({
+        pageId: 'page_personalization',
+        path: '/products/features/personalization',
+        title: 'Personalization',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        productFocus: 'personalization',
+        productFocusLabel: 'Personalization',
+        dwellMs: 8000,
+      }),
+      page({
+        pageId: 'page_recommendations',
+        path: '/products/ai-recommendations',
+        title: 'AI Recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        productFocus: 'recommendations',
+        productFocusLabel: 'AI Recommendations',
+        dwellMs: 8000,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 1000,
+      }),
+    ],
+    fetchImpl: async (url, init) => {
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        text: async () =>
+          JSON.stringify({
+            schema: 'ProactiveGreetingResponse.v1',
+            opportunityId: packet.opportunityId,
+            greeting: conciergeGreeting,
+            chips: ['Show customer examples', 'Compare the options', 'Go deeper'],
+            handoffSummary: {
+              moment: 'commercial_evaluation',
+              trigger: 'product_to_pricing',
+              messageGoal: 'explain_cost_drivers',
+            },
+          }),
+      };
+    },
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_view', path: '/pricing' },
+    })
+  );
+  await flushAsyncControllerWork();
+
+  assert.equal(chatEngagements.length, 1);
+  assert.equal(chatEngagements[0].greeting, conciergeGreeting);
+  assert.deepEqual(Array.from(chatEngagements[0].suggestions), [
+    'Show customer examples',
+    'Compare the options',
+    'Go deeper',
+  ]);
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'shown');
+});
+
 test('controller uses existing engage concierge agent id as greeting agent fallback', async () => {
   const fetchCalls = [];
   const { context, chatEngagements } = createHarness({

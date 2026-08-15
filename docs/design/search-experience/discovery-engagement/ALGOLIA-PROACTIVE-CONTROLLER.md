@@ -130,7 +130,6 @@ When a trigger is eligible, the controller generates an `opportunityId` and buil
     "messageGoal": "explain_cost_drivers",
     "tone": "sharp, useful, warm, lightly witty",
     "constraints": {
-      "maxWords": 34,
       "noTelemetryExposure": true,
       "includeQuestionChips": true
     }
@@ -183,8 +182,8 @@ The controller expects strict JSON from the Greetings Agent:
 {
   "schema": "ProactiveGreetingResponse.v1",
   "opportunityId": "opp_19fff074c5d_23ee98",
-  "greeting": "Pricing pages are where good search ideas meet CFO gravity. Want the practical version of what actually drives cost?",
-  "chips": ["What drives cost?", "How are API calls counted?", "Which plan fits?"],
+  "greeting": "Hey there, explorer. If AI Search, Personalization, and Recommendations are all on your radar, you are circling powerful but different jobs. I can help compare the tradeoffs, find real customer examples, or go deeper on the angle that matters most.",
+  "chips": ["Show customer examples", "Compare the options", "Go deeper"],
   "handoffSummary": {
     "moment": "commercial_evaluation",
     "trigger": "product_to_pricing",
@@ -204,7 +203,7 @@ Validation gates:
 
 - `schema` equals `ProactiveGreetingResponse.v1`.
 - `opportunityId` matches the reserved opportunity.
-- `greeting` is 12-34 words.
+- `greeting` is non-empty, thoughtful, contextual, and popup-suitable.
 - `chips` has 0-3 items and each chip is 8 words or fewer.
 - `handoffSummary` matches the reserved opportunity.
 - Greeting does not expose telemetry or raw behavior.

@@ -89,8 +89,8 @@ The Greetings Agent receives `PROACTIVE_GREETING_REQUEST` and returns strict `Pr
 {
   "schema": "ProactiveGreetingResponse.v1",
   "opportunityId": "opp_...",
-  "greeting": "Pricing pages are where good search ideas meet budget gravity. Want the practical version of what actually drives cost?",
-  "chips": ["What drives cost?", "How are API calls counted?", "Which plan fits?"],
+  "greeting": "Hey there, explorer. If AI Search, Personalization, and Recommendations are all on your radar, you are circling powerful but different jobs. I can help compare the tradeoffs, find real customer examples, or go deeper on the angle that matters most.",
+  "chips": ["Show customer examples", "Compare the options", "Go deeper"],
   "handoffSummary": {
     "moment": "commercial_evaluation",
     "trigger": "product_to_pricing",
@@ -99,7 +99,7 @@ The Greetings Agent receives `PROACTIVE_GREETING_REQUEST` and returns strict `Pr
 }
 ```
 
-The JSON is a runtime contract, not the visible UI. The visitor sees the greeting text and chips. The greeting must be useful, specific, concise, and lively without exposing telemetry.
+The JSON is a runtime contract, not the visible UI. The visitor sees the greeting text and chips. The greeting should feel like white-glove concierge attention: warm, specific, directional, autonomy-preserving, and lively without exposing telemetry. The greeting can offer customer examples, comparison, or deeper exploration, but it must not invent numeric proof claims.
 
 ## Handoff Contract
 

@@ -1,0 +1,15 @@
+{
+  "schema": "ProactiveGreetingResponse.v1",
+  "opportunityId": "opp_white_glove_sample",
+  "greeting": "Hey there, explorer. If AI Search, Personalization, and Recommendations are all on your radar, you are circling three powerful but different jobs. I can help you map the cost drivers for each, compare the value tradeoffs, or find real examples of how they work together.",
+  "chips": [
+    "Map cost drivers",
+    "Compare the options",
+    "See customer examples"
+  ],
+  "handoffSummary": {
+    "moment": "commercial_evaluation",
+    "trigger": "product_to_pricing",
+    "messageGoal": "explain_cost_drivers"
+  }
+}

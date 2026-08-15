@@ -1,0 +1,9 @@
+{
+  "sameAgentId": true,
+  "instructionsShaMatches": true,
+  "promptContainsNoNumericWordLimit": true,
+  "modelPreserved": true,
+  "providerPreserved": true,
+  "toolCountPreserved": true,
+  "pass": true
+}

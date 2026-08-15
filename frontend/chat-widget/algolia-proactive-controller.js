@@ -378,7 +378,6 @@
         source: "browser_deterministic",
         tone: "sharp, useful, warm, lightly witty",
         constraints: {
-          maxWords: 34,
           noTelemetryExposure: true,
           includeQuestionChips: true,
         },
@@ -782,8 +781,7 @@
     if (!sameHandoffSummary(response, decision)) return "handoff_summary_mismatch";
 
     const greeting = typeof response.greeting === "string" ? response.greeting.trim() : "";
-    const greetingWords = wordCount(greeting);
-    if (greetingWords < 12 || greetingWords > 34) return "invalid_greeting_length";
+    if (!greeting) return "invalid_greeting";
     if (BANNED_GREETING_RE.test(greeting)) return "telemetry_exposure";
     if (UNSUPPORTED_CLAIM_RE.test(greeting)) return "unsupported_claim";
 

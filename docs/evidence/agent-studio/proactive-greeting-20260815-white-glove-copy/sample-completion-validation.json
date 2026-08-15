@@ -1,0 +1,11 @@
+{
+  "schemaOk": true,
+  "opportunityOk": true,
+  "summaryOk": true,
+  "nonEmptyGreeting": true,
+  "chipsCountOk": true,
+  "usesJourneyProductLanguage": true,
+  "offersUsefulPath": true,
+  "noTelemetryLanguage": true,
+  "pass": true
+}
