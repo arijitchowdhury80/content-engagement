@@ -1,0 +1,13 @@
+{
+  "release": "chat-ui-followup-section-20260815a",
+  "version": "20260815-chat-ui-followup-section-a",
+  "chatPath": "/sites/www/files/algolia-chat.js",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&followup=20260815-chat-ui-followup-section-a",
+  "sourceCommit": "ba09e7aa04646228e7943c65821fb0c7f23177a9",
+  "committedChatSha256": "e45d4f90fe46a4fa49f845a73dcc2b90784e2d687b127820dbb4246e66ea2031",
+  "previousEditChatSha256": "e45d4f90fe46a4fa49f845a73dcc2b90784e2d687b127820dbb4246e66ea2031",
+  "previousLiveChatSha256": "934377f2bf7d37e524a13601fb64b728c8d254aa862025d1d1660daffef410d2",
+  "blockPath": "/sites/www/home/drift/custom-code-block",
+  "willUpdateBlockRelease": true,
+  "willUpdateChatScript": true
+}
