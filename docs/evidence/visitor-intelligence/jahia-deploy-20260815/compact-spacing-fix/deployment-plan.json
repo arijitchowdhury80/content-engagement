@@ -1,0 +1,21 @@
+{
+  "release": "chat-ui-compact-spacing-20260815a",
+  "version": "20260815-chat-ui-compact-spacing-a",
+  "themePath": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js",
+  "themeUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-compact-spacing-a",
+  "sourceCommit": "14ff346",
+  "committedThemeSha256": "7210a5dfe5729affcf737f6d64a6c885c4178526bf945ef5e90a4c9acbc32d9a",
+  "beforeThemeScripts": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-header-progress-fill-b"
+  ],
+  "afterThemeScripts": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-compact-spacing-a"
+  ],
+  "intendedMarkers": [
+    "headerHeight 60px",
+    "dockedWidth 540px",
+    "header padding 8px 14px 7px",
+    "content padding top 12px",
+    "proactive greeting padding top 10px"
+  ]
+}
