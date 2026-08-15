@@ -36,7 +36,7 @@ function loadAlgoliaTheme() {
 test('Algolia theme keeps the chat panel compact and source-grounded in the header chrome', () => {
   const theme = loadAlgoliaTheme();
 
-  assert.equal(theme.typography.scale.sm, '12px');
+  assert.equal(theme.typography.scale.sm, '13px');
   assert.equal(theme.typography.scale.base, '14px');
   assert.equal(theme.layout.headerHeight, '72px');
   assert.equal(theme.layout.panelWidth, 'min(1080px, 70vw)');

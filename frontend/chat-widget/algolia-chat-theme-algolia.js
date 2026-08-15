@@ -108,7 +108,7 @@
       scale: {
         '2xs': '10px',
         xs: '11px',
-        sm: '12px',
+        sm: '13px',
         base: '14px',
         lg: '16px',
         xl: '20px',
