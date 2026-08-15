@@ -1,0 +1,19 @@
+{
+  "capturedAt": "2026-08-15T05:22:18.754763+00:00",
+  "label": "after",
+  "release": "chat-ui-source-pills-20260815a",
+  "version": "20260815-chat-ui-source-pills-a",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&sources=20260815-chat-ui-source-pills-a",
+  "editBlockSha256": "2610de0f5c2e02343407a37f9b212f5a0dda8a966bffa312ad3c605721d26718",
+  "liveBlockSha256": "2610de0f5c2e02343407a37f9b212f5a0dda8a966bffa312ad3c605721d26718",
+  "editBlockHasCurrentChatUrl": true,
+  "liveBlockHasCurrentChatUrl": true,
+  "editChatSha256": "cc58b317c9a2586b1f381fc578bfd69e678b3028cd7114768b742082a5b9a383",
+  "liveChatSha256": "cc58b317c9a2586b1f381fc578bfd69e678b3028cd7114768b742082a5b9a383",
+  "editReleaseMarkers": [
+    "chat-ui-source-pills-20260815a"
+  ],
+  "liveReleaseMarkers": [
+    "chat-ui-source-pills-20260815a"
+  ]
+}
