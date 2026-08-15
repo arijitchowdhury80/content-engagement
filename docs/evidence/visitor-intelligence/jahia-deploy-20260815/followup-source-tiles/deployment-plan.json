@@ -1,0 +1,15 @@
+{
+  "release": "chat-ui-followup-source-tiles-20260815a",
+  "version": "20260815-chat-ui-followup-source-tiles-a",
+  "chatPath": "/sites/www/files/algolia-chat.js",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&followupTiles=20260815-chat-ui-followup-source-tiles-a",
+  "sourceCommit": "03962403d99e350561bfaa739a0f257e22fde372",
+  "committedChatSha256": "02a563176481b89c671ad367bbb967a69378bb9a8674c28f175e8d8752d15c3f",
+  "blockPath": "/sites/www/home/drift/custom-code-block",
+  "checks": [
+    "follow-up renders before source section",
+    "follow-up tile has glass/3D styling",
+    "source pills have pastel glass/3D styling",
+    "public chat asset hash matches committed bundle"
+  ]
+}
