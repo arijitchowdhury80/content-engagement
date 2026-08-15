@@ -1,0 +1,19 @@
+{
+  "chatStatus": 200,
+  "themeStatus": 200,
+  "localChatSha256": "4da9e765e03e2b770258812f7493feb32cb04ea406b38e0d64edb9b767b7c9af",
+  "publicChatSha256": "4da9e765e03e2b770258812f7493feb32cb04ea406b38e0d64edb9b767b7c9af",
+  "localThemeSha256": "eb54fdf651f352b02119edcaaed0d62e2b3e11f1dd6f76ba47f019ed03c0584d",
+  "publicThemeSha256": "eb54fdf651f352b02119edcaaed0d62e2b3e11f1dd6f76ba47f019ed03c0584d",
+  "checks": {
+    "publicChatHashMatchesLocal": true,
+    "publicThemeHashMatchesLocal": true,
+    "publicChatHasProgressCeiling": true,
+    "publicChatUsesRAF": true,
+    "publicChatKeepsHeaderAfterUnmount": true,
+    "publicThemeHasHeaderFlowKeyframes": true,
+    "publicThemeHasContinuousHeaderAnimation": true,
+    "publicThemeHasSmoothWidthTransition": true
+  },
+  "pass": true
+}

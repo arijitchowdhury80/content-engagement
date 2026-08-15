@@ -16,17 +16,17 @@ function loadDiscoverySplitters() {
   return vm.runInNewContext(`${bundle.slice(start, end)};({ Xl, _R });`);
 }
 
-test('follow-up discovery question renders before source pills as an elevated tile', () => {
+test('follow-up discovery question renders after source pills as a borderless raised prompt', () => {
   const bundle = fs.readFileSync(chatPath, 'utf8');
 
   assert.match(
     bundle,
-    /m&&w\.jsx\(e1,\{turnId:n,followUps:f,inputBlocked:p,onPickFollowUp:v\}\),g&&w\.jsx\(Jb,\{/,
-    'the follow-up prompt should render immediately after the answer and before sources'
+    /g&&w\.jsx\(Jb,\{[\s\S]*?\}\),m&&w\.jsx\(e1,\{turnId:n,followUps:f,inputBlocked:p,onPickFollowUp:v\}\)/,
+    'the follow-up prompt should render after sources and grounding controls'
   );
   assert.match(
     bundle,
-    /function e1\(\{turnId:t,followUps:n,inputBlocked:i,onPickFollowUp:a\}\)\{return w\.jsxs\("div",\{className:"acs-followup-wrap/,
+    /function e1\(\{turnId:t,followUps:n,inputBlocked:i,onPickFollowUp:a\}\)\{return w\.jsxs\("div",\{className:"acs-followup-wrap flex flex-col gap-2 pt-4"/,
     'follow-up section should use a dedicated visual wrapper'
   );
   assert.match(
@@ -36,8 +36,33 @@ test('follow-up discovery question renders before source pills as an elevated ti
   );
   assert.match(
     bundle,
-    /\.acs-followup-card\{[^}]*backdrop-filter:blur\(18px\)[^}]*box-shadow:0 18px 38px/,
-    'follow-up tile CSS should create glass and 3D elevation'
+    /\.acs-followup-card\{[^}]*border:0[^}]*linear-gradient\(135deg,#ffffff,#edf5ff[^}]*backdrop-filter:blur\(16px\)[^}]*box-shadow:0 12px 26px/,
+    'follow-up prompt should share the source-pill glass language without a visible border'
+  );
+  assert.doesNotMatch(
+    bundle,
+    /acs-followup-icon|J\.strings\.discovery\.eyebrow/,
+    'follow-up prompt should not render the old icon or eyebrow label'
+  );
+});
+
+test('answer markdown has breathing room between sections', () => {
+  const bundle = fs.readFileSync(chatPath, 'utf8');
+
+  assert.match(
+    bundle,
+    /function bS\(\{text:t,unsupportedTerms:n=\[\]\}\)[\s\S]*?className:"flex flex-col gap-3"/,
+    'answer block should not stack every markdown run with the old tight gap'
+  );
+  assert.match(
+    bundle,
+    /function fS\(t,n,i,a,l=!1\)\{const u=ig\.exec\(t\),f=u\?u\[2\]:t,d=l\?"mt-7":"mt-1"/,
+    'headings after the opening answer should create a new visual section'
+  );
+  assert.match(
+    bundle,
+    /function hS\(t,n,i,a,l=!1\).*space-y-4/s,
+    'lists should breathe more between bullets'
   );
 });
 

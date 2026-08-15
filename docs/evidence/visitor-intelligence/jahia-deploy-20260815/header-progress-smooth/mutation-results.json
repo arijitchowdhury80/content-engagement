@@ -1,0 +1,329 @@
+{
+  "upsertChat": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-chat.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "upsertNewTracker": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-engagement-tracker.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-engagement-tracker.js"
+          }
+        }
+      }
+    }
+  },
+  "upsertContextCompiler": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-context-compiler.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-context-compiler.js"
+          }
+        }
+      }
+    }
+  },
+  "upsertProactiveController": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-proactive-controller.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-proactive-controller.js"
+          }
+        }
+      }
+    }
+  },
+  "upsertHandoffToOrchestrator": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/handoff-to-orchestrator.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/handoff-to-orchestrator.js"
+          }
+        }
+      }
+    }
+  },
+  "upsertEngage": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-chat-engage.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-chat-engage.js"
+          }
+        }
+      }
+    }
+  },
+  "upsertTheme": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "setBlockHtml": {
+    "data": {
+      "jcr": {
+        "block": {
+          "html": {
+            "setValue": true
+          },
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "deleteOldTrackerEdit": {
+    "skipped": "old tracker not present in EDIT"
+  },
+  "publishChat": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "publishNewTracker": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-engagement-tracker.js"
+          }
+        }
+      }
+    }
+  },
+  "publishContextCompiler": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-context-compiler.js"
+          }
+        }
+      }
+    }
+  },
+  "publishProactiveController": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-proactive-controller.js"
+          }
+        }
+      }
+    }
+  },
+  "publishHandoffToOrchestrator": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/handoff-to-orchestrator.js"
+          }
+        }
+      }
+    }
+  },
+  "publishEngage": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-engage.js"
+          }
+        }
+      }
+    }
+  },
+  "publishTheme": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "publishFilesSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "publishDriftSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "versionBlock": {
+    "data": {
+      "jcr": {
+        "block": {
+          "createVersion": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "republishDriftSubtreeAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "republishBlockAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  }
+}

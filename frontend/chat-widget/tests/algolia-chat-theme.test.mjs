@@ -57,7 +57,7 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\[part="header"\]::after[^{]+{[^}]*top: 36px/);
   assert.match(css, /\[part="header"\]::after[^{]+{[^}]*z-index: 1/);
   assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*width: var\(--acs-header-progress, 0%\)/);
-  assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*linear-gradient\(90deg, rgba\(0,61,255,0\.04\), rgba\(0,61,255,0\.16\)\)/);
+  assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*linear-gradient\(90deg, rgba\(0,61,255,0\.04\), rgba\(0,61,255,0\.16\)(?:, rgba\(0,61,255,0\.08\))?\)/);
   assert.match(css, /\[part="header"\] > \*[^{]+{[^}]*z-index: 1/);
   assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*align-self: center/);
   assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*min-width: 0/);
