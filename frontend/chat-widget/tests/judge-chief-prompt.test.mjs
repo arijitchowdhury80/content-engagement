@@ -194,6 +194,12 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.match(renderer, /&&!\s*R&&w\.jsx\([^,]+,\{name:"thinking"/);
     assert.doesNotMatch(bundle, /acs-step--active \.acs-step__dot\{background:var\(--algolia-accent\)/);
     assert.doesNotMatch(bundle, /acs-progress__fill[^"]*background:var\(--algolia-accent\)/);
+    assert.match(traceBlock, /--acs-progress/);
+    assert.match(traceBlock, /background:linear-gradient\(90deg,color-mix\(in srgb,var\(--algolia-accent\) 10%,transparent\) var\(--acs-progress\)/);
+    assert.match(traceBlock, /className:"sr-only"[^}]*role:"progressbar"/);
+    assert.doesNotMatch(traceBlock, /className:"acs-progress"/);
+    assert.doesNotMatch(traceBlock, /\.acs-progress\{height/);
+    assert.doesNotMatch(traceBlock, /acs-progress__fill/);
   });
 
   test(`${bundleName} logs segment state transitions when chat debug is enabled`, () => {
