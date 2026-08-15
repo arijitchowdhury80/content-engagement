@@ -198,6 +198,21 @@ ${followUp}
     assert.doesNotMatch(bundle, /children:\[w\.jsx\("span",\{className:"text-algolia-2xs font-algolia-bold uppercase tracking-algolia-caps text-algolia-text-muted",children:J\.strings\.discovery\.eyebrow\}\),w\.jsx\("span",\{className:"text-algolia-sm font-algolia-medium text-algolia-text",children:t\}\)\]/);
   });
 
+  test(`${bundleName} keeps the composer shell free of an extra top divider`, () => {
+    const bundle = readBundle(bundleName);
+
+    assert.match(
+      bundle,
+      /part:"composer",className:"flex items-end gap-2\.5 rounded-algolia-xl border border-algolia-border bg-algolia-surface p-2/,
+      'composer input should keep its own rounded border'
+    );
+    assert.doesNotMatch(
+      bundle,
+      /className:"shrink-0 border-t border-algolia-border bg-algolia-surface"/,
+      'composer shell should not draw a second horizontal line above the input'
+    );
+  });
+
   test(`${bundleName} shows an observable processing trace while building an answer`, () => {
     const bundle = readBundle(bundleName);
     const rendererName = bundleName.includes('jahia') ? 'hE' : 't1';
