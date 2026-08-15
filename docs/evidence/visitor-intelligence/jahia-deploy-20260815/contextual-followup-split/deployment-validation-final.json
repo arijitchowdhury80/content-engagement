@@ -1,0 +1,24 @@
+{
+  "release": "chat-ui-contextual-followup-split-20260815a",
+  "version": "20260815-chat-ui-contextual-followup-split-a",
+  "sourceCommit": "1857c6a99440b599e2f31c0198c77087afa7f2c1",
+  "committedChatSha256": "216a719b213e65b714c009658e34fb1653653ecf138661f961784e84155f936e",
+  "editJcrChatSha256": "216a719b213e65b714c009658e34fb1653653ecf138661f961784e84155f936e",
+  "liveJcrChatSha256": "216a719b213e65b714c009658e34fb1653653ecf138661f961784e84155f936e",
+  "publicChatSha256": "216a719b213e65b714c009658e34fb1653653ecf138661f961784e84155f936e",
+  "editJcrMatchesCommitted": true,
+  "liveJcrMatchesCommitted": true,
+  "publicMatchesCommitted": true,
+  "editBlockHasRelease": true,
+  "liveBlockHasRelease": true,
+  "editBlockHasCacheKey": true,
+  "liveBlockHasCacheKey": true,
+  "publicHasContextualSplitterRegex": true,
+  "publicRuntimeSplitsScreenshotQuestion": true,
+  "runtimeSplitCheck": {
+    "pass": true,
+    "followUp": "Since you're looking at this from a cost and configuration angle, are you currently seeing unexplained spikes in your logs, or are you mapping out the projected costs for a new high-traffic launch?",
+    "text": "The Tradeoff: High responsiveness increases conversion, but it increases the operation count.\nMost teams find the sweet spot by debouncing at 100-300ms."
+  },
+  "pass": true
+}

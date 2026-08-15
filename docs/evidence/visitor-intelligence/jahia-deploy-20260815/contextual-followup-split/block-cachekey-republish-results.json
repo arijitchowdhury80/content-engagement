@@ -1,0 +1,50 @@
+{
+  "mutation": {
+    "data": {
+      "jcr": {
+        "block": {
+          "html": {
+            "setValue": true
+          },
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "immediateHasVersion": true,
+  "immediateHasRelease": true,
+  "immediateUrl": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&followupSplit=20260815-chat-ui-followup-split-a&headerProgress=20260815-chat-ui-header-progress-fill-b&contextualFollowup=20260815-chat-ui-contextual-followup-split-a"
+  ],
+  "publishDrift": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "liveHasVersion": false,
+  "liveHasRelease": false,
+  "liveUrl": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&followupSplit=20260815-chat-ui-followup-split-a&headerProgress=20260815-chat-ui-header-progress-fill-b"
+  ]
+}
