@@ -1,0 +1,29 @@
+{
+  "release": "chat-ui-proactive-docked-20260815a",
+  "version": "20260815-chat-ui-proactive-docked-a",
+  "chatPath": "/sites/www/files/algolia-chat.js",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&proactiveDocked=20260815-chat-ui-proactive-docked-a",
+  "sourceCommit": "6517e4498b00140f4d67955a7cf76ecf1817074a",
+  "committedChatSha256": "47902f3c3ce877d753055010d13d2753ff46c14af5484ffdfcd270955764ab33",
+  "blockPath": "/sites/www/home/drift/custom-code-block",
+  "checks": [
+    "public engage defaults to docked openMode",
+    "internal engage applies requested size mode before opening",
+    "block points at cache-busted algolia-chat.js"
+  ],
+  "editJcrChatSha256": "47902f3c3ce877d753055010d13d2753ff46c14af5484ffdfcd270955764ab33",
+  "liveJcrChatSha256": "47902f3c3ce877d753055010d13d2753ff46c14af5484ffdfcd270955764ab33",
+  "publicChatSha256": "47902f3c3ce877d753055010d13d2753ff46c14af5484ffdfcd270955764ab33",
+  "editJcrMatchesCommitted": true,
+  "liveJcrMatchesCommitted": true,
+  "publicMatchesCommitted": true,
+  "publicEngageDefaultsDocked": true,
+  "publicEngageForwardsOpenMode": true,
+  "publicInternalAppliesMode": true,
+  "editBlockHasRelease": true,
+  "liveBlockHasRelease": true,
+  "editBlockHasChatUrl": true,
+  "liveBlockHasChatUrl": true,
+  "checkedAt": "2026-08-15T08:12:57.533766+00:00",
+  "pass": true
+}

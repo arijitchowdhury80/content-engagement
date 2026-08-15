@@ -1,0 +1,149 @@
+{
+  "upsertChat": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-chat.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "setBlockHtml": {
+    "data": {
+      "jcr": {
+        "block": {
+          "html": {
+            "setValue": true
+          },
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "editChatSha256": "47902f3c3ce877d753055010d13d2753ff46c14af5484ffdfcd270955764ab33",
+  "editBlockHasRelease": false,
+  "editBlockHasChatUrl": false,
+  "versionBlock": {
+    "data": {
+      "jcr": {
+        "block": {
+          "createVersion": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishChat": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "publishFilesSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "publishDriftSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "republishChatAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "republishFilesSubtreeAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "republishDriftSubtreeAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "republishBlockAfterStaleLiveReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  }
+}
