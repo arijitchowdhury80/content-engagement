@@ -184,6 +184,12 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.doesNotMatch(traceBlock, /2\+n%4/);
     assert.match(bundle, /prefers-reduced-motion:no-preference/);
     assert.match(bundle, /name:"source-pill"/);
+    assert.match(bundle, /acs-source-group-pill/);
+    assert.match(bundle, /acs-source-group-count/);
+    assert.match(bundle, /backdrop-filter:blur\(10px\)/);
+    assert.match(bundle, /box-shadow:inset 0 1px 0/);
+    assert.doesNotMatch(bundle, /className:"flex flex-col gap-2 border-t border-algolia-border pt-3","aria-label":J\.strings\.sources\.sectionLabel/);
+    assert.match(bundle, /className:"flex flex-col gap-2 pt-2","aria-label":J\.strings\.sources\.sectionLabel/);
     assert.doesNotMatch(bundle, /className:"acs-source-chips"/);
     assert.doesNotMatch(bundle, /Source groups being checked/);
     assert.doesNotMatch(bundle, /acs-source-chip__count/);
