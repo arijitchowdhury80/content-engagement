@@ -1,0 +1,156 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "setChatFile": {
+        "data": {
+          "jcr": {
+            "file": {
+              "content": {
+                "data": {
+                  "setValue": true
+                },
+                "mime": {
+                  "setValue": true
+                },
+                "node": {
+                  "path": "/sites/www/files/algolia-chat.js/jcr:content"
+                }
+              },
+              "node": {
+                "path": "/sites/www/files/algolia-chat.js"
+              }
+            }
+          }
+        }
+      },
+      "setBlockHtml": {
+        "data": {
+          "jcr": {
+            "block": {
+              "html": {
+                "setValue": true
+              },
+              "node": {
+                "path": "/sites/www/home/drift/custom-code-block"
+              }
+            }
+          }
+        }
+      },
+      "editChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+      "editBlockHasRelease": true,
+      "editBlockHasUrl": true,
+      "editOmitsComposerShellDivider": true,
+      "editKeepsComposerInputBorder": true
+    }
+  ],
+  "versionBlock": {
+    "data": {
+      "jcr": {
+        "block": {
+          "createVersion": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishChat": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "publishFilesSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "publishDriftSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "republishChatAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "republishFilesSubtreeAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files"
+          }
+        }
+      }
+    }
+  },
+  "republishDriftSubtreeAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "republishBlockAfterStaleReadback": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  }
+}

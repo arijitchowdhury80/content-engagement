@@ -1,0 +1,11 @@
+{
+  "capturedAt": "2026-08-15T05:49:48.221348+00:00",
+  "editChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+  "liveChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+  "publicChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+  "editBlockHasRelease": true,
+  "liveBlockHasRelease": true,
+  "editBlockHasChatUrl": true,
+  "liveBlockHasChatUrl": true,
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&composer=20260815-chat-ui-composer-divider-a"
+}

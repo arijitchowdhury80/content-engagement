@@ -1,0 +1,14 @@
+{
+  "release": "chat-ui-composer-divider-20260815a",
+  "version": "20260815-chat-ui-composer-divider-a",
+  "chatPath": "/sites/www/files/algolia-chat.js",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&composer=20260815-chat-ui-composer-divider-a",
+  "sourceCommit": "1e4d3dd4b5c53777bd94d46188267abc704c37d7",
+  "committedChatSha256": "7506afc434f0776cf2e680ecd26348d05e2382623bee5a779802ce583b84574d",
+  "previousEditChatSha256": "e45d4f90fe46a4fa49f845a73dcc2b90784e2d687b127820dbb4246e66ea2031",
+  "previousLiveChatSha256": "e45d4f90fe46a4fa49f845a73dcc2b90784e2d687b127820dbb4246e66ea2031",
+  "blockPath": "/sites/www/home/drift/custom-code-block",
+  "willUpdateBlockRelease": false,
+  "willUpdateChatScript": false,
+  "willRemoveComposerShellDivider": false
+}
