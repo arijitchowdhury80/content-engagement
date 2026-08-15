@@ -1,0 +1,12 @@
+{
+  "editThemeMatchesLocal": true,
+  "liveThemeMatchesLocal": true,
+  "publicThemeMatchesLocal": true,
+  "publicHas13pxSm": true,
+  "publicOmits12pxSm": true,
+  "editBlockHasRelease": true,
+  "liveBlockHasRelease": true,
+  "editBlockHasThemeVersion": true,
+  "liveBlockHasThemeVersion": true,
+  "pass": true
+}

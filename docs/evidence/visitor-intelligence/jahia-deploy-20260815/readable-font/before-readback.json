@@ -1,0 +1,29 @@
+{
+  "capturedAt": "2026-08-15T09:10:22.450929+00:00",
+  "release": "chat-ui-readable-font-20260815a",
+  "version": "20260815-chat-ui-readable-font-a",
+  "themePath": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js",
+  "blockPath": "/sites/www/home/drift/custom-code-block",
+  "edit": {
+    "workspace": "EDIT",
+    "blockHasRelease": false,
+    "blockThemeRefs": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-modal-greeting-width-a"
+    ],
+    "themeSha256": "022d7c4d203cfdcabb142e8ed6ec5af66a8e7a27c0675aa5b78604c3e52f4b9f",
+    "themeHas13pxSm": false,
+    "themeHas12pxSm": true,
+    "themeMime": "application/javascript"
+  },
+  "live": {
+    "workspace": "LIVE",
+    "blockHasRelease": false,
+    "blockThemeRefs": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-modal-greeting-width-a"
+    ],
+    "themeSha256": "022d7c4d203cfdcabb142e8ed6ec5af66a8e7a27c0675aa5b78604c3e52f4b9f",
+    "themeHas13pxSm": false,
+    "themeHas12pxSm": true,
+    "themeMime": "application/javascript"
+  }
+}

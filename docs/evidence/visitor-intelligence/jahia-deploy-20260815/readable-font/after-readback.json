@@ -1,0 +1,45 @@
+{
+  "capturedAt": "2026-08-15T09:12:00.333194+00:00",
+  "release": "chat-ui-readable-font-20260815a",
+  "version": "20260815-chat-ui-readable-font-a",
+  "themePath": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js",
+  "themeUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-readable-font-a",
+  "rootUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/?codexCacheBust=20260815-chat-ui-readable-font-a",
+  "sourceCommit": "e83b061a5cc2c5edfb1137292f95ba5d2f992301",
+  "localThemeSha256": "d1e47b931339ef2113270d9e6e8d7cdcb16c0d961365fa36f257fac202ae481a",
+  "publicThemeSha256": "d1e47b931339ef2113270d9e6e8d7cdcb16c0d961365fa36f257fac202ae481a",
+  "edit": {
+    "workspace": "EDIT",
+    "blockHasRelease": true,
+    "blockThemeRefs": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-readable-font-a"
+    ],
+    "themeSha256": "d1e47b931339ef2113270d9e6e8d7cdcb16c0d961365fa36f257fac202ae481a",
+    "themeHas13pxSm": true,
+    "themeHas12pxSm": false,
+    "themeMime": "application/javascript"
+  },
+  "live": {
+    "workspace": "LIVE",
+    "blockHasRelease": true,
+    "blockThemeRefs": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-chat-ui-readable-font-a"
+    ],
+    "themeSha256": "d1e47b931339ef2113270d9e6e8d7cdcb16c0d961365fa36f257fac202ae481a",
+    "themeHas13pxSm": true,
+    "themeHas12pxSm": false,
+    "themeMime": "application/javascript"
+  },
+  "checks": {
+    "editThemeMatchesLocal": true,
+    "liveThemeMatchesLocal": true,
+    "publicThemeMatchesLocal": true,
+    "publicHas13pxSm": true,
+    "publicOmits12pxSm": true,
+    "editBlockHasRelease": true,
+    "liveBlockHasRelease": true,
+    "editBlockHasThemeVersion": true,
+    "liveBlockHasThemeVersion": true,
+    "pass": true
+  }
+}
