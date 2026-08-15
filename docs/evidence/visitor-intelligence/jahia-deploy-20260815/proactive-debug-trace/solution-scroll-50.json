@@ -1,0 +1,26 @@
+{
+  "label": "solution-scroll-50",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/solutions/ecommerce?algoliaChatDebug=1&algoliaProactiveDebug=1&algoliaProactiveReset=1&cb=debug-solution-scroll",
+  "scripts": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/algolia-assets/files/error_404.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-components/javascript/component/error.js"
+  ],
+  "debug": null,
+  "trace": null,
+  "proactiveState": null,
+  "session": null,
+  "events": null,
+  "summary": {
+    "trigger": null,
+    "status": null,
+    "moment": null,
+    "traceStages": [],
+    "hasCandidate": false,
+    "hasRequest": false,
+    "hasWidget": false,
+    "currentPath": null,
+    "productTrail": [],
+    "solutionTrail": [],
+    "reasonCodes": []
+  }
+}

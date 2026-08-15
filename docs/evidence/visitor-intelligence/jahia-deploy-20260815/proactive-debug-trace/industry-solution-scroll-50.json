@@ -1,0 +1,2432 @@
+{
+  "label": "industry-solution-scroll-50",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/ecommerce?algoliaChatDebug=1&algoliaProactiveDebug=1&algoliaProactiveReset=1&cb=debug-industry-scroll",
+  "debug": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "implementationDwellMs": 15000,
+      "implementationScrollDepth": 60,
+      "pricingDwellMs": 8000,
+      "customerProofDwellMs": 12000,
+      "customerProofScrollDepth": 60,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a0069e95ad_da3b51",
+          "status": "shown",
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "pagePath": "/industries/ecommerce",
+          "moment": "solution_research",
+          "trigger": "solution_page_50_scroll",
+          "priority": 63,
+          "messageGoal": "explain_solution_fit",
+          "reasonCodes": [
+            "solution_page",
+            "solution_scroll"
+          ],
+          "createdAt": 1786817451437,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "persona": {
+              "value": "merchandiser",
+              "state": "inferred",
+              "confidence": 0.56,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_e2cc121dd6e88dc00b230796",
+              "path": "/industries/ecommerce",
+              "title": "Build AI search & discovery for Ecommerce",
+              "pageGroup": "solution",
+              "topic": "commerce",
+              "solutionFocus": "commerce",
+              "solutionFocusLabel": "Commerce",
+              "dwellMs": 0,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "commerce",
+              "label": "Commerce",
+              "type": "solution",
+              "state": "observed",
+              "source": "current_solution_page",
+              "pagePath": "/industries/ecommerce",
+              "pageTitle": "Build AI search & discovery for Ecommerce"
+            },
+            "journeySummary": {
+              "currentTransition": "solution_page_50_scroll",
+              "productTrail": [],
+              "solutionTrail": [
+                {
+                  "value": "commerce",
+                  "label": "Commerce",
+                  "pagePath": "/industries/ecommerce",
+                  "pageTitle": "Build AI search & discovery for Ecommerce"
+                }
+              ],
+              "pageTrail": [
+                {
+                  "path": "/industries/ecommerce",
+                  "title": "Build AI search & discovery for Ecommerce",
+                  "pageGroup": "solution",
+                  "topic": "commerce",
+                  "solutionFocusLabel": "Commerce"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/industries/ecommerce",
+                "title": "Build AI search & discovery for Ecommerce",
+                "pageGroup": "solution",
+                "topic": "commerce",
+                "solutionFocus": "commerce",
+                "solutionFocusLabel": "Commerce",
+                "dwellMs": 0,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/industries/ecommerce",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/ecommerce",
+                  "title": "Build AI search & discovery for Ecommerce",
+                  "pageGroup": "solution",
+                  "topic": "commerce",
+                  "solutionFocus": "commerce",
+                  "solutionFocusLabel": "Commerce"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/industries/ecommerce",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "solution",
+                  "topic": "commerce",
+                  "solutionFocus": "commerce",
+                  "solutionFocusLabel": "Commerce"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "ai_recommendations_evaluation",
+              "state": "inferred",
+              "confidence": 0.72,
+              "evidence": [
+                "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+              ]
+            },
+            "friction": {
+              "value": "fit_and_value_unclear",
+              "state": "inferred",
+              "confidence": 0.62,
+              "evidence": [
+                "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+              ]
+            },
+            "messageGoal": "explain_solution_fit",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ],
+            "opportunityId": "opp_1a0069e95ad_da3b51",
+            "createdAt": 1786817451437
+          },
+          "updatedAt": 1786817451445,
+          "shownAt": 1786817451445,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a0069e95ad_da3b51",
+            "greeting": "Hello, explorer. Looks like Commerce is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+            "chips": [
+              "Show tradeoffs",
+              "Find proof",
+              "Explain build"
+            ],
+            "handoffSummary": {
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "messageGoal": "explain_solution_fit"
+            }
+          }
+        }
+      ],
+      "lastOpportunityAt": 1786817451445
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1786817453037,
+      "profile": {
+        "visitorId": "visitor_9e06ec10d1bd53c4c64a49a1",
+        "visits": 1,
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_d3e6c2daa6d01064d18afe86",
+        "startedAt": 1786817450336,
+        "pageCount": 1,
+        "engagementHistory": [
+          {
+            "id": "eng_921140219679738b888f0a7b",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1786817451444,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "path": "/industries/ecommerce",
+        "title": "Build AI search & discovery for Ecommerce",
+        "pageGroup": "solution",
+        "topic": "commerce",
+        "solutionFocus": "commerce",
+        "solutionFocusLabel": "Commerce",
+        "dwellMs": 0,
+        "maxScrollDepth": 50
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "commerce",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "currentSolutionFocus": {
+          "value": "commerce",
+          "label": "Commerce",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 1,
+          "scroll_depth": 1,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_2174c749c4a7f1552be3d68d",
+          "name": "page_view",
+          "ts": 1786817450336,
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "path": "/industries/ecommerce",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/ecommerce",
+            "title": "Build AI search & discovery for Ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "solutionFocus": "commerce",
+            "solutionFocusLabel": "Commerce"
+          }
+        },
+        {
+          "eventId": "evt_a674ebc4e31e6f95e5456420",
+          "name": "scroll_depth",
+          "ts": 1786817451436,
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "path": "/industries/ecommerce",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "solutionFocus": "commerce",
+            "solutionFocusLabel": "Commerce"
+          }
+        },
+        {
+          "eventId": "evt_8618005a2418609ebd420d49",
+          "name": "engagement_exposed",
+          "ts": 1786817451444,
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "path": "/industries/ecommerce",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_921140219679738b888f0a7b",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_560c2cb950e9dcd3b52a4bfd",
+          "name": "chat_open",
+          "ts": 1786817451468,
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "path": "/industries/ecommerce",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "ai_recommendations_evaluation",
+          "state": "inferred",
+          "confidence": 0.72,
+          "evidence": [
+            "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+          ]
+        },
+        "friction": {
+          "value": "fit_and_value_unclear",
+          "state": "inferred",
+          "confidence": 0.62,
+          "evidence": [
+            "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+          ]
+        },
+        "nextBestAction": {
+          "value": "explain_feature_fit_with_example",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "chat_already_open",
+      "createdAt": 1786817453040
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "controller_installed",
+        "at": 1786817450337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817450339,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817450339,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/ecommerce",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817450340,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817450340,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817450340,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/ecommerce",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/ecommerce",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817451436,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/industries/ecommerce",
+          "props": {
+            "depth": 50,
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "solutionFocus": "commerce",
+            "solutionFocusLabel": "Commerce"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451436,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "engage": true,
+          "moment": "solution_research",
+          "trigger": "solution_page_50_scroll",
+          "priority": 63,
+          "pagePath": "/industries/ecommerce",
+          "reasonCodes": [
+            "solution_page",
+            "solution_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "trigger": "solution_page_50_scroll",
+          "moment": "solution_research",
+          "messageGoal": "explain_solution_fit",
+          "pagePath": "/industries/ecommerce"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1786817451438,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1786817451438,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "trigger": "solution_page_50_scroll",
+          "moment": "solution_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1786817451443,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1786817451444,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a0069e95ad_da3b51",
+          "greetingPreview": "Hello, explorer. Looks like Commerce is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817451444,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/industries/ecommerce",
+          "props": {
+            "engagementId": "eng_921140219679738b888f0a7b",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451445,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 3,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451445,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817451445,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1786817451445,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "trigger": "solution_page_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817451468,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "chat_open",
+          "path": "/industries/ecommerce",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451468,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451468,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817451468,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817452838,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817452839,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/ecommerce",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817452840,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817452841,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817452841,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817453038,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817453039,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817453039,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "trace": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "implementationDwellMs": 15000,
+      "implementationScrollDepth": 60,
+      "pricingDwellMs": 8000,
+      "customerProofDwellMs": 12000,
+      "customerProofScrollDepth": 60,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a0069e95ad_da3b51",
+          "status": "shown",
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "pagePath": "/industries/ecommerce",
+          "moment": "solution_research",
+          "trigger": "solution_page_50_scroll",
+          "priority": 63,
+          "messageGoal": "explain_solution_fit",
+          "reasonCodes": [
+            "solution_page",
+            "solution_scroll"
+          ],
+          "createdAt": 1786817451437,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "persona": {
+              "value": "merchandiser",
+              "state": "inferred",
+              "confidence": 0.56,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_e2cc121dd6e88dc00b230796",
+              "path": "/industries/ecommerce",
+              "title": "Build AI search & discovery for Ecommerce",
+              "pageGroup": "solution",
+              "topic": "commerce",
+              "solutionFocus": "commerce",
+              "solutionFocusLabel": "Commerce",
+              "dwellMs": 0,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "commerce",
+              "label": "Commerce",
+              "type": "solution",
+              "state": "observed",
+              "source": "current_solution_page",
+              "pagePath": "/industries/ecommerce",
+              "pageTitle": "Build AI search & discovery for Ecommerce"
+            },
+            "journeySummary": {
+              "currentTransition": "solution_page_50_scroll",
+              "productTrail": [],
+              "solutionTrail": [
+                {
+                  "value": "commerce",
+                  "label": "Commerce",
+                  "pagePath": "/industries/ecommerce",
+                  "pageTitle": "Build AI search & discovery for Ecommerce"
+                }
+              ],
+              "pageTrail": [
+                {
+                  "path": "/industries/ecommerce",
+                  "title": "Build AI search & discovery for Ecommerce",
+                  "pageGroup": "solution",
+                  "topic": "commerce",
+                  "solutionFocusLabel": "Commerce"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/industries/ecommerce",
+                "title": "Build AI search & discovery for Ecommerce",
+                "pageGroup": "solution",
+                "topic": "commerce",
+                "solutionFocus": "commerce",
+                "solutionFocusLabel": "Commerce",
+                "dwellMs": 0,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/industries/ecommerce",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/ecommerce",
+                  "title": "Build AI search & discovery for Ecommerce",
+                  "pageGroup": "solution",
+                  "topic": "commerce",
+                  "solutionFocus": "commerce",
+                  "solutionFocusLabel": "Commerce"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/industries/ecommerce",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "solution",
+                  "topic": "commerce",
+                  "solutionFocus": "commerce",
+                  "solutionFocusLabel": "Commerce"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "ai_recommendations_evaluation",
+              "state": "inferred",
+              "confidence": 0.72,
+              "evidence": [
+                "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+              ]
+            },
+            "friction": {
+              "value": "fit_and_value_unclear",
+              "state": "inferred",
+              "confidence": 0.62,
+              "evidence": [
+                "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+              ]
+            },
+            "messageGoal": "explain_solution_fit",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ],
+            "opportunityId": "opp_1a0069e95ad_da3b51",
+            "createdAt": 1786817451437
+          },
+          "updatedAt": 1786817451445,
+          "shownAt": 1786817451445,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a0069e95ad_da3b51",
+            "greeting": "Hello, explorer. Looks like Commerce is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+            "chips": [
+              "Show tradeoffs",
+              "Find proof",
+              "Explain build"
+            ],
+            "handoffSummary": {
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "messageGoal": "explain_solution_fit"
+            }
+          }
+        }
+      ],
+      "lastOpportunityAt": 1786817451445
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1786817453041,
+      "profile": {
+        "visitorId": "visitor_9e06ec10d1bd53c4c64a49a1",
+        "visits": 1,
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_d3e6c2daa6d01064d18afe86",
+        "startedAt": 1786817450336,
+        "pageCount": 1,
+        "engagementHistory": [
+          {
+            "id": "eng_921140219679738b888f0a7b",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1786817451444,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "path": "/industries/ecommerce",
+        "title": "Build AI search & discovery for Ecommerce",
+        "pageGroup": "solution",
+        "topic": "commerce",
+        "solutionFocus": "commerce",
+        "solutionFocusLabel": "Commerce",
+        "dwellMs": 0,
+        "maxScrollDepth": 50
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "commerce",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "currentSolutionFocus": {
+          "value": "commerce",
+          "label": "Commerce",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 1,
+          "scroll_depth": 1,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_2174c749c4a7f1552be3d68d",
+          "name": "page_view",
+          "ts": 1786817450336,
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "path": "/industries/ecommerce",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/ecommerce",
+            "title": "Build AI search & discovery for Ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "solutionFocus": "commerce",
+            "solutionFocusLabel": "Commerce"
+          }
+        },
+        {
+          "eventId": "evt_a674ebc4e31e6f95e5456420",
+          "name": "scroll_depth",
+          "ts": 1786817451436,
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "path": "/industries/ecommerce",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "solutionFocus": "commerce",
+            "solutionFocusLabel": "Commerce"
+          }
+        },
+        {
+          "eventId": "evt_8618005a2418609ebd420d49",
+          "name": "engagement_exposed",
+          "ts": 1786817451444,
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "path": "/industries/ecommerce",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_921140219679738b888f0a7b",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_560c2cb950e9dcd3b52a4bfd",
+          "name": "chat_open",
+          "ts": 1786817451468,
+          "pageId": "page_e2cc121dd6e88dc00b230796",
+          "path": "/industries/ecommerce",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "ai_recommendations_evaluation",
+          "state": "inferred",
+          "confidence": 0.72,
+          "evidence": [
+            "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+          ]
+        },
+        "friction": {
+          "value": "fit_and_value_unclear",
+          "state": "inferred",
+          "confidence": 0.62,
+          "evidence": [
+            "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+          ]
+        },
+        "nextBestAction": {
+          "value": "explain_feature_fit_with_example",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "chat_already_open",
+      "createdAt": 1786817453042
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "controller_installed",
+        "at": 1786817450337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817450339,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817450339,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/ecommerce",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817450340,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817450340,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817450340,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/ecommerce",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817450633,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/ecommerce",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817451337,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817451436,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/industries/ecommerce",
+          "props": {
+            "depth": 50,
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "solutionFocus": "commerce",
+            "solutionFocusLabel": "Commerce"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451436,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "engage": true,
+          "moment": "solution_research",
+          "trigger": "solution_page_50_scroll",
+          "priority": 63,
+          "pagePath": "/industries/ecommerce",
+          "reasonCodes": [
+            "solution_page",
+            "solution_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1786817451437,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "trigger": "solution_page_50_scroll",
+          "moment": "solution_research",
+          "messageGoal": "explain_solution_fit",
+          "pagePath": "/industries/ecommerce"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1786817451438,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1786817451438,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "trigger": "solution_page_50_scroll",
+          "moment": "solution_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1786817451443,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1786817451444,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a0069e95ad_da3b51",
+          "greetingPreview": "Hello, explorer. Looks like Commerce is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817451444,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/industries/ecommerce",
+          "props": {
+            "engagementId": "eng_921140219679738b888f0a7b",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451445,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 3,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451445,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817451445,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1786817451445,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "trigger": "solution_page_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817451468,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "chat_open",
+          "path": "/industries/ecommerce",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817451468,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817451468,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817451468,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817452838,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817452839,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/ecommerce",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817452840,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817452841,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817452841,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817453038,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817453039,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817453039,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817453041,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "solutionFocusLabel": "Commerce"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": [
+            "Commerce"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817453041,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_50_scroll",
+              "priority": 63,
+              "pagePath": "/industries/ecommerce",
+              "reasonCodes": [
+                "solution_page",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817453042,
+        "path": "/industries/ecommerce",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "priority": 63,
+            "pagePath": "/industries/ecommerce",
+            "reasonCodes": [
+              "solution_page",
+              "solution_scroll"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_1a0069e95ad_da3b51",
+        "status": "shown",
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "pagePath": "/industries/ecommerce",
+        "moment": "solution_research",
+        "trigger": "solution_page_50_scroll",
+        "priority": 63,
+        "messageGoal": "explain_solution_fit",
+        "reasonCodes": [
+          "solution_page",
+          "solution_scroll"
+        ],
+        "createdAt": 1786817451437,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "solution_research",
+          "trigger": "solution_page_50_scroll",
+          "priority": 63,
+          "persona": {
+            "value": "merchandiser",
+            "state": "inferred",
+            "confidence": 0.56,
+            "source": "behavior"
+          },
+          "currentPage": {
+            "pageId": "page_e2cc121dd6e88dc00b230796",
+            "path": "/industries/ecommerce",
+            "title": "Build AI search & discovery for Ecommerce",
+            "pageGroup": "solution",
+            "topic": "commerce",
+            "solutionFocus": "commerce",
+            "solutionFocusLabel": "Commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": {
+            "value": "commerce",
+            "label": "Commerce",
+            "type": "solution",
+            "state": "observed",
+            "source": "current_solution_page",
+            "pagePath": "/industries/ecommerce",
+            "pageTitle": "Build AI search & discovery for Ecommerce"
+          },
+          "journeySummary": {
+            "currentTransition": "solution_page_50_scroll",
+            "productTrail": [],
+            "solutionTrail": [
+              {
+                "value": "commerce",
+                "label": "Commerce",
+                "pagePath": "/industries/ecommerce",
+                "pageTitle": "Build AI search & discovery for Ecommerce"
+              }
+            ],
+            "pageTrail": [
+              {
+                "path": "/industries/ecommerce",
+                "title": "Build AI search & discovery for Ecommerce",
+                "pageGroup": "solution",
+                "topic": "commerce",
+                "solutionFocusLabel": "Commerce"
+              }
+            ],
+            "storyHint": ""
+          },
+          "journey": [
+            {
+              "path": "/industries/ecommerce",
+              "title": "Build AI search & discovery for Ecommerce",
+              "pageGroup": "solution",
+              "topic": "commerce",
+              "solutionFocus": "commerce",
+              "solutionFocusLabel": "Commerce",
+              "dwellMs": 0,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/industries/ecommerce",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/ecommerce",
+                "title": "Build AI search & discovery for Ecommerce",
+                "pageGroup": "solution",
+                "topic": "commerce",
+                "solutionFocus": "commerce",
+                "solutionFocusLabel": "Commerce"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/industries/ecommerce",
+              "props": {
+                "depth": 50,
+                "pageGroup": "solution",
+                "topic": "commerce",
+                "solutionFocus": "commerce",
+                "solutionFocusLabel": "Commerce"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "ai_recommendations_evaluation",
+            "state": "inferred",
+            "confidence": 0.72,
+            "evidence": [
+              "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+            ]
+          },
+          "friction": {
+            "value": "fit_and_value_unclear",
+            "state": "inferred",
+            "confidence": 0.62,
+            "evidence": [
+              "current_page:Build AI search & discovery for Ecommerce /industries/ecommerce commerce"
+            ]
+          },
+          "messageGoal": "explain_solution_fit",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "solution_page",
+            "solution_scroll"
+          ],
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "createdAt": 1786817451437
+        },
+        "updatedAt": 1786817451445,
+        "shownAt": 1786817451445,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a0069e95ad_da3b51",
+          "greeting": "Hello, explorer. Looks like Commerce is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chips": [
+            "Show tradeoffs",
+            "Find proof",
+            "Explain build"
+          ],
+          "handoffSummary": {
+            "moment": "solution_research",
+            "trigger": "solution_page_50_scroll",
+            "messageGoal": "explain_solution_fit"
+          }
+        }
+      }
+    ],
+    "lastOpportunityAt": 1786817451445
+  },
+  "session": {
+    "schema": "AlgoliaEngagementSession.v1",
+    "sessionId": "sess_d3e6c2daa6d01064d18afe86",
+    "startedAt": 1786817450336,
+    "lastSeenAt": 1786817451468,
+    "currentPageId": "page_e2cc121dd6e88dc00b230796",
+    "pages": [
+      {
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "path": "/industries/ecommerce",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/ecommerce",
+        "title": "Build AI search & discovery for Ecommerce",
+        "enteredAt": 1786817450336,
+        "dwellMs": 0,
+        "maxScrollDepth": 50,
+        "pageGroup": "solution",
+        "topic": "commerce",
+        "solutionFocus": "commerce",
+        "solutionFocusLabel": "Commerce"
+      }
+    ],
+    "engagementHistory": [
+      {
+        "id": "eng_921140219679738b888f0a7b",
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1786817451444,
+        "status": "shown"
+      }
+    ]
+  },
+  "events": {
+    "schema": "AlgoliaEngagementEvents.v1",
+    "sessionId": "sess_d3e6c2daa6d01064d18afe86",
+    "events": [
+      {
+        "eventId": "evt_2174c749c4a7f1552be3d68d",
+        "name": "page_view",
+        "ts": 1786817450336,
+        "isoTime": "2026-08-15T18:10:50.336Z",
+        "sessionId": "sess_d3e6c2daa6d01064d18afe86",
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "path": "/industries/ecommerce",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/ecommerce",
+          "title": "Build AI search & discovery for Ecommerce",
+          "pageGroup": "solution",
+          "topic": "commerce",
+          "solutionFocus": "commerce",
+          "solutionFocusLabel": "Commerce"
+        }
+      },
+      {
+        "eventId": "evt_a674ebc4e31e6f95e5456420",
+        "name": "scroll_depth",
+        "ts": 1786817451436,
+        "isoTime": "2026-08-15T18:10:51.436Z",
+        "sessionId": "sess_d3e6c2daa6d01064d18afe86",
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "path": "/industries/ecommerce",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "solution",
+          "topic": "commerce",
+          "solutionFocus": "commerce",
+          "solutionFocusLabel": "Commerce"
+        }
+      },
+      {
+        "eventId": "evt_8618005a2418609ebd420d49",
+        "name": "engagement_exposed",
+        "ts": 1786817451444,
+        "isoTime": "2026-08-15T18:10:51.444Z",
+        "sessionId": "sess_d3e6c2daa6d01064d18afe86",
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "path": "/industries/ecommerce",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_921140219679738b888f0a7b",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_560c2cb950e9dcd3b52a4bfd",
+        "name": "chat_open",
+        "ts": 1786817451468,
+        "isoTime": "2026-08-15T18:10:51.468Z",
+        "sessionId": "sess_d3e6c2daa6d01064d18afe86",
+        "pageId": "page_e2cc121dd6e88dc00b230796",
+        "path": "/industries/ecommerce",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      }
+    ]
+  },
+  "summary": {
+    "trigger": "solution_page_50_scroll",
+    "status": "shown",
+    "moment": "solution_research",
+    "hasCandidate": true,
+    "hasRequest": true,
+    "hasWidget": true,
+    "currentPath": "/industries/ecommerce",
+    "pageGroup": "solution",
+    "solutionFocusLabel": "Commerce",
+    "solutionTrail": [],
+    "reasonCodes": [
+      "solution_page",
+      "solution_scroll"
+    ],
+    "traceStages": [
+      "controller_installed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "candidate_selected",
+      "pre_reserve_credentials_checked",
+      "context_compiled",
+      "candidates_evaluated",
+      "opportunity_reserved",
+      "credentials_checked",
+      "greeting_request_started",
+      "greeting_response_http",
+      "greeting_response_parsed",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "widget_rendered",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed"
+    ]
+  }
+}

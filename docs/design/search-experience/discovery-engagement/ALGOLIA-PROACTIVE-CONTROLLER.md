@@ -28,6 +28,7 @@ The controller reads existing tracker/compiler state and writes only its own opp
 | `algolia_session` | `sessionStorage` | Tracker | Current session pages, dwell, scroll, and engagement history. |
 | `algolia_events` | `sessionStorage` | Tracker | Bounded event stream for this browser tab session. |
 | `algolia_proactive_state` | `sessionStorage` | Controller | Reserved proactive opportunities and cooldown state. |
+| `algolia_proactive_debug_log` | `sessionStorage` | Controller | Debug-only pipeline trace when `algoliaProactiveDebug=1` or `algoliaChatDebug=1` is present. |
 
 ## Trigger Grammar
 
@@ -104,9 +105,11 @@ window.ALGOLIA_PROACTIVE_CONFIG = {
 ```
 
 On the Jahia demo surface, the controller also accepts the existing
-`window.ALGOLIA_CONTEXT_ENGINE_CONFIG.conciergeAgentId` written by
-`<algolia-chat-engage concierge-agent-id="...">` as a fallback Greetings Agent ID.
-This keeps the v1 deployment from needing a second inline config block.
+`<algolia-chat-engage concierge-agent-id="...">` DOM attribute and
+`window.ALGOLIA_CONTEXT_ENGINE_CONFIG.conciergeAgentId` as fallback Greetings
+Agent IDs. The DOM attribute is important because the controller can load before
+`algolia-chat-engage.js` has written the global config. Product-to-pricing and
+solution-to-pricing page-view triggers depend on this startup path.
 
 ## Decision Packet
 
@@ -230,6 +233,39 @@ The controller does not paint DOM for the popup. `algolia-chat` renders the gree
 The widget API currently names the clickable chips `suggestions`; project docs and prompts call them `chips`. The mapping happens only at this widget API boundary.
 
 On fail, the controller does not open the widget.
+
+## Debug Trace
+
+Add `?algoliaProactiveDebug=1` or `?algoliaChatDebug=1` to the Jahia URL to enable trace logging.
+
+Console helpers:
+
+```js
+window.algoliaProactiveController.debugTrace()
+window.algoliaProactiveController.clearDebugTrace()
+JSON.parse(sessionStorage.getItem("algolia_proactive_debug_log") || "[]")
+JSON.parse(sessionStorage.getItem("algolia_proactive_state") || "{}")
+```
+
+The trace records each pipeline boundary:
+
+| Stage | Meaning |
+|---|---|
+| `controller_installed` | Controller loaded and found the compiler/chat/engage DOM state. |
+| `signal_received` | Tracker emitted an engagement signal that the controller heard. |
+| `context_compiled` | Compiler returned the current page, trail, dwell, scroll, and recent-event summary. |
+| `candidates_evaluated` | Trigger grammar ran and produced zero or more candidate moments. |
+| `candidate_selected` | A candidate won before suppression and reservation. |
+| `suppressed` | A matched candidate was blocked by a suppression rule. |
+| `pre_reserve_credentials_checked` | Controller checked whether it can call the Greetings Agent before reserving an opportunity. |
+| `pre_reserve_greeting_not_configured` | Transport was unavailable; no opportunity is reserved so a later signal can still work. |
+| `opportunity_reserved` | The controller stored an opportunity packet in `algolia_proactive_state`. |
+| `greeting_request_started` | The controller POSTed to Agent Studio. |
+| `greeting_response_http` | Agent Studio returned an HTTP status. |
+| `greeting_response_parsed` | The controller reconstructed the response JSON. |
+| `greeting_response_rejected` | The response failed validation and the widget stayed closed. |
+| `widget_unavailable` | `<algolia-chat>` was not ready to render. |
+| `widget_rendered` | The greeting and chips were handed to the chat widget. |
 
 ## Event Flow
 

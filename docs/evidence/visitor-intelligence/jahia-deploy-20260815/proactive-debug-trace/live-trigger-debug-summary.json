@@ -1,0 +1,114 @@
+[
+  {
+    "name": "product-scroll-50",
+    "file": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260815/proactive-debug-trace/product-scroll-50.json",
+    "summary": {
+      "trigger": "product_page_50_scroll",
+      "status": "shown",
+      "moment": "product_research",
+      "hasCandidate": true,
+      "hasRequest": true,
+      "hasWidget": true,
+      "currentPath": "/products/features/personalization",
+      "pageGroup": "product",
+      "productTrail": [
+        {
+          "value": "personalization",
+          "label": "Personalization",
+          "pagePath": "/products/features/personalization",
+          "pageTitle": "Customize user experience with search personalization | Algolia"
+        }
+      ],
+      "solutionTrail": [],
+      "storyHint": "",
+      "reasonCodes": [
+        "product_page",
+        "product_scroll"
+      ]
+    }
+  },
+  {
+    "name": "industry-solution-scroll-50",
+    "file": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260815/proactive-debug-trace/industry-solution-scroll-50.json",
+    "summary": {
+      "trigger": "solution_page_50_scroll",
+      "status": "shown",
+      "moment": "solution_research",
+      "hasCandidate": true,
+      "hasRequest": true,
+      "hasWidget": true,
+      "currentPath": "/industries/ecommerce",
+      "pageGroup": "solution",
+      "productTrail": [],
+      "solutionTrail": [
+        {
+          "value": "commerce",
+          "label": "Commerce",
+          "pagePath": "/industries/ecommerce",
+          "pageTitle": "Build AI search & discovery for Ecommerce"
+        }
+      ],
+      "storyHint": "",
+      "reasonCodes": [
+        "solution_page",
+        "solution_scroll"
+      ]
+    }
+  },
+  {
+    "name": "product-to-pricing",
+    "file": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260815/proactive-debug-trace/product-to-pricing.json",
+    "summary": {
+      "trigger": "product_to_pricing",
+      "status": "shown",
+      "moment": "commercial_evaluation",
+      "hasCandidate": true,
+      "hasRequest": true,
+      "hasWidget": true,
+      "currentPath": "/pricing",
+      "pageGroup": "pricing",
+      "productTrail": [
+        {
+          "value": "ai_search",
+          "label": "AI Search",
+          "pagePath": "/products/ai-search",
+          "pageTitle": "AI Search | Algolia"
+        }
+      ],
+      "solutionTrail": [],
+      "storyHint": "The visitor moved from AI Search into pricing; frame this as a AI Search cost/value question.",
+      "reasonCodes": [
+        "journey_product_to_pricing",
+        "pricing_page_view"
+      ]
+    }
+  },
+  {
+    "name": "industry-solution-to-pricing",
+    "file": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260815/proactive-debug-trace/industry-solution-to-pricing.json",
+    "summary": {
+      "trigger": "solution_to_pricing",
+      "status": "shown",
+      "moment": "commercial_evaluation",
+      "hasCandidate": true,
+      "hasRequest": true,
+      "hasWidget": true,
+      "currentPath": "/pricing",
+      "pageGroup": "pricing",
+      "productTrail": [],
+      "solutionTrail": [
+        {
+          "value": "commerce",
+          "label": "Commerce",
+          "pagePath": "/industries/ecommerce",
+          "pageTitle": "Build AI search & discovery for Ecommerce"
+        }
+      ],
+      "storyHint": "The visitor moved from Commerce into pricing; frame this as a Commerce value and cost question.",
+      "reasonCodes": [
+        "journey_solution_to_pricing",
+        "pricing_page_view"
+      ]
+    }
+  }
+]

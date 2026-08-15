@@ -1,0 +1,2677 @@
+{
+  "label": "product-to-pricing",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/pricing?algoliaChatDebug=1&algoliaProactiveDebug=1&cb=debug-product-price",
+  "scripts": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/header.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codeExchangeSearch.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/generated-resources/718ee52a4c9d3647b477c21fc0d1bf33.min.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/CsrfServlet",
+    "https://cdn.jsdelivr.net/npm/algoliasearch@5.29.0/dist/lite/builds/browser.umd.js",
+    "https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-answer-rhythm-balanced-a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js?judgeReview=judge-review-20260814a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=20260815-answer-rhythm-balanced-a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260815b",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260815b",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260815g",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=20260814b",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260814d",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/anonymousUser.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/hideBlankTag.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/bannerAnimation.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/startupsTracking.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/jquery.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/slick.min.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/accordion.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/customslick.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/prism.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/theme.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/requestDemoModal.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codepen.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/forrester.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/blogNavigation.js"
+  ],
+  "debug": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "implementationDwellMs": 15000,
+      "implementationScrollDepth": 60,
+      "pricingDwellMs": 8000,
+      "customerProofDwellMs": 12000,
+      "customerProofScrollDepth": 60,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a0069da404_56d337",
+          "status": "shown",
+          "pageId": "page_825c37a6e9f3945ec838325a",
+          "pagePath": "/pricing",
+          "moment": "commercial_evaluation",
+          "trigger": "product_to_pricing",
+          "priority": 88,
+          "messageGoal": "explain_cost_drivers",
+          "reasonCodes": [
+            "journey_product_to_pricing",
+            "pricing_page_view"
+          ],
+          "createdAt": 1786817389572,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "persona": {
+              "value": "executive",
+              "state": "inferred",
+              "confidence": 0.58,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_825c37a6e9f3945ec838325a",
+              "path": "/pricing",
+              "title": "Pricing",
+              "pageGroup": "pricing",
+              "topic": "pricing",
+              "dwellMs": 0,
+              "maxScrollDepth": 0
+            },
+            "contextualFocus": {
+              "value": "ai_search",
+              "label": "AI Search",
+              "state": "observed",
+              "source": "prior_product_page",
+              "pagePath": "/products/ai-search",
+              "pageTitle": "AI Search | Algolia"
+            },
+            "journeySummary": {
+              "currentTransition": "product_to_pricing",
+              "productTrail": [
+                {
+                  "value": "ai_search",
+                  "label": "AI Search",
+                  "pagePath": "/products/ai-search",
+                  "pageTitle": "AI Search | Algolia"
+                }
+              ],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "AI Search"
+                },
+                {
+                  "path": "/pricing",
+                  "title": "Pricing",
+                  "pageGroup": "pricing",
+                  "topic": "pricing"
+                }
+              ],
+              "storyHint": "The visitor moved from AI Search into pricing; frame this as a AI Search cost/value question."
+            },
+            "journey": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search",
+                "dwellMs": 2276,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/pricing",
+                "title": "Pricing",
+                "pageGroup": "pricing",
+                "topic": "pricing",
+                "dwellMs": 0,
+                "maxScrollDepth": 0
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/products/ai-search",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/pricing",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/pricing",
+                  "title": "Pricing",
+                  "pageGroup": "pricing",
+                  "topic": "pricing"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "pricing_or_demo_evaluation",
+              "state": "inferred",
+              "confidence": 0.74,
+              "evidence": [
+                "current_page:Pricing /pricing pricing",
+                "page_view:/pricing"
+              ]
+            },
+            "friction": {
+              "value": "pricing_or_cost_unclear",
+              "state": "inferred",
+              "confidence": 0.68,
+              "evidence": [
+                "current_page:Pricing /pricing pricing",
+                "page_view:/pricing"
+              ]
+            },
+            "messageGoal": "explain_cost_drivers",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ],
+            "opportunityId": "opp_1a0069da404_56d337",
+            "createdAt": 1786817389572
+          },
+          "updatedAt": 1786817389576,
+          "shownAt": 1786817389576,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a0069da404_56d337",
+            "greeting": "Hello, explorer. Looks like pricing is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+            "chips": [
+              "Show tradeoffs",
+              "Find proof",
+              "Explain build"
+            ],
+            "handoffSummary": {
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "messageGoal": "explain_cost_drivers"
+            }
+          }
+        }
+      ],
+      "lastOpportunityAt": 1786817389576
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1786817391098,
+      "profile": {
+        "visitorId": "visitor_2508c5c5396bd054510d1451",
+        "visits": 2,
+        "persona": {
+          "value": "executive",
+          "state": "inferred",
+          "confidence": 0.58,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_258a799d6bd7b26fb798fa64",
+        "startedAt": 1786817386830,
+        "pageCount": 2,
+        "engagementHistory": [
+          {
+            "id": "eng_69b3f5d157927dbcba014241",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1786817389575,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_825c37a6e9f3945ec838325a",
+        "path": "/pricing",
+        "title": "Pricing",
+        "pageGroup": "pricing",
+        "topic": "pricing",
+        "dwellMs": 0,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "pricing",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 2,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_5345e76fcee21e9cc119e9b0",
+          "name": "page_view",
+          "ts": 1786817386830,
+          "pageId": "page_30a8297a357ba858d0c0a6ce",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_2a821bff63924c421fea58c6",
+          "name": "page_view",
+          "ts": 1786817389570,
+          "pageId": "page_825c37a6e9f3945ec838325a",
+          "path": "/pricing",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/pricing",
+            "title": "Pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing"
+          }
+        },
+        {
+          "eventId": "evt_c9d4a01797aaf7ad21b3ed1e",
+          "name": "engagement_exposed",
+          "ts": 1786817389575,
+          "pageId": "page_825c37a6e9f3945ec838325a",
+          "path": "/pricing",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_69b3f5d157927dbcba014241",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_8673a13a6b5fe272425a0d46",
+          "name": "chat_open",
+          "ts": 1786817389710,
+          "pageId": "page_825c37a6e9f3945ec838325a",
+          "path": "/pricing",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "executive",
+          "state": "inferred",
+          "confidence": 0.58,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "pricing_or_demo_evaluation",
+          "state": "inferred",
+          "confidence": 0.74,
+          "evidence": [
+            "current_page:Pricing /pricing pricing",
+            "chat_open:/pricing",
+            "engagement_exposed:/pricing",
+            "page_view:/pricing"
+          ]
+        },
+        "friction": {
+          "value": "pricing_or_cost_unclear",
+          "state": "inferred",
+          "confidence": 0.68,
+          "evidence": [
+            "current_page:Pricing /pricing pricing",
+            "chat_open:/pricing",
+            "engagement_exposed:/pricing",
+            "page_view:/pricing"
+          ]
+        },
+        "nextBestAction": {
+          "value": "answer_cost_or_route_to_demo",
+          "state": "inferred",
+          "confidence": 0.7
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "chat_already_open",
+      "createdAt": 1786817391098
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "controller_installed",
+        "at": 1786817386831,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817386834,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817386834,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817386835,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817386835,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817386835,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1786817389570,
+        "path": "/pricing",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817389570,
+        "path": "/pricing",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/pricing",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "engage": true,
+          "moment": "commercial_evaluation",
+          "trigger": "product_to_pricing",
+          "priority": 88,
+          "pagePath": "/pricing",
+          "reasonCodes": [
+            "journey_product_to_pricing",
+            "pricing_page_view"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389572,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1786817389572,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "trigger": "product_to_pricing",
+          "moment": "commercial_evaluation",
+          "messageGoal": "explain_cost_drivers",
+          "pagePath": "/pricing"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1786817389572,
+        "path": "/pricing",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1786817389572,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "trigger": "product_to_pricing",
+          "moment": "commercial_evaluation",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1786817389575,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1786817389575,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a0069da404_56d337",
+          "greetingPreview": "Hello, explorer. Looks like pricing is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/pricing",
+          "props": {
+            "engagementId": "eng_69b3f5d157927dbcba014241",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 3,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "trigger": "product_to_pricing",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817389710,
+        "path": "/pricing",
+        "detail": {
+          "name": "chat_open",
+          "path": "/pricing",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389711,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389711,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817389711,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/pricing",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817390571,
+        "path": "/pricing",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817390571,
+        "path": "/pricing",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/pricing",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817390571,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817390571,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817390572,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817391098,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817391098,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817391098,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "trace": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "implementationDwellMs": 15000,
+      "implementationScrollDepth": 60,
+      "pricingDwellMs": 8000,
+      "customerProofDwellMs": 12000,
+      "customerProofScrollDepth": 60,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a0069da404_56d337",
+          "status": "shown",
+          "pageId": "page_825c37a6e9f3945ec838325a",
+          "pagePath": "/pricing",
+          "moment": "commercial_evaluation",
+          "trigger": "product_to_pricing",
+          "priority": 88,
+          "messageGoal": "explain_cost_drivers",
+          "reasonCodes": [
+            "journey_product_to_pricing",
+            "pricing_page_view"
+          ],
+          "createdAt": 1786817389572,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "persona": {
+              "value": "executive",
+              "state": "inferred",
+              "confidence": 0.58,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_825c37a6e9f3945ec838325a",
+              "path": "/pricing",
+              "title": "Pricing",
+              "pageGroup": "pricing",
+              "topic": "pricing",
+              "dwellMs": 0,
+              "maxScrollDepth": 0
+            },
+            "contextualFocus": {
+              "value": "ai_search",
+              "label": "AI Search",
+              "state": "observed",
+              "source": "prior_product_page",
+              "pagePath": "/products/ai-search",
+              "pageTitle": "AI Search | Algolia"
+            },
+            "journeySummary": {
+              "currentTransition": "product_to_pricing",
+              "productTrail": [
+                {
+                  "value": "ai_search",
+                  "label": "AI Search",
+                  "pagePath": "/products/ai-search",
+                  "pageTitle": "AI Search | Algolia"
+                }
+              ],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "AI Search"
+                },
+                {
+                  "path": "/pricing",
+                  "title": "Pricing",
+                  "pageGroup": "pricing",
+                  "topic": "pricing"
+                }
+              ],
+              "storyHint": "The visitor moved from AI Search into pricing; frame this as a AI Search cost/value question."
+            },
+            "journey": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search",
+                "dwellMs": 2276,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/pricing",
+                "title": "Pricing",
+                "pageGroup": "pricing",
+                "topic": "pricing",
+                "dwellMs": 0,
+                "maxScrollDepth": 0
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/products/ai-search",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/pricing",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/pricing",
+                  "title": "Pricing",
+                  "pageGroup": "pricing",
+                  "topic": "pricing"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "pricing_or_demo_evaluation",
+              "state": "inferred",
+              "confidence": 0.74,
+              "evidence": [
+                "current_page:Pricing /pricing pricing",
+                "page_view:/pricing"
+              ]
+            },
+            "friction": {
+              "value": "pricing_or_cost_unclear",
+              "state": "inferred",
+              "confidence": 0.68,
+              "evidence": [
+                "current_page:Pricing /pricing pricing",
+                "page_view:/pricing"
+              ]
+            },
+            "messageGoal": "explain_cost_drivers",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ],
+            "opportunityId": "opp_1a0069da404_56d337",
+            "createdAt": 1786817389572
+          },
+          "updatedAt": 1786817389576,
+          "shownAt": 1786817389576,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a0069da404_56d337",
+            "greeting": "Hello, explorer. Looks like pricing is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+            "chips": [
+              "Show tradeoffs",
+              "Find proof",
+              "Explain build"
+            ],
+            "handoffSummary": {
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "messageGoal": "explain_cost_drivers"
+            }
+          }
+        }
+      ],
+      "lastOpportunityAt": 1786817389576
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1786817391098,
+      "profile": {
+        "visitorId": "visitor_2508c5c5396bd054510d1451",
+        "visits": 2,
+        "persona": {
+          "value": "executive",
+          "state": "inferred",
+          "confidence": 0.58,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_258a799d6bd7b26fb798fa64",
+        "startedAt": 1786817386830,
+        "pageCount": 2,
+        "engagementHistory": [
+          {
+            "id": "eng_69b3f5d157927dbcba014241",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1786817389575,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_825c37a6e9f3945ec838325a",
+        "path": "/pricing",
+        "title": "Pricing",
+        "pageGroup": "pricing",
+        "topic": "pricing",
+        "dwellMs": 0,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "pricing",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 2,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_5345e76fcee21e9cc119e9b0",
+          "name": "page_view",
+          "ts": 1786817386830,
+          "pageId": "page_30a8297a357ba858d0c0a6ce",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_2a821bff63924c421fea58c6",
+          "name": "page_view",
+          "ts": 1786817389570,
+          "pageId": "page_825c37a6e9f3945ec838325a",
+          "path": "/pricing",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/pricing",
+            "title": "Pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing"
+          }
+        },
+        {
+          "eventId": "evt_c9d4a01797aaf7ad21b3ed1e",
+          "name": "engagement_exposed",
+          "ts": 1786817389575,
+          "pageId": "page_825c37a6e9f3945ec838325a",
+          "path": "/pricing",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_69b3f5d157927dbcba014241",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_8673a13a6b5fe272425a0d46",
+          "name": "chat_open",
+          "ts": 1786817389710,
+          "pageId": "page_825c37a6e9f3945ec838325a",
+          "path": "/pricing",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "executive",
+          "state": "inferred",
+          "confidence": 0.58,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "pricing_or_demo_evaluation",
+          "state": "inferred",
+          "confidence": 0.74,
+          "evidence": [
+            "current_page:Pricing /pricing pricing",
+            "chat_open:/pricing",
+            "engagement_exposed:/pricing",
+            "page_view:/pricing"
+          ]
+        },
+        "friction": {
+          "value": "pricing_or_cost_unclear",
+          "state": "inferred",
+          "confidence": 0.68,
+          "evidence": [
+            "current_page:Pricing /pricing pricing",
+            "chat_open:/pricing",
+            "engagement_exposed:/pricing",
+            "page_view:/pricing"
+          ]
+        },
+        "nextBestAction": {
+          "value": "answer_cost_or_route_to_demo",
+          "state": "inferred",
+          "confidence": 0.7
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "chat_already_open",
+      "createdAt": 1786817391099
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "controller_installed",
+        "at": 1786817386831,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817386834,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817386834,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817386835,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817386835,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817386835,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817387082,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817387832,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1786817389570,
+        "path": "/pricing",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817389570,
+        "path": "/pricing",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/pricing",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "engage": true,
+          "moment": "commercial_evaluation",
+          "trigger": "product_to_pricing",
+          "priority": 88,
+          "pagePath": "/pricing",
+          "reasonCodes": [
+            "journey_product_to_pricing",
+            "pricing_page_view"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389571,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389572,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1786817389572,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "trigger": "product_to_pricing",
+          "moment": "commercial_evaluation",
+          "messageGoal": "explain_cost_drivers",
+          "pagePath": "/pricing"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1786817389572,
+        "path": "/pricing",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1786817389572,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "trigger": "product_to_pricing",
+          "moment": "commercial_evaluation",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1786817389575,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1786817389575,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a0069da404_56d337",
+          "greetingPreview": "Hello, explorer. Looks like pricing is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/pricing",
+          "props": {
+            "engagementId": "eng_69b3f5d157927dbcba014241",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 3,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1786817389576,
+        "path": "/pricing",
+        "detail": {
+          "opportunityId": "opp_1a0069da404_56d337",
+          "trigger": "product_to_pricing",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817389710,
+        "path": "/pricing",
+        "detail": {
+          "name": "chat_open",
+          "path": "/pricing",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389711,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389711,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817389711,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/pricing",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817389821,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817390571,
+        "path": "/pricing",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817390571,
+        "path": "/pricing",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/pricing",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817390571,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817390571,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817390572,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817391098,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817391098,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817391098,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817391098,
+        "path": "/pricing",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817391099,
+        "path": "/pricing",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "commercial_evaluation",
+              "trigger": "product_to_pricing",
+              "priority": 88,
+              "pagePath": "/pricing",
+              "reasonCodes": [
+                "journey_product_to_pricing",
+                "pricing_page_view"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817391099,
+        "path": "/pricing",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "priority": 88,
+            "pagePath": "/pricing",
+            "reasonCodes": [
+              "journey_product_to_pricing",
+              "pricing_page_view"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_1a0069da404_56d337",
+        "status": "shown",
+        "pageId": "page_825c37a6e9f3945ec838325a",
+        "pagePath": "/pricing",
+        "moment": "commercial_evaluation",
+        "trigger": "product_to_pricing",
+        "priority": 88,
+        "messageGoal": "explain_cost_drivers",
+        "reasonCodes": [
+          "journey_product_to_pricing",
+          "pricing_page_view"
+        ],
+        "createdAt": 1786817389572,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "commercial_evaluation",
+          "trigger": "product_to_pricing",
+          "priority": 88,
+          "persona": {
+            "value": "executive",
+            "state": "inferred",
+            "confidence": 0.58,
+            "source": "behavior"
+          },
+          "currentPage": {
+            "pageId": "page_825c37a6e9f3945ec838325a",
+            "path": "/pricing",
+            "title": "Pricing",
+            "pageGroup": "pricing",
+            "topic": "pricing",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "contextualFocus": {
+            "value": "ai_search",
+            "label": "AI Search",
+            "state": "observed",
+            "source": "prior_product_page",
+            "pagePath": "/products/ai-search",
+            "pageTitle": "AI Search | Algolia"
+          },
+          "journeySummary": {
+            "currentTransition": "product_to_pricing",
+            "productTrail": [
+              {
+                "value": "ai_search",
+                "label": "AI Search",
+                "pagePath": "/products/ai-search",
+                "pageTitle": "AI Search | Algolia"
+              }
+            ],
+            "solutionTrail": [],
+            "pageTrail": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocusLabel": "AI Search"
+              },
+              {
+                "path": "/pricing",
+                "title": "Pricing",
+                "pageGroup": "pricing",
+                "topic": "pricing"
+              }
+            ],
+            "storyHint": "The visitor moved from AI Search into pricing; frame this as a AI Search cost/value question."
+          },
+          "journey": [
+            {
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 2276,
+              "maxScrollDepth": 0
+            },
+            {
+              "path": "/pricing",
+              "title": "Pricing",
+              "pageGroup": "pricing",
+              "topic": "pricing",
+              "dwellMs": 0,
+              "maxScrollDepth": 0
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/products/ai-search",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/pricing",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/pricing",
+                "title": "Pricing",
+                "pageGroup": "pricing",
+                "topic": "pricing"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "pricing_or_demo_evaluation",
+            "state": "inferred",
+            "confidence": 0.74,
+            "evidence": [
+              "current_page:Pricing /pricing pricing",
+              "page_view:/pricing"
+            ]
+          },
+          "friction": {
+            "value": "pricing_or_cost_unclear",
+            "state": "inferred",
+            "confidence": 0.68,
+            "evidence": [
+              "current_page:Pricing /pricing pricing",
+              "page_view:/pricing"
+            ]
+          },
+          "messageGoal": "explain_cost_drivers",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "journey_product_to_pricing",
+            "pricing_page_view"
+          ],
+          "opportunityId": "opp_1a0069da404_56d337",
+          "createdAt": 1786817389572
+        },
+        "updatedAt": 1786817389576,
+        "shownAt": 1786817389576,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a0069da404_56d337",
+          "greeting": "Hello, explorer. Looks like pricing is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chips": [
+            "Show tradeoffs",
+            "Find proof",
+            "Explain build"
+          ],
+          "handoffSummary": {
+            "moment": "commercial_evaluation",
+            "trigger": "product_to_pricing",
+            "messageGoal": "explain_cost_drivers"
+          }
+        }
+      }
+    ],
+    "lastOpportunityAt": 1786817389576
+  },
+  "session": {
+    "schema": "AlgoliaEngagementSession.v1",
+    "sessionId": "sess_258a799d6bd7b26fb798fa64",
+    "startedAt": 1786817386830,
+    "lastSeenAt": 1786817389710,
+    "currentPageId": "page_825c37a6e9f3945ec838325a",
+    "pages": [
+      {
+        "pageId": "page_30a8297a357ba858d0c0a6ce",
+        "path": "/products/ai-search",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+        "title": "AI Search | Algolia",
+        "enteredAt": 1786817386830,
+        "dwellMs": 2276,
+        "maxScrollDepth": 0,
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "ai_search",
+        "productFocusLabel": "AI Search"
+      },
+      {
+        "pageId": "page_825c37a6e9f3945ec838325a",
+        "path": "/pricing",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/pricing",
+        "title": "Pricing",
+        "enteredAt": 1786817389569,
+        "dwellMs": 0,
+        "maxScrollDepth": 0,
+        "pageGroup": "pricing",
+        "topic": "pricing"
+      }
+    ],
+    "engagementHistory": [
+      {
+        "id": "eng_69b3f5d157927dbcba014241",
+        "pageId": "page_825c37a6e9f3945ec838325a",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1786817389575,
+        "status": "shown"
+      }
+    ]
+  },
+  "events": {
+    "schema": "AlgoliaEngagementEvents.v1",
+    "sessionId": "sess_258a799d6bd7b26fb798fa64",
+    "events": [
+      {
+        "eventId": "evt_5345e76fcee21e9cc119e9b0",
+        "name": "page_view",
+        "ts": 1786817386830,
+        "isoTime": "2026-08-15T18:09:46.830Z",
+        "sessionId": "sess_258a799d6bd7b26fb798fa64",
+        "pageId": "page_30a8297a357ba858d0c0a6ce",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "title": "AI Search | Algolia",
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_2a821bff63924c421fea58c6",
+        "name": "page_view",
+        "ts": 1786817389570,
+        "isoTime": "2026-08-15T18:09:49.570Z",
+        "sessionId": "sess_258a799d6bd7b26fb798fa64",
+        "pageId": "page_825c37a6e9f3945ec838325a",
+        "path": "/pricing",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/pricing",
+          "title": "Pricing",
+          "pageGroup": "pricing",
+          "topic": "pricing"
+        }
+      },
+      {
+        "eventId": "evt_c9d4a01797aaf7ad21b3ed1e",
+        "name": "engagement_exposed",
+        "ts": 1786817389575,
+        "isoTime": "2026-08-15T18:09:49.575Z",
+        "sessionId": "sess_258a799d6bd7b26fb798fa64",
+        "pageId": "page_825c37a6e9f3945ec838325a",
+        "path": "/pricing",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_69b3f5d157927dbcba014241",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_8673a13a6b5fe272425a0d46",
+        "name": "chat_open",
+        "ts": 1786817389710,
+        "isoTime": "2026-08-15T18:09:49.710Z",
+        "sessionId": "sess_258a799d6bd7b26fb798fa64",
+        "pageId": "page_825c37a6e9f3945ec838325a",
+        "path": "/pricing",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      }
+    ]
+  },
+  "summary": {
+    "trigger": "product_to_pricing",
+    "status": "shown",
+    "moment": "commercial_evaluation",
+    "traceStages": [
+      "controller_installed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "controller_installed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "candidate_selected",
+      "pre_reserve_credentials_checked",
+      "context_compiled",
+      "candidates_evaluated",
+      "opportunity_reserved",
+      "credentials_checked",
+      "greeting_request_started",
+      "greeting_response_http",
+      "greeting_response_parsed",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "widget_rendered",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed"
+    ],
+    "hasCandidate": true,
+    "hasRequest": true,
+    "hasWidget": true,
+    "currentPath": "/pricing",
+    "productTrail": [],
+    "solutionTrail": [],
+    "reasonCodes": [
+      "journey_product_to_pricing",
+      "pricing_page_view"
+    ]
+  }
+}

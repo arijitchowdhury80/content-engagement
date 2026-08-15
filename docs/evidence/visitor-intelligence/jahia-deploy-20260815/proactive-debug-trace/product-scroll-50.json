@@ -1,0 +1,2353 @@
+{
+  "label": "product-scroll-50",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/personalization?algoliaChatDebug=1&algoliaProactiveDebug=1&algoliaProactiveReset=1&cb=debug-product-scroll",
+  "scripts": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/header.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codeExchangeSearch.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/generated-resources/6613b8bd45b9da04378ec63e84528b.min.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/CsrfServlet",
+    "https://cdn.jsdelivr.net/npm/algoliasearch@5.29.0/dist/lite/builds/browser.umd.js",
+    "https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js",
+    "https://go.algolia.com/js/forms2/js/forms2.min.js",
+    "https://assets.adoberesources.net/loader.js?orgId=006021D86138ED7E0A495FEC@AdobeOrg&instanceId=algolia&env=prod&geo=va7",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-answer-rhythm-balanced-a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js?judgeReview=judge-review-20260814a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=20260815-answer-rhythm-balanced-a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260815b",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260815b",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260815g",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=20260814b",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260814d",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/anonymousUser.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/hideBlankTag.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/bannerAnimation.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/startupsTracking.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/jquery.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/slick.min.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/accordion.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/customslick.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/prism.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/theme.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/requestDemoModal.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codepen.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/forrester.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/blogNavigation.js"
+  ],
+  "debug": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "implementationDwellMs": 15000,
+      "implementationScrollDepth": 60,
+      "pricingDwellMs": 8000,
+      "customerProofDwellMs": 12000,
+      "customerProofScrollDepth": 60,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a0069d8343_7885ec",
+          "status": "shown",
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "pagePath": "/products/features/personalization",
+          "moment": "product_research",
+          "trigger": "product_page_50_scroll",
+          "priority": 64,
+          "messageGoal": "explain_product_fit",
+          "reasonCodes": [
+            "product_page",
+            "product_scroll"
+          ],
+          "createdAt": 1786817381187,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "persona": {
+              "value": "merchandiser",
+              "state": "inferred",
+              "confidence": 0.56,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_4fd0cf14d5015849e1f6c18b",
+              "path": "/products/features/personalization",
+              "title": "Customize user experience with search personalization | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "personalization",
+              "productFocusLabel": "Personalization",
+              "dwellMs": 0,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "personalization",
+              "label": "Personalization",
+              "state": "observed",
+              "source": "current_product_page",
+              "pagePath": "/products/features/personalization",
+              "pageTitle": "Customize user experience with search personalization | Algolia"
+            },
+            "journeySummary": {
+              "currentTransition": "product_page_50_scroll",
+              "productTrail": [
+                {
+                  "value": "personalization",
+                  "label": "Personalization",
+                  "pagePath": "/products/features/personalization",
+                  "pageTitle": "Customize user experience with search personalization | Algolia"
+                }
+              ],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/products/features/personalization",
+                  "title": "Customize user experience with search personalization | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "Personalization"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/products/features/personalization",
+                "title": "Customize user experience with search personalization | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "personalization",
+                "productFocusLabel": "Personalization",
+                "dwellMs": 0,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/products/features/personalization",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/personalization",
+                  "title": "Customize user experience with search personalization | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "personalization",
+                  "productFocusLabel": "Personalization"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/products/features/personalization",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "personalization",
+                  "productFocusLabel": "Personalization"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "ai_recommendations_evaluation",
+              "state": "inferred",
+              "confidence": 0.72,
+              "evidence": [
+                "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search",
+                "scroll_depth:/products/features/personalization",
+                "page_view:/products/features/personalization"
+              ]
+            },
+            "friction": {
+              "value": "fit_and_value_unclear",
+              "state": "inferred",
+              "confidence": 0.62,
+              "evidence": [
+                "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search"
+              ]
+            },
+            "messageGoal": "explain_product_fit",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ],
+            "opportunityId": "opp_1a0069d8343_7885ec",
+            "createdAt": 1786817381187
+          },
+          "updatedAt": 1786817381197,
+          "shownAt": 1786817381197,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a0069d8343_7885ec",
+            "greeting": "Hello, explorer. Looks like Personalization is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+            "chips": [
+              "Show tradeoffs",
+              "Find proof",
+              "Explain build"
+            ],
+            "handoffSummary": {
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "messageGoal": "explain_product_fit"
+            }
+          }
+        }
+      ],
+      "lastOpportunityAt": 1786817381197
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1786817382590,
+      "profile": {
+        "visitorId": "visitor_9e24f0632634f24b94bd267e",
+        "visits": 1,
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_e40249d3647e9b8daf132a93",
+        "startedAt": 1786817380203,
+        "pageCount": 1,
+        "engagementHistory": [
+          {
+            "id": "eng_69546db5d2148451d7eb24c7",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1786817381196,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "path": "/products/features/personalization",
+        "title": "Customize user experience with search personalization | Algolia",
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "personalization",
+        "productFocusLabel": "Personalization",
+        "dwellMs": 0,
+        "maxScrollDepth": 50
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "ai_search",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "currentProductFocus": {
+          "value": "personalization",
+          "label": "Personalization",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 1,
+          "scroll_depth": 1,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_3f12a5f655eb3c8eeb727edb",
+          "name": "page_view",
+          "ts": 1786817380204,
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "path": "/products/features/personalization",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/personalization",
+            "title": "Customize user experience with search personalization | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "personalization",
+            "productFocusLabel": "Personalization"
+          }
+        },
+        {
+          "eventId": "evt_4ae35f7b6c00e365d445e5ce",
+          "name": "scroll_depth",
+          "ts": 1786817381186,
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "path": "/products/features/personalization",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "personalization",
+            "productFocusLabel": "Personalization"
+          }
+        },
+        {
+          "eventId": "evt_a3cc2d7a444586f17473d816",
+          "name": "engagement_exposed",
+          "ts": 1786817381196,
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "path": "/products/features/personalization",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_69546db5d2148451d7eb24c7",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_7aebebe6fdcc45b77e33649f",
+          "name": "chat_open",
+          "ts": 1786817381221,
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "path": "/products/features/personalization",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "ai_recommendations_evaluation",
+          "state": "inferred",
+          "confidence": 0.72,
+          "evidence": [
+            "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search",
+            "chat_open:/products/features/personalization",
+            "engagement_exposed:/products/features/personalization",
+            "scroll_depth:/products/features/personalization"
+          ]
+        },
+        "friction": {
+          "value": "fit_and_value_unclear",
+          "state": "inferred",
+          "confidence": 0.62,
+          "evidence": [
+            "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search"
+          ]
+        },
+        "nextBestAction": {
+          "value": "explain_feature_fit_with_example",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "chat_already_open",
+      "createdAt": 1786817382592
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "controller_installed",
+        "at": 1786817380204,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817380228,
+        "path": "/products/features/personalization",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817380228,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/personalization",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817380229,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817380229,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817380229,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/personalization",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817381186,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/products/features/personalization",
+          "props": {
+            "depth": 50,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "personalization",
+            "productFocusLabel": "Personalization"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 2,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "engage": true,
+          "moment": "product_research",
+          "trigger": "product_page_50_scroll",
+          "priority": 64,
+          "pagePath": "/products/features/personalization",
+          "reasonCodes": [
+            "product_page",
+            "product_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 2,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "trigger": "product_page_50_scroll",
+          "moment": "product_research",
+          "messageGoal": "explain_product_fit",
+          "pagePath": "/products/features/personalization"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1786817381188,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1786817381188,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "trigger": "product_page_50_scroll",
+          "moment": "product_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1786817381194,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1786817381195,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a0069d8343_7885ec",
+          "greetingPreview": "Hello, explorer. Looks like Personalization is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817381196,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/products/features/personalization",
+          "props": {
+            "engagementId": "eng_69546db5d2148451d7eb24c7",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381196,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 3,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381197,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817381197,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1786817381197,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "trigger": "product_page_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817381221,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "chat_open",
+          "path": "/products/features/personalization",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381222,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381222,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817381222,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/personalization",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817382590,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817382591,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817382591,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "trace": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "implementationDwellMs": 15000,
+      "implementationScrollDepth": 60,
+      "pricingDwellMs": 8000,
+      "customerProofDwellMs": 12000,
+      "customerProofScrollDepth": 60,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a0069d8343_7885ec",
+          "status": "shown",
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "pagePath": "/products/features/personalization",
+          "moment": "product_research",
+          "trigger": "product_page_50_scroll",
+          "priority": 64,
+          "messageGoal": "explain_product_fit",
+          "reasonCodes": [
+            "product_page",
+            "product_scroll"
+          ],
+          "createdAt": 1786817381187,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "persona": {
+              "value": "merchandiser",
+              "state": "inferred",
+              "confidence": 0.56,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_4fd0cf14d5015849e1f6c18b",
+              "path": "/products/features/personalization",
+              "title": "Customize user experience with search personalization | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "personalization",
+              "productFocusLabel": "Personalization",
+              "dwellMs": 0,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "personalization",
+              "label": "Personalization",
+              "state": "observed",
+              "source": "current_product_page",
+              "pagePath": "/products/features/personalization",
+              "pageTitle": "Customize user experience with search personalization | Algolia"
+            },
+            "journeySummary": {
+              "currentTransition": "product_page_50_scroll",
+              "productTrail": [
+                {
+                  "value": "personalization",
+                  "label": "Personalization",
+                  "pagePath": "/products/features/personalization",
+                  "pageTitle": "Customize user experience with search personalization | Algolia"
+                }
+              ],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/products/features/personalization",
+                  "title": "Customize user experience with search personalization | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "Personalization"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/products/features/personalization",
+                "title": "Customize user experience with search personalization | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "personalization",
+                "productFocusLabel": "Personalization",
+                "dwellMs": 0,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/products/features/personalization",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/personalization",
+                  "title": "Customize user experience with search personalization | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "personalization",
+                  "productFocusLabel": "Personalization"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/products/features/personalization",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "personalization",
+                  "productFocusLabel": "Personalization"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "ai_recommendations_evaluation",
+              "state": "inferred",
+              "confidence": 0.72,
+              "evidence": [
+                "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search",
+                "scroll_depth:/products/features/personalization",
+                "page_view:/products/features/personalization"
+              ]
+            },
+            "friction": {
+              "value": "fit_and_value_unclear",
+              "state": "inferred",
+              "confidence": 0.62,
+              "evidence": [
+                "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search"
+              ]
+            },
+            "messageGoal": "explain_product_fit",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ],
+            "opportunityId": "opp_1a0069d8343_7885ec",
+            "createdAt": 1786817381187
+          },
+          "updatedAt": 1786817381197,
+          "shownAt": 1786817381197,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a0069d8343_7885ec",
+            "greeting": "Hello, explorer. Looks like Personalization is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+            "chips": [
+              "Show tradeoffs",
+              "Find proof",
+              "Explain build"
+            ],
+            "handoffSummary": {
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "messageGoal": "explain_product_fit"
+            }
+          }
+        }
+      ],
+      "lastOpportunityAt": 1786817381197
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1786817382592,
+      "profile": {
+        "visitorId": "visitor_9e24f0632634f24b94bd267e",
+        "visits": 1,
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_e40249d3647e9b8daf132a93",
+        "startedAt": 1786817380203,
+        "pageCount": 1,
+        "engagementHistory": [
+          {
+            "id": "eng_69546db5d2148451d7eb24c7",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1786817381196,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "path": "/products/features/personalization",
+        "title": "Customize user experience with search personalization | Algolia",
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "personalization",
+        "productFocusLabel": "Personalization",
+        "dwellMs": 0,
+        "maxScrollDepth": 50
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "ai_search",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "currentProductFocus": {
+          "value": "personalization",
+          "label": "Personalization",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 1,
+          "scroll_depth": 1,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_3f12a5f655eb3c8eeb727edb",
+          "name": "page_view",
+          "ts": 1786817380204,
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "path": "/products/features/personalization",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/personalization",
+            "title": "Customize user experience with search personalization | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "personalization",
+            "productFocusLabel": "Personalization"
+          }
+        },
+        {
+          "eventId": "evt_4ae35f7b6c00e365d445e5ce",
+          "name": "scroll_depth",
+          "ts": 1786817381186,
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "path": "/products/features/personalization",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "personalization",
+            "productFocusLabel": "Personalization"
+          }
+        },
+        {
+          "eventId": "evt_a3cc2d7a444586f17473d816",
+          "name": "engagement_exposed",
+          "ts": 1786817381196,
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "path": "/products/features/personalization",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_69546db5d2148451d7eb24c7",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_7aebebe6fdcc45b77e33649f",
+          "name": "chat_open",
+          "ts": 1786817381221,
+          "pageId": "page_4fd0cf14d5015849e1f6c18b",
+          "path": "/products/features/personalization",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "ai_recommendations_evaluation",
+          "state": "inferred",
+          "confidence": 0.72,
+          "evidence": [
+            "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search",
+            "chat_open:/products/features/personalization",
+            "engagement_exposed:/products/features/personalization",
+            "scroll_depth:/products/features/personalization"
+          ]
+        },
+        "friction": {
+          "value": "fit_and_value_unclear",
+          "state": "inferred",
+          "confidence": 0.62,
+          "evidence": [
+            "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search"
+          ]
+        },
+        "nextBestAction": {
+          "value": "explain_feature_fit_with_example",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "chat_already_open",
+      "createdAt": 1786817382593
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "controller_installed",
+        "at": 1786817380204,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817380228,
+        "path": "/products/features/personalization",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817380228,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/personalization",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817380229,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817380229,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817380229,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/personalization",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817380455,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817381186,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/products/features/personalization",
+          "props": {
+            "depth": 50,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "personalization",
+            "productFocusLabel": "Personalization"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 2,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "engage": true,
+          "moment": "product_research",
+          "trigger": "product_page_50_scroll",
+          "priority": 64,
+          "pagePath": "/products/features/personalization",
+          "reasonCodes": [
+            "product_page",
+            "product_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 2,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1786817381187,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "trigger": "product_page_50_scroll",
+          "moment": "product_research",
+          "messageGoal": "explain_product_fit",
+          "pagePath": "/products/features/personalization"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1786817381188,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1786817381188,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "trigger": "product_page_50_scroll",
+          "moment": "product_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1786817381194,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1786817381195,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a0069d8343_7885ec",
+          "greetingPreview": "Hello, explorer. Looks like Personalization is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817381196,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/products/features/personalization",
+          "props": {
+            "engagementId": "eng_69546db5d2148451d7eb24c7",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381196,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 3,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381197,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817381197,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1786817381197,
+        "path": "/products/features/personalization",
+        "detail": {
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "trigger": "product_page_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817381221,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "chat_open",
+          "path": "/products/features/personalization",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381222,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381222,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817381222,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/personalization",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817381224,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817382590,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817382591,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817382591,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1786817382592,
+        "path": "/products/features/personalization",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/personalization",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "Personalization"
+          },
+          "pageCount": 1,
+          "recentEventCount": 4,
+          "productTrail": [
+            "Personalization"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1786817382592,
+        "path": "/products/features/personalization",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_50_scroll",
+              "priority": 64,
+              "pagePath": "/products/features/personalization",
+              "reasonCodes": [
+                "product_page",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1786817382592,
+        "path": "/products/features/personalization",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "priority": 64,
+            "pagePath": "/products/features/personalization",
+            "reasonCodes": [
+              "product_page",
+              "product_scroll"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_1a0069d8343_7885ec",
+        "status": "shown",
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "pagePath": "/products/features/personalization",
+        "moment": "product_research",
+        "trigger": "product_page_50_scroll",
+        "priority": 64,
+        "messageGoal": "explain_product_fit",
+        "reasonCodes": [
+          "product_page",
+          "product_scroll"
+        ],
+        "createdAt": 1786817381187,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "product_research",
+          "trigger": "product_page_50_scroll",
+          "priority": 64,
+          "persona": {
+            "value": "merchandiser",
+            "state": "inferred",
+            "confidence": 0.56,
+            "source": "behavior"
+          },
+          "currentPage": {
+            "pageId": "page_4fd0cf14d5015849e1f6c18b",
+            "path": "/products/features/personalization",
+            "title": "Customize user experience with search personalization | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "personalization",
+            "productFocusLabel": "Personalization",
+            "dwellMs": 0,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": {
+            "value": "personalization",
+            "label": "Personalization",
+            "state": "observed",
+            "source": "current_product_page",
+            "pagePath": "/products/features/personalization",
+            "pageTitle": "Customize user experience with search personalization | Algolia"
+          },
+          "journeySummary": {
+            "currentTransition": "product_page_50_scroll",
+            "productTrail": [
+              {
+                "value": "personalization",
+                "label": "Personalization",
+                "pagePath": "/products/features/personalization",
+                "pageTitle": "Customize user experience with search personalization | Algolia"
+              }
+            ],
+            "solutionTrail": [],
+            "pageTrail": [
+              {
+                "path": "/products/features/personalization",
+                "title": "Customize user experience with search personalization | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocusLabel": "Personalization"
+              }
+            ],
+            "storyHint": ""
+          },
+          "journey": [
+            {
+              "path": "/products/features/personalization",
+              "title": "Customize user experience with search personalization | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "personalization",
+              "productFocusLabel": "Personalization",
+              "dwellMs": 0,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/products/features/personalization",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/personalization",
+                "title": "Customize user experience with search personalization | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "personalization",
+                "productFocusLabel": "Personalization"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/products/features/personalization",
+              "props": {
+                "depth": 50,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "personalization",
+                "productFocusLabel": "Personalization"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "ai_recommendations_evaluation",
+            "state": "inferred",
+            "confidence": 0.72,
+            "evidence": [
+              "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search",
+              "scroll_depth:/products/features/personalization",
+              "page_view:/products/features/personalization"
+            ]
+          },
+          "friction": {
+            "value": "fit_and_value_unclear",
+            "state": "inferred",
+            "confidence": 0.62,
+            "evidence": [
+              "current_page:Customize user experience with search personalization | Algolia /products/features/personalization ai_search"
+            ]
+          },
+          "messageGoal": "explain_product_fit",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "product_page",
+            "product_scroll"
+          ],
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "createdAt": 1786817381187
+        },
+        "updatedAt": 1786817381197,
+        "shownAt": 1786817381197,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a0069d8343_7885ec",
+          "greeting": "Hello, explorer. Looks like Personalization is on your radar. Want the practical version before the rabbit hole gets theatrical?",
+          "chips": [
+            "Show tradeoffs",
+            "Find proof",
+            "Explain build"
+          ],
+          "handoffSummary": {
+            "moment": "product_research",
+            "trigger": "product_page_50_scroll",
+            "messageGoal": "explain_product_fit"
+          }
+        }
+      }
+    ],
+    "lastOpportunityAt": 1786817381197
+  },
+  "session": {
+    "schema": "AlgoliaEngagementSession.v1",
+    "sessionId": "sess_e40249d3647e9b8daf132a93",
+    "startedAt": 1786817380203,
+    "lastSeenAt": 1786817381221,
+    "currentPageId": "page_4fd0cf14d5015849e1f6c18b",
+    "pages": [
+      {
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "path": "/products/features/personalization",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/personalization",
+        "title": "Customize user experience with search personalization | Algolia",
+        "enteredAt": 1786817380203,
+        "dwellMs": 0,
+        "maxScrollDepth": 50,
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "personalization",
+        "productFocusLabel": "Personalization"
+      }
+    ],
+    "engagementHistory": [
+      {
+        "id": "eng_69546db5d2148451d7eb24c7",
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1786817381196,
+        "status": "shown"
+      }
+    ]
+  },
+  "events": {
+    "schema": "AlgoliaEngagementEvents.v1",
+    "sessionId": "sess_e40249d3647e9b8daf132a93",
+    "events": [
+      {
+        "eventId": "evt_3f12a5f655eb3c8eeb727edb",
+        "name": "page_view",
+        "ts": 1786817380204,
+        "isoTime": "2026-08-15T18:09:40.204Z",
+        "sessionId": "sess_e40249d3647e9b8daf132a93",
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "path": "/products/features/personalization",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/personalization",
+          "title": "Customize user experience with search personalization | Algolia",
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "personalization",
+          "productFocusLabel": "Personalization"
+        }
+      },
+      {
+        "eventId": "evt_4ae35f7b6c00e365d445e5ce",
+        "name": "scroll_depth",
+        "ts": 1786817381186,
+        "isoTime": "2026-08-15T18:09:41.186Z",
+        "sessionId": "sess_e40249d3647e9b8daf132a93",
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "path": "/products/features/personalization",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "personalization",
+          "productFocusLabel": "Personalization"
+        }
+      },
+      {
+        "eventId": "evt_a3cc2d7a444586f17473d816",
+        "name": "engagement_exposed",
+        "ts": 1786817381196,
+        "isoTime": "2026-08-15T18:09:41.196Z",
+        "sessionId": "sess_e40249d3647e9b8daf132a93",
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "path": "/products/features/personalization",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_69546db5d2148451d7eb24c7",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_7aebebe6fdcc45b77e33649f",
+        "name": "chat_open",
+        "ts": 1786817381221,
+        "isoTime": "2026-08-15T18:09:41.221Z",
+        "sessionId": "sess_e40249d3647e9b8daf132a93",
+        "pageId": "page_4fd0cf14d5015849e1f6c18b",
+        "path": "/products/features/personalization",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      }
+    ]
+  },
+  "summary": {
+    "trigger": "product_page_50_scroll",
+    "status": "shown",
+    "moment": "product_research",
+    "traceStages": [
+      "controller_installed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "candidate_selected",
+      "pre_reserve_credentials_checked",
+      "context_compiled",
+      "candidates_evaluated",
+      "opportunity_reserved",
+      "credentials_checked",
+      "greeting_request_started",
+      "greeting_response_http",
+      "greeting_response_parsed",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "widget_rendered",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "scheduled_initial_evaluation",
+      "signal_received",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed",
+      "context_compiled",
+      "candidates_evaluated",
+      "suppressed"
+    ],
+    "hasCandidate": true,
+    "hasRequest": true,
+    "hasWidget": true,
+    "currentPath": "/products/features/personalization",
+    "productTrail": [],
+    "solutionTrail": [],
+    "reasonCodes": [
+      "product_page",
+      "product_scroll"
+    ]
+  }
+}

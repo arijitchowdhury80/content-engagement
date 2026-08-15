@@ -7,6 +7,7 @@
     new URLSearchParams(location.search).get("algoliaProactiveDebug") === "1";
 
   const STATE_KEY = "algolia_proactive_state";
+  const TRACE_KEY = "algolia_proactive_debug_log";
   const SCHEMA = "AlgoliaProactiveDecision.v1";
   const STATE_SCHEMA = "AlgoliaProactiveState.v1";
   const GREETING_REQUEST_SCHEMA = "ProactiveGreetingRequest.v1";
@@ -54,9 +55,86 @@
     if (DEBUG) console.log(LABEL, ...args);
   }
 
+  function clip(value, maxLength = 240) {
+    if (value === undefined || value === null) return value;
+    const text = String(value);
+    return text.length > maxLength ? `${text.slice(0, maxLength - 1)}...` : text;
+  }
+
+  function readTrace() {
+    return readJson(TRACE_KEY, []);
+  }
+
+  function writeTrace(entries) {
+    if (!DEBUG) return;
+    writeJson(TRACE_KEY, Array.isArray(entries) ? entries.slice(-120) : []);
+  }
+
+  function trace(stage, detail = {}) {
+    if (!DEBUG) return;
+    const entry = {
+      stage,
+      at: Date.now(),
+      path: location.pathname,
+      detail,
+    };
+    const entries = readTrace();
+    entries.push(entry);
+    writeTrace(entries);
+    window.__algoliaProactiveTrace = entries.slice(-120);
+    debug(stage, detail);
+  }
+
+  function packetSummary(packet) {
+    const page = currentPage(packet);
+    const pages = sessionPages(packet);
+    return {
+      hasPacket: !!packet,
+      currentPage: page
+        ? {
+            path: page.path,
+            pageGroup: page.pageGroup,
+            topic: page.topic,
+            dwellMs: page.dwellMs,
+            maxScrollDepth: page.maxScrollDepth,
+            productFocusLabel: page.productFocusLabel,
+            solutionFocusLabel: page.solutionFocusLabel,
+          }
+        : null,
+      pageCount: pages.length,
+      recentEventCount: recentEvents(packet).length,
+      productTrail: uniqueProductTrail(pages).map((item) => item.label),
+      solutionTrail: uniqueSolutionTrail(pages).map((item) => item.label),
+    };
+  }
+
+  function decisionSummary(decision) {
+    if (!decision) return null;
+    return {
+      engage: decision.engage,
+      reason: decision.reason,
+      moment: decision.moment,
+      trigger: decision.trigger,
+      priority: decision.priority,
+      pagePath: decision.pagePath,
+      reasonCodes: decision.reasonCodes,
+      opportunityId: decision.opportunityId,
+    };
+  }
+
   function configure(nextConfig) {
     config = { ...config, ...(nextConfig || {}) };
     debug("configured", config);
+    trace("configured", {
+      enabled: config.enabled,
+      productDwellMs: config.productDwellMs,
+      productScrollDepth: config.productScrollDepth,
+      solutionDwellMs: config.solutionDwellMs,
+      solutionScrollDepth: config.solutionScrollDepth,
+      hasAppId: !!config.appId,
+      hasApiKey: !!(config.apiKey || config.searchKey),
+      hasGreetingsAgentId: !!(config.greetingsAgentId || config.greetingAgentId),
+    });
   }
 
   function readJson(key, fallback) {
@@ -173,22 +251,85 @@
     return document.querySelector("algolia-chat");
   }
 
+  function attr(element, names) {
+    for (const name of names) {
+      const value = element?.getAttribute?.(name);
+      if (value && String(value).trim()) return String(value).trim();
+    }
+    return null;
+  }
+
   function credentials() {
     const search = document.querySelector("algolia-instant-search");
+    const chat = chatElement();
+    const engage = document.querySelector("algolia-chat-engage");
     const legacyEngageConfig =
       window.ALGOLIA_CONTEXT_ENGINE_CONFIG && typeof window.ALGOLIA_CONTEXT_ENGINE_CONFIG === "object"
         ? window.ALGOLIA_CONTEXT_ENGINE_CONFIG
         : {};
+    const proactiveConfig =
+      window.ALGOLIA_PROACTIVE_CONFIG && typeof window.ALGOLIA_PROACTIVE_CONFIG === "object"
+        ? window.ALGOLIA_PROACTIVE_CONFIG
+        : {};
+    const appId =
+      config.appId ||
+      proactiveConfig.appId ||
+      attr(search, ["app-id", "application-id"]) ||
+      attr(chat, ["app-id", "application-id"]) ||
+      null;
+    const apiKey =
+      config.apiKey ||
+      config.searchKey ||
+      proactiveConfig.apiKey ||
+      proactiveConfig.searchKey ||
+      attr(search, ["api-key", "search-api-key"]) ||
+      attr(chat, ["api-key", "search-api-key"]) ||
+      null;
+    const engageGreetingAgentId = attr(engage, [
+      "greetings-agent-id",
+      "greeting-agent-id",
+      "concierge-agent-id",
+    ]);
+    const greetingsAgentId =
+      config.greetingsAgentId ||
+      config.greetingAgentId ||
+      proactiveConfig.greetingsAgentId ||
+      proactiveConfig.greetingAgentId ||
+      proactiveConfig.conciergeAgentId ||
+      legacyEngageConfig.greetingsAgentId ||
+      legacyEngageConfig.greetingAgentId ||
+      legacyEngageConfig.conciergeAgentId ||
+      engageGreetingAgentId ||
+      null;
     return {
-      appId: config.appId || search?.getAttribute?.("app-id") || null,
-      apiKey: config.apiKey || config.searchKey || search?.getAttribute?.("api-key") || null,
-      greetingsAgentId:
-        config.greetingsAgentId ||
-        config.greetingAgentId ||
-        legacyEngageConfig.greetingsAgentId ||
-        legacyEngageConfig.greetingAgentId ||
-        legacyEngageConfig.conciergeAgentId ||
-        null,
+      appId,
+      apiKey,
+      greetingsAgentId,
+      sources: {
+        appId: config.appId || proactiveConfig.appId ? "config" : search ? "algolia-instant-search" : chat ? "algolia-chat" : null,
+        apiKey:
+          config.apiKey || config.searchKey || proactiveConfig.apiKey || proactiveConfig.searchKey
+            ? "config"
+            : search
+              ? "algolia-instant-search"
+              : chat
+                ? "algolia-chat"
+                : null,
+        greetingsAgentId:
+          config.greetingsAgentId ||
+          config.greetingAgentId ||
+          proactiveConfig.greetingsAgentId ||
+          proactiveConfig.greetingAgentId ||
+          proactiveConfig.conciergeAgentId
+            ? "config"
+            : legacyEngageConfig.greetingsAgentId ||
+                legacyEngageConfig.greetingAgentId ||
+                legacyEngageConfig.conciergeAgentId
+              ? "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+              : engageGreetingAgentId
+                ? "algolia-chat-engage"
+                : null,
+      },
     };
   }
 
@@ -834,10 +975,22 @@
   function evaluate({ reserve = false } = {}) {
     const packet = compilerPacket();
     const state = readState();
-    const decision = candidates(packet)[0] || null;
+    trace("context_compiled", packetSummary(packet));
+    const candidateList = candidates(packet);
+    trace("candidates_evaluated", {
+      count: candidateList.length,
+      candidates: candidateList.map(decisionSummary),
+    });
+    const decision = candidateList[0] || null;
     const reason = suppressionReason(packet, decision, state);
-    if (reason) return empty(reason);
-    if (!reserve) return decision;
+    if (reason) {
+      trace("suppressed", { reason, decision: decisionSummary(decision) });
+      return empty(reason);
+    }
+    if (!reserve) {
+      trace("candidate_selected", decisionSummary(decision));
+      return decision;
+    }
 
     const opportunityId = `opp_${Date.now().toString(16)}_${Math.random().toString(16).slice(2, 8)}`;
     const requestPacket = {
@@ -867,6 +1020,13 @@
     const nextState = supersedeLowerPriorityOpportunities(state, decision);
     nextState.opportunities.push(opportunity);
     writeState(nextState);
+    trace("opportunity_reserved", {
+      opportunityId,
+      trigger: decision.trigger,
+      moment: decision.moment,
+      messageGoal: decision.messageGoal,
+      pagePath: decision.pagePath,
+    });
     return {
       ...decision,
       opportunityId: opportunity.id,
@@ -948,6 +1108,7 @@
     const widget = chatElement();
     if (!widget || typeof widget.engage !== "function") {
       updateOpportunity(decision.opportunityId, { status: "widget_unavailable" });
+      trace("widget_unavailable", { opportunityId: decision.opportunityId });
       return false;
     }
     const chips = Array.isArray(response.chips)
@@ -969,17 +1130,47 @@
         handoffSummary: response.handoffSummary,
       },
     }, shown ? { lastOpportunityAt: shownAt } : null);
+    trace(shown ? "widget_rendered" : "render_refused", {
+      opportunityId: decision.opportunityId,
+      trigger: decision.trigger,
+      chips: chips.length,
+    });
     return !!shown;
   }
 
   async function requestGreeting(decision) {
-    const { appId, apiKey, greetingsAgentId } = credentials();
+    const { appId, apiKey, greetingsAgentId, sources } = credentials();
+    trace("credentials_checked", {
+      hasAppId: !!appId,
+      hasApiKey: !!apiKey,
+      hasGreetingsAgentId: !!greetingsAgentId,
+      hasFetch: typeof fetch === "function",
+      sources,
+    });
     if (!appId || !apiKey || !greetingsAgentId || typeof fetch !== "function") {
       debug("greetings agent not configured; emitted opportunity only");
+      trace("greeting_not_configured", {
+        hasAppId: !!appId,
+        hasApiKey: !!apiKey,
+        hasGreetingsAgentId: !!greetingsAgentId,
+        hasFetch: typeof fetch === "function",
+        sources,
+      });
+      updateOpportunity(decision.opportunityId, {
+        status: "greeting_failed",
+        failureReason: "greeting_not_configured",
+      });
       return false;
     }
 
     updateOpportunity(decision.opportunityId, { status: "greeting_requested" });
+    trace("greeting_request_started", {
+      opportunityId: decision.opportunityId,
+      trigger: decision.trigger,
+      moment: decision.moment,
+      agentId: greetingsAgentId,
+      appId,
+    });
     const body = {
       id: `alg_cnv_proactive_${decision.opportunityId}`,
       messages: [
@@ -1009,6 +1200,11 @@
         },
         body: JSON.stringify(body),
       });
+      trace("greeting_response_http", {
+        opportunityId: decision.opportunityId,
+        ok: !!response.ok,
+        status: response.status,
+      });
       if (!response.ok) {
         updateOpportunity(decision.opportunityId, {
           status: "greeting_failed",
@@ -1018,6 +1214,13 @@
       }
 
       const parsed = extractJsonObject(await response.text());
+      trace("greeting_response_parsed", {
+        opportunityId: decision.opportunityId,
+        schema: parsed?.schema,
+        responseOpportunityId: parsed?.opportunityId,
+        greetingPreview: clip(parsed?.greeting, 180),
+        chipCount: Array.isArray(parsed?.chips) ? parsed.chips.length : 0,
+      });
       if (decision.pagePath && decision.pagePath !== location.pathname) {
         updateOpportunity(decision.opportunityId, {
           status: "superseded",
@@ -1032,6 +1235,11 @@
           failureReason: validationError,
           rejectedGreetingResponse: parsed || null,
         });
+        trace("greeting_response_rejected", {
+          opportunityId: decision.opportunityId,
+          validationError,
+          parsed,
+        });
         return false;
       }
 
@@ -1041,6 +1249,10 @@
         status: "greeting_failed",
         failureReason: error instanceof Error ? error.message : String(error),
       });
+      trace("greeting_request_error", {
+        opportunityId: decision.opportunityId,
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }
@@ -1048,10 +1260,42 @@
   async function handleSignal(event) {
     const name = event?.detail?.name;
     if (!name || name === "nav_hover" || name === "hover") return;
+    trace("signal_received", {
+      name,
+      path: event?.detail?.path || location.pathname,
+      props: event?.detail?.props || null,
+    });
+
+    const preview = evaluate();
+    if (!preview.engage) {
+      debug("no proactive opportunity", preview.reason);
+      recordSuppression(preview);
+      return;
+    }
+
+    const { appId, apiKey, greetingsAgentId, sources } = credentials();
+    trace("pre_reserve_credentials_checked", {
+      hasAppId: !!appId,
+      hasApiKey: !!apiKey,
+      hasGreetingsAgentId: !!greetingsAgentId,
+      hasFetch: typeof fetch === "function",
+      sources,
+    });
+    if (!appId || !apiKey || !greetingsAgentId || typeof fetch !== "function") {
+      trace("pre_reserve_greeting_not_configured", {
+        decision: decisionSummary(preview),
+        hasAppId: !!appId,
+        hasApiKey: !!apiKey,
+        hasGreetingsAgentId: !!greetingsAgentId,
+        hasFetch: typeof fetch === "function",
+        sources,
+      });
+      return;
+    }
 
     const decision = evaluate({ reserve: true });
     if (!decision.engage) {
-      debug("no proactive opportunity", decision.reason);
+      debug("no proactive opportunity after reserve check", decision.reason);
       recordSuppression(decision);
       return;
     }
@@ -1067,20 +1311,35 @@
   }
 
   function scheduleInitialEvaluation() {
-    const { appId, apiKey, greetingsAgentId } = credentials();
-    if (!appId || !apiKey || !greetingsAgentId) return;
-    setTimeout(() => {
-      handleSignal({ detail: { name: "controller_ready" } });
-    }, 0);
+    for (const delay of [0, 250, 1000, 2500]) {
+      setTimeout(() => {
+        trace("scheduled_initial_evaluation", { delay });
+        handleSignal({ detail: { name: "controller_ready", delay } });
+      }, delay);
+    }
   }
 
   function debugState() {
+    const creds = credentials();
     return {
       config,
       state: readState(),
       packet: compilerPacket(),
       decision: evaluate(),
+      credentials: {
+        hasAppId: !!creds.appId,
+        hasApiKey: !!creds.apiKey,
+        hasGreetingsAgentId: !!creds.greetingsAgentId,
+        hasFetch: typeof fetch === "function",
+        sources: creds.sources,
+      },
+      trace: readTrace(),
     };
+  }
+
+  function clearDebugTrace() {
+    writeTrace([]);
+    window.__algoliaProactiveTrace = [];
   }
 
   const root = window;
@@ -1096,5 +1355,12 @@
     configure,
     evaluate,
     debug: debugState,
+    debugTrace: debugState,
+    clearDebugTrace,
   };
+  trace("controller_installed", {
+    hasCompiler: !!window.algoliaContextCompiler,
+    hasChat: !!chatElement(),
+    hasEngageElement: !!document.querySelector("algolia-chat-engage"),
+  });
 })();
