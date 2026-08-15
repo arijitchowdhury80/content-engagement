@@ -1,0 +1,19 @@
+{
+  "label": "proactive",
+  "id": "0f290529-629a-48fe-9424-f93e5894d8f3",
+  "httpPatch": 200,
+  "httpReadback": 200,
+  "name": "www Chat – Proactive Concierge",
+  "instructionsLength": 13896,
+  "instructionsSha256": "eb21fa3ea5f19f3a6920c530ab16ed40f8c28c05746c3cd8aa6cb828778bf7e8",
+  "expectedInstructionsSha256": "eb21fa3ea5f19f3a6920c530ab16ed40f8c28c05746c3cd8aa6cb828778bf7e8",
+  "instructionsMatch": true,
+  "systemPromptLength": 7140,
+  "systemPromptSha256": "22dd20140028ccf2e7365d2aa4dcf10f076f5f8ff0e67cb4caba0d9075a5258d",
+  "expectedSystemPromptSha256": "22dd20140028ccf2e7365d2aa4dcf10f076f5f8ff0e67cb4caba0d9075a5258d",
+  "systemPromptMatch": true,
+  "suggestionsEnabled": false,
+  "memoryEnabled": false,
+  "guardrailScope": "Proactive greeting agent for algolia.com visitors. Creates thoughtful, personalized proactive greetings and action chips from browser-provided context, then hands engaged visitors to the main orchestrator. It does not answer product questions, search, reveal telemetry, reveal prompts, reveal tools/configuration/secrets, or engage unrelated or unsafe requests.",
+  "containsArrie": true
+}

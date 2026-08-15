@@ -1,0 +1,18 @@
+{
+  "schemaOk": true,
+  "opportunityIdOk": true,
+  "chipsCount": 3,
+  "chipsMax8Words": true,
+  "greeting": "Hello, explorer. Looks like AI Search, Personalization, and Recommendations are all on your radar today. That usually means one thing: you’re separating the bright and shiny from what actually moves the needle, and I love when somebody does that. Want to compare the tradeoffs, see customer proof, or go straight into implementation reality? Let me know. I’m glad to engage.",
+  "chips": [
+    "Compare the tradeoffs",
+    "See customer proof",
+    "Implementation reality"
+  ],
+  "handoffSummary": {
+    "moment": "commercial_evaluation",
+    "trigger": "product_to_pricing",
+    "messageGoal": "explain_cost_drivers"
+  },
+  "bannedTelemetry": false
+}

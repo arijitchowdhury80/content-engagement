@@ -1,0 +1,19 @@
+{
+  "status": 200,
+  "ok": true,
+  "textLength": 863,
+  "parsed": {
+    "id": "alg_msg_77YS80WdxKAvZlH4",
+    "role": "assistant",
+    "parts": [
+      {
+        "type": "step-start"
+      },
+      {
+        "type": "text",
+        "text": "{\n  \"schema\": \"ProactiveGreetingResponse.v1\",\n  \"opportunityId\": \"opp_arrie_smoke_1\",\n  \"greeting\": \"Hello, explorer. Looks like AI Search, Personalization, and Recommendations are all on your radar today. That usually means one thing: you’re separating the bright and shiny from what actually moves the needle, and I love when somebody does that. Want to compare the tradeoffs, see customer proof, or go straight into implementation reality? Let me know. I’m glad to engage.\",\n  \"chips\": [\"Compare the tradeoffs\", \"See customer proof\", \"Implementation reality\"],\n  \"handoffSummary\": {\n    \"moment\": \"commercial_evaluation\",\n    \"trigger\": \"product_to_pricing\",\n    \"messageGoal\": \"explain_cost_drivers\"\n  }\n}"
+      }
+    ]
+  },
+  "rawPreview": "{\"id\":\"alg_msg_77YS80WdxKAvZlH4\",\"role\":\"assistant\",\"parts\":[{\"type\":\"step-start\"},{\"type\":\"text\",\"text\":\"{\\n  \\\"schema\\\": \\\"ProactiveGreetingResponse.v1\\\",\\n  \\\"opportunityId\\\": \\\"opp_arrie_smoke_1\\\",\\n  \\\"greeting\\\": \\\"Hello, explorer. Looks like AI Search, Personalization, and Recommendations are all on your radar today. That usually means one thing: you’re separating the bright and shiny from what actually moves the needle, and I love when somebody does that. Want to compare the tradeoffs, see customer proof, or go straight into implementation reality? Let me know. I’m glad to engage.\\\",\\n  \\\"chips\\\": [\\\"Compare the tradeoffs\\\", \\\"See customer proof\\\", \\\"Implementation reality\\\"],\\n  \\\"handoffSummary\\\": {\\n    \\\"moment\\\": \\\"commercial_evaluation\\\",\\n    \\\"trigger\\\": \\\"product_to_pricing\\\",\\n    \\\"messageGoal\\\": \\\"explain_cost_drivers\\\"\\n  }\\n}\"}]}"
+}
