@@ -30,8 +30,28 @@ test('processing trace drives the header gradient fill from real progress state'
   assert.match(traceBlock, /acTraceProgressCeiling/);
   assert.match(
     bundle,
-    /function acTraceStageFromSignals\([^)]*\)\{[^}]*return [A-Za-z]\|\|[A-Za-z]==="streaming"\?5:[A-Za-z]\?2:1\}/,
-    'streaming status should force the header progress target to 100% before first text delta'
+    /function acTraceStageFromSignals\([^)]*\)\{[^}]*==="streaming"\|\|[^}]*==="success"[^}]*return [A-Za-z]\|\|[A-Za-z]\?5:[A-Za-z]\?2:1\}/,
+    'streaming and success status should force the header progress target to 100% before first text delta'
+  );
+  assert.match(
+    bundle,
+    /function acHeaderProgressSync\(/,
+    'header progress should have a non-visual sync path that remains mounted when answer text streams'
+  );
+  assert.match(
+    bundle,
+    /status[^?]+==="success"/,
+    'successful finalization should also force the header progress target to 100%'
+  );
+  assert.match(
+    bundle,
+    /acTraceProgressCeiling\([^)]*,[^)]*x>0/,
+    'progress should continue gliding after sources arrive instead of stopping at the source-stage percentage'
+  );
+  assert.match(
+    bundle,
+    /acHeaderProgressSync,\{searchCount:[^,]+,sources:[^,]+,status:[^,]+,text:[^}]+\}/,
+    'assistant renderer should mount header progress sync even when answer text is visible'
   );
   assert.match(traceBlock, /style\.setProperty\("--algolia-header-progress",String\([A-Za-z]\)\+"%"\)/);
   assert.match(traceBlock, /toggleAttribute\("data-algolia-working",!0\)/);

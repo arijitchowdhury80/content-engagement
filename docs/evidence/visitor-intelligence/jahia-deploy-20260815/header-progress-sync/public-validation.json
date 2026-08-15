@@ -1,0 +1,15 @@
+{
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=20260815-header-progress-sync-a&verify=header-progress-sync-final",
+  "themeUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-header-progress-sync-a&verify=header-progress-sync-final",
+  "chatHashMatchesLocal": true,
+  "themeHashMatchesLocal": true,
+  "chatHasHeaderProgressSync": true,
+  "chatForcesCompletionOnStreamingOrSuccess": true,
+  "chatGlidesAfterSources": true,
+  "chatSyncMountedWithVisibleText": true,
+  "chatWritesAlgoliaHeaderProgress": true,
+  "themeOmitsHeaderSubtitleAfter": true,
+  "themeOmitsVerboseSubtitle": true,
+  "themeOmitsHeaderShimmer": true,
+  "pass": true
+}
