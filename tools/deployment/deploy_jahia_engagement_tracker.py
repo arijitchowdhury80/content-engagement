@@ -13,6 +13,7 @@ import json
 import re
 import ssl
 import sys
+import time
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -42,7 +43,7 @@ CONTEXT_COMPILER_VERSION = "20260815a"
 PROACTIVE_CONTROLLER_VERSION = "20260815e"
 HANDOFF_TO_ORCHESTRATOR_VERSION = "20260814b"
 ENGAGE_VERSION = "20260814d"
-THEME_VERSION = "20260815-analogy-canvas-a"
+THEME_VERSION = "20260815-analogy-canvas-b"
 
 
 def load_token() -> str:
@@ -386,6 +387,17 @@ def edit_has_expected_html(snapshot_after: dict) -> bool:
     )
 
 
+def wait_for_live_validation(snapshot_after: dict, checks: dict, attempts: int = 8) -> tuple[dict, dict]:
+    """Give Jahia LIVE readback a short bounded window to catch up after publish."""
+    for _ in range(attempts):
+        if checks["pass"] or not edit_has_expected_html(snapshot_after):
+            break
+        time.sleep(2)
+        snapshot_after = snapshot()
+        checks = validate(snapshot_after)
+    return snapshot_after, checks
+
+
 def main() -> int:
     global EVIDENCE_DIR
     parser = argparse.ArgumentParser()
@@ -510,7 +522,8 @@ def main() -> int:
         mutations["republishBlockAfterStaleLiveReadback"] = publish(BLOCK_PATH, subtree=True)
         after = snapshot()
         checks = validate(after)
-        write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
+    after, checks = wait_for_live_validation(after, checks)
+    write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
     write_json(EVIDENCE_DIR / "after-readback.json", after)
     write_json(EVIDENCE_DIR / "deployment-validation.json", checks)
     print(json.dumps(checks, indent=2))
