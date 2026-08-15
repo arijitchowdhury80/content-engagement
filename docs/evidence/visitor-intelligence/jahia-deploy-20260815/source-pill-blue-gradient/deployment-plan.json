@@ -1,0 +1,14 @@
+{
+  "release": "chat-ui-source-pill-blue-gradient-20260815a",
+  "version": "20260815-chat-ui-source-pill-blue-gradient-a",
+  "chatPath": "/sites/www/files/algolia-chat.js",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&sourcePillBlue=20260815-chat-ui-source-pill-blue-gradient-a",
+  "rootUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/?codexCacheBust=20260815-chat-ui-source-pill-blue-gradient-a",
+  "sourceCommit": "18fe3f1e4f2bd137a2eca5a1da52e47cde17822c",
+  "committedChatSha256": "523ae0627f564d3290c0fc33cd3a979dc38a29bbe1ab18e84a4b33bf6cf92b96",
+  "previousEditChatSha256": "523ae0627f564d3290c0fc33cd3a979dc38a29bbe1ab18e84a4b33bf6cf92b96",
+  "previousLiveChatSha256": "02a563176481b89c671ad367bbb967a69378bb9a8674c28f175e8d8752d15c3f",
+  "blockPath": "/sites/www/home/drift/custom-code-block",
+  "willUpdateBlockRelease": true,
+  "willUpdateChatScript": true
+}

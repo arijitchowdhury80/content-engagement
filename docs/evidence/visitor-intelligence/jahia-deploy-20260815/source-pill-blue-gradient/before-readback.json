@@ -1,0 +1,25 @@
+{
+  "capturedAt": "2026-08-15T08:54:33.844Z",
+  "label": "before",
+  "release": "chat-ui-source-pill-blue-gradient-20260815a",
+  "version": "20260815-chat-ui-source-pill-blue-gradient-a",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&sourcePillBlue=20260815-chat-ui-source-pill-blue-gradient-a",
+  "editBlockSha256": "4ab1072caebac25aacb12f423ae965414f758fa876041ca078be4ca60e4629ec",
+  "liveBlockSha256": "4ab1072caebac25aacb12f423ae965414f758fa876041ca078be4ca60e4629ec",
+  "editBlockHasCurrentChatUrl": false,
+  "liveBlockHasCurrentChatUrl": false,
+  "editBlockReleaseMarkers": [
+    "chat-ui-followup-source-tiles-20260815a"
+  ],
+  "liveBlockReleaseMarkers": [
+    "chat-ui-followup-source-tiles-20260815a"
+  ],
+  "editChatSha256": "02a563176481b89c671ad367bbb967a69378bb9a8674c28f175e8d8752d15c3f",
+  "liveChatSha256": "02a563176481b89c671ad367bbb967a69378bb9a8674c28f175e8d8752d15c3f",
+  "editChatMime": "application/javascript",
+  "liveChatMime": "application/javascript",
+  "editHasNewGroupGradient": false,
+  "liveHasNewGroupGradient": false,
+  "editHasNewSourceGradient": false,
+  "liveHasNewSourceGradient": false
+}
