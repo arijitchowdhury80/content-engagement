@@ -50,8 +50,13 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /Fully grounded/);
   assert.match(css, /\[part="panel"\]/);
   assert.match(css, /\[part="header"\][^{]+{[^}]*gap: 16px/);
+  assert.match(css, /\[part="header"\][^{]+{[^}]*isolation: isolate/);
   assert.match(css, /\[part="header"\] h1[^{]+{[^}]*line-height: 1.15/);
   assert.match(css, /\[part="header"\]::after[^{]+{[^}]*top: 46px/);
+  assert.match(css, /\[part="header"\]::after[^{]+{[^}]*z-index: 1/);
+  assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*width: var\(--acs-header-progress, 0%\)/);
+  assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*linear-gradient\(90deg, rgba\(0,61,255,0\.04\), rgba\(0,61,255,0\.16\)\)/);
+  assert.match(css, /\[part="header"\] > \*[^{]+{[^}]*z-index: 1/);
   assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*align-self: center/);
   assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*min-width: 0/);
   assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*flex: 1 1 auto/);
