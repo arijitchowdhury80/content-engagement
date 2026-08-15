@@ -145,11 +145,12 @@
     },
 
     layout: {
-      // Header height matches the md:h-20 (80px) sticky nav used on the site.
-      headerHeight: '72px',
+      // Compact chat chrome should leave the attention on the answer/greeting,
+      // not on an oversized modal header.
+      headerHeight: '60px',
       // Panel geometry (docked and normal).
       panelWidth: 'min(1080px, 70vw)', panelHeight: '75vh',
-      dockedWidth: '420px', dockedHeight: '500px',
+      dockedWidth: '540px', dockedHeight: '500px',
       dockedMinWidth: '320px', dockedMinHeight: '400px',
       dockedOffsetBottom: '88px', dockedOffsetRight: '24px',
       dockedMarginX: '16px', dockedMarginY: '16px',
@@ -168,13 +169,13 @@
       // rendered as a plain <img>. Invert it to white so it reads on Xenon blue.
       '[part="launcher"] img { filter: brightness(0) invert(1); }',
       '[part="panel"] { border-radius: 20px; border: 1px solid color-mix(in srgb, var(--algolia-border) 88%, #ffffff); box-shadow: 0 24px 80px -52px rgba(35,38,59,0.72), 0 0 0 1px rgba(35,38,59,0.04); }',
-      '[part="header"] { position: relative; min-height: var(--algolia-header-h); gap: 16px; padding: 13px 18px 12px !important; align-items: center !important; overflow: hidden; isolation: isolate; background: rgba(255,255,255,0.98); }',
+      '[part="header"] { position: relative; min-height: var(--algolia-header-h); gap: 12px; padding: 8px 14px 7px !important; align-items: center !important; overflow: hidden; isolation: isolate; background: rgba(255,255,255,0.98); }',
       ':host([data-acs-working]) [part="header"]::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--acs-header-progress, 0%); background: linear-gradient(90deg, rgba(0,61,255,0.04), rgba(0,61,255,0.16)); pointer-events: none; transition: width 450ms var(--algolia-ease, ease); z-index: 0; }',
       '[part="header"] > * { position: relative; z-index: 1; }',
       '[part="header"] > div:first-child { align-self: center; min-width: 0; flex: 1 1 auto; }',
       '[part="header"] > div:first-child h1 { overflow: hidden; text-overflow: ellipsis; }',
       '[part="header"] h1 { line-height: 1.15; margin-bottom: 4px; white-space: nowrap; }',
-      '[part="header"]::after { content: "Fully grounded: every answer cites its source."; position: absolute; left: 80px; top: 46px; z-index: 1; max-width: calc(100% - 190px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--algolia-text-muted); font-size: var(--algolia-fs-xs); line-height: 1.35; }',
+      '[part="header"]::after { content: "Fully grounded: every answer cites its source."; position: absolute; left: 80px; top: 36px; z-index: 1; max-width: calc(100% - 190px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--algolia-text-muted); font-size: var(--algolia-fs-xs); line-height: 1.35; }',
       '[part="header"] > div { gap: 12px !important; }',
       '[part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; padding: 0 !important; margin: 0 !important; border: 0 !important; border-radius: var(--algolia-radius-full); background: transparent !important; color: var(--algolia-text-muted); box-shadow: none !important; }',
       '[part="header"] > div button:hover { background: transparent !important; color: var(--algolia-text-secondary); }',
@@ -194,8 +195,10 @@
       '.uppercase.tracking-algolia-caps { display: inline-flex; width: fit-content; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; letter-spacing: var(--algolia-tracking-caps); color: var(--algolia-text-muted) !important; box-shadow: none !important; }',
       '.mx-auto.flex.w-full.max-w-algolia-maxw.flex-1.flex-col.overflow-hidden { max-width: 100% !important; }',
       '.w-full.max-w-algolia-measure { max-width: var(--algolia-msg-max-w) !important; }',
-      '.flex.flex-1.flex-col.items-center.overflow-y-auto.px-4.pb-8.pt-6.sm\\:px-6.sm\\:pt-10 { padding-top: 20px !important; padding-bottom: 20px !important; }',
+      '.flex.flex-1.flex-col.items-center.overflow-y-auto.px-4.pb-8.pt-6.sm\\:px-6.sm\\:pt-10 { padding-top: 12px !important; padding-bottom: 14px !important; }',
       '.mx-auto.flex.w-full.max-w-algolia-measure.flex-col.items-center.gap-5.px-4.text-center { gap: 12px !important; }',
+      '.flex.w-full.flex-col.gap-3.pt-6.pb-4 { padding-top: 10px !important; padding-bottom: 8px !important; }',
+      '.rounded-algolia-lg.rounded-tl-sm.bg-algolia-surface-2.px-4.py-3.text-algolia-sm.text-algolia-text.shadow-algolia-1 { max-width: 100% !important; }',
       '.shrink-0.border-t.border-algolia-border.bg-algolia-surface { border-top: 0 !important; }',
       '.shrink-0.border-t.border-algolia-border.bg-algolia-surface > .mx-auto { max-width: 100% !important; padding: 6px 14px 8px !important; gap: 6px !important; }',
       '.flex.items-center.justify-between.gap-3.py-2.text-algolia-xs.text-algolia-text-muted { display: none !important; }',
@@ -208,7 +211,7 @@
       '.acs-progress { display: none !important; }',
       // On mobile viewports the normal-mode panel would be too narrow.
       // Override to near-full-width below 640px.
-      '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="header"] { gap: 10px; padding-left: 16px !important; padding-right: 12px !important; } [part="header"] h1 { font-size: 16px; line-height: 1.1; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="header"]::after { content: "Grounded answers cite sources."; left: 64px; top: 45px; max-width: calc(100% - 182px); } [part="composer"] { margin: 8px 14px 12px !important; } [part="composer-input"] { font-size: var(--algolia-fs-sm); } }',
+      '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="header"] { gap: 10px; padding-left: 14px !important; padding-right: 10px !important; } [part="header"] h1 { font-size: 15px; line-height: 1.1; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="header"]::after { content: "Grounded answers cite sources."; left: 64px; top: 36px; max-width: calc(100% - 182px); } [part="composer"] { margin: 8px 14px 12px !important; } [part="composer-input"] { font-size: var(--algolia-fs-sm); } }',
       // The sample-questions popup uses `position:absolute; bottom:100%` and
       // expands upward. The panel has `overflow:hidden` for its rounded corners,
       // so a tall popup gets clipped at the panel top. Cap the popup height and

@@ -38,8 +38,9 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
 
   assert.equal(theme.typography.scale.sm, '13px');
   assert.equal(theme.typography.scale.base, '14px');
-  assert.equal(theme.layout.headerHeight, '72px');
+  assert.equal(theme.layout.headerHeight, '60px');
   assert.equal(theme.layout.panelWidth, 'min(1080px, 70vw)');
+  assert.equal(theme.layout.dockedWidth, '540px');
   assert.equal(theme.layout.dockedHeight, '500px');
   assert.equal(theme.space.maxWidth, '100%');
   assert.equal(theme.space.msgMaxW, 'min(920px, calc(100% - 56px))');
@@ -49,10 +50,11 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   const css = theme.css;
   assert.match(css, /Fully grounded/);
   assert.match(css, /\[part="panel"\]/);
-  assert.match(css, /\[part="header"\][^{]+{[^}]*gap: 16px/);
+  assert.match(css, /\[part="header"\][^{]+{[^}]*gap: 12px/);
+  assert.match(css, /\[part="header"\][^{]+{[^}]*padding: 8px 14px 7px !important/);
   assert.match(css, /\[part="header"\][^{]+{[^}]*isolation: isolate/);
   assert.match(css, /\[part="header"\] h1[^{]+{[^}]*line-height: 1.15/);
-  assert.match(css, /\[part="header"\]::after[^{]+{[^}]*top: 46px/);
+  assert.match(css, /\[part="header"\]::after[^{]+{[^}]*top: 36px/);
   assert.match(css, /\[part="header"\]::after[^{]+{[^}]*z-index: 1/);
   assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*width: var\(--acs-header-progress, 0%\)/);
   assert.match(css, /:host\(\[data-acs-working\]\) \[part="header"\]::before[^{]+{[^}]*linear-gradient\(90deg, rgba\(0,61,255,0\.04\), rgba\(0,61,255,0\.16\)\)/);
@@ -67,7 +69,7 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\[part="header"\] > div button[^{]+{[^}]*color: var\(--algolia-text-muted\)/);
   assert.match(css, /\[part="header"\] > div button svg[^{]+{[^}]*width: 17px/);
   assert.match(css, /\[part="header"\] > div button img[^{]+{[^}]*width: 17px/);
-  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\[part="header"\]::after[^{]+{[^}]*left: 64px/);
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\[part="header"\]::after[^{]+{[^}]*top: 36px/);
   assert.doesNotMatch(css, /\[part="header"\] button[^{]+{[^}]*margin-left: 6px/);
   assert.doesNotMatch(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2::before/);
   assert.doesNotMatch(css, /linear-gradient\(180deg, var\(--algolia-agent-primary\)/);
@@ -82,9 +84,12 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\.uppercase\.tracking-algolia-caps[^{]+{[^}]*border: 0 !important/);
   assert.match(css, /\.mx-auto\.flex\.w-full\.max-w-algolia-maxw\.flex-1\.flex-col\.overflow-hidden[^{]+{[^}]*max-width: 100% !important/);
   assert.match(css, /\.w-full\.max-w-algolia-measure\s*{[^}]*max-width: var\(--algolia-msg-max-w\) !important/);
-  assert.match(css, /\.flex\.flex-1\.flex-col\.items-center\.overflow-y-auto\.px-4\.pb-8\.pt-6\.sm\\:px-6\.sm\\:pt-10[^{]+{[^}]*padding-top: 20px !important/);
-  assert.match(css, /\.flex\.flex-1\.flex-col\.items-center\.overflow-y-auto\.px-4\.pb-8\.pt-6\.sm\\:px-6\.sm\\:pt-10[^{]+{[^}]*padding-bottom: 20px !important/);
+  assert.match(css, /\.flex\.flex-1\.flex-col\.items-center\.overflow-y-auto\.px-4\.pb-8\.pt-6\.sm\\:px-6\.sm\\:pt-10[^{]+{[^}]*padding-top: 12px !important/);
+  assert.match(css, /\.flex\.flex-1\.flex-col\.items-center\.overflow-y-auto\.px-4\.pb-8\.pt-6\.sm\\:px-6\.sm\\:pt-10[^{]+{[^}]*padding-bottom: 14px !important/);
   assert.match(css, /\.mx-auto\.flex\.w-full\.max-w-algolia-measure\.flex-col\.items-center\.gap-5\.px-4\.text-center[^{]+{[^}]*gap: 12px !important/);
+  assert.match(css, /\.flex\.w-full\.flex-col\.gap-3\.pt-6\.pb-4[^{]+{[^}]*padding-top: 10px !important/);
+  assert.match(css, /\.flex\.w-full\.flex-col\.gap-3\.pt-6\.pb-4[^{]+{[^}]*padding-bottom: 8px !important/);
+  assert.match(css, /\.rounded-algolia-lg\.rounded-tl-sm\.bg-algolia-surface-2\.px-4\.py-3\.text-algolia-sm\.text-algolia-text\.shadow-algolia-1[^{]+{[^}]*max-width: 100% !important/);
   assert.match(css, /\.shrink-0\.border-t\.border-algolia-border\.bg-algolia-surface > \.mx-auto[^{]+{[^}]*max-width: 100% !important/);
   assert.match(css, /\.shrink-0\.border-t\.border-algolia-border\.bg-algolia-surface > \.mx-auto[^{]+{[^}]*padding: 6px 14px 8px !important/);
   assert.match(css, /\.shrink-0\.border-t\.border-algolia-border\.bg-algolia-surface\s*{[^}]*border-top: 0 !important/);
