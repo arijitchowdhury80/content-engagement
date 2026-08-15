@@ -51,12 +51,17 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\[part="header"\][^{]+{[^}]*gap: 16px/);
   assert.match(css, /\[part="header"\] h1[^{]+{[^}]*line-height: 1.15/);
   assert.match(css, /\[part="header"\]::after[^{]+{[^}]*top: 46px/);
+  assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*align-self: center/);
+  assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*min-width: 0/);
+  assert.match(css, /\[part="header"\] > div:first-child[^{]+{[^}]*flex: 1 1 auto/);
+  assert.match(css, /\[part="header"\] > div:first-child h1[^{]+{[^}]*text-overflow: ellipsis/);
   assert.match(css, /\[part="header"\] > div[^{]+{[^}]*gap: 12px/);
   assert.match(css, /\[part="header"\] > div button[^{]+{[^}]*width: 28px/);
   assert.match(css, /\[part="header"\] > div button[^{]+{[^}]*background: transparent/);
   assert.match(css, /\[part="header"\] > div button[^{]+{[^}]*color: var\(--algolia-text-muted\)/);
   assert.match(css, /\[part="header"\] > div button svg[^{]+{[^}]*width: 17px/);
   assert.match(css, /\[part="header"\] > div button img[^{]+{[^}]*width: 17px/);
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\[part="header"\]::after[^{]+{[^}]*left: 64px/);
   assert.doesNotMatch(css, /\[part="header"\] button[^{]+{[^}]*margin-left: 6px/);
   assert.doesNotMatch(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2::before/);
   assert.doesNotMatch(css, /linear-gradient\(180deg, var\(--algolia-agent-primary\)/);
@@ -83,6 +88,10 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\.acs-step__detail[^{]+{[^}]*color: color-mix/);
   assert.match(css, /\.acs-step--active \.acs-step__label[^{]+{[^}]*color: var\(--algolia-text-secondary\)/);
   assert.match(css, /\[part="composer"\][^{]+{[^}]*border-radius: var\(--algolia-radius-full\)/);
+  assert.match(css, /\[part="composer-input"\][^{]+{[^}]*display: flex/);
+  assert.match(css, /\[part="composer-input"\][^{]+{[^}]*align-items: center/);
+  assert.match(css, /\[part="composer-input"\][^{]+{[^}]*line-height: 38px/);
+  assert.match(css, /\[part="composer-input"\]::placeholder[^{]+{[^}]*line-height: 38px/);
   assert.match(css, /\[part="composer-send"\][^{]+{[^}]*width: 40px/);
   assert.match(css, /\[part="composer-send"\][^{]+{[^}]*background: #050505/);
   assert.match(css, /data:image\/svg\+xml/);

@@ -169,6 +169,8 @@
       '[part="launcher"] img { filter: brightness(0) invert(1); }',
       '[part="panel"] { border-radius: 20px; border: 1px solid color-mix(in srgb, var(--algolia-border) 88%, #ffffff); box-shadow: 0 24px 80px -52px rgba(35,38,59,0.72), 0 0 0 1px rgba(35,38,59,0.04); }',
       '[part="header"] { position: relative; min-height: var(--algolia-header-h); gap: 16px; padding: 13px 18px 12px !important; align-items: center !important; background: rgba(255,255,255,0.98); }',
+      '[part="header"] > div:first-child { align-self: center; min-width: 0; flex: 1 1 auto; }',
+      '[part="header"] > div:first-child h1 { overflow: hidden; text-overflow: ellipsis; }',
       '[part="header"] h1 { line-height: 1.15; margin-bottom: 4px; white-space: nowrap; }',
       '[part="header"]::after { content: "Fully grounded: every answer cites its source."; position: absolute; left: 80px; top: 46px; max-width: calc(100% - 190px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--algolia-text-muted); font-size: var(--algolia-fs-xs); line-height: 1.35; }',
       '[part="header"] > div { gap: 12px !important; }',
@@ -177,7 +179,8 @@
       '[part="header"] > div button svg, [part="header"] > div button img { width: 17px !important; height: 17px !important; }',
       '[part="chat-content"] { padding: 16px 18px !important; background: linear-gradient(180deg, #f8f9fd 0%, var(--algolia-bg) 60%, #ffffff 100%); }',
       '[part="composer"] { margin: 2px 0 4px !important; padding: 4px 5px 4px 16px !important; gap: 8px !important; min-height: 46px; border: 1px solid var(--algolia-border); border-radius: var(--algolia-radius-full); background: #ffffff; box-shadow: 0 10px 28px -22px rgba(35,38,59,0.8), 0 1px 0 rgba(255,255,255,0.95) inset; }',
-      '[part="composer-input"] { min-height: 38px; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; font-size: var(--algolia-fs-base); box-shadow: none !important; }',
+      '[part="composer-input"] { display: flex; align-items: center; min-height: 38px; line-height: 38px; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; font-size: var(--algolia-fs-base); box-shadow: none !important; }',
+      '[part="composer-input"]::placeholder { line-height: 38px; }',
       '[part="composer-send"] { position: relative; width: 40px; min-width: 40px; height: 40px; min-height: 40px; padding: 0 !important; border: 0; border-radius: var(--algolia-radius-full); background: #050505; color: transparent; font-size: 0; box-shadow: none; }',
       '/* Generated from local Algolia logo pack: /Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG/Algolia-mark-white.svg */',
       `[part="composer-send"]::before { content: ""; position: absolute; inset: 10px; background-image: ${algoliaMarkWhite}; background-repeat: no-repeat; background-position: center; background-size: contain; }`,
@@ -199,7 +202,7 @@
       '.acs-progress__fill::after { display: none !important; }',
       // On mobile viewports the 75vw normal-mode panel would be too narrow.
       // Override to near-full-width below 640px.
-      '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="header"] { gap: 10px; padding-left: 16px !important; padding-right: 12px !important; } [part="header"] h1 { font-size: 18px; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="header"]::after { content: "Grounded answers cite sources."; left: 70px; top: 46px; max-width: calc(100% - 142px); } [part="composer"] { margin: 8px 14px 12px !important; } }',
+      '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="header"] { gap: 10px; padding-left: 16px !important; padding-right: 12px !important; } [part="header"] h1 { font-size: 16px; line-height: 1.1; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="header"]::after { content: "Grounded answers cite sources."; left: 64px; top: 45px; max-width: calc(100% - 182px); } [part="composer"] { margin: 8px 14px 12px !important; } [part="composer-input"] { font-size: var(--algolia-fs-sm); } }',
       // The sample-questions popup uses `position:absolute; bottom:100%` and
       // expands upward. The panel has `overflow:hidden` for its rounded corners,
       // so a tall popup gets clipped at the panel top. Cap the popup height and
