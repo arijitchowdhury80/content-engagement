@@ -1,0 +1,64 @@
+{
+  "target": {
+    "block": "/sites/www/home/drift/custom-code-block",
+    "chat": "/sites/www/files/algolia-chat.js",
+    "newTracker": "/sites/www/files/algolia-engagement-tracker.js",
+    "contextCompiler": "/sites/www/files/algolia-context-compiler.js",
+    "proactiveController": "/sites/www/files/algolia-proactive-controller.js",
+    "handoffToOrchestrator": "/sites/www/files/handoff-to-orchestrator.js",
+    "oldTracker": "/sites/www/files/algolia-chat-tracker.js",
+    "engage": "/sites/www/files/algolia-chat-engage.js",
+    "theme": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+  },
+  "current": {
+    "oldTrackerReferenced": false,
+    "chatReferenced": true,
+    "newTrackerReferenced": true,
+    "contextCompilerReferenced": true,
+    "proactiveControllerReferenced": true,
+    "handoffToOrchestratorReferenced": true,
+    "themeReferenced": true,
+    "releaseMarkers": [
+      "chat-ui-proactive-transcript-lane-20260815a"
+    ],
+    "chatExists": true,
+    "newTrackerExists": true,
+    "contextCompilerExists": true,
+    "proactiveControllerExists": true,
+    "handoffToOrchestratorExists": true,
+    "themeExists": true
+  },
+  "intended": {
+    "oldTrackerReferenced": false,
+    "chatReferenced": true,
+    "newTrackerReferenced": true,
+    "contextCompilerReferenced": true,
+    "proactiveControllerReferenced": true,
+    "handoffToOrchestratorReferenced": true,
+    "themeReferenced": true,
+    "chatVersion": "20260815-answer-rhythm-balanced-a",
+    "trackerVersion": "20260815a",
+    "contextCompilerVersion": "20260815a",
+    "proactiveControllerVersion": "20260815e",
+    "handoffToOrchestratorVersion": "20260814b",
+    "engageVersion": "20260814d",
+    "themeVersion": "20260815-answer-rhythm-balanced-a",
+    "chatSha256": "b4cb6b25863ebe055c48e01d134c83270fa4af596a52823fbdc007a5df14b796",
+    "trackerSha256": "5bb576eaef1c482b03ff23e530658bff6e6fcbaae98727b0d240775dee01b3ef",
+    "contextCompilerSha256": "eb85c26dc29baaa27829f3d7c6be25ea87e70284aa6cab1f29ee7dc4c6e2e0db",
+    "proactiveControllerSha256": "d58f13f48bd41d5c4bf9976407e20171cde436366640c4603cec35b7637d67ad",
+    "handoffToOrchestratorSha256": "7808ef36eeb5f48e7e7b6db6191cb74cf4759eb701809c06eef76b66acd47eb3",
+    "engageSha256": "927868c7f6eb065fb35e09532002bf426f736ad67b8ca948456d2fa7ad0ea711",
+    "themeSha256": "44ba0b7f97f0492e340a3e96e8676e38f6ca029ff0e0dc78c5ba3c23e6a973a6"
+  },
+  "rollback": {
+    "restoreBlockHtmlFrom": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/chat-stack-deploy-20260815T172142Z/jahia/before-snapshot.json",
+    "restoreOldTrackerFrom": "before-snapshot.json edit.oldTrackerNode children[0].properties[jcr:data]",
+    "restoreChatFrom": "before-snapshot.json edit.chatNode children[0].properties[jcr:data]",
+    "restoreOrRemoveContextCompilerFrom": "before-snapshot.json edit.contextCompilerNode children[0].properties[jcr:data]",
+    "restoreOrRemoveProactiveControllerFrom": "before-snapshot.json edit.proactiveControllerNode children[0].properties[jcr:data]",
+    "restoreOrRemoveHandoffToOrchestratorFrom": "before-snapshot.json edit.handoffToOrchestratorNode children[0].properties[jcr:data]",
+    "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]",
+    "restoreThemeFrom": "before-snapshot.json edit.themeNode children[0].properties[jcr:data]"
+  }
+}
