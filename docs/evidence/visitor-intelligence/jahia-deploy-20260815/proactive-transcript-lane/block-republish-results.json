@@ -1,0 +1,62 @@
+[
+  {
+    "attempt": 1,
+    "version": {
+      "data": {
+        "jcr": {
+          "block": {
+            "createVersion": true,
+            "node": {
+              "path": "/sites/www/home/drift/custom-code-block"
+            }
+          }
+        }
+      }
+    },
+    "publishBlockFlat": {
+      "data": {
+        "jcr": {
+          "target": {
+            "publish": true,
+            "node": {
+              "path": "/sites/www/home/drift/custom-code-block"
+            }
+          }
+        }
+      }
+    },
+    "publishBlockTree": {
+      "data": {
+        "jcr": {
+          "target": {
+            "publish": true,
+            "node": {
+              "path": "/sites/www/home/drift/custom-code-block"
+            }
+          }
+        }
+      }
+    },
+    "publishDriftTree": {
+      "data": {
+        "jcr": {
+          "target": {
+            "publish": true,
+            "node": {
+              "path": "/sites/www/home/drift"
+            }
+          }
+        }
+      }
+    },
+    "state": {
+      "attempt": 1,
+      "editHasRelease": true,
+      "editHasKey": true,
+      "liveHasRelease": true,
+      "liveHasKey": true,
+      "liveRelease": "chat-ui-proactive-transcript-lane-20260815a",
+      "liveChat": "algolia-chat.js?chat=20260815-sample-questions-footer-a&proactiveLane=20260815-chat-ui-proactive-transcript-lane-a"
+    }
+  }
+]

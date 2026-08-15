@@ -1,0 +1,10 @@
+{
+  "release": "chat-ui-proactive-transcript-lane-20260815a",
+  "version": "20260815-chat-ui-proactive-transcript-lane-a",
+  "target": {
+    "chat": "/sites/www/files/algolia-chat.js",
+    "block": "/sites/www/home/drift/custom-code-block"
+  },
+  "localChatSha256": "ed42b02d7d95434b8bda9480465697f9c40853f77ce3ae4a38371fd249a60109",
+  "willChangeBlock": true
+}

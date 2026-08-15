@@ -1,0 +1,24 @@
+{
+  "capturedAt": "2026-08-15T10:08:13.398794+00:00",
+  "release": "chat-ui-proactive-transcript-lane-20260815a",
+  "version": "20260815-chat-ui-proactive-transcript-lane-a",
+  "publicUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?proactiveLane=20260815-chat-ui-proactive-transcript-lane-a&verify=20260815100813",
+  "localSha256": "ed42b02d7d95434b8bda9480465697f9c40853f77ce3ae4a38371fd249a60109",
+  "editJcrSha256": "ed42b02d7d95434b8bda9480465697f9c40853f77ce3ae4a38371fd249a60109",
+  "liveJcrSha256": "ed42b02d7d95434b8bda9480465697f9c40853f77ce3ae4a38371fd249a60109",
+  "publicSha256": "ed42b02d7d95434b8bda9480465697f9c40853f77ce3ae4a38371fd249a60109",
+  "checks": {
+    "editBlockHasRelease": true,
+    "liveBlockHasRelease": true,
+    "editBlockHasProactiveLaneKey": true,
+    "liveBlockHasProactiveLaneKey": true,
+    "editChatHashMatchesLocal": true,
+    "liveChatHashMatchesLocal": true,
+    "publicChatHashMatchesLocal": true,
+    "publicChatUsesFullLaneForProactiveGreeting": true,
+    "publicChatOmitsOldProactiveNarrowWrapper": true,
+    "publicGreetingOmitsAvatar": true,
+    "publicGreetingOmitsOldBubble": true
+  },
+  "pass": true
+}
