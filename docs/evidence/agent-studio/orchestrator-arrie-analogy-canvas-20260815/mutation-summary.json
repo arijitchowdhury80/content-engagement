@@ -1,0 +1,35 @@
+{
+  "changedAt": "2026-08-15T09:03:50.258Z",
+  "target": "www Chat – Orchestrator",
+  "appId": "0EXRPAXB56",
+  "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+  "current": {
+    "name": "www Chat – Orchestrator",
+    "model": "medium",
+    "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+    "status": "published",
+    "systemPromptLength": 6168,
+    "systemPromptSha256": "08f3273289b41649ac8f9b25d752965997652c5aa6a5a8e59a1c8867de145e96",
+    "instructionsLength": 16115,
+    "instructionsSha256": "ad697ecf5481117985446f5cb6b9dc2e843261302abfec86d42f51eb20098f2e"
+  },
+  "intended": {
+    "systemPromptLength": 8954,
+    "systemPromptSha256": "418509ab8fd9553fb38eb5b1c3453d8f1928e493643d81815513d4b0fd38f619",
+    "instructionsLength": 18509,
+    "instructionsSha256": "5602aa9420a1acda33602e7b7fc5a7ad56a257da780ccf09c8907188b61013d0",
+    "behavior": [
+      "Add analogy_canvas as first step for substantial explanation/comparison/implementation/ROI/cost/tradeoff answers.",
+      "Make aRRIe voice harder to flatten into support-article style.",
+      "Require technical points to translate into business value where possible."
+    ]
+  },
+  "rollback": {
+    "file": "before.json",
+    "action": "PATCH the agent back with before.json systemPrompt and instructions while preserving current tools/config/model/provider."
+  },
+  "validation": [
+    "Read back agent JSON and compare systemPrompt/instructions hashes to local files.",
+    "Smoke a fresh API-call/cost-control question and verify the answer opens with analogy_canvas, grounds sources, and ends with one discovery question."
+  ]
+}

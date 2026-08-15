@@ -1,0 +1,51 @@
+{
+  "httpStatus": 200,
+  "question": "For a high-traffic search UI, do keystrokes, filter clicks, and page loads each count as Algolia API calls, and how should that shape rate limiting and cost control?",
+  "answerLength": 3139,
+  "answerPreview": "API calls are like door swings at a very busy store: one customer entering is harmless, but autocomplete, filters, page loads, and eager widgets can turn that door into a blur. The trick is not to stop the door from moving, but to make sure every swing is intentional.\n\nShort version: **Yes**. Every single request your frontend sends to an Algolia index—whether it's for a search, a filter change, or an initial page load—counts as one billable search request.\n\n### How UI Interactions Translate to API Calls\nBased on Algolia's billing and usage patterns, here is how your UI behavior impacts your operations count:\n\n*   **Keystrokes:** In \"search-as-you-type\" implementations (like those using [InstantSearch](https://www.algolia.com/doc/guides/building-search-ui/going-further/optimize-search-request-usage/ios)), a search is typically triggered on every single keystroke. If a user types \"running shoes,\" that can be 12 separate API calls.\n*   **Filter Clicks:** Every time a user applies or removes a filter, a new query with updated parameters is sent to the engine to refresh the results. Each click equals one request.\n*   **Page Loads:** If you use Algolia to power category pages or landing pages, an \"empty search\" (a query with no text but specific filters) is performed the moment the page loads. These are called [browse requests](https://support.algolia.com/hc/en-us/articles/26960172321169-Why-are-the-number-of-search-requests-shown-in-the-Billing-and-Analytics-pages-different-when-not-using-search-as-you-type) and are fully billable.\n*   **Pagination:** Moving to the next page of results triggers a new request with an updated `offset` value.\n\n### Strategic Cost Control & Rate Limiting\nFor a high-traffic site, an unoptimized UI can lead to a \"request explosion.\" To keep costs predictable and performance high, I recommend these three levers:\n\n1.  **Implement Query Thresholds:** You can configure your UI to only trigger a search after a user has typed a minimum number of characters (e.g., 3 characters). This prevents a flood of overly broad requests for single letters.\n2.  **Consolidate Requests:** If you use [Query Suggestions](https://support.algolia.com/hc/en-us/artic",
+  "startsWithAnalogyLikely": true,
+  "questionMarkCount": 1,
+  "hitCount": 12,
+  "topHits": [
+    {
+      "title": "Why are the number of search requests shown in the Billing and Analytics pages different when not using search-as-you-type?",
+      "url": "https://support.algolia.com/hc/en-us/articles/26960172321169-Why-are-the-number-of-search-requests-shown-in-the-Billing-and-Analytics-pages-different-when-not-using-search-as-you-type",
+      "source": "Support"
+    },
+    {
+      "title": "How can I monitor my application's monthly costs?",
+      "url": "https://support.algolia.com/hc/en-us/articles/11892882592529-How-can-I-monitor-my-application-s-monthly-costs",
+      "source": "Support"
+    },
+    {
+      "title": "Why is my record count under Billing > Usage higher than expected?",
+      "url": "https://support.algolia.com/hc/en-us/articles/44272601733649-Why-is-my-record-count-under-Billing-Usage-higher-than-expected",
+      "source": "Support"
+    },
+    {
+      "title": "Does a rate-limited API key apply to Recommend requests?",
+      "url": "https://support.algolia.com/hc/en-us/articles/16306807320721-Does-a-rate-limited-API-key-apply-to-Recommend-requests",
+      "source": "Support"
+    },
+    {
+      "title": "How does billing work for Standard and Premium plans?",
+      "url": "https://support.algolia.com/hc/en-us/articles/4406975219601-How-does-billing-work-for-Standard-and-Premium-plans",
+      "source": "Support"
+    },
+    {
+      "title": "Does an empty search count towards my bill?",
+      "url": "https://support.algolia.com/hc/en-us/articles/11555337858321-Does-an-empty-search-count-towards-my-bill",
+      "source": "Support"
+    },
+    {
+      "title": "Do Query Suggestions increase the number of billable requests?",
+      "url": "https://support.algolia.com/hc/en-us/articles/10291951587473-Do-Query-Suggestions-increase-the-number-of-billable-requests",
+      "source": "Support"
+    },
+    {
+      "title": "Optimize search requests",
+      "url": "/doc/guides/building-search-ui/going-further/optimize-search-request-usage/ios",
+      "source": "Documentation"
+    }
+  ]
+}

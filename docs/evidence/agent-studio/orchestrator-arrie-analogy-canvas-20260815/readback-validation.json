@@ -1,0 +1,15 @@
+{
+  "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+  "agentName": "www Chat – Orchestrator",
+  "readbackAt": "2026-08-15T09:03:51.193Z",
+  "systemPromptLength": 8954,
+  "systemPromptSha256": "418509ab8fd9553fb38eb5b1c3453d8f1928e493643d81815513d4b0fd38f619",
+  "systemPromptMatches": true,
+  "instructionsLength": 18509,
+  "instructionsSha256": "5602aa9420a1acda33602e7b7fc5a7ad56a257da780ccf09c8907188b61013d0",
+  "instructionsMatches": true,
+  "modelUnchanged": true,
+  "providerUnchanged": true,
+  "configJsonUnchanged": true,
+  "toolsJsonUnchanged": true
+}
