@@ -9,7 +9,9 @@
   const PROFILE_KEY = "algolia_profile";
   const SESSION_KEY = "algolia_session";
   const EVENTS_KEY = "algolia_events";
+  const PROACTIVE_STATE_KEY = "algolia_proactive_state";
   const TOKEN_KEY = "algolia_token";
+  const RESET_QUERY_PARAM = "algoliaProactiveReset";
 
   const PROFILE_SCHEMA = "AlgoliaEngagementProfile.v1";
   const SESSION_SCHEMA = "AlgoliaEngagementSession.v1";
@@ -272,7 +274,11 @@
       return { pageGroup: "developer", topic: topicFromText(text, "developer_experience") };
     }
     if (path.includes("/products")) {
-      return { pageGroup: "product", topic: topicFromText(text, "product_research") };
+      return {
+        pageGroup: "product",
+        topic: topicFromText(text, "product_research"),
+        ...productFocusFromText(text),
+      };
     }
     if (path.includes("/industries") || path.includes("/solutions")) {
       return { pageGroup: "solution", topic: topicFromText(text, "industry_solution") };
@@ -293,6 +299,42 @@
     if (/ai search|neural|recommend|personalization|semantic/.test(text)) return "ai_search";
     if (/customer|case stud|roi|conversion|revenue/.test(text)) return "customer_proof";
     return fallback;
+  }
+
+  function productFocusFromText(text) {
+    if (/personalization|personalized/.test(text)) {
+      return { productFocus: "personalization", productFocusLabel: "Personalization" };
+    }
+    if (/recommend|recommendations/.test(text)) {
+      return { productFocus: "recommendations", productFocusLabel: "AI Recommendations" };
+    }
+    if (/neural|semantic/.test(text)) {
+      return { productFocus: "neural_search", productFocusLabel: "Neural Search" };
+    }
+    if (/instantsearch/.test(text)) {
+      return { productFocus: "instantsearch", productFocusLabel: "InstantSearch" };
+    }
+    if (/ai search/.test(text)) {
+      return { productFocus: "ai_search", productFocusLabel: "AI Search" };
+    }
+    if (/\/products\/search|site search|\bsearch\b/.test(text)) {
+      return { productFocus: "search", productFocusLabel: "Search" };
+    }
+    return {};
+  }
+
+  function resetSessionForDemoIfRequested() {
+    try {
+      if (new URLSearchParams(location.search).get(RESET_QUERY_PARAM) !== "1") return;
+      sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(EVENTS_KEY);
+      sessionStorage.removeItem(PROACTIVE_STATE_KEY);
+      session = null;
+      currentPageId = null;
+      debug("reset session-scoped proactive state from query parameter");
+    } catch {
+      // Demo reset is best effort and must never break the page.
+    }
   }
 
   function initializeProfile() {
@@ -450,6 +492,8 @@
       maxScrollDepth: 0,
       pageGroup: classification.pageGroup,
       topic: classification.topic,
+      productFocus: classification.productFocus,
+      productFocusLabel: classification.productFocusLabel,
     });
 
     track("page_view", {
@@ -458,6 +502,8 @@
       referrer: page.referrer,
       pageGroup: page.pageGroup,
       topic: page.topic,
+      productFocus: page.productFocus,
+      productFocusLabel: page.productFocusLabel,
       utm: currentUtm(),
     });
 
@@ -469,6 +515,8 @@
           dwellSeconds: Math.round(milestone / 1000),
           pageGroup: page.pageGroup,
           topic: page.topic,
+          productFocus: page.productFocus,
+          productFocusLabel: page.productFocusLabel,
         });
       }, milestone);
     }
@@ -503,6 +551,8 @@
           depth: milestone,
           pageGroup: page?.pageGroup,
           topic: page?.topic,
+          productFocus: page?.productFocus,
+          productFocusLabel: page?.productFocusLabel,
         });
       }
     }
@@ -866,6 +916,7 @@
     processQueue(previousEngagementApi);
     processQueue(previousLegacyApi);
 
+    resetSessionForDemoIfRequested();
     trackPageView();
     installRouteWatcher();
     installClickWatcher();

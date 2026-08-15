@@ -124,7 +124,13 @@
     if (text.includes("/developers") || text.includes("/developer")) {
       return { pageGroup: "developer", topic: topicFromText(text, "developer_experience") };
     }
-    if (text.includes("/products")) return { pageGroup: "product", topic: topicFromText(text, "product_research") };
+    if (text.includes("/products")) {
+      return {
+        pageGroup: "product",
+        topic: topicFromText(text, "product_research"),
+        ...productFocusFromText(text),
+      };
+    }
     if (text.includes("/industries") || text.includes("/solutions")) {
       return { pageGroup: "solution", topic: topicFromText(text, "industry_solution") };
     }
@@ -141,6 +147,38 @@
     if (/customer|case stud|roi|conversion|revenue/.test(text)) return "customer_proof";
     if (/marketplace/.test(text)) return "marketplace";
     return fallback;
+  }
+
+  function productFocusFromText(text) {
+    if (/personalization|personalized/.test(text)) {
+      return { productFocus: "personalization", productFocusLabel: "Personalization" };
+    }
+    if (/recommend|recommendations/.test(text)) {
+      return { productFocus: "recommendations", productFocusLabel: "AI Recommendations" };
+    }
+    if (/neural|semantic/.test(text)) {
+      return { productFocus: "neural_search", productFocusLabel: "Neural Search" };
+    }
+    if (/instantsearch/.test(text)) {
+      return { productFocus: "instantsearch", productFocusLabel: "InstantSearch" };
+    }
+    if (/ai search/.test(text)) {
+      return { productFocus: "ai_search", productFocusLabel: "AI Search" };
+    }
+    if (/\/products\/search|site search|\bsearch\b/.test(text)) {
+      return { productFocus: "search", productFocusLabel: "Search" };
+    }
+    return {};
+  }
+
+  function pageWithClassification(page) {
+    const classified = classifyPath(page?.path, page?.title);
+    const merged = { ...classified, ...(page || {}) };
+    if (!merged.productFocus && classified.productFocus) {
+      merged.productFocus = classified.productFocus;
+      merged.productFocusLabel = classified.productFocusLabel;
+    }
+    return merged;
   }
 
   function findCurrentPage(session) {
@@ -337,10 +375,7 @@
       : MAX_RECENT_EVENTS;
     const recentEvents = events.slice(-maxRecentEvents);
     const currentPage = findCurrentPage(session);
-    const classifiedPage = {
-      ...classifyPath(currentPage?.path, currentPage?.title),
-      ...currentPage,
-    };
+    const classifiedPage = pageWithClassification(currentPage);
     const persona = inferPersona(profile, recentEvents, classifiedPage);
     const inferences = scoreFromSignals({ currentPage: classifiedPage, recentEvents });
 
@@ -371,6 +406,8 @@
         title: clampText(classifiedPage.title, 160),
         pageGroup: clampText(classifiedPage.pageGroup, 80),
         topic: clampText(classifiedPage.topic, 80),
+        productFocus: clampText(classifiedPage.productFocus, 80),
+        productFocusLabel: clampText(classifiedPage.productFocusLabel, 80),
         dwellMs: Number.isFinite(classifiedPage.dwellMs) ? classifiedPage.dwellMs : 0,
         maxScrollDepth: Number.isFinite(classifiedPage.maxScrollDepth) ? classifiedPage.maxScrollDepth : 0,
       },
@@ -380,6 +417,14 @@
           state: "observed",
           source: "current_page",
         },
+        currentProductFocus: classifiedPage.productFocus
+          ? {
+              value: clampText(classifiedPage.productFocus, 80),
+              label: clampText(classifiedPage.productFocusLabel, 80),
+              state: "observed",
+              source: "current_page",
+            }
+          : undefined,
         eventCounts: summarizeEvents(events),
       },
       recentEvents,
@@ -417,6 +462,8 @@
       current_page: packet.currentPage.path,
       current_page_group: packet.currentPage.pageGroup,
       current_topic: inferenceValue(packet.observedSignals.currentTopic),
+      current_product_focus: inferenceValue(packet.observedSignals.currentProductFocus),
+      current_product_focus_label: packet.currentPage.productFocusLabel,
       current_dwell_seconds: String(Math.round((packet.currentPage.dwellMs || 0) / 1000)),
       current_scroll_depth: String(packet.currentPage.maxScrollDepth || 0),
       session_page_count: String(packet.session.pageCount || 0),

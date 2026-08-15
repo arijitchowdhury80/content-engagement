@@ -153,6 +153,42 @@ test('compiles rich context from tracker state without downgrading confirmed per
   assert.ok(packet.recentEvents.some((event) => event.name === 'nav_click'));
 });
 
+test('preserves product feature focus for downstream personalization', () => {
+  const { context } = createHarness({
+    locationPath: '/products/features/personalization',
+    session: {
+      schema: 'AlgoliaEngagementSession.v1',
+      sessionId: 'sess_123',
+      startedAt: 1786750000000,
+      currentPageId: 'page_current',
+      pages: [
+        {
+          pageId: 'page_current',
+          path: '/products/features/personalization',
+          title: 'Search Personalization',
+          enteredAt: 1786750060000,
+          dwellMs: 10000,
+          maxScrollDepth: 50,
+          pageGroup: 'product',
+          topic: 'ai_search',
+          productFocus: 'personalization',
+          productFocusLabel: 'Personalization',
+        },
+      ],
+      engagementHistory: [],
+    },
+  });
+
+  const packet = context.algoliaContextCompiler.compile();
+  const turnContext = context.algoliaContextCompiler.compileTurnContext();
+
+  assert.equal(packet.currentPage.productFocus, 'personalization');
+  assert.equal(packet.currentPage.productFocusLabel, 'Personalization');
+  assert.equal(packet.observedSignals.currentProductFocus.value, 'personalization');
+  assert.equal(turnContext.current_product_focus, 'observed:personalization');
+  assert.equal(turnContext.current_product_focus_label, 'Personalization');
+});
+
 test('infers intent, friction, and persona softly with confidence and evidence', () => {
   const { context } = createHarness();
 

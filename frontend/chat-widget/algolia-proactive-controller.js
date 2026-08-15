@@ -197,6 +197,28 @@
     return pages.filter(predicate).length;
   }
 
+  function productFocus(page) {
+    const value = String(page?.productFocus || "").trim();
+    if (!value) return null;
+    return {
+      value,
+      label: String(page?.productFocusLabel || value).trim(),
+      state: "observed",
+      source: isProduct(page) ? "current_product_page" : "prior_product_page",
+      pagePath: page?.path || null,
+      pageTitle: page?.title || null,
+    };
+  }
+
+  function contextualFocusFor(packet) {
+    const page = currentPage(packet);
+    const currentFocus = productFocus(page);
+    if (currentFocus) return currentFocus;
+    const priorProduct = priorPage(sessionPages(packet), isProduct);
+    const priorFocus = productFocus(priorProduct);
+    return priorFocus ? { ...priorFocus, source: "prior_product_page" } : null;
+  }
+
   function baseDecision(packet, fields) {
     const page = currentPage(packet);
     const events = recentEvents(packet);
@@ -215,10 +237,14 @@
         priority: fields.priority,
         persona: packet?.profile?.persona || null,
         currentPage: page,
+        contextualFocus: contextualFocusFor(packet),
         journey: sessionPages(packet).map((item) => ({
           path: item.path,
+          title: item.title,
           pageGroup: item.pageGroup,
           topic: item.topic,
+          productFocus: item.productFocus,
+          productFocusLabel: item.productFocusLabel,
           dwellMs: item.dwellMs,
           maxScrollDepth: item.maxScrollDepth,
         })),
@@ -476,6 +502,63 @@
     };
   }
 
+  function updateDebugStatus(message, detail) {
+    if (!DEBUG) return;
+    const status = {
+      message,
+      detail,
+      at: Date.now(),
+    };
+    window.__algoliaProactiveLastStatus = status;
+    try {
+      if (!document.body || typeof document.createElement !== "function") return;
+      let node = document.getElementById?.("algolia-proactive-debug-status");
+      if (!node) {
+        node = document.createElement("div");
+        node.id = "algolia-proactive-debug-status";
+        node.setAttribute("style", [
+          "position:fixed",
+          "left:12px",
+          "bottom:12px",
+          "z-index:2147483647",
+          "max-width:420px",
+          "padding:8px 10px",
+          "border:1px solid #3157ff",
+          "border-radius:8px",
+          "background:#fff",
+          "color:#1f2a44",
+          "font:12px/1.35 system-ui,-apple-system,BlinkMacSystemFont,sans-serif",
+          "box-shadow:0 8px 24px rgba(31,42,68,.18)",
+        ].join(";"));
+        document.body.appendChild(node);
+      }
+      node.textContent = message;
+      node.title = JSON.stringify(detail || {}).slice(0, 900);
+    } catch {
+      // Debug UI is best effort; the window/event state above is the testable source.
+    }
+  }
+
+  function recordSuppression(decision) {
+    if (!DEBUG) return;
+    window.__algoliaProactiveLastSuppression = {
+      reason: decision?.reason || "unknown",
+      pagePath: decision?.pagePath || location.pathname,
+      createdAt: Date.now(),
+      decision,
+    };
+    updateDebugStatus(`Proactive suppressed: ${decision?.reason || "unknown"}`, decision);
+    try {
+      document.dispatchEvent(
+        new CustomEvent("algolia-proactive-suppressed", {
+          detail: window.__algoliaProactiveLastSuppression,
+        })
+      );
+    } catch {
+      // ignore
+    }
+  }
+
   function evaluate({ reserve = false } = {}) {
     const packet = compilerPacket();
     const state = readState();
@@ -690,10 +773,12 @@
     const decision = evaluate({ reserve: true });
     if (!decision.engage) {
       debug("no proactive opportunity", decision.reason);
+      recordSuppression(decision);
       return;
     }
 
     debug("proactive opportunity", decision);
+    updateDebugStatus(`Proactive opportunity: ${decision.trigger}`, decision);
     document.dispatchEvent(
       new CustomEvent("algolia-proactive-opportunity", {
         detail: decision,

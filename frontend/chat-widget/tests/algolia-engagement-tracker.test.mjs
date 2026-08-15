@@ -23,12 +23,15 @@ class MemoryStorage {
   }
 }
 
-function createHarness() {
+function createHarness({ pathname = '/pricing', search = '?utm_source=paid_search&email=nope@example.com', title = 'Pricing', initialSession = {}, initialEvents = {} } = {}) {
   const listeners = new Map();
   const documentListeners = new Map();
   const documentDispatches = [];
   const localStorage = new MemoryStorage();
-  const sessionStorage = new MemoryStorage();
+  const sessionStorage = new MemoryStorage({
+    ...initialSession,
+    ...initialEvents,
+  });
   const chatElement = {
     source: null,
     setVisitorDataSource(source) {
@@ -60,10 +63,10 @@ function createHarness() {
       },
     },
     location: {
-      href: 'https://www.algolia.com/pricing?utm_source=paid_search&email=nope@example.com',
+      href: `https://www.algolia.com${pathname}${search}`,
       origin: 'https://www.algolia.com',
-      pathname: '/pricing',
-      search: '?utm_source=paid_search&email=nope@example.com',
+      pathname,
+      search,
     },
     history: {
       pushState() {},
@@ -75,7 +78,7 @@ function createHarness() {
       listeners.get(name)?.();
     },
     document: {
-      title: 'Pricing',
+      title,
       referrer: 'https://www.algolia.com/products/ai-search?token=secret',
       hidden: false,
       cookie: '',
@@ -231,4 +234,40 @@ test('emits an in-page engagement signal whenever activity is tracked', () => {
   assert.ok(signals.length >= 1, 'expected at least one engagement signal');
   assert.equal(signals.at(-1).detail.name, 'nav_click');
   assert.equal(signals.at(-1).detail.path, '/pricing');
+});
+
+test('classifies product feature focus on page views and events', () => {
+  const { sessionStorage } = createHarness({
+    pathname: '/products/features/personalization',
+    search: '',
+    title: 'Search Personalization',
+  });
+
+  const session = parse(sessionStorage, 'algolia_session');
+  const events = parse(sessionStorage, 'algolia_events').events;
+  const pageView = events.find((event) => event.name === 'page_view');
+
+  assert.equal(session.pages[0].pageGroup, 'product');
+  assert.equal(session.pages[0].topic, 'ai_search');
+  assert.equal(session.pages[0].productFocus, 'personalization');
+  assert.equal(session.pages[0].productFocusLabel, 'Personalization');
+  assert.equal(pageView.props.productFocus, 'personalization');
+  assert.equal(pageView.props.productFocusLabel, 'Personalization');
+});
+
+test('algoliaProactiveReset clears session-scoped proactive state without deleting profile', () => {
+  const { localStorage, sessionStorage } = createHarness({
+    pathname: '/products/features/personalization',
+    search: '?algoliaProactiveReset=1',
+    initialSession: {
+      algolia_session: JSON.stringify({ schema: 'AlgoliaEngagementSession.v1', sessionId: 'old', pages: [{ path: '/pricing' }] }),
+      algolia_events: JSON.stringify({ schema: 'AlgoliaEngagementEvents.v1', sessionId: 'old', events: [{ name: 'chat_open' }] }),
+      algolia_proactive_state: JSON.stringify({ opportunities: [{ id: 'old_opp' }] }),
+    },
+  });
+
+  assert.equal(parse(localStorage, 'algolia_profile').schema, 'AlgoliaEngagementProfile.v1');
+  assert.notEqual(parse(sessionStorage, 'algolia_session').sessionId, 'old');
+  assert.equal(parse(sessionStorage, 'algolia_events').events.some((event) => event.name === 'chat_open'), false);
+  assert.equal(sessionStorage.getItem('algolia_proactive_state'), null);
 });

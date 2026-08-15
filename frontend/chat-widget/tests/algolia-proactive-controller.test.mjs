@@ -29,6 +29,9 @@ function page({
   path,
   pageGroup,
   topic,
+  title,
+  productFocus,
+  productFocusLabel,
   dwellMs = 0,
   maxScrollDepth = 0,
   enteredAt = 1786750000000,
@@ -36,9 +39,11 @@ function page({
   return {
     pageId,
     path,
-    title: `${pageGroup} ${topic}`,
+    title: title || `${pageGroup} ${topic}`,
     pageGroup,
     topic,
+    productFocus,
+    productFocusLabel,
     dwellMs,
     maxScrollDepth,
     enteredAt,
@@ -74,6 +79,7 @@ function createHarness({
   proactiveConfig,
   contextEngineConfig,
   fetchImpl,
+  search = '',
 } = {}) {
   const currentPath = locationPath || pages?.at(-1)?.path || '/products/ai-recommendations';
   const localStorage = new MemoryStorage({
@@ -138,10 +144,10 @@ function createHarness({
     clearTimeout() {},
     fetch: fetchImpl,
     location: {
-      href: `https://www.algolia.com${currentPath}`,
+      href: `https://www.algolia.com${currentPath}${search}`,
       origin: 'https://www.algolia.com',
       pathname: currentPath,
-      search: '',
+      search,
     },
     CustomEvent: class CustomEvent {
       constructor(type, options = {}) {
@@ -273,6 +279,41 @@ test('commercial evaluation wins when journey moves from product to pricing', ()
   assert.equal(decision.messageGoal, 'explain_cost_drivers');
   assert.ok(decision.priority > 80);
   assert.ok(decision.reasonCodes.includes('journey_product_to_pricing'));
+});
+
+test('product to pricing carries exact prior product focus for personalized greeting', () => {
+  const { context } = createHarness({
+    locationPath: '/pricing',
+    pages: [
+      page({
+        pageId: 'page_product',
+        path: '/products/features/personalization',
+        title: 'Search Personalization',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        productFocus: 'personalization',
+        productFocusLabel: 'Personalization',
+        dwellMs: 12000,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        title: 'Pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 1000,
+      }),
+    ],
+  });
+
+  const decision = opportunity(context);
+
+  assert.equal(decision.trigger, 'product_to_pricing');
+  assert.equal(decision.agentPromptPacket.contextualFocus.value, 'personalization');
+  assert.equal(decision.agentPromptPacket.contextualFocus.label, 'Personalization');
+  assert.equal(decision.agentPromptPacket.contextualFocus.source, 'prior_product_page');
+  assert.equal(decision.agentPromptPacket.journey[0].productFocus, 'personalization');
+  assert.equal(decision.agentPromptPacket.journey[0].title, 'Search Personalization');
 });
 
 test('customer proof triggers from product research into customer story', () => {
@@ -410,6 +451,35 @@ test('emits one opportunity per page and moment from engagement signals', () => 
   assert.equal(opportunities[0].detail.moment, 'product_research');
   assert.equal(state.opportunities.length, 1);
   assert.equal(state.opportunities[0].status, 'eligible');
+});
+
+test('debug mode exposes suppression reason for invisible proactive blocks', () => {
+  const { context, documentEvents } = createHarness({
+    search: '?algoliaProactiveDebug=1',
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 10000,
+      }),
+    ],
+    events: [
+      event({ eventId: 'evt_chat', name: 'chat_open', path: '/products/ai-recommendations' }),
+      event({ eventId: 'evt_page', name: 'page_view', path: '/products/ai-recommendations' }),
+    ],
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_dwell', path: '/products/ai-recommendations' },
+    })
+  );
+
+  const suppression = documentEvents.find((evt) => evt.type === 'algolia-proactive-suppressed');
+  assert.equal(context.__algoliaProactiveLastSuppression.reason, 'chat_already_open');
+  assert.equal(suppression.detail.reason, 'chat_already_open');
 });
 
 test('trigger grammar covers implemented journey, dwell, scroll, and priority permutations', () => {

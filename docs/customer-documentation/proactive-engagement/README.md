@@ -10,9 +10,9 @@ The browser controls timing. Agent Studio controls language and conversation qua
 
 | Stage | File or agent | Role |
 |---|---|---|
-| Collector | `frontend/chat-widget/algolia-engagement-tracker.js` | Captures browser behavior and writes structured profile, session, and event state. |
-| Compiler | `frontend/chat-widget/algolia-context-compiler.js` | Flattens tracker state into `AlgoliaContextPacket.v1` and `AlgoliaTurnContext.v1`. |
-| Controller | `frontend/chat-widget/algolia-proactive-controller.js` | Evaluates journey triggers, reserves an opportunity, calls the Greetings Agent, and asks the chat widget to render the returned greeting. |
+| Collector | `frontend/chat-widget/algolia-engagement-tracker.js` | Captures browser behavior and writes structured profile, session, event, and product-focus state. |
+| Compiler | `frontend/chat-widget/algolia-context-compiler.js` | Flattens tracker state into `AlgoliaContextPacket.v1` and `AlgoliaTurnContext.v1`, including observed product focus when available. |
+| Controller | `frontend/chat-widget/algolia-proactive-controller.js` | Evaluates journey triggers, reserves an opportunity, adds contextual focus for personalization, calls the Greetings Agent, and asks the chat widget to render the returned greeting. |
 | Greetings Agent | `www Chat - Proactive Concierge`; prompt in `agents/prompts/instructions_algolia_proactive_greeting.md` | Creates one greeting and up to three chips from the proactive packet. It does not continue the full answer conversation. |
 | Handoff tool | `frontend/chat-widget/handoff-to-orchestrator.js` | Registers `handoff_to_orchestrator`, captures the selected chip or typed response, and attaches the proactive handoff context to the next orchestrator turn. |
 | Main Orchestrator | `www Chat - Orchestrator`; prompt in `agents/prompts/instructions_algolia_orchestrator.md` | Answers the visitor using the normal grounded answer flow, now aware of the proactive moment that started the conversation. |
@@ -27,6 +27,8 @@ The browser controls timing. Agent Studio controls language and conversation qua
 | `algolia_proactive_state` | `sessionStorage` | Controller-owned opportunity records, cooldown state, and handoff status. |
 
 Hover is not an intent event and must not open the chat. The tracker may observe UI interactions, but proactive triggers require stronger signals such as page view, click, search, dwell, scroll, or a journey shift.
+
+For demo QA, `?algoliaProactiveReset=1` clears session-scoped proactive state, events, and session history without deleting `algolia_profile`. This gives a clean tab journey while preserving durable profile/persona behavior.
 
 ## Flow
 
@@ -69,7 +71,11 @@ The controller evaluates deterministic journey moments. Examples include:
 | Customer proof | Product-to-customer-story or customer-story dwell/scroll | Surface relevant customer proof. |
 | Journey shift | Repeated movement between technical and commercial pages | Help the visitor resolve the real tradeoff behind the path. |
 
-The controller owns the trigger decision. The Greetings Agent receives the selected moment, trigger, goal, persona, current page, journey, observed signals, inferred intent, and friction.
+The controller owns the trigger decision. The Greetings Agent receives the selected moment, trigger, goal, persona, current page, journey, observed signals, inferred intent, friction, and `contextualFocus`.
+
+`contextualFocus` is the most specific observed product or feature context available. On a product page it comes from the current page. On a follow-on commercial page, such as Product → Pricing, it comes from the prior product page. For example, `/products/features/personalization` followed by `/pricing` sends `contextualFocus.label = "Personalization"` so the greeting can talk about Personalization value and cost instead of generic pricing.
+
+In debug mode, `?algoliaProactiveDebug=1` exposes the latest suppression reason in `window.__algoliaProactiveLastSuppression`, dispatches `algolia-proactive-suppressed`, and displays a small debug status badge when the DOM is available. This makes invisible blocks such as `chat_already_open`, `cooldown_active`, or `already_eligible_for_page_moment` observable during QA.
 
 ## Greeting Contract
 

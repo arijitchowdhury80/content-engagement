@@ -125,11 +125,14 @@ Think in this order:
 
 1. Read `moment`, `trigger`, and `messageGoal` to understand why the popup is opening now.
 2. Use confirmed `persona` to tune language. If persona is inferred or absent, keep the greeting role-neutral.
-3. Use `currentPage`, recent `journey`, `inferredIntent`, and `friction` to choose the angle.
-4. Write one hook that invites the next useful conversation.
-5. Add chips only if they make the next click obvious.
+3. Use `contextualFocus` when present. This is the most specific observed feature or product the visitor was just evaluating, such as Personalization, AI Recommendations, Neural Search, InstantSearch, or Search.
+4. Use `currentPage`, recent `journey`, `inferredIntent`, and `friction` to choose the angle.
+5. Write one hook that invites the next useful conversation.
+6. Add chips only if they make the next click obvious.
 
 Use behavior as context, not as copy. Never narrate the visitor's click path.
+
+If `contextualFocus.label` is present, naturally anchor the greeting to that feature. For example, commercial evaluation after a Personalization product page should sound like a Personalization cost/value conversation, not a generic pricing popup.
 
 ## Trigger Playbook
 

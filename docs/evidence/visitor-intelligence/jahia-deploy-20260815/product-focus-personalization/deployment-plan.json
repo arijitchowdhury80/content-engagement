@@ -1,0 +1,50 @@
+{
+  "target": {
+    "block": "/sites/www/home/drift/custom-code-block",
+    "newTracker": "/sites/www/files/algolia-engagement-tracker.js",
+    "contextCompiler": "/sites/www/files/algolia-context-compiler.js",
+    "proactiveController": "/sites/www/files/algolia-proactive-controller.js",
+    "handoffToOrchestrator": "/sites/www/files/handoff-to-orchestrator.js",
+    "oldTracker": "/sites/www/files/algolia-chat-tracker.js",
+    "engage": "/sites/www/files/algolia-chat-engage.js"
+  },
+  "current": {
+    "oldTrackerReferenced": false,
+    "newTrackerReferenced": true,
+    "contextCompilerReferenced": true,
+    "proactiveControllerReferenced": true,
+    "handoffToOrchestratorReferenced": true,
+    "releaseMarkers": [
+      "chat-ui-docked-spacing-20260815a"
+    ],
+    "newTrackerExists": true,
+    "contextCompilerExists": true,
+    "proactiveControllerExists": true,
+    "handoffToOrchestratorExists": true
+  },
+  "intended": {
+    "oldTrackerReferenced": false,
+    "newTrackerReferenced": true,
+    "contextCompilerReferenced": true,
+    "proactiveControllerReferenced": true,
+    "handoffToOrchestratorReferenced": true,
+    "trackerVersion": "20260815a",
+    "contextCompilerVersion": "20260815a",
+    "proactiveControllerVersion": "20260815a",
+    "handoffToOrchestratorVersion": "20260814b",
+    "engageVersion": "20260814d",
+    "trackerSha256": "5bb576eaef1c482b03ff23e530658bff6e6fcbaae98727b0d240775dee01b3ef",
+    "contextCompilerSha256": "eb85c26dc29baaa27829f3d7c6be25ea87e70284aa6cab1f29ee7dc4c6e2e0db",
+    "proactiveControllerSha256": "10256a3364b982e9fb5bb8dd95d076fb7d63f10b1f3dcd54557474610c1bbe8b",
+    "handoffToOrchestratorSha256": "7808ef36eeb5f48e7e7b6db6191cb74cf4759eb701809c06eef76b66acd47eb3",
+    "engageSha256": "927868c7f6eb065fb35e09532002bf426f736ad67b8ca948456d2fa7ad0ea711"
+  },
+  "rollback": {
+    "restoreBlockHtmlFrom": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260815/product-focus-personalization/before-snapshot.json",
+    "restoreOldTrackerFrom": "before-snapshot.json edit.oldTrackerNode children[0].properties[jcr:data]",
+    "restoreOrRemoveContextCompilerFrom": "before-snapshot.json edit.contextCompilerNode children[0].properties[jcr:data]",
+    "restoreOrRemoveProactiveControllerFrom": "before-snapshot.json edit.proactiveControllerNode children[0].properties[jcr:data]",
+    "restoreOrRemoveHandoffToOrchestratorFrom": "before-snapshot.json edit.handoffToOrchestratorNode children[0].properties[jcr:data]",
+    "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]"
+  }
+}
