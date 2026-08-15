@@ -45,9 +45,8 @@ for (const bundleName of ['algolia-chat.js']) {
   test(`${bundleName} highlights unsupported answer spans without blocking the answer`, () => {
     const bundle = readBundle(bundleName);
     const rendererName = bundleName.includes('jahia') ? 'hE' : 't1';
-    const visibleTextGate = bundleName.includes('jahia')
-      ? 'R=x?e.text:""'
-      : 'R=S?t.text:""';
+    const visibleTextValue = bundleName.includes('jahia') ? 'R=e.text' : 'R=t.text';
+    const staleJudgeGate = bundleName.includes('jahia') ? 'R=x?e.text:""' : 'R=S?t.text:""';
     const rendererStart = bundle.indexOf(`function ${rendererName}(`);
     assert.notEqual(rendererStart, -1, 'assistant message renderer should exist');
 
@@ -61,7 +60,8 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.match(bundle, /text-algolia-negative/);
     assert.match(bundle, /needs source review/);
     assert.match(bundle, /unsupportedTerms/);
-    assert.ok(renderer.includes(visibleTextGate), 'successful answer should remain visible');
+    assert.ok(renderer.includes(visibleTextValue), 'streamed answer text should render before final judging succeeds');
+    assert.ok(!renderer.includes(staleJudgeGate), 'visible answer text must not be gated by judge eligibility');
     assert.match(renderer, /unsupportedTerms:/);
     assert.doesNotMatch(renderer, /acUnsupportedAnswerMessage/);
     assert.match(renderer, /text:[te]\.text/);
