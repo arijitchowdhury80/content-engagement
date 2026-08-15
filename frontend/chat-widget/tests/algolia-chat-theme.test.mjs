@@ -79,9 +79,11 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\.acs-reasoning[^{]+{[^}]*background: transparent/);
   assert.match(css, /\.acs-reasoning[^{]+{[^}]*box-shadow: none/);
   assert.doesNotMatch(css, /\.acs-reasoning[^{]+{[^}]*border-bottom: 1px/);
-  assert.doesNotMatch(css, /\.acs-progress\s*{[^}]*display: none !important/);
-  assert.match(css, /\.acs-progress\s*{[^}]*height: 2px !important/);
-  assert.match(css, /\.acs-progress__fill::after[^{]+{[^}]*display: none !important/);
+  assert.match(css, /\.acs-progress\s*{[^}]*display: none !important/);
+  assert.doesNotMatch(css, /\.acs-progress\s*{[^}]*height: 2px !important/);
+  assert.doesNotMatch(css, /\.acs-progress\s*{[^}]*background: color-mix/);
+  assert.doesNotMatch(css, /\.acs-progress__fill[^{]+{[^}]*background: var\(--algolia-text-secondary\)/);
+  assert.doesNotMatch(css, /\.acs-progress__fill::after/);
   assert.doesNotMatch(css, /\.acs-source-chips/);
   assert.doesNotMatch(css, /\.acs-source-chip__count/);
   assert.match(css, /\.acs-step__label[^{]+{[^}]*font-size: var\(--algolia-fs-2xs\)/);

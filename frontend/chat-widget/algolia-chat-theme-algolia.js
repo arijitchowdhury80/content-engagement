@@ -199,9 +199,7 @@
       '.acs-step__detail { font-size: var(--algolia-fs-2xs) !important; font-style: italic; color: color-mix(in srgb, var(--algolia-text-muted) 70%, #ffffff) !important; }',
       '.acs-step--active .acs-step__label { color: var(--algolia-text-secondary) !important; }',
       '.acs-step--active .acs-step__detail { color: var(--algolia-text-muted) !important; }',
-      '.acs-progress { display: block !important; height: 2px !important; margin-top: 8px !important; background: color-mix(in srgb, var(--algolia-border) 70%, transparent) !important; }',
-      '.acs-progress__fill { background: var(--algolia-text-secondary) !important; }',
-      '.acs-progress__fill::after { display: none !important; }',
+      '.acs-progress { display: none !important; }',
       // On mobile viewports the 75vw normal-mode panel would be too narrow.
       // Override to near-full-width below 640px.
       '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="header"] { gap: 10px; padding-left: 16px !important; padding-right: 12px !important; } [part="header"] h1 { font-size: 16px; line-height: 1.1; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="header"]::after { content: "Grounded answers cite sources."; left: 64px; top: 45px; max-width: calc(100% - 182px); } [part="composer"] { margin: 8px 14px 12px !important; } [part="composer-input"] { font-size: var(--algolia-fs-sm); } }',
