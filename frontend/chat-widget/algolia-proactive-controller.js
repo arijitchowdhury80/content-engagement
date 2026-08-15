@@ -16,6 +16,14 @@
     /\b(I noticed|I saw|based on your browsing|based on your behavior|tracking|telemetry|localStorage|sessionStorage|clickstream|hidden prompt|Agent Studio configuration)\b/i;
   const UNSUPPORTED_CLAIM_RE =
     /\b\d+%|\$\d+|\broadmap\b|\bguarantee\b|customer quote|case study:|https?:\/\//i;
+  const NON_VISIBLE_OPPORTUNITY_STATUSES = new Set([
+    "eligible",
+    "greeting_requested",
+    "greeting_failed",
+    "greeting_rejected",
+    "widget_unavailable",
+    "render_refused",
+  ]);
 
   const DEFAULTS = {
     enabled: true,
@@ -195,6 +203,34 @@
 
   function countPages(pages, predicate) {
     return pages.filter(predicate).length;
+  }
+
+  function replaceableOpportunity(opportunity, decision) {
+    if (!opportunity || !decision) return false;
+    if (!NON_VISIBLE_OPPORTUNITY_STATUSES.has(opportunity.status)) return false;
+    if (opportunity.pageId === decision.pageId) return false;
+    return Number(decision.priority || 0) > Number(opportunity.priority || 0);
+  }
+
+  function canSupersedeRecentOpportunity(state, decision) {
+    return replaceableOpportunity(state.opportunities.at(-1), decision);
+  }
+
+  function supersedeLowerPriorityOpportunities(state, decision) {
+    if (!canSupersedeRecentOpportunity(state, decision)) return state;
+    return {
+      ...state,
+      opportunities: state.opportunities.map((opportunity) =>
+        replaceableOpportunity(opportunity, decision)
+          ? {
+              ...opportunity,
+              status: "superseded",
+              supersededByTrigger: decision.trigger,
+              updatedAt: Date.now(),
+            }
+          : opportunity
+      ),
+    };
   }
 
   function productFocus(page) {
@@ -482,7 +518,12 @@
     const widget = document.querySelector("algolia-chat");
     if (widget && widget.autoEngage === false) return "auto_engage_disabled";
     if (state.opportunities.length >= config.maxOpportunitiesPerSession) return "session_cap_reached";
-    if (Date.now() - state.lastOpportunityAt < config.cooldownMs) return "cooldown_active";
+    if (
+      Date.now() - state.lastOpportunityAt < config.cooldownMs &&
+      !canSupersedeRecentOpportunity(state, decision)
+    ) {
+      return "cooldown_active";
+    }
     const duplicate = state.opportunities.some(
       (item) =>
         item.pageId === decision.pageId &&
@@ -592,9 +633,10 @@
       createdAt: Date.now(),
       requestPacket,
     };
-    state.opportunities.push(opportunity);
-    state.lastOpportunityAt = opportunity.createdAt;
-    writeState(state);
+    const nextState = supersedeLowerPriorityOpportunities(state, decision);
+    nextState.opportunities.push(opportunity);
+    nextState.lastOpportunityAt = opportunity.createdAt;
+    writeState(nextState);
     return {
       ...decision,
       opportunityId: opportunity.id,
@@ -746,6 +788,13 @@
       }
 
       const parsed = extractJsonObject(await response.text());
+      if (decision.pagePath && decision.pagePath !== location.pathname) {
+        updateOpportunity(decision.opportunityId, {
+          status: "superseded",
+          failureReason: "page_changed_before_render",
+        });
+        return false;
+      }
       const validationError = validateGreetingResponse(parsed, decision);
       if (validationError) {
         updateOpportunity(decision.opportunityId, {

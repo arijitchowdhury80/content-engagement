@@ -316,6 +316,59 @@ test('product to pricing carries exact prior product focus for personalized gree
   assert.equal(decision.agentPromptPacket.journey[0].title, 'Search Personalization');
 });
 
+test('product to pricing overrides stale lower-priority product dwell opportunity', () => {
+  const { context } = createHarness({
+    locationPath: '/pricing',
+    state: {
+      schema: 'AlgoliaProactiveState.v1',
+      lastOpportunityAt: Date.now(),
+      opportunities: [
+        {
+          id: 'opp_product_dwell',
+          status: 'greeting_requested',
+          pageId: 'page_product',
+          pagePath: '/products/features/personalization',
+          moment: 'product_research',
+          trigger: 'product_page_10s_dwell',
+          priority: 66,
+          messageGoal: 'explain_product_fit',
+          createdAt: Date.now(),
+        },
+      ],
+    },
+    pages: [
+      page({
+        pageId: 'page_product',
+        path: '/products/features/personalization',
+        title: 'Search Personalization',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        productFocus: 'personalization',
+        productFocusLabel: 'Personalization',
+        dwellMs: 12000,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        title: 'Pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 1000,
+      }),
+    ],
+    events: [
+      event({ eventId: 'evt_product', name: 'page_view', path: '/products/features/personalization', pageId: 'page_product' }),
+      event({ eventId: 'evt_pricing', name: 'page_view', path: '/pricing', pageId: 'page_current', ts: 1786750060000 }),
+    ],
+  });
+
+  const decision = opportunity(context);
+
+  assert.equal(decision.engage, true);
+  assert.equal(decision.trigger, 'product_to_pricing');
+  assert.equal(decision.agentPromptPacket.contextualFocus.label, 'Personalization');
+});
+
 test('customer proof triggers from product research into customer story', () => {
   const { context } = createHarness({
     locationPath: '/customers/gymshark-recommend',
