@@ -1,0 +1,27 @@
+{
+  "release": "chat-ui-question-copy-20260815a",
+  "version": "20260815-chat-ui-question-copy-a",
+  "chatPath": "/sites/www/files/algolia-chat.js",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&questionCopy=20260815-chat-ui-question-copy-a",
+  "sourceCommit": "4e873d11eb6abb647accc12b8c2da07f7493d3ef",
+  "committedChatSha256": "05c37e7570f0cc1343c3548e63fd8f07272cc7d40cc8767d9eac1d5bc0c385c0",
+  "editJcrChatSha256": "05c37e7570f0cc1343c3548e63fd8f07272cc7d40cc8767d9eac1d5bc0c385c0",
+  "liveJcrChatSha256": "05c37e7570f0cc1343c3548e63fd8f07272cc7d40cc8767d9eac1d5bc0c385c0",
+  "publicChatSha256": "05c37e7570f0cc1343c3548e63fd8f07272cc7d40cc8767d9eac1d5bc0c385c0",
+  "editJcrMatchesCommitted": true,
+  "liveJcrMatchesCommitted": true,
+  "publicMatchesCommitted": true,
+  "editBlockHasRelease": true,
+  "liveBlockHasRelease": true,
+  "editBlockHasChatUrl": true,
+  "liveBlockHasChatUrl": true,
+  "publicQuestionCopyChecks": {
+    "helperPresent": true,
+    "discoveryCardCopies": true,
+    "sampleMenuCopies": true,
+    "emptyChipCopies": true,
+    "proactiveSuggestionCopies": true
+  },
+  "checkedAt": "2026-08-15T08:37:51.486543+00:00",
+  "pass": true
+}
