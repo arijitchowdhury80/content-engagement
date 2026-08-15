@@ -132,7 +132,11 @@
       };
     }
     if (text.includes("/industries") || text.includes("/solutions")) {
-      return { pageGroup: "solution", topic: topicFromText(text, "industry_solution") };
+      return {
+        pageGroup: "solution",
+        topic: topicFromText(text, "industry_solution"),
+        ...solutionFocusFromText(text),
+      };
     }
     if (text.includes("/blog") || text.includes("/resources")) return { pageGroup: "resource", topic: topicFromText(text, "education") };
     return { pageGroup: "other", topic: topicFromText(text, "general") };
@@ -171,12 +175,41 @@
     return {};
   }
 
+  function solutionFocusFromText(text) {
+    if (/fashion|retail|ecommerce|commerce|merchandising/.test(text)) {
+      return { solutionFocus: "commerce", solutionFocusLabel: "Commerce" };
+    }
+    if (/marketplace/.test(text)) {
+      return { solutionFocus: "marketplace", solutionFocusLabel: "Marketplace" };
+    }
+    if (/financial|bank|insurance|wealth|advisor/.test(text)) {
+      return { solutionFocus: "financial_services", solutionFocusLabel: "Financial Services" };
+    }
+    if (/healthcare|patient|hospital|life[-\s]?science/.test(text)) {
+      return { solutionFocus: "healthcare", solutionFocusLabel: "Healthcare" };
+    }
+    if (/media|publishing|news|content/.test(text)) {
+      return { solutionFocus: "media", solutionFocusLabel: "Media" };
+    }
+    if (/b2b|manufacturer|industrial|distribution/.test(text)) {
+      return { solutionFocus: "b2b", solutionFocusLabel: "B2B" };
+    }
+    if (/enterprise/.test(text)) {
+      return { solutionFocus: "enterprise", solutionFocusLabel: "Enterprise" };
+    }
+    return {};
+  }
+
   function pageWithClassification(page) {
     const classified = classifyPath(page?.path, page?.title);
     const merged = { ...classified, ...(page || {}) };
     if (!merged.productFocus && classified.productFocus) {
       merged.productFocus = classified.productFocus;
       merged.productFocusLabel = classified.productFocusLabel;
+    }
+    if (!merged.solutionFocus && classified.solutionFocus) {
+      merged.solutionFocus = classified.solutionFocus;
+      merged.solutionFocusLabel = classified.solutionFocusLabel;
     }
     return merged;
   }
@@ -408,6 +441,8 @@
         topic: clampText(classifiedPage.topic, 80),
         productFocus: clampText(classifiedPage.productFocus, 80),
         productFocusLabel: clampText(classifiedPage.productFocusLabel, 80),
+        solutionFocus: clampText(classifiedPage.solutionFocus, 80),
+        solutionFocusLabel: clampText(classifiedPage.solutionFocusLabel, 80),
         dwellMs: Number.isFinite(classifiedPage.dwellMs) ? classifiedPage.dwellMs : 0,
         maxScrollDepth: Number.isFinite(classifiedPage.maxScrollDepth) ? classifiedPage.maxScrollDepth : 0,
       },
@@ -421,6 +456,14 @@
           ? {
               value: clampText(classifiedPage.productFocus, 80),
               label: clampText(classifiedPage.productFocusLabel, 80),
+              state: "observed",
+              source: "current_page",
+            }
+          : undefined,
+        currentSolutionFocus: classifiedPage.solutionFocus
+          ? {
+              value: clampText(classifiedPage.solutionFocus, 80),
+              label: clampText(classifiedPage.solutionFocusLabel, 80),
               state: "observed",
               source: "current_page",
             }
@@ -464,6 +507,8 @@
       current_topic: inferenceValue(packet.observedSignals.currentTopic),
       current_product_focus: inferenceValue(packet.observedSignals.currentProductFocus),
       current_product_focus_label: packet.currentPage.productFocusLabel,
+      current_solution_focus: inferenceValue(packet.observedSignals.currentSolutionFocus),
+      current_solution_focus_label: packet.currentPage.solutionFocusLabel,
       current_dwell_seconds: String(Math.round((packet.currentPage.dwellMs || 0) / 1000)),
       current_scroll_depth: String(packet.currentPage.maxScrollDepth || 0),
       session_page_count: String(packet.session.pageCount || 0),

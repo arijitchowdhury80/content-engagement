@@ -32,6 +32,8 @@ function page({
   title,
   productFocus,
   productFocusLabel,
+  solutionFocus,
+  solutionFocusLabel,
   dwellMs = 0,
   maxScrollDepth = 0,
   enteredAt = 1786750000000,
@@ -44,6 +46,8 @@ function page({
     topic,
     productFocus,
     productFocusLabel,
+    solutionFocus,
+    solutionFocusLabel,
     dwellMs,
     maxScrollDepth,
     enteredAt,
@@ -374,6 +378,55 @@ test('product to pricing summarizes multi-product journey for greeting personali
   assert.match(decision.agentPromptPacket.journeySummary.storyHint, /cost\/value question/);
 });
 
+test('solution to pricing summarizes multi-solution journey for greeting personalization', () => {
+  const { context } = createHarness({
+    locationPath: '/pricing',
+    pages: [
+      page({
+        pageId: 'page_commerce',
+        path: '/solutions/ecommerce',
+        title: 'Ecommerce Site Search Solutions',
+        pageGroup: 'solution',
+        topic: 'commerce',
+        solutionFocus: 'commerce',
+        solutionFocusLabel: 'Commerce',
+        dwellMs: 9000,
+      }),
+      page({
+        pageId: 'page_marketplace',
+        path: '/solutions/marketplaces',
+        title: 'Marketplace Search Solutions',
+        pageGroup: 'solution',
+        topic: 'marketplace',
+        solutionFocus: 'marketplace',
+        solutionFocusLabel: 'Marketplace',
+        dwellMs: 12000,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        title: 'Pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 1000,
+      }),
+    ],
+  });
+
+  const decision = opportunity(context);
+
+  assert.equal(decision.trigger, 'solution_to_pricing');
+  assert.equal(decision.agentPromptPacket.contextualFocus.label, 'Marketplace');
+  assert.equal(decision.agentPromptPacket.contextualFocus.type, 'solution');
+  assert.equal(
+    decision.agentPromptPacket.journeySummary.solutionTrail.map((item) => item.label).join(' > '),
+    'Commerce > Marketplace'
+  );
+  assert.equal(decision.agentPromptPacket.journeySummary.currentTransition, 'solution_to_pricing');
+  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /Commerce and Marketplace/);
+  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /commercial evaluation/);
+});
+
 test('product to pricing overrides stale lower-priority product dwell opportunity', () => {
   const { context } = createHarness({
     locationPath: '/pricing',
@@ -662,6 +715,24 @@ test('trigger grammar covers implemented journey, dwell, scroll, and priority pe
       expected: 'product_to_customer_story',
     },
     {
+      name: 'solution_to_pricing',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 1000 }),
+      ],
+      expected: 'solution_to_pricing',
+    },
+    {
+      name: 'solution_to_customer_story',
+      locationPath: '/customers/lacoste',
+      pages: [
+        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 2000 }),
+      ],
+      expected: 'solution_to_customer_story',
+    },
+    {
       name: 'search_to_docs',
       locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
       pages: [
@@ -717,6 +788,18 @@ test('trigger grammar covers implemented journey, dwell, scroll, and priority pe
       expected: 'product_page_50_scroll',
     },
     {
+      name: 'solution_page_10s_dwell',
+      locationPath: '/solutions/ecommerce',
+      pages: [page({ pageId: 'page_current', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 10000 })],
+      expected: 'solution_page_10s_dwell',
+    },
+    {
+      name: 'solution_page_50_scroll',
+      locationPath: '/solutions/ecommerce',
+      pages: [page({ pageId: 'page_current', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 1000, maxScrollDepth: 50 })],
+      expected: 'solution_page_50_scroll',
+    },
+    {
       name: 'multiple_product_pages',
       locationPath: '/products/ai-recommendations',
       pages: [
@@ -724,6 +807,15 @@ test('trigger grammar covers implemented journey, dwell, scroll, and priority pe
         page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 1000 }),
       ],
       expected: 'multiple_product_pages',
+    },
+    {
+      name: 'multiple_solution_pages',
+      locationPath: '/solutions/marketplaces',
+      pages: [
+        page({ pageId: 'page_solution_1', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 4000 }),
+        page({ pageId: 'page_current', path: '/solutions/marketplaces', pageGroup: 'solution', topic: 'marketplace', solutionFocus: 'marketplace', solutionFocusLabel: 'Marketplace', dwellMs: 1000 }),
+      ],
+      expected: 'multiple_solution_pages',
     },
     {
       name: 'product_to_pricing_beats_pricing_dwell',
@@ -762,10 +854,34 @@ test('trigger grammar covers implemented journey, dwell, scroll, and priority pe
       expected: 'product_to_customer_story',
     },
     {
+      name: 'solution_to_pricing_beats_pricing_dwell',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
+      ],
+      expected: 'solution_to_pricing',
+    },
+    {
+      name: 'solution_to_customer_beats_customer_dwell_scroll',
+      locationPath: '/customers/lacoste',
+      pages: [
+        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 12000 }),
+        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 12000, maxScrollDepth: 60 }),
+      ],
+      expected: 'solution_to_customer_story',
+    },
+    {
       name: 'product_dwell_beats_product_scroll',
       locationPath: '/products/ai-recommendations',
       pages: [page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 })],
       expected: 'product_page_10s_dwell',
+    },
+    {
+      name: 'solution_dwell_beats_solution_scroll',
+      locationPath: '/solutions/ecommerce',
+      pages: [page({ pageId: 'page_current', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 10000, maxScrollDepth: 50 })],
+      expected: 'solution_page_10s_dwell',
     },
     {
       name: 'developer_dwell_beats_developer_scroll',

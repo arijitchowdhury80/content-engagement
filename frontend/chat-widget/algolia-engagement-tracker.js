@@ -281,7 +281,11 @@
       };
     }
     if (path.includes("/industries") || path.includes("/solutions")) {
-      return { pageGroup: "solution", topic: topicFromText(text, "industry_solution") };
+      return {
+        pageGroup: "solution",
+        topic: topicFromText(text, "industry_solution"),
+        ...solutionFocusFromText(text),
+      };
     }
     if (path.includes("/blog")) return { pageGroup: "blog", topic: topicFromText(text, "education") };
     if (path.includes("/resources")) {
@@ -319,6 +323,31 @@
     }
     if (/\/products\/search|site search|\bsearch\b/.test(text)) {
       return { productFocus: "search", productFocusLabel: "Search" };
+    }
+    return {};
+  }
+
+  function solutionFocusFromText(text) {
+    if (/fashion|retail|ecommerce|commerce|merchandising/.test(text)) {
+      return { solutionFocus: "commerce", solutionFocusLabel: "Commerce" };
+    }
+    if (/marketplace/.test(text)) {
+      return { solutionFocus: "marketplace", solutionFocusLabel: "Marketplace" };
+    }
+    if (/financial|bank|insurance|wealth|advisor/.test(text)) {
+      return { solutionFocus: "financial_services", solutionFocusLabel: "Financial Services" };
+    }
+    if (/healthcare|patient|hospital|life[-\s]?science/.test(text)) {
+      return { solutionFocus: "healthcare", solutionFocusLabel: "Healthcare" };
+    }
+    if (/media|publishing|news|content/.test(text)) {
+      return { solutionFocus: "media", solutionFocusLabel: "Media" };
+    }
+    if (/b2b|manufacturer|industrial|distribution/.test(text)) {
+      return { solutionFocus: "b2b", solutionFocusLabel: "B2B" };
+    }
+    if (/enterprise/.test(text)) {
+      return { solutionFocus: "enterprise", solutionFocusLabel: "Enterprise" };
     }
     return {};
   }
@@ -494,6 +523,8 @@
       topic: classification.topic,
       productFocus: classification.productFocus,
       productFocusLabel: classification.productFocusLabel,
+      solutionFocus: classification.solutionFocus,
+      solutionFocusLabel: classification.solutionFocusLabel,
     });
 
     track("page_view", {
@@ -504,6 +535,8 @@
       topic: page.topic,
       productFocus: page.productFocus,
       productFocusLabel: page.productFocusLabel,
+      solutionFocus: page.solutionFocus,
+      solutionFocusLabel: page.solutionFocusLabel,
       utm: currentUtm(),
     });
 
@@ -517,6 +550,8 @@
           topic: page.topic,
           productFocus: page.productFocus,
           productFocusLabel: page.productFocusLabel,
+          solutionFocus: page.solutionFocus,
+          solutionFocusLabel: page.solutionFocusLabel,
         });
       }, milestone);
     }
@@ -553,6 +588,8 @@
           topic: page?.topic,
           productFocus: page?.productFocus,
           productFocusLabel: page?.productFocusLabel,
+          solutionFocus: page?.solutionFocus,
+          solutionFocusLabel: page?.solutionFocusLabel,
         });
       }
     }

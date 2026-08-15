@@ -36,9 +36,11 @@ The controller evaluates candidates in priority order and selects the highest el
 | Moment | Trigger | Condition | Priority | Message goal |
 |---|---|---|---:|---|
 | Commercial evaluation | `product_to_pricing` | Current page is pricing/demo/contact and a prior session page was product. | 88 | `explain_cost_drivers` |
+| Commercial evaluation | `solution_to_pricing` | Current page is pricing/demo/contact and a prior session page was solution/industry. | 87 | `explain_solution_value_and_cost` |
 | Commercial evaluation | `implementation_to_pricing` | Current page is pricing/demo/contact and a prior page was developer/docs. | 86 | `connect_implementation_effort_to_cost` |
 | Implementation research | `pricing_to_implementation` | Current page is developer/docs and a prior page was pricing/demo/contact. | 84 | `reduce_implementation_uncertainty` |
 | Customer proof | `product_to_customer_story` | Current page is a customer story and a prior page was product. | 82 | `surface_relevant_customer_proof` |
+| Customer proof | `solution_to_customer_story` | Current page is a customer story and a prior page was solution/industry. | 81 | `surface_relevant_customer_proof` |
 | Implementation research | `search_to_docs` | Current page is developer/docs and recent site search included implementation terms. | 80 | `answer_implementation_path` |
 | Commercial evaluation | `pricing_8s_dwell` | Current page is pricing/demo/contact with at least 8 seconds dwell. | 78 | `explain_cost_drivers` |
 | Implementation research | `developer_page_15s_dwell` | Current page is developer/docs with at least 15 seconds dwell. | 76 | `reduce_implementation_uncertainty` |
@@ -46,8 +48,11 @@ The controller evaluates candidates in priority order and selects the highest el
 | Customer proof | `customer_story_12s_dwell` | Current page is a customer story with at least 12 seconds dwell. | 72 | `surface_relevant_customer_proof` |
 | Customer proof | `customer_story_60_scroll` | Current page is a customer story with at least 60% scroll. | 70 | `surface_relevant_customer_proof` |
 | Product research | `product_page_10s_dwell` | Current page is product with at least 10 seconds dwell. | 66 | `explain_product_fit` |
+| Solution research | `solution_page_10s_dwell` | Current page is solution/industry with at least 10 seconds dwell. | 65 | `explain_solution_fit` |
 | Product research | `product_page_50_scroll` | Current page is product with at least 50% scroll. | 64 | `explain_product_fit` |
+| Solution research | `solution_page_50_scroll` | Current page is solution/industry with at least 50% scroll. | 63 | `explain_solution_fit` |
 | Journey shift | `multiple_product_pages` | Session includes at least two product pages. | 62 | `help_compare_capabilities` |
+| Journey shift | `multiple_solution_pages` | Session includes at least two solution/industry pages. | 61 | `help_compare_solution_paths` |
 
 Hover is not a proactive trigger. Hover can help the UI expose menus, but it is too weak to infer intent or open a concierge message.
 
@@ -75,6 +80,8 @@ Defaults:
   "cooldownMs": 120000,
   "productDwellMs": 10000,
   "productScrollDepth": 50,
+  "solutionDwellMs": 10000,
+  "solutionScrollDepth": 50,
   "implementationDwellMs": 15000,
   "implementationScrollDepth": 60,
   "pricingDwellMs": 8000,

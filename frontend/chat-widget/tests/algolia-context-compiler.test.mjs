@@ -189,6 +189,42 @@ test('preserves product feature focus for downstream personalization', () => {
   assert.equal(turnContext.current_product_focus_label, 'Personalization');
 });
 
+test('preserves solution focus for downstream personalization', () => {
+  const { context } = createHarness({
+    locationPath: '/solutions/ecommerce',
+    session: {
+      schema: 'AlgoliaEngagementSession.v1',
+      sessionId: 'sess_123',
+      startedAt: 1786750000000,
+      currentPageId: 'page_current',
+      pages: [
+        {
+          pageId: 'page_current',
+          path: '/solutions/ecommerce',
+          title: 'Ecommerce Site Search Solutions',
+          enteredAt: 1786750060000,
+          dwellMs: 10000,
+          maxScrollDepth: 50,
+          pageGroup: 'solution',
+          topic: 'commerce',
+          solutionFocus: 'commerce',
+          solutionFocusLabel: 'Commerce',
+        },
+      ],
+      engagementHistory: [],
+    },
+  });
+
+  const packet = context.algoliaContextCompiler.compile();
+  const turnContext = context.algoliaContextCompiler.compileTurnContext();
+
+  assert.equal(packet.currentPage.solutionFocus, 'commerce');
+  assert.equal(packet.currentPage.solutionFocusLabel, 'Commerce');
+  assert.equal(packet.observedSignals.currentSolutionFocus.value, 'commerce');
+  assert.equal(turnContext.current_solution_focus, 'observed:commerce');
+  assert.equal(turnContext.current_solution_focus_label, 'Commerce');
+});
+
 test('infers intent, friction, and persona softly with confidence and evidence', () => {
   const { context } = createHarness();
 

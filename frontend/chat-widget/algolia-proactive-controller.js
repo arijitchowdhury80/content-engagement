@@ -36,6 +36,8 @@
     cooldownMs: 120000,
     productDwellMs: 10000,
     productScrollDepth: 50,
+    solutionDwellMs: 10000,
+    solutionScrollDepth: 50,
     implementationDwellMs: 15000,
     implementationScrollDepth: 60,
     pricingDwellMs: 8000,
@@ -140,6 +142,11 @@
 
   function isProduct(page) {
     return pageGroup(page) === "product" || String(page?.path || "").includes("/products");
+  }
+
+  function isSolution(page) {
+    const path = String(page?.path || "");
+    return pageGroup(page) === "solution" || path.includes("/solutions") || path.includes("/industries");
   }
 
   function isDeveloper(page) {
@@ -268,13 +275,50 @@
     };
   }
 
+  function cleanFocusLabel(text) {
+    const value = String(text || "")
+      .replace(/^\/?(solutions|industries)\//i, "")
+      .split(/[?#]/)[0]
+      .split("/")
+      .filter(Boolean)
+      .at(-1);
+    if (!value) return "";
+    return value
+      .replace(/[-_]+/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+      .trim();
+  }
+
+  function solutionFocus(page) {
+    const explicit = String(page?.solutionFocus || "").trim();
+    if (!explicit && !isSolution(page)) return null;
+    const label = String(page?.solutionFocusLabel || "").trim();
+    const fallbackLabel = label || cleanFocusLabel(page?.title) || cleanFocusLabel(page?.path);
+    const value = explicit || fallbackLabel.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+    if (!value || !fallbackLabel) return null;
+    return {
+      value,
+      label: fallbackLabel,
+      type: "solution",
+      state: "observed",
+      source: isSolution(page) ? "current_solution_page" : "prior_solution_page",
+      pagePath: page?.path || null,
+      pageTitle: page?.title || null,
+    };
+  }
+
   function contextualFocusFor(packet) {
     const page = currentPage(packet);
     const currentFocus = productFocus(page);
     if (currentFocus) return currentFocus;
+    const currentSolutionFocus = solutionFocus(page);
+    if (currentSolutionFocus) return currentSolutionFocus;
     const priorProduct = priorPage(sessionPages(packet), isProduct);
     const priorFocus = productFocus(priorProduct);
-    return priorFocus ? { ...priorFocus, source: "prior_product_page" } : null;
+    if (priorFocus) return { ...priorFocus, source: "prior_product_page" };
+    const priorSolution = priorPage(sessionPages(packet), isSolution);
+    const priorSolutionFocus = solutionFocus(priorSolution);
+    return priorSolutionFocus ? { ...priorSolutionFocus, source: "prior_solution_page" } : null;
   }
 
   function uniqueProductTrail(pages) {
@@ -282,6 +326,26 @@
     return pages
       .filter(isProduct)
       .map(productFocus)
+      .filter(Boolean)
+      .filter((focus) => {
+        if (seen.has(focus.value)) return false;
+        seen.add(focus.value);
+        return true;
+      })
+      .map((focus) => ({
+        value: focus.value,
+        label: focus.label,
+        pagePath: focus.pagePath,
+        pageTitle: focus.pageTitle,
+      }))
+      .slice(-5);
+  }
+
+  function uniqueSolutionTrail(pages) {
+    const seen = new Set();
+    return pages
+      .filter(isSolution)
+      .map(solutionFocus)
       .filter(Boolean)
       .filter((focus) => {
         if (seen.has(focus.value)) return false;
@@ -307,9 +371,11 @@
   function journeySummaryFor(packet, fields) {
     const pages = sessionPages(packet);
     const productTrail = uniqueProductTrail(pages);
+    const solutionTrail = uniqueSolutionTrail(pages);
     const currentTransition = fields.trigger || null;
     let storyHint = "";
     const productList = humanList(productTrail);
+    const solutionList = humanList(solutionTrail);
 
     if (currentTransition === "product_to_pricing" && productTrail.length > 1) {
       storyHint = `The visitor explored ${productList} before pricing; frame this as a cost/value question across those capabilities.`;
@@ -319,11 +385,20 @@
       storyHint = `The visitor is comparing ${productList}; help turn the capability spread into a clearer decision.`;
     } else if (fields.trigger === "product_to_customer_story" && productTrail.length) {
       storyHint = `The visitor moved from ${productList} to customer proof; connect proof back to that product interest.`;
+    } else if (currentTransition === "solution_to_pricing" && solutionTrail.length > 1) {
+      storyHint = `The visitor explored ${solutionList} before pricing; frame this as a commercial evaluation across those solution areas.`;
+    } else if (currentTransition === "solution_to_pricing" && solutionTrail.length === 1) {
+      storyHint = `The visitor moved from ${solutionList} into pricing; frame this as a ${solutionList} value and cost question.`;
+    } else if (fields.trigger === "multiple_solution_pages" && solutionTrail.length > 1) {
+      storyHint = `The visitor is comparing ${solutionList}; help turn the solution spread into a clearer path forward.`;
+    } else if (fields.trigger === "solution_to_customer_story" && solutionTrail.length) {
+      storyHint = `The visitor moved from ${solutionList} to customer proof; connect proof back to that solution interest.`;
     }
 
     return {
       currentTransition,
       productTrail,
+      solutionTrail,
       pageTrail: pages
         .map((item) => ({
           path: item.path,
@@ -331,6 +406,7 @@
           pageGroup: item.pageGroup,
           topic: item.topic,
           productFocusLabel: item.productFocusLabel,
+          solutionFocusLabel: item.solutionFocusLabel,
         }))
         .slice(-6),
       storyHint,
@@ -364,6 +440,8 @@
           topic: item.topic,
           productFocus: item.productFocus,
           productFocusLabel: item.productFocusLabel,
+          solutionFocus: item.solutionFocus,
+          solutionFocusLabel: item.solutionFocusLabel,
           dwellMs: item.dwellMs,
           maxScrollDepth: item.maxScrollDepth,
         })),
@@ -403,6 +481,7 @@
     const events = recentEvents(packet);
     const result = [];
     const previousProduct = priorPage(pages, isProduct);
+    const previousSolution = priorPage(pages, isSolution);
     const previousDeveloper = priorPage(pages, isDeveloper);
     const previousPricing = priorPage(pages, isPricing);
 
@@ -434,6 +513,20 @@
       );
     }
 
+    if (isPricing(page) && previousSolution) {
+      result.push(
+        withReasons(
+          baseDecision(packet, {
+            moment: "commercial_evaluation",
+            trigger: "solution_to_pricing",
+            priority: 87,
+            messageGoal: "explain_solution_value_and_cost",
+          }),
+          ["journey_solution_to_pricing", "pricing_page_view"]
+        )
+      );
+    }
+
     if (isDeveloper(page) && previousPricing) {
       result.push(
         withReasons(
@@ -458,6 +551,20 @@
             messageGoal: "surface_relevant_customer_proof",
           }),
           ["journey_product_to_customer_story", "customer_story_page"]
+        )
+      );
+    }
+
+    if (isCustomerStory(page) && previousSolution) {
+      result.push(
+        withReasons(
+          baseDecision(packet, {
+            moment: "customer_proof",
+            trigger: "solution_to_customer_story",
+            priority: 81,
+            messageGoal: "surface_relevant_customer_proof",
+          }),
+          ["journey_solution_to_customer_story", "customer_story_page"]
         )
       );
     }
@@ -560,6 +667,20 @@
       );
     }
 
+    if (isSolution(page) && Number(page.dwellMs || 0) >= config.solutionDwellMs) {
+      result.push(
+        withReasons(
+          baseDecision(packet, {
+            moment: "solution_research",
+            trigger: "solution_page_10s_dwell",
+            priority: 65,
+            messageGoal: "explain_solution_fit",
+          }),
+          ["solution_page", "solution_dwell"]
+        )
+      );
+    }
+
     if (isProduct(page) && Number(page.maxScrollDepth || 0) >= config.productScrollDepth) {
       result.push(
         withReasons(
@@ -574,6 +695,20 @@
       );
     }
 
+    if (isSolution(page) && Number(page.maxScrollDepth || 0) >= config.solutionScrollDepth) {
+      result.push(
+        withReasons(
+          baseDecision(packet, {
+            moment: "solution_research",
+            trigger: "solution_page_50_scroll",
+            priority: 63,
+            messageGoal: "explain_solution_fit",
+          }),
+          ["solution_page", "solution_scroll"]
+        )
+      );
+    }
+
     if (isProduct(page) && countPages(pages, isProduct) >= 2) {
       result.push(
         withReasons(
@@ -584,6 +719,20 @@
             messageGoal: "help_compare_capabilities",
           }),
           ["multiple_product_pages"]
+        )
+      );
+    }
+
+    if (isSolution(page) && countPages(pages, isSolution) >= 2) {
+      result.push(
+        withReasons(
+          baseDecision(packet, {
+            moment: "journey_shift",
+            trigger: "multiple_solution_pages",
+            priority: 61,
+            messageGoal: "help_compare_solution_paths",
+          }),
+          ["multiple_solution_pages"]
         )
       );
     }

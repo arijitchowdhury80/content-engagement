@@ -255,6 +255,25 @@ test('classifies product feature focus on page views and events', () => {
   assert.equal(pageView.props.productFocusLabel, 'Personalization');
 });
 
+test('classifies solution focus on page views and events', () => {
+  const { sessionStorage } = createHarness({
+    pathname: '/solutions/ecommerce',
+    search: '',
+    title: 'Ecommerce Site Search Solutions',
+  });
+
+  const session = parse(sessionStorage, 'algolia_session');
+  const events = parse(sessionStorage, 'algolia_events').events;
+  const pageView = events.find((event) => event.name === 'page_view');
+
+  assert.equal(session.pages[0].pageGroup, 'solution');
+  assert.equal(session.pages[0].topic, 'commerce');
+  assert.equal(session.pages[0].solutionFocus, 'commerce');
+  assert.equal(session.pages[0].solutionFocusLabel, 'Commerce');
+  assert.equal(pageView.props.solutionFocus, 'commerce');
+  assert.equal(pageView.props.solutionFocusLabel, 'Commerce');
+});
+
 test('algoliaProactiveReset clears session-scoped proactive state without deleting profile', () => {
   const { localStorage, sessionStorage } = createHarness({
     pathname: '/products/features/personalization',
