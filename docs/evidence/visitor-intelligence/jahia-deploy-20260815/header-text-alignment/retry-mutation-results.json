@@ -1,0 +1,109 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "setChatFile": {
+        "data": {
+          "jcr": {
+            "file": {
+              "content": {
+                "data": {
+                  "setValue": true
+                },
+                "mime": {
+                  "setValue": true
+                },
+                "node": {
+                  "path": "/sites/www/files/algolia-chat.js/jcr:content"
+                }
+              },
+              "node": {
+                "path": "/sites/www/files/algolia-chat.js"
+              }
+            }
+          }
+        }
+      },
+      "setBlockHtml": {
+        "data": {
+          "jcr": {
+            "block": {
+              "html": {
+                "setValue": true
+              },
+              "node": {
+                "path": "/sites/www/home/drift/custom-code-block"
+              }
+            }
+          }
+        }
+      },
+      "editChatSha256": "c6e01b2454fe44f02c6e680f4d2a3dd600b53000d289a7aecb481f5fcf4d02f4",
+      "editBlockHasRelease": true,
+      "editBlockHasUrl": true,
+      "editHasAlign": true
+    },
+    {
+      "publishChat": {
+        "data": {
+          "jcr": {
+            "target": {
+              "publish": true,
+              "node": {
+                "path": "/sites/www/files/algolia-chat.js"
+              }
+            }
+          }
+        }
+      },
+      "publishFilesSubtree": {
+        "data": {
+          "jcr": {
+            "target": {
+              "publish": true,
+              "node": {
+                "path": "/sites/www/files"
+              }
+            }
+          }
+        }
+      },
+      "publishDriftSubtree": {
+        "data": {
+          "jcr": {
+            "target": {
+              "publish": true,
+              "node": {
+                "path": "/sites/www/home/drift"
+              }
+            }
+          }
+        }
+      },
+      "versionBlock": {
+        "data": {
+          "jcr": {
+            "block": {
+              "createVersion": true,
+              "node": {
+                "path": "/sites/www/home/drift/custom-code-block"
+              }
+            }
+          }
+        }
+      },
+      "publishBlock": {
+        "data": {
+          "jcr": {
+            "target": {
+              "publish": true,
+              "node": {
+                "path": "/sites/www/home/drift/custom-code-block"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

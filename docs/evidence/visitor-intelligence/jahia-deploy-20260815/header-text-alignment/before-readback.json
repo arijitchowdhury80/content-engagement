@@ -1,0 +1,19 @@
+{
+  "capturedAt": "2026-08-15T05:25:40.765191+00:00",
+  "label": "before",
+  "release": "chat-ui-header-align-20260815a",
+  "version": "20260815-chat-ui-header-align-a",
+  "chatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&header=20260815-chat-ui-header-align-a",
+  "editBlockSha256": "2eb6aa27acf1b806291cac82a19858ce62cffd5f1523e6e7fc3422891770ebc0",
+  "liveBlockSha256": "2eb6aa27acf1b806291cac82a19858ce62cffd5f1523e6e7fc3422891770ebc0",
+  "editBlockHasCurrentChatUrl": false,
+  "liveBlockHasCurrentChatUrl": false,
+  "editChatSha256": "934377f2bf7d37e524a13601fb64b728c8d254aa862025d1d1660daffef410d2",
+  "liveChatSha256": "934377f2bf7d37e524a13601fb64b728c8d254aa862025d1d1660daffef410d2",
+  "editReleaseMarkers": [
+    "judge-heading-filter-20260815a"
+  ],
+  "liveReleaseMarkers": [
+    "judge-heading-filter-20260815a"
+  ]
+}
