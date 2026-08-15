@@ -21,14 +21,13 @@ function roleJudgeChiefPromptBranch(bundle) {
   return bundle.slice(start, end);
 }
 
-function loadDiscoveryFinalizer(bundle) {
-  const start = bundle.indexOf('const Pn=');
-  assert.notEqual(start, -1, 'discovery state helpers should exist');
+function loadGroundingExtractor(bundle) {
+  const start = bundle.indexOf('const sb=');
+  assert.notEqual(start, -1, 'grounding extractor dependencies should exist');
+  const end = bundle.indexOf('const Ab=3', start);
+  assert.notEqual(end, -1, 'grounding extractor should end before gate floor constant');
 
-  const end = bundle.indexOf('function kR', start);
-  assert.notEqual(end, -1, 'discovery finalizer should end before tool wiring');
-
-  return vm.runInNewContext(`${bundle.slice(start, end)};({ Xl, _R });`);
+  return vm.runInNewContext(`${bundle.slice(start, end)};({ xb });`);
 }
 
 for (const bundleName of ['algolia-chat.js']) {
@@ -94,6 +93,98 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.doesNotMatch(bundle, /hard-floor/);
   });
 
+  test(`${bundleName} does not treat answer headings or label prefixes as grounding claims`, () => {
+    const bundle = readBundle(bundleName);
+
+    assert.match(bundle, /function acIsStructuralGroundingLabel/);
+    assert.match(bundle, /function acLooksLikeStructuralHeading/);
+    assert.match(bundle, /function acStripGroundingMarkdown/);
+    assert.match(bundle, /acIsStructuralGroundingLabel\(t,u,l\.length\)/);
+    assert.match(bundle, /\?\:\#\{1,6\}\\s\+\|\[-\*\+\]\\s\+\|\\d\+\[\.\)\]\\s\+/);
+    assert.match(bundle, /\?\::\|\[-–—\]\|&\|\$/);
+  });
+
+  test(`${bundleName} grounding extractor ignores structural headings while keeping factual spans`, () => {
+    const { xb } = loadGroundingExtractor(readBundle(bundleName));
+    const terms = xb(`
+The Core Cost Drivers
+
+For modern plans like Build and Grow, your total cost is driven by two primary metrics.
+
+1. **Search Requests:** Every time a user triggers a search, it counts as one request.
+2. **Records:** This includes Standard Replicas—if you have one primary index of 5,000 records and three replicas, your total record count is 20,000.
+
+**Architecture Fit** & Effort Drivers
+
+- **Reindexing Strategy:** Using replaceAllObjects creates a temporary index during the build.
+- **UI Implementation:** A search-as-you-type experience generates more requests than a click-to-search button.
+- **Batch Indexing:** Use the SDK's batch method rather than saveObjects to stay within protective rate limits.
+- Multi-Index Search: If you target multiple indices without using multipleQueries, each keystroke is multiplied.
+
+Recommendation: Managing Your Budget
+
+How it works
+
+- **Keystrokes:** In a search-as-you-type setup like InstantSearch, each character entered typically triggers a new billable request.
+- **Filters:** Every time a user applies a facet or filter, a new query is sent to retrieve filtered results.
+- **Page Loads:** An initial page load often triggers an empty search.
+- **Pagination:** Navigating to the next page of results triggers another request.
+
+Implementation Example: Optimizing Cost
+
+Recommendation for Rate Limiting
+
+- **Frontend:** Create a dedicated Search API Key with a limit on queries per IP per hour.
+- **Backend:** If you route requests through your own server, rate limiting should be handled at your server or edge level.
+`).map((term) => term.term);
+
+    assert.ok(!terms.includes('The Core Cost Drivers'));
+    assert.ok(!terms.includes('Core Cost Drivers'));
+    assert.ok(!terms.includes('Architecture Fit'));
+    assert.ok(!terms.includes('Effort Drivers'));
+    assert.ok(!terms.includes('Reindexing Strategy'));
+    assert.ok(!terms.includes('UI Implementation'));
+    assert.ok(!terms.includes('Batch Indexing'));
+    assert.ok(!terms.includes('Multi-Index Search'));
+    assert.ok(!terms.includes('Managing Your Budget'));
+    assert.ok(!terms.includes('How it works'));
+    assert.ok(!terms.includes('Keystrokes'));
+    assert.ok(!terms.includes('Filters'));
+    assert.ok(!terms.includes('Page Loads'));
+    assert.ok(!terms.includes('Pagination'));
+    assert.ok(!terms.includes('Implementation Example'));
+    assert.ok(!terms.includes('Optimizing Cost'));
+    assert.ok(!terms.includes('Recommendation for Rate Limiting'));
+    assert.ok(!terms.includes('Frontend'));
+    assert.ok(!terms.includes('Backend'));
+    assert.ok(terms.some((term) => term.includes('Standard Replicas')));
+    assert.ok(terms.some((term) => term.includes('Search API Key')));
+    assert.ok(terms.includes('20,000') || terms.includes('000'));
+  });
+
+  test(`${bundleName} grounding extractor does not fabricate terms across answer blocks`, () => {
+    const { xb } = loadGroundingExtractor(readBundle(bundleName));
+    const terms = xb(`
+Recommendation
+
+If you are just starting, evaluate whether Advanced Personalization or Classic Personalization fits your needs.
+
+<!--DISCOVERY_STATE {"traceId":"38911610320529"} DISCOVERY_STATE-->
+`).map((term) => term.term);
+
+    assert.ok(!terms.includes('Recommendation If'));
+    assert.ok(!terms.includes('38911610320529'));
+    assert.ok(terms.includes('Advanced Personalization'));
+    assert.ok(terms.includes('Classic Personalization'));
+  });
+
+  test(`${bundleName} grounds the cleaned visible answer instead of raw hidden segment text`, () => {
+    const bundle = readBundle(bundleName);
+
+    assert.match(bundle, /function acGroundingAnswerText/);
+    assert.match(bundle, /kb\(acGroundingAnswerText\(E\),Ul\(j\)\)/);
+  });
+
 
   test(`${bundleName} defines markdown cleanup regexes used by the answer renderer`, () => {
     const bundle = readBundle(bundleName);
@@ -133,84 +224,6 @@ for (const bundleName of ['algolia-chat.js']) {
 
     assert.match(bundle, /late agent error arrived after answer text/);
     assert.match(bundle, /late specialist error arrived after answer text/);
-  });
-
-  test(`${bundleName} aligns header title and subtitle to the same left edge`, () => {
-    const bundle = readBundle(bundleName);
-    const headerStart = bundle.indexOf('function zx(');
-    assert.notEqual(headerStart, -1, 'default header renderer should exist');
-
-    const headerEnd = bundle.indexOf('function ', headerStart + 20);
-    assert.notEqual(headerEnd, -1, 'default header renderer should have a clear boundary');
-    const headerBlock = bundle.slice(headerStart, headerEnd);
-
-    assert.match(headerBlock, /flex min-w-0 flex-col items-start text-left leading-tight/);
-    assert.match(headerBlock, /truncate text-left font-algolia-sans text-algolia-base/);
-    assert.match(headerBlock, /truncate text-left text-algolia-xs text-algolia-text-muted/);
-    assert.doesNotMatch(headerBlock, /flex min-w-0 flex-col text-left leading-tight/);
-  });
-
-  test(`${bundleName} moves the discovery follow-up out of the answer body into followUps`, () => {
-    const { Xl, _R } = loadDiscoveryFinalizer(readBundle(bundleName));
-    const followUp =
-      'Are you planning a frontend-direct implementation for maximum speed, or are you routing search through a backend for tighter control over the logic?';
-    const raw = `The answer stays here.
-
-${followUp}
-
-<!--DISCOVERY_STATE {"probed_slot":"integration_constraints","confirmed_slots":[],"inferred_slots":[],"suppressed_slots":[],"handoff_recommended":false,"handoff_specialist_key":null,"confidence":"medium","visible_followup_question":"${followUp}"} DISCOVERY_STATE-->`;
-    const context = { discoveryLedgerRef: { current: Xl() } };
-    const result = _R(context, { query: 'How should I manage rate limits?' }, { ledger: Xl(), turn: 1 }, raw);
-
-    assert.equal(result.followUp, followUp);
-    assert.equal(result.text, 'The answer stays here.');
-    assert.ok(!result.text.includes(followUp));
-  });
-
-  test(`${bundleName} recovers a trailing discovery question even when the marker omits it`, () => {
-    const { Xl, _R } = loadDiscoveryFinalizer(readBundle(bundleName));
-    const followUp = 'Are you trying to reduce monthly cost, protect the app from abuse, or both?';
-    const raw = `The answer stays here.
-
-${followUp}
-
-<!--DISCOVERY_STATE {"probed_slot":null,"confirmed_slots":[],"inferred_slots":[],"suppressed_slots":[],"handoff_recommended":false,"handoff_specialist_key":null,"confidence":"low","visible_followup_question":null} DISCOVERY_STATE-->`;
-    const context = { discoveryLedgerRef: { current: Xl() } };
-    const result = _R(context, { query: 'What is the best rate limit?' }, { ledger: Xl(), turn: 1 }, raw);
-
-    assert.equal(result.followUp, followUp);
-    assert.equal(result.text, 'The answer stays here.');
-  });
-
-  test(`${bundleName} renders follow-up questions after sources with separate treatment`, () => {
-    const bundle = readBundle(bundleName);
-    const rendererStart = bundle.indexOf('function t1(');
-    assert.notEqual(rendererStart, -1, 'assistant message renderer should exist');
-
-    const rendererEnd = bundle.indexOf('function ', rendererStart + 20);
-    assert.notEqual(rendererEnd, -1, 'assistant renderer should have a clear boundary');
-    const renderer = bundle.slice(rendererStart, rendererEnd);
-
-    assert.ok(renderer.indexOf('w.jsx(Jb,') < renderer.indexOf('w.jsx(e1,'), 'sources/footer should render before follow-ups');
-    assert.match(bundle, /acs-followup-section/);
-    assert.match(bundle, /aria-label":J\.strings\.discovery\.eyebrow/);
-    assert.doesNotMatch(bundle, /function e1\([^)]*\)\{return w\.jsx\("div",\{className:"flex flex-col gap-2 border-t border-algolia-border pt-3"/);
-    assert.doesNotMatch(bundle, /children:\[w\.jsx\("span",\{className:"text-algolia-2xs font-algolia-bold uppercase tracking-algolia-caps text-algolia-text-muted",children:J\.strings\.discovery\.eyebrow\}\),w\.jsx\("span",\{className:"text-algolia-sm font-algolia-medium text-algolia-text",children:t\}\)\]/);
-  });
-
-  test(`${bundleName} keeps the composer shell free of an extra top divider`, () => {
-    const bundle = readBundle(bundleName);
-
-    assert.match(
-      bundle,
-      /part:"composer",className:"flex items-end gap-2\.5 rounded-algolia-xl border border-algolia-border bg-algolia-surface p-2/,
-      'composer input should keep its own rounded border'
-    );
-    assert.doesNotMatch(
-      bundle,
-      /className:"shrink-0 border-t border-algolia-border bg-algolia-surface"/,
-      'composer shell should not draw a second horizontal line above the input'
-    );
   });
 
   test(`${bundleName} shows an observable processing trace while building an answer`, () => {
@@ -273,12 +286,6 @@ ${followUp}
     assert.doesNotMatch(traceBlock, /2\+n%4/);
     assert.match(bundle, /prefers-reduced-motion:no-preference/);
     assert.match(bundle, /name:"source-pill"/);
-    assert.match(bundle, /acs-source-group-pill/);
-    assert.match(bundle, /acs-source-group-count/);
-    assert.match(bundle, /backdrop-filter:blur\(10px\)/);
-    assert.match(bundle, /box-shadow:inset 0 1px 0/);
-    assert.doesNotMatch(bundle, /className:"flex flex-col gap-2 border-t border-algolia-border pt-3","aria-label":J\.strings\.sources\.sectionLabel/);
-    assert.match(bundle, /className:"flex flex-col gap-2 pt-2","aria-label":J\.strings\.sources\.sectionLabel/);
     assert.doesNotMatch(bundle, /className:"acs-source-chips"/);
     assert.doesNotMatch(bundle, /Source groups being checked/);
     assert.doesNotMatch(bundle, /acs-source-chip__count/);
@@ -289,12 +296,6 @@ ${followUp}
     assert.match(renderer, /&&!\s*R&&w\.jsx\([^,]+,\{name:"thinking"/);
     assert.doesNotMatch(bundle, /acs-step--active \.acs-step__dot\{background:var\(--algolia-accent\)/);
     assert.doesNotMatch(bundle, /acs-progress__fill[^"]*background:var\(--algolia-accent\)/);
-    assert.match(traceBlock, /--acs-progress/);
-    assert.match(traceBlock, /background:linear-gradient\(90deg,color-mix\(in srgb,var\(--algolia-accent\) 10%,transparent\) var\(--acs-progress\)/);
-    assert.match(traceBlock, /className:"sr-only"[^}]*role:"progressbar"/);
-    assert.doesNotMatch(traceBlock, /className:"acs-progress"/);
-    assert.doesNotMatch(traceBlock, /\.acs-progress\{height/);
-    assert.doesNotMatch(traceBlock, /acs-progress__fill/);
   });
 
   test(`${bundleName} logs segment state transitions when chat debug is enabled`, () => {

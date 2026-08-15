@@ -29,17 +29,20 @@ CONTEXT_COMPILER = "/sites/www/files/algolia-context-compiler.js"
 PROACTIVE_CONTROLLER = "/sites/www/files/algolia-proactive-controller.js"
 HANDOFF_TO_ORCHESTRATOR = "/sites/www/files/handoff-to-orchestrator.js"
 ENGAGE = "/sites/www/files/algolia-chat-engage.js"
+THEME = "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
 TRACKER_SRC = ROOT / "frontend/chat-widget/algolia-engagement-tracker.js"
 CONTEXT_COMPILER_SRC = ROOT / "frontend/chat-widget/algolia-context-compiler.js"
 PROACTIVE_CONTROLLER_SRC = ROOT / "frontend/chat-widget/algolia-proactive-controller.js"
 HANDOFF_TO_ORCHESTRATOR_SRC = ROOT / "frontend/chat-widget/handoff-to-orchestrator.js"
 ENGAGE_SRC = ROOT / "frontend/chat-widget/algolia-chat-engage.js"
-EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/white-glove-greeting-copy"
+THEME_SRC = ROOT / "frontend/chat-widget/algolia-chat-theme-algolia.js"
+EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/analogy-canvas-typography"
 TRACKER_VERSION = "20260815a"
 CONTEXT_COMPILER_VERSION = "20260815a"
 PROACTIVE_CONTROLLER_VERSION = "20260815e"
 HANDOFF_TO_ORCHESTRATOR_VERSION = "20260814b"
 ENGAGE_VERSION = "20260814d"
+THEME_VERSION = "20260815-analogy-canvas-a"
 
 
 def load_token() -> str:
@@ -136,6 +139,7 @@ def snapshot() -> dict:
             "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "EDIT"),
             "handoffToOrchestratorNode": node(HANDOFF_TO_ORCHESTRATOR, "EDIT"),
             "engageNode": node(ENGAGE, "EDIT"),
+            "themeNode": node(THEME, "EDIT"),
         },
         "live": {
             "blockHtml": block_html("LIVE"),
@@ -145,6 +149,7 @@ def snapshot() -> dict:
             "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "LIVE"),
             "handoffToOrchestratorNode": node(HANDOFF_TO_ORCHESTRATOR, "LIVE"),
             "engageNode": node(ENGAGE, "LIVE"),
+            "themeNode": node(THEME, "LIVE"),
         },
     }
 
@@ -223,6 +228,15 @@ def update_block_html(current: str) -> str:
     engage_tag = (
         '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
         f'algolia-chat-engage.js?engage={ENGAGE_VERSION}"></script>'
+    )
+    theme_tag = (
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme={THEME_VERSION}"></script>'
+    )
+    next_html = re.sub(
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-chat-theme-algolia[^"]*\.js(?:\?[^"]*)?"></script>',
+        theme_tag,
+        next_html,
     )
     next_html = re.sub(
         r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-engagement-tracker\.js(?:\?[^"]*)?"></script>',
@@ -325,6 +339,7 @@ def validate(snapshot_after: dict) -> dict:
     live_proactive_controller = snapshot_after["live"]["proactiveControllerNode"]
     live_handoff = snapshot_after["live"]["handoffToOrchestratorNode"]
     live_engage = snapshot_after["live"]["engageNode"]
+    live_theme = snapshot_after["live"]["themeNode"]
     live_old_tracker = snapshot_after["live"]["oldTrackerNode"]
     edit_old_tracker = snapshot_after["edit"]["oldTrackerNode"]
     checks = {
@@ -337,12 +352,15 @@ def validate(snapshot_after: dict) -> dict:
         "liveHtmlReferencesHandoffToOrchestrator": "handoff-to-orchestrator.js" in live_html,
         "liveHtmlReferencesHandoffToOrchestratorVersion": f"handoff={HANDOFF_TO_ORCHESTRATOR_VERSION}" in live_html,
         "liveHtmlReferencesEngageVersion": f"engage={ENGAGE_VERSION}" in live_html,
+        "liveHtmlReferencesTheme": "algolia-chat-theme-algolia-modal-greeting-width-20260815a.js" in live_html,
+        "liveHtmlReferencesThemeVersion": f"theme={THEME_VERSION}" in live_html,
         "liveHtmlOmitsOldTracker": "algolia-chat-tracker.js" not in live_html,
         "liveNewTrackerExists": live_tracker is not None,
         "liveContextCompilerExists": live_context_compiler is not None,
         "liveProactiveControllerExists": live_proactive_controller is not None,
         "liveHandoffToOrchestratorExists": live_handoff is not None,
         "liveEngageExists": live_engage is not None,
+        "liveThemeExists": live_theme is not None,
         "oldTrackerAbsentFromEdit": edit_old_tracker is None,
         "oldTrackerAbsentFromLive": live_old_tracker is None,
     }
@@ -362,6 +380,8 @@ def edit_has_expected_html(snapshot_after: dict) -> bool:
             "handoff-to-orchestrator.js" in edit_html,
             f"handoff={HANDOFF_TO_ORCHESTRATOR_VERSION}" in edit_html,
             f"engage={ENGAGE_VERSION}" in edit_html,
+            "algolia-chat-theme-algolia-modal-greeting-width-20260815a.js" in edit_html,
+            f"theme={THEME_VERSION}" in edit_html,
         ]
     )
 
@@ -381,6 +401,7 @@ def main() -> int:
     proactive_controller_content = PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")
     handoff_content = HANDOFF_TO_ORCHESTRATOR_SRC.read_text(encoding="utf-8")
     engage_content = ENGAGE_SRC.read_text(encoding="utf-8")
+    theme_content = THEME_SRC.read_text(encoding="utf-8")
     plan = {
         "target": {
             "block": BLOCK_PATH,
@@ -390,6 +411,7 @@ def main() -> int:
             "handoffToOrchestrator": HANDOFF_TO_ORCHESTRATOR,
             "oldTracker": OLD_TRACKER,
             "engage": ENGAGE,
+            "theme": THEME,
         },
         "current": {
             "oldTrackerReferenced": "algolia-chat-tracker.js" in current_html,
@@ -397,11 +419,13 @@ def main() -> int:
             "contextCompilerReferenced": "algolia-context-compiler.js" in current_html,
             "proactiveControllerReferenced": "algolia-proactive-controller.js" in current_html,
             "handoffToOrchestratorReferenced": "handoff-to-orchestrator.js" in current_html,
+            "themeReferenced": "algolia-chat-theme-algolia" in current_html,
             "releaseMarkers": re.findall(r'data-release="([^"]+)"', current_html),
             "newTrackerExists": before["edit"]["newTrackerNode"] is not None,
             "contextCompilerExists": before["edit"]["contextCompilerNode"] is not None,
             "proactiveControllerExists": before["edit"]["proactiveControllerNode"] is not None,
             "handoffToOrchestratorExists": before["edit"]["handoffToOrchestratorNode"] is not None,
+            "themeExists": before["edit"]["themeNode"] is not None,
         },
         "intended": {
             "oldTrackerReferenced": False,
@@ -409,16 +433,19 @@ def main() -> int:
             "contextCompilerReferenced": True,
             "proactiveControllerReferenced": True,
             "handoffToOrchestratorReferenced": True,
+            "themeReferenced": True,
             "trackerVersion": TRACKER_VERSION,
             "contextCompilerVersion": CONTEXT_COMPILER_VERSION,
             "proactiveControllerVersion": PROACTIVE_CONTROLLER_VERSION,
             "handoffToOrchestratorVersion": HANDOFF_TO_ORCHESTRATOR_VERSION,
             "engageVersion": ENGAGE_VERSION,
+            "themeVersion": THEME_VERSION,
             "trackerSha256": sha256(tracker_content),
             "contextCompilerSha256": sha256(context_compiler_content),
             "proactiveControllerSha256": sha256(proactive_controller_content),
             "handoffToOrchestratorSha256": sha256(handoff_content),
             "engageSha256": sha256(engage_content),
+            "themeSha256": sha256(theme_content),
         },
         "rollback": {
             "restoreBlockHtmlFrom": str(EVIDENCE_DIR / "before-snapshot.json"),
@@ -427,6 +454,7 @@ def main() -> int:
             "restoreOrRemoveProactiveControllerFrom": "before-snapshot.json edit.proactiveControllerNode children[0].properties[jcr:data]",
             "restoreOrRemoveHandoffToOrchestratorFrom": "before-snapshot.json edit.handoffToOrchestratorNode children[0].properties[jcr:data]",
             "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]",
+            "restoreThemeFrom": "before-snapshot.json edit.themeNode children[0].properties[jcr:data]",
         },
     }
     write_json(EVIDENCE_DIR / "deployment-plan.json", plan)
@@ -441,6 +469,7 @@ def main() -> int:
         "upsertProactiveController": upsert_file(PROACTIVE_CONTROLLER, proactive_controller_content),
         "upsertHandoffToOrchestrator": upsert_file(HANDOFF_TO_ORCHESTRATOR, handoff_content),
         "upsertEngage": upsert_file(ENGAGE, engage_content),
+        "upsertTheme": upsert_file(THEME, theme_content),
         "setBlockHtml": set_block_html(next_html),
         "deleteOldTrackerEdit": delete_old_tracker(),
         "publishNewTracker": publish(NEW_TRACKER),
@@ -448,6 +477,7 @@ def main() -> int:
         "publishProactiveController": publish(PROACTIVE_CONTROLLER),
         "publishHandoffToOrchestrator": publish(HANDOFF_TO_ORCHESTRATOR),
         "publishEngage": publish(ENGAGE),
+        "publishTheme": publish(THEME),
         "publishFilesSubtree": publish(FILES_PATH, subtree=True),
         "publishDriftSubtree": publish("/sites/www/home/drift", subtree=True),
         "versionBlock": graphql("""

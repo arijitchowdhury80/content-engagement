@@ -1,5 +1,111 @@
 {
-  "republishFilesSubtree": {
+  "setThemeFileAgain": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "setChatFileAgain": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-chat.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "setBlockHtmlThemeRefAgain": {
+    "data": {
+      "jcr": {
+        "block": {
+          "html": {
+            "setValue": true
+          },
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishThemeAgain": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+          }
+        }
+      }
+    }
+  },
+  "publishThemeContentAgain": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js/jcr:content"
+          }
+        }
+      }
+    }
+  },
+  "publishChatAgain": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js"
+          }
+        }
+      }
+    }
+  },
+  "publishChatContentAgain": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat.js/jcr:content"
+          }
+        }
+      }
+    }
+  },
+  "publishFilesAgain": {
     "data": {
       "jcr": {
         "target": {
@@ -11,7 +117,7 @@
       }
     }
   },
-  "republishDriftSubtree": {
+  "publishDriftAgain": {
     "data": {
       "jcr": {
         "target": {
@@ -23,7 +129,7 @@
       }
     }
   },
-  "republishBlock": {
+  "publishBlockAgain": {
     "data": {
       "jcr": {
         "target": {

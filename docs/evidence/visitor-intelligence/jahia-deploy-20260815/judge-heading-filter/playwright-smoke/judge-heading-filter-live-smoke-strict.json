@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-08-15T05:03:09.248Z",
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/?algoliaChatDebug=1&algoliaJudgeDebug=1&codexCacheBust=judge-heading-filter-20260815a-strict",
+  "question": "What counts as an API call, keystrokes, filters applied, or page loads, and does that change how I should configure rate limiting to control cost?",
+  "scriptState": {
+    "rootHasRelease": true,
+    "chatScript": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=judge-heading-filter-20260815a"
+  },
+  "state": {
+    "textLength": 42253,
+    "questionVisible": true,
+    "processing": false,
+    "noResponse": false,
+    "tryAgain": false,
+    "finalSourceSection": true,
+    "assistantAnswer": true,
+    "highlighted": [],
+    "textPreview": ":host{--algolia-bg: #f5f5f5;--algolia-surface: #ffffff;--algolia-surface-2: #f0f0f0;--algolia-surface-hover: #eaeaea;--algolia-border: #e0e0e0;--algolia-border-strong: #b0b0b0;--algolia-text: #1a1a1a;--algolia-text-secondary: #4d4d4d;--algolia-text-muted: #757575;--algolia-text-on-accent: #ffffff;--algolia-accent: #3a3a3a;--algolia-accent-hover: #2c2c2c;--algolia-accent-down: #1f1f1f;--algolia-accent-tint: #ececec;--algolia-link: #3a3a3a;--algolia-focus: #3a3a3a;--algolia-positive: #2e7d46;--algolia-positive-bg: #e6f4ea;--algolia-notice: #a15c00;--algolia-notice-bg: #fbeedd;--algolia-negative: #b3261e;--algolia-negative-bg: #fbe9e7;--algolia-informative: #3a3a3a;--algolia-informative-bg: #ececec;--algolia-agent-primary: #5c5c5c;--algolia-agent-specialist: #707070;--algolia-agent-specialist-product: #626262;--algolia-agent-specialist-tech: #707070;--algolia-agent-specialist-sales: #7e7e7e;--algolia-agent-specialist-evidence: #8c8c8c;--algolia-font-sans: system-ui, -apple-system, \"Segoe UI\", sans-serif;--algolia-font-mono: ui-monospace, \"SF Mono\", Menlo, monospace;--algolia-fs-2xs: 10px;--algolia-fs-xs: 12px;--algolia-fs-sm: 14px;--algolia-fs-base: 16px;--algolia-fs-lg: 18px;--algolia-fs-xl: 22px;--algolia-fs-2xl: 28px;--algolia-fs-hero: clamp(26px, 4vw, 40px);--algolia-tracking-caps: .12em;--algolia-fw-regular: 400;--algolia-fw-medium: 500;--algolia-fw-bold: 700;--algolia-lh-:host: 1.5;--algolia-lh-heading: 1.2;--algolia-control-min: 44px;--algolia-control-sm: 36px;--algolia-source-name-max-w: 200px;--algolia-msg-max-w: 80%;--algolia-thinking-bar-max-w: 220px;--algolia-space-1: 4px;--algolia-space-2: 8px;--algolia-space-3: 12px;--algolia-space-4: 16px;--algolia-space-5: 20px;--algolia-space-6: 24px;--algolia-space-7: 32px;--algolia-space-8: 40px;--algolia-space-9: 48px;--algolia-space-10: 64px;--algolia-gutter: 24px;--algolia-measure: 72ch;--algolia-maxw: 1120px;--algolia-radius-sm: 4px;--algolia-radius-md: 8px;--algolia-radius-lg: 12px;--algolia-radius-xl: 16px;--al"
+  },
+  "forbiddenHighlighted": [],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 ()",
+    "Failed to load resource: net::ERR_FAILED",
+    "There was a problem with the fetch operation: TypeError: Failed to fetch\n    at window.fetch (https://tmp-content-eng-algolia.cloud.jahia.com/?algoliaChatDebug=1&algoliaJudgeDebug=1&codexCacheBust=judge-heading-filter-20260815a-strict:4879:21)\n    at algoliaContextFetch (https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260815a:547:30)\n    at algoliaHandoffFetch (https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=20260814b:282:28)\n    at HTMLDocument.<anonymous> (https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js:4:16)"
+  ],
+  "screenshotPath": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/docs/evidence/visitor-intelligence/jahia-deploy-20260815/judge-heading-filter/playwright-smoke/judge-heading-filter-live-smoke-strict.png",
+  "pass": true
+}

@@ -1,0 +1,609 @@
+{
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?widgetFinal=20260812&algoliaChatDebug=1&algoliaJudgeDebug=1&groundingGate=judge-heading-filter-20260815a&codexSmoke=final-1786771652125",
+  "question": "What counts as an API call keystrokes, filters applied, or page loads and does that change how I should configure rate limiting to control cost?",
+  "waitError": "page.waitForFunction: Timeout 150000ms exceeded.\n    at [stdin]:32:16",
+  "pass": false,
+  "result": {
+    "textLength": 0,
+    "hasNoResponse": false,
+    "hasSources": false,
+    "hasQuestion": false,
+    "hasImplementationExample": false,
+    "hasOptimizingCost": false,
+    "marked": [],
+    "scripts": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=judge-heading-filter-20260815a"
+    ],
+    "textPreview": ""
+  },
+  "requests": [
+    {
+      "method": "POST",
+      "url": "https://0exrpaxb56.algolia.net/agent-studio/1/agents/e2c8596a-4420-41d2-80bb-5cd4aaeffda6/completions?compatibilityMode=ai-sdk-5"
+    },
+    {
+      "method": "POST",
+      "url": "https://0exrpaxb56.algolia.net/agent-studio/1/agents/4479f02f-d5d0-4fce-a875-dafda15de166/completions?compatibilityMode=ai-sdk-5"
+    },
+    {
+      "method": "POST",
+      "url": "https://0exrpaxb56.algolia.net/agent-studio/1/agents/a4c3846b-e538-4c9c-8e39-1bb15a21f2c2/completions?compatibilityMode=ai-sdk-5"
+    },
+    {
+      "method": "POST",
+      "url": "https://0exrpaxb56.algolia.net/agent-studio/1/agents/c43d7374-801a-4d0f-aa09-ca12830565c3/completions?compatibilityMode=ai-sdk-5"
+    },
+    {
+      "method": "POST",
+      "url": "https://0exrpaxb56.algolia.net/agent-studio/1/agents/f14b8ddf-2285-422c-89e5-180d7fa0b3bf/completions?compatibilityMode=ai-sdk-5"
+    },
+    {
+      "method": "POST",
+      "url": "https://0exrpaxb56.algolia.net/agent-studio/1/agents/4479f02f-d5d0-4fce-a875-dafda15de166/completions?compatibilityMode=ai-sdk-5"
+    }
+  ],
+  "consoleLines": [
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio request"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…b15a21f2c2/completions?compatibilityMode=ai-sdk-5, method: POST, headers: Object, body: Object}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] role judge invoked"
+    },
+    {
+      "type": "log",
+      "text": "{role: referee, agentId: c43d7374-801a-4d0f-aa09-ca12830565c3, question: What counts as an API call keystrokes, filters app…I should configure rate limiting to control cost?, answerLength: 2455, sources: Array(21)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop start"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: c43d7374-801a-4d0f-aa09-ca12830565c3, maxSteps: 4, toolTimeoutMs: 30000, toolNames: Array(0)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio request"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: c43d7374-801a-4d0f-aa09-ca12830565c3, url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…12830565c3/completions?compatibilityMode=ai-sdk-5, messageCount: 1, messages: Array(1)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Context Compiler] injected turnContext {context_schema: AlgoliaTurnContext.v1, persona: unknown:unknown, current_page: /cms/render/live/en/sites/www/home.html, current_page_group: other, current_topic: observed:ai_search}"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio request"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…12830565c3/completions?compatibilityMode=ai-sdk-5, method: POST, headers: Object, body: Object}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] role judge invoked"
+    },
+    {
+      "type": "log",
+      "text": "{role: advocate, agentId: f14b8ddf-2285-422c-89e5-180d7fa0b3bf, question: What counts as an API call keystrokes, filters app…I should configure rate limiting to control cost?, answerLength: 2455, sources: Array(21)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop start"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: f14b8ddf-2285-422c-89e5-180d7fa0b3bf, maxSteps: 4, toolTimeoutMs: 30000, toolNames: Array(0)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio request"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: f14b8ddf-2285-422c-89e5-180d7fa0b3bf, url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…0d7fa0b3bf/completions?compatibilityMode=ai-sdk-5, messageCount: 1, messages: Array(1)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Context Compiler] injected turnContext {context_schema: AlgoliaTurnContext.v1, persona: unknown:unknown, current_page: /cms/render/live/en/sites/www/home.html, current_page_group: other, current_topic: observed:ai_search}"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio request"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…0d7fa0b3bf/completions?compatibilityMode=ai-sdk-5, method: POST, headers: Object, body: Object}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio response"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…fda15de166/completions?compatibilityMode=ai-sdk-5, status: 200, ok: true, durationMs: 544, contentLength: 908}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio response"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: a4c3846b-e538-4c9c-8e39-1bb15a21f2c2, status: 200, ok: true}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio parsed stream"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: a4c3846b-e538-4c9c-8e39-1bb15a21f2c2, contentLength: 782, contentPreview: ```json\n{\n  \"score\": 8,\n  \"note\": \"The answer is l… requests instead of nine\",\n      \"reason\": \"T..., hits: 0, suggestions: Array(0)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop step"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: a4c3846b-e538-4c9c-8e39-1bb15a21f2c2, step: 1, contentLength: 782, hitsAdded: 0, totalHits: 0}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop complete"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: a4c3846b-e538-4c9c-8e39-1bb15a21f2c2, contentLength: 782, hits: 0, suggestions: Array(0), error: undefined}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] role judge returned"
+    },
+    {
+      "type": "log",
+      "text": "{role: skeptic, agentId: a4c3846b-e538-4c9c-8e39-1bb15a21f2c2, contentLength: 782, contentPreview: ```json\n{\n  \"score\": 8,\n  \"note\": \"The answer is l…sources.\",\n      \"certainty\": 0.9\n    }\n  ]\n}\n```}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio response"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…b15a21f2c2/completions?compatibilityMode=ai-sdk-5, status: 200, ok: true, durationMs: 477, contentLength: 1199}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio response"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: c43d7374-801a-4d0f-aa09-ca12830565c3, status: 200, ok: true}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio parsed stream"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: c43d7374-801a-4d0f-aa09-ca12830565c3, contentLength: 289, contentPreview: ```json\n{\n  \"score\": 10,\n  \"grounding\": 10,\n  \"cov… and providing actionable recommendations.\"\n}\n```, hits: 0, suggestions: Array(0)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop step"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: c43d7374-801a-4d0f-aa09-ca12830565c3, step: 1, contentLength: 289, hitsAdded: 0, totalHits: 0}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop complete"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: c43d7374-801a-4d0f-aa09-ca12830565c3, contentLength: 289, hits: 0, suggestions: Array(0), error: undefined}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] role judge returned"
+    },
+    {
+      "type": "log",
+      "text": "{role: referee, agentId: c43d7374-801a-4d0f-aa09-ca12830565c3, contentLength: 289, contentPreview: ```json\n{\n  \"score\": 10,\n  \"grounding\": 10,\n  \"cov… and providing actionable recommendations.\"\n}\n```}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio response"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…12830565c3/completions?compatibilityMode=ai-sdk-5, status: 200, ok: true, durationMs: 611, contentLength: 680}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio response"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: f14b8ddf-2285-422c-89e5-180d7fa0b3bf, status: 200, ok: true}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio parsed stream"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: f14b8ddf-2285-422c-89e5-180d7fa0b3bf, contentLength: 327, contentPreview: ```json\n{\n  \"score\": 10,\n  \"grounding\": 10,\n  \"cov…igh-value technical implementation advice.\"\n}\n```, hits: 0, suggestions: Array(0)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop step"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: f14b8ddf-2285-422c-89e5-180d7fa0b3bf, step: 1, contentLength: 327, hitsAdded: 0, totalHits: 0}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop complete"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: f14b8ddf-2285-422c-89e5-180d7fa0b3bf, contentLength: 327, hits: 0, suggestions: Array(0), error: undefined}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] role judge returned"
+    },
+    {
+      "type": "log",
+      "text": "{role: advocate, agentId: f14b8ddf-2285-422c-89e5-180d7fa0b3bf, contentLength: 327, contentPreview: ```json\n{\n  \"score\": 10,\n  \"grounding\": 10,\n  \"cov…igh-value technical implementation advice.\"\n}\n```}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop tool results"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: 4479f02f-d5d0-4fce-a875-dafda15de166, step: 1, results: Array(3)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio request"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: 4479f02f-d5d0-4fce-a875-dafda15de166, url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…fda15de166/completions?compatibilityMode=ai-sdk-5, messageCount: 2, messages: Array(2)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Context Compiler] injected turnContext {context_schema: AlgoliaTurnContext.v1, persona: unknown:unknown, current_page: /cms/render/live/en/sites/www/home.html, current_page_group: other, current_topic: observed:ai_search}"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio request"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…fda15de166/completions?compatibilityMode=ai-sdk-5, method: POST, headers: Object, body: Object}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio response"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…0d7fa0b3bf/completions?compatibilityMode=ai-sdk-5, status: 200, ok: true, durationMs: 620, contentLength: 718}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio response"
+    },
+    {
+      "type": "log",
+      "text": "{appId: 0EXRPAXB56, agentId: 4479f02f-d5d0-4fce-a875-dafda15de166, status: 200, ok: true}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event page_dwell {dwellSeconds: 5, pageGroup: other, topic: ai_search}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Engagement Tracker] event page_dwell {dwellSeconds: 10, pageGroup: other, topic: ai_search}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-studio parsed stream"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: 4479f02f-d5d0-4fce-a875-dafda15de166, contentLength: 1523, contentPreview: ```json\n{\n  \"panelId\": \"algolia-judge-001\",\n  \"dim…erJudge\": [\n    {\n      \"role\": \"skeptic\",\n   ..., hits: 0, suggestions: Array(0)}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop step"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: 4479f02f-d5d0-4fce-a875-dafda15de166, step: 2, contentLength: 1523, hitsAdded: 0, totalHits: 0}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] agent-loop complete"
+    },
+    {
+      "type": "log",
+      "text": "{agentId: 4479f02f-d5d0-4fce-a875-dafda15de166, contentLength: 1523, hits: 0, suggestions: Array(0), error: undefined}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] chief judge raw response"
+    },
+    {
+      "type": "log",
+      "text": "{contentLength: 1523, contentPreview: ```json\n{\n  \"panelId\": \"algolia-judge-001\",\n  \"dim…ge loads) and accurately describes the role of...}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] chief judge parsed response"
+    },
+    {
+      "type": "log",
+      "text": "{panelId: algolia-judge-001, dims: Object, synthesizedScore: 9.6, composite: 9.6, preGateScore: 10}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Judge Debug] judge parsed verdict"
+    },
+    {
+      "type": "log",
+      "text": "{panelId: 52d8537c-8a17-42a0-9be3-66f9a2355585:primary, verdict: Object}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "startGroupCollapsed",
+      "text": "[Algolia Chat - Wire Debug] Agent Studio response"
+    },
+    {
+      "type": "log",
+      "text": "{url: https://0EXRPAXB56.algolia.net/agent-studio/1/agen…fda15de166/completions?compatibilityMode=ai-sdk-5, status: 200, ok: true, durationMs: 11636, contentLength: 22054}"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147364591"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147368943"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Medium.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147364591"
+    },
+    {
+      "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Regular.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147365871"
+    }
+  ],
+  "screenshot": "docs/evidence/visitor-intelligence/jahia-deploy-20260815/judge-heading-filter/playwright-smoke/implementation-example-widget-final-smoke.png",
+  "checkedAt": "2026-08-15T05:30:04.359Z"
+}

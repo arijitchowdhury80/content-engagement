@@ -74,6 +74,11 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2[^{]+{[^}]*background: transparent !important/);
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2[^{]+{[^}]*border: 0 !important/);
   assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2[^{]+{[^}]*box-shadow: none !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col\.gap-2 > p:first-child[^{]+{[^}]*font-size: var\(--algolia-fs-base\) !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col\.gap-2 > p:first-child[^{]+{[^}]*line-height: 1\.62 !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col\.gap-2 > p:first-child[^{]+{[^}]*font-weight: var\(--algolia-fw-medium\) !important/);
+  assert.match(css, /\.bg-algolia-surface\.p-6\.shadow-algolia-2 > \.flex\.flex-col\.gap-2 > p:first-child[^{]+{[^}]*margin-bottom: 8px !important/);
+  assert.doesNotMatch(css, /aRRIe take/);
   assert.match(css, /\.uppercase\.tracking-algolia-caps[^{]+{[^}]*border: 0 !important/);
   assert.match(css, /\.mx-auto\.flex\.w-full\.max-w-algolia-maxw\.flex-1\.flex-col\.overflow-hidden[^{]+{[^}]*max-width: 100% !important/);
   assert.match(css, /\.w-full\.max-w-algolia-measure\s*{[^}]*max-width: var\(--algolia-msg-max-w\) !important/);

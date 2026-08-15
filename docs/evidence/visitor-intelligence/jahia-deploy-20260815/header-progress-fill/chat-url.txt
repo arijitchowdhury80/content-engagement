@@ -1,1 +1,1 @@
-https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&progress=20260815-chat-ui-header-progress-a
+https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&followupSplit=20260815-chat-ui-followup-split-a&headerProgress=20260815-chat-ui-header-progress-fill-b

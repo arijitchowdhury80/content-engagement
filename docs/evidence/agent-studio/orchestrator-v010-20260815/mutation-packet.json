@@ -1,0 +1,59 @@
+{
+  "target": {
+    "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "name": "www Chat – Orchestrator"
+  },
+  "current": {
+    "id": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "name": "www Chat – Orchestrator",
+    "status": "published",
+    "model": "medium",
+    "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+    "instructionsSha256": "5602aa9420a1acda33602e7b7fc5a7ad56a257da780ccf09c8907188b61013d0",
+    "instructionsPrefix": "## Agent Prompt: Superior Answer Contract v009\n\nYou are the answer-quality layer for Algol",
+    "systemPromptSha256": "418509ab8fd9553fb38eb5b1c3453d8f1928e493643d81815513d4b0fd38f619",
+    "systemPromptPrefix": "# aRRIe Orchestrator System Prompt\n\n## Mission\n\nYou are aRRIe, Algolia's website discovery",
+    "toolCount": 3,
+    "configKeys": [
+      "enableAlgoliaMcp",
+      "guardrail",
+      "max_iterations",
+      "max_tokens",
+      "memory",
+      "rate_limit",
+      "suggestions",
+      "thread_depth"
+    ],
+    "updatedAt": "2026-08-15T09:03:50.735061Z"
+  },
+  "intended": {
+    "instructionsSha256": "5b4acecde1997111a3fb8b7b6830b81235155797e3dcad91cf58167afb6c366d",
+    "instructionsPrefix": "## Agent Prompt: Superior Answer Contract v010\n\nVersion note: v010 adds proactive handoff ",
+    "systemPromptSha256": "7f99807dd5379704f58952174956dbec750baa5808fc5dff1affcc1a44d791b9",
+    "systemPromptPrefix": "# aRRIe Orchestrator System Prompt\n\n## Mission\n\nYou are aRRIe, Algolia's website discovery",
+    "model": "medium",
+    "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+    "toolCount": 3,
+    "configKeys": [
+      "enableAlgoliaMcp",
+      "guardrail",
+      "max_iterations",
+      "max_tokens",
+      "memory",
+      "rate_limit",
+      "suggestions",
+      "thread_depth"
+    ]
+  },
+  "rollback": {
+    "restoreInstructionsSha256": "5602aa9420a1acda33602e7b7fc5a7ad56a257da780ccf09c8907188b61013d0",
+    "restoreSystemPromptSha256": "418509ab8fd9553fb38eb5b1c3453d8f1928e493643d81815513d4b0fd38f619",
+    "restoreFrom": "docs/evidence/agent-studio/orchestrator-v010-20260815/before-snapshot.json"
+  },
+  "validation": [
+    "GET readback returns instructions hash matching local v010 file",
+    "GET readback returns systemPrompt hash matching local file",
+    "model/provider/tool count/config keys unchanged",
+    "instructions prefix starts with Superior Answer Contract v010"
+  ]
+}

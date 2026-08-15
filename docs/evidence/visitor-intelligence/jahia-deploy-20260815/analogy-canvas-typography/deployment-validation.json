@@ -1,0 +1,23 @@
+{
+  "liveHtmlReferencesNewTracker": true,
+  "liveHtmlReferencesTrackerVersion": true,
+  "liveHtmlReferencesContextCompiler": true,
+  "liveHtmlReferencesContextCompilerVersion": true,
+  "liveHtmlReferencesProactiveController": true,
+  "liveHtmlReferencesProactiveControllerVersion": true,
+  "liveHtmlReferencesHandoffToOrchestrator": true,
+  "liveHtmlReferencesHandoffToOrchestratorVersion": true,
+  "liveHtmlReferencesEngageVersion": true,
+  "liveHtmlReferencesTheme": true,
+  "liveHtmlReferencesThemeVersion": true,
+  "liveHtmlOmitsOldTracker": true,
+  "liveNewTrackerExists": true,
+  "liveContextCompilerExists": true,
+  "liveProactiveControllerExists": true,
+  "liveHandoffToOrchestratorExists": true,
+  "liveEngageExists": true,
+  "liveThemeExists": true,
+  "oldTrackerAbsentFromEdit": true,
+  "oldTrackerAbsentFromLive": true,
+  "pass": true
+}

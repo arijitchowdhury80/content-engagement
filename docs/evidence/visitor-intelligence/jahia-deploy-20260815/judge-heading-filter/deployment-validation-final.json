@@ -1,0 +1,22 @@
+{
+  "release": "judge-heading-filter-20260815a",
+  "localJsSha256": "a4d5d4e530c4dc6e3e95f51815ad79e014aa2be7c6f338cfd3fb7ad9b8840836",
+  "liveJcrJsSha256": "a4d5d4e530c4dc6e3e95f51815ad79e014aa2be7c6f338cfd3fb7ad9b8840836",
+  "publicJsSha256": "a4d5d4e530c4dc6e3e95f51815ad79e014aa2be7c6f338cfd3fb7ad9b8840836",
+  "publicStatus": 200,
+  "rootStatus": 200,
+  "liveJcrMatchesLocal": true,
+  "publicMatchesLocal": true,
+  "publicHasStructuralGuard": true,
+  "publicHasExtractorCall": true,
+  "liveBlockHasNewGate": true,
+  "rootHtmlHasNewGate": true,
+  "liveBlockHasOldGroundingGate": false,
+  "rootHtmlHasOldGroundingGate": false,
+  "liveScript": "<script src=\"https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=judge-heading-filter-20260815a\"></script>",
+  "rootScript": "<script src=\"https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=judge-heading-filter-20260815a\"></script>",
+  "checkedAt": "2026-08-15T05:00:46.673Z",
+  "publicUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=judge-heading-filter-20260815a",
+  "rootUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/?codexCacheBust=judge-heading-filter-20260815a-final",
+  "pass": true
+}

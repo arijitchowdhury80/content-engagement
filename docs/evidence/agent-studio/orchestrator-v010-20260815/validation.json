@@ -1,0 +1,10 @@
+{
+  "instructionsMatch": true,
+  "systemPromptMatch": true,
+  "instructionsIsV010": true,
+  "modelUnchanged": true,
+  "providerUnchanged": true,
+  "toolCountUnchanged": true,
+  "configKeysUnchanged": true,
+  "pass": true
+}

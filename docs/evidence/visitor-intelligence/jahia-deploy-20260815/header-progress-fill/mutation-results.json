@@ -1,4 +1,26 @@
 {
+  "setThemeFile": {
+    "data": {
+      "jcr": {
+        "file": {
+          "content": {
+            "data": {
+              "setValue": true
+            },
+            "mime": {
+              "setValue": true
+            },
+            "node": {
+              "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js/jcr:content"
+            }
+          },
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
+          }
+        }
+      }
+    }
+  },
   "setChatFile": {
     "data": {
       "jcr": {
@@ -30,6 +52,18 @@
           },
           "node": {
             "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishTheme": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
           }
         }
       }

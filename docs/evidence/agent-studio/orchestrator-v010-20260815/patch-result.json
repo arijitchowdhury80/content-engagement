@@ -1,0 +1,26 @@
+{
+  "status": 200,
+  "summary": {
+    "id": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "name": "www Chat – Orchestrator",
+    "status": "published",
+    "model": "medium",
+    "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+    "instructionsSha256": "5b4acecde1997111a3fb8b7b6830b81235155797e3dcad91cf58167afb6c366d",
+    "instructionsPrefix": "## Agent Prompt: Superior Answer Contract v010\n\nVersion note: v010 adds proactive handoff ",
+    "systemPromptSha256": "7f99807dd5379704f58952174956dbec750baa5808fc5dff1affcc1a44d791b9",
+    "systemPromptPrefix": "# aRRIe Orchestrator System Prompt\n\n## Mission\n\nYou are aRRIe, Algolia's website discovery",
+    "toolCount": 3,
+    "configKeys": [
+      "enableAlgoliaMcp",
+      "guardrail",
+      "max_iterations",
+      "max_tokens",
+      "memory",
+      "rate_limit",
+      "suggestions",
+      "thread_depth"
+    ],
+    "updatedAt": "2026-08-15T09:21:03.146456Z"
+  }
+}

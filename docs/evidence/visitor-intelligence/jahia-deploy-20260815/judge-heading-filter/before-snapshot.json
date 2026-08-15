@@ -1,0 +1,9 @@
+{
+  "release": "judge-heading-filter-20260815a",
+  "localJsSha256": "a4d5d4e530c4dc6e3e95f51815ad79e014aa2be7c6f338cfd3fb7ad9b8840836",
+  "editJsSha256": "bc06184cc8804cf24a0a1e83b73ea6e61b37f17f2cd56f0dc725176b5287b7e2",
+  "liveJsSha256": "bc06184cc8804cf24a0a1e83b73ea6e61b37f17f2cd56f0dc725176b5287b7e2",
+  "blockAlreadyHadNewGate": true,
+  "editBlockScriptBefore": "<script src=\"https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=judge-heading-filter-20260815a\"></script>",
+  "editBlockScriptAfter": "<script src=\"https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=judge-heading-filter-20260815a\"></script>"
+}
