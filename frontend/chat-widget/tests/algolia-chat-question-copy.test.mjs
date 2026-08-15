@@ -22,10 +22,16 @@ test('question buttons copy their text before invoking the existing action', () 
     /f\.questions\.map\(d=>.*?onClick:\(\)=>\{acCopyQuestion\(d\),t\(d\)\}/,
     'sample question menu items should copy before using the question'
   );
-  assert.match(
-    bundle,
-    /f\.map\(v=>.*?onClick:\(\)=>\{acCopyQuestion\(v\),t\(v\)\}/,
-    'inline empty-state question chips should copy before using the question'
+  const emptyStart = bundle.indexOf('function o1({onPick:t,hideWelcome:n})');
+  const emptyEnd = bundle.indexOf('function s1(', emptyStart);
+  assert.notEqual(emptyStart, -1, 'empty-state renderer should exist');
+  assert.notEqual(emptyEnd, -1, 'empty-state renderer should have a stable boundary');
+
+  const emptyBlock = bundle.slice(emptyStart, emptyEnd);
+  assert.doesNotMatch(
+    emptyBlock,
+    /variant:"inline"|f\.map\(v=>.*?acCopyQuestion\(v\)/,
+    'empty-state sample questions should not render in the welcome area'
   );
   assert.match(
     bundle,
