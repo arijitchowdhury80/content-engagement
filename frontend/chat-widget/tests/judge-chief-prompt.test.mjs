@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import vm from 'node:vm';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -18,6 +19,16 @@ function roleJudgeChiefPromptBranch(bundle) {
   assert.notEqual(end, -1, 'chief role-judge prompt branch should have a clear return boundary');
 
   return bundle.slice(start, end);
+}
+
+function loadDiscoveryFinalizer(bundle) {
+  const start = bundle.indexOf('const Pn=');
+  assert.notEqual(start, -1, 'discovery state helpers should exist');
+
+  const end = bundle.indexOf('function kR', start);
+  assert.notEqual(end, -1, 'discovery finalizer should end before tool wiring');
+
+  return vm.runInNewContext(`${bundle.slice(start, end)};({ Xl, _R });`);
 }
 
 for (const bundleName of ['algolia-chat.js']) {
@@ -137,6 +148,54 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.match(headerBlock, /truncate text-left font-algolia-sans text-algolia-base/);
     assert.match(headerBlock, /truncate text-left text-algolia-xs text-algolia-text-muted/);
     assert.doesNotMatch(headerBlock, /flex min-w-0 flex-col text-left leading-tight/);
+  });
+
+  test(`${bundleName} moves the discovery follow-up out of the answer body into followUps`, () => {
+    const { Xl, _R } = loadDiscoveryFinalizer(readBundle(bundleName));
+    const followUp =
+      'Are you planning a frontend-direct implementation for maximum speed, or are you routing search through a backend for tighter control over the logic?';
+    const raw = `The answer stays here.
+
+${followUp}
+
+<!--DISCOVERY_STATE {"probed_slot":"integration_constraints","confirmed_slots":[],"inferred_slots":[],"suppressed_slots":[],"handoff_recommended":false,"handoff_specialist_key":null,"confidence":"medium","visible_followup_question":"${followUp}"} DISCOVERY_STATE-->`;
+    const context = { discoveryLedgerRef: { current: Xl() } };
+    const result = _R(context, { query: 'How should I manage rate limits?' }, { ledger: Xl(), turn: 1 }, raw);
+
+    assert.equal(result.followUp, followUp);
+    assert.equal(result.text, 'The answer stays here.');
+    assert.ok(!result.text.includes(followUp));
+  });
+
+  test(`${bundleName} recovers a trailing discovery question even when the marker omits it`, () => {
+    const { Xl, _R } = loadDiscoveryFinalizer(readBundle(bundleName));
+    const followUp = 'Are you trying to reduce monthly cost, protect the app from abuse, or both?';
+    const raw = `The answer stays here.
+
+${followUp}
+
+<!--DISCOVERY_STATE {"probed_slot":null,"confirmed_slots":[],"inferred_slots":[],"suppressed_slots":[],"handoff_recommended":false,"handoff_specialist_key":null,"confidence":"low","visible_followup_question":null} DISCOVERY_STATE-->`;
+    const context = { discoveryLedgerRef: { current: Xl() } };
+    const result = _R(context, { query: 'What is the best rate limit?' }, { ledger: Xl(), turn: 1 }, raw);
+
+    assert.equal(result.followUp, followUp);
+    assert.equal(result.text, 'The answer stays here.');
+  });
+
+  test(`${bundleName} renders follow-up questions after sources with separate treatment`, () => {
+    const bundle = readBundle(bundleName);
+    const rendererStart = bundle.indexOf('function t1(');
+    assert.notEqual(rendererStart, -1, 'assistant message renderer should exist');
+
+    const rendererEnd = bundle.indexOf('function ', rendererStart + 20);
+    assert.notEqual(rendererEnd, -1, 'assistant renderer should have a clear boundary');
+    const renderer = bundle.slice(rendererStart, rendererEnd);
+
+    assert.ok(renderer.indexOf('w.jsx(Jb,') < renderer.indexOf('w.jsx(e1,'), 'sources/footer should render before follow-ups');
+    assert.match(bundle, /acs-followup-section/);
+    assert.match(bundle, /aria-label":J\.strings\.discovery\.eyebrow/);
+    assert.doesNotMatch(bundle, /function e1\([^)]*\)\{return w\.jsx\("div",\{className:"flex flex-col gap-2 border-t border-algolia-border pt-3"/);
+    assert.doesNotMatch(bundle, /children:\[w\.jsx\("span",\{className:"text-algolia-2xs font-algolia-bold uppercase tracking-algolia-caps text-algolia-text-muted",children:J\.strings\.discovery\.eyebrow\}\),w\.jsx\("span",\{className:"text-algolia-sm font-algolia-medium text-algolia-text",children:t\}\)\]/);
   });
 
   test(`${bundleName} shows an observable processing trace while building an answer`, () => {
