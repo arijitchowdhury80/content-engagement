@@ -1,0 +1,28 @@
+{
+  "jcr": {
+    "versionBlock": {
+      "createVersion": true,
+      "node": {
+        "path": "/sites/www/home/drift/custom-code-block"
+      }
+    },
+    "publishBlock": {
+      "publish": true,
+      "node": {
+        "path": "/sites/www/home/drift/custom-code-block"
+      }
+    },
+    "publishDrift": {
+      "publish": true,
+      "node": {
+        "path": "/sites/www/home/drift"
+      }
+    },
+    "publishChat": {
+      "publish": true,
+      "node": {
+        "path": "/sites/www/files/algolia-chat.js"
+      }
+    }
+  }
+}
