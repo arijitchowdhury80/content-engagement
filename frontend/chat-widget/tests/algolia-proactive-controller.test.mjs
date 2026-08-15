@@ -369,6 +369,36 @@ test('product to pricing overrides stale lower-priority product dwell opportunit
   assert.equal(decision.agentPromptPacket.contextualFocus.label, 'Personalization');
 });
 
+test('unshown opportunities do not consume session cap or cooldown', () => {
+  const { context } = createHarness({
+    locationPath: '/pricing',
+    state: {
+      schema: 'AlgoliaProactiveState.v1',
+      lastOpportunityAt: Date.now(),
+      opportunities: [
+        { id: 'opp_1', status: 'greeting_failed', pageId: 'page_old_1', pagePath: '/products/search', moment: 'product_research', trigger: 'product_page_10s_dwell', priority: 66 },
+        { id: 'opp_2', status: 'greeting_requested', pageId: 'page_old_2', pagePath: '/products/features/personalization', moment: 'product_research', trigger: 'product_page_10s_dwell', priority: 66 },
+        { id: 'opp_3', status: 'greeting_rejected', pageId: 'page_old_3', pagePath: '/developers', moment: 'implementation_research', trigger: 'developer_page_15s_dwell', priority: 76 },
+      ],
+    },
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        title: 'Pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing_and_usage',
+        dwellMs: 8000,
+      }),
+    ],
+  });
+
+  const decision = opportunity(context);
+
+  assert.equal(decision.engage, true);
+  assert.equal(decision.trigger, 'pricing_8s_dwell');
+});
+
 test('customer proof triggers from product research into customer story', () => {
   const { context } = createHarness({
     locationPath: '/customers/gymshark-recommend',

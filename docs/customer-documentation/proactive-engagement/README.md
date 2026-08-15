@@ -77,6 +77,8 @@ The controller owns the trigger decision. The Greetings Agent receives the selec
 
 In debug mode, `?algoliaProactiveDebug=1` exposes the latest suppression reason in `window.__algoliaProactiveLastSuppression`, dispatches `algolia-proactive-suppressed`, and displays a small debug status badge when the DOM is available. This makes invisible blocks such as `chat_already_open`, `cooldown_active`, or `already_eligible_for_page_moment` observable during QA.
 
+Opportunity lifecycle matters. `eligible`, `greeting_requested`, `greeting_failed`, `greeting_rejected`, `widget_unavailable`, and `render_refused` are diagnostic states only. They do not count toward the session cap and do not start cooldown because the visitor has not seen an engagement. Cooldown and cap are based on visible states such as `shown` and handoff states. This prevents an invisible, cancelled, or failed greeting request from blocking a later, higher-value journey moment.
+
 ## Greeting Contract
 
 The Greetings Agent receives `PROACTIVE_GREETING_REQUEST` and returns strict `ProactiveGreetingResponse.v1` JSON:

@@ -24,6 +24,11 @@
     "widget_unavailable",
     "render_refused",
   ]);
+  const VISIBLE_OPPORTUNITY_STATUSES = new Set([
+    "shown",
+    "handoff_tool_called",
+    "handoff_sent",
+  ]);
 
   const DEFAULTS = {
     enabled: true,
@@ -86,7 +91,7 @@
     });
   }
 
-  function updateOpportunity(opportunityId, patch) {
+  function updateOpportunity(opportunityId, patch, statePatch = null) {
     const state = readState();
     const index = state.opportunities.findIndex((item) => item.id === opportunityId);
     if (index === -1) return false;
@@ -95,7 +100,7 @@
       ...patch,
       updatedAt: Date.now(),
     };
-    writeState(state);
+    writeState({ ...state, ...(statePatch || {}) });
     return true;
   }
 
@@ -203,6 +208,23 @@
 
   function countPages(pages, predicate) {
     return pages.filter(predicate).length;
+  }
+
+  function visibleOpportunities(state) {
+    return state.opportunities.filter((opportunity) =>
+      VISIBLE_OPPORTUNITY_STATUSES.has(opportunity.status)
+    );
+  }
+
+  function visibleOpportunityTime(opportunity) {
+    return Number(opportunity?.shownAt || opportunity?.handoffAt || opportunity?.updatedAt || 0);
+  }
+
+  function lastVisibleOpportunityAt(state) {
+    return visibleOpportunities(state).reduce(
+      (latest, opportunity) => Math.max(latest, visibleOpportunityTime(opportunity)),
+      0
+    );
   }
 
   function replaceableOpportunity(opportunity, decision) {
@@ -517,11 +539,11 @@
     if (document.hidden) return "page_hidden";
     const widget = document.querySelector("algolia-chat");
     if (widget && widget.autoEngage === false) return "auto_engage_disabled";
-    if (state.opportunities.length >= config.maxOpportunitiesPerSession) return "session_cap_reached";
-    if (
-      Date.now() - state.lastOpportunityAt < config.cooldownMs &&
-      !canSupersedeRecentOpportunity(state, decision)
-    ) {
+    if (visibleOpportunities(state).length >= config.maxOpportunitiesPerSession) {
+      return "session_cap_reached";
+    }
+    const lastVisibleAt = lastVisibleOpportunityAt(state);
+    if (lastVisibleAt && Date.now() - lastVisibleAt < config.cooldownMs) {
       return "cooldown_active";
     }
     const duplicate = state.opportunities.some(
@@ -635,7 +657,6 @@
     };
     const nextState = supersedeLowerPriorityOpportunities(state, decision);
     nextState.opportunities.push(opportunity);
-    nextState.lastOpportunityAt = opportunity.createdAt;
     writeState(nextState);
     return {
       ...decision,
@@ -728,9 +749,10 @@
       greeting: response.greeting.trim(),
       suggestions: chips,
     });
+    const shownAt = shown ? Date.now() : undefined;
     updateOpportunity(decision.opportunityId, {
       status: shown ? "shown" : "render_refused",
-      shownAt: shown ? Date.now() : undefined,
+      shownAt,
       greetingResponse: {
         schema: GREETING_RESPONSE_SCHEMA,
         opportunityId: response.opportunityId,
@@ -738,7 +760,7 @@
         chips,
         handoffSummary: response.handoffSummary,
       },
-    });
+    }, shown ? { lastOpportunityAt: shownAt } : null);
     return !!shown;
   }
 
