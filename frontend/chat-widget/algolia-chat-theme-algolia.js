@@ -191,6 +191,7 @@
       '.mx-auto.flex.w-full.max-w-algolia-maxw.flex-1.flex-col.overflow-hidden { max-width: 100% !important; }',
       '.flex.flex-1.flex-col.items-center.overflow-y-auto.px-4.pb-8.pt-6.sm\\:px-6.sm\\:pt-10 { padding-top: 20px !important; padding-bottom: 20px !important; }',
       '.mx-auto.flex.w-full.max-w-algolia-measure.flex-col.items-center.gap-5.px-4.text-center { gap: 12px !important; }',
+      '.shrink-0.border-t.border-algolia-border.bg-algolia-surface { border-top: 0 !important; }',
       '.shrink-0.border-t.border-algolia-border.bg-algolia-surface > .mx-auto { max-width: 100% !important; padding: 6px 14px 8px !important; gap: 6px !important; }',
       '.flex.items-center.justify-between.gap-3.py-2.text-algolia-xs.text-algolia-text-muted { display: none !important; }',
       '.acs-reasoning { margin: 2px 0 10px !important; padding: 0 0 8px !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }',
