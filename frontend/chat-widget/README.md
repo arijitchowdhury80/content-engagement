@@ -32,10 +32,24 @@ npm run local:chat
 
 Open `http://127.0.0.1:5177/products/ai-recommendations?algoliaChatDebug=1&algoliaProactiveDebug=1`.
 
-The local harness serves `local-parity/index.html` for website routes and loads the editable
-widget files from this directory through `/chat/<file>.js`. It mocks only the Agent Studio
-Greetings Agent response; tracker storage, context compilation, proactive controller decisions,
-and widget rendering use the real project-owned scripts.
+The local harness hosts representative website routes from
+`local-sites/algolia-com-parity/index.html` and loads Scout-captured Algolia.com page content from
+`local-sites/algolia-com-parity/scout-captures/routes.json`. The editable chat widget files still
+come from this directory through `/chat/<file>.js`.
+
+Refresh the representative local site pages with Scout:
+
+```bash
+npm run scout:local-pages
+```
+
+This fetches only the selected personalization-test routes: home, product pages, solution pages,
+developers/docs, pricing, customers, and one customer story. It does not fetch or mirror the full
+website.
+
+The local harness mocks only the Agent Studio Greetings Agent response; tracker storage, context
+compilation, proactive controller decisions, and widget rendering use the real project-owned
+scripts.
 
 Automated smoke validation:
 

@@ -7,7 +7,8 @@ import { chromium } from 'playwright';
 
 const root = process.cwd();
 const chatDir = join(root, 'frontend', 'chat-widget');
-const fixturePath = join(chatDir, 'local-parity', 'index.html');
+const siteDir = join(root, 'local-sites', 'algolia-com-parity');
+const fixturePath = join(siteDir, 'index.html');
 
 const mime = {
   '.html': 'text/html; charset=utf-8',
@@ -20,7 +21,7 @@ function localPath(urlPath) {
   const path = urlPath.split('?')[0].split('#')[0];
   if (path.startsWith('/chat/')) return join(chatDir, path.replace('/chat/', ''));
   if (path === '/' || !extname(path)) return fixturePath;
-  return join(root, path.replace(/^\//, ''));
+  return join(siteDir, path.replace(/^\//, ''));
 }
 
 function startServer() {

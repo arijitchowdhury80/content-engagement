@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Serve a local Jahia-like page for chat widget parity testing.
+"""Serve a local Algolia.com-like site for chat widget parity testing.
 
-The server is intentionally small: it serves the current editable widget files
-from frontend/chat-widget and returns the same local fixture page for every
-non-file route, so product/solution/pricing paths behave like a website without
-touching Jahia.
+The server is intentionally small: it hosts representative website routes from
+local-sites/algolia-com-parity and serves the current editable widget files from
+frontend/chat-widget under /chat/<file>.js. Jahia is not touched.
 """
 
 from __future__ import annotations
@@ -18,7 +17,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CHAT_DIR = ROOT / "frontend" / "chat-widget"
-FIXTURE = CHAT_DIR / "local-parity" / "index.html"
+SITE_DIR = ROOT / "local-sites" / "algolia-com-parity"
+FIXTURE = SITE_DIR / "index.html"
 
 
 class LocalParityHandler(http.server.SimpleHTTPRequestHandler):
@@ -29,7 +29,7 @@ class LocalParityHandler(http.server.SimpleHTTPRequestHandler):
             return str(target)
         if route in {"/", ""} or "." not in Path(route).name:
             return str(FIXTURE)
-        return str(ROOT / route.removeprefix("/"))
+        return str(SITE_DIR / route.removeprefix("/"))
 
     def end_headers(self) -> None:
         self.send_header("Cache-Control", "no-store")

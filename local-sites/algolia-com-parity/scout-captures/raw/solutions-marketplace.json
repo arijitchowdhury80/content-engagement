@@ -1,0 +1,50 @@
+{
+  "success": true,
+  "url": "https://www.algolia.com/solutions/marketplace/",
+  "status_code": 301,
+  "markdown": "#  Page not found \n[ API Status ](https://status.algolia.com/)\n[ Home page ](https://www.algolia.com/)\n[ Support ](https://support.algolia.com/hc/en-us)\n",
+  "raw_markdown": "#  Page not found \n[ ](https://www.algolia.com/search/)\n[ API Status ](https://status.algolia.com/)\n[ Home page ](https://www.algolia.com/)\n[ Support ](https://support.algolia.com/hc/en-us)\n",
+  "clean_markdown": "#  Page not found \n[ API Status ](https://status.algolia.com/)\n[ Home page ](https://www.algolia.com/)\n[ Support ](https://support.algolia.com/hc/en-us)\n",
+  "raw_html": "",
+  "screenshot_base64": "",
+  "links": [
+    "https://www.algolia.com/search",
+    "https://status.algolia.com/",
+    "https://www.algolia.com/",
+    "https://support.algolia.com/hc/en-us"
+  ],
+  "metadata": {
+    "url": "https://www.algolia.com/solutions/marketplace/",
+    "crawled_at": "2026-08-16T02:10:57.209558+00:00",
+    "title": "",
+    "description": "",
+    "language": "",
+    "word_count": 15,
+    "token_estimate": 38
+  },
+  "final_url": "https://www.algolia.com/solutions/marketplace/",
+  "fetched_at": "2026-08-16T02:10:57.209558+00:00",
+  "provider": "crawl4ai",
+  "content_hash": "5d5f3de1f95f8be85dddc7237bda8ca538e02487dce811492573b11985d4634a",
+  "cleanup_rules_applied": [
+    "PruningContentFilter(threshold=0.4,fixed)"
+  ],
+  "quality_score": 0.55,
+  "quality_reasons": [
+    "not_blocked",
+    "content_sparse",
+    "links_extracted",
+    "not_blocked_copy"
+  ],
+  "recommended_collector": "crawl4ai",
+  "recommended_collector_reason": "Crawl4AI returned usable rendered content.",
+  "error": "",
+  "duration_ms": 1674,
+  "pdf": null,
+  "diagnostics": {
+    "browser_launch_ms": 644,
+    "navigation_ms": 870,
+    "extraction_ms": 0,
+    "retry_count": 0
+  }
+}
