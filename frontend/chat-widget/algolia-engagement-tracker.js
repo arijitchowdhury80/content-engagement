@@ -10,6 +10,8 @@
   const SESSION_KEY = "algolia_session";
   const EVENTS_KEY = "algolia_events";
   const PROACTIVE_STATE_KEY = "algolia_proactive_state";
+  const PENDING_GREETING_KEY = "algolia_pending_greeting";
+  const PROACTIVE_DEBUG_KEY = "algolia_proactive_debug_log";
   const TOKEN_KEY = "algolia_token";
   const RESET_QUERY_PARAM = "algoliaProactiveReset";
 
@@ -628,7 +630,29 @@
   }
 
   function handleClick(event) {
-    const target = event.target;
+    const path = typeof event.composedPath === "function" ? event.composedPath() : [];
+    const resetButton = path.find((node) =>
+      /reset conversation/i.test(node?.getAttribute?.("aria-label") || "")
+    );
+    const chat = document.querySelector?.("algolia-chat");
+    if (resetButton && chat?.hasAttribute?.("reset-visitor-state-on-logo")) {
+      const logo = resetButton.querySelector?.('img[alt*="Algolia" i], img, svg');
+      logo?.animate?.(
+        [{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }],
+        { duration: 650, easing: "cubic-bezier(.2,.8,.2,1)" }
+      );
+      reset();
+      try {
+        document.dispatchEvent(new CustomEvent("algolia-visitor-state-reset", {
+          detail: { source: "assistant_logo", at: Date.now() },
+        }));
+      } catch {
+        // Reset remains valid when custom events are unavailable.
+      }
+      return;
+    }
+
+    const target = event.target || path[0];
     const anchor = closestElement(target, "a, button, [role='button'], [data-cta], [data-nav]");
     if (!anchor) return;
 
@@ -799,6 +823,9 @@
     writeJson(sessionStorage, EVENTS_KEY, null);
     try {
       sessionStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem(PROACTIVE_STATE_KEY);
+      sessionStorage.removeItem(PENDING_GREETING_KEY);
+      sessionStorage.removeItem(PROACTIVE_DEBUG_KEY);
     } catch {
       // ignore
     }
@@ -806,6 +833,7 @@
     currentPageId = null;
     initializeState();
     trackPageView();
+    debug("visitor state reset");
   }
 
   function registerWithChatWidget() {

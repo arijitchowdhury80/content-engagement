@@ -41,7 +41,7 @@ ENGAGE_SRC = ROOT / "frontend/chat-widget/algolia-chat-engage.js"
 THEME_SRC = ROOT / "frontend/chat-widget/algolia-chat-theme-algolia.js"
 EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/proactive-debug-trace"
 CHAT_VERSION = "20260815-answer-rhythm-balanced-a"
-TRACKER_VERSION = "20260815b"
+TRACKER_VERSION = "20260817-logo-only-reset-b"
 CONTEXT_COMPILER_VERSION = "20260815b"
 PROACTIVE_CONTROLLER_VERSION = "20260815g"
 HANDOFF_TO_ORCHESTRATOR_VERSION = "20260814b"
@@ -128,6 +128,31 @@ def sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def file_content(file_node: dict | None) -> str | None:
+    if not file_node:
+        return None
+    for child in file_node.get("children", {}).get("nodes", []):
+        if child.get("name") != "jcr:content":
+            continue
+        for prop in child.get("properties", []):
+            if prop.get("name") == "jcr:data":
+                return prop.get("value")
+    return None
+
+
+def validate_logo_reset(snapshot_after: dict, tracker_content: str) -> dict:
+    live_html = snapshot_after["live"]["blockHtml"]
+    checks = {
+        "liveLogoResetEnabled": "reset-visitor-state-on-logo" in live_html,
+        "liveHtmlReferencesTrackerVersion": f"tracker={TRACKER_VERSION}" in live_html,
+        "liveNewTrackerExists": snapshot_after["live"]["newTrackerNode"] is not None,
+        "liveTrackerMatchesSource": file_content(snapshot_after["live"]["newTrackerNode"])
+        == tracker_content,
+    }
+    checks["pass"] = all(checks.values())
+    return checks
+
+
 def snapshot() -> dict:
     return {
         "capturedAt": datetime.now(timezone.utc).isoformat(),
@@ -211,6 +236,16 @@ def upsert_file(path: str, content: str) -> dict:
 
 def update_block_html(current: str) -> str:
     next_html = current
+    next_html = re.sub(
+        r"<algolia-chat\b[^>]*>",
+        lambda match: (
+            match.group(0)
+            if "reset-visitor-state-on-logo" in match.group(0)
+            else match.group(0)[:-1] + " reset-visitor-state-on-logo>"
+        ),
+        next_html,
+        count=1,
+    )
     next_html = re.sub(
         r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-chat-tracker\.js"></script>\n?',
         "",
@@ -425,6 +460,11 @@ def main() -> int:
     global EVIDENCE_DIR
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true")
+    parser.add_argument(
+        "--logo-reset-only",
+        action="store_true",
+        help="Deploy only the engagement tracker and logo-reset markup.",
+    )
     parser.add_argument("--evidence-dir", type=Path)
     args = parser.parse_args()
     if args.evidence_dir:
@@ -513,6 +553,37 @@ def main() -> int:
     if not args.apply:
         print(json.dumps(plan, indent=2))
         return 0
+
+    if args.logo_reset_only:
+        mutations = {
+            "upsertNewTracker": upsert_file(NEW_TRACKER, tracker_content),
+            "setBlockHtml": set_block_html(next_html),
+            "publishNewTracker": publish(NEW_TRACKER, subtree=True),
+            "versionBlock": graphql("""
+              mutation VersionBlock {
+                jcr(workspace: EDIT) {
+                  block: mutateNode(pathOrId: "/sites/www/home/drift/custom-code-block") {
+                    createVersion
+                    node { path }
+                  }
+                }
+              }
+            """),
+            "publishBlock": publish(BLOCK_PATH, subtree=True),
+        }
+        write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
+        after = snapshot()
+        checks = validate_logo_reset(after, tracker_content)
+        for _ in range(8):
+            if checks["pass"]:
+                break
+            time.sleep(2)
+            after = snapshot()
+            checks = validate_logo_reset(after, tracker_content)
+        write_json(EVIDENCE_DIR / "after-readback.json", after)
+        write_json(EVIDENCE_DIR / "deployment-validation.json", checks)
+        print(json.dumps(checks, indent=2))
+        return 0 if checks["pass"] else 1
 
     mutations = {
         "upsertChat": upsert_file(CHAT, chat_content),

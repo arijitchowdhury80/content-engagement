@@ -1,0 +1,146 @@
+{
+  "result": {
+    "conversationWasVisible": true,
+    "conversationCleared": true,
+    "visitorChanged": true,
+    "sessionChanged": true,
+    "freshEventNames": [
+      "page_view"
+    ],
+    "proactiveCleared": true,
+    "pendingCleared": true,
+    "unrelatedStoragePreserved": true,
+    "rotated360": true,
+    "resetEventEmitted": true
+  },
+  "before": {
+    "profile": {
+      "schema": "AlgoliaEngagementProfile.v1",
+      "visitorId": "visitor_bf0c345602197157aae71cf6",
+      "userToken": "tok_267d7426ded405ec97b76b87",
+      "tokenSource": "ephemeral",
+      "firstSeenAt": 1786939102152,
+      "lastSeenAt": 1786939102152,
+      "visits": 1,
+      "persona": null,
+      "traits": {}
+    },
+    "session": {
+      "schema": "AlgoliaEngagementSession.v1",
+      "sessionId": "sess_8e330da746b0fb76aaf885a3",
+      "startedAt": 1786939102152,
+      "lastSeenAt": 1786939103455,
+      "currentPageId": "page_49ea5442e2697dcc31a3c9f3",
+      "pages": [
+        {
+          "pageId": "page_49ea5442e2697dcc31a3c9f3",
+          "path": "/products/ai-search",
+          "url": "http://127.0.0.1:5177/products/ai-search",
+          "title": "Algolia Local Site Parity",
+          "enteredAt": 1786939102152,
+          "dwellMs": 0,
+          "maxScrollDepth": 0,
+          "pageGroup": "product",
+          "topic": "product_research",
+          "productFocus": "search",
+          "productFocusLabel": "Search"
+        }
+      ],
+      "engagementHistory": [
+        {
+          "id": "eng_7f399c0664fa51ed6fc6dc14",
+          "pageId": "page_49ea5442e2697dcc31a3c9f3",
+          "messageGoal": "proactive_concierge",
+          "shownAt": 1786939103426,
+          "status": "shown"
+        }
+      ]
+    }
+  },
+  "after": {
+    "profile": {
+      "schema": "AlgoliaEngagementProfile.v1",
+      "visitorId": "visitor_09e129a9684b7f42f649d1df",
+      "userToken": "tok_33543dc4ce260251c707902d",
+      "tokenSource": "ephemeral",
+      "firstSeenAt": 1786939103509,
+      "lastSeenAt": 1786939103509,
+      "visits": 1,
+      "persona": null,
+      "traits": {}
+    },
+    "session": {
+      "schema": "AlgoliaEngagementSession.v1",
+      "sessionId": "sess_87467828089ae657c85351cf",
+      "startedAt": 1786939103509,
+      "lastSeenAt": 1786939103509,
+      "currentPageId": "page_c7e07b82c3ea42ab2af2196e",
+      "pages": [
+        {
+          "pageId": "page_c7e07b82c3ea42ab2af2196e",
+          "path": "/products/ai-search",
+          "url": "http://127.0.0.1:5177/products/ai-search",
+          "title": "AI Search | Local Site Parity",
+          "enteredAt": 1786939103509,
+          "dwellMs": 0,
+          "maxScrollDepth": 0,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      ],
+      "engagementHistory": []
+    },
+    "events": {
+      "schema": "AlgoliaEngagementEvents.v1",
+      "sessionId": "sess_87467828089ae657c85351cf",
+      "events": [
+        {
+          "eventId": "evt_23edb45650b5941f0d2814ea",
+          "name": "page_view",
+          "ts": 1786939103509,
+          "isoTime": "2026-08-17T03:58:23.509Z",
+          "sessionId": "sess_87467828089ae657c85351cf",
+          "pageId": "page_c7e07b82c3ea42ab2af2196e",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "url": "http://[redacted-phone]:5177/products/ai-search",
+            "title": "AI Search | Local Site Parity",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      ]
+    },
+    "proactive": null,
+    "pending": null,
+    "preservedLocal": "preserve-local",
+    "preservedSession": "preserve-session",
+    "animations": [
+      {
+        "frames": [
+          {
+            "transform": "rotate(0deg)"
+          },
+          {
+            "transform": "rotate(360deg)"
+          }
+        ],
+        "options": {
+          "duration": 650,
+          "easing": "cubic-bezier(.2,.8,.2,1)"
+        }
+      }
+    ],
+    "resetEvents": [
+      {
+        "source": "assistant_logo",
+        "at": 1786939103509
+      }
+    ]
+  }
+}

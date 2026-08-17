@@ -1,0 +1,149 @@
+{
+  "result": {
+    "optInPresent": true,
+    "conversationCleared": true,
+    "visitorChanged": true,
+    "sessionChanged": true,
+    "freshEventNames": [
+      "page_view"
+    ],
+    "proactiveCleared": true,
+    "pendingCleared": true,
+    "unrelatedStoragePreserved": true,
+    "rotated360": true,
+    "logoOnlyAnimation": true,
+    "headerButtonAnimationCount": 0,
+    "headerButtonBoxStable": true,
+    "resetEventEmitted": true
+  },
+  "before": {
+    "profile": {
+      "schema": "AlgoliaEngagementProfile.v1",
+      "visitorId": "visitor_1a79ddfba7f3f59c3a5e2dbd",
+      "userToken": "tok_cec43a954a84ebf26d85b920",
+      "tokenSource": "ephemeral",
+      "firstSeenAt": 1786939154297,
+      "lastSeenAt": 1786939154297,
+      "visits": 1,
+      "persona": null,
+      "traits": {}
+    },
+    "session": {
+      "schema": "AlgoliaEngagementSession.v1",
+      "sessionId": "sess_806c1139da635ffbf49ce4e3",
+      "startedAt": 1786939154297,
+      "lastSeenAt": 1786939154752,
+      "currentPageId": "page_44c9152df86b357031f45592",
+      "pages": [
+        {
+          "pageId": "page_44c9152df86b357031f45592",
+          "path": "/products/ai-search",
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "title": "AI Search | Algolia",
+          "enteredAt": 1786939154297,
+          "dwellMs": 0,
+          "maxScrollDepth": 0,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      ],
+      "engagementHistory": [
+        {
+          "id": "eng_d11c47ff2ca2995db658a74f",
+          "pageId": "page_44c9152df86b357031f45592",
+          "messageGoal": "proactive_concierge",
+          "shownAt": 1786939154737,
+          "status": "shown"
+        }
+      ]
+    }
+  },
+  "after": {
+    "profile": {
+      "schema": "AlgoliaEngagementProfile.v1",
+      "visitorId": "visitor_b893898914102b4d18d1c367",
+      "userToken": "tok_0e0b7ea65b6200de78589cd3",
+      "tokenSource": "ephemeral",
+      "firstSeenAt": 1786939154851,
+      "lastSeenAt": 1786939154851,
+      "visits": 1,
+      "persona": null,
+      "traits": {}
+    },
+    "session": {
+      "schema": "AlgoliaEngagementSession.v1",
+      "sessionId": "sess_1999447501fadc45416662bb",
+      "startedAt": 1786939154851,
+      "lastSeenAt": 1786939154852,
+      "currentPageId": "page_7e5619a35b467944643dd74c",
+      "pages": [
+        {
+          "pageId": "page_7e5619a35b467944643dd74c",
+          "path": "/products/ai-search",
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "title": "AI Search | Algolia",
+          "enteredAt": 1786939154851,
+          "dwellMs": 0,
+          "maxScrollDepth": 0,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      ],
+      "engagementHistory": []
+    },
+    "events": {
+      "schema": "AlgoliaEngagementEvents.v1",
+      "sessionId": "sess_1999447501fadc45416662bb",
+      "events": [
+        {
+          "eventId": "evt_ddd8095a5225707ed64264b6",
+          "name": "page_view",
+          "ts": 1786939154852,
+          "isoTime": "2026-08-17T03:59:14.852Z",
+          "sessionId": "sess_1999447501fadc45416662bb",
+          "pageId": "page_7e5619a35b467944643dd74c",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      ]
+    },
+    "proactive": null,
+    "pending": null,
+    "preservedLocal": "preserve-live-local",
+    "preservedSession": "preserve-live-session",
+    "animations": [
+      {
+        "frames": [
+          {
+            "transform": "rotate(0deg)"
+          },
+          {
+            "transform": "rotate(360deg)"
+          }
+        ],
+        "options": {
+          "duration": 650,
+          "easing": "cubic-bezier(.2,.8,.2,1)"
+        }
+      }
+    ],
+    "resetEvents": [
+      {
+        "source": "assistant_logo",
+        "at": 1786939154852
+      }
+    ]
+  }
+}

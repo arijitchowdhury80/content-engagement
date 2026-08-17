@@ -6,8 +6,8 @@ import vm from 'node:vm';
 const trackerPath = new URL('../algolia-engagement-tracker.js', import.meta.url);
 
 class MemoryStorage {
-  constructor() {
-    this.store = new Map();
+  constructor(initial = {}) {
+    this.store = new Map(Object.entries(initial));
   }
 
   getItem(key) {
@@ -23,17 +23,20 @@ class MemoryStorage {
   }
 }
 
-function createHarness({ pathname = '/pricing', search = '?utm_source=paid_search&email=nope@example.com', title = 'Pricing', initialSession = {}, initialEvents = {} } = {}) {
+function createHarness({ pathname = '/pricing', search = '?utm_source=paid_search&email=nope@example.com', title = 'Pricing', initialLocal = {}, initialSession = {}, initialEvents = {}, resetOnLogo = false } = {}) {
   const listeners = new Map();
   const documentListeners = new Map();
   const documentDispatches = [];
-  const localStorage = new MemoryStorage();
+  const localStorage = new MemoryStorage(initialLocal);
   const sessionStorage = new MemoryStorage({
     ...initialSession,
     ...initialEvents,
   });
   const chatElement = {
     source: null,
+    hasAttribute(name) {
+      return name === 'reset-visitor-state-on-logo' && resetOnLogo;
+    },
     setVisitorDataSource(source) {
       this.source = source;
     },
@@ -289,4 +292,74 @@ test('algoliaProactiveReset clears session-scoped proactive state without deleti
   assert.notEqual(parse(sessionStorage, 'algolia_session').sessionId, 'old');
   assert.equal(parse(sessionStorage, 'algolia_events').events.some((event) => event.name === 'chat_open'), false);
   assert.equal(sessionStorage.getItem('algolia_proactive_state'), null);
+});
+
+
+test('reset clears only Algolia visitor state and starts a fresh tracked session', () => {
+  const { context, localStorage, sessionStorage } = createHarness({
+    initialLocal: {
+      algolia_profile: JSON.stringify({ visitorId: 'old_visitor' }),
+      jahia_editor_preference: 'keep-me',
+    },
+    initialSession: {
+      algolia_session: JSON.stringify({ sessionId: 'old_session' }),
+      algolia_proactive_state: JSON.stringify({ opportunities: [{ id: 'old_opp' }] }),
+      algolia_pending_greeting: JSON.stringify({ opportunityId: 'old_opp' }),
+      algolia_proactive_debug_log: JSON.stringify([{ stage: 'old' }]),
+      algolia_token: 'old_token',
+      jahia_route_state: 'keep-me-too',
+    },
+    initialEvents: {
+      algolia_events: JSON.stringify({ sessionId: 'old_session', events: [{ name: 'chat_open' }] }),
+    },
+  });
+
+  context.algoliaEngagementTracker.reset();
+
+  assert.equal(localStorage.getItem('jahia_editor_preference'), 'keep-me');
+  assert.equal(sessionStorage.getItem('jahia_route_state'), 'keep-me-too');
+  assert.notEqual(parse(localStorage, 'algolia_profile').visitorId, 'old_visitor');
+  assert.notEqual(parse(sessionStorage, 'algolia_session').sessionId, 'old_session');
+  assert.equal(parse(sessionStorage, 'algolia_events').events[0].name, 'page_view');
+  assert.equal(sessionStorage.getItem('algolia_proactive_state'), null);
+  assert.equal(sessionStorage.getItem('algolia_pending_greeting'), null);
+  assert.equal(sessionStorage.getItem('algolia_proactive_debug_log'), null);
+  assert.notEqual(sessionStorage.getItem('algolia_token'), 'old_token');
+});
+
+test('configured Assistant logo reset spins and clears visitor state', () => {
+  const { context, sessionStorage } = createHarness({
+    resetOnLogo: true,
+    initialSession: {
+      algolia_proactive_state: JSON.stringify({ opportunities: [{ id: 'old_opp' }] }),
+    },
+  });
+  const animations = [];
+  const logo = {
+    animate(frames, options) {
+      animations.push({ target: 'logo', frames, options });
+    },
+  };
+  const resetButton = {
+    getAttribute(name) {
+      return name === 'aria-label' ? 'Algolia - reset conversation' : null;
+    },
+    querySelector(selector) {
+      return selector.includes('img') ? logo : null;
+    },
+    animate(frames, options) {
+      animations.push({ target: 'button', frames, options });
+    },
+  };
+
+  context.document.dispatchDocumentEvent('click', {
+    composedPath() {
+      return [resetButton];
+    },
+  });
+
+  assert.equal(sessionStorage.getItem('algolia_proactive_state'), null);
+  assert.equal(animations.length, 1);
+  assert.equal(animations[0].target, 'logo');
+  assert.equal(animations[0].frames.at(-1).transform, 'rotate(360deg)');
 });
