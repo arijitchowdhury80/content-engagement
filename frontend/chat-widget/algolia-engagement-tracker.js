@@ -13,6 +13,14 @@
   const PENDING_GREETING_KEY = "algolia_pending_greeting";
   const PROACTIVE_DEBUG_KEY = "algolia_proactive_debug_log";
   const TOKEN_KEY = "algolia_token";
+  const LEGACY_VISITOR_STATE_KEYS = [
+    "acs_profile",
+    "acs_session",
+    "acs_events",
+    "acs_pending_greeting",
+    "acs_token",
+    "acs_user_token",
+  ];
   const RESET_QUERY_PARAM = "algoliaProactiveReset";
 
   const PROFILE_SCHEMA = "AlgoliaEngagementProfile.v1";
@@ -826,6 +834,10 @@
       sessionStorage.removeItem(PROACTIVE_STATE_KEY);
       sessionStorage.removeItem(PENDING_GREETING_KEY);
       sessionStorage.removeItem(PROACTIVE_DEBUG_KEY);
+      for (const key of LEGACY_VISITOR_STATE_KEYS) {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      }
     } catch {
       // ignore
     }

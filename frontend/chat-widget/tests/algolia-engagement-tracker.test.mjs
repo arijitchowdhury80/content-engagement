@@ -299,6 +299,11 @@ test('reset clears only Algolia visitor state and starts a fresh tracked session
   const { context, localStorage, sessionStorage } = createHarness({
     initialLocal: {
       algolia_profile: JSON.stringify({ visitorId: 'old_visitor' }),
+      acs_profile: JSON.stringify({ visitorId: 'legacy_visitor' }),
+      acs_session: JSON.stringify({ sessionId: 'legacy_session' }),
+      acs_events: JSON.stringify([{ name: 'legacy_click' }]),
+      acs_pending_greeting: JSON.stringify({ opportunityId: 'legacy_opp' }),
+      acs_user_token: 'legacy_user_token',
       jahia_editor_preference: 'keep-me',
     },
     initialSession: {
@@ -307,6 +312,7 @@ test('reset clears only Algolia visitor state and starts a fresh tracked session
       algolia_pending_greeting: JSON.stringify({ opportunityId: 'old_opp' }),
       algolia_proactive_debug_log: JSON.stringify([{ stage: 'old' }]),
       algolia_token: 'old_token',
+      acs_token: 'legacy_token',
       jahia_route_state: 'keep-me-too',
     },
     initialEvents: {
@@ -325,6 +331,12 @@ test('reset clears only Algolia visitor state and starts a fresh tracked session
   assert.equal(sessionStorage.getItem('algolia_pending_greeting'), null);
   assert.equal(sessionStorage.getItem('algolia_proactive_debug_log'), null);
   assert.notEqual(sessionStorage.getItem('algolia_token'), 'old_token');
+  assert.equal(localStorage.getItem('acs_profile'), null);
+  assert.equal(localStorage.getItem('acs_session'), null);
+  assert.equal(localStorage.getItem('acs_events'), null);
+  assert.equal(localStorage.getItem('acs_pending_greeting'), null);
+  assert.equal(localStorage.getItem('acs_user_token'), null);
+  assert.equal(sessionStorage.getItem('acs_token'), null);
 });
 
 test('configured Assistant logo reset spins and clears visitor state', () => {
