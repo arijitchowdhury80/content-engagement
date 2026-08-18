@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Algolia concierge — local harness</title>
+<style>
+  body{font:15px/1.55 system-ui,-apple-system,sans-serif;margin:0;padding:32px;background:#f7f8fb;color:#021046}
+  h1{font-size:20px;margin:0 0 4px}
+  .hint{color:#6b7280;max-width:74ch;margin:0 0 20px}
+  code{background:#eef1f7;padding:1px 5px;border-radius:5px;font-size:13px}
+  details{margin-top:18px}
+  summary{cursor:pointer;color:#6b7280;font-size:13px}
+  pre#boot{background:#fff;border:1px solid #e1e4ec;border-radius:8px;padding:12px;overflow:auto;font-size:12px;color:#6b7280}
+</style>
+</head>
+<body>
+<h1>Algolia concierge — local harness</h1>
+<p class="hint">Hosts the chat widget exactly as the Jahia custom-code block does. Credentials load
+from <code>/config</code> (served by <code>proxy.mjs</code>), so no key lives in this file. Open the
+widget and click <b>maximize</b> — a <b>Compare with production</b> toggle appears in the header;
+turn it on and every question is also sent to the live algolia.com Ask AI, rendered on the right.</p>
+
+<div id="widgetMount"></div>
+<details><summary>boot report</summary><pre id="boot">booting…</pre></details>
+
+<!-- Theme MUST load before algolia-chat.js so the 'algolia' theme name is registered at upgrade. -->
+<script src="./algolia-chat-theme-algolia.js"></script>
+<script src="./algolia-confidence-badge.js"></script>
+<script src="./algolia-chat.js"></script>
+<script src="./algolia-chat-tracker.js"></script>
+<script src="./algolia-chat-engage.js"></script>
+<script src="./algolia-chat-form-tool.js"></script>
+<!-- Companion: in-widget compare-with-production. Augments the widget via its open
+     shadow DOM + the /prod proxy; does NOT modify the widget bundle. -->
+<script src="./algolia-chat-compare.js"></script>
+
+<script type="module">
+const SPECIALISTS = [
+  {key:"product",  id:"24b23e23-26a6-4f98-9019-44746e1eb7f0", label:"Product Specialist"},
+  {key:"developer",id:"cdac8765-5626-451a-87a0-f5a95aad7235", label:"Developer Specialist"},
+  {key:"evidence", id:"c735a57d-d64e-4c4f-bea2-857a608d5a52", label:"Customer Evidence"},
+];
+const JUDGES = { chief:"4479f02f-d5d0-4fce-a875-dafda15de166",
+  skeptic:"a4c3846b-e538-4c9c-8e39-1bb15a21f2c2",
+  referee:"c43d7374-801a-4d0f-aa09-ca12830565c3",
+  advocate:"f14b8ddf-2285-422c-89e5-180d7fa0b3bf" };
+
+const cfg = await fetch('/config').then(r => r.json());
+
+// Mount the widget from /config so no key is inlined in this file.
+const c = cfg.concierge;
+const el = document.createElement('algolia-chat');
+el.setAttribute('app-id', c.appId);
+el.setAttribute('search-api-key', c.searchKey);
+el.setAttribute('index-name', c.indexName);
+el.setAttribute('agents', JSON.stringify({ primary: { id: c.agentId, label: "Algolia Assistant" }, specialists: SPECIALISTS }));
+for (const [k,v] of Object.entries({
+  'brand-name':'Algolia','product-title':'Algolia Assistant',
+  'corpus-name':'Algolia documentation, guides and API reference',
+  'disclaimer':'Fully grounded - every answer cites its sources.',
+  'canonical-base-url':'https://www.algolia.com','theme':'algolia',
+  'default-open-mode':'docked','show-welcome':'true','discovery-enabled':'true',
+  'auto-engage':'true','sample-questions-group-cap':'0' })) el.setAttribute(k,v);
+el.innerHTML = `
+  <algolia-chat-visitor cookie-name="_ALGOLIA" region="us"></algolia-chat-visitor>
+  <algolia-chat-engage concierge-agent-id="0f290529-629a-48fe-9424-f93e5894d8f3"
+    min-pages="2" delay-ms="3000" widget-timeout-ms="25000" greeting-ttl-ms="600000"
+    style="display:none"></algolia-chat-engage>
+  <algolia-chat-form tool-name="submit_lead_form" title="Get in touch"></algolia-chat-form>
+  <algolia-chat-confidence mode="algolia" agent-id="${JUDGES.chief}">
+    <algolia-agent role="skeptic"  agent-id="${JUDGES.skeptic}"></algolia-agent>
+    <algolia-agent role="referee"  agent-id="${JUDGES.referee}"></algolia-agent>
+    <algolia-agent role="advocate" agent-id="${JUDGES.advocate}"></algolia-agent>
+  </algolia-chat-confidence>`;
+document.getElementById('widgetMount').appendChild(el);
+
+setTimeout(() => {
+  const tags = ['algolia-chat','algolia-chat-confidence','algolia-chat-form','algolia-agent','algolia-instant-search'];
+  document.getElementById('boot').textContent = JSON.stringify({
+    configLoaded: !!cfg.concierge?.searchKey,
+    defined: Object.fromEntries(tags.map(t => [t, !!customElements.get(t)])),
+    shadowRoot: !!el.shadowRoot,
+    compareCompanion: typeof document.querySelector('algolia-chat')?.shadowRoot !== 'undefined',
+  }, null, 2);
+}, 1200);
+</script>
+</body>
+</html>
