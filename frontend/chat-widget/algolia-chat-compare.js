@@ -135,28 +135,70 @@
   function findToggle() { return sroot()?.querySelector("#acs-compare-toggle") || null; }
   function styleToggle(t) {
     t.textContent = compareOn ? "Comparing with production ✓" : "Compare with production";
-    t.style.background = compareOn ? "var(--algolia-accent, #003DFF)" : "transparent";
-    t.style.color = compareOn ? "#fff" : "var(--algolia-text, #021046)";
+    t.dataset.on = compareOn ? "1" : "0"; // colours come from the stylesheet below
+  }
+
+  // The widget ships `[part="header"] > div button { width/min-width/height:28px
+  // !important }` to size its icon cluster. A text button placed INSIDE that div
+  // gets squashed to 28x28 and no inline style can win against !important. We
+  // therefore mount the toggle as a direct header child (selector no longer
+  // matches) and style it from this scoped sheet, injected once and never removed.
+  const TOGGLE_CSS = `
+#acs-compare-toggle{
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex !important;
+  align-items: center;
+  width: auto !important; height: auto !important;
+  min-width: 0 !important; min-height: 0 !important;
+  flex: 0 0 auto !important;
+  white-space: nowrap;
+  font: 600 12px/1 system-ui, -apple-system, sans-serif;
+  padding: 7px 13px !important;
+  border-radius: 999px;
+  border: 1px solid var(--algolia-border, #e1e4ec) !important;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+#acs-compare-toggle[data-on="0"]{
+  background: transparent !important;
+  color: var(--algolia-text, #021046) !important;
+}
+#acs-compare-toggle[data-on="0"]:hover{
+  background: var(--algolia-surface-2, #eef1f7) !important;
+}
+#acs-compare-toggle[data-on="1"]{
+  background: var(--algolia-accent, #003DFF) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}`;
+  function ensureToggleStyle() {
+    const root = sroot(); if (!root) return;
+    if (root.querySelector("#acs-compare-toggle-style")) return;
+    const st = document.createElement("style");
+    st.id = "acs-compare-toggle-style";
+    st.textContent = TOGGLE_CSS;
+    root.appendChild(st);
   }
   function ensureToggle() {
     const header = q('[part="header"]');
     const expanded = isExpanded();
     let toggle = findToggle();
     if (expanded && header && !toggle) {
+      ensureToggleStyle();
       toggle = document.createElement("button");
       toggle.id = "acs-compare-toggle";
       toggle.type = "button";
-      Object.assign(toggle.style, {
-        font: "600 12px system-ui, sans-serif", padding: "6px 12px", borderRadius: "999px",
-        border: "1px solid var(--algolia-border, #e1e4ec)", cursor: "pointer", marginRight: "10px",
-        whiteSpace: "nowrap", flex: "0 0 auto",
-      });
       styleToggle(toggle);
-      toggle.addEventListener("click", () => { compareOn = !compareOn; reconcile(); if (compareOn) scanForNewQuestions(); });
+      // NOTE: no per-node listener. React re-renders the header and clones our
+      // button — markup survives, listeners do not, leaving a dead toggle that
+      // findToggle() then happily reuses forever. Clicks are handled by the
+      // delegated listener on the shadow root in attach() instead.
       // Place it just LEFT of the header's icon cluster (header's last child).
+      // Sit just LEFT of the icon cluster as a HEADER child — putting it inside
+      // the cluster subjects it to that cluster's icon-button sizing.
       const cluster = header.lastElementChild;
-      if (cluster && cluster.querySelector("button")) cluster.insertBefore(toggle, cluster.firstChild);
-      else if (cluster) header.insertBefore(toggle, cluster);
+      if (cluster) header.insertBefore(toggle, cluster);
       else header.appendChild(toggle);
       log("toggle injected");
     } else if (!expanded && toggle) {
@@ -167,10 +209,15 @@
   }
 
   // ---- reconcile on every shadow mutation / resize ---------------------------
-  let raf = 0;
+  // Coalesce bursts WITHOUT cancelling: the widget mutates continuously (timers,
+  // auto-engage, streaming), and a cancel-then-reschedule loop starves the callback
+  // so it never runs. A pending flag guarantees the first scheduled pass executes.
+  let pending = false;
   function reconcile() {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
       const expanded = isExpanded();
       if (!expanded) compareOn = false;
       // Widget new-chat clears ALL bubbles → reset production thread + log too.
@@ -186,6 +233,14 @@
   function attach() {
     const root = sroot();
     if (!root) return false;
+    // Delegated click: survives React re-creating/cloning the toggle node.
+    root.addEventListener("click", (e) => {
+      const hit = (e.composedPath ? e.composedPath() : []).some((n) => n && n.id === "acs-compare-toggle");
+      if (!hit) return;
+      compareOn = !compareOn;
+      reconcile();
+      if (compareOn) scanForNewQuestions();
+    });
     new MutationObserver(reconcile).observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "class", "part"] });
     window.addEventListener("resize", reconcile);
     reconcile();
@@ -199,7 +254,7 @@
   })();
 
   // ---- production panel: right ~42% of the PANEL, below header, above composer -
-  const PANEL_FRAC = 0.42;
+  const PANEL_FRAC = 0.5; // even 50/50 split of the conversation area
   let panel = null;
   function mount() {
     if (panel) return panel;
@@ -208,9 +263,9 @@
     // A flush interior column, not a floating card: white to match the widget,
     // a single hairline divider on the left, no shadow, no border-radius.
     Object.assign(panel.style, {
-      position: "fixed", background: "#fff",
+      position: "absolute", right: "0", background: "#fff",
       borderLeft: "1px solid #e6e8ef", boxShadow: "none",
-      padding: "20px 24px", overflow: "auto", zIndex: "2147483000",
+      padding: "20px 24px", overflow: "auto", zIndex: "5",
       font: "15px/1.55 system-ui, sans-serif", color: "#021046", display: "none",
       boxSizing: "border-box",
     });
@@ -221,24 +276,36 @@
       '<div style="font-size:12px;color:#8b93a6;margin-bottom:16px">algolia.com</div>' +
       '<div id="acs-compare-log"></div>' +
       '<div id="acs-compare-empty" style="color:#8b93a6">Ask a question below — it goes to both.</div>';
-    document.body.appendChild(panel);
     return panel;
   }
-  // Anchor to the widget PANEL rect, so it aligns whether centered or full-bleed.
-  function positionPanel() {
+  // Keep the column parented to the widget's own chat-content so it sits INSIDE
+  // the rounded container and is clipped by it. chat-content is `relative`, so
+  // absolute positioning anchors here. Re-parent if React swaps the node.
+  function ensureMounted() {
     const p = mount();
-    const panelEl = q('[part="panel"]'); if (!panelEl) return;
-    const pr = panelEl.getBoundingClientRect();
+    const cc = q('[part="chat-content"]');
+    if (cc && p.parentElement !== cc) cc.appendChild(p);
+    return !!cc;
+  }
+  // Anchor to the widget PANEL rect, so it aligns whether centered or full-bleed.
+  // Offsets are relative to chat-content, so the header and the composer keep
+  // their FULL width and only the conversation area shares space with us.
+  function positionPanel() {
+    if (!ensureMounted()) return;
+    const p = mount();
+    const cc = q('[part="chat-content"]');
     const header = q('[part="header"]');
     const composer = q('[part="composer"]');
-    const top = header ? header.getBoundingClientRect().bottom : pr.top + 60;
-    const bottom = composer ? composer.getBoundingClientRect().top : pr.bottom - 90;
-    const width = Math.round(pr.width * PANEL_FRAC);
+    const ccr = cc.getBoundingClientRect();
+    const top = header ? Math.round(header.getBoundingClientRect().bottom - ccr.top) : 60;
+    const bottomInset = composer
+      ? Math.max(0, Math.round(ccr.bottom - composer.getBoundingClientRect().top))
+      : 80;
     Object.assign(p.style, {
-      left: Math.round(pr.right - width) + "px",
-      top: Math.round(top) + "px",
-      width: width + "px",
-      height: Math.max(0, Math.round(bottom - top)) + "px",
+      top: top + "px",
+      bottom: bottomInset + "px",
+      height: "auto",
+      width: Math.round(PANEL_FRAC * 100) + "%",
     });
   }
   // Pad the widget's own conversation so its answer keeps the left region.
@@ -248,7 +315,10 @@
     if (active && !style) {
       style = document.createElement("style");
       style.id = "acs-compare-style";
-      style.textContent = `[part="chat-content"]{ padding-right: ${Math.round(PANEL_FRAC * 100) + 3}% !important; }`;
+      // Target the messages scroller only. Padding chat-content would shrink the
+      // header and composer too, which is what made the panel look bolted on.
+      style.textContent =
+        `[part="chat-content"] .overflow-y-auto{ padding-right: calc(${Math.round(PANEL_FRAC * 100)}% + 20px) !important; }`;
       root.appendChild(style);
     } else if (!active && style) {
       style.remove();
