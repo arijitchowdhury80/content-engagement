@@ -20,13 +20,30 @@
  *   - the production panel is anchored to the PANEL's rectangle (not the viewport),
  *     so it aligns whether the widget is a centered card or full-bleed.
  *
- * Requires the /prod route from proxy.mjs — production is only reachable through
- * the Origin-injecting proxy.
+ * Two ways to reach production, auto-selected:
+ *   - Direct (no proxy): set window.ACS_COMPARE = { prod: { appId, apiKey, agentId } }
+ *     before this script loads. Used where the page's origin is on production's
+ *     approved-domains list — e.g. the Jahia dev site, which IS allowlisted, so no
+ *     proxy, no Origin spoofing, no mixed content.
+ *   - Proxy: with no config, POSTs to /prod (proxy.mjs injects the Origin). Used on
+ *     the local harness where localhost is not an approved origin.
  */
 (function () {
   "use strict";
   const seenBubbles = new WeakSet();
   let compareOn = false;
+
+  // Production endpoint: direct if configured (approved origin), else the proxy.
+  const PROD_CFG = (typeof window !== "undefined" && window.ACS_COMPARE && window.ACS_COMPARE.prod) || null;
+  function prodEndpoint() {
+    if (PROD_CFG && PROD_CFG.appId && PROD_CFG.agentId) {
+      return {
+        url: `https://${PROD_CFG.appId}.algolia.net/agent-studio/1/agents/${PROD_CFG.agentId}/completions?stream=true&compatibilityMode=ai-sdk-5`,
+        headers: { "content-type": "application/json", "x-algolia-application-id": PROD_CFG.appId, "x-algolia-api-key": PROD_CFG.apiKey || "" },
+      };
+    }
+    return { url: "/prod", headers: { "content-type": "application/json" } };
+  }
 
   // Production conversation state. Agent Studio is stateless per request — the
   // client carries the thread: a STABLE conversation id plus the full message
@@ -66,7 +83,8 @@
     visit(obj);
   }
   async function askProd(messages, onUpdate) {
-    const res = await fetch("/prod", { method: "POST", headers: { "content-type": "application/json" },
+    const ep = prodEndpoint();
+    const res = await fetch(ep.url, { method: "POST", headers: ep.headers,
       body: JSON.stringify({ id: convId, messages, trigger: "user" }) });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${(await res.text()).slice(0, 120)}`);
     const reader = res.body.getReader(); const dec = new TextDecoder();

@@ -1,10 +1,11 @@
 /**
  * Compare-with-production harness server.
  *
- *   node frontend/chat-widget/proxy.mjs        # then open http://localhost:8765/
+ *   node frontend/chat-widget/proxy.mjs   # then open http://localhost:3000/ (PORT overrides)
  *
  * One process does three jobs:
- *   1. serves harness.local.html + the widget bundles from this directory;
+ *   1. serves the harness page + widget bundles from this directory. Prefers a
+ *      gitignored harness.local.html override, else the committed harness.html;
  *   2. GET  /config  — hands the browser the CONCIERGE (0EXRPAXB56) public search
  *                      config for the left column, which it calls directly;
  *   3. POST /prod    — forwards to the live algolia.com Ask AI agent for the right
@@ -144,7 +145,12 @@ const server = createServer(async (req, res) => {
 
   // 3. Static files from this directory. Default to the harness page.
   let rel = decodeURIComponent(url.pathname);
-  if (rel === "/") rel = "/harness.local.html";
+  // Prefer a gitignored local override, else the committed harness so a fresh
+  // clone is runnable with just `node proxy.mjs`.
+  if (rel === "/")
+    rel = existsSync(join(__dirname, "harness.local.html"))
+      ? "/harness.local.html"
+      : "/harness.html";
   const filePath = normalize(join(__dirname, rel));
   if (!filePath.startsWith(__dirname)) {
     res.writeHead(403).end("forbidden");
