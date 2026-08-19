@@ -39,6 +39,7 @@ TRACKER_CONTENT = f"{NEW_TRACKER}/jcr:content"
 CONTEXT_COMPILER_CONTENT = f"{CONTEXT_COMPILER}/jcr:content"
 HANDOFF_TO_ORCHESTRATOR = "/sites/www/files/handoff-to-orchestrator.js"
 ENGAGE = "/sites/www/files/algolia-chat-engage.js"
+COMPARE = "/sites/www/files/algolia-chat-compare.js"
 THEME = "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
 CHAT_SRC = ROOT / "frontend/chat-widget/algolia-chat.js"
 CONFIDENCE_BADGE_SRC = ROOT / "frontend/chat-widget/algolia-confidence-badge.js"
@@ -47,6 +48,7 @@ CONTEXT_COMPILER_SRC = ROOT / "frontend/chat-widget/algolia-context-compiler.js"
 PROACTIVE_CONTROLLER_SRC = ROOT / "frontend/chat-widget/algolia-proactive-controller.js"
 HANDOFF_TO_ORCHESTRATOR_SRC = ROOT / "frontend/chat-widget/handoff-to-orchestrator.js"
 ENGAGE_SRC = ROOT / "frontend/chat-widget/algolia-chat-engage.js"
+COMPARE_SRC = ROOT / "frontend/chat-widget/algolia-chat-compare.js"
 THEME_SRC = ROOT / "frontend/chat-widget/algolia-chat-theme-algolia.js"
 EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/proactive-debug-trace"
 RUNTIME_VERSION = "20260819-runtime-z"
@@ -60,6 +62,14 @@ PROACTIVE_CONTROLLER_VERSION = RUNTIME_VERSION
 CONTROLLER_ONLY_VERSION = "20260819-controller-a"
 HANDOFF_TO_ORCHESTRATOR_VERSION = RUNTIME_VERSION
 ENGAGE_VERSION = RUNTIME_VERSION
+# Compare rides the shared runtime version so every asset re-caches together.
+COMPARE_VERSION = RUNTIME_VERSION
+# Production Ask AI benchmark. The Jahia origin is on this agent's approved-domains
+# list, so the browser calls it directly; no proxy is deployed. The search key is
+# public by class (it ships in algolia.com's own page source).
+COMPARE_PROD_APP_ID = "1QDAWL72TQ"
+COMPARE_PROD_AGENT_ID = "ebff018c-66e1-44df-b33a-2a58a0188840"
+COMPARE_PROD_SEARCH_KEY_ENV = "PROD_ASKAI_SEARCH_KEY"
 THEME_VERSION = "20260815-answer-rhythm-balanced-a"
 
 
@@ -207,6 +217,29 @@ def run_access_check() -> int:
     checks = access_check()
     print(json.dumps(checks, indent=2))
     return 0 if checks["pass"] else 1
+def compare_prod_search_key() -> str:
+    """Production Ask AI search key, from the environment or .env.local.
+
+    Never hardcoded in the repo. It is a search-only key and is already public in
+    algolia.com's own page source, but it still reaches Jahia only at deploy time.
+    """
+    return os.environ.get(COMPARE_PROD_SEARCH_KEY_ENV) or dotenv_value(ENV_LOCAL, COMPARE_PROD_SEARCH_KEY_ENV) or ""
+
+
+def compare_tags() -> tuple[str, str]:
+    """(config script, module script) injected into the custom-code block."""
+    config = (
+        "<script>window.ACS_COMPARE={prod:{"
+        f'appId:"{COMPARE_PROD_APP_ID}",'
+        f'apiKey:"{compare_prod_search_key()}",'
+        f'agentId:"{COMPARE_PROD_AGENT_ID}"'
+        "}};</script>"
+    )
+    module = (
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-chat-compare.js?compare={COMPARE_VERSION}"></script>'
+    )
+    return config, module
 
 
 def write_json(path: Path, payload: dict) -> None:
@@ -250,6 +283,7 @@ def snapshot() -> dict:
         "trackerVersion": TRACKER_VERSION,
         "contextCompilerVersion": CONTEXT_COMPILER_VERSION,
         "engageVersion": ENGAGE_VERSION,
+        "compareVersion": COMPARE_VERSION,
         "chatVersion": CHAT_VERSION,
         "edit": {
             "blockHtml": block_html("EDIT"),
@@ -260,6 +294,7 @@ def snapshot() -> dict:
             "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "EDIT"),
             "handoffToOrchestratorNode": node(HANDOFF_TO_ORCHESTRATOR, "EDIT"),
             "engageNode": node(ENGAGE, "EDIT"),
+            "compareNode": node(COMPARE, "EDIT"),
             "themeNode": node(THEME, "EDIT"),
         },
         "live": {
@@ -271,6 +306,7 @@ def snapshot() -> dict:
             "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "LIVE"),
             "handoffToOrchestratorNode": node(HANDOFF_TO_ORCHESTRATOR, "LIVE"),
             "engageNode": node(ENGAGE, "LIVE"),
+            "compareNode": node(COMPARE, "LIVE"),
             "themeNode": node(THEME, "LIVE"),
         },
     }
@@ -522,6 +558,23 @@ def update_block_html(current: str) -> str:
             )
         else:
             next_html = next_html.replace(engage_tag, handoff_tag + "\n" + engage_tag)
+
+    # Compare-with-production. Config must precede the module, and the module must
+    # load after algolia-chat.js so the widget's shadow root already exists. Both
+    # tags are stripped first, so re-running is idempotent and re-versions cleanly.
+    compare_config_tag, compare_module_tag = compare_tags()
+    next_html = re.sub(r"<script>window\.ACS_COMPARE=.*?</script>\n?", "", next_html, flags=re.S)
+    next_html = re.sub(
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/'
+        r'algolia-chat-compare\.js(?:\?[^"]*)?"></script>\n?',
+        "",
+        next_html,
+    )
+    compare_block = compare_config_tag + "\n" + compare_module_tag
+    if engage_tag in next_html:
+        next_html = next_html.replace(engage_tag, engage_tag + "\n" + compare_block)
+    else:
+        next_html = next_html + "\n" + compare_block
     return next_html
 
 
@@ -733,6 +786,7 @@ def validate(snapshot_after: dict) -> dict:
     live_proactive_controller = snapshot_after["live"]["proactiveControllerNode"]
     live_handoff = snapshot_after["live"]["handoffToOrchestratorNode"]
     live_engage = snapshot_after["live"]["engageNode"]
+    live_compare = snapshot_after["live"]["compareNode"]
     live_theme = snapshot_after["live"]["themeNode"]
     live_old_tracker = snapshot_after["live"]["oldTrackerNode"]
     edit_old_tracker = snapshot_after["edit"]["oldTrackerNode"]
@@ -757,6 +811,12 @@ def validate(snapshot_after: dict) -> dict:
         "liveProactiveControllerExists": live_proactive_controller is not None,
         "liveHandoffToOrchestratorExists": live_handoff is not None,
         "liveEngageExists": live_engage is not None,
+        "liveHtmlReferencesCompare": "algolia-chat-compare.js" in live_html,
+        "liveHtmlReferencesCompareVersion": f"compare={COMPARE_VERSION}" in live_html,
+        "liveHtmlReferencesCompareConfig": "window.ACS_COMPARE" in live_html,
+        "liveCompareExists": live_compare is not None,
+        "liveCompareMatchesSource": file_content(live_compare)
+        == COMPARE_SRC.read_text(encoding="utf-8"),
         "liveThemeExists": live_theme is not None,
         "oldTrackerAbsentFromEdit": edit_old_tracker is None,
         "oldTrackerAbsentFromLive": live_old_tracker is None,
@@ -781,6 +841,9 @@ def edit_has_expected_html(snapshot_after: dict) -> bool:
             f"engage={ENGAGE_VERSION}" in edit_html,
             "algolia-chat-theme-algolia-modal-greeting-width-20260815a.js" in edit_html,
             f"theme={THEME_VERSION}" in edit_html,
+            "algolia-chat-compare.js" in edit_html,
+            f"compare={COMPARE_VERSION}" in edit_html,
+            "window.ACS_COMPARE" in edit_html,
         ]
     )
 
@@ -1451,6 +1514,7 @@ def main() -> int:
     proactive_controller_content = PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")
     handoff_content = HANDOFF_TO_ORCHESTRATOR_SRC.read_text(encoding="utf-8")
     engage_content = ENGAGE_SRC.read_text(encoding="utf-8")
+    compare_content = COMPARE_SRC.read_text(encoding="utf-8")
     theme_content = THEME_SRC.read_text(encoding="utf-8")
     plan = {
         "target": {
@@ -1460,6 +1524,7 @@ def main() -> int:
             "contextCompiler": CONTEXT_COMPILER,
             "proactiveController": PROACTIVE_CONTROLLER,
             "handoffToOrchestrator": HANDOFF_TO_ORCHESTRATOR,
+            "compare": COMPARE,
             "oldTracker": OLD_TRACKER,
             "engage": ENGAGE,
             "theme": THEME,
@@ -1493,6 +1558,10 @@ def main() -> int:
             "contextCompilerVersion": CONTEXT_COMPILER_VERSION,
             "proactiveControllerVersion": PROACTIVE_CONTROLLER_VERSION,
             "handoffToOrchestratorVersion": HANDOFF_TO_ORCHESTRATOR_VERSION,
+            "compareVersion": COMPARE_VERSION,
+            "compareReferenced": True,
+            "compareProductionAgent": f"{COMPARE_PROD_APP_ID}/{COMPARE_PROD_AGENT_ID}",
+            "compareProductionKeyResolved": bool(compare_prod_search_key()),
             "engageVersion": ENGAGE_VERSION,
             "themeVersion": THEME_VERSION,
             "chatSha256": sha256(chat_content),
@@ -1500,6 +1569,7 @@ def main() -> int:
             "contextCompilerSha256": sha256(context_compiler_content),
             "proactiveControllerSha256": sha256(proactive_controller_content),
             "handoffToOrchestratorSha256": sha256(handoff_content),
+            "compareSha256": sha256(compare_content),
             "engageSha256": sha256(engage_content),
             "themeSha256": sha256(theme_content),
         },
@@ -1510,6 +1580,7 @@ def main() -> int:
             "restoreOrRemoveContextCompilerFrom": "before-snapshot.json edit.contextCompilerNode children[0].properties[jcr:data]",
             "restoreOrRemoveProactiveControllerFrom": "before-snapshot.json edit.proactiveControllerNode children[0].properties[jcr:data]",
             "restoreOrRemoveHandoffToOrchestratorFrom": "before-snapshot.json edit.handoffToOrchestratorNode children[0].properties[jcr:data]",
+            "restoreOrRemoveCompareFrom": "before-snapshot.json edit.compareNode children[0].properties[jcr:data]; if that node was absent, delete /sites/www/files/algolia-chat-compare.js and republish. Removing the two Compare script tags from the block HTML disables the feature on its own.",
             "restoreEngageFrom": "before-snapshot.json edit.engageNode children[0].properties[jcr:data]",
             "restoreThemeFrom": "before-snapshot.json edit.themeNode children[0].properties[jcr:data]",
         },
@@ -1558,6 +1629,7 @@ def main() -> int:
         "upsertProactiveController": upsert_file(PROACTIVE_CONTROLLER, proactive_controller_content),
         "upsertHandoffToOrchestrator": upsert_file(HANDOFF_TO_ORCHESTRATOR, handoff_content),
         "upsertEngage": upsert_file(ENGAGE, engage_content),
+        "upsertCompare": upsert_file(COMPARE, compare_content),
         "upsertTheme": upsert_file(THEME, theme_content),
         "setBlockHtml": set_block_html(next_html),
         "deleteOldTrackerEdit": delete_old_tracker(),
@@ -1567,6 +1639,7 @@ def main() -> int:
         "publishProactiveController": publish(PROACTIVE_CONTROLLER),
         "publishHandoffToOrchestrator": publish(HANDOFF_TO_ORCHESTRATOR),
         "publishEngage": publish(ENGAGE),
+        "publishCompare": publish(COMPARE),
         "publishTheme": publish(THEME),
         "publishFilesSubtree": publish(FILES_PATH, subtree=True),
         "publishDriftSubtree": publish("/sites/www/home/drift", subtree=True),

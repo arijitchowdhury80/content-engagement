@@ -16,8 +16,20 @@
       "algolia-context-compiler.js",
       "algolia-proactive-controller.js",
       "handoff-to-orchestrator.js",
-      "algolia-chat-engage.js"
-    ]
+      "algolia-chat-engage.js",
+      "algolia-chat-compare.js"
+    ],
+    "compareWithProduction": {
+      "script": "frontend/chat-widget/algolia-chat-compare.js",
+      "jahiaPath": "/sites/www/files/algolia-chat-compare.js",
+      "productionAgent": {
+        "appId": "1QDAWL72TQ",
+        "agentId": "ebff018c-66e1-44df-b33a-2a58a0188840",
+        "index": "ALGOLIA_WWW_PROD_V2",
+        "searchKeyEnv": "PROD_ASKAI_SEARCH_KEY",
+        "note": "Read-only comparison benchmark. The Jahia origin is on this agent's approved-domains list, so the browser calls it directly and no proxy is deployed."
+      }
+    }
   },
   "agentStudio": {
     "greetings": {
