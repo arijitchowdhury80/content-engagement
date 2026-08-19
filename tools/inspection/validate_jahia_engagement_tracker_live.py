@@ -16,8 +16,8 @@ URL = (
     "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html"
     "?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1"
 )
-TRACKER_VERSION = "20260814c"
-ENGAGE_VERSION = "20260814c"
+TRACKER_SCRIPT = "algolia-engagement-tracker.js"
+ENGAGE_SCRIPT = "algolia-chat-engage.js"
 
 
 def main() -> int:
@@ -115,14 +115,10 @@ def main() -> int:
         browser.close()
 
     checks = {
-        "newTrackerScriptLoaded": any(
-            "algolia-engagement-tracker.js" in src and f"tracker={TRACKER_VERSION}" in src
-            for src in state["scripts"]
-        ),
-        "engageScriptLoaded": any(
-            "algolia-chat-engage.js" in src and f"engage={ENGAGE_VERSION}" in src
-            for src in state["scripts"]
-        ),
+        # Cache-busting tokens change on every release. The deployment contract is
+        # the canonical script path; the captured script URL preserves the token.
+        "newTrackerScriptLoaded": any(TRACKER_SCRIPT in src for src in state["scripts"]),
+        "engageScriptLoaded": any(ENGAGE_SCRIPT in src for src in state["scripts"]),
         "oldTrackerScriptAbsent": not any("algolia-chat-tracker.js" in src for src in state["scripts"]),
         "trackerInstalled": state["installed"] is True,
         "oldTrackerNotInstalled": state["oldTrackerInstalled"] is False,

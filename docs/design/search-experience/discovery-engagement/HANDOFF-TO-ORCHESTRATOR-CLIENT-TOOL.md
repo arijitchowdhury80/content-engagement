@@ -1,151 +1,76 @@
-# Handoff To Orchestrator JavaScript Client Tool
+# Proactive Handoff To Orchestrator
 
 ## Purpose
 
-This document is the build spec for `frontend/chat-widget/handoff-to-orchestrator.js`, the JavaScript file that executes the Greetings Agent's `handoff_to_orchestrator` client-side tool.
+`frontend/chat-widget/handoff-to-orchestrator.js` preserves the proactive journey when the visitor responds to a greeting. It is browser runtime code, not an Agent Studio tool and not a second agent turn.
 
-It carries the first engaged proactive user turn to `www Chat - Orchestrator` with the original opportunity packet, latest compiled context, greeting shown, chips, and user reply or selected chip.
+The Greetings Agent has one job: generate one greeting and its response choices. The browser renders that result. When the visitor clicks a choice or types freely, the existing chat submission path sends one request to the primary orchestrator with the handoff context attached.
 
-The tool does not generate copy, decide triggers, or answer the visitor. It is transport and validation.
-
-## Position In Flow
+## Runtime Sequence
 
 ```mermaid
 sequenceDiagram
-  participant Visitor
-  participant Widget as Chat widget
-  participant Agent as Agent Studio Greetings Agent
-  participant Tool as handoff-to-orchestrator.js
-  participant Compiler as algolia-context-compiler.js
-  participant Orchestrator as www Chat - Orchestrator
+  participant Controller as Proactive Controller
+  participant Greeter as Greetings Agent
+  participant Widget as Chat Widget
+  participant Handoff as Browser Handoff
+  participant Orchestrator as Primary Orchestrator
 
-  Visitor->>Widget: Reply or chip click
-  Widget->>Orchestrator: Existing chat submit path
-  Tool->>Tool: Intercept primary orchestrator completion request
-  Tool->>Tool: Read latest shown opportunity
-  Tool->>Compiler: Compile latest AlgoliaTurnContext.v1
-  Tool->>Orchestrator: Attach PROACTIVE_HANDOFF_CONTEXT
-  Orchestrator-->>Widget: Stream main answer
+  Controller->>Greeter: completion(opportunity as turnContext)
+  Greeter-->>Controller: strict greeting JSON
+  Controller->>Widget: render greeting and choices
+  Widget->>Handoff: visitor response
+  Handoff->>Handoff: merge opportunity, greeting, choices, and response
+  Handoff->>Orchestrator: one decorated completion request
+  Orchestrator-->>Widget: grounded answer and discovery question
 ```
 
-The Agent Studio tool schema still exists on the Greetings Agent so a native `handoff_to_orchestrator` tool call can be supported when the widget routes an engaged response back through the Greeting Agent. The deployed v1 path also decorates the next primary orchestrator request because the current chat widget owns the visible conversation with the primary orchestrator.
+## Input
 
-## Agent Studio Tool Schema
+The browser combines:
 
-Tool name: `handoff_to_orchestrator`
+- the stored `ProactiveOpportunity.v1` packet;
+- the exact greeting returned by the Greetings Agent;
+- all rendered choices;
+- the selected choice, when applicable;
+- the visitor's free-text response, when applicable; and
+- the compiled `AlgoliaContextPacket.v1` journey context.
 
-Agent Studio's dashboard follows the function-calling pattern, but the management API stores client-side tools with `type: "client_side"` and `inputSchema`:
+The visitor response is authoritative. A choice helps structure intent but never restricts what the visitor may ask.
 
-```json
-{
-  "name": "handoff_to_orchestrator",
-  "type": "client_side",
-  "description": "Hands an engaged proactive visitor to the main Algolia.com orchestrator. Use only after PROACTIVE_USER_ENGAGEMENT. Do not answer the visitor yourself.",
-  "inputSchema": {
-    "type": "object",
-    "properties": {
-      "schema": { "type": "string", "enum": ["ProactiveHandoffToolInput.v1"] },
-      "opportunityId": { "type": "string" },
-      "greeting": { "type": "string" },
-      "chips": { "type": "array", "items": { "type": "string" }, "maxItems": 3 },
-      "selectedChip": { "type": ["string", "null"] },
-      "userResponse": { "type": "string" },
-      "handoffSummary": {
-        "type": "object",
-        "properties": {
-          "moment": { "type": "string" },
-          "trigger": { "type": "string" },
-          "messageGoal": { "type": "string" }
-        },
-        "required": ["moment", "trigger", "messageGoal"],
-        "additionalProperties": false
-      }
-    },
-    "required": ["schema", "opportunityId", "greeting", "chips", "selectedChip", "userResponse", "handoffSummary"],
-    "additionalProperties": false
-  }
-}
-```
+## Output Contract
 
-## Runtime Input
+The outgoing primary-orchestrator turn contains the visitor's response plus one `PROACTIVE_HANDOFF_CONTEXT` object. The compiler validates the final merged per-turn context after all handoff fields have been added:
 
-The model passes the interaction fields. The JavaScript adds the trusted browser-owned fields:
+- at most 32 top-level keys;
+- at most 4,096 UTF-8 bytes in total; and
+- at most 1,024 UTF-8 bytes per value.
 
-- original `AlgoliaProactiveDecision.v1` from session storage;
-- latest `AlgoliaContextPacket.v1`;
-- latest flat `AlgoliaTurnContext.v1`;
-- engagement history;
-- source URL/path metadata;
-- conversation IDs and message IDs.
+There is no independent 6,500-character clipping rule. If the valid Agent Studio context budget cannot be met, the request fails closed with an explicit trace rather than silently truncating meaning.
 
-This is deliberate. The model should not be trusted to echo the original opportunity packet perfectly.
+## State Machine
 
-## Orchestrator Completion Decoration
-
-The current implementation does not create a separate orchestrator POST. It decorates the existing widget POST to the primary orchestrator:
-
-```text
-https://{appId}.algolia.net/agent-studio/1/agents/{orchestratorAgentId}/completions?compatibilityMode=ai-sdk-5&stream=true&cache=false
-```
-
-Body:
-
-```json
-{
-  "id": "alg_cnv_orch_...",
-  "messages": [
-    {
-      "id": "alg_msg_handoff_...",
-      "role": "user",
-      "parts": [
-        {
-          "type": "text",
-          "text": "How are API calls counted?\n\nPROACTIVE_HANDOFF_CONTEXT\n{\"schema\":\"ProactiveHandoffContext.v1\",\"opportunityId\":\"opp_...\",\"userResponse\":\"How are API calls counted?\",\"selectedChip\":\"How are API calls counted?\",\"greeting\":\"Pricing pages are where shiny ideas meet budget gravity...\",\"chips\":[\"Break down cost drivers\",\"API calls and usage\",\"Which plan fits?\"],\"handoffSummary\":{\"moment\":\"commercial_evaluation\",\"trigger\":\"product_to_pricing\",\"messageGoal\":\"explain_cost_drivers\"},\"requestPacket\":{},\"contextPacket\":{}}"
-        }
-      ],
-      "metadata": {
-        "turnContext": {
-          "schema": "AlgoliaTurnContext.v1"
-        }
-      }
-    }
-  ]
-}
-```
-
-The visible user text remains the visitor's message. The appended `PROACTIVE_HANDOFF_CONTEXT` is an internal instruction block for the orchestrator; the orchestrator must never quote or expose it.
-
-## Validation Gates
-
-- `opportunityId` exists in session storage and is not expired.
-- `handoffSummary` matches the stored opportunity.
-- `userMessage` is present and under the configured max length.
-- `greetingShown` matches the rendered greeting or stored greeting record.
-- Latest `AlgoliaTurnContext.v1` compiles successfully.
-- Orchestrator config has app ID, search API key, and orchestrator agent ID.
-- Completion response starts streaming or returns a structured error.
-
-## Failure Behavior
-
-| Failure | Behavior |
+| State | Meaning |
 |---|---|
-| Missing opportunity | Return `{ success:false, error:{ code:"OPPORTUNITY_NOT_FOUND" } }`. |
-| Invalid args | Return validation error; do not call orchestrator. |
-| Orchestrator config missing | Return config error; keep user input in widget. |
-| Orchestrator call fails | Return retry-safe error; do not clear handoff state. |
-| Stream interrupted | Preserve partial response and expose retry. |
+| `shown` | Greeting is visible and can receive a response. |
+| `handoff_pending` | Visitor responded; the orchestrator request is in flight. |
+| `handoff_sent` | The orchestrator accepted the decorated request. |
 
-## Tests
+Network or HTTP failure restores `shown` so the visitor can retry. A transition opportunity never consumes the previous opportunity until its greeting has actually rendered.
 
-Unit tests must prove:
+## Ownership Rules
 
-- It registers a valid `handoff_to_orchestrator` handler.
-- It reads the original opportunity packet from session storage.
-- It attaches latest `AlgoliaTurnContext.v1`.
-- It decorates only primary orchestrator completion requests.
-- It does not decorate unrelated agent requests.
-- It marks the opportunity as `handoff_sent` after decoration.
+- The controller decides when an opportunity exists.
+- The Greetings Agent writes one greeting; it does not continue the conversation.
+- The widget renders UI and captures the visitor response.
+- The browser handoff decorates the existing submission request.
+- The primary orchestrator owns every conversational answer after engagement.
+- Agent Studio specialists are called only by the primary orchestrator.
 
-## Documentation Evidence
+## Verification Gates
 
-This design follows Algolia Agent Studio's client-side tool pattern: the agent defines a function schema, the frontend code executes the function in the browser context, and the code returns structured tool output to the agent.
+1. The Greetings Agent receives exactly one completion call per rendered opportunity.
+2. No `PROACTIVE_USER_ENGAGEMENT` turn is sent back to the Greetings Agent.
+3. The primary orchestrator receives the greeting, choices, visitor response, opportunity, and compiled context together.
+4. A failed request remains retryable and does not mark the opportunity sent.
+5. A successful request records `handoff_sent` and preserves conversation continuity across navigation.

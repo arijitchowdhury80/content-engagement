@@ -23,22 +23,27 @@ class MemoryStorage {
   }
 }
 
-function createHarness() {
+function createHarness({ anchors = [] } = {}) {
   const documentListeners = new Map();
   const timers = [];
   const analyzingCalls = [];
   const chatElement = {
     autoEngage: true,
+    visitorDataSource: null,
     engage() {
       return true;
     },
     setAnalyzing(value) {
       analyzingCalls.push(Boolean(value));
     },
+    setVisitorDataSource(source) {
+      this.visitorDataSource = source;
+    },
   };
 
   const context = {
     console,
+    URL,
     URLSearchParams,
     localStorage: new MemoryStorage(),
     sessionStorage: new MemoryStorage({
@@ -55,6 +60,7 @@ function createHarness() {
     location: {
       search: '?minPages=99&minEvents=99&delayMs=999999',
       pathname: '/pricing',
+      origin: 'https://tmp-content-eng-algolia.cloud.jahia.com',
     },
     setTimeout(fn, delay) {
       timers.push({ fn, delay });
@@ -77,6 +83,9 @@ function createHarness() {
       querySelector(selector) {
         return selector === 'algolia-chat' ? chatElement : null;
       },
+      querySelectorAll(selector) {
+        return selector === 'a[data-finalurl][data-is-internal="true"]' ? anchors : [];
+      },
       addEventListener(name, handler) {
         documentListeners.set(name, handler);
       },
@@ -94,8 +103,65 @@ function createHarness() {
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(engagePath, 'utf8'), context);
 
-  return { context, analyzingCalls, timers };
+  return { context, analyzingCalls, timers, chatElement };
 }
+
+test('repairs malformed same-origin Jahia documentation hrefs using their final render URL', () => {
+  const anchor = {
+    dataset: {
+      finalurl:
+        'https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home/doc/guides/example.html',
+    },
+    attributes: new Map([['href', '/sites/www/doc/guides/example']]),
+    getAttribute(name) {
+      return this.attributes.get(name) || null;
+    },
+    setAttribute(name, value) {
+      this.attributes.set(name, String(value));
+    },
+  };
+
+  createHarness({ anchors: [anchor] });
+
+  assert.equal(
+    anchor.getAttribute('href'),
+    'https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home/doc/guides/example.html',
+  );
+});
+
+test('connects the reactive chat to the canonical Algolia tracker stores', async () => {
+  const { context, chatElement } = createHarness();
+  context.localStorage.setItem(
+    'algolia_profile',
+    JSON.stringify({ schema: 'AlgoliaEngagementProfile.v1', persona: 'developer' }),
+  );
+  context.sessionStorage.setItem(
+    'algolia_session',
+    JSON.stringify({
+      schema: 'AlgoliaEngagementSession.v1',
+      sessionId: 'session_1',
+      pages: [{ path: '/products/search', title: 'Search' }, { path: '/pricing', title: 'Pricing' }],
+    }),
+  );
+  context.sessionStorage.setItem(
+    'algolia_events',
+    JSON.stringify({
+      schema: 'AlgoliaEngagementEvents.v1',
+      events: [{ eventId: 'event_1', name: 'page_view', path: '/pricing' }],
+    }),
+  );
+
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.ok(chatElement.visitorDataSource, 'expected the chat visitor source to be installed');
+  assert.equal(chatElement.visitorDataSource.getProfile().persona, 'developer');
+  assert.equal(
+    JSON.stringify(chatElement.visitorDataSource.getSessionPages().map((page) => page.path)),
+    JSON.stringify(['/products/search', '/pricing']),
+  );
+  assert.equal(chatElement.visitorDataSource.getEvents()[0].name, 'page_view');
+  assert.equal(chatElement.visitorDataSource.getSession().sessionId, 'session_1');
+});
 
 test('pulses the launcher when the tracker reports visitor activity', () => {
   const { context, analyzingCalls, timers } = createHarness();

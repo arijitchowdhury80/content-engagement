@@ -43,6 +43,7 @@
       }
 
       nav a,
+      .actions a,
       button[data-local-action] {
         border: 0;
         border-radius: 999px;
@@ -55,6 +56,7 @@
       }
 
       nav a:hover,
+      .actions a:hover,
       button[data-local-action]:hover {
         background: rgba(255, 255, 255, 0.2);
       }
@@ -175,6 +177,56 @@
       }
     </style>
     <script>
+      (() => {
+        const path = location.pathname;
+        const knownLabels = {
+          "/products/ai-search": "AI Search",
+          "/products/ai-recommendations": "AI Recommendations",
+          "/products/features/ui-component-libraries": "UI Component Libraries",
+          "/products/features/personalization": "Personalization",
+          "/solutions/ecommerce": "Ecommerce",
+          "/solutions/marketplace": "Marketplace",
+          "/solutions/financial-services": "Financial Services",
+          "/doc/guides/building-search-ui/what-is-instantsearch/js/": "InstantSearch Docs",
+          "/customers/harry-rosen": "Harry Rosen",
+          "/pricing": "Pricing",
+          "/developers": "Developer Hub",
+          "/resources": "Resources",
+        };
+        const words = (path.split("/").filter(Boolean).at(-1) || "home")
+          .split("-")
+          .map((word) => (/^(ai|api|ui|sdk)$/i.test(word) ? word.toUpperCase() : `${word[0]?.toUpperCase() || ""}${word.slice(1)}`));
+        const label = knownLabels[path] || words.join(" ");
+        const pageGroup = path.includes("/pricing")
+          ? "pricing"
+          : path.includes("/customers")
+            ? "customer_story"
+            : path.includes("/doc/")
+              ? "documentation"
+              : path.includes("/developers")
+                ? "developer"
+                : path.includes("/resources")
+                  ? "resource"
+                  : path.includes("/products")
+                    ? "product"
+                    : path.includes("/solutions")
+                      ? "solution"
+                      : "other";
+        const focus = words.join("_").toLowerCase();
+
+        document.title = `${label} | Local Site Parity`;
+        document.documentElement.dataset.algoliaPageGroup = pageGroup;
+        document.documentElement.dataset.algoliaTopic = focus;
+        if (pageGroup === "product") {
+          document.documentElement.dataset.algoliaProductFocus = focus;
+          document.documentElement.dataset.algoliaProductFocusLabel = label;
+        }
+        if (pageGroup === "solution") {
+          document.documentElement.dataset.algoliaSolutionFocus = focus;
+          document.documentElement.dataset.algoliaSolutionFocusLabel = label;
+        }
+      })();
+
       window.ALGOLIA_PROACTIVE_CONFIG = {
         appId: "0EXRPAXB56",
         apiKey: "local_search_key",
@@ -183,14 +235,28 @@
         productScrollDepth: 50,
         solutionDwellMs: 10000,
         solutionScrollDepth: 50,
-        pricingDwellMs: 8000,
-        customerProofDwellMs: 12000,
-        customerProofScrollDepth: 60,
+        documentationJourneyDwellMs: 10000,
+        documentationJourneyScrollDepth: 50,
+        proofJourneyDwellMs: 10000,
+        proofJourneyScrollDepth: 50,
+        implementationDwellMs: 10000,
+        implementationScrollDepth: 50,
+        resourceDwellMs: 10000,
+        resourceScrollDepth: 50,
       };
 
       window.ALGOLIA_VISITOR_CONFIG = {
         cookieName: "",
       };
+
+      const LOCAL_GREETING_AGENT_ID = "local_greetings_agent";
+      const LOCAL_ORCHESTRATOR_AGENT_ID = "local_orchestrator_agent";
+      const LOCAL_SPECIALIST_AGENT_IDS = Object.freeze({
+        evidence: "local_evidence_agent",
+        product: "local_product_agent",
+        tech: "local_tech_agent",
+        sales: "local_sales_agent",
+      });
 
       const localGreetingResponse = (request) => {
         const text = request?.messages?.[0]?.parts?.[0]?.text || "";
@@ -201,12 +267,63 @@
           packet.journeySummary?.solutionTrail?.map((item) => item.label).join(", ") ||
           packet.currentPage?.title ||
           "this path";
+        const greetingFixtures = {
+          product_page_10s_50_scroll: {
+            greeting: `Hello, explorer, looks like ${trail} has earned a proper look. Want to separate the interesting capability from what could actually move the needle?`,
+            chips: ["Show customer proof", "Compare tradeoffs", "Implementation reality"],
+          },
+          product_to_documentation: {
+            greeting: `Aha, ${trail} caught your attention and now you are in the documentation. Excellent; this is where product interest meets implementation reality, so want the clean technical path?`,
+            chips: ["Map the implementation", "Bring in a specialist", "Show the tradeoffs"],
+          },
+          solution_page_10s_50_scroll: {
+            greeting: `Hello, explorer, looks like ${trail} is the business problem on your mind. Let us get past the broad promises and pin down the outcome that matters in your world.`,
+            chips: ["Map the business outcome", "Show relevant products", "Find customer proof"],
+          },
+          solution_to_customer_story: {
+            greeting: `Good move: you went from ${trail} to customer proof, not just the pitch. Let us find what changed for teams like yours and whether the evidence actually matches your world.`,
+            chips: ["Show measurable outcomes", "Find my industry", "Compare use cases"],
+          },
+          product_to_pricing: {
+            greeting: `Good stop: ${trail} led you to pricing, so the spreadsheet part has officially entered the chat. Want to unpack the real cost drivers before the numbers start behaving dramatically?`,
+            chips: ["Explain cost drivers", "Scope a POC", "Prepare for sales"],
+          },
+          solution_to_pricing: {
+            greeting: `Good stop: you moved from ${trail} into pricing, which usually means the business case is getting real. Want to connect value, effort, and cost without the usual hand-waving?`,
+            chips: ["Build the value case", "Explain cost drivers", "Scope the next step"],
+          },
+          developer_page_10s_50_scroll: {
+            greeting: `And let me tell you a secret: the developer corner is the best corner in the house. Want the direct route from ${trail} to a working implementation?`,
+            chips: ["Plan the architecture", "Scope a POC", "Bring in a specialist"],
+          },
+          resource_page_10s_50_scroll: {
+            greeting: `You are digging through ${trail}, which tells me the headline was not enough. Good; want the strongest guide, proof point, or practical next step for what you are exploring?`,
+            chips: ["Find the best guide", "Show customer proof", "Recommend a next step"],
+          },
+        };
+        const fixture = greetingFixtures[packet.trigger] || {
+          greeting: `Hello, explorer, looks like ${trail} is on your radar. Good; that is where the useful questions start.`,
+          chips: ["Show customer proof", "Compare tradeoffs", "Implementation reality"],
+        };
         window.__localAgentCalls = (window.__localAgentCalls || 0) + 1;
+        window.__localGreetingCalls = (window.__localGreetingCalls || 0) + 1;
+        const persistedGreetingRequests = JSON.parse(
+          sessionStorage.getItem("algolia-local-greeting-requests") || "[]"
+        );
+        persistedGreetingRequests.push({
+          opportunityId: packet.opportunityId,
+          trigger: packet.trigger,
+          request,
+        });
+        sessionStorage.setItem(
+          "algolia-local-greeting-requests",
+          JSON.stringify(persistedGreetingRequests)
+        );
         return {
           schema: "ProactiveGreetingResponse.v1",
           opportunityId: packet.opportunityId,
-          greeting: `Hello, explorer. Looks like ${trail} is on your radar. Good; that is where the useful questions start. Want customer proof, tradeoffs, or implementation reality?`,
-          chips: ["Show customer proof", "Compare tradeoffs", "Implementation reality"],
+          greeting: fixture.greeting,
+          chips: fixture.chips,
           handoffSummary: {
             moment: packet.moment,
             trigger: packet.trigger,
@@ -215,14 +332,197 @@
         };
       };
 
+      const localOrchestratorFrames = (request) => {
+        const lastUserText = [...(request?.messages || [])]
+          .reverse()
+          .find((message) => message?.role === "user")
+          ?.parts?.find((part) => part?.type === "text")?.text || "";
+        const specialistMatch = lastUserText.match(
+          /bring in the (developer|evidence|product|sales) specialist/i
+        );
+        if (specialistMatch) {
+          const specialistKeyByName = {
+            developer: "tech",
+            evidence: "evidence",
+            product: "product",
+            sales: "sales",
+          };
+          const specialistKey = specialistKeyByName[specialistMatch[1].toLowerCase()];
+          return [
+            {
+              type: "text-delta",
+              delta:
+                `This deserves a proper ${specialistMatch[1]} pass. I can bring in the specialist with the journey context intact.`,
+            },
+            {
+              type: "tool-input-available",
+              toolCallId: "local-specialist-call-1",
+              toolName: "ask_specialist",
+              input: {
+                specialist_key: specialistKey,
+                question:
+                  `Evaluate this request using the visitor's qualified journey context and provide grounded ${specialistMatch[1]} depth.`,
+              },
+            },
+          ];
+        }
+        const discoveryQuestion =
+          "Are you mapping a first implementation, or replacing an existing search experience?";
+        const discoveryState = {
+          probed_slot: "stack_platform",
+          confirmed_slots: [],
+          inferred_slots: [],
+          suppressed_slots: [],
+          handoff_recommended: false,
+          handoff_specialist_key: null,
+          confidence: "medium",
+          visible_followup_question: discoveryQuestion,
+        };
+        return [
+          {
+            type: "tool-output-available",
+            toolCallId: "local-search-1",
+            output: {
+              hits: [
+                {
+                  objectID: "local-implementation-guide",
+                  title: "Build your search UI with InstantSearch",
+                  url: "https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/js/",
+                  source: "Documentation",
+                  description:
+                    "A practical implementation path validates the data model, connects the index, builds the search UI, and tunes relevance with representative query evidence.",
+                },
+              ],
+            },
+          },
+          {
+            type: "text-delta",
+            delta:
+              "# Quick take\nHere is the practical implementation path: validate the data model, connect the index, build the search UI, then tune relevance with real query evidence.\n\n## Implementation path\nStart with one representative experience and prove retrieval quality before widening the surface.\n\n" +
+              discoveryQuestion +
+              "\n<!--DISCOVERY_STATE " +
+              JSON.stringify(discoveryState) +
+              " DISCOVERY_STATE-->",
+          },
+        ];
+      };
+
+      const streamResponse = (frames) => {
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+          start(controller) {
+            for (const frame of frames) {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(frame)}\n\n`));
+            }
+            controller.close();
+          },
+        });
+        return new Response(stream, {
+          status: 200,
+          headers: { "content-type": "text/event-stream" },
+        });
+      };
+
       const originalFetch = window.fetch?.bind(window);
       window.fetch = async (url, options = {}) => {
-        if (String(url).includes("/agent-studio/1/agents/")) {
+        const requestUrl = String(url);
+        if (requestUrl.includes("/api/judge")) {
+          return new Response(JSON.stringify({
+            panels: [{
+              panelId: "primary",
+              dims: { grounding: 9, coverage: 9, depth: 8, relevance: 9 },
+              synthesizedScore: 9,
+              composite: 8.8,
+              preGateScore: 8.8,
+              gateTripped: false,
+              borderline: false,
+              flaggedClaims: [],
+              perJudge: [],
+              rationale: "Grounded local parity fixture",
+            }],
+          }), {
+            status: 200,
+            headers: { "content-type": "application/json" },
+          });
+        }
+        if (requestUrl.includes(`/agent-studio/1/agents/${LOCAL_GREETING_AGENT_ID}/`)) {
           const request = JSON.parse(options.body || "{}");
           return new Response(JSON.stringify(localGreetingResponse(request)), {
             status: 200,
             headers: { "content-type": "application/json" },
           });
+        }
+        if (requestUrl.includes(`/agent-studio/1/agents/${LOCAL_ORCHESTRATOR_AGENT_ID}/`)) {
+          const request = JSON.parse(options.body || "{}");
+          const persistedRequests = JSON.parse(
+            sessionStorage.getItem("algolia-local-orchestrator-requests") || "[]"
+          );
+          persistedRequests.push(request);
+          sessionStorage.setItem(
+            "algolia-local-orchestrator-requests",
+            JSON.stringify(persistedRequests)
+          );
+          window.__localAgentCalls = (window.__localAgentCalls || 0) + 1;
+          window.__localOrchestratorCalls = (window.__localOrchestratorCalls || 0) + 1;
+          window.__localOrchestratorRequests = [
+            ...(window.__localOrchestratorRequests || []),
+            request,
+          ];
+          return streamResponse(localOrchestratorFrames(request));
+        }
+        const specialistEntry = Object.entries(LOCAL_SPECIALIST_AGENT_IDS).find(
+          ([, agentId]) => requestUrl.includes(`/agent-studio/1/agents/${agentId}/`)
+        );
+        if (specialistEntry) {
+          const [specialistKey, agentId] = specialistEntry;
+          const request = JSON.parse(options.body || "{}");
+          const persistedRequests = JSON.parse(
+            sessionStorage.getItem("algolia-local-specialist-requests") || "[]"
+          );
+          persistedRequests.push({ specialistKey, agentId, request });
+          sessionStorage.setItem(
+            "algolia-local-specialist-requests",
+            JSON.stringify(persistedRequests)
+          );
+          const specialistDiscovery = specialistKey === "evidence"
+            ? "Which claim would you like to pressure-test first?"
+            : "Which implementation constraint should we unpack first?";
+          const discoveryState = {
+            probed_slot: specialistKey === "evidence" ? "evidence_need" : "implementation_constraint",
+            confirmed_slots: [],
+            inferred_slots: [],
+            suppressed_slots: [],
+            handoff_recommended: false,
+            handoff_specialist_key: null,
+            confidence: "medium",
+            visible_followup_question: specialistDiscovery,
+          };
+          return streamResponse([
+            {
+              type: "tool-output-available",
+              toolCallId: "local-specialist-search-1",
+              output: {
+                hits: [
+                  {
+                    objectID: "local-migration-guide",
+                    title: "Upgrade and migration guidance",
+                    url: "https://www.algolia.com/doc/guides/building-search-ui/upgrade-guides/js/",
+                    source: "Documentation",
+                    description: "Guidance for staging an InstantSearch migration.",
+                  },
+                ],
+              },
+            },
+            {
+              type: "text-delta",
+              delta:
+                (specialistKey === "evidence"
+                  ? "Start with the source-backed claim, separate reported outcomes from inference, and validate whether the evidence matches this visitor's evaluation context."
+                  : "Use a staged indexing rollout, preserve the current experience behind a controlled switch, and compare relevance before moving traffic.") +
+                "\n\n" + specialistDiscovery +
+                "\n<!--DISCOVERY_STATE " + JSON.stringify(discoveryState) + " DISCOVERY_STATE-->",
+            },
+          ]);
         }
         if (originalFetch) return originalFetch(url, options);
         return new Response("{}", { status: 200, headers: { "content-type": "application/json" } });
@@ -244,11 +544,13 @@
       <nav aria-label="Local parity navigation" data-nav="primary">
         <a data-nav="products" href="/products/ai-search">AI Search</a>
         <a data-nav="products" href="/products/ai-recommendations">Recommendations</a>
+        <a data-nav="products" href="/products/features/ui-component-libraries">UI Components</a>
         <a data-nav="products" href="/products/features/personalization">Personalization</a>
         <a data-nav="solutions" href="/solutions/ecommerce">Commerce</a>
         <a data-nav="solutions" href="/solutions/marketplace">Marketplace</a>
         <a data-nav="solutions" href="/solutions/financial-services">Financial Services</a>
         <a data-nav="developers" href="/developers">Developers</a>
+        <a data-nav="resources" href="/resources">Resources</a>
         <a data-nav="docs" href="/doc/guides/building-search-ui/what-is-instantsearch/js/">Docs</a>
         <a data-nav="pricing" href="/pricing">Pricing</a>
         <a data-nav="customers" href="/customers">Customers</a>
@@ -270,7 +572,12 @@
         />
         <div class="actions">
           <button data-local-action="cta_demo" data-cta="book_demo">Book a demo</button>
-          <button data-local-action="cta_docs" data-cta="view_docs">View docs</button>
+          <a
+            id="product-docs-cta"
+            data-local-action="cta_docs"
+            data-cta="view_docs"
+            href="/doc/guides/building-search-ui/what-is-instantsearch/js/"
+          >Read the docs</a>
           <button data-local-action="cta_case_study" data-cta="customer_proof">
             Find customer proof
           </button>
@@ -285,7 +592,7 @@
         <div class="proof-card" data-search-result>
           <h2 id="proof-title">Representative customer proof</h2>
           <p id="proof-copy"></p>
-          <a data-cta="customer_story_link" href="/customers/end-clothing">Open customer story</a>
+          <a data-cta="customer_story_link" href="/customers/harry-rosen">Open customer story</a>
         </div>
       </section>
 
@@ -320,9 +627,42 @@
       theme="algolia"
       default-open-mode="docked"
       auto-engage
+      discovery-enabled="true"
+      judge-mode="off"
       reset-visitor-state-on-logo
       sample-questions='[{"section":"Test questions","questions":["What counts as an API call?","Can marketers manage search without developers?","Show me customer proof for commerce search."]}]'
-    ></algolia-chat>
+    >
+      <algolia-agent
+        role="primary"
+        agent-id="local_orchestrator_agent"
+        label="aRRIe"
+      >
+        <algolia-agent
+          role="specialist"
+          key="evidence"
+          agent-id="local_evidence_agent"
+          label="Customer Evidence Specialist"
+        ></algolia-agent>
+        <algolia-agent
+          role="specialist"
+          key="product"
+          agent-id="local_product_agent"
+          label="Product Specialist"
+        ></algolia-agent>
+        <algolia-agent
+          role="specialist"
+          key="tech"
+          agent-id="local_tech_agent"
+          label="Developer Specialist"
+        ></algolia-agent>
+        <algolia-agent
+          role="specialist"
+          key="sales"
+          agent-id="local_sales_agent"
+          label="Sales Concierge"
+        ></algolia-agent>
+      </algolia-agent>
+    </algolia-chat>
     <algolia-chat-engage concierge-agent-id="local_greetings_agent"></algolia-chat-engage>
     <algolia-chat-form tool-name="submit_lead_form" title="Get in touch"></algolia-chat-form>
 
@@ -338,7 +678,15 @@
         },
       };
 
+      const sameOriginDocsBySource = Object.freeze({
+        "/products/ai-search": "/doc/guides/building-search-ui/what-is-instantsearch/js/",
+      });
+
       let routeManifest = { pages: fallbackPages };
+
+      window.algoliaLocalParityReady = new Promise((resolve) => {
+        window.__resolveAlgoliaLocalParityReady = resolve;
+      });
 
       function currentPageData() {
         return routeManifest.pages[location.pathname] || routeManifest.pages["/"];
@@ -349,6 +697,7 @@
         if (path.includes("/customers")) return "customer_story";
         if (path.includes("/doc/")) return "documentation";
         if (path.includes("/developers")) return "developer";
+        if (path.includes("/resources")) return "resource";
         if (path.includes("/products")) return "product";
         if (path.includes("/solutions")) return "solution";
         return "other";
@@ -366,6 +715,10 @@
         document.getElementById("proof-title").textContent = `${data.label || data.title}: proof angle`;
         document.getElementById("proof-copy").textContent =
           "This local proof card lets customer-proof and search-result click events fire without requiring a full production mirror.";
+        const productDocsCta = document.getElementById("product-docs-cta");
+        const productDocsRoute = sameOriginDocsBySource[location.pathname];
+        productDocsCta.hidden = !productDocsRoute;
+        if (productDocsRoute) productDocsCta.href = productDocsRoute;
         const headings = (data.headings || []).length ? data.headings : [data.label || data.title];
         document.getElementById("journey-cards").innerHTML = headings
           .slice(0, 6)
@@ -416,6 +769,65 @@
         );
       }
 
+      function normalizedVisibleProbe(text) {
+        return String(text || "")
+          .replace(/<!--DISCOVERY_STATE[\s\S]*?DISCOVERY_STATE-->/g, "")
+          .replace(/[#*_`]/g, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "")
+          .slice(0, 120);
+      }
+
+      function localParityReadiness() {
+        const chat = document.querySelector("algolia-chat");
+        const root = chat?.shadowRoot?.querySelector(".algolia-chat-root");
+        const session = JSON.parse(sessionStorage.getItem("algolia_session") || "null");
+        if (
+          !window.algoliaEngagementTracker ||
+          !window.algoliaContextCompiler ||
+          !window.algoliaProactiveController ||
+          !chat?.configured ||
+          !root ||
+          session?.pages?.find((page) => page.pageId === session.currentPageId)?.path !==
+            location.pathname
+        ) {
+          return null;
+        }
+
+        const conversation = JSON.parse(
+          sessionStorage.getItem("algolia-chat:conversation") || "null"
+        );
+        const successfulSegments = (conversation?.turns || []).flatMap((turn) =>
+          (turn.segments || []).filter((segment) => segment.status === "success")
+        );
+        const visibleText = root.textContent.toLowerCase().replace(/[^a-z0-9]+/g, "");
+        const restored = successfulSegments.every((segment) => {
+          const probe = normalizedVisibleProbe(segment.text);
+          return !probe || visibleText.includes(probe);
+        });
+        if (!restored) return null;
+
+        return {
+          path: location.pathname,
+          conversationId: conversation?.conversationId || null,
+          restoredTurns: conversation?.turns?.length || 0,
+        };
+      }
+
+      function announceLocalParityReady() {
+        const interval = setInterval(() => {
+          const detail = localParityReadiness();
+          if (!detail) return;
+          clearInterval(interval);
+          window.__localParityReady = detail;
+          window.__resolveAlgoliaLocalParityReady?.(detail);
+          delete window.__resolveAlgoliaLocalParityReady;
+          document.dispatchEvent(
+            new CustomEvent("algolia-local-parity-ready", { detail })
+          );
+        }, 25);
+      }
+
       document.addEventListener("click", (event) => {
         const action = event.target?.closest?.("[data-local-action]")?.dataset?.localAction;
         if (action) window.algoliaEngagementTracker?.track?.("cta_click", { action });
@@ -438,7 +850,10 @@
       window.addEventListener("popstate", renderLocalPage);
       document.addEventListener("algolia-engagement-signal", () => setTimeout(updateDebug, 50));
       document.addEventListener("algolia-proactive-opportunity", () => setTimeout(updateDebug, 50));
-      loadScoutRoutes().then(updateDebug);
+      loadScoutRoutes().then(() => {
+        updateDebug();
+        announceLocalParityReady();
+      });
       setInterval(updateDebug, 1000);
     </script>
   </body>

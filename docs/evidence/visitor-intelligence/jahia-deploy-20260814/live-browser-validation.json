@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-08-14T04:55:54.229908+00:00",
+  "capturedAt": "2026-08-19T10:48:32.261398+00:00",
   "url": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1",
   "checks": {
     "newTrackerScriptLoaded": true,
@@ -23,10 +23,10 @@
   "state": {
     "href": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1",
     "releaseMarkers": [
-      "grounding-gate-20260814a"
+      "chat-ui-proactive-transcript-lane-20260815a"
     ],
     "scripts": [
-      "https://www.youtube.com/s/player/b0d2d49a/www-widgetapi.vflset/www-widgetapi.js",
+      "https://www.youtube.com/s/player/3891b194/www-widgetapi.vflset/www-widgetapi.js",
       "https://cdn.cookielaw.org/scripttemplates/otSDKStub.js",
       "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/header.js",
       "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/codeExchangeSearch.js",
@@ -43,11 +43,14 @@
       "https://cdn.jsdelivr.net/npm/dompurify@3.4.12/dist/purify.min.js",
       "https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js",
       "https://cdn.jsdelivr.net/npm/@splidejs/splide-extension-auto-scroll@0.5.3/dist/js/splide-extension-auto-scroll.min.js",
-      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia.js",
-      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js",
-      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?citationFallback=20260812&groundingGate=20260814-grounding-gate-a",
-      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260814c",
-      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260814c",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-answer-rhythm-balanced-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js?judgeReview=judge-review-20260814a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=20260818-runtime-y",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260818-runtime-y",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260818-runtime-y",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260819-controller-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=20260818-runtime-y",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260818-runtime-y",
       "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js",
       "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/anonymousUser.js",
       "https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js",
@@ -79,38 +82,39 @@
     "sessionStorageKeys": [
       "algolia_session",
       "algolia_events",
+      "algolia_proactive_debug_log",
       "algolia_token"
     ],
     "profile": {
       "schema": "AlgoliaEngagementProfile.v1",
-      "visitorId": "visitor_ebcb074570fe76ee67dc2c36",
-      "userToken": "tok_566413857a3ff425a020f3e3",
+      "visitorId": "visitor_3a60f01ab2e968b647972e45",
+      "userToken": "tok_da3395db64c413af8eff94eb",
       "tokenSource": "ephemeral",
-      "firstSeenAt": 1786683342722,
-      "lastSeenAt": 1786683343168,
+      "firstSeenAt": 1787136500784,
+      "lastSeenAt": 1787136501171,
       "visits": 1,
       "persona": {
         "value": "developer",
         "state": "confirmed",
         "source": "demo_selector",
-        "updatedAt": 1786683343168
+        "updatedAt": 1787136501171
       },
       "traits": {}
     },
     "session": {
       "schema": "AlgoliaEngagementSession.v1",
-      "sessionId": "sess_8f9f32b4278eb1a087bde121",
-      "startedAt": 1786683342722,
-      "lastSeenAt": 1786683352725,
-      "currentPageId": "page_39f7eb2c775f149e79f0ebb5",
+      "sessionId": "sess_03524eced80ce096c2b5fbfa",
+      "startedAt": 1787136500785,
+      "lastSeenAt": 1787136510786,
+      "currentPageId": "page_af61214da9617ae36384aa71",
       "pages": [
         {
-          "pageId": "page_39f7eb2c775f149e79f0ebb5",
+          "pageId": "page_af61214da9617ae36384aa71",
           "path": "/cms/render/live/en/sites/www/home.html",
           "url": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html",
           "title": "The AI search and retrieval platform - Agentic | Generative | Search",
-          "enteredAt": 1786683342722,
-          "dwellMs": 10002,
+          "enteredAt": 1787136500785,
+          "dwellMs": 10001,
           "maxScrollDepth": 100,
           "pageGroup": "other",
           "topic": "ai_search"
@@ -118,10 +122,10 @@
       ],
       "engagementHistory": [
         {
-          "id": "eng_22122d9d2fd40da2a88e01ef",
-          "pageId": "page_39f7eb2c775f149e79f0ebb5",
+          "id": "eng_f173f068c17fa0dc51ec607d",
+          "pageId": "page_af61214da9617ae36384aa71",
           "messageGoal": "live_validation",
-          "shownAt": 1786683343168,
+          "shownAt": 1787136501173,
           "status": "shown_no_action"
         }
       ]
@@ -144,59 +148,59 @@
     "analyzingCalls": [
       {
         "value": true,
-        "ts": 1786683343168
+        "ts": 1787136501172
       },
       {
         "value": true,
-        "ts": 1786683343168
+        "ts": 1787136501173
       },
       {
         "value": true,
-        "ts": 1786683343168
+        "ts": 1787136501173
       },
       {
         "value": true,
-        "ts": 1786683343169
+        "ts": 1787136501174
       },
       {
         "value": true,
-        "ts": 1786683343169
+        "ts": 1787136501175
       },
       {
         "value": true,
-        "ts": 1786683343169
+        "ts": 1787136501175
       },
       {
         "value": true,
-        "ts": 1786683343173
+        "ts": 1787136501179
       },
       {
         "value": true,
-        "ts": 1786683343173
+        "ts": 1787136501180
       },
       {
         "value": true,
-        "ts": 1786683343173
+        "ts": 1787136501180
       },
       {
         "value": false,
-        "ts": 1786683344075
+        "ts": 1787136502081
       },
       {
         "value": true,
-        "ts": 1786683347725
+        "ts": 1787136505789
       },
       {
         "value": false,
-        "ts": 1786683348627
+        "ts": 1787136506690
       },
       {
         "value": true,
-        "ts": 1786683352725
+        "ts": 1787136510790
       },
       {
         "value": false,
-        "ts": 1786683353627
+        "ts": 1787136511691
       }
     ],
     "engagementHistoryCount": 1,
@@ -204,52 +208,60 @@
   },
   "console": [
     {
-      "type": "startGroupCollapsed",
-      "text": "[Algolia Chat - Wire Debug] installed"
+      "type": "log",
+      "text": "[Algolia Proactive Controller] suppressed {reason: no_trigger_match, decision: null}"
     },
     {
       "type": "log",
-      "text": "{href: https://tmp-content-eng-algolia.cloud.jahia.com/cm…60814&algoliaChatDebug=1&algoliaEngagementDebug=1}"
-    },
-    {
-      "type": "endGroup",
-      "text": "console.groupEnd"
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
     },
     {
       "type": "log",
-      "text": "[Algolia Engagement Tracker] configured {cookieName: _ALGOLIA, region: us}"
+      "text": "[Algolia Engagement Tracker] event scroll_depth {depth: 75, pageGroup: other, topic: ai_search}"
     },
     {
       "type": "log",
-      "text": "[Algolia Engagement Tracker] event page_view {url: https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html, title: The AI search and retrieval platform - Agentic | Generative | Search, pageGroup: other, topic: ai_search}"
+      "text": "[Algolia Proactive Controller] signal_received {name: scroll_depth, path: /cms/render/live/en/sites/www/home.html, props: Object}"
     },
     {
       "type": "log",
-      "text": "[Algolia Engagement Tracker] registered with <algolia-chat>"
+      "text": "[Algolia Proactive Controller] context_compiled {hasPacket: true, currentPage: Object, pageCount: 1, recentEventCount: 9, productTrail: Array(0)}"
     },
     {
       "type": "log",
-      "text": "[Algolia Chat – Engage] configured {minPages: 2, minEvents: 3, analysisDelayMs: 3000, widgetTimeoutMs: 25000, greetingTtlMs: 600000}"
+      "text": "[Algolia Proactive Controller] candidates_evaluated {count: 0, candidates: Array(0)}"
     },
     {
       "type": "log",
-      "text": "[Algolia Chat – Engage] configured {minPages: 2, minEvents: 3, analysisDelayMs: 3000, widgetTimeoutMs: 25000, greetingTtlMs: 600000}"
+      "text": "[Algolia Proactive Controller] suppressed {reason: no_trigger_match, decision: null}"
     },
     {
       "type": "log",
-      "text": "[Algolia Chat – Form Tool] configured {toolName: submit_lead_form, title: Get in touch, submitLabel: Submit, cancelLabel: Cancel, fields: Array(3)}"
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
     },
     {
       "type": "log",
-      "text": "[Algolia Chat – Form Tool] registered tool 'submit_lead_form'"
+      "text": "[Algolia Engagement Tracker] event scroll_depth {depth: 100, pageGroup: other, topic: ai_search}"
     },
     {
       "type": "log",
-      "text": "null"
+      "text": "[Algolia Proactive Controller] signal_received {name: scroll_depth, path: /cms/render/live/en/sites/www/home.html, props: Object}"
     },
     {
-      "type": "error",
-      "text": "Failed to load resource: the server responded with a status of 404 ()"
+      "type": "log",
+      "text": "[Algolia Proactive Controller] context_compiled {hasPacket: true, currentPage: Object, pageCount: 1, recentEventCount: 10, productTrail: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] candidates_evaluated {count: 0, candidates: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] suppressed {reason: no_trigger_match, decision: null}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
     },
     {
       "type": "error",
@@ -261,55 +273,11 @@
     },
     {
       "type": "error",
-      "text": "There was a problem with the fetch operation: TypeError: Failed to fetch\n    at window.fetch (https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1:4878:21)\n    at HTMLDocument.<anonymous> (https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js:4:16)"
-    },
-    {
-      "type": "log",
-      "text": "Client IP Address: 172.126.44.66"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event persona_select {persona: developer}"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event site_search {query: instantsearch implementation, source: live_validation}"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event engagement_exposed {engagementId: eng_22122d9d2fd40da2a88e01ef, messageGoal: live_validation, status: shown_no_action}"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event chat_open {open: true}"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event chat_question {source: live_validation}"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event nav_click {label: Pulse validation, source: live_validation}"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event scroll_depth {depth: 50, pageGroup: other, topic: ai_search}"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event scroll_depth {depth: 75, pageGroup: other, topic: ai_search}"
-    },
-    {
-      "type": "log",
-      "text": "[Algolia Engagement Tracker] event scroll_depth {depth: 100, pageGroup: other, topic: ai_search}"
+      "text": "There was a problem with the fetch operation: TypeError: Failed to fetch\n    at window.fetch (https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?engagementTracker=20260814&algoliaChatDebug=1&algoliaEngagementDebug=1:4879:21)\n    at algoliaContextFetch (https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260818-runtime-y:690:30)\n    at HTMLDocument.<anonymous> (https://tmp-content-eng-algolia.cloud.ja"
     },
     {
       "type": "warning",
       "text": "Amplitude Logger [Warn]: `options.defaultTracking` is set to undefined. This implicitly configures your Amplitude instance to track Page Views, Sessions, File Downloads, and Form Interactions. You can suppress this warning by explicitly setting a value to `options.defaultTracking`. The value must either be a boolean, to enable and disable all default events, or an object, for advanced configuration. For example:\n\namplitude.init(<YOUR_API_KEY>, {\n  defaultTracking: true,\n});\n\nVisit https://www.do"
-    },
-    {
-      "type": "error",
-      "text": "Failed to load resource: the server responded with a status of 404 ()"
     },
     {
       "type": "warning",
@@ -321,6 +289,14 @@
     },
     {
       "type": "warning",
+      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+    },
+    {
+      "type": "warning",
+      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+    },
+    {
+      "type": "warning",
       "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-Bold.woff2"
     },
     {
@@ -328,12 +304,28 @@
       "text": "OTS parsing error: invalid sfntVersion: -2147368943"
     },
     {
-      "type": "warning",
-      "text": "Failed to decode downloaded font: https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/css/fonts/inter/Inter-SemiBold.woff2"
+      "type": "log",
+      "text": "[Algolia Proactive Controller] scheduled_initial_evaluation {delay: 1000}"
     },
     {
-      "type": "warning",
-      "text": "OTS parsing error: invalid sfntVersion: -2147362543"
+      "type": "log",
+      "text": "[Algolia Proactive Controller] signal_received {name: controller_ready, path: /cms/render/live/en/sites/www/home.html, props: null}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] context_compiled {hasPacket: true, currentPage: Object, pageCount: 1, recentEventCount: 10, productTrail: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] candidates_evaluated {count: 0, candidates: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] suppressed {reason: no_trigger_match, decision: null}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
     },
     {
       "type": "warning",
@@ -345,11 +337,75 @@
     },
     {
       "type": "log",
+      "text": "[Algolia Proactive Controller] scheduled_initial_evaluation {delay: 2500}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] signal_received {name: controller_ready, path: /cms/render/live/en/sites/www/home.html, props: null}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] context_compiled {hasPacket: true, currentPage: Object, pageCount: 1, recentEventCount: 10, productTrail: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] candidates_evaluated {count: 0, candidates: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] suppressed {reason: no_trigger_match, decision: null}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
+    },
+    {
+      "type": "log",
       "text": "[Algolia Engagement Tracker] event page_dwell {dwellSeconds: 5, pageGroup: other, topic: ai_search}"
     },
     {
       "type": "log",
+      "text": "[Algolia Proactive Controller] signal_received {name: page_dwell, path: /cms/render/live/en/sites/www/home.html, props: Object}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] context_compiled {hasPacket: true, currentPage: Object, pageCount: 1, recentEventCount: 11, productTrail: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] candidates_evaluated {count: 0, candidates: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] suppressed {reason: no_trigger_match, decision: null}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
+    },
+    {
+      "type": "log",
       "text": "[Algolia Engagement Tracker] event page_dwell {dwellSeconds: 10, pageGroup: other, topic: ai_search}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] signal_received {name: page_dwell, path: /cms/render/live/en/sites/www/home.html, props: Object}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] context_compiled {hasPacket: true, currentPage: Object, pageCount: 1, recentEventCount: 12, productTrail: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] candidates_evaluated {count: 0, candidates: Array(0)}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] suppressed {reason: no_trigger_match, decision: null}"
+    },
+    {
+      "type": "log",
+      "text": "[Algolia Proactive Controller] no proactive opportunity no_trigger_match"
     }
   ]
 }

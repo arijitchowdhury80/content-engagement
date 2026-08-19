@@ -1,86 +1,140 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import fs from 'node:fs';
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
 
-const chatPath = new URL('../algolia-chat.js', import.meta.url);
+const chatPath = new URL("../algolia-chat.js", import.meta.url);
+const engagePath = new URL("../algolia-chat-engage.js", import.meta.url);
+const identifier = String.raw`[$A-Z_a-z][$\w]*`;
 
-test('proactive engage opens in docked mode unless a caller explicitly overrides it', () => {
-  const bundle = fs.readFileSync(chatPath, 'utf8');
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function functionContaining(bundle, marker) {
+  const markerIndex = bundle.indexOf(marker);
+  assert.notEqual(markerIndex, -1, `bundle should contain ${marker}`);
+
+  const start = bundle.lastIndexOf("function ", markerIndex);
+  const end = bundle.indexOf("function ", markerIndex);
+  assert.notEqual(start, -1, `${marker} should belong to a function`);
+  assert.notEqual(end, -1, `${marker} function should have a boundary`);
+
+  const block = bundle.slice(start, end);
+  const name = block.match(/^function ([$A-Z_a-z][$\w]*)\(/)?.[1];
+  assert.ok(name, `${marker} function should have a discoverable name`);
+  return { block, name };
+}
+
+test("engage bridge never makes a competing Greetings Agent completion", () => {
+  const source = fs.readFileSync(engagePath, "utf8");
+
+  assert.doesNotMatch(source, /callConcierge|\/completions\?/);
+  assert.doesNotMatch(source, /enableProactiveAnalysis|applyDecision/);
+});
+
+test("proactive engage opens in docked mode unless a caller explicitly overrides it", () => {
+  const bundle = fs.readFileSync(chatPath, "utf8");
 
   assert.match(
     bundle,
-    /n\?\.openMode==="normal"\|\|n\?\.openMode==="maximized"\|\|n\?\.openMode==="docked"\?n\.openMode:"docked"/,
-    'public engage() should default proactive greetings to docked mode'
+    new RegExp(
+      `${identifier}\\(${identifier}\\?\\.openMode\\)\\?${identifier}\\.openMode:"docked"`,
+    ),
+    "public engage() should validate an override and otherwise use docked mode",
   );
   assert.match(
     bundle,
-    /[a-z]\.engage\(\{greeting:i,suggestions:a,openMode:/,
-    'public engage() should forward the selected open mode to the internal widget API'
+    new RegExp(
+      `\\.engage\\(\\{greeting:${identifier},suggestions:${identifier},openMode:${identifier}\\}\\)`,
+    ),
+    "public engage() should forward the selected open mode to the internal widget API",
   );
   assert.match(
     bundle,
-    /engage:\(\{greeting:b,suggestions:k,openMode:m\}\)=>\{const R=Je\.engage\(b,k\?\?\[\]\);return R&&\(m==="docked"\|\|m==="normal"\|\|m==="maximized"\)&&d\(m\),R&&E\(\),R\}/,
-    'internal engage() should apply the requested mode before opening'
+    new RegExp(
+      `engage:\\(\\{greeting:${identifier},suggestions:${identifier},openMode:${identifier}="docked"\\}\\)=>` +
+        `\\{const ${identifier}=${identifier}\\.engage\\(${identifier},${identifier}\\?\\?\\[\\]\\);` +
+        `return ${identifier}&&\\(${identifier}\\(${identifier}\\),${identifier}\\(\\)\\),${identifier}\\}`,
+    ),
+    "internal engage() should accept the greeting, apply its mode, and then open",
   );
 });
 
-test('proactive greeting uses the same transcript lane instead of a separate avatar rail', () => {
-  const bundle = fs.readFileSync(chatPath, 'utf8');
-  const greetingStart = bundle.indexOf('function d1({greeting:t,suggestions:n,onPickSuggestion:i,personaLabel:a})');
-  const greetingEnd = bundle.indexOf('const Wl=', greetingStart);
+test("proactive greeting uses the same transcript lane instead of a separate avatar rail", () => {
+  const bundle = fs.readFileSync(chatPath, "utf8");
+  const { block: greetingBlock } = functionContaining(
+    bundle,
+    'proactiveGreetingLabel,className:"flex w-full flex-col gap-3 pt-6 pb-4"',
+  );
 
-  assert.notEqual(greetingStart, -1, 'proactive greeting renderer should exist');
-  assert.notEqual(greetingEnd, -1, 'proactive greeting renderer should have a stable boundary');
-
-  const greetingBlock = bundle.slice(greetingStart, greetingEnd);
-
-  assert.doesNotMatch(greetingBlock, /w\.jsx\(f1,\{\}\)/, 'proactive greeting should not render a separate blue chat avatar');
-  assert.doesNotMatch(greetingBlock, /ml-11 flex flex-wrap gap-2/, 'suggestion chips should not be indented for a removed avatar rail');
-  assert.doesNotMatch(greetingBlock, /rounded-algolia-lg rounded-tl-sm bg-algolia-surface-2/, 'greeting should not use a separate chat-bubble visual system');
-  assert.match(greetingBlock, /className:"flex items-start gap-0"/, 'greeting row should align to the normal transcript lane');
-  assert.match(greetingBlock, /className:"flex w-full flex-col gap-2"/, 'greeting copy and suggestions should use the full transcript width');
+  assert.doesNotMatch(
+    greetingBlock,
+    /ml-11 flex flex-wrap gap-2/,
+    "suggestion chips should not retain an avatar indent",
+  );
+  assert.doesNotMatch(
+    greetingBlock,
+    /rounded-algolia-lg rounded-tl-sm bg-algolia-surface-2/,
+    "greeting should not use the legacy bubble treatment",
+  );
+  assert.match(
+    greetingBlock,
+    /className:"flex items-start gap-0"/,
+    "greeting row should align to the transcript lane",
+  );
+  assert.match(
+    greetingBlock,
+    /className:"flex w-full flex-col gap-2"/,
+    "greeting copy and suggestions should use the full transcript width",
+  );
 });
 
-test('proactive greeting keeps normal transcript width when the window is maximized', () => {
-  const bundle = fs.readFileSync(chatPath, 'utf8');
-  const transcriptStart = bundle.indexOf('function s1({turns:t,onPickSample:n,onRetry:i,onPickFollowUp:a,onOpenJudge:l,onRunDeepDive:u,onDeclineDeepDive:f,inputBlocked:d,emptyStateFooter:p})');
-  const transcriptEnd = bundle.indexOf('const l1=', transcriptStart);
-
-  assert.notEqual(transcriptStart, -1, 'transcript renderer should exist');
-  assert.notEqual(transcriptEnd, -1, 'transcript renderer should have a stable boundary');
-
-  const transcriptBlock = bundle.slice(transcriptStart, transcriptEnd);
+test("proactive greeting keeps normal transcript width when the window is maximized", () => {
+  const bundle = fs.readFileSync(chatPath, "utf8");
+  const { block: transcriptBlock } = functionContaining(
+    bundle,
+    "emptyStateFooter:",
+  );
 
   assert.doesNotMatch(
     transcriptBlock,
-    /p&&w\.jsx\("div",\{className:"w-full max-w-algolia-measure"/,
-    'proactive greeting should not be constrained to the narrow empty-state measure'
+    /w-full max-w-algolia-measure/,
+    "proactive greeting should not be constrained to the narrow empty-state measure",
   );
   assert.match(
     transcriptBlock,
-    /p\?w\.jsxs\("div",\{className:"flex flex-1 flex-col gap-7 overflow-y-auto px-4 py-6 sm:px-6"/,
-    'proactive greeting should use the same full transcript lane as normal chat turns'
+    /className:"flex flex-1 flex-col gap-7 overflow-y-auto px-4 py-6 sm:px-6"/,
+    "proactive greeting should use the same full transcript lane as normal chat turns",
   );
 });
 
-test('sample questions stay in the composer footer even on first access', () => {
-  const bundle = fs.readFileSync(chatPath, 'utf8');
-  const panelStart = bundle.indexOf('function HR({onClose:t,initialMessage:n,sizeMode:i,onToggleSize:a,onRestore:l})');
-  const panelEnd = bundle.indexOf('function zR()', panelStart);
-
-  assert.notEqual(panelStart, -1, 'chat panel renderer should exist');
-  assert.notEqual(panelEnd, -1, 'chat panel renderer should have a stable boundary');
-
-  const panelBlock = bundle.slice(panelStart, panelEnd);
-
-  assert.match(
-    panelBlock,
-    /R=!1,T=oe\.useRef\(!1\)/,
-    'first access should not suppress the footer sample-question trigger'
+test("sample questions stay directly above the composer from first access onward", () => {
+  const bundle = fs.readFileSync(chatPath, "utf8");
+  const { name: sampleQuestionsName } = functionContaining(
+    bundle,
+    "relative z-20 inline-flex items-center gap-1.5",
   );
+  const sampleQuestionsCall = new RegExp(
+    `\\.jsx\\(${escapeRegex(sampleQuestionsName)},`,
+    "g",
+  );
+  const calls = [...bundle.matchAll(sampleQuestionsCall)];
+
+  assert.equal(
+    calls.length,
+    1,
+    "sample questions should render once, not separately in the welcome and composer areas",
+  );
+
+  const composerBlock = bundle.slice(calls[0].index, calls[0].index + 500);
   assert.match(
-    panelBlock,
-    /children:\[\!R&&w\.jsx\(bg,\{onPick:I=>\{d\(I\)\},disabled:f\}\),w\.jsx\(an,\{name:"composer"/,
-    'sample-question trigger should remain directly above the composer'
+    composerBlock,
+    /name:"composer"/,
+    "the single sample-question trigger should share the composer footer",
+  );
+  assert.ok(
+    composerBlock.indexOf(sampleQuestionsName) <
+      composerBlock.indexOf('name:"composer"'),
+    "sample-question trigger should be immediately before the composer",
   );
 });

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Algolia Content Engagement team demo and UAT briefing." />
+    <title>Content Engagement | Team Demo & UAT</title>
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Sora:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260817-brand-placement" />
+  </head>
+  <body>
+    <main class="deck" aria-live="polite">
+      <header class="deck-header">
+        <a class="brand" id="brand-home" href="#s-1" aria-label="Go to the first slide">
+          <span><strong>Content Engagement</strong><small>Team Demo & UAT</small></span>
+        </a>
+        <div class="deck-meta"><span id="section-name">Briefing</span><span class="counter"><strong id="slide-number">1</strong> / <span id="slide-total">8</span></span></div>
+      </header>
+
+      <div class="slides" id="slides">
+        <section class="slide title-slide is-active" id="slide-1" data-section="Briefing" aria-labelledby="title-heading">
+          <div class="title-copy">
+            <img class="title-logo" src="assets/Algolia-logo-white.svg" alt="Algolia" />
+            <p class="eyebrow">Four business stories · Eight journeys · One proof standard</p>
+            <h1 id="title-heading">Prove that website intent becomes business momentum.</h1>
+            <p class="lead">We are testing whether Content Engagement can turn passive exploration into relevant guidance, deeper evaluation, and a clear path toward proof, a POC, or a conversation.</p>
+            <div class="chain" aria-label="Business progression"><span>Understand</span><span>Engage</span><span>Guide</span><span>Prove</span><span>Progress</span></div>
+          </div>
+          <aside class="north-star"><p class="eyebrow">The rule</p><blockquote>Respond like yourself. The system has to work with what you give it. Be creative.</blockquote><p>Choose any chip, type your own question, challenge the premise, or redirect the conversation within the journey.</p></aside>
+        </section>
+
+        <section class="slide" id="slide-2" data-section="How to test" aria-labelledby="reset-heading">
+          <div class="slide-heading"><p class="eyebrow">Before every journey</p><h2 id="reset-heading">Reset first. Then behave naturally.</h2></div>
+          <div class="process-grid">
+            <article><span>01</span><h3>Reset</h3><p>Click the Algolia Assistant logo. Confirm it rotates and clears only Algolia-owned journey, greeting, and chat state.</p></article>
+            <article><span>02</span><h3>Browse</h3><p>Follow the stated route. Keep the tab visible, dwell for the required time, and reach the required depth.</p></article>
+            <article><span>03</span><h3>Engage</h3><p>Do not open chat yourself. When aRRIe appears, answer however you want: chip, free text, challenge, or redirect.</p></article>
+            <article><span>04</span><h3>Verify</h3><p>Check that aRRIe remembers the journey, answers your actual response with evidence, and asks a useful next question.</p></article>
+          </div>
+          <p class="callout">A popup alone is not a pass. The experience must recognize intent, earn engagement, carry context forward, and help the visitor take a meaningful next step.</p>
+        </section>
+
+        <section class="slide category-slide" id="slide-3" data-section="Technical" aria-labelledby="technical-heading">
+          <div class="slide-heading split-heading"><div><p class="eyebrow">Journey 01 · Technical</p><h2 id="technical-heading">Testing a technical specialist flow: product page to product documentation.</h2><p class="slide-instruction">Run these as two separate tests. Reset the Assistant before starting each one.</p></div><span class="category-code">2 tests</span></div>
+          <div class="scenario-grid">
+            <article class="scenario" data-trigger="product_page_10s_50_scroll"><header><span>T1</span><h3>Individual product engagement</h3></header><p class="click-path"><strong>Click path</strong> Products → AI Search</p><ol><li>Reset the Assistant.</li><li>Open AI Search and stay for 10+ seconds.</li><li>Scroll beyond 50% and wait for aRRIe.</li><li>Respond naturally when the greeting appears.</li></ol><div class="expect"><strong>Look for</strong><p>A greeting that clearly reflects the product you explored and offers useful paths into fit, proof, or implementation.</p></div></article>
+            <article class="scenario" data-trigger="product_to_documentation"><header><span>T2</span><h3>Product to documentation</h3></header><p class="click-path"><strong>Click path</strong> Products → AI Search → Read the AI Search docs</p><ol><li>Reset the Assistant.</li><li>Open AI Search; stay 10+ sec and scroll 50%+.</li><li>Let the product greeting appear, but leave that greeting unanswered.</li><li>Open the multilingual FAQ and click <strong>Read the AI Search docs</strong>.</li><li>On documentation: stay 10+ sec, scroll 50%+, and wait for the destination greeting to replace the first one.</li><li>Only then respond naturally.</li></ol><div class="expect"><strong>Look for</strong><p>A greeting that connects the AI Search product you explored with the InstantSearch documentation you are now reading, then handles your technical question intelligently.</p></div></article>
+          </div>
+          <p class="response-rule">Tester response: any relevant chip or free text. Ask, challenge, or redirect naturally. There is no required question.</p>
+        </section>
+
+        <section class="slide category-slide" id="slide-4" data-section="Business value" aria-labelledby="business-heading">
+          <div class="slide-heading split-heading"><div><p class="eyebrow">Journey 02 · Business value</p><h2 id="business-heading">From a business priority to confidence.</h2><p class="slide-instruction">Run these as two separate tests. Reset the Assistant before starting each one.</p></div><span class="category-code">2 tests</span></div>
+          <div class="scenario-grid">
+            <article class="scenario" data-trigger="solution_page_10s_50_scroll"><header><span>B1</span><h3>Explore a business priority</h3></header><p class="click-path"><strong>Click path</strong> Solutions → Grocery</p><ol><li>Reset the Assistant.</li><li>Open Grocery and stay for 10+ seconds.</li><li>Scroll beyond 50% and wait for aRRIe.</li><li>Respond as a business leader would, in your own words.</li></ol><div class="expect"><strong>Look for</strong><p>A greeting that speaks to business outcomes, then a grounded answer supported by current English sources and one useful discovery question.</p></div></article>
+            <article class="scenario" data-trigger="solution_to_customer_story"><header><span>B2</span><h3>See how another brand solved it</h3></header><p class="click-path"><strong>Click path</strong> Solutions → Grocery → Read their story → H-E-B Mexico</p><ol><li>Reset the Assistant.</li><li>Explore Grocery for 10+ sec and scroll 50%+.</li><li>Let the solution greeting appear, but leave that greeting unanswered.</li><li>Click <strong>Read their story</strong> to open H-E-B Mexico.</li><li>Read the story for 10+ sec, scroll 50%+, and wait for the destination greeting to replace the first one.</li><li>Only then respond with what you want to understand or compare.</li></ol><div class="expect"><strong>Look for</strong><p>A greeting that connects your original business priority to what the customer achieved and helps you decide whether that example is meaningful for your company.</p></div></article>
+          </div>
+          <p class="response-rule">Respond like a business leader: ask about value, outcomes, relevance, comparable customers, or what would make the case credible for your organization.</p>
+        </section>
+
+        <section class="slide category-slide" id="slide-5" data-section="Commercial" aria-labelledby="commercial-heading">
+          <div class="slide-heading split-heading"><div><p class="eyebrow">Journey 03 · Commercial</p><h2 id="commercial-heading">When interest turns into the money question.</h2><p class="slide-instruction">Run these as two separate tests. Reset the Assistant before starting each one.</p></div><span class="category-code">2 tests</span></div>
+          <div class="scenario-grid">
+            <article class="scenario" data-trigger="product_to_pricing"><header><span>C1</span><h3>Product to pricing</h3></header><p class="click-path"><strong>Click path</strong> Products → AI Search → Pricing</p><ol><li>Reset the Assistant.</li><li>On AI Search: stay 10+ sec and scroll 50%+.</li><li>Let the product greeting appear, but leave that greeting unanswered.</li><li>Use the main navigation to open Pricing.</li><li>Wait for the destination greeting to replace the first one.</li><li>Only then respond naturally.</li></ol><div class="expect"><strong>Look for</strong><p>A greeting that remembers the product and helps you think through cost, value, effort, or a practical evaluation path.</p></div></article>
+            <article class="scenario" data-trigger="solution_to_pricing"><header><span>C2</span><h3>Solution to pricing</h3></header><p class="click-path"><strong>Click path</strong> Solutions → Grocery → Pricing</p><ol><li>Reset the Assistant.</li><li>On Grocery: stay 10+ sec and scroll 50%+.</li><li>Let the solution greeting appear, but leave that greeting unanswered.</li><li>Use the main navigation to open Pricing.</li><li>Wait for the destination greeting to replace the first one.</li><li>Only then respond naturally.</li></ol><div class="expect"><strong>Look for</strong><p>A greeting that carries the business problem into a useful cost-versus-value conversation without becoming a generic sales pitch.</p></div></article>
+          </div>
+          <p class="response-rule">Tester response: ask anything relevant about cost, value, effort, proof, POC scope, or commercial fit. The system follows you.</p>
+        </section>
+
+        <section class="slide category-slide" id="slide-6" data-section="Specialist" aria-labelledby="specialist-heading">
+          <div class="slide-heading split-heading"><div><p class="eyebrow">Journey 04 · Specialist</p><h2 id="specialist-heading">Prove that depth reaches the right expertise.</h2><p class="slide-instruction">Run these as two separate tests. Reset the Assistant before starting each one.</p></div><span class="category-code">2 tests</span></div>
+          <div class="scenario-grid">
+            <article class="scenario" data-trigger="developer_page_10s_50_scroll"><header><span>S1</span><h3>Developer and implementation</h3></header><p class="click-path"><strong>Click path</strong> Developers</p><ol><li>Reset the Assistant.</li><li>Open Developers and move beyond the hero.</li><li>Keep it visible for 10+ seconds and scroll beyond 50%.</li><li>Wait for aRRIe, then ask or challenge naturally.</li></ol><div class="expect"><strong>Look for</strong><p>A technically credible answer supported by documentation, with deeper product expertise brought into the conversation when needed.</p></div></article>
+            <article class="scenario" data-trigger="resource_page_10s_50_scroll"><header><span>S2</span><h3>Resource and research</h3></header><p class="click-path"><strong>Click path</strong> Resources → Unlock the Power of Agentic AI</p><ol><li>Reset the Assistant.</li><li>Open the resource and move beyond the overview.</li><li>Keep it visible for 10+ seconds and scroll beyond 50%.</li><li>Wait for aRRIe, then choose your own direction.</li></ol><div class="expect"><strong>Look for</strong><p>A useful synthesis of the resource, connected to supporting evidence and a thoughtful next direction.</p></div></article>
+          </div>
+          <p class="response-rule">Tester response: implementation, architecture, strategic takeaway, supporting proof, or something unexpected. Watch whether routing adapts.</p>
+        </section>
+
+        <section class="slide" id="slide-7" data-section="Evidence" aria-labelledby="evidence-heading">
+          <div class="slide-heading"><p class="eyebrow">Evidence collection</p><h2 id="evidence-heading">Turn every journey into evidence executives can trust.</h2></div>
+          <div class="evidence-layout">
+            <div class="evidence-list"><p>For every scenario, capture:</p><ul><li>Scenario and pages visited</li><li>Pass, needs work, or blocked</li><li>Start, CTA, destination, greeting, and answer</li><li>The response you actually gave</li><li>When the greeting appeared</li><li>Whether it remembered the journey</li><li>Handoff or specialist trace ID</li><li>Sources and any questionable claim</li></ul></div>
+            <aside class="failure-note"><p class="eyebrow">For a failure</p><h3>Expected vs. actual</h3><p>Write one clean sentence for each. Reset and repeat once. Mark intermittent behavior explicitly instead of smoothing it over.</p><div class="evidence-example"><strong>Example</strong><p>Expected product-to-pricing context. Actual greeting discussed pricing generically and omitted the product after two fresh attempts.</p></div></aside>
+          </div>
+          <div class="baseline-evidence" aria-label="Authoritative hosted answer screenshots">
+            <strong>Authoritative hosted evidence · embedded in the standalone deck</strong>
+            <div class="evidence-gallery">
+              <a class="evidence-thumb" href="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T1/01-answer.png" target="_blank" rel="noopener"><img src="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T1/01-answer.png" alt="T1 hosted answer" /><span>T1</span></a>
+              <a class="evidence-thumb" href="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T2/02-answer.png" target="_blank" rel="noopener"><img src="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T2/02-answer.png" alt="T2 hosted answer" /><span>T2</span></a>
+              <a class="evidence-thumb" href="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B1/03-answer.png" target="_blank" rel="noopener"><img src="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B1/03-answer.png" alt="B1 hosted answer" /><span>B1</span></a>
+              <a class="evidence-thumb" href="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B2/04-answer.png" target="_blank" rel="noopener"><img src="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B2/04-answer.png" alt="B2 hosted answer" /><span>B2</span></a>
+              <a class="evidence-thumb" href="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/C1/05-answer.png" target="_blank" rel="noopener"><img src="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/C1/05-answer.png" alt="C1 hosted answer" /><span>C1</span></a>
+              <a class="evidence-thumb" href="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/C2/06-answer.png" target="_blank" rel="noopener"><img src="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/C2/06-answer.png" alt="C2 hosted answer" /><span>C2</span></a>
+              <a class="evidence-thumb" href="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S1-retry/07-answer.png" target="_blank" rel="noopener"><img src="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S1-retry/07-answer.png" alt="S1 specialist answer" /><span>S1</span></a>
+              <a class="evidence-thumb" href="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S2/08-answer.png" target="_blank" rel="noopener"><img src="../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S2/08-answer.png" alt="S2 specialist answer" /><span>S2</span></a>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide final-slide" id="slide-8" data-section="Completion" aria-labelledby="completion-heading">
+          <div class="slide-heading"><p class="eyebrow">Current acceptance baseline</p><h2 id="completion-heading">Eight journeys. One complete validated chain.</h2></div>
+          <div class="completion-grid"><div><strong>8 / 8</strong><span>Hosted Jahia journeys passed</span></div><div><strong>8 / 8</strong><span>Discovery and continuity passed</span></div><div><strong>2 / 2</strong><span>Specialist routes safely gated</span></div></div>
+          <ul class="done-list"><li>All eight expected triggers, greetings, handoffs, and grounded orchestrator answers passed.</li><li>Every answer presented exactly one on-topic discovery question.</li><li>Every conversation survived the follow-up navigation used by the test.</li><li>S1 and S2 routed to specialists; weak specialist output was safely demoted behind the evidence gate.</li></ul>
+          <div class="final-actions"><a class="primary-link" href="content-engagement-demo-uat-test-cases.md" target="_blank" rel="noopener">Open the canonical test guide</a><p>The outcome is a defensible decision about what is ready, what must improve, and what evidence is required before the next phase. This briefing does not authorize runtime, prompt, Agent Studio, trigger, Jahia, or production changes.</p></div>
+        </section>
+      </div>
+
+      <footer class="deck-controls">
+        <button class="icon-button" id="prev-slide" type="button" aria-label="Previous slide" title="Previous slide"><span aria-hidden="true">←</span></button>
+        <nav class="slide-dots" id="slide-dots" aria-label="Slide navigation"></nav>
+        <button class="icon-button" id="next-slide" type="button" aria-label="Next slide" title="Next slide"><span aria-hidden="true">→</span></button>
+        <img class="content-slide-logo" src="assets/Algolia-logo-blue.svg" alt="Algolia" />
+      </footer>
+    </main>
+    <script src="app.js?v=20260817-brand-placement"></script>
+  </body>
+</html>

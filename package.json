@@ -7,11 +7,13 @@
     "doc": "docs"
   },
   "scripts": {
+    "build:team-uat": "node testing/team-uat/build-standalone.mjs",
     "local:chat": "python3 tools/local_chat_parity_server.py",
     "scout:local-pages": "node tools/inspection/fetch_local_parity_pages_with_scout.mjs",
     "test:chat-widget": "node --test frontend/chat-widget/tests/*.test.mjs",
-    "test:local-chat-parity": "node tools/inspection/validate_local_chat_parity.mjs",
-    "test": "npm run test:chat-widget && npm run test:local-chat-parity"
+    "test:local-chat-parity": "node tools/inspection/validate_local_chat_parity.mjs && node tools/inspection/validate_local_proactive_journeys.mjs",
+    "test:team-uat": "node --test testing/team-uat/*.test.mjs",
+    "test": "npm run test:chat-widget && npm run test:local-chat-parity && npm run test:team-uat"
   },
   "repository": {
     "type": "git",

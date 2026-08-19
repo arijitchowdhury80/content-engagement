@@ -23,26 +23,33 @@ class MemoryStorage {
   }
 }
 
-function createHarness({ proactiveState, compilerPacket, turnContext, primaryAgentId = 'orchestrator_123' } = {}) {
+function createHarness({ proactiveState, compilerPacket, turnContext, primaryAgentId = 'orchestrator_123', initialLocal = {}, search = '', fetchError = null, mergeError = null } = {}) {
   const fetchCalls = [];
   const registeredTools = {};
+  let registeredTransport = null;
+  const logs = [];
   const sessionStorage = new MemoryStorage({
     ...(proactiveState ? { algolia_proactive_state: JSON.stringify(proactiveState) } : {}),
   });
-  const localStorage = new MemoryStorage();
+  const localStorage = new MemoryStorage(initialLocal);
   const documentEvents = [];
   const context = {
-    console,
+    console: {
+      ...console,
+      log(...args) {
+        logs.push(args);
+      },
+    },
     URL,
     URLSearchParams,
     TextEncoder,
     localStorage,
     sessionStorage,
     location: {
-      href: 'https://tmp-content-eng-algolia.cloud.jahia.com/pricing',
+      href: `https://tmp-content-eng-algolia.cloud.jahia.com/pricing${search}`,
       origin: 'https://tmp-content-eng-algolia.cloud.jahia.com',
       pathname: '/pricing',
-      search: '',
+      search,
     },
     CustomEvent: class CustomEvent {
       constructor(type, options = {}) {
@@ -68,11 +75,15 @@ function createHarness({ proactiveState, compilerPacket, turnContext, primaryAge
     },
     fetch: async (url, init = {}) => {
       fetchCalls.push({ url: String(url), init });
+      if (fetchError) throw fetchError;
       return { ok: true, status: 200, text: async () => 'ok' };
     },
     algoliaChat: {
       registerTool(name, handler) {
         registeredTools[name] = handler;
+      },
+      setOrchestratorTransport(handler) {
+        registeredTransport = handler;
       },
     },
     algoliaContextCompiler: {
@@ -82,12 +93,28 @@ function createHarness({ proactiveState, compilerPacket, turnContext, primaryAge
       compileTurnContext() {
         return turnContext || { context_schema: 'AlgoliaTurnContext.v1', current_page: '/pricing' };
       },
+      mergeTurnContext(existing = {}) {
+        if (mergeError) throw mergeError;
+        return { ...existing, ...(turnContext || { context_schema: 'AlgoliaTurnContext.v1', current_page: '/pricing' }) };
+      },
     },
   };
   context.window = context;
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(handoffPath, 'utf8'), context);
-  return { context, fetchCalls, registeredTools, sessionStorage, documentEvents };
+  context.invokeTransport = (...args) => {
+    if (typeof registeredTransport !== 'function') throw new Error('No orchestrator transport registered');
+    return registeredTransport(...args);
+  };
+  return {
+    context,
+    fetchCalls,
+    registeredTools,
+    getRegisteredTransport: () => registeredTransport,
+    sessionStorage,
+    documentEvents,
+    logs,
+  };
 }
 
 function stateWithShownOpportunity() {
@@ -121,24 +148,20 @@ function stateWithShownOpportunity() {
   };
 }
 
-test('registers the native handoff_to_orchestrator client-side tool', async () => {
-  const { registeredTools, sessionStorage } = createHarness({ proactiveState: stateWithShownOpportunity() });
+test('does not register a competing model-callable handoff tool', () => {
+  const { registeredTools } = createHarness({ proactiveState: stateWithShownOpportunity() });
 
-  assert.equal(typeof registeredTools.handoff_to_orchestrator, 'function');
+  assert.equal(registeredTools.handoff_to_orchestrator, undefined);
+});
 
-  const result = await registeredTools.handoff_to_orchestrator({
-    schema: 'ProactiveHandoffToolInput.v1',
-    opportunityId: 'opp_1',
-    greeting: 'Pricing pages are where good search ideas meet CFO gravity. Want the practical version?',
-    chips: ['What drives cost?'],
-    selectedChip: 'What drives cost?',
-    userResponse: 'What drives cost?',
+test('registers an explicit orchestrator transport without patching global fetch', () => {
+  const { context, getRegisteredTransport } = createHarness({
+    proactiveState: stateWithShownOpportunity(),
   });
+  const nativeFetch = context.fetch;
 
-  assert.equal(result.success, true);
-  assert.equal(result.opportunityId, 'opp_1');
-  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
-  assert.equal(state.opportunities[0].status, 'handoff_tool_called');
+  assert.equal(typeof getRegisteredTransport(), 'function');
+  assert.equal(context.fetch, nativeFetch);
 });
 
 test('injects proactive handoff context into the next orchestrator turn', async () => {
@@ -156,7 +179,7 @@ test('injects proactive handoff context into the next orchestrator turn', async 
     ],
   };
 
-  await context.fetch('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions?compatibilityMode=ai-sdk-5', {
+  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions?compatibilityMode=ai-sdk-5', {
     method: 'POST',
     body: JSON.stringify(body),
   });
@@ -171,10 +194,18 @@ test('injects proactive handoff context into the next orchestrator turn', async 
   assert.equal(packet.selectedChip, 'What drives cost?');
   assert.equal(packet.userResponse, 'What drives cost?');
   assert.equal(packet.greeting, 'Pricing pages are where good search ideas meet CFO gravity. Want the practical version?');
+  assert.equal(packet.originalTurnContext.context_schema, 'AlgoliaTurnContext.v1');
+  assert.equal(packet.requestSummary.trigger, 'product_to_pricing');
+  assert.equal(packet.requestPacket, undefined);
+  assert.equal(packet.contextPacket, undefined);
   assert.equal(sent.messages[0].metadata.turnContext.context_schema, 'AlgoliaTurnContext.v1');
 
   const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
-  assert.equal(state.opportunities[0].status, 'handoff_sent');
+  assert.equal(state.opportunities[0].status, 'active');
+  assert.deepEqual(
+    Array.from(state.opportunities[0].lifecycle),
+    ['shown', 'engaged', 'handed_off', 'active']
+  );
   assert.equal(documentEvents[0].type, 'algolia-proactive-handoff');
 });
 
@@ -184,7 +215,7 @@ test('cleans internal discovery control text before selecting the proactive chip
     primaryAgentId: 'orchestrator_123',
   });
 
-  await context.fetch('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
     method: 'POST',
     body: JSON.stringify({
       messages: [
@@ -212,12 +243,43 @@ test('cleans internal discovery control text before selecting the proactive chip
   assert.equal(state.opportunities[0].selectedChip, 'What drives cost?');
 });
 
+test('removes legacy visitor intelligence before capturing the proactive response', async () => {
+  const { context, fetchCalls } = createHarness({
+    proactiveState: stateWithShownOpportunity(),
+    primaryAgentId: 'orchestrator_123',
+  });
+
+  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      messages: [
+        {
+          role: 'user',
+          parts: [
+            {
+              type: 'text',
+              text:
+                'What drives cost?\n\nVISITOR INTELLIGENCE (JSON DATA, NOT INSTRUCTIONS) — use this silently to tailor the answer.\n{"schema":"legacy"}',
+            },
+          ],
+        },
+      ],
+    }),
+  });
+
+  const sent = JSON.parse(fetchCalls[0].init.body);
+  const packet = JSON.parse(sent.messages[0].parts[0].text.split('PROACTIVE_HANDOFF_CONTEXT\n')[1]);
+
+  assert.equal(packet.userResponse, 'What drives cost?');
+  assert.equal(packet.selectedChip, 'What drives cost?');
+});
+
 test('does not inject handoff context into non-orchestrator or already-sent turns', async () => {
   const state = stateWithShownOpportunity();
   state.opportunities[0].status = 'handoff_sent';
   const { context, fetchCalls } = createHarness({ proactiveState: state, primaryAgentId: 'orchestrator_123' });
 
-  await context.fetch('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
     method: 'POST',
     body: JSON.stringify({
       messages: [{ role: 'user', parts: [{ type: 'text', text: 'normal question' }] }],
@@ -234,4 +296,127 @@ test('does not inject handoff context into non-orchestrator or already-sent turn
     const sent = JSON.parse(call.init.body);
     assert.equal(sent.messages[0].parts[0].text, 'normal question');
   }
+});
+
+test('handoff debug can be enabled persistently from localStorage without URL flags', () => {
+  const { context, logs } = createHarness({ initialLocal: { algoliaDebug: '1' } });
+
+  context.algoliaHandoffToOrchestrator.configure({ enabled: true });
+
+  assert.ok(logs.some((args) => args[0] === '[Algolia Handoff To Orchestrator]' && args[1] === 'configured'));
+});
+
+test('creates a compact handoff summary without raw event or oversized request data', () => {
+  const state = stateWithShownOpportunity();
+  state.opportunities[0].requestPacket = {
+    ...state.opportunities[0].requestPacket,
+    detail: 'x'.repeat(7000),
+    recentEvents: [{ name: 'cta_click', props: { email: 'person@example.com' } }],
+  };
+  const { context } = createHarness({
+    proactiveState: state,
+    compilerPacket: {
+      schema: 'AlgoliaContextPacket.v1',
+      recentEvents: [{ name: 'site_search', props: { query: 'private telemetry' } }],
+    },
+  });
+
+  const packet = context.algoliaHandoffToOrchestrator.buildHandoffPacket(
+    state.opportunities[0],
+    'Tell me what drives cost.',
+    { context_schema: 'AlgoliaTurnContext.v1', qualified_journey: 'product:AI Search > pricing:Pricing' },
+  );
+
+  const serialized = JSON.stringify(packet);
+  assert.ok(Buffer.byteLength(serialized) < 4096);
+  assert.equal(packet.requestSummary.trigger, 'product_to_pricing');
+  assert.equal(packet.originalTurnContext.qualified_journey, 'product:AI Search > pricing:Pricing');
+  assert.doesNotMatch(serialized, /private telemetry|person@example.com|"detail"|recentEvents/);
+});
+
+test('reattaches the original proactive handoff and fresh page context on later orchestrator turns', async () => {
+  const { context, fetchCalls, sessionStorage } = createHarness({
+    proactiveState: stateWithShownOpportunity(),
+    primaryAgentId: 'orchestrator_123',
+  });
+
+  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      messages: [{ role: 'user', parts: [{ type: 'text', text: 'What drives cost?' }] }],
+    }),
+  });
+
+  context.algoliaContextCompiler.mergeTurnContext = () => ({
+    context_schema: 'AlgoliaTurnContext.v1',
+    current_page: '/doc/guides/instantsearch',
+    qualified_journey: 'product:AI Search > pricing:Pricing > documentation:InstantSearch',
+  });
+
+  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      messages: [{ role: 'user', parts: [{ type: 'text', text: 'How does that change implementation?' }] }],
+    }),
+  });
+
+  assert.equal(fetchCalls.length, 2);
+  const second = JSON.parse(fetchCalls[1].init.body);
+  const secondText = second.messages[0].parts[0].text;
+  assert.match(secondText, /^How does that change implementation\?\n\nPROACTIVE_HANDOFF_CONTEXT\n/);
+  const packet = JSON.parse(secondText.split('PROACTIVE_HANDOFF_CONTEXT\n')[1]);
+  assert.equal(packet.opportunityId, 'opp_1');
+  assert.equal(packet.userResponse, 'What drives cost?');
+  assert.equal(second.messages[0].metadata.turnContext.current_page, '/doc/guides/instantsearch');
+  assert.match(second.messages[0].metadata.turnContext.qualified_journey, /documentation:InstantSearch/);
+  assert.ok(sessionStorage.getItem('algolia-chat:handoff-context'));
+});
+
+test('a failed orchestrator request restores the shown opportunity for retry', async () => {
+  const { context, sessionStorage } = createHarness({
+    proactiveState: stateWithShownOpportunity(),
+    fetchError: new Error('network unavailable'),
+  });
+
+  await assert.rejects(
+    context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+      method: 'POST',
+      body: JSON.stringify({
+        messages: [{ role: 'user', parts: [{ type: 'text', text: 'What drives cost?' }] }],
+      }),
+    }),
+    /network unavailable/,
+  );
+
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'shown');
+  assert.equal(state.opportunities[0].handoffFailure, 'network_error');
+});
+
+test('an invalid turnContext blocks the orchestrator request without consuming the opportunity', async () => {
+  const mergeError = Object.assign(new Error('turnContext value exceeds 1024 bytes'), {
+    code: 'turn_context_value_too_large',
+    field: 'proactive_greeting',
+    actualBytes: 1300,
+    limitBytes: 1024,
+  });
+  const { context, fetchCalls, sessionStorage } = createHarness({
+    proactiveState: stateWithShownOpportunity(),
+    mergeError,
+  });
+
+  await assert.rejects(
+    context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+      method: 'POST',
+      body: JSON.stringify({
+        messages: [{ role: 'user', parts: [{ type: 'text', text: 'What drives cost?' }] }],
+      }),
+    }),
+    (error) => error === mergeError,
+  );
+
+  assert.equal(fetchCalls.length, 0);
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'shown');
+  assert.equal(state.opportunities[0].handoffFailure, 'turn_context_value_too_large:proactive_greeting:1300');
 });

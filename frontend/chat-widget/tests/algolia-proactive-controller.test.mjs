@@ -87,9 +87,13 @@ function createHarness({
   instantSearch = true,
   chatAttrs = {},
   engageAttrs = {},
+  chatAvailable = true,
+  initialLocal = {},
+  initialSession = {},
 } = {}) {
   const currentPath = locationPath || pages?.at(-1)?.path || '/products/ai-recommendations';
   const localStorage = new MemoryStorage({
+    ...initialLocal,
     algolia_profile: JSON.stringify({
       schema: 'AlgoliaEngagementProfile.v1',
       visitorId: 'visitor_123',
@@ -127,10 +131,12 @@ function createHarness({
       ],
     }),
     ...(state ? { algolia_proactive_state: JSON.stringify(state) } : {}),
+    ...initialSession,
   });
   const documentListeners = new Map();
   const documentEvents = [];
   const chatEngagements = [];
+  const chatOpens = [];
   const chatElement = {
     autoEngage: true,
     getAttribute(name) {
@@ -139,6 +145,9 @@ function createHarness({
     engage(payload) {
       chatEngagements.push(payload);
       return true;
+    },
+    open() {
+      chatOpens.push(Date.now());
     },
   };
   const engageElement = {
@@ -174,7 +183,10 @@ function createHarness({
       hidden: false,
       title: pages?.at(-1)?.title || 'AI Recommendations',
       querySelector(selector) {
-        if (selector === 'algolia-chat') return chatElement;
+        if (selector === 'algolia-chat') {
+          const available = typeof chatAvailable === 'function' ? chatAvailable() : chatAvailable;
+          return available ? chatElement : null;
+        }
         if (selector === 'algolia-instant-search') {
           if (!instantSearch) return null;
           return {
@@ -204,7 +216,7 @@ function createHarness({
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(compilerPath, 'utf8'), context);
   vm.runInContext(fs.readFileSync(controllerPath, 'utf8'), context);
-  return { context, localStorage, sessionStorage, documentEvents, chatEngagements };
+  return { context, localStorage, sessionStorage, documentEvents, chatEngagements, chatOpens };
 }
 
 function opportunity(context) {
@@ -217,7 +229,7 @@ async function flushAsyncControllerWork() {
   }
 }
 
-test('product research triggers on product page dwell after 10 seconds', () => {
+test('product research triggers at 10 visible seconds and 50 percent scroll', () => {
   const { context } = createHarness({
     pages: [
       page({
@@ -226,6 +238,7 @@ test('product research triggers on product page dwell after 10 seconds', () => {
         pageGroup: 'product',
         topic: 'ai_search',
         dwellMs: 10000,
+        maxScrollDepth: 50,
       }),
     ],
   });
@@ -234,14 +247,14 @@ test('product research triggers on product page dwell after 10 seconds', () => {
 
   assert.equal(decision.engage, true);
   assert.equal(decision.moment, 'product_research');
-  assert.equal(decision.trigger, 'product_page_10s_dwell');
+  assert.equal(decision.trigger, 'product_page_10s_50_scroll');
   assert.equal(decision.messageGoal, 'explain_product_fit');
   assert.ok(decision.priority >= 60);
   assert.ok(decision.reasonCodes.includes('product_page'));
   assert.equal(decision.agentPromptPacket.currentPage.path, '/products/ai-recommendations');
 });
 
-test('implementation research triggers on developer page dwell or scroll', () => {
+test('developer depth requires 10 visible seconds and 50 percent scroll', () => {
   const { context } = createHarness({
     locationPath: '/developers',
     pages: [
@@ -250,7 +263,8 @@ test('implementation research triggers on developer page dwell or scroll', () =>
         path: '/developers',
         pageGroup: 'developer',
         topic: 'implementation',
-        dwellMs: 15000,
+        dwellMs: 10000,
+        maxScrollDepth: 50,
       }),
     ],
   });
@@ -259,8 +273,80 @@ test('implementation research triggers on developer page dwell or scroll', () =>
 
   assert.equal(decision.engage, true);
   assert.equal(decision.moment, 'implementation_research');
-  assert.equal(decision.trigger, 'developer_page_15s_dwell');
+  assert.equal(decision.trigger, 'developer_page_10s_50_scroll');
   assert.equal(decision.messageGoal, 'reduce_implementation_uncertainty');
+});
+
+test('all eight canonical journeys honor below, exact, and above trigger boundaries', () => {
+  const singlePageCases = [
+    ['product_page_10s_50_scroll', '/products/ai-search', 'product'],
+    ['solution_page_10s_50_scroll', '/solutions/ecommerce', 'solution'],
+    ['developer_page_10s_50_scroll', '/developers', 'developer'],
+    ['resource_page_10s_50_scroll', '/resources', 'resource'],
+  ];
+  for (const [trigger, path, pageGroup] of singlePageCases) {
+    for (const [dwellMs, maxScrollDepth, expected] of [
+      [9999, 50, false],
+      [10000, 49, false],
+      [10000, 50, true],
+      [10001, 51, true],
+    ]) {
+      const { context } = createHarness({
+        locationPath: path,
+        pages: [page({ pageId: 'page_current', path, pageGroup, topic: 'test', dwellMs, maxScrollDepth })],
+      });
+      const decision = opportunity(context);
+      assert.equal(decision.trigger === trigger, expected, `${trigger} at ${dwellMs}ms/${maxScrollDepth}%`);
+    }
+  }
+
+  const depthTransitions = [
+    ['product_to_documentation', '/products/ai-search', 'product', '/doc/guides/search/', 'documentation'],
+    ['solution_to_customer_story', '/solutions/ecommerce', 'solution', '/customers/harry-rosen', 'customer_story'],
+  ];
+  for (const [trigger, sourcePath, sourceGroup, destinationPath, destinationGroup] of depthTransitions) {
+    for (const [sourceDwell, sourceScroll, destinationDwell, destinationScroll, expected] of [
+      [9999, 50, 10000, 50, false],
+      [10000, 49, 10000, 50, false],
+      [10000, 50, 9999, 50, false],
+      [10000, 50, 10000, 49, false],
+      [10000, 50, 10000, 50, true],
+      [10001, 51, 10001, 51, true],
+    ]) {
+      const { context } = createHarness({
+        locationPath: destinationPath,
+        pages: [
+          page({ pageId: 'page_source', path: sourcePath, pageGroup: sourceGroup, topic: 'test', dwellMs: sourceDwell, maxScrollDepth: sourceScroll }),
+          page({ pageId: 'page_current', path: destinationPath, pageGroup: destinationGroup, topic: 'test', dwellMs: destinationDwell, maxScrollDepth: destinationScroll }),
+        ],
+      });
+      const decision = opportunity(context);
+      assert.equal(decision.trigger === trigger, expected, `${trigger} boundary case`);
+    }
+  }
+
+  const pricingTransitions = [
+    ['product_to_pricing', '/products/ai-search', 'product'],
+    ['solution_to_pricing', '/solutions/ecommerce', 'solution'],
+  ];
+  for (const [trigger, sourcePath, sourceGroup] of pricingTransitions) {
+    for (const [dwellMs, maxScrollDepth, expected] of [
+      [9999, 50, false],
+      [10000, 49, false],
+      [10000, 50, true],
+      [10001, 51, true],
+    ]) {
+      const { context } = createHarness({
+        locationPath: '/pricing',
+        pages: [
+          page({ pageId: 'page_source', path: sourcePath, pageGroup: sourceGroup, topic: 'test', dwellMs, maxScrollDepth }),
+          page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+        ],
+      });
+      const decision = opportunity(context);
+      assert.equal(decision.trigger === trigger, expected, `${trigger} at ${dwellMs}ms/${maxScrollDepth}%`);
+    }
+  }
 });
 
 test('commercial evaluation wins when journey moves from product to pricing', () => {
@@ -273,6 +359,7 @@ test('commercial evaluation wins when journey moves from product to pricing', ()
         pageGroup: 'product',
         topic: 'ai_search',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -298,6 +385,65 @@ test('commercial evaluation wins when journey moves from product to pricing', ()
   assert.ok(decision.reasonCodes.includes('journey_product_to_pricing'));
 });
 
+test('demo and contact-sales conversion pages do not masquerade as pricing journeys', () => {
+  for (const path of ['/demo', '/contact-sales']) {
+    const { context } = createHarness({
+      locationPath: path,
+      pages: [
+        page({
+          pageId: 'page_product',
+          path: '/products/ai-search',
+          pageGroup: 'product',
+          topic: 'ai_search',
+          dwellMs: 10000,
+          maxScrollDepth: 50,
+        }),
+        page({
+          pageId: 'page_current',
+          path,
+          pageGroup: 'conversion',
+          topic: 'conversion',
+        }),
+      ],
+    });
+
+    assert.notEqual(opportunity(context).trigger, 'product_to_pricing', path);
+  }
+});
+
+test('pricing transition follows the most recent qualified product-or-solution source', () => {
+  const cases = [
+    {
+      name: 'solution visited after product',
+      sources: [
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'ecommerce', dwellMs: 10000, maxScrollDepth: 50 }),
+      ],
+      expected: 'solution_to_pricing',
+    },
+    {
+      name: 'product visited after solution',
+      sources: [
+        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'ecommerce', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 }),
+      ],
+      expected: 'product_to_pricing',
+    },
+  ];
+
+  for (const item of cases) {
+    const { context } = createHarness({
+      locationPath: '/pricing',
+      pages: [
+        ...item.sources,
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+      ],
+    });
+
+    assert.equal(opportunity(context).trigger, item.expected, item.name);
+  }
+});
+
 test('product to pricing carries exact prior product focus for personalized greeting', () => {
   const { context } = createHarness({
     locationPath: '/pricing',
@@ -311,6 +457,7 @@ test('product to pricing carries exact prior product focus for personalized gree
         productFocus: 'personalization',
         productFocusLabel: 'Personalization',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -356,6 +503,7 @@ test('product to pricing summarizes multi-product journey for greeting personali
         productFocus: 'personalization',
         productFocusLabel: 'Personalization',
         dwellMs: 14000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_recommendations',
@@ -366,6 +514,7 @@ test('product to pricing summarizes multi-product journey for greeting personali
         productFocus: 'recommendations',
         productFocusLabel: 'AI Recommendations',
         dwellMs: 11000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -414,6 +563,7 @@ test('solution to pricing summarizes multi-solution journey for greeting persona
         solutionFocus: 'marketplace',
         solutionFocusLabel: 'Marketplace',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -470,6 +620,7 @@ test('product to pricing overrides stale lower-priority product dwell opportunit
         productFocus: 'personalization',
         productFocusLabel: 'Personalization',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -495,24 +646,25 @@ test('product to pricing overrides stale lower-priority product dwell opportunit
 
 test('unshown opportunities do not consume session cap or cooldown', () => {
   const { context } = createHarness({
-    locationPath: '/pricing',
+    locationPath: '/products/ai-search',
     state: {
       schema: 'AlgoliaProactiveState.v1',
       lastOpportunityAt: Date.now(),
       opportunities: [
-        { id: 'opp_1', status: 'greeting_failed', pageId: 'page_old_1', pagePath: '/products/search', moment: 'product_research', trigger: 'product_page_10s_dwell', priority: 66 },
-        { id: 'opp_2', status: 'greeting_requested', pageId: 'page_old_2', pagePath: '/products/features/personalization', moment: 'product_research', trigger: 'product_page_10s_dwell', priority: 66 },
-        { id: 'opp_3', status: 'greeting_rejected', pageId: 'page_old_3', pagePath: '/developers', moment: 'implementation_research', trigger: 'developer_page_15s_dwell', priority: 76 },
+        { id: 'opp_1', status: 'greeting_failed', pageId: 'page_old_1', pagePath: '/products/search', moment: 'product_research', trigger: 'product_page_10s_50_scroll', priority: 66 },
+        { id: 'opp_2', status: 'greeting_requested', pageId: 'page_old_2', pagePath: '/products/features/personalization', moment: 'product_research', trigger: 'product_page_10s_50_scroll', priority: 66 },
+        { id: 'opp_3', status: 'greeting_rejected', pageId: 'page_old_3', pagePath: '/developers', moment: 'implementation_research', trigger: 'developer_page_10s_50_scroll', priority: 76 },
       ],
     },
     pages: [
       page({
         pageId: 'page_current',
-        path: '/pricing',
-        title: 'Pricing',
-        pageGroup: 'pricing',
-        topic: 'pricing_and_usage',
-        dwellMs: 8000,
+        path: '/products/ai-search',
+        title: 'AI Search',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
       }),
     ],
   });
@@ -520,10 +672,10 @@ test('unshown opportunities do not consume session cap or cooldown', () => {
   const decision = opportunity(context);
 
   assert.equal(decision.engage, true);
-  assert.equal(decision.trigger, 'pricing_8s_dwell');
+  assert.equal(decision.trigger, 'product_page_10s_50_scroll');
 });
 
-test('customer proof triggers from product research into customer story', () => {
+test('product to customer story is not a canonical journey trigger', () => {
   const { context } = createHarness({
     locationPath: '/customers/gymshark-recommend',
     pages: [
@@ -533,6 +685,7 @@ test('customer proof triggers from product research into customer story', () => 
         pageGroup: 'product',
         topic: 'ai_search',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -540,19 +693,452 @@ test('customer proof triggers from product research into customer story', () => 
         pageGroup: 'customer_story',
         topic: 'customer_proof',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
     ],
   });
 
   const decision = opportunity(context);
 
-  assert.equal(decision.engage, true);
-  assert.equal(decision.moment, 'customer_proof');
-  assert.equal(decision.trigger, 'product_to_customer_story');
-  assert.equal(decision.messageGoal, 'surface_relevant_customer_proof');
+  assert.equal(decision.engage, false);
+  assert.equal(decision.reason, 'no_trigger_match');
 });
 
-test('site search followed by docs creates implementation journey trigger', () => {
+test('generic product engagement requires both 10 visible seconds and 50 percent scroll', () => {
+  for (const [dwellMs, maxScrollDepth, expected] of [
+    [10000, 49, false],
+    [9999, 50, false],
+    [10000, 50, true],
+  ]) {
+    const { context } = createHarness({
+      locationPath: '/products/arbitrary-future-product',
+      pages: [page({
+        pageId: 'page_current',
+        path: '/products/arbitrary-future-product',
+        pageGroup: 'product',
+        topic: 'future_product',
+        dwellMs,
+        maxScrollDepth,
+      })],
+    });
+    const decision = opportunity(context);
+    assert.equal(decision.engage, expected);
+    if (expected) assert.equal(decision.trigger, 'product_page_10s_50_scroll');
+  }
+});
+
+test('generic solution engagement requires both 10 visible seconds and 50 percent scroll', () => {
+  for (const [dwellMs, maxScrollDepth, expected] of [
+    [10000, 49, false],
+    [9999, 50, false],
+    [10000, 50, true],
+  ]) {
+    const { context } = createHarness({
+      locationPath: '/solutions/grocery',
+      pages: [page({
+        pageId: 'page_current',
+        path: '/solutions/grocery',
+        pageGroup: 'solution',
+        topic: 'grocery',
+        solutionFocus: 'grocery',
+        solutionFocusLabel: 'Grocery',
+        dwellMs,
+        maxScrollDepth,
+      })],
+    });
+    const decision = opportunity(context);
+    assert.equal(decision.engage, expected);
+    if (expected) assert.equal(decision.trigger, 'solution_page_10s_50_scroll');
+  }
+});
+
+test('product to documentation waits for destination engagement and preserves product context', () => {
+  const pages = [
+    page({
+      pageId: 'page_product',
+      path: '/products/ai-recommendations',
+      pageGroup: 'product',
+      topic: 'recommendations',
+      productFocus: 'recommendations',
+      productFocusLabel: 'AI Recommendations',
+      dwellMs: 16000,
+      maxScrollDepth: 60,
+    }),
+    page({
+      pageId: 'page_current',
+      path: '/doc/guides/ai-recommendations/getting-started/',
+      pageGroup: 'documentation',
+      topic: 'recommendations_implementation',
+      dwellMs: 10000,
+      maxScrollDepth: 50,
+    }),
+  ];
+  const { context } = createHarness({
+    locationPath: pages.at(-1).path,
+    pages,
+  });
+
+  const decision = opportunity(context);
+  assert.equal(decision.trigger, 'product_to_documentation');
+  assert.equal(decision.agentPromptPacket.contextualFocus.label, 'AI Recommendations');
+  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /technical validation/i);
+});
+
+test('solution to customer proof waits for destination engagement', () => {
+  const { context } = createHarness({
+    locationPath: '/customers/heb-mexico',
+    pages: [
+      page({
+        pageId: 'page_solution',
+        path: '/solutions/grocery',
+        pageGroup: 'solution',
+        topic: 'grocery',
+        solutionFocus: 'grocery',
+        solutionFocusLabel: 'Grocery',
+        dwellMs: 16000,
+        maxScrollDepth: 60,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/customers/heb-mexico',
+        pageGroup: 'customer_story',
+        topic: 'customer_proof',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+    ],
+  });
+
+  assert.equal(opportunity(context).trigger, 'solution_to_customer_story');
+});
+
+test('transition journeys require qualified sources and qualified depth destinations', () => {
+  const cases = [
+    {
+      name: 'product source below dwell',
+      locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 9999, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 50 }),
+      ],
+      expected: 'developer_page_10s_50_scroll',
+    },
+    {
+      name: 'documentation destination below scroll',
+      locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 49 }),
+      ],
+      expected: null,
+    },
+    {
+      name: 'solution source below scroll',
+      locationPath: '/customers/heb-mexico',
+      pages: [
+        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 10000, maxScrollDepth: 49 }),
+        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 10000, maxScrollDepth: 50 }),
+      ],
+      expected: null,
+    },
+    {
+      name: 'proof destination below dwell',
+      locationPath: '/customers/heb-mexico',
+      pages: [
+        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 9999, maxScrollDepth: 50 }),
+      ],
+      expected: null,
+    },
+  ];
+
+  for (const item of cases) {
+    const { context } = createHarness({ locationPath: item.locationPath, pages: item.pages });
+    const decision = opportunity(context);
+    assert.equal(decision.engage, item.expected !== null, item.name);
+    if (item.expected) {
+      assert.equal(decision.trigger, item.expected, item.name);
+    } else {
+      assert.equal(decision.reason, 'no_trigger_match', item.name);
+    }
+  }
+});
+
+test('transition journeys find a qualified source across intermediate pages', () => {
+  const { context } = createHarness({
+    locationPath: '/pricing',
+    pages: [
+      page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 }),
+      page({ pageId: 'page_resource', path: '/resources/search-buyers-guide', pageGroup: 'resource', topic: 'evaluation', dwellMs: 1000, maxScrollDepth: 5 }),
+      page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+    ],
+  });
+
+  assert.equal(opportunity(context).trigger, 'product_to_pricing');
+});
+
+test('a closed unengaged greeting does not suppress a later journey transition', () => {
+  const now = Date.now();
+  const { context } = createHarness({
+    locationPath: '/doc/guides/ai-recommendations/getting-started/',
+    pages: [
+      page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'recommendations', productFocus: 'recommendations', productFocusLabel: 'AI Recommendations', dwellMs: 16000, maxScrollDepth: 60 }),
+      page({ pageId: 'page_current', path: '/doc/guides/ai-recommendations/getting-started/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 50 }),
+    ],
+    events: [
+      event({ eventId: 'evt_open', name: 'chat_open', path: '/products/ai-recommendations', ts: now - 20000, props: { open: true } }),
+      event({ eventId: 'evt_close', name: 'chat_open', path: '/products/ai-recommendations', ts: now - 19000, props: { open: false } }),
+    ],
+    state: {
+      opportunities: [{ id: 'opp_first', status: 'shown', shownAt: now - 20000, pageId: 'page_product', moment: 'product_research' }],
+      lastOpportunityAt: now - 20000,
+    },
+  });
+
+  assert.equal(opportunity(context).trigger, 'product_to_documentation');
+});
+
+test('an open unengaged greeting does not suppress a stronger journey transition', () => {
+  const now = Date.now();
+  const { context } = createHarness({
+    locationPath: '/doc/guides/ai-recommendations/getting-started/',
+    pages: [
+      page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'recommendations', productFocus: 'recommendations', productFocusLabel: 'AI Recommendations', dwellMs: 16000, maxScrollDepth: 60 }),
+      page({ pageId: 'page_current', path: '/doc/guides/ai-recommendations/getting-started/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 50 }),
+    ],
+    events: [
+      event({ eventId: 'evt_open', name: 'chat_open', path: '/products/ai-recommendations', ts: now - 20000, props: { open: true } }),
+    ],
+    state: {
+      opportunities: [{
+        id: 'opp_first',
+        status: 'shown',
+        shownAt: now - 20000,
+        pageId: 'page_product',
+        moment: 'product_research',
+        trigger: 'product_page_10s_50_scroll',
+        priority: 66,
+      }],
+      lastOpportunityAt: now - 20000,
+    },
+  });
+
+  assert.equal(opportunity(context).trigger, 'product_to_documentation');
+});
+
+test('a trailing terminal opportunity does not hide the replaceable visible greeting', () => {
+  const now = Date.now();
+  const { context } = createHarness({
+    locationPath: '/customers/harry-rosen',
+    pages: [
+      page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'ecommerce', dwellMs: 10000, maxScrollDepth: 50 }),
+      page({ pageId: 'page_current', path: '/customers/harry-rosen', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 10000, maxScrollDepth: 50 }),
+    ],
+    events: [
+      event({ eventId: 'evt_open', name: 'chat_open', path: '/solutions/ecommerce', ts: now - 20000, props: { open: true } }),
+    ],
+    state: {
+      opportunities: [
+        {
+          id: 'opp_visible',
+          status: 'shown',
+          shownAt: now - 20000,
+          pageId: 'page_solution',
+          moment: 'solution_research',
+          trigger: 'solution_page_10s_50_scroll',
+          priority: 65,
+        },
+        {
+          id: 'opp_terminal',
+          status: 'superseded',
+          pageId: 'page_stale',
+          moment: 'product_research',
+          trigger: 'product_page_10s_50_scroll',
+          priority: 66,
+        },
+      ],
+      lastOpportunityAt: now - 20000,
+    },
+  });
+
+  const decision = opportunity(context);
+
+  assert.equal(decision.engage, true);
+  assert.equal(decision.trigger, 'solution_to_customer_story');
+});
+
+test('the newest visible opportunity blocks replacement when an older greeting is lower priority', async () => {
+  const now = Date.now();
+  let requestCount = 0;
+  const { context, sessionStorage, chatEngagements } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/doc/guides/ai-recommendations/getting-started/',
+    pages: [
+      page({
+        pageId: 'page_product',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'recommendations',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/doc/guides/ai-recommendations/getting-started/',
+        pageGroup: 'documentation',
+        topic: 'implementation',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    events: [
+      event({
+        eventId: 'evt_open',
+        name: 'chat_open',
+        path: '/pricing',
+        ts: now - 5000,
+        props: { open: true },
+      }),
+    ],
+    state: {
+      schema: 'AlgoliaProactiveState.v1',
+      opportunities: [
+        {
+          id: 'opp_older_low',
+          status: 'shown',
+          lifecycle: ['qualified', 'pending', 'shown'],
+          shownAt: now - 20000,
+          pageId: 'page_older',
+          moment: 'product_research',
+          trigger: 'product_page_10s_50_scroll',
+          priority: 66,
+        },
+        {
+          id: 'opp_newer_high',
+          status: 'shown',
+          lifecycle: ['qualified', 'pending', 'shown'],
+          shownAt: now - 5000,
+          pageId: 'page_pricing',
+          moment: 'commercial_evaluation',
+          trigger: 'product_to_pricing',
+          priority: 88,
+        },
+      ],
+      lastOpportunityAt: now - 5000,
+    },
+    fetchImpl: async () => {
+      requestCount += 1;
+      throw new Error('a blocked replacement must not request another greeting');
+    },
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'scroll_depth', path: context.location.pathname },
+    })
+  );
+  await flushAsyncControllerWork();
+
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(opportunity(context).reason, 'chat_already_open');
+  assert.equal(requestCount, 0);
+  assert.equal(chatEngagements.length, 0);
+  assert.equal(state.opportunities.length, 2);
+  assert.deepEqual(
+    state.opportunities.map(({ id, status }) => ({ id, status })),
+    [
+      { id: 'opp_older_low', status: 'shown' },
+      { id: 'opp_newer_high', status: 'shown' },
+    ]
+  );
+});
+
+test('a closed unengaged greeting is superseded in stored state by a stronger transition', async () => {
+  const now = Date.now();
+  const { sessionStorage, chatEngagements } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/doc/guides/ai-recommendations/getting-started/',
+    pages: [
+      page({
+        pageId: 'page_product',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'recommendations',
+        productFocus: 'recommendations',
+        productFocusLabel: 'AI Recommendations',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/doc/guides/ai-recommendations/getting-started/',
+        pageGroup: 'documentation',
+        topic: 'implementation',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    events: [
+      event({ eventId: 'evt_open', name: 'chat_open', path: '/products/ai-recommendations', ts: now - 20000, props: { open: true } }),
+      event({ eventId: 'evt_close', name: 'chat_open', path: '/products/ai-recommendations', ts: now - 19000, props: { open: false } }),
+    ],
+    state: {
+      schema: 'AlgoliaProactiveState.v1',
+      opportunities: [{
+        id: 'opp_first',
+        status: 'shown',
+        shownAt: now - 20000,
+        pageId: 'page_product',
+        moment: 'product_research',
+        trigger: 'product_page_10s_50_scroll',
+        priority: 66,
+      }],
+      lastOpportunityAt: now - 20000,
+    },
+    fetchImpl: async (_url, init) => {
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        text: async () => JSON.stringify({
+          schema: 'ProactiveGreetingResponse.v1',
+          opportunityId: packet.opportunityId,
+          greeting: 'You made it from product promise to implementation reality. Want the clean version of what fits, what bends, and what needs planning?',
+          chips: ['Show implementation fit'],
+          handoffSummary: {
+            moment: packet.moment,
+            trigger: packet.trigger,
+            messageGoal: packet.messageGoal,
+          },
+        }),
+      };
+    },
+  });
+
+  await flushAsyncControllerWork();
+
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities.length, 2);
+  assert.equal(state.opportunities[0].status, 'superseded');
+  assert.equal(state.opportunities[0].supersededByTrigger, 'product_to_documentation');
+  assert.deepEqual(
+    Array.from(state.opportunities[0].lifecycle),
+    ['shown', 'superseded']
+  );
+  assert.equal(state.opportunities[1].status, 'shown');
+  assert.equal(state.opportunities[1].trigger, 'product_to_documentation');
+  assert.equal(chatEngagements.length, 1);
+});
+
+test('search to docs does not bypass the canonical developer depth rule', () => {
   const { context } = createHarness({
     locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
     pages: [
@@ -568,6 +1154,7 @@ test('site search followed by docs creates implementation journey trigger', () =
         pageGroup: 'documentation',
         topic: 'instantsearch_implementation',
         dwellMs: 2000,
+        maxScrollDepth: 0,
       }),
     ],
     events: [
@@ -589,10 +1176,31 @@ test('site search followed by docs creates implementation journey trigger', () =
 
   const decision = opportunity(context);
 
-  assert.equal(decision.engage, true);
-  assert.equal(decision.moment, 'implementation_research');
-  assert.equal(decision.trigger, 'search_to_docs');
-  assert.ok(decision.reasonCodes.includes('site_search_implementation_terms'));
+  assert.equal(decision.engage, false);
+  assert.equal(decision.reason, 'no_trigger_match');
+});
+
+test('resource depth requires 10 visible seconds and 50 percent scroll', () => {
+  for (const [dwellMs, maxScrollDepth, expected] of [
+    [10000, 49, false],
+    [9999, 50, false],
+    [10000, 50, true],
+  ]) {
+    const { context } = createHarness({
+      locationPath: '/resources/guides/search-platform-evaluation',
+      pages: [page({
+        pageId: 'page_current',
+        path: '/resources/guides/search-platform-evaluation',
+        pageGroup: 'resource',
+        topic: 'search_platform_evaluation',
+        dwellMs,
+        maxScrollDepth,
+      })],
+    });
+    const decision = opportunity(context);
+    assert.equal(decision.engage, expected);
+    if (expected) assert.equal(decision.trigger, 'resource_page_10s_50_scroll');
+  }
 });
 
 test('hover-only activity never creates a proactive opportunity', () => {
@@ -632,6 +1240,7 @@ test('emits one opportunity per page and moment from engagement signals', async 
         path: '/products/ai-recommendations',
         pageGroup: 'product',
         topic: 'ai_search',
+        dwellMs: 15000,
         maxScrollDepth: 50,
       }),
     ],
@@ -681,6 +1290,423 @@ test('emits one opportunity per page and moment from engagement signals', async 
   assert.equal(state.opportunities[0].status, 'shown');
 });
 
+test('uses the canonical qualified to pending to shown lifecycle', async () => {
+  const { context, sessionStorage } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+      cooldownMs: 0,
+    },
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/products/ai-search',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    fetchImpl: async (_url, init) => {
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        text: async () => JSON.stringify({
+          schema: 'ProactiveGreetingResponse.v1',
+          opportunityId: packet.opportunityId,
+          greeting: 'AI Search has your attention. Want to separate the bright and shiny from what moves the needle?',
+          chips: ['Show practical value'],
+          handoffSummary: {
+            moment: packet.moment,
+            trigger: packet.trigger,
+            messageGoal: packet.messageGoal,
+          },
+        }),
+      };
+    },
+  });
+
+  await flushAsyncControllerWork();
+
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'shown');
+  assert.deepEqual(Array.from(state.opportunities[0].lifecycle), ['qualified', 'pending', 'shown']);
+});
+
+test('expires a stale unengaged opportunity and records the terminal lifecycle state', () => {
+  const now = Date.now();
+  const { context, sessionStorage } = createHarness({
+    proactiveConfig: {
+      opportunityTtlMs: 1000,
+    },
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/products/ai-search',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    state: {
+      schema: 'AlgoliaProactiveState.v1',
+      opportunities: [{
+        id: 'opp_stale',
+        status: 'shown',
+        lifecycle: ['qualified', 'pending', 'shown'],
+        pageId: 'page_previous',
+        pagePath: '/products/ai-recommendations',
+        moment: 'product_research',
+        trigger: 'product_page_10s_50_scroll',
+        priority: 66,
+        createdAt: now - 5000,
+        shownAt: now - 4000,
+      }],
+    },
+  });
+
+  context.algoliaProactiveController.evaluate();
+
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'expired');
+  assert.ok(state.opportunities[0].expiredAt >= now);
+  assert.deepEqual(
+    Array.from(state.opportunities[0].lifecycle),
+    ['qualified', 'pending', 'shown', 'expired']
+  );
+});
+
+test('records a shown greeting as dismissed when the visitor closes it', () => {
+  const now = Date.now();
+  const { context, sessionStorage } = createHarness({
+    state: {
+      schema: 'AlgoliaProactiveState.v1',
+      opportunities: [{
+        id: 'opp_shown',
+        status: 'shown',
+        lifecycle: ['qualified', 'pending', 'shown'],
+        pageId: 'page_current',
+        pagePath: '/products/ai-search',
+        moment: 'product_research',
+        trigger: 'product_page_10s_50_scroll',
+        priority: 66,
+        createdAt: now,
+        shownAt: now,
+      }],
+    },
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-chat-open-change', {
+      detail: { open: false },
+    })
+  );
+
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'dismissed');
+  assert.ok(state.opportunities[0].dismissedAt >= now);
+  assert.deepEqual(
+    Array.from(state.opportunities[0].lifecycle),
+    ['qualified', 'pending', 'shown', 'dismissed']
+  );
+});
+
+test('dismissed source greetings suppress same-page duplicates without blocking a new pricing page', async () => {
+  const cases = [
+    {
+      name: 'product to pricing',
+      source: page({
+        pageId: 'page_product',
+        path: '/products/ai-search',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        productFocus: 'ai_search',
+        productFocusLabel: 'AI Search',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+      sourceTrigger: 'product_page_10s_50_scroll',
+      destinationTrigger: 'product_to_pricing',
+    },
+    {
+      name: 'solution to pricing',
+      source: page({
+        pageId: 'page_solution',
+        path: '/solutions/ecommerce',
+        pageGroup: 'solution',
+        topic: 'commerce',
+        solutionFocus: 'commerce',
+        solutionFocusLabel: 'Commerce',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+      sourceTrigger: 'solution_page_10s_50_scroll',
+      destinationTrigger: 'solution_to_pricing',
+    },
+  ];
+
+  for (const item of cases) {
+    const requests = [];
+    const { context, sessionStorage } = createHarness({
+      locationPath: item.source.path,
+      currentPageId: item.source.pageId,
+      pages: [item.source],
+      proactiveConfig: {
+        greetingsAgentId: 'greeting_agent_123',
+        appId: '0EXRPAXB56',
+        apiKey: 'search_key',
+        cooldownMs: 0,
+      },
+      fetchImpl: async (_url, init) => {
+        const body = JSON.parse(init.body);
+        const packet = JSON.parse(
+          body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, '')
+        );
+        requests.push(packet);
+        return {
+          ok: true,
+          status: 200,
+          text: async () => JSON.stringify({
+            schema: 'ProactiveGreetingResponse.v1',
+            opportunityId: packet.opportunityId,
+            greeting: 'Here is the useful version for this decision. Where should we start?',
+            chips: ['Show the practical view'],
+            handoffSummary: {
+              moment: packet.moment,
+              trigger: packet.trigger,
+              messageGoal: packet.messageGoal,
+            },
+          }),
+        };
+      },
+    });
+
+    await flushAsyncControllerWork();
+    assert.equal(requests.length, 1, `${item.name}: source request`);
+    assert.equal(requests[0].trigger, item.sourceTrigger, `${item.name}: source trigger`);
+
+    context.document.dispatchEvent(
+      new context.CustomEvent('algolia-chat-open-change', { detail: { open: false } })
+    );
+    let state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+    assert.equal(state.opportunities[0].status, 'dismissed', `${item.name}: dismissed`);
+
+    context.document.dispatchEvent(
+      new context.CustomEvent('algolia-engagement-signal', {
+        detail: { name: 'nav_click', path: item.source.path },
+      })
+    );
+    await flushAsyncControllerWork();
+
+    state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+    assert.equal(requests.length, 1, `${item.name}: no same-page fetch`);
+    assert.equal(state.opportunities.length, 1, `${item.name}: no same-page opportunity`);
+
+    const destinationPageId = `${item.source.pageId}_pricing`;
+    const session = JSON.parse(sessionStorage.getItem('algolia_session'));
+    session.currentPageId = destinationPageId;
+    session.pages.push(page({
+      pageId: destinationPageId,
+      path: '/pricing',
+      pageGroup: 'pricing',
+      topic: 'pricing_and_usage',
+    }));
+    sessionStorage.setItem('algolia_session', JSON.stringify(session));
+    context.location.pathname = '/pricing';
+    context.location.href = 'https://www.algolia.com/pricing';
+
+    context.document.dispatchEvent(
+      new context.CustomEvent('algolia-engagement-signal', {
+        detail: { name: 'nav_click', path: '/pricing' },
+      })
+    );
+    await flushAsyncControllerWork();
+
+    state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+    assert.equal(requests.length, 2, `${item.name}: one destination fetch`);
+    assert.equal(requests[1].currentPage.pageId, destinationPageId, `${item.name}: destination page`);
+    assert.equal(requests[1].trigger, item.destinationTrigger, `${item.name}: destination trigger`);
+    assert.equal(state.opportunities.length, 2, `${item.name}: one destination opportunity`);
+    assert.equal(state.opportunities[1].status, 'shown', `${item.name}: destination shown`);
+  }
+});
+
+test('does not expire or dismiss an active opportunity', () => {
+  const now = Date.now();
+  const { context, sessionStorage } = createHarness({
+    proactiveConfig: {
+      opportunityTtlMs: 1,
+    },
+    state: {
+      schema: 'AlgoliaProactiveState.v1',
+      opportunities: [{
+        id: 'opp_active',
+        status: 'active',
+        lifecycle: ['qualified', 'pending', 'shown', 'engaged', 'handed_off', 'active'],
+        pageId: 'page_current',
+        pagePath: '/products/ai-search',
+        moment: 'product_research',
+        trigger: 'product_page_10s_50_scroll',
+        priority: 66,
+        createdAt: now - 5000,
+        updatedAt: now - 4000,
+      }],
+    },
+  });
+
+  context.algoliaProactiveController.evaluate();
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-chat-engagement-dismissed', {
+      detail: { opportunityId: 'opp_active' },
+    })
+  );
+
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'active');
+  assert.deepEqual(
+    Array.from(state.opportunities[0].lifecycle),
+    ['qualified', 'pending', 'shown', 'engaged', 'handed_off', 'active']
+  );
+});
+
+test('retries the same qualified page moment after a greeting request fails', async () => {
+  let requestCount = 0;
+  const { context, sessionStorage, chatEngagements } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+      cooldownMs: 0,
+    },
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/products/ai-search',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    fetchImpl: async (_url, init) => {
+      requestCount += 1;
+      if (requestCount === 1) return { ok: false, status: 503, text: async () => '' };
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        status: 200,
+        text: async () => JSON.stringify({
+          schema: 'ProactiveGreetingResponse.v1',
+          opportunityId: packet.opportunityId,
+          greeting: 'AI Search has your attention. Want the practical version of where it earns its keep?',
+          chips: ['Show practical value'],
+          handoffSummary: {
+            moment: packet.moment,
+            trigger: packet.trigger,
+            messageGoal: packet.messageGoal,
+          },
+        }),
+      };
+    },
+  });
+
+  await flushAsyncControllerWork();
+  let state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(requestCount, 1);
+  assert.equal(state.opportunities[0].status, 'failed');
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_dwell', path: '/products/ai-search' },
+    })
+  );
+  await flushAsyncControllerWork();
+
+  state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(requestCount, 2);
+  assert.equal(chatEngagements.length, 1);
+  assert.equal(state.opportunities.length, 1);
+  assert.equal(state.opportunities[0].status, 'shown');
+  assert.deepEqual(
+    Array.from(state.opportunities[0].lifecycle),
+    ['qualified', 'pending', 'failed', 'pending', 'shown']
+  );
+});
+
+test('retries the same opportunity when the chat widget becomes ready after qualification', async () => {
+  let widgetReady = false;
+  let requestCount = 0;
+  const { context, sessionStorage, chatEngagements } = createHarness({
+    chatAvailable: () => widgetReady,
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+      cooldownMs: 0,
+    },
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/products/ai-search',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 10000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    fetchImpl: async (_url, init) => {
+      requestCount += 1;
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        status: 200,
+        text: async () => JSON.stringify({
+          schema: 'ProactiveGreetingResponse.v1',
+          opportunityId: packet.opportunityId,
+          greeting: 'AI Search has your attention. Want the practical version of where it earns its keep?',
+          chips: ['Show practical value'],
+          handoffSummary: {
+            moment: packet.moment,
+            trigger: packet.trigger,
+            messageGoal: packet.messageGoal,
+          },
+        }),
+      };
+    },
+  });
+
+  await flushAsyncControllerWork();
+  let state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  const opportunityId = state.opportunities[0].id;
+  assert.equal(requestCount, 1);
+  assert.equal(state.opportunities[0].status, 'failed');
+  assert.equal(state.opportunities[0].failureReason, 'widget_unavailable');
+
+  widgetReady = true;
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_dwell', path: '/products/ai-search' },
+    })
+  );
+  await flushAsyncControllerWork();
+
+  state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(requestCount, 2);
+  assert.equal(chatEngagements.length, 1);
+  assert.equal(state.opportunities.length, 1);
+  assert.equal(state.opportunities[0].id, opportunityId);
+  assert.equal(state.opportunities[0].status, 'shown');
+  assert.deepEqual(
+    Array.from(state.opportunities[0].lifecycle),
+    ['qualified', 'pending', 'failed', 'pending', 'shown']
+  );
+});
+
 test('debug mode exposes suppression reason for invisible proactive blocks', () => {
   const { context, documentEvents } = createHarness({
     search: '?algoliaProactiveDebug=1',
@@ -690,12 +1716,13 @@ test('debug mode exposes suppression reason for invisible proactive blocks', () 
         path: '/products/ai-recommendations',
         pageGroup: 'product',
         topic: 'ai_search',
-        dwellMs: 10000,
+        dwellMs: 15000,
+        maxScrollDepth: 50,
       }),
     ],
     events: [
-      event({ eventId: 'evt_chat', name: 'chat_open', path: '/products/ai-recommendations' }),
       event({ eventId: 'evt_page', name: 'page_view', path: '/products/ai-recommendations' }),
+      event({ eventId: 'evt_chat', name: 'chat_open', path: '/products/ai-recommendations' }),
     ],
   });
 
@@ -710,224 +1737,258 @@ test('debug mode exposes suppression reason for invisible proactive blocks', () 
   assert.equal(suppression.detail.reason, 'chat_already_open');
 });
 
-test('trigger grammar covers implemented journey, dwell, scroll, and priority permutations', () => {
+test('an active persisted conversation suppresses a new proactive greeting after navigation', () => {
+  const { context } = createHarness({
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 15000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    initialSession: {
+      'algolia-chat:conversation': JSON.stringify({
+        version: 1,
+        conversationId: 'conversation_1',
+        turns: [{ id: 'turn_1' }],
+      }),
+    },
+  });
+
+  assert.equal(opportunity(context).reason, 'conversation_already_active');
+});
+
+test('an active conversation that was open is restored after navigation', () => {
+  const { context, chatOpens } = createHarness({
+    pages: [
+      page({
+        pageId: 'page_source',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 15000,
+        maxScrollDepth: 50,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing',
+      }),
+    ],
+    events: [
+      event({
+        eventId: 'evt_chat_open',
+        name: 'chat_open',
+        path: '/products/ai-recommendations',
+        pageId: 'page_source',
+        ts: 1786750000000,
+        props: { open: true },
+      }),
+      event({
+        eventId: 'evt_destination',
+        name: 'page_view',
+        path: '/pricing',
+        ts: 1786750001000,
+      }),
+    ],
+    initialSession: {
+      'algolia-chat:conversation': JSON.stringify({
+        version: 1,
+        conversationId: 'conversation_1',
+        turns: [{ id: 'turn_1' }],
+      }),
+    },
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'controller_ready', path: '/pricing' },
+    })
+  );
+
+  assert.equal(chatOpens.length, 1);
+  assert.equal(opportunity(context).reason, 'conversation_already_active');
+});
+
+test('an active conversation that was closed stays closed after navigation', () => {
+  const { context, chatOpens } = createHarness({
+    pages: [
+      page({
+        pageId: 'page_source',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 15000,
+        maxScrollDepth: 50,
+      }),
+      page({
+        pageId: 'page_current',
+        path: '/pricing',
+        pageGroup: 'pricing',
+        topic: 'pricing',
+      }),
+    ],
+    events: [
+      event({
+        eventId: 'evt_chat_open',
+        name: 'chat_open',
+        path: '/products/ai-recommendations',
+        pageId: 'page_source',
+        ts: 1786750000000,
+        props: { open: true },
+      }),
+      event({
+        eventId: 'evt_chat_close',
+        name: 'chat_open',
+        path: '/products/ai-recommendations',
+        pageId: 'page_source',
+        ts: 1786750000500,
+        props: { open: false },
+      }),
+      event({
+        eventId: 'evt_destination',
+        name: 'page_view',
+        path: '/pricing',
+        ts: 1786750001000,
+      }),
+    ],
+    initialSession: {
+      'algolia-chat:conversation': JSON.stringify({
+        version: 1,
+        conversationId: 'conversation_1',
+        turns: [{ id: 'turn_1' }],
+      }),
+    },
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'controller_ready', path: '/pricing' },
+    })
+  );
+
+  assert.equal(chatOpens.length, 0);
+});
+
+test('a chat-open event from the previous page does not suppress the current-page journey', () => {
+  const { context } = createHarness({
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 15000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    events: [
+      event({ eventId: 'evt_chat', name: 'chat_open', path: '/pricing', ts: 1786749999000, props: { open: true } }),
+      event({ eventId: 'evt_page', name: 'page_view', path: '/products/ai-recommendations', ts: 1786750000000 }),
+    ],
+  });
+
+  const decision = opportunity(context);
+  assert.equal(decision.engage, true);
+  assert.equal(decision.trigger, 'product_page_10s_50_scroll');
+});
+
+test('debug trace can be enabled persistently from localStorage without URL flags', () => {
+  const { context, documentEvents } = createHarness({
+    initialLocal: { algoliaDebug: '1' },
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: '/products/ai-recommendations',
+        pageGroup: 'product',
+        topic: 'ai_search',
+        dwellMs: 15000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    events: [
+      event({ eventId: 'evt_page', name: 'page_view', path: '/products/ai-recommendations' }),
+      event({ eventId: 'evt_chat', name: 'chat_open', path: '/products/ai-recommendations' }),
+    ],
+  });
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_dwell', path: '/products/ai-recommendations' },
+    })
+  );
+
+  const suppression = documentEvents.find((evt) => evt.type === 'algolia-proactive-suppressed');
+  assert.equal(suppression.detail.reason, 'chat_already_open');
+  assert.ok(context.algoliaProactiveController.debug().trace.some((entry) => entry.stage === 'suppressed'));
+});
+
+
+test('trigger grammar contains exactly the eight canonical journeys', () => {
   const cases = [
     {
-      name: 'product_to_pricing',
-      locationPath: '/pricing',
-      pages: [
-        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 12000 }),
-        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 1000 }),
-      ],
-      expected: 'product_to_pricing',
-    },
-    {
-      name: 'implementation_to_pricing',
-      locationPath: '/pricing',
-      pages: [
-        page({ pageId: 'page_docs', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 18000 }),
-        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 1000 }),
-      ],
-      expected: 'implementation_to_pricing',
-    },
-    {
-      name: 'pricing_to_implementation',
-      locationPath: '/developers',
-      pages: [
-        page({ pageId: 'page_pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 10000 }),
-        page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 2000 }),
-      ],
-      expected: 'pricing_to_implementation',
-    },
-    {
-      name: 'product_to_customer_story',
-      locationPath: '/customers/lacoste',
-      pages: [
-        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 12000 }),
-        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 2000 }),
-      ],
-      expected: 'product_to_customer_story',
-    },
-    {
-      name: 'solution_to_pricing',
-      locationPath: '/pricing',
-      pages: [
-        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 12000 }),
-        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 1000 }),
-      ],
-      expected: 'solution_to_pricing',
-    },
-    {
-      name: 'solution_to_customer_story',
-      locationPath: '/customers/lacoste',
-      pages: [
-        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 12000 }),
-        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 2000 }),
-      ],
-      expected: 'solution_to_customer_story',
-    },
-    {
-      name: 'search_to_docs',
-      locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
-      pages: [
-        page({ pageId: 'page_search', path: '/search', pageGroup: 'search', topic: 'site_search', dwellMs: 5000 }),
-        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 1000 }),
-      ],
-      events: [
-        event({ eventId: 'evt_search', name: 'site_search', path: '/search', pageId: 'page_search', props: { query: 'react instantsearch implementation' } }),
-        event({ eventId: 'evt_docs', name: 'page_view', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/' }),
-      ],
-      expected: 'search_to_docs',
-    },
-    {
-      name: 'pricing_8s_dwell',
-      locationPath: '/pricing',
-      pages: [page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 8000 })],
-      expected: 'pricing_8s_dwell',
-    },
-    {
-      name: 'developer_page_15s_dwell',
-      locationPath: '/developers',
-      pages: [page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 15000 })],
-      expected: 'developer_page_15s_dwell',
-    },
-    {
-      name: 'developer_page_60_scroll',
-      locationPath: '/developers',
-      pages: [page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 2000, maxScrollDepth: 60 })],
-      expected: 'developer_page_60_scroll',
-    },
-    {
-      name: 'customer_story_12s_dwell',
-      locationPath: '/customers/lacoste',
-      pages: [page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 12000 })],
-      expected: 'customer_story_12s_dwell',
-    },
-    {
-      name: 'customer_story_60_scroll',
-      locationPath: '/customers/lacoste',
-      pages: [page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 1000, maxScrollDepth: 60 })],
-      expected: 'customer_story_60_scroll',
-    },
-    {
-      name: 'product_page_10s_dwell',
-      locationPath: '/products/ai-recommendations',
-      pages: [page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000 })],
-      expected: 'product_page_10s_dwell',
-    },
-    {
-      name: 'product_page_50_scroll',
-      locationPath: '/products/ai-recommendations',
-      pages: [page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 1000, maxScrollDepth: 50 })],
-      expected: 'product_page_50_scroll',
-    },
-    {
-      name: 'solution_page_10s_dwell',
-      locationPath: '/solutions/ecommerce',
-      pages: [page({ pageId: 'page_current', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 10000 })],
-      expected: 'solution_page_10s_dwell',
-    },
-    {
-      name: 'solution_page_50_scroll',
-      locationPath: '/solutions/ecommerce',
-      pages: [page({ pageId: 'page_current', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 1000, maxScrollDepth: 50 })],
-      expected: 'solution_page_50_scroll',
-    },
-    {
-      name: 'multiple_product_pages',
-      locationPath: '/products/ai-recommendations',
-      pages: [
-        page({ pageId: 'page_product_1', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 4000 }),
-        page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 1000 }),
-      ],
-      expected: 'multiple_product_pages',
-    },
-    {
-      name: 'multiple_solution_pages',
-      locationPath: '/solutions/marketplaces',
-      pages: [
-        page({ pageId: 'page_solution_1', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 4000 }),
-        page({ pageId: 'page_current', path: '/solutions/marketplaces', pageGroup: 'solution', topic: 'marketplace', solutionFocus: 'marketplace', solutionFocusLabel: 'Marketplace', dwellMs: 1000 }),
-      ],
-      expected: 'multiple_solution_pages',
-    },
-    {
-      name: 'product_to_pricing_beats_pricing_dwell',
-      locationPath: '/pricing',
-      pages: [
-        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 12000 }),
-        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
-      ],
-      expected: 'product_to_pricing',
-    },
-    {
-      name: 'implementation_to_pricing_beats_pricing_dwell',
-      locationPath: '/pricing',
-      pages: [
-        page({ pageId: 'page_docs', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 18000 }),
-        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
-      ],
-      expected: 'implementation_to_pricing',
-    },
-    {
-      name: 'pricing_to_implementation_beats_developer_dwell_scroll',
-      locationPath: '/developers',
-      pages: [
-        page({ pageId: 'page_pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 10000 }),
-        page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 15000, maxScrollDepth: 60 }),
-      ],
-      expected: 'pricing_to_implementation',
-    },
-    {
-      name: 'product_to_customer_beats_customer_dwell_scroll',
-      locationPath: '/customers/lacoste',
-      pages: [
-        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 12000 }),
-        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 12000, maxScrollDepth: 60 }),
-      ],
-      expected: 'product_to_customer_story',
-    },
-    {
-      name: 'solution_to_pricing_beats_pricing_dwell',
-      locationPath: '/pricing',
-      pages: [
-        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 12000 }),
-        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
-      ],
-      expected: 'solution_to_pricing',
-    },
-    {
-      name: 'solution_to_customer_beats_customer_dwell_scroll',
-      locationPath: '/customers/lacoste',
-      pages: [
-        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 12000 }),
-        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 12000, maxScrollDepth: 60 }),
-      ],
-      expected: 'solution_to_customer_story',
-    },
-    {
-      name: 'product_dwell_beats_product_scroll',
+      name: 'product depth',
       locationPath: '/products/ai-recommendations',
       pages: [page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 })],
-      expected: 'product_page_10s_dwell',
+      expected: 'product_page_10s_50_scroll',
     },
     {
-      name: 'solution_dwell_beats_solution_scroll',
+      name: 'product to documentation',
+      locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 50 }),
+      ],
+      expected: 'product_to_documentation',
+    },
+    {
+      name: 'solution depth',
       locationPath: '/solutions/ecommerce',
-      pages: [page({ pageId: 'page_current', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', solutionFocus: 'commerce', solutionFocusLabel: 'Commerce', dwellMs: 10000, maxScrollDepth: 50 })],
-      expected: 'solution_page_10s_dwell',
+      pages: [page({ pageId: 'page_current', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', dwellMs: 10000, maxScrollDepth: 50 })],
+      expected: 'solution_page_10s_50_scroll',
     },
     {
-      name: 'developer_dwell_beats_developer_scroll',
-      locationPath: '/developers',
-      pages: [page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 15000, maxScrollDepth: 60 })],
-      expected: 'developer_page_15s_dwell',
-    },
-    {
-      name: 'customer_dwell_beats_customer_scroll',
+      name: 'solution to proof',
       locationPath: '/customers/lacoste',
-      pages: [page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 12000, maxScrollDepth: 60 })],
-      expected: 'customer_story_12s_dwell',
+      pages: [
+        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 10000, maxScrollDepth: 50 }),
+      ],
+      expected: 'solution_to_customer_story',
+    },
+    {
+      name: 'product to pricing',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+      ],
+      expected: 'product_to_pricing',
+    },
+    {
+      name: 'solution to pricing',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_solution', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+      ],
+      expected: 'solution_to_pricing',
+    },
+    {
+      name: 'developer depth',
+      locationPath: '/developers',
+      pages: [page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 50 })],
+      expected: 'developer_page_10s_50_scroll',
+    },
+    {
+      name: 'resource depth',
+      locationPath: '/resources/guides/search-platform-evaluation',
+      pages: [page({ pageId: 'page_current', path: '/resources/guides/search-platform-evaluation', pageGroup: 'resource', topic: 'evaluation', dwellMs: 10000, maxScrollDepth: 50 })],
+      expected: 'resource_page_10s_50_scroll',
     },
   ];
 
@@ -940,6 +2001,55 @@ test('trigger grammar covers implemented journey, dwell, scroll, and priority pe
     const decision = opportunity(context);
     assert.equal(decision.engage, true, item.name);
     assert.equal(decision.trigger, item.expected, item.name);
+  }
+});
+
+test('legacy trigger paths do not create opportunities', () => {
+  const cases = [
+    {
+      name: 'unqualified product to pricing',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 9999, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
+      ],
+    },
+    {
+      name: 'implementation to pricing',
+      locationPath: '/pricing',
+      pages: [
+        page({ pageId: 'page_docs', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
+      ],
+    },
+    {
+      name: 'product to customer story',
+      locationPath: '/customers/lacoste',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_current', path: '/customers/lacoste', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 10000, maxScrollDepth: 50 }),
+      ],
+    },
+    {
+      name: 'standalone pricing dwell',
+      locationPath: '/pricing',
+      pages: [page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 30000, maxScrollDepth: 100 })],
+    },
+    {
+      name: 'two shallow product pages',
+      locationPath: '/products/ai-recommendations',
+      pages: [
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 4000 }),
+        page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'recommendations', dwellMs: 4000 }),
+      ],
+    },
+  ];
+
+  for (const item of cases) {
+    const { context } = createHarness({ locationPath: item.locationPath, pages: item.pages });
+    const decision = opportunity(context);
+    assert.equal(decision.engage, false, item.name);
+    assert.equal(decision.reason, 'no_trigger_match', item.name);
   }
 });
 
@@ -982,7 +2092,7 @@ test('unsupported journey paths do not invent path-specific triggers', () => {
   }
 });
 
-test('faq to pricing falls back to generic pricing dwell only after the pricing threshold', () => {
+test('faq to pricing never invents a standalone pricing trigger', () => {
   const belowThreshold = createHarness({
     locationPath: '/pricing',
     pages: [
@@ -999,7 +2109,7 @@ test('faq to pricing falls back to generic pricing dwell only after the pricing 
   });
 
   assert.equal(opportunity(belowThreshold.context).engage, false);
-  assert.equal(opportunity(atThreshold.context).trigger, 'pricing_8s_dwell');
+  assert.equal(opportunity(atThreshold.context).engage, false);
 });
 
 test('configured controller posts a proactive greeting request and renders validated greeting chips', async () => {
@@ -1018,6 +2128,7 @@ test('configured controller posts a proactive greeting request and renders valid
         pageGroup: 'product',
         topic: 'ai_search',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -1081,7 +2192,7 @@ test('configured controller posts a proactive greeting request and renders valid
 
 test('controller accepts white-glove concierge greetings that are specific and option-rich', async () => {
   const conciergeGreeting =
-    'Hey there, explorer. AI Search, Personalization, and Recommendations can all move your store, but they solve different jobs. Want real customer examples, a practical comparison, or a deeper walkthrough? I’ll keep it useful, specific, and judgment-free.';
+    'Hello, explorer. AI Search, Personalization, and Recommendations solve different jobs, so shall we compare the options, look at customer proof, or go straight into implementation reality?';
   const { context, chatEngagements, sessionStorage } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
@@ -1098,7 +2209,8 @@ test('controller accepts white-glove concierge greetings that are specific and o
         topic: 'ai_search',
         productFocus: 'ai_search',
         productFocusLabel: 'AI Search',
-        dwellMs: 8000,
+        dwellMs: 10000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_personalization',
@@ -1108,7 +2220,8 @@ test('controller accepts white-glove concierge greetings that are specific and o
         topic: 'ai_search',
         productFocus: 'personalization',
         productFocusLabel: 'Personalization',
-        dwellMs: 8000,
+        dwellMs: 10000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_recommendations',
@@ -1118,7 +2231,8 @@ test('controller accepts white-glove concierge greetings that are specific and o
         topic: 'ai_search',
         productFocus: 'recommendations',
         productFocusLabel: 'AI Recommendations',
-        dwellMs: 8000,
+        dwellMs: 10000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -1167,6 +2281,51 @@ test('controller accepts white-glove concierge greetings that are specific and o
   assert.equal(state.opportunities[0].status, 'shown');
 });
 
+test('controller compacts greetings longer than the two-sentence popup contract', async () => {
+  const { chatEngagements, sessionStorage } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000, maxScrollDepth: 50 }),
+      page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+    ],
+    fetchImpl: async (_url, init) => {
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        text: async () => JSON.stringify({
+          schema: 'ProactiveGreetingResponse.v1',
+          opportunityId: packet.opportunityId,
+          greeting: 'Pricing has entered the chat. Let us make the cost drivers useful. Where should we begin?',
+          chips: ['Explain cost drivers'],
+          handoffSummary: {
+            moment: 'commercial_evaluation',
+            trigger: 'product_to_pricing',
+            messageGoal: 'explain_cost_drivers',
+          },
+        }),
+      };
+    },
+  });
+
+  await flushAsyncControllerWork();
+
+  assert.equal(chatEngagements.length, 1);
+  assert.equal(
+    chatEngagements[0].greeting,
+    'Pricing has entered the chat. Let us make the cost drivers useful.'
+  );
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'shown');
+  assert.equal(state.opportunities[0].failureReason, null);
+  assert.equal(state.opportunities[0].normalizationReason, 'greeting_compacted_to_two_sentences');
+});
+
 test('controller uses existing engage concierge agent id as greeting agent fallback', async () => {
   const fetchCalls = [];
   const { context, chatEngagements } = createHarness({
@@ -1181,6 +2340,7 @@ test('controller uses existing engage concierge agent id as greeting agent fallb
         pageGroup: 'product',
         topic: 'ai_search',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -1233,7 +2393,7 @@ test('controller reads greeting agent id directly from algolia-chat-engage befor
     },
     locationPath: '/pricing',
     pages: [
-      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000 }),
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000, maxScrollDepth: 50 }),
       page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
     ],
     fetchImpl: async (url, init) => {
@@ -1286,7 +2446,8 @@ test('controller can use algolia-chat credentials when instant search is absent'
         topic: 'commerce',
         solutionFocus: 'commerce',
         solutionFocusLabel: 'Commerce',
-        dwellMs: 10000,
+        dwellMs: 15000,
+        maxScrollDepth: 50,
       }),
     ],
     fetchImpl: async (url, init) => {
@@ -1304,7 +2465,7 @@ test('controller can use algolia-chat credentials when instant search is absent'
             chips: ['Show examples', 'Compare use cases'],
             handoffSummary: {
               moment: 'solution_research',
-              trigger: 'solution_page_10s_dwell',
+              trigger: 'solution_page_10s_50_scroll',
               messageGoal: 'explain_solution_fit',
             },
           }),
@@ -1327,7 +2488,7 @@ test('debug trace records candidate, credential, request, and render pipeline st
     },
     locationPath: '/pricing',
     pages: [
-      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000 }),
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000, maxScrollDepth: 50 }),
       page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
     ],
     fetchImpl: async (_url, init) => {
@@ -1367,6 +2528,66 @@ test('debug trace records candidate, credential, request, and render pipeline st
   assert.ok(stages.includes('widget_rendered'));
 });
 
+test('debug status keeps a rendered greeting recognizable when later signals see the open chat', async () => {
+  const currentPath = '/products/ai-recommendations';
+  const { context, sessionStorage } = createHarness({
+    search: '?algoliaProactiveDebug=1',
+    locationPath: currentPath,
+    pages: [
+      page({
+        pageId: 'page_current',
+        path: currentPath,
+        pageGroup: 'product',
+        topic: 'ai_recommendations',
+        dwellMs: 12000,
+        maxScrollDepth: 50,
+      }),
+    ],
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+      cooldownMs: 0,
+    },
+    fetchImpl: async (_url, init) => {
+      const body = JSON.parse(init.body);
+      const packet = JSON.parse(body.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      return {
+        ok: true,
+        status: 200,
+        text: async () => JSON.stringify({
+          schema: 'ProactiveGreetingResponse.v1',
+          opportunityId: packet.opportunityId,
+          greeting: 'Recommendations deserve a closer look. Want to separate useful discovery from expensive decoration?',
+          chips: ['Show the practical value'],
+          handoffSummary: {
+            moment: 'product_research',
+            trigger: 'product_page_10s_50_scroll',
+            messageGoal: 'explain_product_fit',
+          },
+        }),
+      };
+    },
+  });
+
+  await flushAsyncControllerWork();
+  const events = JSON.parse(sessionStorage.getItem('algolia_events'));
+  events.events.push(event({ eventId: 'evt_chat', name: 'chat_open', path: currentPath }));
+  sessionStorage.setItem('algolia_events', JSON.stringify(events));
+
+  context.document.dispatchEvent(
+    new context.CustomEvent('algolia-engagement-signal', {
+      detail: { name: 'page_dwell', path: currentPath },
+    })
+  );
+
+  assert.equal(context.__algoliaProactiveLastSuppression.reason, 'chat_already_open');
+  assert.equal(
+    context.__algoliaProactiveLastStatus.message,
+    'Proactive greeting active: product_page_10s_50_scroll'
+  );
+});
+
 test('controller evaluates once on install so initial page-view journey triggers are not missed', async () => {
   const fetchCalls = [];
   const { chatEngagements } = createHarness({
@@ -1384,6 +2605,7 @@ test('controller evaluates once on install so initial page-view journey triggers
         pageGroup: 'product',
         topic: 'ai_search',
         dwellMs: 12000,
+        maxScrollDepth: 50,
       }),
       page({
         pageId: 'page_current',
@@ -1436,7 +2658,7 @@ test('controller refuses invalid greeting responses and does not open the widget
     },
     locationPath: '/pricing',
     pages: [
-      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000 }),
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000, maxScrollDepth: 50 }),
       page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
     ],
     fetchImpl: async () => ({
@@ -1465,8 +2687,83 @@ test('controller refuses invalid greeting responses and does not open the widget
 
   assert.equal(chatEngagements.length, 0);
   const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
-  assert.equal(state.opportunities[0].status, 'greeting_rejected');
+  assert.equal(state.opportunities[0].status, 'failed');
   assert.equal(state.opportunities[0].failureReason, 'opportunity_mismatch');
+});
+
+test('controller rejects greeting JSON wrapped in model prose', async () => {
+  const { context, chatEngagements, sessionStorage } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000, maxScrollDepth: 50 }),
+      page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+    ],
+    fetchImpl: async (_url, init) => {
+      const request = JSON.parse(init.body);
+      const packet = JSON.parse(request.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      const response = {
+        schema: 'ProactiveGreetingResponse.v1',
+        opportunityId: packet.opportunityId,
+        greeting: 'Pricing after product research is where budget gravity arrives. Want the useful version?',
+        chips: ['Explain cost drivers'],
+        handoffSummary: {
+          moment: 'commercial_evaluation',
+          trigger: 'product_to_pricing',
+          messageGoal: 'explain_cost_drivers',
+        },
+      };
+      return { ok: true, text: async () => `Here is the JSON:\n${JSON.stringify(response)}` };
+    },
+  });
+
+  await flushAsyncControllerWork();
+
+  assert.equal(chatEngagements.length, 0);
+  const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state'));
+  assert.equal(state.opportunities[0].status, 'failed');
+  assert.equal(state.opportunities[0].failureReason, 'invalid_json');
+});
+
+test('controller accepts one validated greeting object wrapped in a JSON code fence', async () => {
+  const { context, chatEngagements } = createHarness({
+    proactiveConfig: {
+      greetingsAgentId: 'greeting_agent_123',
+      appId: '0EXRPAXB56',
+      apiKey: 'search_key',
+    },
+    locationPath: '/pricing',
+    pages: [
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000, maxScrollDepth: 50 }),
+      page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
+    ],
+    fetchImpl: async (_url, init) => {
+      const request = JSON.parse(init.body);
+      const packet = JSON.parse(request.messages[0].parts[0].text.replace(/^PROACTIVE_GREETING_REQUEST\n/, ''));
+      const response = {
+        schema: 'ProactiveGreetingResponse.v1',
+        opportunityId: packet.opportunityId,
+        greeting: 'Pricing after product research is where budget gravity arrives. Want the useful version?',
+        chips: ['Explain cost drivers'],
+        handoffSummary: {
+          moment: 'commercial_evaluation',
+          trigger: 'product_to_pricing',
+          messageGoal: 'explain_cost_drivers',
+        },
+      };
+      return { ok: true, text: async () => `\`\`\`json\n${JSON.stringify(response, null, 2)}\n\`\`\`` };
+    },
+  });
+
+  await flushAsyncControllerWork();
+
+  assert.equal(chatEngagements.length, 1);
+  assert.match(chatEngagements[0].greeting, /budget gravity/);
+  assert.deepEqual(Array.from(chatEngagements[0].suggestions), ['Explain cost drivers']);
 });
 
 test('controller parses streamed text deltas from the greetings agent', async () => {
@@ -1478,7 +2775,7 @@ test('controller parses streamed text deltas from the greetings agent', async ()
     },
     locationPath: '/pricing',
     pages: [
-      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000 }),
+      page({ pageId: 'page_product', path: '/products/search', pageGroup: 'product', topic: 'search', dwellMs: 12000, maxScrollDepth: 50 }),
       page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
     ],
     fetchImpl: async (_url, init) => {

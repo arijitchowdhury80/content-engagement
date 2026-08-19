@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CHAT_DIR = ROOT / "frontend" / "chat-widget"
 SITE_DIR = ROOT / "local-sites" / "algolia-com-parity"
 FIXTURE = SITE_DIR / "index.html"
+UAT_STANDALONE = ROOT / "testing" / "team-uat" / "content-engagement-team-uat.html"
 
 
 class LocalParityHandler(http.server.SimpleHTTPRequestHandler):
@@ -27,6 +28,8 @@ class LocalParityHandler(http.server.SimpleHTTPRequestHandler):
         if route.startswith("/chat/"):
             target = CHAT_DIR / route.removeprefix("/chat/")
             return str(target)
+        if route in {"/team-uat", "/team-uat/"}:
+            return str(UAT_STANDALONE)
         if route in {"/", ""} or "." not in Path(route).name:
             return str(FIXTURE)
         return str(SITE_DIR / route.removeprefix("/"))
@@ -51,9 +54,12 @@ def main() -> int:
 
     if not FIXTURE.exists():
         raise SystemExit(f"Missing local parity fixture: {FIXTURE}")
+    if not UAT_STANDALONE.exists():
+        raise SystemExit(f"Missing standalone team UAT deck: {UAT_STANDALONE}")
 
     with socketserver.TCPServer((args.host, args.port), LocalParityHandler) as httpd:
         print(f"Local chat parity server: http://{args.host}:{args.port}/")
+        print(f"Team UAT deck: http://{args.host}:{args.port}/team-uat")
         print("Press Ctrl+C to stop.")
         httpd.serve_forever()
     return 0

@@ -17,7 +17,7 @@ source under a dated `dist/<date>/local-reference/` tree again.
 - `algolia-engagement-tracker.js` — engagement tracker for profile, session, and event signals.
 - `algolia-context-compiler.js` — compiles tracker state into Agent Studio per-turn context.
 - `algolia-proactive-controller.js` — evaluates journey triggers, stores opportunity packets, calls the Agent Studio Greetings Agent, and asks the chat widget to render the returned greeting.
-- `handoff-to-orchestrator.js` — registers the Greetings Agent's `handoff_to_orchestrator` client-side tool and attaches proactive handoff context to the next primary orchestrator turn.
+- `handoff-to-orchestrator.js` — decorates the first engaged response with a compact proactive handoff, persists that origin context, and combines it with freshly compiled page context on later orchestrator turns.
 - `algolia-chat-form-tool.js` — lead form client tool.
 - `algolia-chat-theme-algolia.js` — Algolia brand theme.
 - `algolia-confidence-badge.js` — confidence badge bundle.
@@ -60,3 +60,35 @@ npm run test:local-chat-parity
 This proves the local page writes `algolia_profile`, `algolia_session`, and `algolia_events`,
 compiles an `AlgoliaContextPacket.v1`, sends one Greetings Agent completion request, and renders
 a proactive greeting without mutating Jahia.
+
+## Debugging Without URL Flags
+
+For manual testing, turn on the full chat/proactive/context/handoff debug pipeline once per browser:
+
+```js
+localStorage.setItem("algoliaDebug", "1");
+location.reload();
+```
+
+To turn it off:
+
+```js
+localStorage.removeItem("algoliaDebug");
+location.reload();
+```
+
+The master `algoliaDebug=1` storage flag enables the same debug behavior as the individual URL
+flags. Narrow flags still work when you only want one layer:
+
+- `algoliaChatDebug`
+- `algoliaEngagementDebug`
+- `algoliaProactiveDebug`
+- `algoliaContextDebug`
+- `algoliaHandoffDebug`
+
+Example:
+
+```js
+localStorage.setItem("algoliaHandoffDebug", "1");
+location.reload();
+```

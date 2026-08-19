@@ -1,6 +1,7 @@
-import test from 'node:test';
+import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { chromium } from 'playwright';
 
 const chatPath = new URL('../algolia-chat.js', import.meta.url);
 const legacyHeaderProgressVar = ['--a', 'cs-header-progress'].join('');
@@ -11,60 +12,235 @@ function literal(value) {
   return new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 }
 
+let browser;
+
+before(async () => {
+  browser = await chromium.launch({ headless: true });
+});
+
+after(async () => {
+  await browser?.close();
+});
+
 test('processing trace drives the header gradient fill from real progress state', () => {
   const bundle = fs.readFileSync(chatPath, 'utf8');
-  const traceStart = bundle.indexOf('function acProcessingTrace');
-  const traceEnd = bundle.indexOf('function ', traceStart + 20);
+  const progressEmitterStart = bundle.indexOf('function mt(');
+  const progressEmitterEnd = bundle.indexOf('function yg(', progressEmitterStart);
+  const progressEmitter = bundle.slice(progressEmitterStart, progressEmitterEnd);
+  const thinkingStart = bundle.indexOf('function lE(');
+  const thinkingEnd = bundle.indexOf('function uE(', thinkingStart);
+  const thinkingIndicator = bundle.slice(thinkingStart, thinkingEnd);
+  const headerStart = bundle.indexOf('function mR({onReset');
+  const headerEnd = bundle.indexOf('const Eg=', headerStart);
+  const header = bundle.slice(headerStart, headerEnd);
+  const headerProgressSetter = bundle.match(
+    /function ([A-Za-z_$][\w$]*)\(e,n,[^)]+\)\{const [A-Za-z_$][\w$]*=Math\.max\(0,Math\.min\(100,n\)\)[\s\S]{0,240}e\.style\.setProperty\("--algolia-header-progress"/
+  );
 
-  assert.notEqual(traceStart, -1, 'processing trace should exist');
-  assert.notEqual(traceEnd, -1, 'processing trace should have a stable boundary');
-
-  const traceBlock = bundle.slice(traceStart, traceEnd);
-
-  assert.match(traceBlock, /--algolia-header-progress/);
-  assert.match(traceBlock, /data-algolia-working/);
-  assert.doesNotMatch(traceBlock, literal(legacyHeaderProgressVar));
-  assert.doesNotMatch(traceBlock, literal(legacyWorkingAttr));
-  assert.match(traceBlock, /=zh\(\)/);
-  assert.match(traceBlock, /requestAnimationFrame/);
-  assert.match(traceBlock, /acTraceProgressCeiling/);
+  assert.match(bundle, /algolia-chat-processing-progress/);
+  assert.match(bundle, /--algolia-header-progress/);
+  assert.match(bundle, /data-algolia-working/);
+  assert.match(bundle, /data-algolia-progress-resetting/);
+  assert.match(bundle, /aria-valuenow/);
+  assert.ok(headerProgressSetter, 'bundle must include a helper that writes the header progress CSS variable');
   assert.match(
     bundle,
-    /function acTraceStageFromSignals\([^)]*\)\{[^}]*==="streaming"\|\|[^}]*==="success"[^}]*return [A-Za-z]\|\|[A-Za-z]\?5:[A-Za-z]\?2:1\}/,
-    'streaming and success status should force the header progress target to 100% before first text delta'
+    /textLength/,
+    'streaming progress must be based on observed answer text growth, not only a coarse status jump'
+  );
+  assert.doesNotMatch(
+    bundle,
+    /function A1\(e\)\{return e\.hasText\|\|e\.status==="streaming"\|\|e\.status==="success"\?5:e\.searchCount>0\?2:1\}/,
+    'progress calculation must not collapse the answer journey to loading, sources-found, and final'
   );
   assert.match(
     bundle,
-    /function acHeaderProgressSync\(/,
-    'header progress should have a non-visual sync path that remains mounted when answer text streams'
+    /status==="success"\|\|[A-Za-z_$][\w$]*\.stage==="followup"\?5/,
+    'only final success/follow-up completion should map to the final progress stage'
   );
   assert.match(
     bundle,
-    /status[^?]+==="success"/,
-    'successful finalization should also force the header progress target to 100%'
+    /status==="streaming"[\s\S]{0,120}Math\.min\(98,Math\.round\(84\+/,
+    'streaming should continue moving the header from real streamed text length before final completion'
   );
   assert.match(
-    bundle,
-    /acTraceProgressCeiling\([^)]*,[^)]*x>0/,
-    'progress should continue gliding after sources arrive instead of stopping at the source-stage percentage'
+    progressEmitter,
+    /querySelectorAll\?\.\("algolia-chat"\)/,
+    'streaming progress must synchronize the live chat host, not only broadcast an event'
+  );
+  assert.ok(
+    progressEmitter.includes(`${headerProgressSetter[1]}(`),
+    'progress emitter must write the header progress CSS variable on the live host'
   );
   assert.match(
-    bundle,
-    /acHeaderProgressSync,\{searchCount:[^,]+,sources:[^,]+,status:[^,]+,text:[^}]+\}/,
-    'assistant renderer should mount header progress sync even when answer text is visible'
+    progressEmitter,
+    /getPropertyValue\("--algolia-header-progress"\)/,
+    'direct host sync must read existing header progress before writing'
   );
-  assert.match(traceBlock, /style\.setProperty\("--algolia-header-progress",String\([A-Za-z]\)\+"%"\)/);
-  assert.match(traceBlock, /toggleAttribute\("data-algolia-working",!0\)/);
-  assert.doesNotMatch(traceBlock, /style\.removeProperty\("--algolia-header-progress"\)/);
-  assert.doesNotMatch(traceBlock, /removeAttribute\("data-algolia-working"\)/);
-  assert.match(traceBlock, /aria-valuenow/);
+  assert.match(
+    progressEmitter,
+    /Math\.max\([^)]*,[A-Za-z_$][\w$]*\)/,
+    'direct host sync must not lower the header within the current run'
+  );
+  assert.match(
+    progressEmitter,
+    /progress:[A-Za-z_$][\w$]*/,
+    'the emitted event and the host sync must share the same computed progress value'
+  );
+  assert.match(
+    thinkingIndicator,
+    /useEffect\(\(\)=>\{[A-Za-z_$][\w$]*\(\{status:[A-Za-z_$][\w$]*,searchCount:[A-Za-z_$][\w$]*\?\?0,hasText:!![A-Za-z_$][\w$]*\.trim\(\),textLength:[A-Za-z_$][\w$]*\.length\}\)\},\[[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*\]\)/,
+    'rendered streaming/thinking state must also synchronize header progress from visible props'
+  );
+  assert.match(
+    header,
+    /useRef\(0\)/,
+    'header progress must remember the highest progress within the current run'
+  );
+  assert.match(
+    header,
+    /Math\.max\([^)]*\.current,[A-Za-z_$][\w$]*\)/,
+    'header progress must be monotonic so late loading events cannot lower a streaming answer'
+  );
+  assert.match(
+    header,
+    /getPropertyValue\("--algolia-header-progress"\)/,
+    'header remounts must seed progress from the host CSS variable before accepting later events'
+  );
+  assert.match(
+    header,
+    /==="loading"&&[A-Za-z_$][\w$]*<50&&[A-Za-z_$][\w$]*>=95,[A-Za-z_$][\w$]*=[A-Za-z_$][\w$]*\?0:/,
+    'a new loading run must be allowed to reset progress after the prior answer completed'
+  );
+  assert.match(
+    header,
+    /[A-Za-z_$][\w$]*\([A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*\)/,
+    'header reset writes must tell the progress helper to snap instead of animating backwards'
+  );
+  assert.doesNotMatch(bundle, literal(legacyHeaderProgressVar));
+  assert.doesNotMatch(bundle, literal(legacyWorkingAttr));
   assert.doesNotMatch(
     bundle,
     /acs-fill-sweep|\.acs-fill::after|\.acs-progress__fill::after/,
     'progress bars should only move by width, with no internal shimmer sweep'
   );
-  assert.doesNotMatch(traceBlock, /querySelector\?\.\("algolia-chat"\)/);
-  assert.doesNotMatch(traceBlock, /setTimeout\([^)]*--algolia-header-progress/);
+});
+
+test('rendered header progress does not fall back to retrieval progress after streaming starts', async () => {
+  const page = await browser.newPage();
+  try {
+    await page.route('**/*', async (route) => {
+      const request = route.request();
+      if (request.isNavigationRequest()) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'text/html',
+          body: '<!doctype html><html><body></body></html>',
+        });
+        return;
+      }
+      if (/\.algolia\.(net|com)\//.test(request.url())) {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            results: [{ hits: [], nbHits: 0, page: 0, nbPages: 0, hitsPerPage: 0 }],
+          }),
+        });
+        return;
+      }
+      await route.continue();
+    });
+
+    await page.goto('http://localhost/');
+    await page.addScriptTag({ content: fs.readFileSync(chatPath, 'utf8') });
+    await page.evaluate(async () => {
+      await Promise.all([
+        customElements.whenDefined('algolia-instant-search'),
+        customElements.whenDefined('algolia-chat'),
+        customElements.whenDefined('algolia-agent'),
+      ]);
+      const search = document.createElement('algolia-instant-search');
+      search.setAttribute('app-id', 'test-app');
+      search.setAttribute('api-key', 'test-search-key');
+      search.setAttribute('index-name', 'test-index');
+      const widget = document.createElement('algolia-chat');
+      widget.setAttribute('judge-mode', 'off');
+      const agent = document.createElement('algolia-agent');
+      agent.setAttribute('role', 'primary');
+      agent.setAttribute('agent-id', 'test-agent');
+      widget.append(agent);
+      search.append(widget);
+      document.body.append(search);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      widget.open();
+    });
+    await page.waitForFunction(
+      () => document.querySelector('algolia-chat')?.shadowRoot?.querySelector('[part="header"]')
+    );
+
+    const emit = async (detail) => {
+      await page.evaluate((payload) => {
+        globalThis.dispatchEvent(
+          new CustomEvent('algolia-chat-processing-progress', { detail: payload })
+        );
+      }, detail);
+    };
+    const hostProgress = () =>
+      page.evaluate(() =>
+        document.querySelector('algolia-chat')?.style.getPropertyValue('--algolia-header-progress')
+      );
+
+    await emit({ status: 'loading', progress: 50 });
+    await page.waitForFunction(
+      () => document.querySelector('algolia-chat')?.style.getPropertyValue('--algolia-header-progress') === '50%'
+    );
+    await emit({ status: 'streaming', progress: 100 });
+    await page.waitForFunction(
+      () => document.querySelector('algolia-chat')?.style.getPropertyValue('--algolia-header-progress') === '100%'
+    );
+    await emit({ status: 'loading', progress: 50 });
+    await page.waitForTimeout(100);
+    assert.equal(await hostProgress(), '100%');
+
+    await page.evaluate(async () => {
+      const widget = document.querySelector('algolia-chat');
+      const parent = widget.parentNode;
+      widget.remove();
+      parent.append(widget);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      widget.open();
+    });
+    await page.waitForFunction(
+      () => document.querySelector('algolia-chat')?.shadowRoot?.querySelector('[part="header"]')
+    );
+    await emit({ status: 'loading', progress: 50 });
+    await page.waitForTimeout(100);
+    assert.equal(await hostProgress(), '100%');
+
+    const resetRead = await page.evaluate(() => {
+      globalThis.dispatchEvent(
+        new CustomEvent('algolia-chat-processing-progress', {
+          detail: { status: 'loading', progress: 33 },
+        })
+      );
+      const widget = document.querySelector('algolia-chat');
+      const header = widget?.shadowRoot?.querySelector('[part="header"]');
+      return {
+        progress: widget?.style.getPropertyValue('--algolia-header-progress'),
+        resetting: widget?.hasAttribute('data-algolia-progress-resetting'),
+        transition: header ? getComputedStyle(header, '::before').transitionDuration : '',
+      };
+    });
+    assert.equal(resetRead.progress, '33%');
+    assert.equal(resetRead.resetting, true);
+    assert.notEqual(resetRead.transition, '0.9s');
+    await page.waitForFunction(
+      () => document.querySelector('algolia-chat')?.style.getPropertyValue('--algolia-header-progress') === '33%'
+    );
+  } finally {
+    await page.close();
+  }
 });
 
 test('header progress skin keeps moving while work is active', () => {
@@ -91,5 +267,10 @@ test('header progress skin keeps moving while work is active', () => {
     theme,
     /transition: width 900ms linear/,
     'header fill width should glide smoothly between real progress signals'
+  );
+  assert.match(
+    theme,
+    /:host\(\[data-algolia-progress-resetting\]\) \[part="header"\]::before \{ transition-duration: 1ms !important; \}/,
+    'new answer resets should snap to the start instead of animating backwards from the prior answer'
   );
 });

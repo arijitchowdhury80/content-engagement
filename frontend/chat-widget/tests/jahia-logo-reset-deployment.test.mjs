@@ -8,6 +8,13 @@ const deploymentScript = new URL(
   import.meta.url,
 );
 
+function deploymentRelease() {
+  const source = readFileSync(deploymentScript, 'utf8');
+  const match = source.match(/^RUNTIME_VERSION = "([^"]+)"/m);
+  assert.ok(match, 'deployment script should declare one RUNTIME_VERSION');
+  return match[1];
+}
+
 function transform(html) {
   const program = [
     'import importlib.util, pathlib, sys',
@@ -39,6 +46,22 @@ test('Jahia transform enables Assistant logo visitor reset exactly once', () => 
 
   assert.match(once, /<algolia-chat\b[^>]*\breset-visitor-state-on-logo\b/);
   assert.equal((twice.match(/reset-visitor-state-on-logo/g) || []).length, 1);
+});
+
+test('Jahia transform cache-busts every changed engagement runtime as one release', () => {
+  const release = deploymentRelease();
+  const transformed = transform([
+    '<algolia-chat></algolia-chat>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=old"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=old"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=old"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=old"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=old"></script>',
+  ].join('\n'));
+
+  for (const asset of ['chat', 'tracker', 'context', 'proactive', 'handoff', 'engage']) {
+    assert.match(transformed, new RegExp(`${asset}=${release}`));
+  }
 });
 
 test('narrow Jahia deployment publishes the tracker content subtree', () => {

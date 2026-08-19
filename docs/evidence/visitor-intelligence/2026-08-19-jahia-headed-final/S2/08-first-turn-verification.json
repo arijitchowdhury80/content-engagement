@@ -1,0 +1,62 @@
+{
+  "pass": true,
+  "errors": [],
+  "greetings": {
+    "requests": 1,
+    "byOpportunity": {
+      "opp_1a019dc229c_79710b": 1
+    },
+    "afterVisitorResponse": 0
+  },
+  "firstTurn": {
+    "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "orchestratorRequests": 1,
+    "handoffBlocks": 1,
+    "requestId": 3,
+    "responseId": 4,
+    "responseStatus": 200,
+    "responseTextLength": 2533,
+    "routedToSpecialist": true,
+    "routingMode": "deterministic_client",
+    "specialistRequests": 1,
+    "specialistAction": "accept",
+    "specialistOutcome": "demoted",
+    "visibleResponderAgentIds": [
+      "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+    ],
+    "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+  },
+  "continuity": {
+    "orchestratorRequests": 0
+  },
+  "discovery": {
+    "pass": true,
+    "errors": [],
+    "visibleWraps": 1,
+    "visibleQuestions": 1,
+    "questions": [
+      "Since you're looking at the strategic side of Agent Studio, would it be helpful to see how other companies have mapped their specific business friction to an agentic AI use case?"
+    ]
+  },
+  "specialistRoutingDebug": {
+    "context": {
+      "context.version": "1",
+      "context.source": "deterministic_browser_signals",
+      "page.path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+      "page.title": "Unlock the power of agentic AI with Agent Studio",
+      "journey.paths": "/resources/asset/infographic-unlock-the-power-of-agentic-ai -> /resources/asset/infographic-unlock-the-power-of-agentic-ai",
+      "journey.page_count": "2",
+      "behavior.read_depth": "medium",
+      "conversation_id": "5f6a3556-84e9-4512-8944-55d5539cef28"
+    },
+    "query": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?",
+    "contentLength": 2533,
+    "visibleAnswerLength": 1852,
+    "toolNames": [],
+    "offer": {
+      "specialistKey": "evidence",
+      "question": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?"
+    },
+    "hasHandler": true
+  }
+}

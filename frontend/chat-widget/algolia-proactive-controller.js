@@ -2,9 +2,22 @@
   "use strict";
 
   const LABEL = "[Algolia Proactive Controller]";
-  const DEBUG =
-    new URLSearchParams(location.search).get("algoliaChatDebug") === "1" ||
-    new URLSearchParams(location.search).get("algoliaProactiveDebug") === "1";
+  function debugFlag(name) {
+    try {
+      const params = new URLSearchParams(location.search);
+      return (
+        params.get("algoliaChatDebug") === "1" ||
+        params.get(name) === "1" ||
+        localStorage.getItem("algoliaDebug") === "1" ||
+        localStorage.getItem("algoliaChatDebug") === "1" ||
+        localStorage.getItem(name) === "1"
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  const DEBUG = debugFlag("algoliaProactiveDebug");
 
   const STATE_KEY = "algolia_proactive_state";
   const TRACE_KEY = "algolia_proactive_debug_log";
@@ -18,38 +31,46 @@
   const UNSUPPORTED_CLAIM_RE =
     /\b\d+%|\$\d+|\broadmap\b|\bguarantee\b|customer quote|case study:|https?:\/\//i;
   const NON_VISIBLE_OPPORTUNITY_STATUSES = new Set([
-    "eligible",
-    "greeting_requested",
-    "greeting_failed",
-    "greeting_rejected",
-    "widget_unavailable",
-    "render_refused",
+    "qualified",
+    "pending",
+    "failed",
   ]);
   const VISIBLE_OPPORTUNITY_STATUSES = new Set([
     "shown",
-    "handoff_tool_called",
-    "handoff_sent",
+    "engaged",
+    "handed_off",
+    "active",
   ]);
+  const REPLACEABLE_OPPORTUNITY_STATUSES = new Set([
+    ...NON_VISIBLE_OPPORTUNITY_STATUSES,
+    "shown",
+  ]);
+  const EXPIRABLE_OPPORTUNITY_STATUSES = new Set(["qualified", "pending", "shown"]);
 
   const DEFAULTS = {
     enabled: true,
     maxOpportunitiesPerSession: 3,
     cooldownMs: 120000,
+    opportunityTtlMs: 600000,
     productDwellMs: 10000,
     productScrollDepth: 50,
     solutionDwellMs: 10000,
     solutionScrollDepth: 50,
-    implementationDwellMs: 15000,
-    implementationScrollDepth: 60,
-    pricingDwellMs: 8000,
-    customerProofDwellMs: 12000,
-    customerProofScrollDepth: 60,
+    documentationJourneyDwellMs: 10000,
+    documentationJourneyScrollDepth: 50,
+    proofJourneyDwellMs: 10000,
+    proofJourneyScrollDepth: 50,
+    implementationDwellMs: 10000,
+    implementationScrollDepth: 50,
+    resourceDwellMs: 10000,
+    resourceScrollDepth: 50,
     compatibilityMode: COMPLETIONS_COMPATIBILITY_MODE,
     cache: false,
     memory: false,
   };
 
   let config = { ...DEFAULTS };
+  let activeConversationRestored = false;
 
   function debug(...args) {
     if (DEBUG) console.log(LABEL, ...args);
@@ -175,12 +196,75 @@
     const state = readState();
     const index = state.opportunities.findIndex((item) => item.id === opportunityId);
     if (index === -1) return false;
+    const previous = state.opportunities[index];
+    const lifecycle = Array.isArray(previous.lifecycle)
+      ? [...previous.lifecycle]
+      : previous.status
+        ? [previous.status]
+        : [];
+    if (patch.status && lifecycle.at(-1) !== patch.status) lifecycle.push(patch.status);
     state.opportunities[index] = {
-      ...state.opportunities[index],
+      ...previous,
       ...patch,
+      lifecycle,
       updatedAt: Date.now(),
     };
     writeState({ ...state, ...(statePatch || {}) });
+    return true;
+  }
+
+  function expireStaleOpportunities(state, now = Date.now()) {
+    let changed = false;
+    const opportunities = state.opportunities.map((opportunity) => {
+      if (!EXPIRABLE_OPPORTUNITY_STATUSES.has(opportunity.status)) return opportunity;
+      const anchor = Number(
+        opportunity.updatedAt || opportunity.shownAt || opportunity.createdAt || 0
+      );
+      if (!anchor || now - anchor < config.opportunityTtlMs) return opportunity;
+      const lifecycle = Array.isArray(opportunity.lifecycle)
+        ? [...opportunity.lifecycle]
+        : opportunity.status
+          ? [opportunity.status]
+          : [];
+      if (lifecycle.at(-1) !== "expired") lifecycle.push("expired");
+      changed = true;
+      return {
+        ...opportunity,
+        status: "expired",
+        lifecycle,
+        expiredAt: now,
+        updatedAt: now,
+      };
+    });
+    if (!changed) return state;
+    const nextState = { ...state, opportunities };
+    writeState(nextState);
+    return nextState;
+  }
+
+  function dismissShownOpportunity(event) {
+    const state = readState();
+    const requestedId = event?.detail?.opportunityId;
+    const index = requestedId
+      ? state.opportunities.findIndex(
+          (opportunity) => opportunity.id === requestedId && opportunity.status === "shown"
+        )
+      : state.opportunities.findLastIndex((opportunity) => opportunity.status === "shown");
+    if (index < 0) return false;
+    const opportunity = state.opportunities[index];
+    const lifecycle = Array.isArray(opportunity.lifecycle)
+      ? [...opportunity.lifecycle]
+      : ["shown"];
+    if (lifecycle.at(-1) !== "dismissed") lifecycle.push("dismissed");
+    state.opportunities[index] = {
+      ...opportunity,
+      status: "dismissed",
+      lifecycle,
+      dismissedAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    writeState(state);
+    trace("opportunity_dismissed", { opportunityId: opportunity.id });
     return true;
   }
 
@@ -233,18 +317,83 @@
     return group === "developer" || group === "documentation" || path.includes("/developers") || path.includes("/doc/");
   }
 
-  function isPricing(page) {
+  function isDocumentation(page) {
     const group = pageGroup(page);
     const path = String(page?.path || "");
-    return group === "pricing" || group === "conversion" || path.includes("/pricing") || path.includes("/demo") || path.includes("contact-sales");
+    return group === "documentation" || path.includes("/doc/");
+  }
+
+  function isResource(page) {
+    const group = pageGroup(page);
+    const path = String(page?.path || "");
+    return (
+      group === "resource" ||
+      /\/(resources|reports|guides|research|infographics)(\/|$)/.test(path)
+    );
+  }
+
+  function isPricing(page) {
+    const group = pageGroup(page);
+    const path = String(page?.path || "").toLowerCase();
+    return group === "pricing" || /(^|\/)pricing(?:\/|$)/.test(path);
   }
 
   function isCustomerStory(page) {
     return pageGroup(page) === "customer_story" || String(page?.path || "").includes("/customers/");
   }
 
+  function qualifies(page, dwellMs, scrollDepth) {
+    return (
+      Number(page?.dwellMs || 0) >= dwellMs &&
+      Number(page?.maxScrollDepth || 0) >= scrollDepth
+    );
+  }
+
   function hasRecentEvent(events, name) {
     return events.some((event) => event.name === name);
+  }
+
+  function chatIsOpen(events) {
+    const latestChatIndex = events.findLastIndex((event) => event.name === "chat_open");
+    if (latestChatIndex < 0) return false;
+    const latestPageIndex = events.findLastIndex((event) => event.name === "page_view");
+    if (latestPageIndex > latestChatIndex) return false;
+    return events[latestChatIndex].props?.open !== false;
+  }
+
+  function conversationIsActive() {
+    try {
+      const snapshot = JSON.parse(sessionStorage.getItem("algolia-chat:conversation") || "null");
+      return snapshot?.version === 1 && Array.isArray(snapshot.turns) && snapshot.turns.length > 0;
+    } catch {
+      return false;
+    }
+  }
+
+  function latestChatOpenState(events) {
+    const latest = [...events].reverse().find((event) => event.name === "chat_open");
+    return latest ? latest.props?.open !== false : null;
+  }
+
+  function restoreActiveConversation(packet) {
+    if (activeConversationRestored || !conversationIsActive()) return false;
+    if (latestChatOpenState(recentEvents(packet)) !== true) return false;
+    const widget = chatElement();
+    if (!widget || typeof widget.open !== "function") return false;
+    widget.open();
+    activeConversationRestored = true;
+    trace("active_conversation_restored", { path: location.pathname });
+    return true;
+  }
+
+  function isJourneyTransition(decision) {
+    return String(decision?.trigger || "").includes("_to_");
+  }
+
+  function hasCompletedHandoff(state) {
+    return state.opportunities.some((item) =>
+      item.status === "engaged" || item.status === "handed_off" || item.status === "active"
+    );
   }
 
   function chatElement() {
@@ -342,20 +491,8 @@
     return `https://${appId}.algolia.net/agent-studio/1/agents/${agentId}/completions?${params.toString()}`;
   }
 
-  function hasSearchWithTerms(events, terms) {
-    return events.some((event) => {
-      if (event.name !== "site_search") return false;
-      const query = JSON.stringify(event.props || {}).toLowerCase();
-      return terms.some((term) => query.includes(term));
-    });
-  }
-
   function priorPage(pages, predicate) {
     return [...pages].slice(0, -1).reverse().find(predicate) || null;
-  }
-
-  function countPages(pages, predicate) {
-    return pages.filter(predicate).length;
   }
 
   function visibleOpportunities(state) {
@@ -377,13 +514,22 @@
 
   function replaceableOpportunity(opportunity, decision) {
     if (!opportunity || !decision) return false;
-    if (!NON_VISIBLE_OPPORTUNITY_STATUSES.has(opportunity.status)) return false;
+    if (!REPLACEABLE_OPPORTUNITY_STATUSES.has(opportunity.status)) return false;
     if (opportunity.pageId === decision.pageId) return false;
     return Number(decision.priority || 0) > Number(opportunity.priority || 0);
   }
 
+  function latestVisibleOpportunity(state) {
+    return visibleOpportunities(state).reduce((latest, opportunity) => {
+      if (!latest) return opportunity;
+      return visibleOpportunityTime(opportunity) >= visibleOpportunityTime(latest)
+        ? opportunity
+        : latest;
+    }, null);
+  }
+
   function canSupersedeRecentOpportunity(state, decision) {
-    return replaceableOpportunity(state.opportunities.at(-1), decision);
+    return replaceableOpportunity(latestVisibleOpportunity(state), decision);
   }
 
   function supersedeLowerPriorityOpportunities(state, decision) {
@@ -395,6 +541,14 @@
           ? {
               ...opportunity,
               status: "superseded",
+              lifecycle: [
+                ...(Array.isArray(opportunity.lifecycle)
+                  ? opportunity.lifecycle
+                  : opportunity.status
+                    ? [opportunity.status]
+                    : []),
+                ...(opportunity.lifecycle?.at(-1) === "superseded" ? [] : ["superseded"]),
+              ],
               supersededByTrigger: decision.trigger,
               updatedAt: Date.now(),
             }
@@ -522,16 +676,12 @@
       storyHint = `The visitor explored ${productList} before pricing; frame this as a cost/value question across those capabilities.`;
     } else if (currentTransition === "product_to_pricing" && productTrail.length === 1) {
       storyHint = `The visitor moved from ${productList} into pricing; frame this as a ${productList} cost/value question.`;
-    } else if (fields.trigger === "multiple_product_pages" && productTrail.length > 1) {
-      storyHint = `The visitor is comparing ${productList}; help turn the capability spread into a clearer decision.`;
-    } else if (fields.trigger === "product_to_customer_story" && productTrail.length) {
-      storyHint = `The visitor moved from ${productList} to customer proof; connect proof back to that product interest.`;
+    } else if (fields.trigger === "product_to_documentation" && productTrail.length) {
+      storyHint = `The visitor moved from ${productList} into documentation; frame this as technical validation of that product interest.`;
     } else if (currentTransition === "solution_to_pricing" && solutionTrail.length > 1) {
       storyHint = `The visitor explored ${solutionList} before pricing; frame this as a commercial evaluation across those solution areas.`;
     } else if (currentTransition === "solution_to_pricing" && solutionTrail.length === 1) {
       storyHint = `The visitor moved from ${solutionList} into pricing; frame this as a ${solutionList} value and cost question.`;
-    } else if (fields.trigger === "multiple_solution_pages" && solutionTrail.length > 1) {
-      storyHint = `The visitor is comparing ${solutionList}; help turn the solution spread into a clearer path forward.`;
     } else if (fields.trigger === "solution_to_customer_story" && solutionTrail.length) {
       storyHint = `The visitor moved from ${solutionList} to customer proof; connect proof back to that solution interest.`;
     }
@@ -619,84 +769,67 @@
   function candidates(packet) {
     const page = currentPage(packet);
     const pages = sessionPages(packet);
-    const events = recentEvents(packet);
     const result = [];
-    const previousProduct = priorPage(pages, isProduct);
-    const previousSolution = priorPage(pages, isSolution);
-    const previousDeveloper = priorPage(pages, isDeveloper);
-    const previousPricing = priorPage(pages, isPricing);
+    const previousProduct = priorPage(
+      pages,
+      (item) => isProduct(item) && qualifies(item, config.productDwellMs, config.productScrollDepth)
+    );
+    const previousSolution = priorPage(
+      pages,
+      (item) => isSolution(item) && qualifies(item, config.solutionDwellMs, config.solutionScrollDepth)
+    );
+    const previousPricingSource = priorPage(
+      pages,
+      (item) =>
+        (isProduct(item) && qualifies(item, config.productDwellMs, config.productScrollDepth)) ||
+        (isSolution(item) && qualifies(item, config.solutionDwellMs, config.solutionScrollDepth))
+    );
 
-    if (isPricing(page) && previousProduct) {
+    if (isPricing(page) && previousPricingSource) {
+      const fromProduct = isProduct(previousPricingSource);
       result.push(
         withReasons(
           baseDecision(packet, {
             moment: "commercial_evaluation",
-            trigger: "product_to_pricing",
-            priority: 88,
-            messageGoal: "explain_cost_drivers",
+            trigger: fromProduct ? "product_to_pricing" : "solution_to_pricing",
+            priority: fromProduct ? 88 : 87,
+            messageGoal: fromProduct ? "explain_cost_drivers" : "explain_solution_value_and_cost",
           }),
-          ["journey_product_to_pricing", "pricing_page_view"]
+          [
+            fromProduct ? "journey_product_to_pricing" : "journey_solution_to_pricing",
+            "pricing_page_view",
+          ]
         )
       );
     }
 
-    if (isPricing(page) && previousDeveloper) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "commercial_evaluation",
-            trigger: "implementation_to_pricing",
-            priority: 86,
-            messageGoal: "connect_implementation_effort_to_cost",
-          }),
-          ["journey_implementation_to_pricing", "pricing_page_view"]
-        )
-      );
-    }
-
-    if (isPricing(page) && previousSolution) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "commercial_evaluation",
-            trigger: "solution_to_pricing",
-            priority: 87,
-            messageGoal: "explain_solution_value_and_cost",
-          }),
-          ["journey_solution_to_pricing", "pricing_page_view"]
-        )
-      );
-    }
-
-    if (isDeveloper(page) && previousPricing) {
+    if (
+      isDocumentation(page) &&
+      previousProduct &&
+      qualifies(
+        page,
+        config.documentationJourneyDwellMs,
+        config.documentationJourneyScrollDepth
+      )
+    ) {
       result.push(
         withReasons(
           baseDecision(packet, {
             moment: "implementation_research",
-            trigger: "pricing_to_implementation",
-            priority: 84,
-            messageGoal: "reduce_implementation_uncertainty",
+            trigger: "product_to_documentation",
+            priority: 85,
+            messageGoal: "connect_product_interest_to_implementation",
           }),
-          ["journey_pricing_to_implementation", "developer_page_view"]
+          ["journey_product_to_documentation", "documentation_depth"]
         )
       );
     }
 
-    if (isCustomerStory(page) && previousProduct) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "customer_proof",
-            trigger: "product_to_customer_story",
-            priority: 82,
-            messageGoal: "surface_relevant_customer_proof",
-          }),
-          ["journey_product_to_customer_story", "customer_story_page"]
-        )
-      );
-    }
-
-    if (isCustomerStory(page) && previousSolution) {
+    if (
+      isCustomerStory(page) &&
+      previousSolution &&
+      qualifies(page, config.proofJourneyDwellMs, config.proofJourneyScrollDepth)
+    ) {
       result.push(
         withReasons(
           baseDecision(packet, {
@@ -710,170 +843,72 @@
       );
     }
 
-    if (isDeveloper(page) && hasSearchWithTerms(events, ["api", "sdk", "react", "instantsearch", "implementation", "integrat"])) {
+    if (
+      isDeveloper(page) &&
+      qualifies(page, config.implementationDwellMs, config.implementationScrollDepth)
+    ) {
       result.push(
         withReasons(
           baseDecision(packet, {
             moment: "implementation_research",
-            trigger: "search_to_docs",
-            priority: 80,
-            messageGoal: "answer_implementation_path",
-          }),
-          ["site_search_implementation_terms", "developer_page_view"]
-        )
-      );
-    }
-
-    if (isPricing(page) && Number(page.dwellMs || 0) >= config.pricingDwellMs) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "commercial_evaluation",
-            trigger: "pricing_8s_dwell",
-            priority: 78,
-            messageGoal: "explain_cost_drivers",
-          }),
-          ["pricing_page", "pricing_dwell"]
-        )
-      );
-    }
-
-    if (isDeveloper(page) && Number(page.dwellMs || 0) >= config.implementationDwellMs) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "implementation_research",
-            trigger: "developer_page_15s_dwell",
+            trigger: "developer_page_10s_50_scroll",
             priority: 76,
             messageGoal: "reduce_implementation_uncertainty",
           }),
-          ["developer_page", "implementation_dwell"]
+          ["developer_page", "implementation_dwell", "implementation_scroll"]
         )
       );
     }
 
-    if (isDeveloper(page) && Number(page.maxScrollDepth || 0) >= config.implementationScrollDepth) {
+    if (
+      isResource(page) &&
+      qualifies(page, config.resourceDwellMs, config.resourceScrollDepth)
+    ) {
       result.push(
         withReasons(
           baseDecision(packet, {
-            moment: "implementation_research",
-            trigger: "developer_page_60_scroll",
-            priority: 74,
-            messageGoal: "reduce_implementation_uncertainty",
+            moment: "resource_research",
+            trigger: "resource_page_10s_50_scroll",
+            priority: 75,
+            messageGoal: "connect_resource_insight_to_next_step",
           }),
-          ["developer_page", "implementation_scroll"]
+          ["resource_page", "resource_dwell", "resource_scroll"]
         )
       );
     }
 
-    if (isCustomerStory(page) && Number(page.dwellMs || 0) >= config.customerProofDwellMs) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "customer_proof",
-            trigger: "customer_story_12s_dwell",
-            priority: 72,
-            messageGoal: "surface_relevant_customer_proof",
-          }),
-          ["customer_story_page", "customer_story_dwell"]
-        )
-      );
-    }
-
-    if (isCustomerStory(page) && Number(page.maxScrollDepth || 0) >= config.customerProofScrollDepth) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "customer_proof",
-            trigger: "customer_story_60_scroll",
-            priority: 70,
-            messageGoal: "surface_relevant_customer_proof",
-          }),
-          ["customer_story_page", "customer_story_scroll"]
-        )
-      );
-    }
-
-    if (isProduct(page) && Number(page.dwellMs || 0) >= config.productDwellMs) {
+    if (
+      isProduct(page) &&
+      Number(page.dwellMs || 0) >= config.productDwellMs &&
+      Number(page.maxScrollDepth || 0) >= config.productScrollDepth
+    ) {
       result.push(
         withReasons(
           baseDecision(packet, {
             moment: "product_research",
-            trigger: "product_page_10s_dwell",
+            trigger: "product_page_10s_50_scroll",
             priority: 66,
             messageGoal: "explain_product_fit",
           }),
-          ["product_page", "product_dwell"]
+          ["product_page", "product_dwell", "product_scroll"]
         )
       );
     }
 
-    if (isSolution(page) && Number(page.dwellMs || 0) >= config.solutionDwellMs) {
+    if (
+      isSolution(page) &&
+      Number(page.dwellMs || 0) >= config.solutionDwellMs &&
+      Number(page.maxScrollDepth || 0) >= config.solutionScrollDepth
+    ) {
       result.push(
         withReasons(
           baseDecision(packet, {
             moment: "solution_research",
-            trigger: "solution_page_10s_dwell",
+            trigger: "solution_page_10s_50_scroll",
             priority: 65,
             messageGoal: "explain_solution_fit",
           }),
-          ["solution_page", "solution_dwell"]
-        )
-      );
-    }
-
-    if (isProduct(page) && Number(page.maxScrollDepth || 0) >= config.productScrollDepth) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "product_research",
-            trigger: "product_page_50_scroll",
-            priority: 64,
-            messageGoal: "explain_product_fit",
-          }),
-          ["product_page", "product_scroll"]
-        )
-      );
-    }
-
-    if (isSolution(page) && Number(page.maxScrollDepth || 0) >= config.solutionScrollDepth) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "solution_research",
-            trigger: "solution_page_50_scroll",
-            priority: 63,
-            messageGoal: "explain_solution_fit",
-          }),
-          ["solution_page", "solution_scroll"]
-        )
-      );
-    }
-
-    if (isProduct(page) && countPages(pages, isProduct) >= 2) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "journey_shift",
-            trigger: "multiple_product_pages",
-            priority: 62,
-            messageGoal: "help_compare_capabilities",
-          }),
-          ["multiple_product_pages"]
-        )
-      );
-    }
-
-    if (isSolution(page) && countPages(pages, isSolution) >= 2) {
-      result.push(
-        withReasons(
-          baseDecision(packet, {
-            moment: "journey_shift",
-            trigger: "multiple_solution_pages",
-            priority: 61,
-            messageGoal: "help_compare_solution_paths",
-          }),
-          ["multiple_solution_pages"]
+          ["solution_page", "solution_dwell", "solution_scroll"]
         )
       );
     }
@@ -885,22 +920,32 @@
     if (!config.enabled) return "disabled";
     if (!packet) return "missing_context_packet";
     if (!decision) return "no_trigger_match";
-    if (hasRecentEvent(recentEvents(packet), "chat_open")) return "chat_already_open";
+    if (conversationIsActive()) return "conversation_already_active";
+    const canReplaceOpenGreeting =
+      isJourneyTransition(decision) && canSupersedeRecentOpportunity(state, decision);
+    if (chatIsOpen(recentEvents(packet)) && !canReplaceOpenGreeting) return "chat_already_open";
     if (document.hidden) return "page_hidden";
     const widget = document.querySelector("algolia-chat");
     if (widget && widget.autoEngage === false) return "auto_engage_disabled";
-    if (visibleOpportunities(state).length >= config.maxOpportunitiesPerSession) {
+    if (
+      visibleOpportunities(state).length >= config.maxOpportunitiesPerSession &&
+      !canSupersedeRecentOpportunity(state, decision)
+    ) {
       return "session_cap_reached";
     }
     const lastVisibleAt = lastVisibleOpportunityAt(state);
-    if (lastVisibleAt && Date.now() - lastVisibleAt < config.cooldownMs) {
+    if (
+      lastVisibleAt &&
+      Date.now() - lastVisibleAt < config.cooldownMs &&
+      !(isJourneyTransition(decision) && !hasCompletedHandoff(state))
+    ) {
       return "cooldown_active";
     }
     const duplicate = state.opportunities.some(
       (item) =>
         item.pageId === decision.pageId &&
         item.moment === decision.moment &&
-        item.status !== "expired"
+        !["failed", "expired", "superseded"].includes(item.status)
     );
     if (duplicate) return "already_eligible_for_page_moment";
     return null;
@@ -960,7 +1005,17 @@
       createdAt: Date.now(),
       decision,
     };
-    updateDebugStatus(`Proactive suppressed: ${decision?.reason || "unknown"}`, decision);
+    const latestVisible = readState().opportunities
+      .filter((opportunity) => VISIBLE_OPPORTUNITY_STATUSES.has(opportunity.status))
+      .at(-1);
+    if (decision?.reason === "chat_already_open" && latestVisible?.status === "shown") {
+      updateDebugStatus(`Proactive greeting active: ${latestVisible.trigger}`, {
+        suppression: decision,
+        activeOpportunity: latestVisible,
+      });
+    } else {
+      updateDebugStatus(`Proactive suppressed: ${decision?.reason || "unknown"}`, decision);
+    }
     try {
       document.dispatchEvent(
         new CustomEvent("algolia-proactive-suppressed", {
@@ -974,7 +1029,7 @@
 
   function evaluate({ reserve = false } = {}) {
     const packet = compilerPacket();
-    const state = readState();
+    const state = expireStaleOpportunities(readState());
     trace("context_compiled", packetSummary(packet));
     const candidateList = candidates(packet);
     trace("candidates_evaluated", {
@@ -992,7 +1047,14 @@
       return decision;
     }
 
-    const opportunityId = `opp_${Date.now().toString(16)}_${Math.random().toString(16).slice(2, 8)}`;
+    const retryable = state.opportunities.find(
+      (item) =>
+        item.pageId === decision.pageId &&
+        item.moment === decision.moment &&
+        item.status === "failed"
+    );
+    const opportunityId = retryable?.id ||
+      `opp_${Date.now().toString(16)}_${Math.random().toString(16).slice(2, 8)}`;
     const requestPacket = {
       ...decision.agentPromptPacket,
       schema: GREETING_REQUEST_SCHEMA,
@@ -1006,7 +1068,8 @@
     };
     const opportunity = {
       id: opportunityId,
-      status: "eligible",
+      status: "qualified",
+      lifecycle: ["qualified"],
       pageId: decision.pageId,
       pagePath: decision.pagePath,
       moment: decision.moment,
@@ -1018,7 +1081,17 @@
       requestPacket,
     };
     const nextState = supersedeLowerPriorityOpportunities(state, decision);
-    nextState.opportunities.push(opportunity);
+    if (retryable) {
+      const index = nextState.opportunities.findIndex((item) => item.id === retryable.id);
+      nextState.opportunities[index] = {
+        ...retryable,
+        requestPacket,
+        failureReason: null,
+        updatedAt: Date.now(),
+      };
+    } else {
+      nextState.opportunities.push(opportunity);
+    }
     writeState(nextState);
     trace("opportunity_reserved", {
       opportunityId,
@@ -1054,16 +1127,15 @@
   }
 
   function extractJsonObject(raw) {
-    const text = textFromSse(raw);
+    const text = String(textFromSse(raw) || "").trim();
     if (!text) return null;
     try {
       return JSON.parse(text);
     } catch {
-      const start = text.indexOf("{");
-      const end = text.lastIndexOf("}");
-      if (start === -1 || end === -1 || end <= start) return null;
+      const fenced = text.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+      if (!fenced) return null;
       try {
-        return JSON.parse(text.slice(start, end + 1));
+        return JSON.parse(fenced[1]);
       } catch {
         return null;
       }
@@ -1072,6 +1144,31 @@
 
   function wordCount(text) {
     return String(text || "").trim().split(/\s+/).filter(Boolean).length;
+  }
+
+  function sentenceCount(text) {
+    const normalized = String(text || "").trim();
+    if (!normalized) return 0;
+    return normalized
+      .split(/(?<=[.!?])\s+/)
+      .map((sentence) => sentence.trim())
+      .filter(Boolean).length;
+  }
+
+  function compactGreetingResponse(response) {
+    if (!response || typeof response !== "object" || typeof response.greeting !== "string") {
+      return { response, normalizationReason: null };
+    }
+    const sentences = response.greeting
+      .trim()
+      .split(/(?<=[.!?])\s+/)
+      .map((sentence) => sentence.trim())
+      .filter(Boolean);
+    if (sentences.length <= 2) return { response, normalizationReason: null };
+    return {
+      response: { ...response, greeting: sentences.slice(0, 2).join(" ") },
+      normalizationReason: "greeting_compacted_to_two_sentences",
+    };
   }
 
   function sameHandoffSummary(response, decision) {
@@ -1091,6 +1188,7 @@
 
     const greeting = typeof response.greeting === "string" ? response.greeting.trim() : "";
     if (!greeting) return "invalid_greeting";
+    if (sentenceCount(greeting) > 2) return "greeting_too_many_sentences";
     if (BANNED_GREETING_RE.test(greeting)) return "telemetry_exposure";
     if (UNSUPPORTED_CLAIM_RE.test(greeting)) return "unsupported_claim";
 
@@ -1107,7 +1205,10 @@
   function renderGreeting(response, decision) {
     const widget = chatElement();
     if (!widget || typeof widget.engage !== "function") {
-      updateOpportunity(decision.opportunityId, { status: "widget_unavailable" });
+      updateOpportunity(decision.opportunityId, {
+        status: "failed",
+        failureReason: "widget_unavailable",
+      });
       trace("widget_unavailable", { opportunityId: decision.opportunityId });
       return false;
     }
@@ -1120,7 +1221,8 @@
     });
     const shownAt = shown ? Date.now() : undefined;
     updateOpportunity(decision.opportunityId, {
-      status: shown ? "shown" : "render_refused",
+      status: shown ? "shown" : "failed",
+      failureReason: shown ? null : "render_refused",
       shownAt,
       greetingResponse: {
         schema: GREETING_RESPONSE_SCHEMA,
@@ -1135,6 +1237,13 @@
       trigger: decision.trigger,
       chips: chips.length,
     });
+    if (shown) {
+      updateDebugStatus(`Proactive greeting shown: ${decision.trigger}`, {
+        opportunityId: decision.opportunityId,
+        trigger: decision.trigger,
+        chips: chips.length,
+      });
+    }
     return !!shown;
   }
 
@@ -1157,13 +1266,13 @@
         sources,
       });
       updateOpportunity(decision.opportunityId, {
-        status: "greeting_failed",
+        status: "failed",
         failureReason: "greeting_not_configured",
       });
       return false;
     }
 
-    updateOpportunity(decision.opportunityId, { status: "greeting_requested" });
+    updateOpportunity(decision.opportunityId, { status: "pending" });
     trace("greeting_request_started", {
       opportunityId: decision.opportunityId,
       trigger: decision.trigger,
@@ -1207,7 +1316,7 @@
       });
       if (!response.ok) {
         updateOpportunity(decision.opportunityId, {
-          status: "greeting_failed",
+          status: "failed",
           failureReason: `http_${response.status}`,
         });
         return false;
@@ -1228,10 +1337,22 @@
         });
         return false;
       }
-      const validationError = validateGreetingResponse(parsed, decision);
+      const normalized = compactGreetingResponse(parsed);
+      if (normalized.normalizationReason) {
+        updateOpportunity(decision.opportunityId, {
+          normalizationReason: normalized.normalizationReason,
+          originalGreeting: parsed.greeting,
+        });
+        trace("greeting_response_normalized", {
+          opportunityId: decision.opportunityId,
+          normalizationReason: normalized.normalizationReason,
+          originalSentenceCount: sentenceCount(parsed.greeting),
+        });
+      }
+      const validationError = validateGreetingResponse(normalized.response, decision);
       if (validationError) {
         updateOpportunity(decision.opportunityId, {
-          status: "greeting_rejected",
+          status: "failed",
           failureReason: validationError,
           rejectedGreetingResponse: parsed || null,
         });
@@ -1243,10 +1364,10 @@
         return false;
       }
 
-      return renderGreeting(parsed, decision);
+      return renderGreeting(normalized.response, decision);
     } catch (error) {
       updateOpportunity(decision.opportunityId, {
-        status: "greeting_failed",
+        status: "failed",
         failureReason: error instanceof Error ? error.message : String(error),
       });
       trace("greeting_request_error", {
@@ -1266,6 +1387,7 @@
       props: event?.detail?.props || null,
     });
 
+    restoreActiveConversation(compilerPacket());
     const preview = evaluate();
     if (!preview.engage) {
       debug("no proactive opportunity", preview.reason);
@@ -1348,6 +1470,10 @@
     const previous = root.ALGOLIA_PROACTIVE_CONFIG;
     if (previous && typeof previous === "object") configure(previous);
     document.addEventListener("algolia-engagement-signal", handleSignal);
+    document.addEventListener("algolia-chat-engagement-dismissed", dismissShownOpportunity);
+    document.addEventListener("algolia-chat-open-change", (event) => {
+      if (event?.detail?.open === false) dismissShownOpportunity(event);
+    });
     scheduleInitialEvaluation();
   }
 

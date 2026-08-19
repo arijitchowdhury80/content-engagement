@@ -28,6 +28,12 @@ const routes = [
     label: 'AI Recommendations',
   },
   {
+    path: '/products/features/ui-component-libraries',
+    url: 'https://www.algolia.com/products/features/ui-component-libraries/',
+    group: 'product',
+    label: 'UI Component Libraries',
+  },
+  {
     path: '/products/features/personalization',
     url: 'https://www.algolia.com/products/features/personalization/',
     group: 'product',
@@ -58,6 +64,12 @@ const routes = [
     label: 'Developers',
   },
   {
+    path: '/resources',
+    url: 'https://www.algolia.com/resources/',
+    group: 'resource',
+    label: 'Resources',
+  },
+  {
     path: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
     url: 'https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/js/',
     group: 'documentation',
@@ -76,12 +88,18 @@ const routes = [
     label: 'Customers',
   },
   {
-    path: '/customers/end-clothing',
-    url: 'https://www.algolia.com/customers/end-clothing/',
+    path: '/customers/harry-rosen',
+    url: 'https://www.algolia.com/customers/harry-rosen/',
     group: 'customer_story',
-    label: 'END. Clothing',
+    label: 'Harry Rosen',
   },
 ];
+
+const requestedPaths = new Set(
+  process.argv
+    .filter((argument) => argument.startsWith('--path='))
+    .map((argument) => argument.slice('--path='.length))
+);
 
 function parseDotEnv(text) {
   const env = {};
@@ -135,8 +153,23 @@ async function main() {
     dotEnv = {};
   }
 
-  const pages = {};
-  for (const route of routes) {
+  let pages = {};
+  try {
+    pages = JSON.parse(await readFile(routeFile, 'utf8')).pages || {};
+  } catch {
+    pages = {};
+  }
+
+  const selectedRoutes = requestedPaths.size
+    ? routes.filter((route) => requestedPaths.has(route.path))
+    : routes;
+  if (requestedPaths.size && selectedRoutes.length !== requestedPaths.size) {
+    const known = new Set(routes.map((route) => route.path));
+    const unknown = [...requestedPaths].filter((path) => !known.has(path));
+    throw new Error(`Unknown Scout route path(s): ${unknown.join(', ')}`);
+  }
+
+  for (const route of selectedRoutes) {
     const slug = slugFor(route.path);
     process.stderr.write(`Scout fetching ${route.url}\n`);
     const proc = spawnSync('scout', ['scrape', route.url, '--js', '--timeout', '45000'], {
@@ -170,6 +203,8 @@ async function main() {
     };
   }
 
+  delete pages['/customers/end-clothing'];
+
   await writeFile(
     routeFile,
     `${JSON.stringify(
@@ -182,7 +217,7 @@ async function main() {
       2
     )}\n`
   );
-  console.log(JSON.stringify({ pass: true, count: routes.length, routeFile }, null, 2));
+  console.log(JSON.stringify({ pass: true, count: selectedRoutes.length, routeFile }, null, 2));
 }
 
 main().catch((error) => {

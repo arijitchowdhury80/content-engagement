@@ -1,0 +1,3593 @@
+{
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery?algoliaChatDebug=1&algoliaProactiveDebug=1&algoliaHandoffDebug=1&cb=hosted-b2-continuity",
+  "title": "Grocery",
+  "controller": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "opportunityTtlMs": 600000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "documentationJourneyDwellMs": 10000,
+      "documentationJourneyScrollDepth": 50,
+      "proofJourneyDwellMs": 10000,
+      "proofJourneyScrollDepth": 50,
+      "implementationDwellMs": 10000,
+      "implementationScrollDepth": 50,
+      "resourceDwellMs": 10000,
+      "resourceScrollDepth": 50,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a019d8285e_a998d8",
+          "status": "dismissed",
+          "lifecycle": [
+            "qualified",
+            "pending",
+            "shown",
+            "dismissed"
+          ],
+          "pageId": "page_5db83e44ea4096186bd5fbf8",
+          "pagePath": "/industries/grocery",
+          "moment": "solution_research",
+          "trigger": "solution_page_10s_50_scroll",
+          "priority": 65,
+          "messageGoal": "explain_solution_fit",
+          "reasonCodes": [
+            "solution_page",
+            "solution_dwell",
+            "solution_scroll"
+          ],
+          "createdAt": 1787139991646,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "solution_research",
+            "trigger": "solution_page_10s_50_scroll",
+            "priority": 65,
+            "persona": {
+              "value": "unknown",
+              "state": "unknown",
+              "confidence": 0,
+              "source": "insufficient_signal"
+            },
+            "currentPage": {
+              "pageId": "page_5db83e44ea4096186bd5fbf8",
+              "path": "/industries/grocery",
+              "title": "Grocery",
+              "pageGroup": "solution",
+              "topic": "industry_solution",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "grocery",
+              "label": "Grocery",
+              "type": "solution",
+              "state": "observed",
+              "source": "current_solution_page",
+              "pagePath": "/industries/grocery",
+              "pageTitle": "Grocery"
+            },
+            "journeySummary": {
+              "currentTransition": "solution_page_10s_50_scroll",
+              "productTrail": [],
+              "solutionTrail": [
+                {
+                  "value": "grocery",
+                  "label": "Grocery",
+                  "pagePath": "/industries/grocery",
+                  "pageTitle": "Grocery"
+                }
+              ],
+              "pageTrail": [
+                {
+                  "path": "/industries/grocery",
+                  "title": "Grocery",
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                },
+                {
+                  "path": "/industries/grocery",
+                  "title": "Grocery",
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution",
+                "dwellMs": 1083,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution",
+                "dwellMs": 10003,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/industries/grocery",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                  "title": "Grocery",
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/industries/grocery",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                  "title": "Grocery",
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/industries/grocery",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/industries/grocery",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/industries/grocery",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "general_algolia_research",
+              "state": "inferred",
+              "confidence": 0.45,
+              "evidence": [
+                "current_page:Grocery /industries/grocery industry_solution",
+                "scroll_depth:/industries/grocery",
+                "page_dwell:/industries/grocery",
+                "page_dwell:/industries/grocery"
+              ]
+            },
+            "friction": {
+              "value": "question_behind_question_unknown",
+              "state": "inferred",
+              "confidence": 0.38,
+              "evidence": []
+            },
+            "messageGoal": "explain_solution_fit",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "solution_page",
+              "solution_dwell",
+              "solution_scroll"
+            ],
+            "opportunityId": "opp_1a019d8285e_a998d8",
+            "createdAt": 1787139991646
+          },
+          "updatedAt": 1787139996930,
+          "failureReason": null,
+          "shownAt": 1787139996229,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a019d8285e_a998d8",
+            "greeting": "Hello, explorer. Grocery discovery looks simple until substitutions, availability, intent, and impatient shoppers arrive together; I can help map the friction, the value levers, or where Algolia fits.",
+            "chips": [
+              "Map the shopper friction",
+              "Show the value levers",
+              "Explore the solution"
+            ],
+            "handoffSummary": {
+              "moment": "solution_research",
+              "trigger": "solution_page_10s_50_scroll",
+              "messageGoal": "explain_solution_fit"
+            }
+          },
+          "dismissedAt": 1787139996930
+        },
+        {
+          "id": "opp_1a019d8744b_6781c2",
+          "status": "active",
+          "lifecycle": [
+            "qualified",
+            "pending",
+            "shown",
+            "engaged",
+            "handed_off",
+            "active"
+          ],
+          "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+          "pagePath": "/customers/h-e-b-mexico",
+          "moment": "customer_proof",
+          "trigger": "solution_to_customer_story",
+          "priority": 81,
+          "messageGoal": "surface_relevant_customer_proof",
+          "reasonCodes": [
+            "journey_solution_to_customer_story",
+            "customer_story_page"
+          ],
+          "createdAt": 1787140011083,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "customer_proof",
+            "trigger": "solution_to_customer_story",
+            "priority": 81,
+            "persona": {
+              "value": "executive",
+              "state": "inferred",
+              "confidence": 0.58,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+              "path": "/customers/h-e-b-mexico",
+              "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+              "pageGroup": "customer_story",
+              "topic": "customer_proof",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "grocery",
+              "label": "Grocery",
+              "type": "solution",
+              "state": "observed",
+              "source": "prior_solution_page",
+              "pagePath": "/industries/grocery",
+              "pageTitle": "Grocery"
+            },
+            "journeySummary": {
+              "currentTransition": "solution_to_customer_story",
+              "productTrail": [],
+              "solutionTrail": [
+                {
+                  "value": "grocery",
+                  "label": "Grocery",
+                  "pagePath": "/industries/grocery",
+                  "pageTitle": "Grocery"
+                }
+              ],
+              "pageTrail": [
+                {
+                  "path": "/industries/grocery",
+                  "title": "Grocery",
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                },
+                {
+                  "path": "/industries/grocery",
+                  "title": "Grocery",
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                },
+                {
+                  "path": "/customers/h-e-b-mexico",
+                  "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+                  "pageGroup": "customer_story",
+                  "topic": "customer_proof"
+                }
+              ],
+              "storyHint": "The visitor moved from Grocery to customer proof; connect proof back to that solution interest."
+            },
+            "journey": [
+              {
+                "path": "/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution",
+                "dwellMs": 1083,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution",
+                "dwellMs": 19768,
+                "maxScrollDepth": 50
+              },
+              {
+                "path": "/customers/h-e-b-mexico",
+                "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+                "pageGroup": "customer_story",
+                "topic": "customer_proof",
+                "dwellMs": 10003,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/industries/grocery",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                  "title": "Grocery",
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/industries/grocery",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                  "title": "Grocery",
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/industries/grocery",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/industries/grocery",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/industries/grocery",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/industries/grocery",
+                "props": {
+                  "dwellSeconds": 15,
+                  "pageGroup": "solution",
+                  "topic": "industry_solution"
+                }
+              },
+              {
+                "name": "engagement_exposed",
+                "path": "/industries/grocery",
+                "props": {
+                  "engagementId": "eng_84d68f2b35756ddb48df8552",
+                  "messageGoal": "proactive_concierge",
+                  "status": "shown"
+                }
+              },
+              {
+                "name": "chat_open",
+                "path": "/industries/grocery",
+                "props": {
+                  "open": true
+                }
+              },
+              {
+                "name": "chat_open",
+                "path": "/industries/grocery",
+                "props": {
+                  "open": false
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/customers/h-e-b-mexico",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico",
+                  "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+                  "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                  "pageGroup": "customer_story",
+                  "topic": "customer_proof"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/customers/h-e-b-mexico",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "customer_story",
+                  "topic": "customer_proof"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/customers/h-e-b-mexico",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "customer_story",
+                  "topic": "customer_proof"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/customers/h-e-b-mexico",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "customer_story",
+                  "topic": "customer_proof"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "general_algolia_research",
+              "state": "inferred",
+              "confidence": 0.45,
+              "evidence": [
+                "current_page:H-E-B México: Powering Omnichannel Grocery Search With Algolia /customers/h-e-b-mexico customer_proof",
+                "scroll_depth:/customers/h-e-b-mexico",
+                "page_dwell:/customers/h-e-b-mexico",
+                "page_dwell:/customers/h-e-b-mexico"
+              ]
+            },
+            "friction": {
+              "value": "question_behind_question_unknown",
+              "state": "inferred",
+              "confidence": 0.38,
+              "evidence": []
+            },
+            "messageGoal": "surface_relevant_customer_proof",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "journey_solution_to_customer_story",
+              "customer_story_page"
+            ],
+            "opportunityId": "opp_1a019d8744b_6781c2",
+            "createdAt": 1787140011083
+          },
+          "updatedAt": 1787140021133,
+          "failureReason": null,
+          "shownAt": 1787140020017,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a019d8744b_6781c2",
+            "greeting": "Good move: you’re checking the proof, not just the pitch, and honestly, I wish more people did that. Let’s connect what changed for H-E-B México to your own grocery KPIs so the story earns its keep.",
+            "chips": [
+              "Match it to my use case",
+              "Show the KPI story",
+              "Find similar proof"
+            ],
+            "handoffSummary": {
+              "moment": "customer_proof",
+              "trigger": "solution_to_customer_story",
+              "messageGoal": "surface_relevant_customer_proof"
+            }
+          },
+          "handoffStartedAt": 1787140020695,
+          "userResponse": "Which verified outcomes make this story relevant to another grocery business?",
+          "selectedChip": null,
+          "handoffSchema": "ProactiveHandoffContext.v1",
+          "handoffAt": 1787140021133,
+          "handoffFailure": null,
+          "activeAt": 1787140021133
+        }
+      ],
+      "lastOpportunityAt": 1787140020017
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1787140088838,
+      "profile": {
+        "visitorId": "visitor_1d8d2cb854657d48c382f12a",
+        "visits": 4,
+        "persona": {
+          "value": "executive",
+          "state": "inferred",
+          "confidence": 0.58,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "startedAt": 1787139976283,
+        "pageCount": 4,
+        "engagementHistory": [
+          {
+            "id": "eng_84d68f2b35756ddb48df8552",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1787139996227,
+            "status": "shown"
+          },
+          {
+            "id": "eng_c64a2ddf80ed86a87243d206",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1787140020017,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_e8dd3e4a091fe76bd68e9581",
+        "path": "/industries/grocery",
+        "title": "Grocery",
+        "pageGroup": "solution",
+        "topic": "industry_solution",
+        "dwellMs": 15003,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "industry_solution",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 4,
+          "page_dwell": 9,
+          "scroll_depth": 2,
+          "engagement_exposed": 2,
+          "chat_open": 3
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_2355d6ba97252e9bf8b45f91",
+          "name": "page_dwell",
+          "ts": 1787139992701,
+          "pageId": "page_5db83e44ea4096186bd5fbf8",
+          "path": "/industries/grocery",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        },
+        {
+          "eventId": "evt_1ca679ad2795f6e5b971eccb",
+          "name": "engagement_exposed",
+          "ts": 1787139996227,
+          "pageId": "page_5db83e44ea4096186bd5fbf8",
+          "path": "/industries/grocery",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_84d68f2b35756ddb48df8552",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_c0c7492a7d3a2910aefd7584",
+          "name": "chat_open",
+          "ts": 1787139996236,
+          "pageId": "page_5db83e44ea4096186bd5fbf8",
+          "path": "/industries/grocery",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        },
+        {
+          "eventId": "evt_101d803d04cf3b6f5f08b6fe",
+          "name": "chat_open",
+          "ts": 1787139996928,
+          "pageId": "page_5db83e44ea4096186bd5fbf8",
+          "path": "/industries/grocery",
+          "source": "observed",
+          "props": {
+            "open": false
+          }
+        },
+        {
+          "eventId": "evt_2e7ee1fc57234b5971268cea",
+          "name": "page_view",
+          "ts": 1787139997814,
+          "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+          "path": "/customers/h-e-b-mexico",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico",
+            "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+            "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+            "pageGroup": "customer_story",
+            "topic": "customer_proof"
+          }
+        },
+        {
+          "eventId": "evt_80bf2dcb9ab8d76f06cc9e35",
+          "name": "page_dwell",
+          "ts": 1787140002815,
+          "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+          "path": "/customers/h-e-b-mexico",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "customer_story",
+            "topic": "customer_proof"
+          }
+        },
+        {
+          "eventId": "evt_dcf631924245844b72ca8b44",
+          "name": "page_dwell",
+          "ts": 1787140007818,
+          "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+          "path": "/customers/h-e-b-mexico",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "customer_story",
+            "topic": "customer_proof"
+          }
+        },
+        {
+          "eventId": "evt_378f5a11331168381d8dd66a",
+          "name": "scroll_depth",
+          "ts": 1787140011080,
+          "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+          "path": "/customers/h-e-b-mexico",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "customer_story",
+            "topic": "customer_proof"
+          }
+        },
+        {
+          "eventId": "evt_2b8b1f4d6452ab2c0bd982f3",
+          "name": "page_dwell",
+          "ts": 1787140012815,
+          "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+          "path": "/customers/h-e-b-mexico",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "customer_story",
+            "topic": "customer_proof"
+          }
+        },
+        {
+          "eventId": "evt_b67b82752fe5e7df3722a51f",
+          "name": "engagement_exposed",
+          "ts": 1787140020017,
+          "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+          "path": "/customers/h-e-b-mexico",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_c64a2ddf80ed86a87243d206",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_5c188df23da668703cb4b9ba",
+          "name": "chat_open",
+          "ts": 1787140020024,
+          "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+          "path": "/customers/h-e-b-mexico",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        },
+        {
+          "eventId": "evt_524b8214b7e59a990f486142",
+          "name": "page_view",
+          "ts": 1787140070106,
+          "pageId": "page_e8dd3e4a091fe76bd68e9581",
+          "path": "/industries/grocery",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+            "title": "Grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        },
+        {
+          "eventId": "evt_938034c2fa20dec98ce8dbda",
+          "name": "page_dwell",
+          "ts": 1787140075107,
+          "pageId": "page_e8dd3e4a091fe76bd68e9581",
+          "path": "/industries/grocery",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        },
+        {
+          "eventId": "evt_282cfd977dcbb9b7102c233e",
+          "name": "page_dwell",
+          "ts": 1787140080107,
+          "pageId": "page_e8dd3e4a091fe76bd68e9581",
+          "path": "/industries/grocery",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        },
+        {
+          "eventId": "evt_5d0e2c46c190d0d429f53745",
+          "name": "page_dwell",
+          "ts": 1787140085108,
+          "pageId": "page_e8dd3e4a091fe76bd68e9581",
+          "path": "/industries/grocery",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "executive",
+          "state": "inferred",
+          "confidence": 0.58,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "general_algolia_research",
+          "state": "inferred",
+          "confidence": 0.45,
+          "evidence": [
+            "current_page:Grocery /industries/grocery industry_solution",
+            "page_dwell:/industries/grocery",
+            "page_dwell:/industries/grocery",
+            "page_dwell:/industries/grocery"
+          ]
+        },
+        "friction": {
+          "value": "question_behind_question_unknown",
+          "state": "inferred",
+          "confidence": 0.38,
+          "evidence": []
+        },
+        "nextBestAction": {
+          "value": "answer_then_ask_discovery_question",
+          "state": "inferred",
+          "confidence": 0.44
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "no_trigger_match",
+      "createdAt": 1787140088839
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "signal_received",
+        "at": 1787139976283,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "page_view",
+          "path": "/industries/grocery",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+            "title": "Grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139976283,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139976283,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139976283,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787139977701,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139977704,
+        "path": "/industries/grocery",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139977704,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/grocery",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139977704,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139977704,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139977704,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139977952,
+        "path": "/industries/grocery",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139977952,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/grocery",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139977952,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139977952,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139977952,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139978701,
+        "path": "/industries/grocery",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139978701,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/grocery",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139978702,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139978702,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139978702,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139980202,
+        "path": "/industries/grocery",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139980202,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/grocery",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139980203,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139980203,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139980203,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139982704,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/industries/grocery",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139982705,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 5003,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 3,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139982706,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139982706,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139987704,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/industries/grocery",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139987705,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 10003,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139987706,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139987706,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139991642,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/industries/grocery",
+          "props": {
+            "depth": 50,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139991643,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139991644,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_10s_50_scroll",
+              "priority": 65,
+              "pagePath": "/industries/grocery",
+              "reasonCodes": [
+                "solution_page",
+                "solution_dwell",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1787139991645,
+        "path": "/industries/grocery",
+        "detail": {
+          "engage": true,
+          "moment": "solution_research",
+          "trigger": "solution_page_10s_50_scroll",
+          "priority": 65,
+          "pagePath": "/industries/grocery",
+          "reasonCodes": [
+            "solution_page",
+            "solution_dwell",
+            "solution_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1787139991645,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139991646,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139991646,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_10s_50_scroll",
+              "priority": 65,
+              "pagePath": "/industries/grocery",
+              "reasonCodes": [
+                "solution_page",
+                "solution_dwell",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1787139991647,
+        "path": "/industries/grocery",
+        "detail": {
+          "opportunityId": "opp_1a019d8285e_a998d8",
+          "trigger": "solution_page_10s_50_scroll",
+          "moment": "solution_research",
+          "messageGoal": "explain_solution_fit",
+          "pagePath": "/industries/grocery"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1787139991648,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1787139991648,
+        "path": "/industries/grocery",
+        "detail": {
+          "opportunityId": "opp_1a019d8285e_a998d8",
+          "trigger": "solution_page_10s_50_scroll",
+          "moment": "solution_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1787139992424,
+        "path": "/industries/grocery",
+        "detail": {
+          "opportunityId": "opp_1a019d8285e_a998d8",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139992702,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/industries/grocery",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139992703,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 15001,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 6,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139992704,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_10s_50_scroll",
+              "priority": 65,
+              "pagePath": "/industries/grocery",
+              "reasonCodes": [
+                "solution_page",
+                "solution_dwell",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139992704,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_10s_50_scroll",
+            "priority": 65,
+            "pagePath": "/industries/grocery",
+            "reasonCodes": [
+              "solution_page",
+              "solution_dwell",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1787139996225,
+        "path": "/industries/grocery",
+        "detail": {
+          "opportunityId": "opp_1a019d8285e_a998d8",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a019d8285e_a998d8",
+          "greetingPreview": "Hello, explorer. Grocery discovery looks simple until substitutions, availability, intent, and impatient shoppers arrive together; I can help map the friction, the value levers, o...",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139996227,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/industries/grocery",
+          "props": {
+            "engagementId": "eng_84d68f2b35756ddb48df8552",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139996228,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 15001,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 7,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139996228,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_10s_50_scroll",
+              "priority": 65,
+              "pagePath": "/industries/grocery",
+              "reasonCodes": [
+                "solution_page",
+                "solution_dwell",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139996228,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_10s_50_scroll",
+            "priority": 65,
+            "pagePath": "/industries/grocery",
+            "reasonCodes": [
+              "solution_page",
+              "solution_dwell",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1787139996229,
+        "path": "/industries/grocery",
+        "detail": {
+          "opportunityId": "opp_1a019d8285e_a998d8",
+          "trigger": "solution_page_10s_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139996237,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "chat_open",
+          "path": "/industries/grocery",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139996237,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 15001,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 8,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139996237,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_10s_50_scroll",
+              "priority": 65,
+              "pagePath": "/industries/grocery",
+              "reasonCodes": [
+                "solution_page",
+                "solution_dwell",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139996238,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_10s_50_scroll",
+            "priority": 65,
+            "pagePath": "/industries/grocery",
+            "reasonCodes": [
+              "solution_page",
+              "solution_dwell",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139996928,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "chat_open",
+          "path": "/industries/grocery",
+          "props": {
+            "open": false
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139996929,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 15001,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 9,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139996929,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "solution_research",
+              "trigger": "solution_page_10s_50_scroll",
+              "priority": 65,
+              "pagePath": "/industries/grocery",
+              "reasonCodes": [
+                "solution_page",
+                "solution_dwell",
+                "solution_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139996929,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "cooldown_active",
+          "decision": {
+            "engage": true,
+            "moment": "solution_research",
+            "trigger": "solution_page_10s_50_scroll",
+            "priority": 65,
+            "pagePath": "/industries/grocery",
+            "reasonCodes": [
+              "solution_page",
+              "solution_dwell",
+              "solution_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "opportunity_dismissed",
+        "at": 1787139996930,
+        "path": "/industries/grocery",
+        "detail": {
+          "opportunityId": "opp_1a019d8285e_a998d8"
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787140070107,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140070121,
+        "path": "/industries/grocery",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140070122,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/grocery",
+          "props": null
+        }
+      },
+      {
+        "stage": "active_conversation_restored",
+        "at": 1787140070123,
+        "path": "/industries/grocery",
+        "detail": {
+          "path": "/industries/grocery"
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140070124,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140070124,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140070124,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140070358,
+        "path": "/industries/grocery",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140070358,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/grocery",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140070359,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140070359,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140070359,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140071108,
+        "path": "/industries/grocery",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140071109,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/grocery",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140071109,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140071110,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140071110,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140072607,
+        "path": "/industries/grocery",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140072607,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/industries/grocery",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140072608,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140072608,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140072608,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140075107,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/industries/grocery",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140075108,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 5001,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140075108,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140075108,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140080108,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/industries/grocery",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140080109,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 10002,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140080110,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140080110,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140085108,
+        "path": "/industries/grocery",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/industries/grocery",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "solution",
+            "topic": "industry_solution"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140085110,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 15003,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140085111,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140085111,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140088838,
+        "path": "/industries/grocery",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/industries/grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 15003,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [],
+          "solutionTrail": [
+            "Grocery"
+          ]
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140088839,
+        "path": "/industries/grocery",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140088839,
+        "path": "/industries/grocery",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      }
+    ]
+  },
+  "profile": {
+    "schema": "AlgoliaEngagementProfile.v1",
+    "visitorId": "visitor_1d8d2cb854657d48c382f12a",
+    "userToken": "tok_a05098b076fc89fd7c29842c",
+    "tokenSource": "ephemeral",
+    "firstSeenAt": 1787139976283,
+    "lastSeenAt": 1787140070105,
+    "visits": 4,
+    "persona": null,
+    "traits": {}
+  },
+  "session": {
+    "schema": "AlgoliaEngagementSession.v1",
+    "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+    "startedAt": 1787139976283,
+    "lastSeenAt": 1787140085108,
+    "currentPageId": "page_e8dd3e4a091fe76bd68e9581",
+    "pages": [
+      {
+        "pageId": "page_2b656a7b0ccbdf13a09f8438",
+        "path": "/industries/grocery",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+        "title": "Grocery",
+        "enteredAt": 1787139976283,
+        "dwellMs": 1083,
+        "maxScrollDepth": 0,
+        "pageGroup": "solution",
+        "topic": "industry_solution"
+      },
+      {
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+        "title": "Grocery",
+        "enteredAt": 1787139977700,
+        "dwellMs": 19768,
+        "maxScrollDepth": 50,
+        "pageGroup": "solution",
+        "topic": "industry_solution"
+      },
+      {
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "path": "/customers/h-e-b-mexico",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico",
+        "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+        "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+        "enteredAt": 1787139997814,
+        "dwellMs": 71836,
+        "maxScrollDepth": 50,
+        "pageGroup": "customer_story",
+        "topic": "customer_proof"
+      },
+      {
+        "pageId": "page_e8dd3e4a091fe76bd68e9581",
+        "path": "/industries/grocery",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+        "title": "Grocery",
+        "enteredAt": 1787140070105,
+        "dwellMs": 15003,
+        "maxScrollDepth": 0,
+        "pageGroup": "solution",
+        "topic": "industry_solution"
+      }
+    ],
+    "engagementHistory": [
+      {
+        "id": "eng_84d68f2b35756ddb48df8552",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1787139996227,
+        "status": "shown"
+      },
+      {
+        "id": "eng_c64a2ddf80ed86a87243d206",
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1787140020017,
+        "status": "shown"
+      }
+    ]
+  },
+  "events": {
+    "schema": "AlgoliaEngagementEvents.v1",
+    "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+    "events": [
+      {
+        "eventId": "evt_e35c8c1f5dbcdc73012aa98c",
+        "name": "page_view",
+        "ts": 1787139976283,
+        "isoTime": "2026-08-19T11:46:16.283Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_2b656a7b0ccbdf13a09f8438",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+          "title": "Grocery",
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_2766c48231ee29d3faaeb1a5",
+        "name": "page_view",
+        "ts": 1787139977700,
+        "isoTime": "2026-08-19T11:46:17.700Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+          "title": "Grocery",
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_accfe5c625cde4f8d2458037",
+        "name": "page_dwell",
+        "ts": 1787139982703,
+        "isoTime": "2026-08-19T11:46:22.703Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_0c03b56a31285432f83c0c82",
+        "name": "page_dwell",
+        "ts": 1787139987704,
+        "isoTime": "2026-08-19T11:46:27.704Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_28d8386671728b0606c9bafd",
+        "name": "scroll_depth",
+        "ts": 1787139991641,
+        "isoTime": "2026-08-19T11:46:31.641Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_2355d6ba97252e9bf8b45f91",
+        "name": "page_dwell",
+        "ts": 1787139992701,
+        "isoTime": "2026-08-19T11:46:32.701Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_1ca679ad2795f6e5b971eccb",
+        "name": "engagement_exposed",
+        "ts": 1787139996227,
+        "isoTime": "2026-08-19T11:46:36.227Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_84d68f2b35756ddb48df8552",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_c0c7492a7d3a2910aefd7584",
+        "name": "chat_open",
+        "ts": 1787139996236,
+        "isoTime": "2026-08-19T11:46:36.236Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      },
+      {
+        "eventId": "evt_101d803d04cf3b6f5f08b6fe",
+        "name": "chat_open",
+        "ts": 1787139996928,
+        "isoTime": "2026-08-19T11:46:36.928Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "open": false
+        }
+      },
+      {
+        "eventId": "evt_2e7ee1fc57234b5971268cea",
+        "name": "page_view",
+        "ts": 1787139997814,
+        "isoTime": "2026-08-19T11:46:37.814Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "path": "/customers/h-e-b-mexico",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico",
+          "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+          "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+          "pageGroup": "customer_story",
+          "topic": "customer_proof"
+        }
+      },
+      {
+        "eventId": "evt_80bf2dcb9ab8d76f06cc9e35",
+        "name": "page_dwell",
+        "ts": 1787140002815,
+        "isoTime": "2026-08-19T11:46:42.815Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "path": "/customers/h-e-b-mexico",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "customer_story",
+          "topic": "customer_proof"
+        }
+      },
+      {
+        "eventId": "evt_dcf631924245844b72ca8b44",
+        "name": "page_dwell",
+        "ts": 1787140007818,
+        "isoTime": "2026-08-19T11:46:47.818Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "path": "/customers/h-e-b-mexico",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "customer_story",
+          "topic": "customer_proof"
+        }
+      },
+      {
+        "eventId": "evt_378f5a11331168381d8dd66a",
+        "name": "scroll_depth",
+        "ts": 1787140011080,
+        "isoTime": "2026-08-19T11:46:51.080Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "path": "/customers/h-e-b-mexico",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "customer_story",
+          "topic": "customer_proof"
+        }
+      },
+      {
+        "eventId": "evt_2b8b1f4d6452ab2c0bd982f3",
+        "name": "page_dwell",
+        "ts": 1787140012815,
+        "isoTime": "2026-08-19T11:46:52.815Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "path": "/customers/h-e-b-mexico",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "customer_story",
+          "topic": "customer_proof"
+        }
+      },
+      {
+        "eventId": "evt_b67b82752fe5e7df3722a51f",
+        "name": "engagement_exposed",
+        "ts": 1787140020017,
+        "isoTime": "2026-08-19T11:47:00.017Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "path": "/customers/h-e-b-mexico",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_c64a2ddf80ed86a87243d206",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_5c188df23da668703cb4b9ba",
+        "name": "chat_open",
+        "ts": 1787140020024,
+        "isoTime": "2026-08-19T11:47:00.024Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "path": "/customers/h-e-b-mexico",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      },
+      {
+        "eventId": "evt_524b8214b7e59a990f486142",
+        "name": "page_view",
+        "ts": 1787140070106,
+        "isoTime": "2026-08-19T11:47:50.106Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_e8dd3e4a091fe76bd68e9581",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+          "title": "Grocery",
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_938034c2fa20dec98ce8dbda",
+        "name": "page_dwell",
+        "ts": 1787140075107,
+        "isoTime": "2026-08-19T11:47:55.107Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_e8dd3e4a091fe76bd68e9581",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_282cfd977dcbb9b7102c233e",
+        "name": "page_dwell",
+        "ts": 1787140080107,
+        "isoTime": "2026-08-19T11:48:00.107Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_e8dd3e4a091fe76bd68e9581",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      },
+      {
+        "eventId": "evt_5d0e2c46c190d0d429f53745",
+        "name": "page_dwell",
+        "ts": 1787140085108,
+        "isoTime": "2026-08-19T11:48:05.108Z",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "pageId": "page_e8dd3e4a091fe76bd68e9581",
+        "path": "/industries/grocery",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "solution",
+          "topic": "industry_solution"
+        }
+      }
+    ]
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_1a019d8285e_a998d8",
+        "status": "dismissed",
+        "lifecycle": [
+          "qualified",
+          "pending",
+          "shown",
+          "dismissed"
+        ],
+        "pageId": "page_5db83e44ea4096186bd5fbf8",
+        "pagePath": "/industries/grocery",
+        "moment": "solution_research",
+        "trigger": "solution_page_10s_50_scroll",
+        "priority": 65,
+        "messageGoal": "explain_solution_fit",
+        "reasonCodes": [
+          "solution_page",
+          "solution_dwell",
+          "solution_scroll"
+        ],
+        "createdAt": 1787139991646,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "solution_research",
+          "trigger": "solution_page_10s_50_scroll",
+          "priority": 65,
+          "persona": {
+            "value": "unknown",
+            "state": "unknown",
+            "confidence": 0,
+            "source": "insufficient_signal"
+          },
+          "currentPage": {
+            "pageId": "page_5db83e44ea4096186bd5fbf8",
+            "path": "/industries/grocery",
+            "title": "Grocery",
+            "pageGroup": "solution",
+            "topic": "industry_solution",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": {
+            "value": "grocery",
+            "label": "Grocery",
+            "type": "solution",
+            "state": "observed",
+            "source": "current_solution_page",
+            "pagePath": "/industries/grocery",
+            "pageTitle": "Grocery"
+          },
+          "journeySummary": {
+            "currentTransition": "solution_page_10s_50_scroll",
+            "productTrail": [],
+            "solutionTrail": [
+              {
+                "value": "grocery",
+                "label": "Grocery",
+                "pagePath": "/industries/grocery",
+                "pageTitle": "Grocery"
+              }
+            ],
+            "pageTrail": [
+              {
+                "path": "/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              },
+              {
+                "path": "/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            ],
+            "storyHint": ""
+          },
+          "journey": [
+            {
+              "path": "/industries/grocery",
+              "title": "Grocery",
+              "pageGroup": "solution",
+              "topic": "industry_solution",
+              "dwellMs": 1083,
+              "maxScrollDepth": 0
+            },
+            {
+              "path": "/industries/grocery",
+              "title": "Grocery",
+              "pageGroup": "solution",
+              "topic": "industry_solution",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/industries/grocery",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/industries/grocery",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/industries/grocery",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/industries/grocery",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/industries/grocery",
+              "props": {
+                "depth": 50,
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "general_algolia_research",
+            "state": "inferred",
+            "confidence": 0.45,
+            "evidence": [
+              "current_page:Grocery /industries/grocery industry_solution",
+              "scroll_depth:/industries/grocery",
+              "page_dwell:/industries/grocery",
+              "page_dwell:/industries/grocery"
+            ]
+          },
+          "friction": {
+            "value": "question_behind_question_unknown",
+            "state": "inferred",
+            "confidence": 0.38,
+            "evidence": []
+          },
+          "messageGoal": "explain_solution_fit",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "solution_page",
+            "solution_dwell",
+            "solution_scroll"
+          ],
+          "opportunityId": "opp_1a019d8285e_a998d8",
+          "createdAt": 1787139991646
+        },
+        "updatedAt": 1787139996930,
+        "failureReason": null,
+        "shownAt": 1787139996229,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a019d8285e_a998d8",
+          "greeting": "Hello, explorer. Grocery discovery looks simple until substitutions, availability, intent, and impatient shoppers arrive together; I can help map the friction, the value levers, or where Algolia fits.",
+          "chips": [
+            "Map the shopper friction",
+            "Show the value levers",
+            "Explore the solution"
+          ],
+          "handoffSummary": {
+            "moment": "solution_research",
+            "trigger": "solution_page_10s_50_scroll",
+            "messageGoal": "explain_solution_fit"
+          }
+        },
+        "dismissedAt": 1787139996930
+      },
+      {
+        "id": "opp_1a019d8744b_6781c2",
+        "status": "active",
+        "lifecycle": [
+          "qualified",
+          "pending",
+          "shown",
+          "engaged",
+          "handed_off",
+          "active"
+        ],
+        "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+        "pagePath": "/customers/h-e-b-mexico",
+        "moment": "customer_proof",
+        "trigger": "solution_to_customer_story",
+        "priority": 81,
+        "messageGoal": "surface_relevant_customer_proof",
+        "reasonCodes": [
+          "journey_solution_to_customer_story",
+          "customer_story_page"
+        ],
+        "createdAt": 1787140011083,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "customer_proof",
+          "trigger": "solution_to_customer_story",
+          "priority": 81,
+          "persona": {
+            "value": "executive",
+            "state": "inferred",
+            "confidence": 0.58,
+            "source": "behavior"
+          },
+          "currentPage": {
+            "pageId": "page_ca4a1ce8b6342b5a85eec8a9",
+            "path": "/customers/h-e-b-mexico",
+            "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+            "pageGroup": "customer_story",
+            "topic": "customer_proof",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": {
+            "value": "grocery",
+            "label": "Grocery",
+            "type": "solution",
+            "state": "observed",
+            "source": "prior_solution_page",
+            "pagePath": "/industries/grocery",
+            "pageTitle": "Grocery"
+          },
+          "journeySummary": {
+            "currentTransition": "solution_to_customer_story",
+            "productTrail": [],
+            "solutionTrail": [
+              {
+                "value": "grocery",
+                "label": "Grocery",
+                "pagePath": "/industries/grocery",
+                "pageTitle": "Grocery"
+              }
+            ],
+            "pageTrail": [
+              {
+                "path": "/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              },
+              {
+                "path": "/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              },
+              {
+                "path": "/customers/h-e-b-mexico",
+                "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+                "pageGroup": "customer_story",
+                "topic": "customer_proof"
+              }
+            ],
+            "storyHint": "The visitor moved from Grocery to customer proof; connect proof back to that solution interest."
+          },
+          "journey": [
+            {
+              "path": "/industries/grocery",
+              "title": "Grocery",
+              "pageGroup": "solution",
+              "topic": "industry_solution",
+              "dwellMs": 1083,
+              "maxScrollDepth": 0
+            },
+            {
+              "path": "/industries/grocery",
+              "title": "Grocery",
+              "pageGroup": "solution",
+              "topic": "industry_solution",
+              "dwellMs": 19768,
+              "maxScrollDepth": 50
+            },
+            {
+              "path": "/customers/h-e-b-mexico",
+              "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+              "pageGroup": "customer_story",
+              "topic": "customer_proof",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/industries/grocery",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/industries/grocery",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                "title": "Grocery",
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/industries/grocery",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/industries/grocery",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/industries/grocery",
+              "props": {
+                "depth": 50,
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/industries/grocery",
+              "props": {
+                "dwellSeconds": 15,
+                "pageGroup": "solution",
+                "topic": "industry_solution"
+              }
+            },
+            {
+              "name": "engagement_exposed",
+              "path": "/industries/grocery",
+              "props": {
+                "engagementId": "eng_84d68f2b35756ddb48df8552",
+                "messageGoal": "proactive_concierge",
+                "status": "shown"
+              }
+            },
+            {
+              "name": "chat_open",
+              "path": "/industries/grocery",
+              "props": {
+                "open": true
+              }
+            },
+            {
+              "name": "chat_open",
+              "path": "/industries/grocery",
+              "props": {
+                "open": false
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/customers/h-e-b-mexico",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico",
+                "title": "H-E-B México: Powering Omnichannel Grocery Search With Algolia",
+                "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery",
+                "pageGroup": "customer_story",
+                "topic": "customer_proof"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/customers/h-e-b-mexico",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "customer_story",
+                "topic": "customer_proof"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/customers/h-e-b-mexico",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "customer_story",
+                "topic": "customer_proof"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/customers/h-e-b-mexico",
+              "props": {
+                "depth": 50,
+                "pageGroup": "customer_story",
+                "topic": "customer_proof"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "general_algolia_research",
+            "state": "inferred",
+            "confidence": 0.45,
+            "evidence": [
+              "current_page:H-E-B México: Powering Omnichannel Grocery Search With Algolia /customers/h-e-b-mexico customer_proof",
+              "scroll_depth:/customers/h-e-b-mexico",
+              "page_dwell:/customers/h-e-b-mexico",
+              "page_dwell:/customers/h-e-b-mexico"
+            ]
+          },
+          "friction": {
+            "value": "question_behind_question_unknown",
+            "state": "inferred",
+            "confidence": 0.38,
+            "evidence": []
+          },
+          "messageGoal": "surface_relevant_customer_proof",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "journey_solution_to_customer_story",
+            "customer_story_page"
+          ],
+          "opportunityId": "opp_1a019d8744b_6781c2",
+          "createdAt": 1787140011083
+        },
+        "updatedAt": 1787140021133,
+        "failureReason": null,
+        "shownAt": 1787140020017,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a019d8744b_6781c2",
+          "greeting": "Good move: you’re checking the proof, not just the pitch, and honestly, I wish more people did that. Let’s connect what changed for H-E-B México to your own grocery KPIs so the story earns its keep.",
+          "chips": [
+            "Match it to my use case",
+            "Show the KPI story",
+            "Find similar proof"
+          ],
+          "handoffSummary": {
+            "moment": "customer_proof",
+            "trigger": "solution_to_customer_story",
+            "messageGoal": "surface_relevant_customer_proof"
+          }
+        },
+        "handoffStartedAt": 1787140020695,
+        "userResponse": "Which verified outcomes make this story relevant to another grocery business?",
+        "selectedChip": null,
+        "handoffSchema": "ProactiveHandoffContext.v1",
+        "handoffAt": 1787140021133,
+        "handoffFailure": null,
+        "activeAt": 1787140021133
+      }
+    ],
+    "lastOpportunityAt": 1787140020017
+  },
+  "conversation": {
+    "version": 1,
+    "conversationId": "bd4e0a7d-df76-4d21-ac41-adef1bbc0ecf",
+    "turns": [
+      {
+        "id": "2a7887b0-8271-4819-8a75-ac2ccfafa58e",
+        "userMessageId": "1d86b1ce-285d-4554-ae1c-7bce5c86afc3",
+        "query": "Which verified outcomes make this story relevant to another grocery business?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "094f7574-f29f-41ee-9fc9-22930656f3d9",
+            "agent": "primary",
+            "status": "success",
+            "text": "The retrieved material does not verify the specific details requested, so I cannot present those claims as confirmed.",
+            "sources": [
+              {
+                "id": "en_eab4c0ef-e5ad-4301-baee-4da7c5d6f802_3_0",
+                "title": "H-E-B México redefines omnichannel grocery shopping with Algolia",
+                "url": "https://www.algolia.com/customers/h-e-b-mexico",
+                "source": "Customer Stories"
+              },
+              {
+                "id": "en_3102e372-fc3a-48b6-bd8f-a3ca323d48b0_0_1",
+                "title": "40+ stats on e-commerce search and KPIs - Algolia Blog | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/e-commerce-search-and-kpis-statistics",
+                "source": "Blog"
+              },
+              {
+                "id": "en_1b938bbc-aff4-41ec-9cda-7b96203fc935_0_4",
+                "title": "Conversational AI in ecommerce: use cases, ROI & implementation",
+                "url": "https://www.algolia.com/blog/ecommerce/conversational-ai-in-ecommerce",
+                "source": "Blog"
+              },
+              {
+                "id": "en_938730f3-80dc-4d73-b7bc-ee22229b3c8b_0_1",
+                "title": "Estimate ecommerce ROI with our profit calculator | Algolia",
+                "url": "https://www.algolia.com/blog/product/measuring-ecommerce-conversion-rates-and-revenue-with-a-profit-calculator",
+                "source": "Blog"
+              },
+              {
+                "id": "en_ec678df9-b2e2-4a21-bc36-a3e7911db742",
+                "title": "Key findings on site search KPIs—2020 Digital Commerce 360 survey - Algolia Blog | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/2020-survey-site-search-kpis",
+                "source": "Blog"
+              },
+              {
+                "id": "en_5c0bd504-2bac-4d50-a86b-bfbf73d47dc2_0_99",
+                "title": "Optimizing B2B personalization: 5 KPIs you’ll improve with AI search and discovery",
+                "url": "https://www.algolia.com/resources/asset/ebook-optimizing-b2b-personalization",
+                "source": "Resources"
+              },
+              {
+                "id": "en_6e79e8c6-7ffc-43e5-a614-a009dce7426f",
+                "title": "How are B2B ecommerce companies maximizing AI's potential?",
+                "url": "https://www.algolia.com/resources/asset/infographic-b2bsosaiadoption",
+                "source": "Resources"
+              }
+            ],
+            "searchCount": 7,
+            "rawHits": [
+              {
+                "facets": {
+                  "facet1": [
+                    "Ecommerce"
+                  ],
+                  "facet6": [
+                    "Personalization",
+                    "Dynamic Re-Ranking",
+                    "Merchandising Studio",
+                    "AI Synonyms",
+                    "Search"
+                  ]
+                },
+                "title": "H-E-B México redefines omnichannel grocery shopping with Algolia",
+                "category": "Ecommerce",
+                "authors": [
+                  {
+                    "name": "Gerardo Ayala"
+                  }
+                ],
+                "abstract": "H-E-B México upgraded to a composable, headless commerce architecture and implemented Algolia’s AI-powered search to deliver faster, more personalized, and more accurate shopping experiences. ",
+                "published_at": 1782820502929,
+                "transform_source": "aant-customerEntry",
+                "objectID": "en_eab4c0ef-e5ad-4301-baee-4da7c5d6f802_3_0",
+                "indexed_at": 1784670305564,
+                "source": "Customer Stories",
+                "thumbnail": "/sites/algolia-assets/files/customer-stories/customer-design-assets/H-E-B/H-E-B-Mexico-thumbnail.png",
+                "tags": [],
+                "language_code": "en",
+                "hierarchicalCategories": {},
+                "lastUpdated": "2026-07-21T21:45:05.564Z",
+                "environment": "prod20260722",
+                "url": "/customers/h-e-b-mexico",
+                "description": "H-E-B México upgraded to a composable, headless commerce architecture and implemented Algolia’s AI-powered search to deliver faster, more personalized, and more accurate shopping experiences. ",
+                "keywords": [
+                  "user experience",
+                  "search",
+                  "headless commerce"
+                ],
+                "is404": false
+              },
+              {
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/e-commerce-search-and-kpis-statistics.webp",
+                "abstract": "A roundup of ecommerce search KPIs and benchmarks—what shoppers expect, what drives conversion, and where AI is changing product discovery. 40+ stats on e-commerce search and KPIs",
+                "published_at": 1720823400000,
+                "is404": false,
+                "category": "Ecommerce",
+                "tags": [
+                  "E-commerce"
+                ],
+                "authors": [
+                  {
+                    "name": "Jon Silvers",
+                    "desc": "Director, Digital Marketing"
+                  }
+                ],
+                "description": "A roundup of ecommerce search KPIs and benchmarks—what shoppers expect, what drives conversion, and where AI is changing product discovery.",
+                "objectID": "en_3102e372-fc3a-48b6-bd8f-a3ca323d48b0_0_1",
+                "keywords": [
+                  "e-commerce"
+                ],
+                "language_code": "en",
+                "indexed_at": 1784670293132,
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "source": "Blog",
+                "title": "40+ stats on e-commerce search and KPIs - Algolia Blog | Algolia",
+                "url": "/blog/ecommerce/e-commerce-search-and-kpis-statistics",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Jon Silvers"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:44:53.132Z",
+                "environment": "prod20260722",
+                "transform_source": "aant-blogsEntry"
+              },
+              {
+                "source": "Resources",
+                "tags": [],
+                "url": "/resources/asset/ebook-optimizing-b2b-personalization",
+                "keywords": [
+                  "search"
+                ],
+                "abstract": "",
+                "facets": {
+                  "facet0": [
+                    [
+                      "Ebooks"
+                    ]
+                  ],
+                  "facet1": [
+                    "Ecommerce"
+                  ],
+                  "facet7": [
+                    "B2B Ecommerce"
+                  ],
+                  "facet8": [
+                    "Personalization",
+                    "Search",
+                    "AI"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Ebooks"
+                    ]
+                  ]
+                },
+                "objectID": "en_5c0bd504-2bac-4d50-a86b-bfbf73d47dc2_0_99",
+                "category": "Ebooks",
+                "thumbnail": "/sites/www/files/ebooks/ebook_optimizingB2Bperso_au6ak0.avif",
+                "description": "",
+                "language_code": "en",
+                "indexed_at": 1784670312645,
+                "transform_source": "aant-resourceCenterContentItem",
+                "authors": [],
+                "published_at": 1779902499697,
+                "lastUpdated": "2026-07-21T21:45:12.645Z",
+                "title": "Optimizing B2B personalization: 5 KPIs you’ll improve with AI search and discovery",
+                "is404": false,
+                "environment": "prod20260722"
+              },
+              {
+                "transform_source": "aant-blogsEntry",
+                "title": "Conversational AI in ecommerce: use cases, ROI & implementation",
+                "keywords": [
+                  "e-commerce"
+                ],
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-Conversational-AI-1920x1080.webp",
+                "indexed_at": 1784670299211,
+                "source": "Blog",
+                "category": "Ecommerce",
+                "url": "/blog/ecommerce/conversational-ai-in-ecommerce",
+                "description": "Explore how conversational AI transforms ecommerce through product discovery, personalized recommendations, and support automation, including ROI benchmarks.",
+                "abstract": "Explore how conversational AI transforms ecommerce through product discovery, personalized recommendations, and support automation, including ROI benchmarks.",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Brendan Cleary"
+                  ]
+                },
+                "is404": false,
+                "tags": [
+                  "E-commerce"
+                ],
+                "authors": [
+                  {
+                    "name": "Brendan Cleary",
+                    "desc": "Product Marketing Manager"
+                  }
+                ],
+                "published_at": 1782247380000,
+                "lastUpdated": "2026-07-21T21:44:59.211Z",
+                "environment": "prod20260722",
+                "objectID": "en_1b938bbc-aff4-41ec-9cda-7b96203fc935_0_4",
+                "language_code": "en",
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                }
+              },
+              {
+                "facets": {
+                  "facet0": [
+                    [
+                      "Infographics"
+                    ]
+                  ],
+                  "facet7": [
+                    "B2B Ecommerce"
+                  ],
+                  "facet8": [
+                    "AI"
+                  ]
+                },
+                "published_at": 1771249500205,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Infographics"
+                    ]
+                  ]
+                },
+                "category": "Infographics",
+                "thumbnail": "/sites/www/files/ebooks/B2B_AI_Adoption_Info_Uberflip-Thumbnail.png",
+                "url": "/resources/asset/infographic-b2bsosaiadoption",
+                "language_code": "en",
+                "indexed_at": 1784670332063,
+                "environment": "prod20260722",
+                "transform_source": "aant-resourceCenterContentItem",
+                "tags": [],
+                "authors": [],
+                "description": "",
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:45:32.063Z",
+                "source": "Resources",
+                "title": "How are B2B ecommerce companies maximizing AI's potential?",
+                "abstract": "",
+                "objectID": "en_6e79e8c6-7ffc-43e5-a614-a009dce7426f",
+                "keywords": [
+                  "ecommerce",
+                  "commerce"
+                ]
+              },
+              {
+                "abstract": "Profit calculator tool to measure key ecommerce conversion metrics & KPIs such as sessions per month, conversion rates, and monthly ecommerce revenue. Estimating your ecommerce conversion rates and revenue with a profit calculator",
+                "facets": {
+                  "facet0": [
+                    "Product"
+                  ]
+                },
+                "is404": false,
+                "environment": "prod20260722",
+                "authors": [
+                  {
+                    "name": "Elise Furon",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/elise-furon.png",
+                    "desc": "Senior Marketing Manager"
+                  }
+                ],
+                "url": "/blog/product/measuring-ecommerce-conversion-rates-and-revenue-with-a-profit-calculator",
+                "indexed_at": 1784670447962,
+                "published_at": 1691390160000,
+                "objectID": "en_938730f3-80dc-4d73-b7bc-ee22229b3c8b_0_1",
+                "source": "Blog",
+                "category": "Product",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Product"
+                  ],
+                  "lvl2": [
+                    "by Elise Furon"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:47:27.962Z",
+                "tags": [
+                  "Product"
+                ],
+                "description": "Profit calculator tool to measure key ecommerce conversion metrics & KPIs such as sessions per month, conversion rates, and monthly ecommerce revenue.",
+                "language_code": "en",
+                "transform_source": "aant-blogsEntry",
+                "title": "Estimate ecommerce ROI with our profit calculator | Algolia",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/measuring.webp",
+                "keywords": [
+                  "product"
+                ]
+              },
+              {
+                "indexed_at": 1784670416578,
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:46:56.578Z",
+                "objectID": "en_ec678df9-b2e2-4a21-bc36-a3e7911db742",
+                "url": "/blog/ecommerce/2020-survey-site-search-kpis",
+                "abstract": "… Key findings on site search KPIs—2020 Digital Commerce 360 survey",
+                "environment": "prod20260722",
+                "transform_source": "aant-blogsEntry",
+                "title": "Key findings on site search KPIs—2020 Digital Commerce 360 survey - Algolia Blog | Algolia",
+                "category": "Ecommerce",
+                "description": "…",
+                "language_code": "en",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/2020-survey-site-search.webp",
+                "published_at": 1596176280000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Ivana Ivanovic"
+                  ]
+                },
+                "is404": false,
+                "source": "Blog",
+                "tags": [
+                  "E-commerce"
+                ],
+                "authors": [
+                  {
+                    "name": "Ivana Ivanovic",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/ivana-ivanovic.jpeg",
+                    "desc": "Senior Content Strategist"
+                  }
+                ],
+                "keywords": [
+                  "e-commerce"
+                ]
+              }
+            ],
+            "admissionRejected": true,
+            "followUps": [
+              "Would you like to go deeper on implementation, business value, or customer proof?"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ab7c7cb0-2773-4249-98b9-b80db96c9bb3",
+        "userMessageId": "5ba6de3a-72fd-4fe8-b310-def808885526",
+        "query": "Back on Grocery, which of those outcomes should an evaluation team validate first?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "d846559d-7e0b-44b1-aa60-4540a2571637",
+            "agent": "primary",
+            "status": "error",
+            "text": "",
+            "sources": [],
+            "searchCount": 0,
+            "rawHits": [],
+            "error": "No answer text returned by the agent.",
+            "followUps": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyText": "Join us:\nAlgolia DevCon 2026: Sep 30 - Oct 1, 2026 — VIRTUAL\nRegister Now\nCompany\nPartners\nSupport\nLogin\n\nEng\n\nProducts\nSolutions\nPricing\nDevelopers\nResources\nSearch or Ask AI\nFix your search\nGet started\n\nFILTER BY SOURCE\n\nDocumentation\n4,358\nSupport\n1,701\nBlog\n938\nWebsite\n472\nDevelopers\n288\nResources\n277\nAcademy\n144\nCustomer Stories\n83\n\nSUGGESTIONS\n\nAlgolia API integration\nAlgolia search benefits\nAlgolia scalability\nAI search for ecommerce\n\nPRODUCTS & RESOURCES\n\nAI Search\nWebsite • Products\nLearn more →\nSecurity Measures | Algolia\nWebsite • Distributed Secure\nLearn more →\nAgent Studio\nWebsite • Products\nLearn more →\nShow more results\nGROCERY\nIncrease margins with smarter AI search for grocery\n\nIncrease conversions and revenue using Algolia to personalize and elevate your customers' online grocery shopping experiences\n\nSchedule a grocery demo\nGrocery leaders using Algolia\n“Although the official language is Spanish, a lot of people speak a mixture of Spanish and English — Spanglish. Customers don't enter technical product descriptions when they do a search. Algolia helped us bridge the gap between the words that our category managers use and the actual terms that people enter into a search field when they look for a product. We love that kind of functionality.”\n\nFelipe Alonso Valverde\n\nHead of Ecommerce @ Auto Mercado\n\nRead their story\n“Amazing search speed and performance have become an expectation thanks to Algolia. But it's become so much more for us than search. Using Algolia's advanced features has allowed us to improve customer results, boost sales and focus our attention on delivering an outstanding experience.”\n\nHead of Digital Commerce\n\nH-E-B México\n\nRead their story\n“The big advantage of Algolia is with a simple implementation of simple data we’ve been able to get very good results. Dynamic re-ranking has been a big part of that. We A/B tested it in the first couple weeks of launch and saw positive results. Really that has been a massive benefit for us. It saves a load of time that we don’t have to manually add rules, while providing a positive customer experience.”\n\nGareth Cottiss\n\nEcommerce Development Manager @ Co-op\n\nRead their story\n“Around 65% of our customers use search for their shopping. Because of this, MILKRUN relies heavily on Algolia to deliver a seamless browsing experience. In our business, every millisecond matters, and Algolia's average response time of ~20 milliseconds delivers a great customer experience.”\n\nVenky Kuman\n\nChief Product and Technology Officer, MILKRUN\n\nRead their story\n“Although the official language is Spanish, a lot of people speak a mixture of Spanish and English — Spanglish. Customers don't enter technical product descriptions when they do a search. Algolia helped us bridge the gap between the words that our category managers use and the actual terms that people enter into a search field when they look for a product. We love that kind of functionality.”\n\nFelipe Alonso Valverde\n\nHead of Ecommerce @ Auto Mercado\n\nRead their story\n“Amazing search speed and performance have become an expectation thanks to Algolia. But it's become so much more for us than search. Using Algolia's advanced features has allowed us to improve customer results, boost sales and focus our attention on delivering an outstanding experience.”\n\nHead of Digital Commerce\n\nH-E-B México\n\nRead their story\n“The big advantage of Algolia is with a simple implementation of simple data we’ve been able to get very good results. Dynamic re-ranking has been a big part of that. We A/B tested it in the first couple weeks of launch and saw positive results. Really that has been a massive benefit for us. It saves a load of time that we don’t have to manually add rules, while providing a positive customer experience.”\n\nGareth Cottiss\n\nEcommerce Development Manager @ Co-op\n\nRead their story\n“Around 65% of our customers use search for their shopping. Because of this, MILKRUN relies heavily on Algolia to deliver a seamless browsing experience. In our business, every millisecond matters, and Algolia's average response time of ~20 milliseconds delivers a great customer experience.”\n\nVenky Kuman\n\nChief Product and Technology Officer, MILKRUN\n\nRead their story\n“Although the official language is Spanish, a lot of people speak a mixture of Spanish and English — Spanglish. Customers don't enter technical product descriptions when they do a search. Algolia helped us bridge the gap between the words that our category managers use and the actual terms that people enter into a search field when they look for a product. We love that kind of functionality.”\n\nFelipe Alonso Valverde\n\nHead of Ecommerce @ Auto Mercado\n\nRead their story\nTransform your search and discovery\n\nBuild personalized, AI-powered ecommerce search that understands what customers are looking for. \n\nOnline grocery sales are set to grow 5.2x faster than in-store\n\nSeize the opportunity with intelligent AI search\n\nBigger carts, better engagement\n\nDeliver a fast, simple product discovery experience that recognizes intent, maximizes customer engagement, and increases order value by an average of 70%. \n\nGet a demo\nCreate easy shopping lists — fast\n\nBoost margins with Algolia’s GenAI Toolkit that allows customers to “shop-the-shelf” online, coupled with personalized suggestions to help shoppers find what they want, when they want it.\n\nSeasonal search in real time\n\nPrioritize your inventory goals, margins, offers, and seasonal shifts on products using tools like Premium Re-Ranking, Semantic Search, Smart Groups, and more.\n\nGet a demo\nGenAI for personalized experiences\n\nDevelop personalized, consultative suggestions to guide and help shoppers create their perfect cart, and grow cart sizes with personalized recipes, product suggestions, and more.\n\nFeature your own brands\n\nPromote high-margin, own-brand items and boost them to the top of results to see higher ROI — faster.\n\n'Buy It Again' makes repeat purchases easier than ever\n\nShoppers can easily access their purchase history, receive personalized recommendations, and make repeat purchases with ease. \n\nGet a demo\nFrom aisle to AI: how grocers are powering the next generation of retail growth\n\nThe grocery industry is being transformed by AI-powered search, discovery, and merchandising, and the results are remarkable\n\nWhy grocery leaders choose Algolia\nAward-winning search and product discovery\n\nAlgolia has consistently been recognized by Gartner® as a Leader in the Magic Quadrant™ for Search and Product Discovery, Nasdaq, G2, and other industry publications as a top-performer in search.\n\n \nSearch that understands\n\nIntelligent AI Ranking serves grocery customers exactly what they’re looking for, while preserving your ability to curate results to promote key products.\n\nEasy integration into any environment\n\nIndex your content with our API clients or partner integrations, fine-tune your rankings, and launch with our UI components in minutes.\n\n \nREQUEST A DEMO\nSee how Algolia fits your use case\n\nShare your goals, challenges, and architecture—we’ll show you how Algolia performs in environments like yours.\n\nValidate performance and scalability\nExplore integrations and implementation paths\nCompare approaches to relevance and AI\nGet recommendations tailored to your business\n \n*\nFirst Name\n*\nLast Name\n*\nBusiness Email\n*\nPhone\n*\nCompany\n*\nCountry\nSelect...\nUnited States\nAfghanistan\nAland Islands\nAlbania\nAlgeria\nAndorra\nAngola\nAnguilla\nAntarctica\nAntigua and Barbuda\nArgentina\nArmenia\nAruba\nAustralia\nAustria\nAzerbaijan\nBahamas\nBahrain\nBangladesh\nBarbados\nBelarus\nBelgium\nBelize\nBenin\nBermuda\nBhutan\nBolivia\nBonaire, Sint Eustatius and Saba\nBosnia and Herzegovina\nBotswana\nBouvet Island\nBrazil\nBritish Indian Ocean Territory\nBrunei Darussalam\nBulgaria\nBurkina Faso\nBurundi\nCambodia\nCameroon\nCanada\nCape Verde\nCayman Islands\nCentral African Republic\nChad\nChile\nChina\nChristmas Island\nCocos (Keeling) Islands\nColombia\nComoros\nCongo\nCongo, the Democratic Republic of the\nCook Islands\nCosta Rica\nCote d'Ivoire\nCroatia\nCuba\nCuraçao\nCyprus\nCzech Republic\nDenmark\nDjibouti\nDominica\nDominican Republic\nEcuador\nEgypt\nEl Salvador\nEquatorial Guinea\nEritrea\nEstonia\nEthiopia\nFalkland Islands (Malvinas)\nFaroe Islands\nFiji\nFinland\nFrance\nFrench Guiana\nFrench Polynesia\nFrench Southern Territories\nGabon\nGambia\nGeorgia\nGermany\nGhana\nGibraltar\nGreece\nGreenland\nGrenada\nGuadeloupe\nGuatemala\nGuernsey\nGuinea\nGuinea-Bissau\nGuyana\nHaiti\nHeard Island and McDonald Islands\nHoly See (Vatican City State)\nHonduras\nHong Kong\nHungary\nIceland\nIndia\nIndonesia\nIran\nIraq\nIreland\nIsle of Man\nIsrael\nItaly\nJamaica\nJapan\nJersey\nJordan\nKazakhstan\nKenya\nKiribati\nKorea, Democratic People's Republic of\nKuwait\nKyrgyzstan\nLaos\nLatvia\nLebanon\nLesotho\nLiberia\nLibya\nLiechtenstein\nLithuania\nLuxembourg\nMacao\nMacedonia, the former Yugoslav Republic of\nMadagascar\nMalawi\nMalaysia\nMaldives\nMali\nMalta\nMartinique\nMauritania\nMauritius\nMayotte\nMexico\nMoldova\nMonaco\nMongolia\nMontenegro\nMontserrat\nMorocco\nMozambique\nMyanmar\nNamibia\nNauru\nNepal\nNetherlands\nNew Caledonia\nNew Zealand\nNicaragua\nNiger\nNigeria\nNiue\nNorfolk Island\nNorway\nOman\nPakistan\nPalestine\nPanama\nPapua New Guinea\nParaguay\nPeru\nPhilippines\nPitcairn\nPoland\nPortugal\nPuerto Rico\nQatar\nReunion\nRomania\nRussian Federation\nRwanda\nSaint Barthélemy\nSaint Helena, Ascension and Tristan da Cunha\nSaint Kitts and Nevis\nSaint Lucia\nSaint Martin (French part)\nSaint Pierre and Miquelon\nSaint Vincent and the Grenadines\nSamoa\nSan Marino\nSao Tome and Principe\nSaudi Arabia\nSenegal\nSerbia\nSeychelles\nSierra Leone\nSingapore\nSint Maarten (Dutch part)\nSlovakia\nSlovenia\nSolomon Islands\nSomalia\nSouth Africa\nSouth Georgia and the South Sandwich Islands\nSouth Korea\nSouth Sudan\nSpain\nSri Lanka\nSudan\nSuriname\nSvalbard and Jan Mayen\nSwaziland\nSweden\nSwitzerland\nSyrian Arab Republic\nTaiwan\nTajikistan\nTanzania\nThailand\nTimor-Leste\nTogo\nTokelau\nTonga\nTrinidad and Tobago\nTunisia\nTurkey\nTurkmenistan\nTurks and Caicos Islands\nTuvalu\nUganda\nUkraine\nUnited Arab Emirates\nUnited Kingdom\nUruguay\nUzbekistan\nVanuatu\nVenezuela\nVietNam\nVirgin Islands, British\nWallis and Futuna\nWestern Sahara\nYemen\nZambia\nZimbabwe\nGet In Touch\nRecommended content\nAI-powered Solutions for Smarter Grocery Shopping\n\nOnline grocery shopping is exploding, driven by the next generation of shoppers' buying habits. To compete, grocers need AI-driven, experiences that are easy, convenient, and tailored to each individual shopper's preferences.\n\nRead more\nBeyond the Basket: Algolia’s Shopping Assistant for Grocers\n\nAlgolia’s intelligent grocery solution helps you provide your customers with a simple, intuitive online grocery shopping experience that they can navigate using natural language. Read this eBook to find out how.\n\nRead more\nRetail Media Strategies Ranked by Popularity\n\nGet a firsthand look at the trends shaping retail media purchasing decisions for online grocers. \n\nRead more\nTry the AI search that understands\nGet a demo\nStart free\nCareers\nContact Us\nAbout Algolia\nAnti-Modern Slavery Statement\nSocial networks\nGet the latest in AI search - straight to your inbox.\n©2026 Algolia - All rights reserved.\nCookie settings\nTrust Center\nPrivacy Policy\nTerms of service\nAcceptable Use Policy\nProactive suppressed: no_trigger_match",
+  "journey": "B2",
+  "expectedTrigger": "solution_to_customer_story",
+  "visitorResponse": "Which verified outcomes make this story relevant to another grocery business?",
+  "specialistAccepted": false,
+  "specialistDeclined": false,
+  "specialistAction": null,
+  "continuity": {
+    "sourcePath": "/customers/h-e-b-mexico",
+    "destinationPath": "/industries/grocery",
+    "conversationIdBefore": "bd4e0a7d-df76-4d21-ac41-adef1bbc0ecf",
+    "conversationIdAfter": "bd4e0a7d-df76-4d21-ac41-adef1bbc0ecf",
+    "turnCountBefore": 1,
+    "turnCountAfter": 2,
+    "restoredQueryVisible": true,
+    "followUp": "Back on Grocery, which of those outcomes should an evaluation team validate first?"
+  },
+  "verification": {
+    "boundaries": {
+      "visitorResponseBoundaryId": 4,
+      "firstTurnBoundaryId": 16
+    },
+    "configuredOrchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "reset": {
+      "pass": true,
+      "errors": [],
+      "checks": {
+        "preseedCaptured": true,
+        "freshProfile": true,
+        "freshSession": true,
+        "eventsReset": true,
+        "proactiveCleared": true,
+        "conversationCleared": true,
+        "handoffCleared": true,
+        "unrelatedStatePreserved": true
+      },
+      "preseed": {
+        "profileVisitorId": "reset_probe_visitor",
+        "sessionId": "reset_probe_session",
+        "proactiveOpportunityId": "reset_probe_opportunity",
+        "conversationId": "reset_probe_conversation",
+        "handoffOpportunityId": "reset_probe_opportunity",
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      },
+      "post": {
+        "profileVisitorId": "visitor_1d8d2cb854657d48c382f12a",
+        "sessionId": "sess_983e42c3cafc5e18a3c2ce74",
+        "eventNames": [
+          "page_view"
+        ],
+        "proactiveOpportunityId": null,
+        "conversationId": null,
+        "handoffOpportunityId": null,
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      }
+    },
+    "firstTurnTraffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 2,
+        "byOpportunity": {
+          "opp_1a019d8285e_a998d8": 1,
+          "opp_1a019d8744b_6781c2": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 5,
+        "responseId": 7,
+        "responseStatus": 200,
+        "responseTextLength": 3236,
+        "routedToSpecialist": false,
+        "routingMode": null,
+        "specialistRequests": 0,
+        "specialistAction": null,
+        "specialistOutcome": null,
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 0
+      },
+      "discovery": {
+        "pass": true,
+        "errors": [],
+        "visibleWraps": 1,
+        "visibleQuestions": 1,
+        "questions": [
+          "Would you like to go deeper on implementation, business value, or customer proof?"
+        ]
+      },
+      "specialistRoutingDebug": null
+    },
+    "traffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 2,
+        "byOpportunity": {
+          "opp_1a019d8285e_a998d8": 1,
+          "opp_1a019d8744b_6781c2": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 5,
+        "responseId": 7,
+        "responseStatus": 200,
+        "responseTextLength": 3236,
+        "routedToSpecialist": false,
+        "routingMode": null,
+        "specialistRequests": 0,
+        "specialistAction": null,
+        "specialistOutcome": null,
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 2
+      }
+    }
+  }
+}

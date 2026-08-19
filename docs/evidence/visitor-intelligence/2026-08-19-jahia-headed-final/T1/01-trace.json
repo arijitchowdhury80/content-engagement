@@ -1,0 +1,4198 @@
+{
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations?algoliaChatDebug=1&algoliaProactiveDebug=1&algoliaHandoffDebug=1&cb=hosted-t1-continuity",
+  "title": "AI recommendation engine for products and content | Algolia",
+  "controller": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "opportunityTtlMs": 600000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "documentationJourneyDwellMs": 10000,
+      "documentationJourneyScrollDepth": 50,
+      "proofJourneyDwellMs": 10000,
+      "proofJourneyScrollDepth": 50,
+      "implementationDwellMs": 10000,
+      "implementationScrollDepth": 50,
+      "resourceDwellMs": 10000,
+      "resourceScrollDepth": 50,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a019d3a75e_e2292d",
+          "status": "active",
+          "lifecycle": [
+            "qualified",
+            "pending",
+            "shown",
+            "engaged",
+            "handed_off",
+            "active"
+          ],
+          "pageId": "page_7ac80258c6ffd98ecec07691",
+          "pagePath": "/products/ai-search",
+          "moment": "product_research",
+          "trigger": "product_page_10s_50_scroll",
+          "priority": 66,
+          "messageGoal": "explain_product_fit",
+          "reasonCodes": [
+            "product_page",
+            "product_dwell",
+            "product_scroll"
+          ],
+          "createdAt": 1787139696478,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "persona": {
+              "value": "unknown",
+              "state": "unknown",
+              "confidence": 0,
+              "source": "insufficient_signal"
+            },
+            "currentPage": {
+              "pageId": "page_7ac80258c6ffd98ecec07691",
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "ai_search",
+              "label": "AI Search",
+              "state": "observed",
+              "source": "current_product_page",
+              "pagePath": "/products/ai-search",
+              "pageTitle": "AI Search | Algolia"
+            },
+            "journeySummary": {
+              "currentTransition": "product_page_10s_50_scroll",
+              "productTrail": [
+                {
+                  "value": "ai_search",
+                  "label": "AI Search",
+                  "pagePath": "/products/ai-search",
+                  "pageTitle": "AI Search | Algolia"
+                }
+              ],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "AI Search"
+                },
+                {
+                  "path": "/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search",
+                "dwellMs": 1103,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search",
+                "dwellMs": 10003,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/products/ai-search",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/products/ai-search",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/products/ai-search",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/products/ai-search",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/products/ai-search",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "ai_recommendations_evaluation",
+              "state": "inferred",
+              "confidence": 0.72,
+              "evidence": [
+                "current_page:AI Search | Algolia /products/ai-search ai_search",
+                "scroll_depth:/products/ai-search",
+                "page_dwell:/products/ai-search",
+                "page_dwell:/products/ai-search"
+              ]
+            },
+            "friction": {
+              "value": "fit_and_value_unclear",
+              "state": "inferred",
+              "confidence": 0.62,
+              "evidence": [
+                "current_page:AI Search | Algolia /products/ai-search ai_search"
+              ]
+            },
+            "messageGoal": "explain_product_fit",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ],
+            "opportunityId": "opp_1a019d3a75e_e2292d",
+            "createdAt": 1787139696478
+          },
+          "updatedAt": 1787139705587,
+          "failureReason": null,
+          "shownAt": 1787139703837,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a019d3a75e_e2292d",
+            "greeting": "Hello, explorer. AI Search is earning a proper look today, so let’s skip the fluff and figure out where it actually fits your problem and what value it should earn.",
+            "chips": [
+              "See where it fits",
+              "Explore the value",
+              "Compare capabilities"
+            ],
+            "handoffSummary": {
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "messageGoal": "explain_product_fit"
+            }
+          },
+          "handoffStartedAt": 1787139705014,
+          "userResponse": "How can a non-technical merchandising team operate AI Search day to day after implementation?",
+          "selectedChip": null,
+          "handoffSchema": "ProactiveHandoffContext.v1",
+          "handoffAt": 1787139705587,
+          "handoffFailure": null,
+          "activeAt": 1787139705587
+        }
+      ],
+      "lastOpportunityAt": 1787139703837
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1787139811124,
+      "profile": {
+        "visitorId": "visitor_a1de8e3fb869e73bd2789f2b",
+        "visits": 3,
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "startedAt": 1787139681786,
+        "pageCount": 3,
+        "engagementHistory": [
+          {
+            "id": "eng_8ad63d15ee8d8b3fc8e2ec9a",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1787139703833,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_de701dbaed7d2da59f21b3f9",
+        "path": "/products/ai-recommendations",
+        "title": "AI recommendation engine for products and content | Algolia",
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "recommendations",
+        "productFocusLabel": "AI Recommendations",
+        "dwellMs": 15002,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "ai_search",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "currentProductFocus": {
+          "value": "recommendations",
+          "label": "AI Recommendations",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 3,
+          "page_dwell": 6,
+          "scroll_depth": 1,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_e3a622ef543f60127beac1ad",
+          "name": "page_view",
+          "ts": 1787139681786,
+          "pageId": "page_51617fa41894a9c9079f93a4",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_0f5413499322f88b8525a983",
+          "name": "page_view",
+          "ts": 1787139683193,
+          "pageId": "page_7ac80258c6ffd98ecec07691",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_0cc7d555d2b53c01a16e1a74",
+          "name": "page_dwell",
+          "ts": 1787139688197,
+          "pageId": "page_7ac80258c6ffd98ecec07691",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_86305da0d2ab6f98c6969f70",
+          "name": "page_dwell",
+          "ts": 1787139693196,
+          "pageId": "page_7ac80258c6ffd98ecec07691",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_3cc4043492fd78fee96bcdf1",
+          "name": "scroll_depth",
+          "ts": 1787139696474,
+          "pageId": "page_7ac80258c6ffd98ecec07691",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_347f8fe615704cf5a462acea",
+          "name": "page_dwell",
+          "ts": 1787139698195,
+          "pageId": "page_7ac80258c6ffd98ecec07691",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_4ea67b85a954c7b7a8d4b8ad",
+          "name": "engagement_exposed",
+          "ts": 1787139703833,
+          "pageId": "page_7ac80258c6ffd98ecec07691",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_8ad63d15ee8d8b3fc8e2ec9a",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_c5b79523e3a2b47e84c8e9a9",
+          "name": "chat_open",
+          "ts": 1787139703850,
+          "pageId": "page_7ac80258c6ffd98ecec07691",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        },
+        {
+          "eventId": "evt_3a8ff1a44fff6765694c67fa",
+          "name": "page_view",
+          "ts": 1787139759951,
+          "pageId": "page_de701dbaed7d2da59f21b3f9",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations",
+            "title": "AI recommendation engine for products and content | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "recommendations",
+            "productFocusLabel": "AI Recommendations"
+          }
+        },
+        {
+          "eventId": "evt_ea861ddf5c2a11d5538269f2",
+          "name": "page_dwell",
+          "ts": 1787139764952,
+          "pageId": "page_de701dbaed7d2da59f21b3f9",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "recommendations",
+            "productFocusLabel": "AI Recommendations"
+          }
+        },
+        {
+          "eventId": "evt_9b00e1e55eaa0f587355920f",
+          "name": "page_dwell",
+          "ts": 1787139769951,
+          "pageId": "page_de701dbaed7d2da59f21b3f9",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "recommendations",
+            "productFocusLabel": "AI Recommendations"
+          }
+        },
+        {
+          "eventId": "evt_7dd324b6e13c44cc1eb7903f",
+          "name": "page_dwell",
+          "ts": 1787139774953,
+          "pageId": "page_de701dbaed7d2da59f21b3f9",
+          "path": "/products/ai-recommendations",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "recommendations",
+            "productFocusLabel": "AI Recommendations"
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "ai_recommendations_evaluation",
+          "state": "inferred",
+          "confidence": 0.72,
+          "evidence": [
+            "current_page:AI recommendation engine for products and content | Algolia /products/ai-recommendations ai_search",
+            "page_dwell:/products/ai-recommendations",
+            "page_dwell:/products/ai-recommendations",
+            "page_dwell:/products/ai-recommendations"
+          ]
+        },
+        "friction": {
+          "value": "fit_and_value_unclear",
+          "state": "inferred",
+          "confidence": 0.62,
+          "evidence": [
+            "current_page:AI recommendation engine for products and content | Algolia /products/ai-recommendations ai_search"
+          ]
+        },
+        "nextBestAction": {
+          "value": "explain_feature_fit_with_example",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "no_trigger_match",
+      "createdAt": 1787139811125
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "signal_received",
+        "at": 1787139681786,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_view",
+          "path": "/products/ai-search",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139681786,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139681786,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139681786,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139681843,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139681843,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139681844,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139681844,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139681844,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787139683194,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139683194,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139683194,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139683195,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139683195,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139683195,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139683444,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139683444,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139683444,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139683444,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139683444,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139684194,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139684195,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139684195,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139684195,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139684195,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139685695,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139685695,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139685696,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139685696,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139685696,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139688198,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139688199,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 5003,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 3,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139688199,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139688200,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139693197,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139693198,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 10003,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139693198,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139693198,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139696474,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/products/ai-search",
+          "props": {
+            "depth": 50,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139696475,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139696476,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1787139696476,
+        "path": "/products/ai-search",
+        "detail": {
+          "engage": true,
+          "moment": "product_research",
+          "trigger": "product_page_10s_50_scroll",
+          "priority": 66,
+          "pagePath": "/products/ai-search",
+          "reasonCodes": [
+            "product_page",
+            "product_dwell",
+            "product_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1787139696477,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139696477,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139696477,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1787139696478,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d3a75e_e2292d",
+          "trigger": "product_page_10s_50_scroll",
+          "moment": "product_research",
+          "messageGoal": "explain_product_fit",
+          "pagePath": "/products/ai-search"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1787139696479,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1787139696479,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d3a75e_e2292d",
+          "trigger": "product_page_10s_50_scroll",
+          "moment": "product_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1787139697344,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d3a75e_e2292d",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139698196,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139698197,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15002,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 6,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139698198,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139698199,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1787139703830,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d3a75e_e2292d",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a019d3a75e_e2292d",
+          "greetingPreview": "Hello, explorer. AI Search is earning a proper look today, so let’s skip the fluff and figure out where it actually fits your problem and what value it should earn.",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139703833,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/products/ai-search",
+          "props": {
+            "engagementId": "eng_8ad63d15ee8d8b3fc8e2ec9a",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139703835,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15002,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 7,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139703836,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139703837,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1787139703838,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d3a75e_e2292d",
+          "trigger": "product_page_10s_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139703850,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "chat_open",
+          "path": "/products/ai-search",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139703851,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15002,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 8,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139703852,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139703852,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139758979,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15002,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 8,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139758979,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139758979,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "conversation_already_active",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787139760066,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139760076,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139760077,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-recommendations",
+          "props": null
+        }
+      },
+      {
+        "stage": "active_conversation_restored",
+        "at": 1787139760079,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "path": "/products/ai-recommendations"
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139760081,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Recommendations"
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [
+            "AI Search",
+            "AI Recommendations"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139760081,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139760082,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139760316,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139760317,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-recommendations",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139760317,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Recommendations"
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [
+            "AI Search",
+            "AI Recommendations"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139760317,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139760318,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139761067,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139761067,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-recommendations",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139761068,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Recommendations"
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [
+            "AI Search",
+            "AI Recommendations"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139761068,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139761068,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139762567,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139762568,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-recommendations",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139762570,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Recommendations"
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [
+            "AI Search",
+            "AI Recommendations"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139762570,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139762571,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139764953,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-recommendations",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "recommendations",
+            "productFocusLabel": "AI Recommendations"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139764955,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 5001,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Recommendations"
+          },
+          "pageCount": 3,
+          "recentEventCount": 10,
+          "productTrail": [
+            "AI Search",
+            "AI Recommendations"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139764956,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139764956,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139769952,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-recommendations",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "recommendations",
+            "productFocusLabel": "AI Recommendations"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139769954,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 10000,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Recommendations"
+          },
+          "pageCount": 3,
+          "recentEventCount": 11,
+          "productTrail": [
+            "AI Search",
+            "AI Recommendations"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139769955,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139769956,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139774953,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-recommendations",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "recommendations",
+            "productFocusLabel": "AI Recommendations"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139774955,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15002,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Recommendations"
+          },
+          "pageCount": 3,
+          "recentEventCount": 12,
+          "productTrail": [
+            "AI Search",
+            "AI Recommendations"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139774955,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139774956,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139811125,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-recommendations",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15002,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Recommendations"
+          },
+          "pageCount": 3,
+          "recentEventCount": 12,
+          "productTrail": [
+            "AI Search",
+            "AI Recommendations"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139811125,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139811125,
+        "path": "/products/ai-recommendations",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      }
+    ]
+  },
+  "profile": {
+    "schema": "AlgoliaEngagementProfile.v1",
+    "visitorId": "visitor_a1de8e3fb869e73bd2789f2b",
+    "userToken": "tok_5532161cd1640aeb1387b244",
+    "tokenSource": "ephemeral",
+    "firstSeenAt": 1787139681786,
+    "lastSeenAt": 1787139759951,
+    "visits": 3,
+    "persona": null,
+    "traits": {}
+  },
+  "session": {
+    "schema": "AlgoliaEngagementSession.v1",
+    "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+    "startedAt": 1787139681786,
+    "lastSeenAt": 1787139774953,
+    "currentPageId": "page_de701dbaed7d2da59f21b3f9",
+    "pages": [
+      {
+        "pageId": "page_51617fa41894a9c9079f93a4",
+        "path": "/products/ai-search",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+        "title": "AI Search | Algolia",
+        "enteredAt": 1787139681786,
+        "dwellMs": 1103,
+        "maxScrollDepth": 0,
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "ai_search",
+        "productFocusLabel": "AI Search"
+      },
+      {
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "path": "/products/ai-search",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+        "title": "AI Search | Algolia",
+        "enteredAt": 1787139683193,
+        "dwellMs": 76413,
+        "maxScrollDepth": 50,
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "ai_search",
+        "productFocusLabel": "AI Search"
+      },
+      {
+        "pageId": "page_de701dbaed7d2da59f21b3f9",
+        "path": "/products/ai-recommendations",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations",
+        "title": "AI recommendation engine for products and content | Algolia",
+        "enteredAt": 1787139759951,
+        "dwellMs": 15002,
+        "maxScrollDepth": 0,
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "recommendations",
+        "productFocusLabel": "AI Recommendations"
+      }
+    ],
+    "engagementHistory": [
+      {
+        "id": "eng_8ad63d15ee8d8b3fc8e2ec9a",
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1787139703833,
+        "status": "shown"
+      }
+    ]
+  },
+  "events": {
+    "schema": "AlgoliaEngagementEvents.v1",
+    "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+    "events": [
+      {
+        "eventId": "evt_e3a622ef543f60127beac1ad",
+        "name": "page_view",
+        "ts": 1787139681786,
+        "isoTime": "2026-08-19T11:41:21.786Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_51617fa41894a9c9079f93a4",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "title": "AI Search | Algolia",
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_0f5413499322f88b8525a983",
+        "name": "page_view",
+        "ts": 1787139683193,
+        "isoTime": "2026-08-19T11:41:23.193Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "title": "AI Search | Algolia",
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_0cc7d555d2b53c01a16e1a74",
+        "name": "page_dwell",
+        "ts": 1787139688197,
+        "isoTime": "2026-08-19T11:41:28.197Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_86305da0d2ab6f98c6969f70",
+        "name": "page_dwell",
+        "ts": 1787139693196,
+        "isoTime": "2026-08-19T11:41:33.196Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_3cc4043492fd78fee96bcdf1",
+        "name": "scroll_depth",
+        "ts": 1787139696474,
+        "isoTime": "2026-08-19T11:41:36.474Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_347f8fe615704cf5a462acea",
+        "name": "page_dwell",
+        "ts": 1787139698195,
+        "isoTime": "2026-08-19T11:41:38.195Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_4ea67b85a954c7b7a8d4b8ad",
+        "name": "engagement_exposed",
+        "ts": 1787139703833,
+        "isoTime": "2026-08-19T11:41:43.833Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_8ad63d15ee8d8b3fc8e2ec9a",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_c5b79523e3a2b47e84c8e9a9",
+        "name": "chat_open",
+        "ts": 1787139703850,
+        "isoTime": "2026-08-19T11:41:43.850Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      },
+      {
+        "eventId": "evt_3a8ff1a44fff6765694c67fa",
+        "name": "page_view",
+        "ts": 1787139759951,
+        "isoTime": "2026-08-19T11:42:39.951Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_de701dbaed7d2da59f21b3f9",
+        "path": "/products/ai-recommendations",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-recommendations",
+          "title": "AI recommendation engine for products and content | Algolia",
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "recommendations",
+          "productFocusLabel": "AI Recommendations"
+        }
+      },
+      {
+        "eventId": "evt_ea861ddf5c2a11d5538269f2",
+        "name": "page_dwell",
+        "ts": 1787139764952,
+        "isoTime": "2026-08-19T11:42:44.952Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_de701dbaed7d2da59f21b3f9",
+        "path": "/products/ai-recommendations",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "recommendations",
+          "productFocusLabel": "AI Recommendations"
+        }
+      },
+      {
+        "eventId": "evt_9b00e1e55eaa0f587355920f",
+        "name": "page_dwell",
+        "ts": 1787139769951,
+        "isoTime": "2026-08-19T11:42:49.951Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_de701dbaed7d2da59f21b3f9",
+        "path": "/products/ai-recommendations",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "recommendations",
+          "productFocusLabel": "AI Recommendations"
+        }
+      },
+      {
+        "eventId": "evt_7dd324b6e13c44cc1eb7903f",
+        "name": "page_dwell",
+        "ts": 1787139774953,
+        "isoTime": "2026-08-19T11:42:54.953Z",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "pageId": "page_de701dbaed7d2da59f21b3f9",
+        "path": "/products/ai-recommendations",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "recommendations",
+          "productFocusLabel": "AI Recommendations"
+        }
+      }
+    ]
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_1a019d3a75e_e2292d",
+        "status": "active",
+        "lifecycle": [
+          "qualified",
+          "pending",
+          "shown",
+          "engaged",
+          "handed_off",
+          "active"
+        ],
+        "pageId": "page_7ac80258c6ffd98ecec07691",
+        "pagePath": "/products/ai-search",
+        "moment": "product_research",
+        "trigger": "product_page_10s_50_scroll",
+        "priority": 66,
+        "messageGoal": "explain_product_fit",
+        "reasonCodes": [
+          "product_page",
+          "product_dwell",
+          "product_scroll"
+        ],
+        "createdAt": 1787139696478,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "product_research",
+          "trigger": "product_page_10s_50_scroll",
+          "priority": 66,
+          "persona": {
+            "value": "unknown",
+            "state": "unknown",
+            "confidence": 0,
+            "source": "insufficient_signal"
+          },
+          "currentPage": {
+            "pageId": "page_7ac80258c6ffd98ecec07691",
+            "path": "/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": {
+            "value": "ai_search",
+            "label": "AI Search",
+            "state": "observed",
+            "source": "current_product_page",
+            "pagePath": "/products/ai-search",
+            "pageTitle": "AI Search | Algolia"
+          },
+          "journeySummary": {
+            "currentTransition": "product_page_10s_50_scroll",
+            "productTrail": [
+              {
+                "value": "ai_search",
+                "label": "AI Search",
+                "pagePath": "/products/ai-search",
+                "pageTitle": "AI Search | Algolia"
+              }
+            ],
+            "solutionTrail": [],
+            "pageTrail": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocusLabel": "AI Search"
+              },
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            ],
+            "storyHint": ""
+          },
+          "journey": [
+            {
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 1103,
+              "maxScrollDepth": 0
+            },
+            {
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/products/ai-search",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/products/ai-search",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/products/ai-search",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/products/ai-search",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/products/ai-search",
+              "props": {
+                "depth": 50,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "ai_recommendations_evaluation",
+            "state": "inferred",
+            "confidence": 0.72,
+            "evidence": [
+              "current_page:AI Search | Algolia /products/ai-search ai_search",
+              "scroll_depth:/products/ai-search",
+              "page_dwell:/products/ai-search",
+              "page_dwell:/products/ai-search"
+            ]
+          },
+          "friction": {
+            "value": "fit_and_value_unclear",
+            "state": "inferred",
+            "confidence": 0.62,
+            "evidence": [
+              "current_page:AI Search | Algolia /products/ai-search ai_search"
+            ]
+          },
+          "messageGoal": "explain_product_fit",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "product_page",
+            "product_dwell",
+            "product_scroll"
+          ],
+          "opportunityId": "opp_1a019d3a75e_e2292d",
+          "createdAt": 1787139696478
+        },
+        "updatedAt": 1787139705587,
+        "failureReason": null,
+        "shownAt": 1787139703837,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a019d3a75e_e2292d",
+          "greeting": "Hello, explorer. AI Search is earning a proper look today, so let’s skip the fluff and figure out where it actually fits your problem and what value it should earn.",
+          "chips": [
+            "See where it fits",
+            "Explore the value",
+            "Compare capabilities"
+          ],
+          "handoffSummary": {
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "messageGoal": "explain_product_fit"
+          }
+        },
+        "handoffStartedAt": 1787139705014,
+        "userResponse": "How can a non-technical merchandising team operate AI Search day to day after implementation?",
+        "selectedChip": null,
+        "handoffSchema": "ProactiveHandoffContext.v1",
+        "handoffAt": 1787139705587,
+        "handoffFailure": null,
+        "activeAt": 1787139705587
+      }
+    ],
+    "lastOpportunityAt": 1787139703837
+  },
+  "conversation": {
+    "version": 1,
+    "conversationId": "65f8653d-a645-4601-a813-c0d819b5cd43",
+    "turns": [
+      {
+        "id": "ca693913-705e-41b4-a052-bf8ca96b18ba",
+        "userMessageId": "056a85e0-31c8-448b-8807-3c79ca9b7d99",
+        "query": "How can a non-technical merchandising team operate AI Search day to day after implementation?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "3ee817ac-4be1-4441-9586-6a5a49285629",
+            "agent": "primary",
+            "status": "success",
+            "text": "The retrieved material does not verify the specific details requested, so I cannot present those claims as confirmed.",
+            "sources": [
+              {
+                "id": "en_9c5c0eb3-622f-4966-a533-5289502e1b86_0_1",
+                "title": "How AI is transforming merchandising from reactive to proactive - Algolia Blog | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/how-ai-is-transforming-merchandising-from-reactive-to-proactive",
+                "source": "Blog"
+              },
+              {
+                "id": "en_937aa585-631e-4ee2-9527-2c3e5968efb4",
+                "title": "Merchandising in the AI era - Algolia Blog | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/merchandising-in-the-ai-era",
+                "source": "Blog"
+              },
+              {
+                "id": "en_9405bdb7-5ca1-4858-b390-d78ad84ad76a_0_3",
+                "title": "Increase online sales with Search merchandising | Algolia",
+                "url": "https://www.algolia.com/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+                "source": "Blog"
+              },
+              {
+                "id": "en_24f9632e-8711-49fe-a626-88360a73609c",
+                "title": "Digital transformation: B2B merchandising & AI | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/b2b-commerce-digital-transformation-merchandising-and-ai-optimizations",
+                "source": "Blog"
+              },
+              {
+                "id": "en_3036dcf4-87e9-4fe2-8edb-4db3d21fba75",
+                "title": "Why merchandising (and searchandising) matter for ecommerce | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/how-to-design-your-merchandising-and-searchandising-stategies-for-success",
+                "source": "Blog"
+              },
+              {
+                "id": "en_276e3385-f5e7-470d-904d-e09ad79fc341",
+                "title": "Scaling marketplace search with AI - Algolia Blog | Algolia",
+                "url": "https://www.algolia.com/blog/ai/scaling-marketplace-search-with-ai",
+                "source": "Blog"
+              },
+              {
+                "id": "en_9e89e42b-99f5-4a57-a24e-5f5289c1b4b9_0_1",
+                "title": "How AI search helps boost revenue and cut costs | Algolia",
+                "url": "https://www.algolia.com/blog/ai/how-ai-search-enables-ecommerce-companies-to-boost-revenue-and-cut-costs",
+                "source": "Blog"
+              },
+              {
+                "id": "en_d89f8ae4-be37-4d74-a89a-251f0f5b3ac6_0_4",
+                "title": "Agentic retrieval: a practical guide for enterprise AI",
+                "url": "https://www.algolia.com/blog/ai/agentic-retrieval",
+                "source": "Blog"
+              },
+              {
+                "id": "en_0c3eae14-2701-4dc2-9eaf-75a275713d54",
+                "title": "Algolia is a Shopify Plus Certified Partner | Algolia",
+                "url": "https://www.algolia.com/blog/algolia/increased-revenue-for-merchants-algolia-is-now-a-shopify-plus-certified-partner",
+                "source": "Blog"
+              },
+              {
+                "id": "en_2da3fb3f-5daa-43f6-861f-4da20f96cb84",
+                "title": "How AI-led Merchandising solves merchandisers’ biggest challenges",
+                "url": "https://www.algolia.com/resources/asset/webinar-digitalexpert-ai-led-merchandising",
+                "source": "Resources"
+              },
+              {
+                "id": "en_ac47a5cb-d7ce-4e23-938c-bcb82f880d2f",
+                "title": "How AI-led Merchandising solves merchandisers’ biggest challenges",
+                "url": "https://www.algolia.com/resources/asset/video-ai-led-merchandising",
+                "source": "Resources"
+              },
+              {
+                "id": "en_90b376bc-5de5-44f6-a773-bd11f604304d",
+                "title": "The Merchandising Edge with AWS and Algolia",
+                "url": "https://www.algolia.com/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+                "source": "Resources"
+              },
+              {
+                "id": "01903bad-fd92-716c-ae7f-9a106183db34",
+                "title": "Understanding Search Results with Merchandising Studio",
+                "url": "https://academy.algolia.com/training/019036f5-92eb-7850-a275-5138ed1ed04e",
+                "source": "Academy"
+              },
+              {
+                "id": "01903ba9-3986-7101-83e9-ce0c11ba8bbc",
+                "title": "Discover Algolia's Search and Discovery Platform",
+                "url": "https://academy.algolia.com/training/1a7aff24-cc3f-11ee-83f2-0281f0277ee7",
+                "source": "Academy"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/getting-started/quick-start/tutorials/getting-started-with-the-dashboard/-0",
+                "title": "Get started with the dashboard | Algolia",
+                "url": "https://www.algolia.com/doc/guides/getting-started/quick-start/tutorials/getting-started-with-the-dashboard",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/managing-results/rules/merchandising-and-promoting/-2",
+                "title": "Merchandising | Algolia",
+                "url": "https://www.algolia.com/doc/guides/managing-results/rules/merchandising-and-promoting",
+                "source": "Documentation"
+              }
+            ],
+            "searchCount": 16,
+            "rawHits": [
+              {
+                "url": "/blog/ecommerce/how-ai-is-transforming-merchandising-from-reactive-to-proactive",
+                "description": "Merchandisers are now seeking ways to leverage AI tools to simplify their tasks and make better proactive decisions that can be automated.",
+                "published_at": 1700209920000,
+                "is404": false,
+                "indexed_at": 1784670424759,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Lorna Rivera"
+                  ]
+                },
+                "objectID": "en_9c5c0eb3-622f-4966-a533-5289502e1b86_0_1",
+                "transform_source": "aant-blogsEntry",
+                "title": "How AI is transforming merchandising from reactive to proactive - Algolia Blog | Algolia",
+                "category": "Ecommerce",
+                "tags": [
+                  "E-commerce"
+                ],
+                "keywords": [
+                  "e-commerce"
+                ],
+                "lastUpdated": "2026-07-21T21:47:04.759Z",
+                "source": "Blog",
+                "authors": [
+                  {
+                    "name": "Lorna Rivera",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Lorna Rivera.png",
+                    "desc": "Staff User Researcher"
+                  }
+                ],
+                "abstract": "Merchandisers are now seeking ways to leverage AI tools to simplify their tasks and make better proactive decisions that can be automated. How AI is transforming merchandising from reactive to proactive",
+                "language_code": "en",
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "environment": "prod20260722",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-ai-is-transforming.webp"
+              },
+              {
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "is404": false,
+                "environment": "prod20260722",
+                "tags": [
+                  "E-commerce"
+                ],
+                "authors": [
+                  {
+                    "name": "Tariq Khan",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/tariq-khan.jpeg",
+                    "desc": "Director of Content Marketing"
+                  }
+                ],
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Tariq Khan"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:47:05.250Z",
+                "category": "Ecommerce",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/merchandising-in-the.webp",
+                "url": "/blog/ecommerce/merchandising-in-the-ai-era",
+                "indexed_at": 1784670425250,
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "abstract": "AI-enabled merchandising uses data to make decisions fast, capabilities that complement a merchandisers’ business knowledge to help convert more buyers. Merchandising in the AI era",
+                "language_code": "en",
+                "published_at": 1708902000000,
+                "objectID": "en_937aa585-631e-4ee2-9527-2c3e5968efb4",
+                "title": "Merchandising in the AI era - Algolia Blog | Algolia",
+                "description": "AI-enabled merchandising uses data to make decisions fast, capabilities that complement a merchandisers’ business knowledge to help convert more buyers.",
+                "keywords": [
+                  "e-commerce"
+                ]
+              },
+              {
+                "abstract": "Design an effective eCommerce strategy: merchandising popular searches, trends, seasonal, pinning, boosting, redirecting searches, banners. How to increase online sales with Search merchandising",
+                "facets": {
+                  "facet0": [
+                    ""
+                  ]
+                },
+                "objectID": "en_9405bdb7-5ca1-4858-b390-d78ad84ad76a_0_3",
+                "title": "Increase online sales with Search merchandising | Algolia",
+                "url": "/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+                "keywords": [
+                  "customers"
+                ],
+                "language_code": "en",
+                "published_at": 1691045940000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Customers"
+                  ],
+                  "lvl2": [
+                    "by Tanya Herman"
+                  ]
+                },
+                "environment": "prod20260722",
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "category": "",
+                "tags": [],
+                "description": "Design an effective eCommerce strategy: merchandising popular searches, trends, seasonal, pinning, boosting, redirecting searches, banners.",
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:47:12.095Z",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/comp-network-white.webp",
+                "authors": [
+                  {
+                    "name": "Tanya Herman",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png",
+                    "desc": "Product Manager"
+                  }
+                ],
+                "indexed_at": 1784670432095
+              },
+              {
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/b2b-commerce-digital-transformation-merchandising.webp",
+                "url": "/blog/ecommerce/b2b-commerce-digital-transformation-merchandising-and-ai-optimizations",
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Tanya Herman"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:46:57.726Z",
+                "objectID": "en_24f9632e-8711-49fe-a626-88360a73609c",
+                "source": "Blog",
+                "description": "Merchandising & recommendations (promoting products & categories) is essential for B2B. Learn to merchandise with Search & AI automation.",
+                "keywords": [
+                  "e-commerce"
+                ],
+                "language_code": "en",
+                "published_at": 1690794540000,
+                "is404": false,
+                "environment": "prod20260722",
+                "category": "Ecommerce",
+                "authors": [
+                  {
+                    "name": "Tanya Herman",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/tanya-herman.png",
+                    "desc": "Product Manager"
+                  }
+                ],
+                "abstract": "Merchandising & recommendations (promoting products & categories) is essential for B2B. Learn to merchandise with Search & AI automation. B2B commerce digital transformation: merchandising and AI optimizations",
+                "indexed_at": 1784670417726,
+                "transform_source": "aant-blogsEntry",
+                "title": "Digital transformation: B2B merchandising & AI | Algolia",
+                "tags": [
+                  "E-commerce"
+                ]
+              },
+              {
+                "keywords": [
+                  "e-commerce"
+                ],
+                "abstract": "Merchandising & recommendations (promoting products & categories) is essential for B2B. Learn to merchandise with Search & AI automation. B2B commerce digital transformation: merchandising and AI optimizations",
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:46:57.720Z",
+                "environment": "prod20260722",
+                "source": "Blog",
+                "category": "Ecommerce",
+                "language_code": "en",
+                "title": "Digital transformation: B2B merchandising & AI | Algolia",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/b2b-commerce-digital-transformation-merchandising.webp",
+                "tags": [
+                  "E-commerce"
+                ],
+                "description": "Merchandising & recommendations (promoting products & categories) is essential for B2B. Learn to merchandise with Search & AI automation.",
+                "indexed_at": 1784670417720,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Tanya Herman"
+                  ]
+                },
+                "objectID": "en_24f9632e-8711-49fe-a626-88360a73609c_0_1",
+                "transform_source": "aant-blogsEntry",
+                "authors": [
+                  {
+                    "name": "Tanya Herman",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/tanya-herman.png",
+                    "desc": "Product Manager"
+                  }
+                ],
+                "url": "/blog/ecommerce/b2b-commerce-digital-transformation-merchandising-and-ai-optimizations",
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "published_at": 1690794540000
+              },
+              {
+                "language_code": "en",
+                "indexed_at": 1784670426682,
+                "lastUpdated": "2026-07-21T21:47:06.682Z",
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "category": "Ecommerce",
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "tags": [
+                  "E-commerce"
+                ],
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Peter Villani"
+                  ]
+                },
+                "objectID": "en_3036dcf4-87e9-4fe2-8edb-4db3d21fba75",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-to-design-your-merchandising-and-searchandising.webp",
+                "description": "Merchandising is both an art and a science: when online merchandising is driven by data as well as design, it can deliver great results.",
+                "keywords": [
+                  "e-commerce"
+                ],
+                "published_at": 1679479740000,
+                "is404": false,
+                "environment": "prod20260722",
+                "title": "Why merchandising (and searchandising) matter for ecommerce | Algolia",
+                "authors": [
+                  {
+                    "name": "Peter Villani",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/peter-villani.jpeg",
+                    "desc": "Sr. Tech & Business Writer"
+                  }
+                ],
+                "url": "/blog/ecommerce/how-to-design-your-merchandising-and-searchandising-stategies-for-success",
+                "abstract": "Merchandising is both an art and a science: when online merchandising is driven by data as well as design, it can deliver great results. How to design your merchandising (and searchandising) stategies for success"
+              },
+              {
+                "authors": [
+                  {
+                    "name": "Peter Villani",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/peter-villani.jpeg",
+                    "desc": "Sr. Tech & Business Writer"
+                  }
+                ],
+                "objectID": "en_3036dcf4-87e9-4fe2-8edb-4db3d21fba75_0_2",
+                "language_code": "en",
+                "transform_source": "aant-blogsEntry",
+                "title": "Why merchandising (and searchandising) matter for ecommerce | Algolia",
+                "category": "Ecommerce",
+                "keywords": [
+                  "e-commerce"
+                ],
+                "source": "Blog",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-to-design-your-merchandising-and-searchandising.webp",
+                "indexed_at": 1784670426602,
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "published_at": 1679479740000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Peter Villani"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:47:06.602Z",
+                "environment": "prod20260722",
+                "tags": [
+                  "E-commerce"
+                ],
+                "url": "/blog/ecommerce/how-to-design-your-merchandising-and-searchandising-stategies-for-success",
+                "description": "Merchandising is both an art and a science: when online merchandising is driven by data as well as design, it can deliver great results.",
+                "abstract": "Merchandising is both an art and a science: when online merchandising is driven by data as well as design, it can deliver great results. How to design your merchandising (and searchandising) stategies for success",
+                "is404": false
+              },
+              {
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "AI"
+                  ],
+                  "lvl2": [
+                    "by Bharat Guruprakash"
+                  ]
+                },
+                "is404": false,
+                "objectID": "en_276e3385-f5e7-470d-904d-e09ad79fc341",
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "lastUpdated": "2026-07-21T21:47:24.926Z",
+                "title": "Scaling marketplace search with AI - Algolia Blog | Algolia",
+                "category": "AI",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/scaling-marketplace-search-with-ai.webp",
+                "tags": [
+                  "AI"
+                ],
+                "indexed_at": 1784670444926,
+                "facets": {
+                  "facet0": [
+                    "AI"
+                  ]
+                },
+                "description": "AI search can have an outsized impact on improving results for marketplaces or other B2B/B2C ecommerce businesses with complex data challenges.",
+                "abstract": "AI search can have an outsized impact on improving results for marketplaces or other B2B/B2C ecommerce businesses with complex data challenges. Scaling marketplace search with AI",
+                "published_at": 1708949580000,
+                "environment": "prod20260722",
+                "authors": [
+                  {
+                    "name": "Bharat Guruprakash",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/bharat-guruprakash.jpeg",
+                    "desc": "Chief Product Officer"
+                  }
+                ],
+                "url": "/blog/ai/scaling-marketplace-search-with-ai",
+                "keywords": [
+                  "ai"
+                ],
+                "language_code": "en"
+              },
+              {
+                "transform_source": "aant-blogsEntry",
+                "description": "AI search can have an outsized impact on improving results for marketplaces or other B2B/B2C ecommerce businesses with complex data challenges.",
+                "facets": {
+                  "facet0": [
+                    "AI"
+                  ]
+                },
+                "title": "Scaling marketplace search with AI - Algolia Blog | Algolia",
+                "category": "AI",
+                "tags": [
+                  "AI"
+                ],
+                "authors": [
+                  {
+                    "name": "Bharat Guruprakash",
+                    "desc": "Chief Product Officer"
+                  }
+                ],
+                "url": "/blog/ai/scaling-marketplace-search-with-ai",
+                "keywords": [
+                  "ai"
+                ],
+                "abstract": "AI search can have an outsized impact on improving results for marketplaces or other B2B/B2C ecommerce businesses with complex data challenges. Scaling marketplace search with AI",
+                "indexed_at": 1784670277082,
+                "source": "Blog",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "AI"
+                  ],
+                  "lvl2": [
+                    "by Bharat Guruprakash"
+                  ]
+                },
+                "is404": false,
+                "environment": "prod20260722",
+                "objectID": "en_276e3385-f5e7-470d-904d-e09ad79fc341_0_1",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/scaling-marketplace-search-with-ai.webp",
+                "language_code": "en",
+                "published_at": 1708949580000,
+                "lastUpdated": "2026-07-21T21:44:37.082Z"
+              },
+              {
+                "environment": "prod20260722",
+                "objectID": "en_2da3fb3f-5daa-43f6-861f-4da20f96cb84",
+                "source": "Resources",
+                "transform_source": "aant-resourceCenterContentItem",
+                "tags": [],
+                "authors": [],
+                "description": "<p>Discover how leading retailers like Kiko Milano, Flaconi, and Maisons Du Monde are using AI to boost conversions, automate repetitive tasks, and gain full control of their merchandising&mdash;without relying on developers. From dynamic re-ranking to advanced personalization, see how data-driven strategies are reshaping ecommerce. Want to know the secrets behind their success? Watch the recording and learn how to turn your merchandising challenges into growth opportunities.</p>\n",
+                "indexed_at": 1784670332042,
+                "lastUpdated": "2026-07-21T21:45:32.042Z",
+                "url": "/resources/asset/webinar-digitalexpert-ai-led-merchandising",
+                "keywords": [],
+                "is404": false,
+                "thumbnail": "/sites/algolia-assets/files/Resource thumbnails/how-ai-led-merch-webinar.jpg",
+                "abstract": "<p>Discover how leading retailers like Kiko Milano, Flaconi, and Maisons Du Monde are using AI to boost conversions, automate repetitive tasks, and gain full control of their merchandising&mdash;without relying on developers. From dynamic re-ranking to advanced personalization, see how data-driven strategies are reshaping ecommerce. Want to know the secrets behind their success? Watch the recording and learn how to turn your merchandising challenges into growth opportunities.</p>\n",
+                "language_code": "en",
+                "published_at": 1771322853811,
+                "title": "How AI-led Merchandising solves merchandisers’ biggest challenges",
+                "category": "Webinars",
+                "facets": {
+                  "facet0": [
+                    [
+                      "Webinars"
+                    ]
+                  ],
+                  "facet1": [
+                    "Merchandising"
+                  ],
+                  "facet7": [
+                    "B2C Ecommerce"
+                  ],
+                  "facet8": [
+                    "Merchandising",
+                    "Personalization",
+                    "AI"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Webinars"
+                    ]
+                  ]
+                }
+              },
+              {
+                "authors": [],
+                "description": "<p>Discover how leading retailers like Kiko Milano, Flaconi, and Maisons Du Monde are using AI to boost conversions, automate repetitive tasks, and gain full control of their merchandising&mdash;without relying on developers. From dynamic re-ranking to advanced personalization, see how data-driven strategies are reshaping ecommerce. Want to know the secrets behind their success? Watch the recording and learn how to turn your merchandising challenges into growth opportunities.</p>\n",
+                "abstract": "<p>Discover how leading retailers like Kiko Milano, Flaconi, and Maisons Du Monde are using AI to boost conversions, automate repetitive tasks, and gain full control of their merchandising&mdash;without relying on developers. From dynamic re-ranking to advanced personalization, see how data-driven strategies are reshaping ecommerce. Want to know the secrets behind their success? Watch the recording and learn how to turn your merchandising challenges into growth opportunities.</p>\n",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Webinars"
+                    ]
+                  ]
+                },
+                "is404": false,
+                "facets": {
+                  "facet0": [
+                    [
+                      "Webinars"
+                    ]
+                  ],
+                  "facet1": [
+                    "Merchandising"
+                  ],
+                  "facet7": [
+                    "B2C Ecommerce"
+                  ],
+                  "facet8": [
+                    "Merchandising",
+                    "AI",
+                    "Personalization"
+                  ]
+                },
+                "objectID": "en_ac47a5cb-d7ce-4e23-938c-bcb82f880d2f",
+                "source": "Resources",
+                "transform_source": "aant-resourceCenterContentItem",
+                "title": "How AI-led Merchandising solves merchandisers’ biggest challenges",
+                "category": "Webinars",
+                "thumbnail": "/sites/algolia-assets/files/Resource thumbnails/how-ai-led-merch-webinar.jpg",
+                "url": "/resources/asset/video-ai-led-merchandising",
+                "indexed_at": 1784670276497,
+                "published_at": 1784144789537,
+                "tags": [],
+                "keywords": [],
+                "language_code": "en",
+                "lastUpdated": "2026-07-21T21:44:36.497Z",
+                "environment": "prod20260722"
+              },
+              {
+                "abstract": "AI-powered search has the potential to help online commerce sellers boost revenue and cut costs. In this blog, we’ll explain how. How AI search enables ecommerce companies to boost revenue and cut costs",
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:44:39.701Z",
+                "facets": {
+                  "facet0": [
+                    "AI"
+                  ]
+                },
+                "title": "How AI search helps boost revenue and cut costs | Algolia",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-ai-search-enables.webp",
+                "authors": [
+                  {
+                    "name": "Michelle Adams",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Michelle-Adams.png",
+                    "desc": "Chief Revenue Officer at Algolia"
+                  }
+                ],
+                "keywords": [
+                  "ai"
+                ],
+                "environment": "prod20260722",
+                "source": "Blog",
+                "url": "/blog/ai/how-ai-search-enables-ecommerce-companies-to-boost-revenue-and-cut-costs",
+                "language_code": "en",
+                "published_at": 1721898540000,
+                "objectID": "en_9e89e42b-99f5-4a57-a24e-5f5289c1b4b9_0_1",
+                "transform_source": "aant-blogsEntry",
+                "tags": [
+                  "AI"
+                ],
+                "description": "AI-powered search has the potential to help online commerce sellers boost revenue and cut costs. In this blog, we’ll explain how.",
+                "indexed_at": 1784670279701,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "AI"
+                  ],
+                  "lvl2": [
+                    "by Michelle Adams"
+                  ]
+                },
+                "category": "AI"
+              },
+              {
+                "category": "AI",
+                "language_code": "en",
+                "facets": {
+                  "facet0": [
+                    "AI"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "AI"
+                  ],
+                  "lvl2": [
+                    "by Allie Allegra"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:44:53.192Z",
+                "environment": "prod20260722",
+                "authors": [
+                  {
+                    "name": "Allie Allegra",
+                    "desc": "Director, Product Marketing"
+                  }
+                ],
+                "published_at": 1774630055034,
+                "is404": false,
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-agentic-retrieval-1920x1080.jpg",
+                "tags": [
+                  "AI"
+                ],
+                "description": "Learn how agentic retrieval extends RAG with autonomous agents, why retrieval quality is critical, and how enterprises can leverage it to power reliable, scalable AI systems.",
+                "keywords": [
+                  "ai"
+                ],
+                "abstract": "Learn how agentic retrieval extends RAG with autonomous agents, why retrieval quality is critical, and how enterprises can leverage it to power reliable, scalable AI systems.",
+                "indexed_at": 1784670293192,
+                "title": "Agentic retrieval: a practical guide for enterprise AI",
+                "url": "/blog/ai/agentic-retrieval",
+                "objectID": "en_d89f8ae4-be37-4d74-a89a-251f0f5b3ac6_0_4"
+              },
+              {
+                "category": "guide",
+                "language_code": "en",
+                "indexed_at": 1784670696212,
+                "published_at": 1761946213347,
+                "source": "Academy",
+                "title": "Understanding Search Results with Merchandising Studio",
+                "tags": [
+                  "merchandising studio",
+                  "search",
+                  "search results",
+                  "queries"
+                ],
+                "keywords": [],
+                "abstract": "Learn how you can dig deeper into understanding search results by leveraging the Merchandising Studio.",
+                "facets": {},
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:51:36.212Z",
+                "algoliaDisabled": "false",
+                "transform_source": "algolia-academy",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "url": "https://academy.algolia.com/training/019036f5-92eb-7850-a275-5138ed1ed04e",
+                "description": "Learn how you can dig deeper into understanding search results by leveraging the Merchandising Studio.",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Certified Business User (ACBU)"
+                  ]
+                },
+                "authors": [],
+                "environment": "prod20260722",
+                "objectID": "01903bad-fd92-716c-ae7f-9a106183db34"
+              },
+              {
+                "title": "Get started with the dashboard | Algolia",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "url": "/doc/guides/getting-started/quick-start/tutorials/getting-started-with-the-dashboard",
+                "published_at": 1784670696113,
+                "source": "Documentation",
+                "tags": [],
+                "description": "Learn how to manage your indices and relevance configuration with the Algolia dashboard.",
+                "abstract": "Algolia’s dashboard is an interface for accessing your data and index configuration.The dashboard’s ...",
+                "objectID": "https://www.algolia.com/doc/guides/getting-started/quick-start/tutorials/getting-started-with-the-dashboard/-0",
+                "facets": {},
+                "transform_source": "algolia-com-doc",
+                "keywords": [],
+                "language_code": "en",
+                "indexed_at": 1784670696113,
+                "environment": "prod20260722",
+                "category": "Doc",
+                "lastUpdated": "2026-07-21T21:51:36.113Z"
+              },
+              {
+                "objectID": "en_0c3eae14-2701-4dc2-9eaf-75a275713d54",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/increased-revenue-for-merchants.webp",
+                "abstract": "Shopify Plus merchants looking to drive customer growth via blazing fast search and cutting-edge content discovery, Algolia is your solution! Learn why here. Increased Revenue for Merchants, Algolia is now a Shopify Plus Certified Partner",
+                "published_at": 1690796220000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Algolia"
+                  ],
+                  "lvl2": [
+                    "by Piyush Patel"
+                  ]
+                },
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:44:50.157Z",
+                "environment": "prod20260722",
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "title": "Algolia is a Shopify Plus Certified Partner | Algolia",
+                "description": "Shopify Plus merchants looking to drive customer growth via blazing fast search and cutting-edge content discovery, Algolia is your solution! Learn why here.",
+                "language_code": "en",
+                "url": "/blog/algolia/increased-revenue-for-merchants-algolia-is-now-a-shopify-plus-certified-partner",
+                "indexed_at": 1784670290157,
+                "category": "Algolia",
+                "tags": [
+                  "Algolia"
+                ],
+                "authors": [
+                  {
+                    "name": "Piyush Patel",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/piyush-patel.png",
+                    "desc": "Chief Strategic Business Development Officer"
+                  }
+                ],
+                "keywords": [
+                  "algolia"
+                ],
+                "facets": {
+                  "facet0": [
+                    "Algolia"
+                  ]
+                }
+              },
+              {
+                "transform_source": "algolia-academy",
+                "category": "guide",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "authors": [],
+                "keywords": [],
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Certified Business User (ACBU)"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:51:36.212Z",
+                "tags": [
+                  "AlgoliaOverview",
+                  "SearchTechnology",
+                  "UserExperience",
+                  "BusinessResults",
+                  "SearchSolutions",
+                  "ModernSearch",
+                  "DeveloperTools",
+                  "APIs",
+                  "Recommendations",
+                  "Personalization",
+                  "Dashboard",
+                  "search",
+                  "Recommend",
+                  "merchandising studio"
+                ],
+                "url": "https://academy.algolia.com/training/1a7aff24-cc3f-11ee-83f2-0281f0277ee7",
+                "environment": "prod20260722",
+                "source": "Academy",
+                "title": "Discover Algolia's Search and Discovery Platform",
+                "description": "Algolia Overview provides an understanding of Algolia's search, recommend, and merchandising studio dashboards and features.",
+                "abstract": "Algolia Overview provides an understanding of Algolia's search, recommend, and merchandising studio dashboards and features.",
+                "language_code": "en",
+                "facets": {},
+                "published_at": 1761916200503,
+                "objectID": "01903ba9-3986-7101-83e9-ce0c11ba8bbc",
+                "algoliaDisabled": "false",
+                "indexed_at": 1784670696212,
+                "is404": false
+              },
+              {
+                "title": "Discover Algolia's Search and Discovery Platform",
+                "authors": [],
+                "description": "Algolia Overview provides an understanding of Algolia's search, recommend, and merchandising studio dashboards and features.",
+                "language_code": "en",
+                "transform_source": "algolia-academy",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "url": "https://academy.algolia.com/training/1a7aff24-cc3f-11ee-83f2-0281f0277ee7",
+                "abstract": "Algolia Overview provides an understanding of Algolia's search, recommend, and merchandising studio dashboards and features.",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.211Z",
+                "objectID": "0199aac9-fa13-7c57-bbe6-16f8fa12feb4",
+                "algoliaDisabled": "false",
+                "category": "guide",
+                "keywords": [],
+                "indexed_at": 1784670696211,
+                "published_at": 1761916200553,
+                "environment": "prod20260722",
+                "source": "Academy",
+                "tags": [
+                  "AlgoliaOverview",
+                  "SearchTechnology",
+                  "UserExperience",
+                  "BusinessResults",
+                  "SearchSolutions",
+                  "ModernSearch",
+                  "DeveloperTools",
+                  "APIs",
+                  "Recommendations",
+                  "Personalization",
+                  "Dashboard",
+                  "search",
+                  "Recommend",
+                  "merchandising studio"
+                ],
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Overview"
+                  ]
+                },
+                "is404": false
+              },
+              {
+                "facets": {},
+                "objectID": "019987cb-a2fe-7124-8c29-7c27564267bb",
+                "algoliaDisabled": "false",
+                "title": "Discover Algolia's Search and Discovery Platform",
+                "authors": [],
+                "language_code": "en",
+                "published_at": 1761916200527,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Overview"
+                  ]
+                },
+                "category": "guide",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "lastUpdated": "2026-07-21T21:51:36.211Z",
+                "environment": "prod20260722",
+                "source": "Academy",
+                "transform_source": "algolia-academy",
+                "tags": [
+                  "AlgoliaOverview",
+                  "SearchTechnology",
+                  "UserExperience",
+                  "BusinessResults",
+                  "SearchSolutions",
+                  "ModernSearch",
+                  "DeveloperTools",
+                  "APIs",
+                  "Recommendations",
+                  "Personalization",
+                  "Dashboard",
+                  "search",
+                  "Recommend",
+                  "merchandising studio"
+                ],
+                "keywords": [],
+                "abstract": "Algolia Overview provides an understanding of Algolia's search, recommend, and merchandising studio dashboards and features.",
+                "indexed_at": 1784670696211,
+                "is404": false,
+                "url": "https://academy.algolia.com/training/1a7aff24-cc3f-11ee-83f2-0281f0277ee7",
+                "description": "Algolia Overview provides an understanding of Algolia's search, recommend, and merchandising studio dashboards and features."
+              },
+              {
+                "abstract": "You can display a banner to promote an item,a group of products, a business-wide sale, and so on.Usi...",
+                "language_code": "en",
+                "environment": "prod20260722",
+                "facets": {},
+                "source": "Documentation",
+                "tags": [],
+                "keywords": [],
+                "indexed_at": 1784670696109,
+                "objectID": "https://www.algolia.com/doc/guides/managing-results/rules/merchandising-and-promoting/-2",
+                "title": "Merchandising | Algolia",
+                "description": "Merchandise search results, facets, and category pages with Algolia. Apply rules to influence the ranking of individual records or whole categories.",
+                "published_at": 1784670696109,
+                "lastUpdated": "2026-07-21T21:51:36.109Z",
+                "transform_source": "algolia-com-doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "url": "/doc/guides/managing-results/rules/merchandising-and-promoting",
+                "category": "Doc"
+              },
+              {
+                "title": "The Merchandising Edge with AWS and Algolia",
+                "thumbnail": "/sites/algolia-assets/files/eBook/The_Merchandising_Edge_Thumbnail.png",
+                "keywords": [],
+                "facets": {
+                  "facet0": [
+                    [
+                      "Ebooks"
+                    ]
+                  ],
+                  "facet1": [
+                    "Ecommerce",
+                    "Merchandising"
+                  ],
+                  "facet7": [
+                    "B2C Ecommerce",
+                    "Marketplaces",
+                    "Fashion"
+                  ],
+                  "facet8": [
+                    "Merchandising",
+                    "Search",
+                    "AI"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:44:52.655Z",
+                "source": "Resources",
+                "abstract": "<p><img alt=\"The-Merchandising-Edge-Cover.png\" src=\"/files/{workspace}/sites/algolia-assets/files/eBook/The-Merchandising-Edge-Cover.png\" style=\"width: 300px; height: 169px;\" /></p>\n\n<p>Give your fashion merchandising a boost with AWS and Algolia&rsquo;s intelligent fashion solution.&nbsp;</p>\n\n<p>Read the eBook to learn how Algolia&#39;s suite of user-friendly ecommerce tools help shoppers find and fall in love with the latest fashion trends.</p>\n",
+                "published_at": 1784135087997,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Ebooks"
+                    ]
+                  ]
+                },
+                "is404": false,
+                "transform_source": "aant-resourceCenterContentItem",
+                "url": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+                "indexed_at": 1784670292655,
+                "environment": "prod20260722",
+                "category": "Ebooks",
+                "tags": [],
+                "authors": [],
+                "description": "<p><img alt=\"The-Merchandising-Edge-Cover.png\" src=\"/files/{workspace}/sites/algolia-assets/files/eBook/The-Merchandising-Edge-Cover.png\" style=\"width: 300px; height: 169px;\" /></p>\n\n<p>Give your fashion merchandising a boost with AWS and Algolia&rsquo;s intelligent fashion solution.&nbsp;</p>\n\n<p>Read the eBook to learn how Algolia&#39;s suite of user-friendly ecommerce tools help shoppers find and fall in love with the latest fashion trends.</p>\n",
+                "language_code": "en",
+                "objectID": "en_90b376bc-5de5-44f6-a773-bd11f604304d"
+              }
+            ],
+            "admissionRejected": true,
+            "followUps": [
+              "Are you currently managing your product catalog through a specific PIM or CMS that needs to sync with these merchandising efforts?"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "ecd55505-959a-4608-be00-38c2be4e94b8",
+        "userMessageId": "ce8e3254-23f9-48b0-b4c5-c159371c6080",
+        "query": "Now that I am looking at AI Recommendations too, how should the merchandising team divide its day-to-day work between Search and Recommendations?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "b1b2b24d-b9e4-4314-a30c-ac36d810a03b",
+            "agent": "primary",
+            "status": "success",
+            "text": "The retrieved material does not verify the specific details requested, so I cannot present those claims as confirmed.",
+            "sources": [
+              {
+                "id": "en_2da3fb3f-5daa-43f6-861f-4da20f96cb84",
+                "title": "How AI-led Merchandising solves merchandisers’ biggest challenges",
+                "url": "https://www.algolia.com/resources/asset/webinar-digitalexpert-ai-led-merchandising",
+                "source": "Resources"
+              },
+              {
+                "id": "en_ac47a5cb-d7ce-4e23-938c-bcb82f880d2f",
+                "title": "How AI-led Merchandising solves merchandisers’ biggest challenges",
+                "url": "https://www.algolia.com/resources/asset/video-ai-led-merchandising",
+                "source": "Resources"
+              },
+              {
+                "id": "en_24f9632e-8711-49fe-a626-88360a73609c",
+                "title": "Digital transformation: B2B merchandising & AI | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/b2b-commerce-digital-transformation-merchandising-and-ai-optimizations",
+                "source": "Blog"
+              },
+              {
+                "id": "en_937aa585-631e-4ee2-9527-2c3e5968efb4",
+                "title": "Merchandising in the AI era - Algolia Blog | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/merchandising-in-the-ai-era",
+                "source": "Blog"
+              },
+              {
+                "id": "en_9c5c0eb3-622f-4966-a533-5289502e1b86_0_1",
+                "title": "How AI is transforming merchandising from reactive to proactive - Algolia Blog | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/how-ai-is-transforming-merchandising-from-reactive-to-proactive",
+                "source": "Blog"
+              },
+              {
+                "id": "en_9405bdb7-5ca1-4858-b390-d78ad84ad76a_0_3",
+                "title": "Increase online sales with Search merchandising | Algolia",
+                "url": "https://www.algolia.com/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+                "source": "Blog"
+              },
+              {
+                "id": "en_5e8f58e9-ebd7-4d34-8543-87a6b1509bd9_0_2",
+                "title": "AI recommendations for your Shopify store",
+                "url": "https://www.algolia.com/blog/ecommerce/ai-recommendations-for-your-shopify-store",
+                "source": "Blog"
+              },
+              {
+                "id": "en_588a8a9f-53f6-49e7-94e8-b5a099ce3b25_0_1",
+                "title": "How AI-powered product recommendations increase conversion - Algolia Blog | Algolia",
+                "url": "https://www.algolia.com/blog/ecommerce/how-ai-powered-product-recommendations-increase-conversion",
+                "source": "Blog"
+              },
+              {
+                "id": "en_76db5a32-2f70-44ff-87d7-9b0cc4bdfe6c",
+                "title": "AI vs non-AI: Building recos for ecommerce & media | Algolia",
+                "url": "https://www.algolia.com/blog/ai/building-recommendations-for-ecommerce-media-with-without-ai",
+                "source": "Blog"
+              }
+            ],
+            "searchCount": 9,
+            "rawHits": [
+              {
+                "source": "Resources",
+                "tags": [],
+                "url": "/resources/asset/webinar-digitalexpert-ai-led-merchandising",
+                "published_at": 1771322853811,
+                "environment": "prod20260722",
+                "indexed_at": 1784670332042,
+                "facets": {
+                  "facet0": [
+                    [
+                      "Webinars"
+                    ]
+                  ],
+                  "facet1": [
+                    "Merchandising"
+                  ],
+                  "facet7": [
+                    "B2C Ecommerce"
+                  ],
+                  "facet8": [
+                    "Merchandising",
+                    "Personalization",
+                    "AI"
+                  ]
+                },
+                "transform_source": "aant-resourceCenterContentItem",
+                "title": "How AI-led Merchandising solves merchandisers’ biggest challenges",
+                "category": "Webinars",
+                "thumbnail": "/sites/algolia-assets/files/Resource thumbnails/how-ai-led-merch-webinar.jpg",
+                "authors": [],
+                "lastUpdated": "2026-07-21T21:45:32.042Z",
+                "language_code": "en",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Webinars"
+                    ]
+                  ]
+                },
+                "is404": false,
+                "description": "<p>Discover how leading retailers like Kiko Milano, Flaconi, and Maisons Du Monde are using AI to boost conversions, automate repetitive tasks, and gain full control of their merchandising&mdash;without relying on developers. From dynamic re-ranking to advanced personalization, see how data-driven strategies are reshaping ecommerce. Want to know the secrets behind their success? Watch the recording and learn how to turn your merchandising challenges into growth opportunities.</p>\n",
+                "keywords": [],
+                "abstract": "<p>Discover how leading retailers like Kiko Milano, Flaconi, and Maisons Du Monde are using AI to boost conversions, automate repetitive tasks, and gain full control of their merchandising&mdash;without relying on developers. From dynamic re-ranking to advanced personalization, see how data-driven strategies are reshaping ecommerce. Want to know the secrets behind their success? Watch the recording and learn how to turn your merchandising challenges into growth opportunities.</p>\n",
+                "objectID": "en_2da3fb3f-5daa-43f6-861f-4da20f96cb84"
+              },
+              {
+                "thumbnail": "/sites/algolia-assets/files/Resource thumbnails/how-ai-led-merch-webinar.jpg",
+                "tags": [],
+                "url": "/resources/asset/video-ai-led-merchandising",
+                "description": "<p>Discover how leading retailers like Kiko Milano, Flaconi, and Maisons Du Monde are using AI to boost conversions, automate repetitive tasks, and gain full control of their merchandising&mdash;without relying on developers. From dynamic re-ranking to advanced personalization, see how data-driven strategies are reshaping ecommerce. Want to know the secrets behind their success? Watch the recording and learn how to turn your merchandising challenges into growth opportunities.</p>\n",
+                "keywords": [],
+                "language_code": "en",
+                "indexed_at": 1784670276497,
+                "is404": false,
+                "category": "Webinars",
+                "environment": "prod20260722",
+                "objectID": "en_ac47a5cb-d7ce-4e23-938c-bcb82f880d2f",
+                "source": "Resources",
+                "authors": [],
+                "abstract": "<p>Discover how leading retailers like Kiko Milano, Flaconi, and Maisons Du Monde are using AI to boost conversions, automate repetitive tasks, and gain full control of their merchandising&mdash;without relying on developers. From dynamic re-ranking to advanced personalization, see how data-driven strategies are reshaping ecommerce. Want to know the secrets behind their success? Watch the recording and learn how to turn your merchandising challenges into growth opportunities.</p>\n",
+                "published_at": 1784144789537,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Webinars"
+                    ]
+                  ]
+                },
+                "transform_source": "aant-resourceCenterContentItem",
+                "title": "How AI-led Merchandising solves merchandisers’ biggest challenges",
+                "facets": {
+                  "facet0": [
+                    [
+                      "Webinars"
+                    ]
+                  ],
+                  "facet1": [
+                    "Merchandising"
+                  ],
+                  "facet7": [
+                    "B2C Ecommerce"
+                  ],
+                  "facet8": [
+                    "Merchandising",
+                    "AI",
+                    "Personalization"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:44:36.497Z"
+              },
+              {
+                "category": "Ecommerce",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/b2b-commerce-digital-transformation-merchandising.webp",
+                "published_at": 1690794540000,
+                "lastUpdated": "2026-07-21T21:46:57.726Z",
+                "environment": "prod20260722",
+                "title": "Digital transformation: B2B merchandising & AI | Algolia",
+                "url": "/blog/ecommerce/b2b-commerce-digital-transformation-merchandising-and-ai-optimizations",
+                "objectID": "en_24f9632e-8711-49fe-a626-88360a73609c",
+                "transform_source": "aant-blogsEntry",
+                "tags": [
+                  "E-commerce"
+                ],
+                "description": "Merchandising & recommendations (promoting products & categories) is essential for B2B. Learn to merchandise with Search & AI automation.",
+                "keywords": [
+                  "e-commerce"
+                ],
+                "abstract": "Merchandising & recommendations (promoting products & categories) is essential for B2B. Learn to merchandise with Search & AI automation. B2B commerce digital transformation: merchandising and AI optimizations",
+                "indexed_at": 1784670417726,
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "source": "Blog",
+                "authors": [
+                  {
+                    "name": "Tanya Herman",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/tanya-herman.png",
+                    "desc": "Product Manager"
+                  }
+                ],
+                "language_code": "en",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Tanya Herman"
+                  ]
+                },
+                "is404": false
+              },
+              {
+                "published_at": 1690794540000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Tanya Herman"
+                  ]
+                },
+                "transform_source": "aant-blogsEntry",
+                "url": "/blog/ecommerce/b2b-commerce-digital-transformation-merchandising-and-ai-optimizations",
+                "language_code": "en",
+                "objectID": "en_24f9632e-8711-49fe-a626-88360a73609c_0_1",
+                "category": "Ecommerce",
+                "authors": [
+                  {
+                    "name": "Tanya Herman",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/tanya-herman.png",
+                    "desc": "Product Manager"
+                  }
+                ],
+                "keywords": [
+                  "e-commerce"
+                ],
+                "abstract": "Merchandising & recommendations (promoting products & categories) is essential for B2B. Learn to merchandise with Search & AI automation. B2B commerce digital transformation: merchandising and AI optimizations",
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:46:57.720Z",
+                "title": "Digital transformation: B2B merchandising & AI | Algolia",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/b2b-commerce-digital-transformation-merchandising.webp",
+                "description": "Merchandising & recommendations (promoting products & categories) is essential for B2B. Learn to merchandise with Search & AI automation.",
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "environment": "prod20260722",
+                "source": "Blog",
+                "tags": [
+                  "E-commerce"
+                ],
+                "indexed_at": 1784670417720
+              },
+              {
+                "category": "Ecommerce",
+                "description": "AI-enabled merchandising uses data to make decisions fast, capabilities that complement a merchandisers’ business knowledge to help convert more buyers.",
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Tariq Khan"
+                  ]
+                },
+                "objectID": "en_937aa585-631e-4ee2-9527-2c3e5968efb4",
+                "authors": [
+                  {
+                    "name": "Tariq Khan",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/tariq-khan.jpeg",
+                    "desc": "Director of Content Marketing"
+                  }
+                ],
+                "keywords": [
+                  "e-commerce"
+                ],
+                "language_code": "en",
+                "indexed_at": 1784670425250,
+                "lastUpdated": "2026-07-21T21:47:05.250Z",
+                "environment": "prod20260722",
+                "source": "Blog",
+                "title": "Merchandising in the AI era - Algolia Blog | Algolia",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/merchandising-in-the.webp",
+                "tags": [
+                  "E-commerce"
+                ],
+                "url": "/blog/ecommerce/merchandising-in-the-ai-era",
+                "abstract": "AI-enabled merchandising uses data to make decisions fast, capabilities that complement a merchandisers’ business knowledge to help convert more buyers. Merchandising in the AI era",
+                "published_at": 1708902000000,
+                "is404": false,
+                "transform_source": "aant-blogsEntry"
+              },
+              {
+                "transform_source": "aant-blogsEntry",
+                "title": "How AI is transforming merchandising from reactive to proactive - Algolia Blog | Algolia",
+                "lastUpdated": "2026-07-21T21:47:04.759Z",
+                "environment": "prod20260722",
+                "keywords": [
+                  "e-commerce"
+                ],
+                "abstract": "Merchandisers are now seeking ways to leverage AI tools to simplify their tasks and make better proactive decisions that can be automated. How AI is transforming merchandising from reactive to proactive",
+                "published_at": 1700209920000,
+                "is404": false,
+                "source": "Blog",
+                "category": "Ecommerce",
+                "tags": [
+                  "E-commerce"
+                ],
+                "authors": [
+                  {
+                    "name": "Lorna Rivera",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Lorna Rivera.png",
+                    "desc": "Staff User Researcher"
+                  }
+                ],
+                "url": "/blog/ecommerce/how-ai-is-transforming-merchandising-from-reactive-to-proactive",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-ai-is-transforming.webp",
+                "description": "Merchandisers are now seeking ways to leverage AI tools to simplify their tasks and make better proactive decisions that can be automated.",
+                "language_code": "en",
+                "indexed_at": 1784670424759,
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Lorna Rivera"
+                  ]
+                },
+                "objectID": "en_9c5c0eb3-622f-4966-a533-5289502e1b86_0_1"
+              },
+              {
+                "abstract": "Design an effective eCommerce strategy: merchandising popular searches, trends, seasonal, pinning, boosting, redirecting searches, banners. How to increase online sales with Search merchandising",
+                "facets": {
+                  "facet0": [
+                    ""
+                  ]
+                },
+                "category": "",
+                "language_code": "en",
+                "published_at": 1691045940000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Customers"
+                  ],
+                  "lvl2": [
+                    "by Tanya Herman"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:47:12.095Z",
+                "environment": "prod20260722",
+                "source": "Blog",
+                "title": "Increase online sales with Search merchandising | Algolia",
+                "indexed_at": 1784670432095,
+                "is404": false,
+                "objectID": "en_9405bdb7-5ca1-4858-b390-d78ad84ad76a_0_3",
+                "transform_source": "aant-blogsEntry",
+                "tags": [],
+                "url": "/blog/customers/how-to-increase-online-sales-with-search-merchandising",
+                "description": "Design an effective eCommerce strategy: merchandising popular searches, trends, seasonal, pinning, boosting, redirecting searches, banners.",
+                "keywords": [
+                  "customers"
+                ],
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/comp-network-white.webp",
+                "authors": [
+                  {
+                    "name": "Tanya Herman",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Tanya-Herman.png",
+                    "desc": "Product Manager"
+                  }
+                ]
+              },
+              {
+                "authors": [
+                  {
+                    "name": "Ashley Huynh",
+                    "desc": "Writer at Author's Collective"
+                  }
+                ],
+                "keywords": [
+                  "e-commerce"
+                ],
+                "objectID": "en_5e8f58e9-ebd7-4d34-8543-87a6b1509bd9_0_2",
+                "title": "AI recommendations for your Shopify store",
+                "category": "Ecommerce",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-ai-recommendations-shopify.jpg",
+                "tags": [
+                  "E-commerce"
+                ],
+                "language_code": "en",
+                "indexed_at": 1784670299139,
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "environment": "prod20260722",
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "url": "/blog/ecommerce/ai-recommendations-for-your-shopify-store",
+                "description": "",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by Ashley Huynh"
+                  ]
+                },
+                "abstract": "AI recommendations for your Shopify store",
+                "published_at": 1727994323639,
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:44:59.139Z"
+              },
+              {
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/how-ai-powered-product-recommendations.webp",
+                "authors": [
+                  {
+                    "name": "John Stewart",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/john-stewart.png",
+                    "desc": "VP, Corporate Communications and Brand"
+                  }
+                ],
+                "url": "/blog/ecommerce/how-ai-powered-product-recommendations-increase-conversion",
+                "description": "Learn how AI recommendations work to deliver relevant product suggestions that keep shoppers engaged and drive conversions on a site or app.",
+                "category": "Ecommerce",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "E-commerce"
+                  ],
+                  "lvl2": [
+                    "by John Stewart"
+                  ]
+                },
+                "facets": {
+                  "facet0": [
+                    "Ecommerce"
+                  ]
+                },
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "keywords": [
+                  "e-commerce"
+                ],
+                "abstract": "Learn how AI recommendations work to deliver relevant product suggestions that keep shoppers engaged and drive conversions on a site or app. How AI-powered product recommendations increase conversion",
+                "published_at": 1712826540000,
+                "is404": false,
+                "environment": "prod20260722",
+                "title": "How AI-powered product recommendations increase conversion - Algolia Blog | Algolia",
+                "tags": [
+                  "E-commerce"
+                ],
+                "lastUpdated": "2026-07-21T21:47:06.601Z",
+                "objectID": "en_588a8a9f-53f6-49e7-94e8-b5a099ce3b25_0_1",
+                "language_code": "en",
+                "indexed_at": 1784670426601
+              },
+              {
+                "transform_source": "aant-blogsEntry",
+                "category": "AI",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/building-recommendations-for-ecommerce.webp",
+                "url": "/blog/ai/building-recommendations-for-ecommerce-media-with-without-ai",
+                "keywords": [
+                  "ai"
+                ],
+                "published_at": 1690794660000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "AI"
+                  ],
+                  "lvl2": [
+                    "by Julia Seidman"
+                  ]
+                },
+                "objectID": "en_76db5a32-2f70-44ff-87d7-9b0cc4bdfe6c",
+                "source": "Blog",
+                "title": "AI vs non-AI: Building recos for ecommerce & media | Algolia",
+                "tags": [
+                  "AI"
+                ],
+                "authors": [
+                  {
+                    "name": "Julia Seidman",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Julia-Seidman-2.png",
+                    "desc": "Developer Educator"
+                  }
+                ],
+                "description": "You can build recommendations using manual categorization only, or with AI using ML-based recommendation models. Compare.",
+                "abstract": "You can build recommendations using manual categorization only, or with AI using ML-based recommendation models. Compare. Building recommendations for ecommerce & media, with & without AI",
+                "indexed_at": 1784670444794,
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:47:24.794Z",
+                "facets": {
+                  "facet0": [
+                    "AI"
+                  ]
+                },
+                "language_code": "en",
+                "environment": "prod20260722"
+              }
+            ],
+            "admissionRejected": true,
+            "followUps": [
+              "Would you like to go deeper on implementation, business value, or customer proof?"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "bodyText": "UPDATE:\nUnlock the power of agentic AI with Agent Studio\nSee what's new\nCompany\nPartners\nSupport\nLogin\n\nEng\n\nProducts\nSolutions\nPricing\nDevelopers\nResources\nSearch or Ask AI\nFix your search\nGet started\n\nFILTER BY SOURCE\n\nDocumentation\n4,358\nSupport\n1,701\nBlog\n938\nWebsite\n472\nDevelopers\n288\nResources\n277\nAcademy\n144\nCustomer Stories\n83\n\nSUGGESTIONS\n\nAlgolia API integration\nAlgolia search benefits\nAlgolia scalability\nAI search for ecommerce\n\nPRODUCTS & RESOURCES\n\nAI Search\nWebsite • Products\nLearn more →\nSecurity Measures | Algolia\nWebsite • Distributed Secure\nLearn more →\nAgent Studio\nWebsite • Products\nLearn more →\nShow more results\nAI RECOMMENDATIONS\nRecommendations that reflect real behavior\n\nUse behavioral signals and AI models to surface products and content your users are most likely to engage with.\n\nGet a demo\nGet started for free\nAI-powered recommendations across every experience\nInspire undecided visitors\n\nHelp users move forward when they’re unsure what to do next. AI Recommendations surfaces relevant items based on how others interact with your content, guiding discovery without requiring precise queries.\nDisplay recommendations in flexible UI components like carousels, and refine results using filters or segments.\n\nDrive discovery and cross-sell\n\nExpose more of your catalog by recommending complementary or related items throughout the journey.\n\nPower recommendations in agent-driven experiences\n\nUse recommendations to ground conversational experiences in real user behavior. What agents suggest stays relevant, actionable, and based on what actually performs.\n\nMeasure what works\n\nWith Recommend Analytics, track how models perform across your site with clear metrics like clicks, conversions, and revenue.\n\nHow AI Recommendations Works\n\nAI Recommendations turns first-party behavioral data and catalog content into revenue-driving suggestions in just 4 steps:\n\nIngest & enrich your data\n\nSync your full product or content index and stream real-time events (like views, clicks, add-to-cart, purchases). The engine enriches each record with vector embeddings and image fingerprints, laying the groundwork for high-quality matches.\n\nTrain purpose-built ML models\n\nSupervised machine-learning algorithms spot patterns in what shoppers browse and buy, to predict what each person is most likely to want next.\n\nDeliver results in real time\n\nServe fast, ranked recommendations via API, using pre-built or custom models.\n\nLearn & optimize continuously\n\nAs new interactions are captured, models retrain automatically so you can A/B-test, merchandise, and fine-tune relevance over time.\n\nRecommendation models and tools\nFrequently bought together\n\nRecommend complementary items to increase cart value and drive cross-sell.\n\nRead the docs\nLooking similar\nRelated items\nTrending items\nPersonalized recommendations\nMore than 18,000 customers in 150+ countries trust Algolia\nFeatured Customer Stories\nEND. Clothing lifts conversions with AI Recommendations\n\nStreetwear retailer END. boosted product-listing click-throughs and delivered a 2 % site-wide conversion lift after adding Algolia Recommendations.\n\nRead the END. Clothing case study\nAuto Mercado grows baskets & revenue online\n\nCosta Rica’s premium grocer saw a 50 %+ post-search conversion jump and larger basket sizes, while unlocking new ad-revenue streams thanks to Algolia’s Recommend plus Search.\n\nExplore the Auto Mercado story\nGymshark’s Black Friday orders soar 150 %\n\nDuring peak traffic, Gymshark recorded a 150 % increase in order rate and 32 % more “add-to-cart” actions from new users after switching to Algolia Recommend.\n\nSee Gymshark’s results\nRecommended Content\nEND.: Enhancing Fashion Ecommerce Search With Algolia\nCUSTOMER\nAI recommendations for your Shopify store\nBLOG\nPower up product recommendations with AI\nRECOMMEND\n4 Advanced Tactics to Improve Your Site Search\nRECOMMEND\nTransform Search and Merchandising with Algolia Smart Groups | Product Walkthrough\nRECOMMEND\nAI Recommendations FAQs\nHow does Algolia's recommendation engine work technically?\nWhat industries can benefit from Algolia’s AI Recommendation engine?\nHow fast are Algolia's AI recommendation responses?\nWhat is the implementation process for AI Recommendations?\nDoes Algolia AI Recommendations support multiple languages?\nHow are AI-powered recommendation engines different from traditional recommendation engines?\nWhat's the difference between content-based and personalized recommendations?\nWhat are the benefits of an AI-powered recommendation engine?\nWhat makes Algolia AI Recommendations different from other solutions?\nEnable anyone to build great Search & Discovery\nGet a demo\nStart free\nCareers\nContact Us\nAbout Algolia\nAnti-Modern Slavery Statement\nSocial networks\nGet the latest in AI search - straight to your inbox.\n©2026 Algolia - All rights reserved.\nCookie settings\nTrust Center\nPrivacy Policy\nTerms of service\nAcceptable Use Policy\nProactive suppressed: no_trigger_match",
+  "journey": "T1",
+  "expectedTrigger": "product_page_10s_50_scroll",
+  "visitorResponse": "How can a non-technical merchandising team operate AI Search day to day after implementation?",
+  "specialistAccepted": false,
+  "specialistDeclined": false,
+  "specialistAction": null,
+  "continuity": {
+    "sourcePath": "/products/ai-search",
+    "destinationPath": "/products/ai-recommendations",
+    "conversationIdBefore": "65f8653d-a645-4601-a813-c0d819b5cd43",
+    "conversationIdAfter": "65f8653d-a645-4601-a813-c0d819b5cd43",
+    "turnCountBefore": 1,
+    "turnCountAfter": 2,
+    "restoredQueryVisible": true,
+    "followUp": "Now that I am looking at AI Recommendations too, how should the merchandising team divide its day-to-day work between Search and Recommendations?"
+  },
+  "verification": {
+    "boundaries": {
+      "visitorResponseBoundaryId": 2,
+      "firstTurnBoundaryId": 14
+    },
+    "configuredOrchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "reset": {
+      "pass": true,
+      "errors": [],
+      "checks": {
+        "preseedCaptured": true,
+        "freshProfile": true,
+        "freshSession": true,
+        "eventsReset": true,
+        "proactiveCleared": true,
+        "conversationCleared": true,
+        "handoffCleared": true,
+        "unrelatedStatePreserved": true
+      },
+      "preseed": {
+        "profileVisitorId": "reset_probe_visitor",
+        "sessionId": "reset_probe_session",
+        "proactiveOpportunityId": "reset_probe_opportunity",
+        "conversationId": "reset_probe_conversation",
+        "handoffOpportunityId": "reset_probe_opportunity",
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      },
+      "post": {
+        "profileVisitorId": "visitor_a1de8e3fb869e73bd2789f2b",
+        "sessionId": "sess_ad41ee642e2874ea0fd609ba",
+        "eventNames": [
+          "page_view"
+        ],
+        "proactiveOpportunityId": null,
+        "conversationId": null,
+        "handoffOpportunityId": null,
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      }
+    },
+    "firstTurnTraffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 1,
+        "byOpportunity": {
+          "opp_1a019d3a75e_e2292d": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 3,
+        "responseId": 4,
+        "responseStatus": 200,
+        "responseTextLength": 2951,
+        "routedToSpecialist": false,
+        "routingMode": null,
+        "specialistRequests": 0,
+        "specialistAction": null,
+        "specialistOutcome": null,
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 0
+      },
+      "discovery": {
+        "pass": true,
+        "errors": [],
+        "visibleWraps": 1,
+        "visibleQuestions": 1,
+        "questions": [
+          "Are you currently managing your product catalog through a specific PIM or CMS that needs to sync with these merchandising efforts?"
+        ]
+      },
+      "specialistRoutingDebug": {
+        "context": {
+          "context.version": "1",
+          "context.source": "deterministic_browser_signals",
+          "page.path": "/products/ai-search",
+          "page.title": "AI Search | Algolia",
+          "journey.paths": "/products/ai-search -> /products/ai-search",
+          "journey.page_count": "2",
+          "behavior.read_depth": "medium",
+          "conversation_id": "65f8653d-a645-4601-a813-c0d819b5cd43"
+        },
+        "query": "How can a non-technical merchandising team operate AI Search day to day after implementation?",
+        "contentLength": 2951,
+        "visibleAnswerLength": 2508,
+        "toolNames": [],
+        "offer": null,
+        "hasHandler": true
+      }
+    },
+    "traffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 1,
+        "byOpportunity": {
+          "opp_1a019d3a75e_e2292d": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 3,
+        "responseId": 4,
+        "responseStatus": 200,
+        "responseTextLength": 2951,
+        "routedToSpecialist": false,
+        "routingMode": null,
+        "specialistRequests": 0,
+        "specialistAction": null,
+        "specialistOutcome": null,
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 1
+      }
+    }
+  }
+}

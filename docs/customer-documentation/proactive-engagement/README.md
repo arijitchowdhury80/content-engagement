@@ -11,7 +11,7 @@ The browser controls timing. Agent Studio controls language and conversation qua
 | Stage | File or agent | Role |
 |---|---|---|
 | Collector | `frontend/chat-widget/algolia-engagement-tracker.js` | Captures browser behavior and writes structured profile, session, event, and product-focus state. |
-| Compiler | `frontend/chat-widget/algolia-context-compiler.js` | Flattens tracker state into `AlgoliaContextPacket.v1` and `AlgoliaTurnContext.v1`, including observed product focus when available. |
+| Compiler | `frontend/chat-widget/algolia-context-compiler.js` | Builds the rich browser packet and a bounded `AlgoliaTurnContext.v1` for Agent Studio. The turn context contains qualified journey summaries, not the raw event stream. |
 | Controller | `frontend/chat-widget/algolia-proactive-controller.js` | Evaluates journey triggers, reserves an opportunity, adds contextual focus for personalization, calls the Greetings Agent, and asks the chat widget to render the returned greeting. |
 | Greetings Agent | `www Chat - Proactive Concierge`; prompt in `agents/prompts/instructions_algolia_proactive_greeting.md` | Creates one greeting and up to three chips from the proactive packet. It does not continue the full answer conversation. |
 | Handoff tool | `frontend/chat-widget/handoff-to-orchestrator.js` | Registers `handoff_to_orchestrator`, captures the selected chip or typed response, and attaches the proactive handoff context to the next orchestrator turn. |
@@ -25,6 +25,7 @@ The browser controls timing. Agent Studio controls language and conversation qua
 | `algolia_session` | `sessionStorage` | Current-tab journey state: pages, dwell, scroll, referrer, engagement history, and latest proactive opportunity. |
 | `algolia_events` | `sessionStorage` | Bounded ordered event stream: page views, nav clicks, CTA clicks, searches, form starts, scroll milestones, dwell milestones, and chat interactions. |
 | `algolia_proactive_state` | `sessionStorage` | Controller-owned opportunity records, cooldown state, and handoff status. |
+| `algolia-chat:handoff-context` | `sessionStorage` | Compact original proactive greeting context retained for later orchestrator turns in the same tab. |
 
 Hover is not an intent event and must not open the chat. The tracker may observe UI interactions, but proactive triggers require stronger signals such as page view, click, search, dwell, scroll, or a journey shift.
 
@@ -61,15 +62,15 @@ sequenceDiagram
 
 ## Trigger Model
 
-The controller evaluates deterministic journey moments. Examples include:
+The controller evaluates deterministic page and transition moments:
 
 | Moment | Example triggers | Goal |
 |---|---|---|
-| Product research | Product page dwell or 50% scroll; multiple product pages | Help compare capabilities and clarify fit. |
-| Implementation research | Developer/docs dwell, 60% scroll, or search-to-docs path | Reduce implementation uncertainty. |
-| Commercial evaluation | Product-to-pricing, implementation-to-pricing, or pricing dwell | Explain cost drivers and connect effort to value. |
-| Customer proof | Product-to-customer-story or customer-story dwell/scroll | Surface relevant customer proof. |
-| Journey shift | Repeated movement between technical and commercial pages | Help the visitor resolve the real tradeoff behind the path. |
+| Product research | Product page reaches 10 seconds and 50% scroll | Help clarify the current capability and its fit. |
+| Solution research | Solution page reaches 10 seconds and 50% scroll | Connect an industry or use-case need to an outcome. |
+| Technical progression | Qualified product page followed by the same-origin documentation route | Carry product interest into implementation guidance. |
+| Customer proof | Qualified solution page followed by a customer story | Connect the business need to grounded proof. |
+| Commercial evaluation | Qualified product or solution page followed by Pricing | Explain cost and value in the context of the preceding research. |
 
 The controller owns the trigger decision. The Greetings Agent receives the selected moment, trigger, goal, persona, current page, `journeySummary`, raw journey, observed signals, inferred intent, friction, and `contextualFocus`.
 
@@ -103,7 +104,7 @@ The JSON is a runtime contract, not the visible UI. The visitor sees the greetin
 
 ## Handoff Contract
 
-After the visitor engages, the handoff tool attaches `PROACTIVE_HANDOFF_CONTEXT` to the next main orchestrator request. The context includes:
+After the visitor engages, the handoff runtime attaches `PROACTIVE_HANDOFF_CONTEXT` to the next main orchestrator request. The compact context includes:
 
 - original opportunity ID;
 - greeting shown;
@@ -111,10 +112,12 @@ After the visitor engages, the handoff tool attaches `PROACTIVE_HANDOFF_CONTEXT`
 - selected chip, if any;
 - typed response, if any;
 - handoff summary;
-- original proactive request packet;
-- latest compiled context packet and turn context.
+- a bounded request summary containing the moment, trigger, current focus, and compact journey summary;
+- the original flat turn context used for the greeting.
 
-The orchestrator treats this as context only. It answers the visitor's actual message first, searches before making factual Algolia claims, and never exposes hidden telemetry or handoff internals.
+The compact handoff is retained in `sessionStorage`. On each later visitor turn, the runtime reattaches the original handoff and compiles a fresh flat turn context for the visitor's current page. The orchestrator therefore keeps the origin story without answering stale chip text or losing later navigation context.
+
+`AlgoliaTurnContext.v1` is validated before any network request: at most 32 keys, 4,096 total bytes, and 1,024 bytes per value. An invalid field blocks the request, records its exact field and byte count for debugging, and leaves the opportunity available for retry. Values are never silently clipped or discarded.
 
 ## Current Status
 

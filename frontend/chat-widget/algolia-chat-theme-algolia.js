@@ -171,6 +171,7 @@
       '[part="panel"] { border-radius: 20px; border: 1px solid color-mix(in srgb, var(--algolia-border) 88%, #ffffff); box-shadow: 0 24px 80px -52px rgba(35,38,59,0.72), 0 0 0 1px rgba(35,38,59,0.04); }',
       '[part="header"] { position: relative; min-height: var(--algolia-header-h); gap: 12px; padding: 8px 14px 7px !important; align-items: center !important; overflow: hidden; isolation: isolate; background: rgba(255,255,255,0.98); }',
       ':host([data-algolia-working]) [part="header"]::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--algolia-header-progress, 0%); background: linear-gradient(90deg, rgba(0,61,255,0.04), rgba(0,61,255,0.16), rgba(0,61,255,0.08)); pointer-events: none; transition: width 900ms linear; z-index: 0; }',
+      ':host([data-algolia-progress-resetting]) [part="header"]::before { transition-duration: 1ms !important; }',
       '@media (prefers-reduced-motion: reduce) { :host([data-algolia-working]) [part="header"]::before { transition-duration: 1ms; } }',
       '[part="header"] > * { position: relative; z-index: 1; }',
       '[part="header"] > div:first-child { align-self: center; min-width: 0; flex: 1 1 auto; }',

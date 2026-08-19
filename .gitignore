@@ -9,6 +9,8 @@
 **/.pytest_cache/
 node_modules/
 .playwright-mcp/
+testing/team-uat/.artifacts/
+docs/evidence/visitor-intelligence/**/*-network.json
 
 # raw crawl / enrichment data payloads — regenerable, too large for git, not "docs"
 frontend/search-first-demo/corpus/records.jsonl
