@@ -259,8 +259,8 @@ test("specialist journeys use the same quantified dwell and scroll gate as the r
     const start = html.indexOf(`<span>${id}</span>`);
     const end = html.indexOf("</article>", start);
     const scenario = html.slice(start, end);
-    assert.match(scenario, /10\+ seconds/);
-    assert.match(scenario, /50%/);
+    assert.match(scenario, /5\+ seconds/);
+    assert.match(scenario, /25%/);
   }
 });
 

@@ -166,9 +166,9 @@ async function installQualifiedAiSearchSeed(page) {
       path: '/products/ai-search',
       url: `${location.origin}/products/ai-search`,
       title: 'AI Search | Local Chat Parity',
-      enteredAt: now - 12000,
-      dwellMs: 10000,
-      maxScrollDepth: 50,
+      enteredAt: now - 7000,
+      dwellMs: 5000,
+      maxScrollDepth: 25,
       pageGroup: 'product',
       topic: 'ai_search',
       productFocus: 'ai_search',
@@ -179,7 +179,7 @@ async function installQualifiedAiSearchSeed(page) {
       JSON.stringify({
         schema: 'AlgoliaEngagementSession.v1',
         sessionId,
-        startedAt: now - 12000,
+        startedAt: now - 7000,
         lastSeenAt: now,
         currentPageId: productPage.pageId,
         pages: [productPage],
@@ -340,8 +340,8 @@ async function main() {
     });
     assert.equal(docsContinuity.sessionId, 'local_docs_sess_123');
     assert.equal(docsContinuity.currentPath, '/doc/guides/building-search-ui/what-is-instantsearch/js/');
-    assert.equal(docsContinuity.qualifiedProduct?.dwellMs, 10000);
-    assert.equal(docsContinuity.qualifiedProduct?.maxScrollDepth, 50);
+    assert.equal(docsContinuity.qualifiedProduct?.dwellMs, 5000);
+    assert.equal(docsContinuity.qualifiedProduct?.maxScrollDepth, 25);
 
     console.log(
       JSON.stringify(

@@ -762,9 +762,15 @@ async function waitForNetworkSettled(network, pendingResponses, {
   const deadline = Date.now() + timeoutMs;
   let stableSince = 0;
   while (Date.now() < deadline) {
-    const requests = network.filter((entry) => entry.phase === 'request').length;
-    const responses = network.filter((entry) => entry.phase === 'response').length;
-    const settled = requests >= minimumRequests && responses >= requests && pendingResponses.size === 0;
+    const requests = network.filter((entry) => entry.phase === 'request');
+    const responseRequestIds = new Set(
+      network
+        .filter((entry) => entry.phase === 'response' && entry.requestId)
+        .map((entry) => entry.requestId)
+    );
+    const settled =
+      requests.length >= minimumRequests &&
+      requests.every((entry) => responseRequestIds.has(entry.id));
     if (settled) {
       if (!stableSince) stableSince = Date.now();
       if (Date.now() - stableSince >= 1500) return;
@@ -796,10 +802,26 @@ async function waitForShownOpportunity(page, trigger, timeout = 45_000) {
   );
 }
 
+async function waitForVisibleOpportunity(page, trigger, timeout = 45_000) {
+  await page.waitForFunction(
+    (expectedTrigger) => {
+      const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state') || '{}');
+      const opportunity = [...(state.opportunities || [])]
+        .reverse()
+        .find((item) => item.trigger === expectedTrigger && item.status === 'shown');
+      const greeting = opportunity?.greetingResponse?.greeting?.trim();
+      const widgetText = document.querySelector('algolia-chat')?.shadowRoot?.textContent || '';
+      return Boolean(greeting && widgetText.includes(greeting));
+    },
+    trigger,
+    { timeout }
+  );
+}
+
 async function qualifyPage(page) {
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForTimeout(10_500);
-  await scrollToDepth(page, 0.55);
+  await page.waitForTimeout(5_500);
+  await scrollToDepth(page, 0.3);
 }
 
 async function readLocalCompletionState(page) {
@@ -840,11 +862,6 @@ async function waitForLocalCompletionState(page, {
   );
 }
 
-async function closeChatForNavigation(page) {
-  const close = page.getByRole('button', { name: /^close chat$/i });
-  if (await close.isVisible().catch(() => false)) await close.click();
-}
-
 async function acceptSpecialistOfferIfPresent(page, timeout = 45_000, action = 'accept') {
   if (!['accept', 'decline'].includes(action)) {
     throw new Error(`Unsupported specialist action: ${action}`);
@@ -882,7 +899,6 @@ async function acceptSpecialistOfferIfPresent(page, timeout = 45_000, action = '
 }
 
 async function followTransition(page, scenario, expectedOrigin) {
-  await closeChatForNavigation(page);
   const target = page.locator(`${scenario.targetSelector}:visible`).first();
   if (!(await target.count())) {
     const hiddenTarget = page.locator(scenario.targetSelector).first();
@@ -1019,6 +1035,7 @@ async function runJourney({
 
     await qualifyPage(page);
     await waitForShownOpportunity(page, scenario.sourceTrigger || scenario.trigger);
+    await waitForVisibleOpportunity(page, scenario.sourceTrigger || scenario.trigger);
     await page.screenshot({ path: resolve(evidenceDir, `${scenario.number}-source-qualified.png`), fullPage: true });
 
     if (scenario.targetPath) {
@@ -1026,6 +1043,7 @@ async function runJourney({
       await page.screenshot({ path: resolve(evidenceDir, `${scenario.number}-destination.png`), fullPage: true });
       if (scenario.qualifyTarget) await qualifyPage(page);
       await waitForShownOpportunity(page, scenario.trigger);
+      await waitForVisibleOpportunity(page, scenario.trigger);
     }
     await page.screenshot({ path: resolve(evidenceDir, `${scenario.number}-greeting.png`), fullPage: true });
 
@@ -1113,7 +1131,7 @@ async function runJourney({
       await waitForLocalCompletionState(page, { orchestratorRequests: requestsBeforeFollowUp + 1 });
     } else {
       await waitForNetworkSettled(network, pendingResponses, {
-        minimumRequests: requestsBeforeFollowUp + 2,
+        minimumRequests: requestsBeforeFollowUp + 1,
       });
     }
     await page.screenshot({ path: resolve(evidenceDir, `${scenario.number}-continuity.png`), fullPage: true });

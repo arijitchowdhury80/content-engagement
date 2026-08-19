@@ -321,6 +321,39 @@ test('returns flat Agent Studio turn context within documented limits', () => {
   assert.doesNotMatch(serialized, /person@example.com/);
 });
 
+test('qualified journey summary uses the shared 5 second and 25 percent boundary', () => {
+  const buildPage = (pageId, dwellMs, maxScrollDepth) => ({
+    pageId,
+    path: `/products/${pageId}`,
+    title: pageId,
+    enteredAt: 1786750000000,
+    dwellMs,
+    maxScrollDepth,
+    pageGroup: 'product',
+    topic: pageId,
+  });
+  const { context } = createHarness({
+    session: {
+      schema: 'AlgoliaEngagementSession.v1',
+      sessionId: 'sess_123',
+      startedAt: 1786750000000,
+      currentPageId: 'qualified',
+      pages: [
+        buildPage('short-dwell', 4999, 25),
+        buildPage('shallow-scroll', 5000, 24),
+        buildPage('qualified', 5000, 25),
+      ],
+      engagementHistory: [],
+    },
+  });
+
+  const qualifiedJourney = context.algoliaContextCompiler.compileTurnContext().qualified_journey;
+
+  assert.match(qualifiedJourney, /qualified/);
+  assert.doesNotMatch(qualifiedJourney, /short-dwell/);
+  assert.doesNotMatch(qualifiedJourney, /shallow-scroll/);
+});
+
 test('weights recent events above older pages when choosing next useful context', () => {
   const { context } = createHarness({
     events: {

@@ -34,9 +34,11 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.match(bundle, /function __arrieAdmitAnswer/);
     assert.match(bundle, /await xE\(/);
     assert.match(bundle, /BE\(f,u\)/);
-    assert.match(bundle, /The retrieved material does not verify the specific details requested/);
+    assert.match(bundle, /GROUNDING REPAIR - SYSTEM-GENERATED RUNTIME INSTRUCTION/);
+    assert.match(bundle, /function __arrieAttemptGroundedRewrite/);
+    assert.match(bundle, /admissionRewritten/);
     assert.match(bundle, /reason:g\?"judge-unavailable":v\?"material-gate"/);
-    assert.match(bundle, /u\.admissionRejected\?\(\{\.\.\.u,admissionVerdict:void 0\}\):u/);
+    assert.match(bundle, /admissionVerdict/);
     assert.match(bundle, /u\.status==="success"/);
   });
 

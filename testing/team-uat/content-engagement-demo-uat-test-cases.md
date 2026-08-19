@@ -72,8 +72,8 @@ For every failure, capture the URL, screenshot or recording, approximate time, v
 
 1. Reset the journey.
 2. Open **Products -> AI Search**.
-3. Keep the page visible for at least 10 seconds.
-4. Scroll to at least 50% depth.
+3. Keep the page visible for at least 5 seconds.
+4. Scroll to at least 25% depth.
 5. Wait briefly for the concierge. Do not open it yourself.
 6. Respond naturally using any chip or your own text.
 
@@ -101,11 +101,11 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 **Steps**
 
 1. Reset the journey.
-2. Open **Products -> AI Search** and dwell at least 10 seconds.
-3. Scroll beyond 50% and let the product greeting appear. Leave that greeting unanswered.
+2. Open **Products -> AI Search** and dwell at least 5 seconds.
+3. Scroll beyond 25% and let the product greeting appear. Leave that greeting unanswered.
 4. Open the multilingual AI Search FAQ and click **Read the AI Search docs**.
 5. Confirm the internal InstantSearch.js documentation route opens without leaving the internal site.
-6. On documentation, dwell at least 10 seconds and scroll beyond 50%.
+6. On documentation, dwell at least 5 seconds and scroll beyond 25%.
 7. Wait for the destination greeting to replace the first greeting. Only then respond naturally.
 
 **Expected trigger:** `product_to_documentation`
@@ -131,8 +131,8 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 
 1. Reset the journey.
 2. Open **Solutions -> Grocery**.
-3. Keep it visible for at least 10 seconds.
-4. Scroll to at least 50% depth.
+3. Keep it visible for at least 5 seconds.
+4. Scroll to at least 25% depth.
 5. Wait for the concierge and respond naturally.
 
 **Expected trigger:** `solution_page_10s_50_scroll`
@@ -156,10 +156,10 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 **Steps**
 
 1. Reset the journey.
-2. Open a solution page, dwell at least 10 seconds, and scroll beyond 50%.
+2. Open a solution page, dwell at least 5 seconds, and scroll beyond 25%.
 3. Let the solution greeting appear. Leave that greeting unanswered.
 4. Follow a visible customer story, case study, proof, or Customers link.
-5. On the proof page, dwell at least 10 seconds and scroll beyond 50%.
+5. On the proof page, dwell at least 5 seconds and scroll beyond 25%.
 6. Wait for the destination greeting to replace the first greeting. Only then respond naturally.
 
 **Expected trigger:** `solution_to_customer_story`
@@ -184,7 +184,7 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 **Steps**
 
 1. Reset the journey.
-2. Open **Products -> AI Search**, dwell at least 10 seconds, and scroll beyond 50%.
+2. Open **Products -> AI Search**, dwell at least 5 seconds, and scroll beyond 25%.
 3. Let the product greeting appear. Leave that greeting unanswered.
 4. Use website navigation to open Pricing.
 5. Wait for the destination greeting to replace the first greeting.
@@ -210,7 +210,7 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 **Steps**
 
 1. Reset the journey.
-2. Open **Solutions -> Grocery**, dwell at least 10 seconds, and scroll beyond 50%.
+2. Open **Solutions -> Grocery**, dwell at least 5 seconds, and scroll beyond 25%.
 3. Let the solution greeting appear. Leave that greeting unanswered.
 4. Use website navigation to open Pricing.
 5. Wait for the destination greeting to replace the first greeting.
@@ -240,7 +240,7 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 1. Reset the journey.
 2. Open **Developers**.
 3. Continue beyond the hero into substantive implementation content.
-4. Keep the page visible for at least 10 seconds and scroll to at least 50% depth.
+4. Keep the page visible for at least 5 seconds and scroll to at least 25% depth.
 5. Wait for the concierge and respond naturally, including technical challenges.
 
 **Expected trigger:** `developer_page_10s_50_scroll`
@@ -265,7 +265,7 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 1. Reset the journey.
 2. Open the **Unlock the Power of Agentic AI** resource.
 3. Move beyond the hero or library overview into substantive content.
-4. Keep the page visible for at least 10 seconds and scroll to at least 50% depth.
+4. Keep the page visible for at least 5 seconds and scroll to at least 25% depth.
 5. Wait for the concierge and respond naturally.
 
 **Expected trigger:** `resource_page_10s_50_scroll`

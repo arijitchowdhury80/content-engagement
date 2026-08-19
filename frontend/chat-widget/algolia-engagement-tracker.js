@@ -62,7 +62,7 @@
   const MAX_ENGAGEMENTS = 20;
   const MAX_TEXT = 120;
   const DWELL_MILESTONES_MS = [5000, 10000, 15000];
-  const SCROLL_MILESTONES = [50, 75, 100];
+  const SCROLL_MILESTONES = [25, 50, 75, 100];
   const SAFE_UTM_KEYS = [
     "utm_source",
     "utm_medium",

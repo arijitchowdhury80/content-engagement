@@ -66,8 +66,8 @@ The controller evaluates deterministic page and transition moments:
 
 | Moment | Example triggers | Goal |
 |---|---|---|
-| Product research | Product page reaches 10 seconds and 50% scroll | Help clarify the current capability and its fit. |
-| Solution research | Solution page reaches 10 seconds and 50% scroll | Connect an industry or use-case need to an outcome. |
+| Product research | Product page reaches 5 seconds and 25% scroll | Help clarify the current capability and its fit. |
+| Solution research | Solution page reaches 5 seconds and 25% scroll | Connect an industry or use-case need to an outcome. |
 | Technical progression | Qualified product page followed by the same-origin documentation route | Carry product interest into implementation guidance. |
 | Customer proof | Qualified solution page followed by a customer story | Connect the business need to grounded proof. |
 | Commercial evaluation | Qualified product or solution page followed by Pricing | Explain cost and value in the context of the preceding research. |

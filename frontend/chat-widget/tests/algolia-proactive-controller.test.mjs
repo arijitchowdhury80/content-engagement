@@ -229,7 +229,7 @@ async function flushAsyncControllerWork() {
   }
 }
 
-test('product research triggers at 10 visible seconds and 50 percent scroll', () => {
+test('product research triggers at 5 visible seconds and 25 percent scroll', () => {
   const { context } = createHarness({
     pages: [
       page({
@@ -237,8 +237,8 @@ test('product research triggers at 10 visible seconds and 50 percent scroll', ()
         path: '/products/ai-recommendations',
         pageGroup: 'product',
         topic: 'ai_search',
-        dwellMs: 10000,
-        maxScrollDepth: 50,
+        dwellMs: 5000,
+        maxScrollDepth: 25,
       }),
     ],
   });
@@ -254,7 +254,7 @@ test('product research triggers at 10 visible seconds and 50 percent scroll', ()
   assert.equal(decision.agentPromptPacket.currentPage.path, '/products/ai-recommendations');
 });
 
-test('developer depth requires 10 visible seconds and 50 percent scroll', () => {
+test('developer depth requires 5 visible seconds and 25 percent scroll', () => {
   const { context } = createHarness({
     locationPath: '/developers',
     pages: [
@@ -263,8 +263,8 @@ test('developer depth requires 10 visible seconds and 50 percent scroll', () => 
         path: '/developers',
         pageGroup: 'developer',
         topic: 'implementation',
-        dwellMs: 10000,
-        maxScrollDepth: 50,
+        dwellMs: 5000,
+        maxScrollDepth: 25,
       }),
     ],
   });
@@ -286,10 +286,10 @@ test('all eight canonical journeys honor below, exact, and above trigger boundar
   ];
   for (const [trigger, path, pageGroup] of singlePageCases) {
     for (const [dwellMs, maxScrollDepth, expected] of [
-      [9999, 50, false],
-      [10000, 49, false],
-      [10000, 50, true],
-      [10001, 51, true],
+      [4999, 25, false],
+      [5000, 24, false],
+      [5000, 25, true],
+      [5001, 26, true],
     ]) {
       const { context } = createHarness({
         locationPath: path,
@@ -306,12 +306,12 @@ test('all eight canonical journeys honor below, exact, and above trigger boundar
   ];
   for (const [trigger, sourcePath, sourceGroup, destinationPath, destinationGroup] of depthTransitions) {
     for (const [sourceDwell, sourceScroll, destinationDwell, destinationScroll, expected] of [
-      [9999, 50, 10000, 50, false],
-      [10000, 49, 10000, 50, false],
-      [10000, 50, 9999, 50, false],
-      [10000, 50, 10000, 49, false],
-      [10000, 50, 10000, 50, true],
-      [10001, 51, 10001, 51, true],
+      [4999, 25, 5000, 25, false],
+      [5000, 24, 5000, 25, false],
+      [5000, 25, 4999, 25, false],
+      [5000, 25, 5000, 24, false],
+      [5000, 25, 5000, 25, true],
+      [5001, 26, 5001, 26, true],
     ]) {
       const { context } = createHarness({
         locationPath: destinationPath,
@@ -331,10 +331,10 @@ test('all eight canonical journeys honor below, exact, and above trigger boundar
   ];
   for (const [trigger, sourcePath, sourceGroup] of pricingTransitions) {
     for (const [dwellMs, maxScrollDepth, expected] of [
-      [9999, 50, false],
-      [10000, 49, false],
-      [10000, 50, true],
-      [10001, 51, true],
+      [4999, 25, false],
+      [5000, 24, false],
+      [5000, 25, true],
+      [5001, 26, true],
     ]) {
       const { context } = createHarness({
         locationPath: '/pricing',
@@ -704,11 +704,11 @@ test('product to customer story is not a canonical journey trigger', () => {
   assert.equal(decision.reason, 'no_trigger_match');
 });
 
-test('generic product engagement requires both 10 visible seconds and 50 percent scroll', () => {
+test('generic product engagement requires both 5 visible seconds and 25 percent scroll', () => {
   for (const [dwellMs, maxScrollDepth, expected] of [
-    [10000, 49, false],
-    [9999, 50, false],
-    [10000, 50, true],
+    [5000, 24, false],
+    [4999, 25, false],
+    [5000, 25, true],
   ]) {
     const { context } = createHarness({
       locationPath: '/products/arbitrary-future-product',
@@ -727,11 +727,11 @@ test('generic product engagement requires both 10 visible seconds and 50 percent
   }
 });
 
-test('generic solution engagement requires both 10 visible seconds and 50 percent scroll', () => {
+test('generic solution engagement requires both 5 visible seconds and 25 percent scroll', () => {
   for (const [dwellMs, maxScrollDepth, expected] of [
-    [10000, 49, false],
-    [9999, 50, false],
-    [10000, 50, true],
+    [5000, 24, false],
+    [4999, 25, false],
+    [5000, 25, true],
   ]) {
     const { context } = createHarness({
       locationPath: '/solutions/grocery',
@@ -818,8 +818,8 @@ test('transition journeys require qualified sources and qualified depth destinat
       name: 'product source below dwell',
       locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
       pages: [
-        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 9999, maxScrollDepth: 50 }),
-        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 4999, maxScrollDepth: 25 }),
+        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 5000, maxScrollDepth: 25 }),
       ],
       expected: 'developer_page_10s_50_scroll',
     },
@@ -827,8 +827,8 @@ test('transition journeys require qualified sources and qualified depth destinat
       name: 'documentation destination below scroll',
       locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
       pages: [
-        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 }),
-        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 49 }),
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 }),
+        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 5000, maxScrollDepth: 24 }),
       ],
       expected: null,
     },
@@ -836,8 +836,8 @@ test('transition journeys require qualified sources and qualified depth destinat
       name: 'solution source below scroll',
       locationPath: '/customers/heb-mexico',
       pages: [
-        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 10000, maxScrollDepth: 49 }),
-        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 10000, maxScrollDepth: 50 }),
+        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 5000, maxScrollDepth: 24 }),
+        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 5000, maxScrollDepth: 25 }),
       ],
       expected: null,
     },
@@ -845,8 +845,8 @@ test('transition journeys require qualified sources and qualified depth destinat
       name: 'proof destination below dwell',
       locationPath: '/customers/heb-mexico',
       pages: [
-        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 10000, maxScrollDepth: 50 }),
-        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 9999, maxScrollDepth: 50 }),
+        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 5000, maxScrollDepth: 25 }),
+        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 4999, maxScrollDepth: 25 }),
       ],
       expected: null,
     },
@@ -1180,11 +1180,11 @@ test('search to docs does not bypass the canonical developer depth rule', () => 
   assert.equal(decision.reason, 'no_trigger_match');
 });
 
-test('resource depth requires 10 visible seconds and 50 percent scroll', () => {
+test('resource depth requires 5 visible seconds and 25 percent scroll', () => {
   for (const [dwellMs, maxScrollDepth, expected] of [
-    [10000, 49, false],
-    [9999, 50, false],
-    [10000, 50, true],
+    [5000, 24, false],
+    [4999, 25, false],
+    [5000, 25, true],
   ]) {
     const { context } = createHarness({
       locationPath: '/resources/guides/search-platform-evaluation',
@@ -2010,7 +2010,7 @@ test('legacy trigger paths do not create opportunities', () => {
       name: 'unqualified product to pricing',
       locationPath: '/pricing',
       pages: [
-        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 9999, maxScrollDepth: 50 }),
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 4999, maxScrollDepth: 25 }),
         page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
       ],
     },

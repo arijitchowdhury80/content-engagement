@@ -141,8 +141,8 @@ and does not repeat the same intervention.
       "title": "Pricing",
       "referrer": "/products/ai-search",
       "enteredAt": 1786750000000,
-      "dwellMs": 10000,
-      "maxScrollDepth": 75,
+      "dwellMs": 5000,
+      "maxScrollDepth": 25,
       "pageGroup": "pricing",
       "topic": "pricing"
     }
@@ -192,7 +192,7 @@ repeated hooks and preserve continuity.
 |---|---|
 | `page_view` | URL, path, title, referrer, page id, page group, topic, safe UTM/source fields. |
 | `page_dwell` | 5-second and 10-second milestones, once per page. |
-| `scroll_depth` | 50%, 75%, and 100%, once per page. |
+| `scroll_depth` | 25%, 50%, 75%, and 100%, once per page. |
 | `nav_click` | label, href, detected top-level/submenu context, page group, topic. |
 | `cta_click` | label, href, CTA type such as demo, pricing, signup, contact, docs, or unknown. |
 | `site_search` | sanitized and truncated query, source input, current page. |
@@ -275,7 +275,7 @@ python3 frontend/chat-widget/tests/validate-engagement-tracker-browser.py
 The browser validation runs a local HTTP fixture in headless Chromium, navigates
 from a referrer page, clicks top navigation and submenu links, searches, clicks a
 search result, clicks a CTA, submits an invalid then valid form, emits chat and
-engagement events, scrolls through 50%, 75%, and 100%, waits for 5-second and
+engagement events, scrolls through 25%, 50%, 75%, and 100%, waits for 5-second and
 10-second dwell milestones, and reads back `localStorage` and `sessionStorage`.
 
 Evidence artifact:

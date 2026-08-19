@@ -103,7 +103,7 @@ async function qualifyCurrentPage(page) {
     const current = (session.pages || []).find(
       (item) => item.pageId === session.currentPageId
     );
-    return current?.path === location.pathname && current?.dwellMs >= 10_000;
+    return current?.path === location.pathname && current?.dwellMs >= 5_000;
   });
   await page.evaluate(() => {
     const root = document.scrollingElement || document.documentElement;
@@ -114,7 +114,7 @@ async function qualifyCurrentPage(page) {
     const current = (session.pages || []).find(
       (item) => item.pageId === session.currentPageId
     );
-    return current?.dwellMs >= 10_000 && current?.maxScrollDepth >= 50;
+    return current?.dwellMs >= 5_000 && current?.maxScrollDepth >= 25;
   });
 }
 
@@ -158,7 +158,7 @@ async function runScenario(browser, baseUrl, scenario) {
       );
       return {
         sessionId: session.sessionId,
-        qualified: current?.dwellMs >= 10_000 && current?.maxScrollDepth >= 50,
+        qualified: current?.dwellMs >= 5_000 && current?.maxScrollDepth >= 25,
         readinessEvents: window.__localParityReadinessEvents.length,
       };
     });

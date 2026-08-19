@@ -43,15 +43,11 @@ The controller evaluates candidates in priority order and selects the highest el
 | Customer proof | `product_to_customer_story` | Current page is a customer story and a prior page was product. | 82 | `surface_relevant_customer_proof` |
 | Customer proof | `solution_to_customer_story` | Current page is a customer story and a prior page was solution/industry. | 81 | `surface_relevant_customer_proof` |
 | Implementation research | `search_to_docs` | Current page is developer/docs and recent site search included implementation terms. | 80 | `answer_implementation_path` |
-| Commercial evaluation | `pricing_8s_dwell` | Current page is pricing/demo/contact with at least 8 seconds dwell. | 78 | `explain_cost_drivers` |
-| Implementation research | `developer_page_15s_dwell` | Current page is developer/docs with at least 15 seconds dwell. | 76 | `reduce_implementation_uncertainty` |
-| Implementation research | `developer_page_60_scroll` | Current page is developer/docs with at least 60% scroll. | 74 | `reduce_implementation_uncertainty` |
-| Customer proof | `customer_story_12s_dwell` | Current page is a customer story with at least 12 seconds dwell. | 72 | `surface_relevant_customer_proof` |
-| Customer proof | `customer_story_60_scroll` | Current page is a customer story with at least 60% scroll. | 70 | `surface_relevant_customer_proof` |
-| Product research | `product_page_10s_dwell` | Current page is product with at least 10 seconds dwell. | 66 | `explain_product_fit` |
-| Solution research | `solution_page_10s_dwell` | Current page is solution/industry with at least 10 seconds dwell. | 65 | `explain_solution_fit` |
-| Product research | `product_page_50_scroll` | Current page is product with at least 50% scroll. | 64 | `explain_product_fit` |
-| Solution research | `solution_page_50_scroll` | Current page is solution/industry with at least 50% scroll. | 63 | `explain_solution_fit` |
+| Commercial evaluation | `pricing_8s_dwell` | Current page is pricing/demo/contact after a qualifying source page reached 5 seconds dwell and 25% scroll. | 78 | `explain_cost_drivers` |
+| Implementation research | `developer_page_10s_50_scroll` | Current page is developer/docs with at least 5 seconds dwell and 25% scroll. | 76 | `reduce_implementation_uncertainty` |
+| Customer proof | `solution_to_customer_story` | Current page is a customer story with at least 5 seconds dwell and 25% scroll after a qualifying solution page. | 72 | `surface_relevant_customer_proof` |
+| Product research | `product_page_10s_50_scroll` | Current page is product with at least 5 seconds dwell and 25% scroll. | 66 | `explain_product_fit` |
+| Solution research | `solution_page_10s_50_scroll` | Current page is solution/industry with at least 5 seconds dwell and 25% scroll. | 65 | `explain_solution_fit` |
 | Journey shift | `multiple_product_pages` | Session includes at least two product pages. | 62 | `help_compare_capabilities` |
 | Journey shift | `multiple_solution_pages` | Session includes at least two solution/industry pages. | 61 | `help_compare_solution_paths` |
 
@@ -79,15 +75,18 @@ Defaults:
 {
   "maxOpportunitiesPerSession": 3,
   "cooldownMs": 120000,
-  "productDwellMs": 10000,
-  "productScrollDepth": 50,
-  "solutionDwellMs": 10000,
-  "solutionScrollDepth": 50,
-  "implementationDwellMs": 15000,
-  "implementationScrollDepth": 60,
-  "pricingDwellMs": 8000,
-  "customerProofDwellMs": 12000,
-  "customerProofScrollDepth": 60
+  "productDwellMs": 5000,
+  "productScrollDepth": 25,
+  "solutionDwellMs": 5000,
+  "solutionScrollDepth": 25,
+  "documentationJourneyDwellMs": 5000,
+  "documentationJourneyScrollDepth": 25,
+  "proofJourneyDwellMs": 5000,
+  "proofJourneyScrollDepth": 25,
+  "implementationDwellMs": 5000,
+  "implementationScrollDepth": 25,
+  "resourceDwellMs": 5000,
+  "resourceScrollDepth": 25
 }
 ```
 

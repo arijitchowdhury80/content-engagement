@@ -164,6 +164,20 @@ test('captures page view with sanitized URL and safe UTM values', () => {
   assert.equal(pageView.props.email, undefined);
 });
 
+test('emits the 25 percent scroll milestone required by proactive journeys', () => {
+  const { context, sessionStorage } = createHarness({ pathname: '/products/ai-search', search: '' });
+
+  context.document.documentElement.scrollHeight = 2000;
+  context.document.body.scrollHeight = 2000;
+  context.scrollY = 0;
+  context.dispatchWindowEvent('scroll');
+
+  const scrollEvents = parse(sessionStorage, 'algolia_events').events
+    .filter((event) => event.name === 'scroll_depth');
+  assert.equal(scrollEvents.length, 1);
+  assert.equal(scrollEvents[0].props.depth, 25);
+});
+
 test('dwell accumulates visible time and excludes time while the page is hidden', () => {
   const { context, sessionStorage, advanceTime } = createHarness({
     pathname: '/products/ai-search',

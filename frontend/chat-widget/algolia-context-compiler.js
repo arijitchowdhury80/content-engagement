@@ -39,6 +39,8 @@
   const MAX_TURN_CONTEXT_KEYS = 32;
   const MAX_TURN_CONTEXT_BYTES = 4096;
   const MAX_TURN_CONTEXT_VALUE_BYTES = 1024;
+  const JOURNEY_DWELL_MS = 5000;
+  const JOURNEY_SCROLL_DEPTH = 25;
   const AGENT_STUDIO_COMPLETIONS_RE = /\/agent-studio\/1\/agents\/[^/]+\/completions/;
   const SENSITIVE_PROP_RE =
     /email|phone|password|passwd|token|secret|api[_-]?key|credential|name|company|value/i;
@@ -521,7 +523,8 @@
         const group = page.pageGroup || classifyPage(page).pageGroup;
         return (
           group === "pricing" ||
-          (Number(page.dwellMs || 0) >= 10000 && Number(page.maxScrollDepth || 0) >= 50)
+          (Number(page.dwellMs || 0) >= JOURNEY_DWELL_MS &&
+            Number(page.maxScrollDepth || 0) >= JOURNEY_SCROLL_DEPTH)
         );
       })
       .slice(-6)

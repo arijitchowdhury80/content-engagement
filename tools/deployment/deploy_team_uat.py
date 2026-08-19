@@ -218,7 +218,11 @@ def main() -> int:
         if not report["verified"]:
             raise RuntimeError("Published team UAT deck did not match the local standalone artifact")
     EVIDENCE.mkdir(parents=True, exist_ok=True)
-    (EVIDENCE / "latest.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    report_name = "latest.json" if args.apply else "dry-run.json"
+    (EVIDENCE / report_name).write_text(
+        json.dumps(report, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps(report, indent=2))
     return 0
 

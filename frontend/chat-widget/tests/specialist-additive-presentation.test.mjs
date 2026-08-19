@@ -254,7 +254,7 @@ test('sourced specialist output rejected by admission is demoted to a limitation
 
     assert.match(
       result.text,
-      /retrieved material does not verify the specific details requested/i,
+      /found relevant material, but it does not verify enough of the requested detail/i,
       JSON.stringify(result)
     );
     assert.doesNotMatch(result.text, /99\.99% conversion growth/);
@@ -270,7 +270,7 @@ test('sourced specialist output rejected by admission is demoted to a limitation
   }
 });
 
-test('pending specialist consent never persists streamed primary text across reload', async () => {
+test('pending specialist consent never exposes or persists unadmitted primary text across reload', async () => {
   const { context, page, server } = await openSpecialistFlow({
     specialistMode: 'sourced',
     acceptSpecialist: false,
@@ -293,7 +293,7 @@ test('pending specialist consent never persists streamed primary text across rel
       };
     });
 
-    assert.equal(beforeReload.visible, true, 'streaming text may remain visible while consent is pending');
+    assert.equal(beforeReload.visible, false, 'unadmitted streaming text must remain buffered');
     assert.equal(beforeReload.segment.status, 'streaming');
     assert.equal(beforeReload.segment.text, '');
     assert.doesNotMatch(beforeReload.serialized, /grounded primary answer remains/);
