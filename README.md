@@ -22,6 +22,7 @@ Start here for the folder map and current runtime boundaries.
 | `agents/admin/` | Agent Studio config builders and patch/provisioning scripts. |
 | `agents/checks/` | Read-only live Agent Studio dump, spot-check, and sweep scripts. |
 | `frontend/chat-widget/` | Current project-owned chat widget JavaScript files. Keep source files flat here; create `dist/` only for generated packages. |
+| `backend/jahia-modules/` | Jahia OSGi modules (Maven/Java) providing server-side endpoints for the chat widget, e.g. the token-telemetry API-key proxy. |
 | `skills/algolia-data-enrichment/` | Project-local enrichment skill, CLI, tests, references, and runbooks. |
 | `tools/inspection/` | Small inspection/probe scripts used by workstream validation. |
 | `config/` | Public configuration notes only. Secrets stay in ignored local env files. |

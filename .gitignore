@@ -56,3 +56,6 @@ docs/operations/enrichment/.selection-registry.jsonl.lock
 docs/operations/enrichment/_archive/
 
 frontend/chat-widget/*.local.html
+
+# Maven build output — first Maven module in this repo (backend/jahia-modules/)
+target/

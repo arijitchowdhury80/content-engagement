@@ -1,7 +1,23 @@
-// Local-only token-usage probe for the chat widget harness. Must load after
-// window.__ALGOLIA_LOGS_API_KEY__ is set (see index.html) and before
+// Local-only token-usage probe for the chat widget harness. Must load before
 // algolia-chat.js, so the fetch wrapper is in place before the widget makes
 // its first completions call.
+//
+// Usage totals come from the Algolia Agent Studio conversation-detail endpoint,
+// which requires an admin/logs-scoped API key. That key never touches the
+// browser: it's held server-side by the algolia-token-telemetry Jahia module
+// (see backend/jahia-modules/algolia-token-telemetry), which this script calls
+// instead of Algolia directly — as a Jahia Action (POST .../home.algoliaTokenTelemetry.do).
+//
+// The action is bound to a page under the "algolia-assets" site, not "www"
+// (where the widget itself is embedded) — anonymous action dispatch is
+// blocked on "www" by a site-level setting we haven't been able to change
+// from the admin UI, but "algolia-assets" allows it. The action doesn't need
+// to live on the same site as the caller; this endpoint is called cross-site
+// (CORS is handled server-side via Access-Control-Allow-Origin). See the
+// module's README for the full investigation.
+// Optionally set window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ (see index.local.html)
+// to point at that module's host when this page isn't itself served from the
+// same Jahia instance; it defaults to a same-origin relative path.
 //
 // Not part of any shipped bundle, not present in the Jahia embed. The usage
 // pill is injected straight into <algolia-confidence-badge>'s open shadow
@@ -11,6 +27,12 @@
   // <algolia-chat> hasn't been parsed yet at this point in the document, so read
   // its app-id lazily (by the time a completions call happens, it's in the DOM).
   const getAppId = () => document.querySelector('algolia-chat')?.getAttribute('app-id');
+  const getTelemetryBase = () => window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ || '';
+  // The node this Action is bound to (see module README) — algolia-assets,
+  // not www, since anonymous action dispatch is blocked on www. Short-form
+  // path (no /cms/render/{mode}/{lang}/ prefix) — that's what actually
+  // routes past the auth gate; the longer render-path form does not.
+  const TELEMETRY_ACTION_URL = '/sites/algolia-assets/home.algoliaTokenTelemetry.do';
 
   const usage = (window.__algoliaChatUsage = window.__algoliaChatUsage || {});
   const completionsRe = /\/agent-studio\/1\/agents\/([^/]+)\/completions/;
@@ -51,21 +73,20 @@
   const USAGE_RETRY_DELAY_MS = 2000;
 
   async function fetchUsage(agentId, conversationId, attempt = 0) {
-    if (!window.__ALGOLIA_LOGS_API_KEY__ || window.__ALGOLIA_LOGS_API_KEY__.startsWith('REPLACE_')) {
-      console.warn('[token-usage probe] set window.__ALGOLIA_LOGS_API_KEY__ in index.html to fetch usage');
-      return;
-    }
     try {
       const appId = getAppId();
-      const res = await origFetch(
-        `https://${appId}.algolia.net/agent-studio/1/agents/${agentId}/conversations/${conversationId}`,
-        {
-          headers: {
-            'X-Algolia-Application-Id': appId,
-            'X-Algolia-API-Key': window.__ALGOLIA_LOGS_API_KEY__,
-          },
-        }
-      );
+      if (!appId) {
+        console.warn('[token-usage probe] no app-id on <algolia-chat> yet');
+        return;
+      }
+      const params = new URLSearchParams({ appId, agentId, conversationId });
+      const res = await origFetch(`${getTelemetryBase()}${TELEMETRY_ACTION_URL}`, {
+        method: 'POST',
+        // Jahia's ActionResult content-negotiates on Accept: without this,
+        // a genuine 200 still comes back with an empty body.
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+        body: params,
+      });
       if (!res.ok) {
         console.warn('[token-usage probe] conversation fetch failed', res.status);
         return;
