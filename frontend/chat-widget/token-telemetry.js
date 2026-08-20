@@ -24,6 +24,13 @@
 // root from here — algolia-confidence-badge.js itself is never touched,
 // since it ships to production too.
 (() => {
+  // Guard against this script's top-level code running more than once in the
+  // same window (e.g. a dev harness that soft-reloads the widget without a
+  // full page navigation) — without this, each run wraps window.fetch again,
+  // so one real completions response gets drained and reported N times.
+  if (window.__algoliaTokenTelemetryInstalled) return;
+  window.__algoliaTokenTelemetryInstalled = true;
+
   // <algolia-chat> hasn't been parsed yet at this point in the document, so read
   // its app-id lazily (by the time a completions call happens, it's in the DOM).
   const getAppId = () => document.querySelector('algolia-chat')?.getAttribute('app-id');
@@ -69,7 +76,7 @@
   // turn finishes generating, and persists them shortly after that — not the
   // instant the completions response headers arrive. Retry a few times with
   // a short backoff before giving up, rather than trusting the first read.
-  const USAGE_MAX_ATTEMPTS = 3;
+  const USAGE_MAX_ATTEMPTS = 2;
   const USAGE_RETRY_DELAY_MS = 2000;
 
   async function fetchUsage(agentId, conversationId, attempt = 0) {
@@ -125,13 +132,39 @@
       }
       // Drain a clone of the stream in the background — don't touch the
       // original body the widget is about to read — and only ask for usage
-      // once the answer has actually finished generating.
+      // once the answer has actually finished generating. A guardrail
+      // violation short-circuits generation (the SSE stream carries a
+      // "data-guardrail-violation" event and no real completion), so the
+      // conversation never accrues usage worth asking Agent Studio for.
       const drain = response.clone().body.getReader();
       (async () => {
+        let guardrailViolation = false;
+        let drainFailed = false;
         try {
-          while (!(await drain.read()).done) {}
+          const decoder = new TextDecoder();
+          let buf = '';
+          let chunk;
+          while (!(chunk = await drain.read()).done) {
+            buf += decoder.decode(chunk.value, { stream: true });
+            if (!guardrailViolation && /"type"\s*:\s*"data-guardrail-violation"/.test(buf)) {
+              guardrailViolation = true;
+            }
+          }
         } catch (err) {
+          drainFailed = true;
           console.warn('[token-usage probe] stream drain error', err);
+        }
+        if (guardrailViolation) {
+          console.warn('[token-usage probe] guardrail violation — skipping usage fetch for', conversationId);
+          return;
+        }
+        // A failed drain means we couldn't confirm the turn actually
+        // completed normally — skip rather than risk a telemetry call for
+        // a blocked/aborted turn (fail closed, same intent as the
+        // guardrail-violation skip above).
+        if (drainFailed) {
+          console.warn('[token-usage probe] drain failed — skipping usage fetch for', conversationId);
+          return;
         }
         fetchUsage(agentId, conversationId);
       })();
@@ -175,7 +208,7 @@
       : 'Token breakdown unavailable';
     const turnsNote = u.turns ? ` across ${u.turns} turn${u.turns === 1 ? '' : 's'}` : '';
     pill.textContent = u.totalTokens != null ? `${u.totalTokens} tokens` : 'tokens: —';
-    pill.title = `${detail} — reported by Agent Studio, summed${turnsNote} (local dev only)`;
+    pill.title = `${detail}`;
   }
 
   function renderLatestPill(shadowRoot) {
