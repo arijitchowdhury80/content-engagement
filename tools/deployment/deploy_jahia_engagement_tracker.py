@@ -453,6 +453,41 @@ def upsert_file(path: str, content: str) -> dict:
     return graphql(mutation, {"path": path, "content": content})
 
 
+def update_block_html_logo_reset_only(current: str) -> str:
+    """Narrow transform for --logo-reset-only.
+
+    It touches exactly two things: the `reset-visitor-state-on-logo` attribute and
+    the engagement-tracker script tag. It must NOT reach the Compare config or
+    script — a logo-reset deployment uploads and publishes only the tracker, so
+    enabling Compare here would reference an asset this run never shipped.
+    """
+    next_html = re.sub(
+        r"<algolia-chat\b[^>]*>",
+        lambda match: (
+            match.group(0)
+            if "reset-visitor-state-on-logo" in match.group(0)
+            else match.group(0)[:-1] + " reset-visitor-state-on-logo>"
+        ),
+        current,
+        count=1,
+    )
+    next_html = re.sub(
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-chat-tracker\.js"></script>\n?',
+        "",
+        next_html,
+    )
+    tracker_tag = (
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-engagement-tracker.js?tracker={TRACKER_VERSION}"></script>'
+    )
+    next_html = re.sub(
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-engagement-tracker\.js(?:\?[^"]*)?"></script>',
+        tracker_tag,
+        next_html,
+    )
+    return next_html
+
+
 def update_block_html(current: str) -> str:
     next_html = current
     next_html = re.sub(
@@ -1507,7 +1542,14 @@ def main() -> int:
     write_json(EVIDENCE_DIR / "before-snapshot.json", before)
 
     current_html = before["edit"]["blockHtml"]
-    next_html = update_block_html(current_html)
+    # --logo-reset-only publishes only the tracker, so it must use the narrow
+    # transform. The full one injects the Compare config and script, which would
+    # reference an asset this mode never uploads.
+    next_html = (
+        update_block_html_logo_reset_only(current_html)
+        if args.logo_reset_only
+        else update_block_html(current_html)
+    )
     chat_content = CHAT_SRC.read_text(encoding="utf-8")
     tracker_content = TRACKER_SRC.read_text(encoding="utf-8")
     context_compiler_content = CONTEXT_COMPILER_SRC.read_text(encoding="utf-8")
@@ -1621,6 +1663,18 @@ def main() -> int:
         write_json(EVIDENCE_DIR / "deployment-validation.json", checks)
         print(json.dumps(checks, indent=2))
         return 0 if checks["pass"] else 1
+
+    # Refuse before ANY mutation if the production key is absent. Without it the
+    # block would ship apiKey:"" — the toggle still renders, because app id and
+    # agent id are present, but every production request would fail. The key
+    # itself is never printed or written to evidence.
+    if not compare_prod_search_key():
+        raise SystemExit(
+            f"Refusing to deploy: {COMPARE_PROD_SEARCH_KEY_ENV} is not set in the "
+            "environment or .env.local. Compare would be published with an empty "
+            "production key and every production request would fail. No mutation "
+            "has been made."
+        )
 
     mutations = {
         "upsertChat": upsert_file(CHAT, chat_content),

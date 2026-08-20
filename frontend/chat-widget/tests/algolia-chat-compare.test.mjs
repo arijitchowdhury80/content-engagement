@@ -143,9 +143,15 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
     shadowRoot.dispatch('click', { composedPath: () => [t] });
   };
 
+  // Collapse/expand the way the widget's size modes do: by changing panel width.
+  const setExpanded = (on) => {
+    panel.rect = { ...panel.rect, width: on ? chatWidth : Math.round(context.window.innerWidth * 0.3) };
+    observers.forEach((cb) => cb([{ type: 'attributes' }]));
+  };
+
   flush(); // initial reconcile mounts the toggle
   return {
-    context, flush, addBubble, toggle, clickToggle, shadowRoot, chatContent, documentListeners,
+    context, flush, addBubble, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
     fetchCalls,
     setFetch: (fn) => { fetchImpl = fn; },
     api: () => context.window.__acsCompare,
@@ -308,6 +314,36 @@ test('compare is inert when no production endpoint is configured', () => {
   assert.equal(h.toggle(), null, 'no toggle without configuration');
 });
 
+test('Compare survives collapse and expand, and turn two keeps turn one', async () => {
+  const h = createHarness();
+  h.clickToggle();                                    // enabled BEFORE the first question
+  h.setFetch(async (_url, init) => ({
+    ok: true, status: 200,
+    body: sse([{ type: 'text-delta', delta: `answer:${JSON.parse(init.body).messages.at(-1).parts[0].text}` }]),
+  }));
+
+  h.addBubble('question one');
+  await h.settle();
+  assert.equal(h.fetchCalls.length, 1, 'turn one reaches production');
+
+  h.setExpanded(false);                               // collapse
+  await h.settle();
+  assert.equal(h.api().state().compareOn, true, 'collapsing must not disable Compare');
+
+  h.setExpanded(true);                                // reopen
+  await h.settle();
+  assert.equal(h.toggle()?.getAttribute('aria-pressed'), 'true', 'still on after reopening');
+
+  h.addBubble('question two');
+  await h.settle();
+
+  assert.equal(h.fetchCalls.length, 2, 'turn two still reaches production');
+  const second = JSON.parse(h.fetchCalls[1][1].body);
+  assert.equal(second.messages.length, 3, 'turn two carries turn one user + assistant');
+  assert.equal(second.messages[0].parts[0].text, 'question one');
+  assert.equal(second.messages[2].parts[0].text, 'question two');
+});
+
 /* --------------------------------------------------- Jahia deployment wiring */
 
 function transformBlock(html) {
@@ -362,6 +398,45 @@ test('the chat stack manifest requires the Compare marker live', () => {
   );
   assert.ok(manifest.jahia.requiredLiveMarkers.includes('algolia-chat-compare.js'));
   assert.equal(manifest.jahia.compareWithProduction.productionAgent.searchKeyEnv, 'PROD_ASKAI_SEARCH_KEY');
+});
+
+test('--logo-reset-only leaves every Compare reference untouched', () => {
+  const program = [
+    'import importlib.util, pathlib, sys',
+    'path = pathlib.Path(sys.argv[1])',
+    "spec = importlib.util.spec_from_file_location('deploy', path)",
+    'module = importlib.util.module_from_spec(spec)',
+    'spec.loader.exec_module(module)',
+    'html = sys.stdin.read()',
+    'narrow = module.update_block_html_logo_reset_only(html)',
+    'full = module.update_block_html(html)',
+    'print("LOGO_RESET", "reset-visitor-state-on-logo" in narrow)',
+    'print("NO_COMPARE_CFG", "ACS_COMPARE" not in narrow)',
+    'print("NO_COMPARE_SRC", "algolia-chat-compare.js" not in narrow)',
+    'print("FULL_HAS_COMPARE", "ACS_COMPARE" in full and "algolia-chat-compare.js" in full)',
+    'print("PRESERVES_EXISTING", full.count("algolia-chat-compare.js") == module.update_block_html_logo_reset_only(full).count("algolia-chat-compare.js"))',
+    'print("IDEMPOTENT", module.update_block_html_logo_reset_only(narrow) == narrow)',
+  ].join('; ');
+  const out = execFileSync('python3', ['-c', program, deployScript.pathname], {
+    input: BLOCK_FIXTURE, encoding: 'utf8',
+  });
+  for (const key of ['LOGO_RESET', 'NO_COMPARE_CFG', 'NO_COMPARE_SRC', 'FULL_HAS_COMPARE', 'PRESERVES_EXISTING', 'IDEMPOTENT']) {
+    assert.match(out, new RegExp(`${key} True`), `${key} should hold`);
+  }
+});
+
+test('apply mode refuses to deploy when the production key is missing', () => {
+  const source = fs.readFileSync(deployScript, 'utf8');
+  const guard = source.indexOf('if not compare_prod_search_key():');
+  assert.notEqual(guard, -1, 'a pre-mutation guard must exist');
+  const firstMutation = source.indexOf('"upsertChat": upsert_file(CHAT, chat_content)', guard);
+  assert.notEqual(firstMutation, -1);
+  assert.ok(guard < firstMutation, 'the guard must run before any mutation');
+  assert.match(source, /Refusing to deploy/);
+  assert.match(source, /SystemExit\(/, 'must abort, not warn');
+  // the key itself must never be echoed into logs or evidence
+  assert.equal(/print\([^)]*compare_prod_search_key\(\)/.test(source), false, 'key must not be printed');
+  assert.match(source, /"compareProductionKeyResolved": bool\(compare_prod_search_key\(\)\)/);
 });
 
 test('the parity site loads Compare and routes production through the parity server', () => {

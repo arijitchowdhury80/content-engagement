@@ -189,7 +189,10 @@
 
   function scanForNewQuestions() {
     const bubbles = userBubbles();
-    if (!(compareOn && isExpanded())) return;
+    // Deliberately NOT gated on isExpanded(): a question asked while the chat is
+    // docked must still reach production, otherwise turn two would carry a
+    // history that no longer matches the conversation on the left.
+    if (!compareOn) return;
     bubbles.forEach((el) => {
       if (seenBubbles.has(el)) return;
       seenBubbles.add(el);
@@ -296,7 +299,9 @@
       pending = false;
       try {
         const expanded = isExpanded();
-        if (!expanded && compareOn) { compareOn = false; }
+        // Collapsing only HIDES the production column. Clearing compareOn here
+        // stranded the visitor: the choice is locked after turn one, so it could
+        // never be switched back on for that conversation.
         // DOM fallback for reset: every user bubble disappeared.
         const count = userBubbles().length;
         if (count === 0 && lastUserCount > 0) resetConversation("dom");
