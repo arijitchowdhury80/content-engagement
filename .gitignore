@@ -57,5 +57,10 @@ docs/operations/enrichment/_archive/
 
 frontend/chat-widget/*.local.html
 
+# Frontend-key debugging variant of token-telemetry.js — direct-to-Algolia
+# fetch with the logs key exposed client-side, kept only to isolate "is the
+# key bad" from "is the Jahia proxy broken". Not the shipped approach.
+frontend/chat-widget/token-telemetry-fe-key.js
+
 # Maven build output — first Maven module in this repo (backend/jahia-modules/)
 target/
