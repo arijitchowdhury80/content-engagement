@@ -173,6 +173,29 @@ test('compiles rich context from tracker state without downgrading confirmed per
   assert.ok(packet.recentEvents.some((event) => event.name === 'nav_click'));
 });
 
+test('exposes the immediate navigation edge while preserving the complete page trail', () => {
+  const pages = [
+    { pageId: 'product', path: '/products/ai-search', title: 'AI Search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 },
+    { pageId: 'resource', path: '/resources/guide', title: 'Guide', pageGroup: 'resource', topic: 'research', dwellMs: 1000, maxScrollDepth: 5 },
+    {
+      pageId: 'pricing', path: '/pricing', title: 'Pricing', pageGroup: 'pricing', topic: 'pricing_and_usage',
+      navigationType: 'navigate', sourcePageId: 'resource', sourcePath: '/resources/guide',
+      destinationPageId: 'pricing', destinationPath: '/pricing', edgeId: 'resource-to-pricing',
+    },
+  ];
+  const { context } = createHarness({
+    locationPath: '/pricing',
+    session: { schema: 'AlgoliaEngagementSession.v1', sessionId: 'sess_123', startedAt: 1786750000000, currentPageId: 'pricing', pages, engagementHistory: [] },
+  });
+  const packet = context.algoliaContextCompiler.compile();
+
+  assert.equal(packet.session.pages.length, 3);
+  assert.equal(packet.session.currentEdge.sourcePageId, 'resource');
+  assert.equal(packet.session.currentEdge.destinationPageId, 'pricing');
+  assert.equal(packet.session.currentEdge.edgeId, 'resource-to-pricing');
+  assert.equal(packet.session.currentEdge.isImmediate, true);
+});
+
 test('preserves product feature focus for downstream personalization', () => {
   const { context } = createHarness({
     locationPath: '/products/features/personalization',
@@ -243,6 +266,33 @@ test('preserves solution focus for downstream personalization', () => {
   assert.equal(packet.observedSignals.currentSolutionFocus.value, 'commerce');
   assert.equal(turnContext.current_solution_focus, 'observed:commerce');
   assert.equal(turnContext.current_solution_focus_label, 'Commerce');
+});
+
+test('classifies enterprise use-case context as a solution', () => {
+  const { context } = createHarness({
+    locationPath: '/use-cases/enterprise',
+    session: {
+      schema: 'AlgoliaEngagementSession.v1',
+      sessionId: 'sess_enterprise',
+      startedAt: 1786750000000,
+      currentPageId: 'page_current',
+      pages: [{
+        pageId: 'page_current',
+        path: '/use-cases/enterprise',
+        title: 'Enterprise Search',
+        enteredAt: 1786750060000,
+        dwellMs: 5000,
+        maxScrollDepth: 25,
+      }],
+      engagementHistory: [],
+    },
+  });
+
+  const packet = context.algoliaContextCompiler.compile();
+
+  assert.equal(packet.currentPage.pageGroup, 'solution');
+  assert.equal(packet.currentPage.solutionFocus, 'enterprise');
+  assert.equal(packet.currentPage.solutionFocusLabel, 'Enterprise');
 });
 
 test('infers intent, friction, and persona softly with confidence and evidence', () => {

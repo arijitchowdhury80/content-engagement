@@ -32,6 +32,8 @@ NEW_TRACKER = "/sites/www/files/algolia-engagement-tracker.js"
 CONTEXT_COMPILER = "/sites/www/files/algolia-context-compiler.js"
 PROACTIVE_CONTROLLER = "/sites/www/files/algolia-proactive-controller.js"
 PROACTIVE_CONTROLLER_CONTENT = f"{PROACTIVE_CONTROLLER}/jcr:content"
+TRACKER_CONTENT = f"{NEW_TRACKER}/jcr:content"
+CONTEXT_COMPILER_CONTENT = f"{CONTEXT_COMPILER}/jcr:content"
 HANDOFF_TO_ORCHESTRATOR = "/sites/www/files/handoff-to-orchestrator.js"
 ENGAGE = "/sites/www/files/algolia-chat-engage.js"
 THEME = "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
@@ -46,6 +48,7 @@ EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/
 RUNTIME_VERSION = "20260819-runtime-z"
 CHAT_VERSION = RUNTIME_VERSION
 CHAT_ONLY_VERSION = "20260819-chat-b"
+JOURNEY_RUNTIME_VERSION = "20260820-navigation-edge-a"
 TRACKER_VERSION = RUNTIME_VERSION
 CONTEXT_COMPILER_VERSION = RUNTIME_VERSION
 PROACTIVE_CONTROLLER_VERSION = RUNTIME_VERSION
@@ -258,6 +261,33 @@ def chat_snapshot() -> dict:
         "live": {
             "blockHtml": block_html("LIVE"),
             "chatNode": node(CHAT, "LIVE"),
+        },
+    }
+
+
+def journey_runtime_snapshot() -> dict:
+    """Capture only the three journey assets and the block that references them."""
+    return {
+        "capturedAt": datetime.now(timezone.utc).isoformat(),
+        "mode": "journey-runtime-only",
+        "journeyRuntimeVersion": JOURNEY_RUNTIME_VERSION,
+        "target": {
+            "tracker": NEW_TRACKER,
+            "contextCompiler": CONTEXT_COMPILER,
+            "proactiveController": PROACTIVE_CONTROLLER,
+            "block": BLOCK_PATH,
+        },
+        "edit": {
+            "blockHtml": block_html("EDIT"),
+            "newTrackerNode": node(NEW_TRACKER, "EDIT"),
+            "contextCompilerNode": node(CONTEXT_COMPILER, "EDIT"),
+            "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "EDIT"),
+        },
+        "live": {
+            "blockHtml": block_html("LIVE"),
+            "newTrackerNode": node(NEW_TRACKER, "LIVE"),
+            "contextCompilerNode": node(CONTEXT_COMPILER, "LIVE"),
+            "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "LIVE"),
         },
     }
 
@@ -475,6 +505,47 @@ def update_chat_block_html(current: str) -> str:
     if re.search(r'\sdata-chat-release="[^"]*"', embed):
         updated_embed = re.sub(
             r'\sdata-chat-release="[^"]*"',
+            f" {marker}",
+            embed,
+            count=1,
+        )
+    else:
+        updated_embed = embed[:-1] + f" {marker}>"
+    return next_html.replace(embed, updated_embed, 1)
+
+
+def update_journey_runtime_block_html(current: str) -> str:
+    """Change only tracker, compiler, and controller cache keys and release marker."""
+    assets = (
+        ("algolia-engagement-tracker.js", "tracker"),
+        ("algolia-context-compiler.js", "context"),
+        ("algolia-proactive-controller.js", "proactive"),
+    )
+    next_html = current
+    for filename, query_name in assets:
+        pattern = re.compile(
+            rf'(<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/'
+            rf'sites/www/files/{re.escape(filename)})(?:\?[^"\n]*)?(\"></script>)'
+        )
+        if len(pattern.findall(next_html)) != 1:
+            raise RuntimeError(
+                f"Journey-runtime deployment requires exactly one {filename} script tag"
+            )
+        next_html = pattern.sub(
+            rf'\1?{query_name}={JOURNEY_RUNTIME_VERSION}\2', next_html, count=1
+        )
+
+    embed_pattern = re.compile(r'<div\b[^>]*\bclass="[^"]*\balgolia-chat-embed\b[^"]*"[^>]*>')
+    embed_matches = embed_pattern.findall(next_html)
+    if len(embed_matches) != 1:
+        raise RuntimeError(
+            "Journey-runtime deployment requires exactly one algolia-chat-embed element"
+        )
+    embed = embed_matches[0]
+    marker = f'data-journey-runtime-release="{JOURNEY_RUNTIME_VERSION}"'
+    if re.search(r'\sdata-journey-runtime-release="[^"]*"', embed):
+        updated_embed = re.sub(
+            r'\sdata-journey-runtime-release="[^"]*"',
             f" {marker}",
             embed,
             count=1,
@@ -855,6 +926,185 @@ def run_chat_only(apply: bool) -> int:
     return 0 if checks["pass"] else 1
 
 
+def validate_journey_runtime_only(
+    snapshot_after: dict,
+    tracker_content: str,
+    compiler_content: str,
+    controller_content: str,
+    expected_html: str,
+) -> dict:
+    edit_html = snapshot_after["edit"]["blockHtml"]
+    live_html = snapshot_after["live"]["blockHtml"]
+    expected = {
+        "tracker": tracker_content,
+        "contextCompiler": compiler_content,
+        "proactiveController": controller_content,
+    }
+    node_names = {
+        "tracker": "newTrackerNode",
+        "contextCompiler": "contextCompilerNode",
+        "proactiveController": "proactiveControllerNode",
+    }
+    checks = {
+        "mode": "journey-runtime-only",
+        "journeyRuntimeVersion": JOURNEY_RUNTIME_VERSION,
+        "editBlockMatchesExpected": edit_html == expected_html,
+        "liveBlockMatchesExpected": live_html == expected_html,
+        "editBlockHasTrackerQuery": f"tracker={JOURNEY_RUNTIME_VERSION}" in edit_html,
+        "liveBlockHasTrackerQuery": f"tracker={JOURNEY_RUNTIME_VERSION}" in live_html,
+        "editBlockHasCompilerQuery": f"context={JOURNEY_RUNTIME_VERSION}" in edit_html,
+        "liveBlockHasCompilerQuery": f"context={JOURNEY_RUNTIME_VERSION}" in live_html,
+        "editBlockHasControllerQuery": f"proactive={JOURNEY_RUNTIME_VERSION}" in edit_html,
+        "liveBlockHasControllerQuery": f"proactive={JOURNEY_RUNTIME_VERSION}" in live_html,
+        "editBlockHasJourneyMarker": (
+            f'data-journey-runtime-release="{JOURNEY_RUNTIME_VERSION}"' in edit_html
+        ),
+        "liveBlockHasJourneyMarker": (
+            f'data-journey-runtime-release="{JOURNEY_RUNTIME_VERSION}"' in live_html
+        ),
+    }
+    for key, content in expected.items():
+        node_name = node_names[key]
+        edit_content = file_content(snapshot_after["edit"][node_name])
+        live_content = file_content(snapshot_after["live"][node_name])
+        checks[f"{key}ExpectedSha256"] = sha256(content)
+        checks[f"{key}EditSha256"] = sha256(edit_content) if edit_content is not None else None
+        checks[f"{key}LiveSha256"] = sha256(live_content) if live_content is not None else None
+        checks[f"{key}EditMatchesSource"] = edit_content == content
+        checks[f"{key}LiveMatchesSource"] = live_content == content
+    non_boolean = {
+        "mode",
+        "journeyRuntimeVersion",
+        "trackerExpectedSha256",
+        "trackerEditSha256",
+        "trackerLiveSha256",
+        "contextCompilerExpectedSha256",
+        "contextCompilerEditSha256",
+        "contextCompilerLiveSha256",
+        "proactiveControllerExpectedSha256",
+        "proactiveControllerEditSha256",
+        "proactiveControllerLiveSha256",
+    }
+    checks["pass"] = all(value for key, value in checks.items() if key not in non_boolean)
+    return checks
+
+
+def journey_runtime_only_plan(
+    before: dict,
+    tracker_content: str,
+    compiler_content: str,
+    controller_content: str,
+    next_html: str,
+) -> dict:
+    return {
+        "mode": "journey-runtime-only",
+        "target": {
+            "tracker": NEW_TRACKER,
+            "contextCompiler": CONTEXT_COMPILER,
+            "proactiveController": PROACTIVE_CONTROLLER,
+            "block": BLOCK_PATH,
+        },
+        "intended": {
+            "journeyRuntimeVersion": JOURNEY_RUNTIME_VERSION,
+            "trackerSha256": sha256(tracker_content),
+            "contextCompilerSha256": sha256(compiler_content),
+            "proactiveControllerSha256": sha256(controller_content),
+            "blockHtmlSha256": sha256(next_html),
+        },
+        "mutationAllowlist": [
+            {"operation": "upsert", "path": NEW_TRACKER},
+            {"operation": "upsert", "path": CONTEXT_COMPILER},
+            {"operation": "upsert", "path": PROACTIVE_CONTROLLER},
+            {"operation": "setBlockHtml", "path": BLOCK_PATH},
+            {"operation": "publish", "path": TRACKER_CONTENT, "subtree": False},
+            {"operation": "publish", "path": NEW_TRACKER, "subtree": False},
+            {"operation": "publish", "path": CONTEXT_COMPILER_CONTENT, "subtree": False},
+            {"operation": "publish", "path": CONTEXT_COMPILER, "subtree": False},
+            {"operation": "publish", "path": PROACTIVE_CONTROLLER_CONTENT, "subtree": False},
+            {"operation": "publish", "path": PROACTIVE_CONTROLLER, "subtree": False},
+            {"operation": "createVersion", "path": BLOCK_PATH},
+            {"operation": "publish", "path": BLOCK_PATH, "subtree": True},
+        ],
+        "excluded": {
+            "runtimeFiles": [CHAT, HANDOFF_TO_ORCHESTRATOR, ENGAGE],
+            "theme": THEME,
+            "agentStudio": True,
+            "subtrees": [FILES_PATH, "/sites/www/home/drift"],
+        },
+        "rollback": {
+            "restoreTrackerFrom": "before-snapshot.json edit.newTrackerNode",
+            "restoreCompilerFrom": "before-snapshot.json edit.contextCompilerNode",
+            "restoreControllerFrom": "before-snapshot.json edit.proactiveControllerNode",
+            "restoreBlockHtmlFrom": "before-snapshot.json edit.blockHtml",
+        },
+        "before": {
+            "editBlockHtmlSha256": sha256(before["edit"]["blockHtml"]),
+            "liveBlockHtmlSha256": sha256(before["live"]["blockHtml"]),
+        },
+    }
+
+
+def run_journey_runtime_only(apply: bool) -> int:
+    before = journey_runtime_snapshot()
+    write_json(EVIDENCE_DIR / "before-snapshot.json", before)
+    tracker_content = TRACKER_SRC.read_text(encoding="utf-8")
+    compiler_content = CONTEXT_COMPILER_SRC.read_text(encoding="utf-8")
+    controller_content = PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")
+    next_html = update_journey_runtime_block_html(before["edit"]["blockHtml"])
+    plan = journey_runtime_only_plan(
+        before,
+        tracker_content,
+        compiler_content,
+        controller_content,
+        next_html,
+    )
+    write_json(EVIDENCE_DIR / "deployment-plan.json", plan)
+    if not apply:
+        print(json.dumps(plan, indent=2))
+        return 0
+
+    mutations = {
+        "upsertTracker": upsert_file(NEW_TRACKER, tracker_content),
+        "upsertContextCompiler": upsert_file(CONTEXT_COMPILER, compiler_content),
+        "upsertProactiveController": upsert_file(PROACTIVE_CONTROLLER, controller_content),
+        "setBlockHtml": set_block_html(next_html),
+        "publishTrackerContent": publish(TRACKER_CONTENT, subtree=False),
+        "publishTracker": publish(NEW_TRACKER, subtree=False),
+        "publishCompilerContent": publish(CONTEXT_COMPILER_CONTENT, subtree=False),
+        "publishCompiler": publish(CONTEXT_COMPILER, subtree=False),
+        "publishControllerContent": publish(PROACTIVE_CONTROLLER_CONTENT, subtree=False),
+        "publishController": publish(PROACTIVE_CONTROLLER, subtree=False),
+        "versionBlock": version_block(),
+        "publishBlock": publish(BLOCK_PATH, subtree=True),
+    }
+    write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
+
+    after = journey_runtime_snapshot()
+    checks = validate_journey_runtime_only(
+        after,
+        tracker_content,
+        compiler_content,
+        controller_content,
+        next_html,
+    )
+    for _ in range(8):
+        if checks["pass"]:
+            break
+        time.sleep(2)
+        after = journey_runtime_snapshot()
+        checks = validate_journey_runtime_only(
+            after,
+            tracker_content,
+            compiler_content,
+            controller_content,
+            next_html,
+        )
+    write_json(EVIDENCE_DIR / "after-readback.json", after)
+    write_json(EVIDENCE_DIR / "deployment-validation.json", checks)
+    print(json.dumps(checks, indent=2))
+    return 0 if checks["pass"] else 1
+
+
 def main() -> int:
     global EVIDENCE_DIR
     parser = argparse.ArgumentParser()
@@ -874,6 +1124,11 @@ def main() -> int:
         action="store_true",
         help="Deploy only algolia-chat.js and its Drift cache marker.",
     )
+    parser.add_argument(
+        "--journey-runtime-only",
+        action="store_true",
+        help="Deploy only tracker, context compiler, proactive controller, and their cache markers.",
+    )
     parser.add_argument("--evidence-dir", type=Path)
     args = parser.parse_args()
     if args.evidence_dir:
@@ -883,15 +1138,22 @@ def main() -> int:
             else ROOT / args.evidence_dir
         )
 
-    selected_modes = [args.logo_reset_only, args.controller_only, args.chat_only]
+    selected_modes = [
+        args.logo_reset_only,
+        args.controller_only,
+        args.chat_only,
+        args.journey_runtime_only,
+    ]
     if sum(selected_modes) > 1:
         parser.error(
-            "--logo-reset-only, --controller-only, and --chat-only are mutually exclusive"
+            "narrow deployment modes are mutually exclusive"
         )
     if args.controller_only:
         return run_controller_only(args.apply)
     if args.chat_only:
         return run_chat_only(args.apply)
+    if args.journey_runtime_only:
+        return run_journey_runtime_only(args.apply)
 
     before = snapshot()
     write_json(EVIDENCE_DIR / "before-snapshot.json", before)

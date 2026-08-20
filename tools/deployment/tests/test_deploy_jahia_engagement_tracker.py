@@ -78,6 +78,39 @@ def chat_state(html: str, content: str) -> dict:
     }
 
 
+def journey_block_html(version: str = "old") -> str:
+    return (
+        '<div class="algolia-chat-embed" data-release="existing-release">\n'
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-chat.js?chat={version}"></script>\n'
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-engagement-tracker.js?tracker={version}"></script>\n'
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-context-compiler.js?context={version}"></script>\n'
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-proactive-controller.js?proactive={version}"></script>\n'
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'handoff-to-orchestrator.js?handoff={version}"></script>\n'
+        "</div>"
+    )
+
+
+def journey_state(html: str, tracker: str, compiler: str, controller: str) -> dict:
+    side = {
+        "blockHtml": html,
+        "newTrackerNode": file_node(tracker),
+        "contextCompilerNode": file_node(compiler),
+        "proactiveControllerNode": file_node(controller),
+    }
+    return {
+        "capturedAt": "2026-08-20T00:00:00+00:00",
+        "mode": "journey-runtime-only",
+        "journeyRuntimeVersion": MODULE.JOURNEY_RUNTIME_VERSION,
+        "edit": dict(side),
+        "live": dict(side),
+    }
+
+
 class ControllerOnlyHtmlTests(unittest.TestCase):
     def test_uses_new_august_19_controller_cache_token(self):
         self.assertEqual(MODULE.CONTROLLER_ONLY_VERSION, "20260819-controller-a")
@@ -411,6 +444,105 @@ class ChatOnlyDeploymentTests(unittest.TestCase):
 
         state["live"]["chatNode"] = file_node("stale chat")
         self.assertFalse(MODULE.validate_chat_only(state, content, expected_html)["pass"])
+
+
+class JourneyRuntimeOnlyDeploymentTests(unittest.TestCase):
+    def test_html_changes_only_three_queries_and_one_marker(self):
+        original = journey_block_html()
+        updated = MODULE.update_journey_runtime_block_html(original)
+
+        self.assertIn(f"tracker={MODULE.JOURNEY_RUNTIME_VERSION}", updated)
+        self.assertIn(f"context={MODULE.JOURNEY_RUNTIME_VERSION}", updated)
+        self.assertIn(f"proactive={MODULE.JOURNEY_RUNTIME_VERSION}", updated)
+        self.assertIn(
+            f'data-journey-runtime-release="{MODULE.JOURNEY_RUNTIME_VERSION}"',
+            updated,
+        )
+        self.assertIn("chat=old", updated)
+        self.assertIn("handoff=old", updated)
+
+    def test_html_update_is_idempotent_and_fails_closed(self):
+        once = MODULE.update_journey_runtime_block_html(journey_block_html())
+        self.assertEqual(once, MODULE.update_journey_runtime_block_html(once))
+        for filename in (
+            "algolia-engagement-tracker.js",
+            "algolia-context-compiler.js",
+            "algolia-proactive-controller.js",
+        ):
+            with self.assertRaisesRegex(RuntimeError, "exactly one"):
+                MODULE.update_journey_runtime_block_html(
+                    journey_block_html().replace(filename, "missing.js")
+                )
+
+    def test_cli_routes_to_narrow_runner(self):
+        with patch.object(
+            MODULE.sys,
+            "argv",
+            ["deploy", "--journey-runtime-only", "--apply"],
+        ), patch.object(
+            MODULE, "run_journey_runtime_only", return_value=9
+        ) as runner, patch.object(MODULE, "snapshot") as full_snapshot:
+            result = MODULE.main()
+
+        self.assertEqual(result, 9)
+        runner.assert_called_once_with(True)
+        full_snapshot.assert_not_called()
+
+    def test_apply_updates_only_three_assets_and_block(self):
+        tracker = MODULE.TRACKER_SRC.read_text(encoding="utf-8")
+        compiler = MODULE.CONTEXT_COMPILER_SRC.read_text(encoding="utf-8")
+        controller = MODULE.PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")
+        original = journey_block_html()
+        expected_html = MODULE.update_journey_runtime_block_html(original)
+        before = journey_state(original, "old tracker", "old compiler", "old controller")
+        after = journey_state(expected_html, tracker, compiler, controller)
+
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+            MODULE, "EVIDENCE_DIR", Path(directory)
+        ), patch.object(
+            MODULE, "journey_runtime_snapshot", side_effect=[before, after]
+        ), patch.object(MODULE, "upsert_file", return_value={}) as upsert, patch.object(
+            MODULE, "set_block_html", return_value={}
+        ), patch.object(MODULE, "publish", return_value={}) as publish, patch.object(
+            MODULE, "version_block", return_value={}
+        ):
+            result = MODULE.run_journey_runtime_only(apply=True)
+
+        self.assertEqual(result, 0)
+        self.assertEqual(
+            upsert.call_args_list,
+            [
+                call(MODULE.NEW_TRACKER, tracker),
+                call(MODULE.CONTEXT_COMPILER, compiler),
+                call(MODULE.PROACTIVE_CONTROLLER, controller),
+            ],
+        )
+        self.assertEqual(
+            publish.call_args_list,
+            [
+                call(MODULE.TRACKER_CONTENT, subtree=False),
+                call(MODULE.NEW_TRACKER, subtree=False),
+                call(MODULE.CONTEXT_COMPILER_CONTENT, subtree=False),
+                call(MODULE.CONTEXT_COMPILER, subtree=False),
+                call(MODULE.PROACTIVE_CONTROLLER_CONTENT, subtree=False),
+                call(MODULE.PROACTIVE_CONTROLLER, subtree=False),
+                call(MODULE.BLOCK_PATH, subtree=True),
+            ],
+        )
+
+    def test_validation_requires_exact_bytes_in_edit_and_live(self):
+        html = MODULE.update_journey_runtime_block_html(journey_block_html())
+        state = journey_state(html, "tracker", "compiler", "controller")
+        checks = MODULE.validate_journey_runtime_only(
+            state, "tracker", "compiler", "controller", html
+        )
+        self.assertTrue(checks["pass"])
+        state["live"]["contextCompilerNode"] = file_node("stale")
+        self.assertFalse(
+            MODULE.validate_journey_runtime_only(
+                state, "tracker", "compiler", "controller", html
+            )["pass"]
+        )
 
 
 if __name__ == "__main__":
