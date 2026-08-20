@@ -1,33 +1,28 @@
-// Local-only token-usage probe for the chat widget harness. Must load before
-// algolia-chat.js, so the fetch wrapper is in place before the widget makes
-// its first completions call.
+// Token-usage telemetry for the chat widget. Must load before algolia-chat.js
+// so the fetch wrapper is in place before the widget's first completions call.
 //
-// Usage totals come from the Algolia Agent Studio conversation-detail endpoint,
-// which requires an admin/logs-scoped API key. That key never touches the
-// browser: it's held server-side by the algolia-token-telemetry Jahia module
-// (see backend/jahia-modules/algolia-token-telemetry), which this script calls
-// instead of Algolia directly — as a Jahia Action (POST .../home.algoliaTokenTelemetry.do).
+// Usage totals come from the Algolia Agent Studio conversation-detail
+// endpoint, which requires an admin/logs-scoped API key. That key never
+// touches the browser: it's held server-side by the algolia-token-telemetry
+// Jahia module (backend/jahia-modules/algolia-token-telemetry), which this
+// script calls instead of Algolia directly, via a Jahia Action (POST
+// .../home.algoliaTokenTelemetry.do).
 //
 // The action is bound to a page under the "algolia-assets" site, not "www"
 // (where the widget itself is embedded) — anonymous action dispatch is
-// blocked on "www" by a site-level setting we haven't been able to change
-// from the admin UI, but "algolia-assets" allows it. The action doesn't need
-// to live on the same site as the caller; this endpoint is called cross-site
-// (CORS is handled server-side via Access-Control-Allow-Origin). See the
+// blocked on "www" by a site-level setting, but "algolia-assets" allows it.
+// The endpoint is called cross-site (CORS handled server-side). See the
 // module's README for the full investigation.
-// Optionally set window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ (see index.local.html)
-// to point at that module's host when this page isn't itself served from the
-// same Jahia instance; it defaults to a same-origin relative path.
+// Set window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ to point at a non-same-origin
+// host for that module; it defaults to a same-origin relative path.
 //
-// Not part of any shipped bundle, not present in the Jahia embed. The usage
-// pill is injected straight into <algolia-confidence-badge>'s open shadow
-// root from here — algolia-confidence-badge.js itself is never touched,
-// since it ships to production too.
+// The usage pill is injected straight into <algolia-confidence-badge>'s open
+// shadow root from here — algolia-confidence-badge.js itself is never touched.
 (() => {
-  // Guard against this script's top-level code running more than once in the
-  // same window (e.g. a dev harness that soft-reloads the widget without a
-  // full page navigation) — without this, each run wraps window.fetch again,
-  // so one real completions response gets drained and reported N times.
+  // Guard against this script running more than once in the same window
+  // (e.g. the widget remounting without a full page navigation) — otherwise
+  // each run wraps window.fetch again and one completions response gets
+  // drained and reported N times.
   if (window.__algoliaTokenTelemetryInstalled) return;
   window.__algoliaTokenTelemetryInstalled = true;
 
@@ -69,7 +64,6 @@
     turnTotals.clear();
     usage.usage = null;
     usage.conversationId = null;
-    console.log('[token-usage probe] conversation reset — cleared running token total');
   }
 
   // Agent Studio finalizes totalInputTokens/totalOutputTokens only after the
@@ -83,7 +77,7 @@
     try {
       const appId = getAppId();
       if (!appId) {
-        console.warn('[token-usage probe] no app-id on <algolia-chat> yet');
+        console.warn('[token-usage] no app-id on <algolia-chat> yet');
         return;
       }
       const params = new URLSearchParams({ appId, agentId, conversationId });
@@ -95,7 +89,7 @@
         body: params,
       });
       if (!res.ok) {
-        console.warn('[token-usage probe] conversation fetch failed', res.status);
+        console.warn('[token-usage] conversation fetch failed', res.status);
         return;
       }
       const data = await res.json();
@@ -105,17 +99,16 @@
       const outputTokens = data.totalOutputTokens ?? null;
       const totalTokens = data.totalTokens ?? ((inputTokens ?? 0) + (outputTokens ?? 0));
       if (!totalTokens && attempt < USAGE_MAX_ATTEMPTS - 1) {
-        console.warn(`[token-usage probe] totals still 0, retrying (${attempt + 1}/${USAGE_MAX_ATTEMPTS - 1})`);
         setTimeout(() => fetchUsage(agentId, conversationId, attempt + 1), USAGE_RETRY_DELAY_MS);
         return;
       }
       if (!totalTokens) {
-        console.warn(`[token-usage probe] gave up after ${USAGE_MAX_ATTEMPTS} attempts, totals never showed up for`, conversationId);
+        console.warn('[token-usage] usage totals never arrived for', conversationId);
       }
       turnTotals.set(conversationId, { inputTokens, outputTokens, totalTokens: totalTokens || null });
       recomputeCumulative();
     } catch (err) {
-      console.warn('[token-usage probe] conversation fetch error', err);
+      console.warn('[token-usage] conversation fetch error', err);
     }
   }
 
@@ -127,46 +120,35 @@
       const agentId = match[1];
       const conversationId = response.headers.get('X-Conversation-Id');
       if (!conversationId) {
-        console.warn('[token-usage probe] no X-Conversation-Id on completions response');
+        console.warn('[token-usage] no X-Conversation-Id on completions response');
         return response;
       }
       // Drain a clone of the stream in the background — don't touch the
-      // original body the widget is about to read — and only ask for usage
-      // once the answer has actually finished generating. A guardrail
-      // violation short-circuits generation (the SSE stream carries a
-      // "data-guardrail-violation" event and no real completion), so the
-      // conversation never accrues usage worth asking Agent Studio for.
+      // original body the widget is about to read — and only ask Agent
+      // Studio for usage once the turn has actually finished generating.
+      // A guardrail violation short-circuits generation (the SSE stream
+      // carries a "data-guardrail-violation" event, no real completion),
+      // and a drain error means we can't confirm the turn completed
+      // normally either — skip the telemetry call in both cases rather
+      // than report usage for a blocked/aborted turn.
       const drain = response.clone().body.getReader();
       (async () => {
-        let guardrailViolation = false;
-        let drainFailed = false;
+        let skip = false;
         try {
           const decoder = new TextDecoder();
           let buf = '';
           let chunk;
           while (!(chunk = await drain.read()).done) {
             buf += decoder.decode(chunk.value, { stream: true });
-            if (!guardrailViolation && /"type"\s*:\s*"data-guardrail-violation"/.test(buf)) {
-              guardrailViolation = true;
+            if (!skip && /"type"\s*:\s*"data-guardrail-violation"/.test(buf)) {
+              skip = true;
             }
           }
         } catch (err) {
-          drainFailed = true;
-          console.warn('[token-usage probe] stream drain error', err);
+          skip = true;
+          console.warn('[token-usage] stream drain error', err);
         }
-        if (guardrailViolation) {
-          console.warn('[token-usage probe] guardrail violation — skipping usage fetch for', conversationId);
-          return;
-        }
-        // A failed drain means we couldn't confirm the turn actually
-        // completed normally — skip rather than risk a telemetry call for
-        // a blocked/aborted turn (fail closed, same intent as the
-        // guardrail-violation skip above).
-        if (drainFailed) {
-          console.warn('[token-usage probe] drain failed — skipping usage fetch for', conversationId);
-          return;
-        }
-        fetchUsage(agentId, conversationId);
+        if (!skip) fetchUsage(agentId, conversationId);
       })();
     }
     return response;
@@ -174,11 +156,10 @@
 
   // --- Usage pill rendering -------------------------------------------
   // <algolia-confidence-badge> uses an open shadow root, so the pill can be
-  // inserted from here without touching that shipped file (it ships to the
-  // production Jahia embed too; this script never runs there). Only the
-  // most recent badge tracks the live running total — once a newer turn's
-  // badge appears, earlier badges are never touched again and keep
-  // whatever total they last showed.
+  // inserted from here without touching that shipped file. Only the most
+  // recent badge tracks the live running total — once a newer turn's badge
+  // appears, earlier badges are never touched again and keep whatever total
+  // they last showed.
   const PILL_CLASS = 'algolia-usage-pill';
   const PILL_STYLE_ID = 'algolia-usage-pill-style';
   const pillStyleCSS = `.${PILL_CLASS}{display:inline-flex;align-items:center;width:fit-content;margin-right:6px;border-radius:var(--algolia-radius-full, 9999px);border:1px solid var(--algolia-border, #e0e0e0);background-color:var(--algolia-surface-2, #f0f0f0);color:var(--algolia-text-muted, #757575);padding:4px 12px;font-size:var(--algolia-fs-xs, 12px);font-weight:var(--algolia-fw-medium, 500);font-family:var(--algolia-font-sans, system-ui, sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}`;
@@ -206,9 +187,8 @@
     const detail = u.inputTokens != null && u.outputTokens != null
       ? `Input ${u.inputTokens} / Output ${u.outputTokens} tokens`
       : 'Token breakdown unavailable';
-    const turnsNote = u.turns ? ` across ${u.turns} turn${u.turns === 1 ? '' : 's'}` : '';
     pill.textContent = u.totalTokens != null ? `${u.totalTokens} tokens` : 'tokens: —';
-    pill.title = `${detail}`;
+    pill.title = detail;
   }
 
   function renderLatestPill(shadowRoot) {
