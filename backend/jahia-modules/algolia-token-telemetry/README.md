@@ -61,19 +61,29 @@ and applies automatically on deploy — no manual step needed for that part.
 
 ## Configure the API key
 
-`TokenTelemetryAction` resolves the key from two places, in order:
+`TokenTelemetryAction` resolves the key from three places, in order:
 
-1. **Environment variable** `ALGOLIA_TOKEN_TELEMETRY_API_KEY` on the Jahia
-   server process.
-2. **Baked into the jar at build time**, if (1) isn't set.
+1. **OSGi Configuration Admin** — the `api.key` property on PID
+   `com.algolia.contentengagement.tokentelemetry.TokenTelemetryAction`
+   (`@ObjectClassDefinition`/`@Designate` in `TokenTelemetryAction.java`,
+   masked as a password field). The module ships a `.cfg` file at
+   `src/main/resources/META-INF/configurations/com.algolia.contentengagement.tokentelemetry.TokenTelemetryAction.cfg`
+   with `api.key` left **blank** — that file is tracked in git, so never put
+   a real key in it. Set the real value through Configuration Admin instead
+   (Felix console, or a config drop-in outside git), only where that's
+   reachable.
+2. **Environment variable** `ALGOLIA_TOKEN_TELEMETRY_API_KEY` on the Jahia
+   server process, if (1) is blank.
+3. **Baked into the jar at build time**, if (1) and (2) are both unset.
 
-(An earlier version also supported OSGi Configuration Admin as a third,
-higher-priority option. Dropped for simplicity once it became clear OSGi
-config isn't reachable at all on this tenant — see "Why this is a Jahia
-Action" above — and to rule out the extra `@Activate(Map<String,Object>)`
-wiring as a variable while debugging the 401 issue below.)
+(An earlier version had option 1 and dropped it — see git history — once it
+became clear OSGi config isn't reachable at all on the `tmp-content-eng-*`
+Cloud tenant this module targets: see "Why this is a Jahia Action" above.
+It's back as the top-priority option for environments where Configuration
+Admin *is* reachable; on tenants where it isn't, it's a no-op and (2)/(3)
+still carry the real key exactly as before.)
 
-### Option 2: bake it in at build time (use this on a locked-down Jahia Cloud tenant)
+### Option 3: bake it in at build time (use this on a locked-down Jahia Cloud tenant)
 
 On a Cloud tenant like `tmp-content-eng-algolia.cloud.jahia.com`, none of the
 above admin surfaces are reachable — `/tools` (the Felix console) 404s

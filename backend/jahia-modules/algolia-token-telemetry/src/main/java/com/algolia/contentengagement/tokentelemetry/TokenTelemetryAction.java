@@ -9,6 +9,10 @@ import org.jahia.services.render.URLResolver;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.AttributeType;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +44,7 @@ import java.util.regex.Pattern;
  * README for why algolia-assets (not www) and why the short-form path (no
  * /cms/render/{mode}/{lang}/ prefix) — both matter, neither is arbitrary.
  */
+@Designate(ocd = TokenTelemetryAction.TokenTelemetryConfig.class)
 @Component(service = Action.class)
 public class TokenTelemetryAction extends Action {
 
@@ -57,18 +62,21 @@ public class TokenTelemetryAction extends Action {
 
     private static final String API_KEY_ENV_VAR = "ALGOLIA_TOKEN_TELEMETRY_API_KEY";
     private static final String BAKED_PROPERTIES_RESOURCE = "/token-telemetry.properties";
-    // CORS is fixed rather than OSGi-configurable now (see activate() below) —
-    // OSGi Configuration Admin isn't reachable on this tenant anyway. Tighten
-    // this to the real site origin before any production use.
+    // CORS is fixed rather than OSGi-configurable — no operational need to
+    // vary it per-tenant like api_key(). Tighten this to the real site
+    // origin before any production use.
     private static final String ALLOWED_ORIGIN = "*";
 
     private String bakedApiKey;
 
+    private String osgiConfigApiKey;
+
     @Activate
-    public void activate() {
+    public void activate(TokenTelemetryConfig config) {
         setName("algoliaTokenTelemetry");
         setRequireAuthenticatedUser(false);
         bakedApiKey = loadBakedApiKey();
+        osgiConfigApiKey = config.api_key();
         setRequireAuthenticatedUser(false);
         super.setRequiredMethods("GET,POST");
         super.setRequiredWorkspace(org.jahia.api.Constants.LIVE_WORKSPACE);
@@ -152,6 +160,9 @@ public class TokenTelemetryAction extends Action {
     }
 
     private String resolveApiKey() {
+        if (osgiConfigApiKey != null && !osgiConfigApiKey.isEmpty()) {
+            return osgiConfigApiKey;
+        }
         String envKey = System.getenv(API_KEY_ENV_VAR);
         if (envKey != null && !envKey.isEmpty()) {
             return envKey;
@@ -184,5 +195,25 @@ public class TokenTelemetryAction extends Action {
         JSONObject json = new JSONObject();
         json.put("error", message);
         return new ActionResult(status, null, json);
+    }
+
+    @ObjectClassDefinition(
+            name = "Algolia: Token Telemetry Proxy Configurations",
+            description = "Configurations for the Agent Studio token telemetry proxy action."
+    )
+    public @interface TokenTelemetryConfig {
+
+        @AttributeDefinition(
+                name = "Agent Studio API Key",
+                description = "Logs-scoped Algolia Agent Studio API key used to call the upstream "
+                        + "conversation-detail endpoint. Takes priority over the "
+                        + API_KEY_ENV_VAR + " environment variable and the jar-baked key. Leave "
+                        + "blank to fall back to those. Never commit a real value for this into "
+                        + "the packaged .cfg file — set it through Configuration Admin at deploy "
+                        + "time instead (Felix console, or a config file dropped outside git).",
+                type = AttributeType.PASSWORD
+        )
+        String api_key() default "";
+
     }
 }
