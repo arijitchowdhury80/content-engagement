@@ -22,6 +22,7 @@ import http.server
 import json
 import mimetypes
 import os
+import ssl
 import socketserver
 import urllib.error
 import urllib.request
@@ -39,6 +40,19 @@ COMPARE_ROUTE = "/__compare/production"
 MAX_BODY_BYTES = 256 * 1024          # a chat turn is tiny; refuse anything larger
 UPSTREAM_TIMEOUT = 60
 APPROVED_ORIGIN = "https://www.algolia.com"
+# Corporate TLS interception presents a self-signed root, which urllib rejects.
+# Verification stays ON by default; set COMPARE_INSECURE_TLS=1 to relax it for a
+# loopback dev harness on an intercepted network. Never set it anywhere else.
+INSECURE_TLS = os.environ.get("COMPARE_INSECURE_TLS") == "1"
+
+
+def ssl_context() -> ssl.SSLContext:
+    if INSECURE_TLS:
+        return ssl._create_unverified_context()
+    system_ca = "/etc/ssl/cert.pem"
+    if os.path.exists(system_ca):
+        return ssl.create_default_context(cafile=system_ca)
+    return ssl.create_default_context()
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -81,6 +95,23 @@ class LocalParityHandler(http.server.SimpleHTTPRequestHandler):
         return str(SITE_DIR / route.removeprefix("/"))
 
     # -- compare-with-production ------------------------------------------------
+    def _is_compare_route(self) -> bool:
+        return self.path.split("?", 1)[0] == COMPARE_ROUTE
+
+    def do_GET(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler naming
+        # Without this the route falls through to the static handler, which has no
+        # extension to key on and would serve the parity fixture with a 200.
+        if self._is_compare_route():
+            self._json(405, {"error": "POST only"})
+            return
+        super().do_GET()
+
+    def do_HEAD(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler naming
+        if self._is_compare_route():
+            self._json(405, {"error": "POST only"})
+            return
+        super().do_HEAD()
+
     def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler naming
         route = self.path.split("?", 1)[0]
         if route != COMPARE_ROUTE:
@@ -124,7 +155,7 @@ class LocalParityHandler(http.server.SimpleHTTPRequestHandler):
             },
         )
         try:
-            with urllib.request.urlopen(request, timeout=UPSTREAM_TIMEOUT) as upstream:
+            with urllib.request.urlopen(request, timeout=UPSTREAM_TIMEOUT, context=ssl_context()) as upstream:
                 self.send_response(upstream.status)
                 self.send_header("Content-Type", upstream.headers.get("Content-Type", "text/event-stream"))
                 self.send_header("Cache-Control", "no-store")
@@ -136,7 +167,10 @@ class LocalParityHandler(http.server.SimpleHTTPRequestHandler):
             # Surface upstream status so the companion can show it in its column.
             self._json(exc.code, {"error": f"Production returned HTTP {exc.code}"})
         except (urllib.error.URLError, TimeoutError) as exc:
-            self._json(502, {"error": f"Upstream unreachable: {exc}"})
+            hint = ""
+            if "CERTIFICATE_VERIFY_FAILED" in str(exc) and not INSECURE_TLS:
+                hint = " — TLS interception detected; rerun with COMPARE_INSECURE_TLS=1 for this local harness"
+            self._json(502, {"error": f"Upstream unreachable: {exc}{hint}"})
 
     def _json(self, status: int, payload: dict) -> None:
         body = json.dumps(payload).encode("utf-8")
