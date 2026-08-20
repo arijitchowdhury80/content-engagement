@@ -27,19 +27,16 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.match(bundle, /harmless paraphrases, headings, transitions/);
   });
 
-  test(`${bundleName} ships hard answer admission before successful persistence`, () => {
+  test(`${bundleName} keeps confidence evaluation outside the answer lifecycle`, () => {
     const bundle = readBundle(bundleName);
 
     assert.match(bundle, /unsupportedTerms/);
-    assert.match(bundle, /function __arrieAdmitAnswer/);
-    assert.match(bundle, /await xE\(/);
-    assert.match(bundle, /BE\(f,u\)/);
-    assert.match(bundle, /GROUNDING REPAIR - SYSTEM-GENERATED RUNTIME INSTRUCTION/);
-    assert.match(bundle, /function __arrieAttemptGroundedRewrite/);
-    assert.match(bundle, /admissionRewritten/);
-    assert.match(bundle, /reason:g\?"judge-unavailable":v\?"material-gate"/);
+    assert.match(bundle, /xE\(\{question:w,answer:E,hits:A,panelId:h\},fetch,x\)/);
     assert.match(bundle, /admissionVerdict/);
-    assert.match(bundle, /u\.status==="success"/);
+    assert.doesNotMatch(bundle, /function __arrieAdmitAnswer/);
+    assert.doesNotMatch(bundle, /GROUNDING REPAIR - SYSTEM-GENERATED RUNTIME INSTRUCTION/);
+    assert.doesNotMatch(bundle, /function __arrieAttemptGroundedRewrite/);
+    assert.doesNotMatch(bundle, /admissionRewritten/);
   });
 
   test(`${bundleName} preserves streamed answers and late-error recovery`, () => {

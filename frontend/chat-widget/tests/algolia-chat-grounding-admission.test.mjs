@@ -9,8 +9,6 @@ const root = process.cwd();
 const chatDir = join(root, 'frontend', 'chat-widget');
 const siteDir = join(root, 'local-sites', 'algolia-com-parity');
 const fixturePath = join(siteDir, 'index.html');
-const rejectionText = 'I found relevant material, but it does not verify enough of the requested detail';
-const groundedRewriteText = 'InstantSearch is available for React implementations.';
 let browser;
 
 function fixture() {
@@ -37,7 +35,7 @@ function fixture() {
       if (url.includes('/api/judge')) {
         window.__judgeRequests.push(JSON.parse(init.body));
         if (scenario === 'unavailable') return new Response('offline', { status: 503 });
-        const gateTripped = scenario === 'judgeGate' && window.__agentRequests.length === 1;
+        const gateTripped = scenario === 'judgeGate';
         return new Response(JSON.stringify({ panels: [{
           panelId: 'primary', dims: { grounding: gateTripped ? 2 : 9, coverage: 9, depth: 8, relevance: 9 },
           synthesizedScore: gateTripped ? 3 : 9, composite: gateTripped ? 3 : 8.8,
@@ -48,7 +46,7 @@ function fixture() {
       }
       if (url.includes('/agent-studio/1/agents/local_primary_agent/')) {
         window.__agentRequests.push(JSON.parse(init.body));
-        const answer = window.__agentRequests.length === 1 ? candidates[scenario] : '${groundedRewriteText}';
+        const answer = candidates[scenario];
         return stream([
           { type: 'tool-output-available', toolCallId: 'docs', output: { hits: [{
             objectID: 'docs-hit', title: 'InstantSearch React documentation',
@@ -157,82 +155,76 @@ async function closeScenario({ context, server }) {
   await new Promise((resolve) => server.close(resolve));
 }
 
-test('gate false admits the candidate answer', async () => {
+test('streams and persists the original answer while confidence runs separately', async () => {
   const run = await openScenario('pass');
   try {
     const result = await runtimeState(run.page);
     assert.match(result.text, /This guidance matches the retrieved material/);
-    assert.doesNotMatch(result.text, new RegExp(rejectionText));
     assert.match(JSON.stringify(result.persisted), /This guidance matches the retrieved material/);
-    assert.equal(result.streamingTexts.some((text) => text.includes('This guidance matches')), false);
+    assert.equal(result.streamingTexts.some((text) => text.includes('This guidance matches')), true);
     assert.equal(result.agentRequestCount, 1);
     assert.equal(result.judgeRequestCount, 1);
-    assert.deepEqual(result.badgeVerdict, result.segment.admissionVerdict);
+    assert.equal(typeof result.badgeVerdict.gateTripped, 'boolean');
+    assert.equal(result.segment.admissionVerdict, undefined);
     assert.equal(result.discoveryCount, 1);
   } finally {
     await closeScenario(run);
   }
 });
 
-test('material judge gate buffers the rejected candidate and admits one grounded rewrite', async () => {
+test('a judge gate never hides, replaces, or regenerates the streamed answer', async () => {
   const run = await openScenario('judgeGate');
   try {
     const first = await runtimeState(run.page);
-    assert.match(first.text, new RegExp(groundedRewriteText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    assert.doesNotMatch(first.text, new RegExp(rejectionText));
-    assert.doesNotMatch(first.text, /99\.99% annual conversion growth/);
-    assert.equal(first.streamingTexts.some((text) => text.includes('99.99% annual conversion growth')), false);
+    assert.match(first.text, /99\.99% annual conversion growth/);
+    assert.equal(first.streamingTexts.some((text) => text.includes('99.99% annual conversion growth')), true);
     assert.equal(first.discoveryCount, 1);
     assert.deepEqual(first.segment.rawHits.map((hit) => hit.source), ['Documentation', 'Customer Stories']);
     assert.equal(first.segment.sources.length, 2);
-    assert.doesNotMatch(first.segment.text, /99\.99% annual conversion growth/);
-    assert.equal(first.segment.admissionRewritten, true);
-    assert.equal(first.segment.admissionOriginalVerdict.gateTripped, true);
-    assert.equal(first.segment.admissionVerdict.gateTripped, false);
-    assert.equal(first.agentRequestCount, 2);
-    assert.equal(first.judgeRequestCount, 2);
-    assert.deepEqual(first.badgeVerdict, first.segment.admissionVerdict);
+    assert.match(first.segment.text, /99\.99% annual conversion growth/);
+    assert.equal(first.segment.admissionRewritten, undefined);
+    assert.equal(first.segment.admissionVerdict, undefined);
+    assert.equal(first.agentRequestCount, 1);
+    assert.equal(first.judgeRequestCount, 1);
+    assert.equal(first.badgeVerdict.gateTripped, true);
 
     await run.page.evaluate(() => {
       document.querySelector('algolia-chat').shadowRoot.querySelector('.acs-followup-card').click();
     });
-    await run.page.waitForFunction(() => window.__agentRequests.length === 3);
-    const followUpRequest = await run.page.evaluate(() => JSON.stringify(window.__agentRequests[2]));
-    assert.doesNotMatch(followUpRequest, /99\.99% annual conversion growth/);
-    assert.match(followUpRequest, new RegExp(groundedRewriteText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    await run.page.waitForFunction(() => window.__agentRequests.length === 2);
+    const followUpRequest = await run.page.evaluate(() => JSON.stringify(window.__agentRequests[1]));
+    assert.match(followUpRequest, /99\.99% annual conversion growth/);
   } finally {
     await closeScenario(run);
   }
 });
 
-test('deterministic unsupported-term gate buffers the candidate and admits one grounded rewrite', async () => {
+test('deterministic confidence checks never become a second completion', async () => {
   const run = await openScenario('deterministicGate');
   try {
     const result = await runtimeState(run.page);
-    assert.match(result.text, new RegExp(groundedRewriteText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    assert.doesNotMatch(result.text, /999 requests per millisecond/);
-    assert.equal(result.streamingTexts.some((text) => text.includes('999 requests per millisecond')), false);
-    assert.equal(result.segment.admissionRewritten, true);
-    assert.equal(result.agentRequestCount, 2);
-    assert.equal(result.judgeRequestCount, 2);
+    assert.match(result.text, /999 requests per millisecond/);
+    assert.equal(result.streamingTexts.some((text) => text.includes('999 requests per millisecond')), true);
+    assert.equal(result.segment.admissionRewritten, undefined);
+    assert.equal(result.agentRequestCount, 1);
+    assert.equal(result.judgeRequestCount, 1);
   } finally {
     await closeScenario(run);
   }
 });
 
-test('judge unavailability fails closed without exposing candidate or re-judging fallback', async () => {
+test('judge unavailability cannot blank or replace a completed answer', async () => {
   const run = await openScenario('unavailable');
   try {
     const result = await runtimeState(run.page);
-    assert.match(result.text, new RegExp(rejectionText));
-    assert.doesNotMatch(JSON.stringify(result.persisted), /automatic conversion growth/);
-    assert.equal(result.streamingTexts.some((text) => text.includes('automatic conversion growth')), false);
-    assert.equal(result.segment.admissionRejected, true);
-    assert.equal(result.segment.admissionRewriteAttempted, false);
-    assert.ok(result.segment.admissionVerdict.error);
+    assert.match(result.text, /automatic conversion growth/);
+    assert.match(JSON.stringify(result.persisted), /automatic conversion growth/);
+    assert.equal(result.streamingTexts.some((text) => text.includes('automatic conversion growth')), true);
+    assert.equal(result.segment.admissionRejected, undefined);
+    assert.equal(result.segment.admissionRewriteAttempted, undefined);
+    assert.ok(result.badgeVerdict.error);
     assert.equal(result.agentRequestCount, 1);
     assert.equal(result.judgeRequestCount, 1);
-    assert.deepEqual(result.badgeVerdict, result.segment.admissionVerdict);
     assert.equal(result.discoveryCount, 1);
   } finally {
     await closeScenario(run);

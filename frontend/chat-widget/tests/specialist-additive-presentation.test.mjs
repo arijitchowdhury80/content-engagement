@@ -230,12 +230,12 @@ test('sourced specialist depth remains an additive answer segment', async () => 
   }
 });
 
-test('sourced specialist output rejected by admission is demoted to a limitation', async () => {
+test('confidence evaluation cannot demote sourced specialist output', async () => {
   const { context, page, server } = await openSpecialistFlow({ specialistMode: 'rejected' });
   try {
     await page.waitForFunction(() => {
       const root = document.querySelector('algolia-chat')?.shadowRoot;
-      return root?.querySelector('.acs-specialist-limitation') &&
+      return root?.textContent.includes('The specialist guarantees 99.99% conversion growth.') &&
         root.querySelectorAll('.acs-followup-card').length === 1;
     });
 
@@ -252,17 +252,12 @@ test('sourced specialist output rejected by admission is demoted to a limitation
       };
     });
 
-    assert.match(
-      result.text,
-      /found relevant material, but it does not verify enough of the requested detail/i,
-      JSON.stringify(result)
-    );
-    assert.doesNotMatch(result.text, /99\.99% conversion growth/);
-    assert.doesNotMatch(result.persisted, /99\.99% conversion growth/);
-    assert.equal(result.sourceSectionCount, 1, 'rejected specialist sources must not become additive');
-    assert.equal(result.limitationCount, 1);
+    assert.match(result.text, /99\.99% conversion growth/, JSON.stringify(result));
+    assert.match(result.persisted, /99\.99% conversion growth/);
+    assert.equal(result.sourceSectionCount, 2, 'primary and specialist sources must both render');
+    assert.equal(result.limitationCount, 0);
     assert.equal(result.discoveryCount, 1, JSON.stringify(result));
-    assert.equal(result.judgeRequests[0].panels[0].sources.length, 1);
+    assert.equal(result.judgeRequests.length, 0, 'this fixture has no confidence evaluator configured');
     assert.deepEqual(result.calls, ['orchestrator', 'specialist']);
   } finally {
     await context.close();
@@ -270,7 +265,7 @@ test('sourced specialist output rejected by admission is demoted to a limitation
   }
 });
 
-test('pending specialist consent never exposes or persists unadmitted primary text across reload', async () => {
+test('pending specialist consent streams primary text but does not persist an incomplete turn', async () => {
   const { context, page, server } = await openSpecialistFlow({
     specialistMode: 'sourced',
     acceptSpecialist: false,
@@ -293,7 +288,7 @@ test('pending specialist consent never exposes or persists unadmitted primary te
       };
     });
 
-    assert.equal(beforeReload.visible, false, 'unadmitted streaming text must remain buffered');
+    assert.equal(beforeReload.visible, true, 'streaming text must paint while specialist consent is pending');
     assert.equal(beforeReload.segment.status, 'streaming');
     assert.equal(beforeReload.segment.text, '');
     assert.doesNotMatch(beforeReload.serialized, /grounded primary answer remains/);
