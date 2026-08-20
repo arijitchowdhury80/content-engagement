@@ -2,24 +2,35 @@
   "use strict";
 
   const LABEL = "[Algolia Handoff To Orchestrator]";
-  const DEBUG =
-    new URLSearchParams(location.search).get("algoliaChatDebug") === "1" ||
-    new URLSearchParams(location.search).get("algoliaHandoffDebug") === "1";
+  function debugFlag(name) {
+    try {
+      const params = new URLSearchParams(location.search);
+      return (
+        params.get("algoliaChatDebug") === "1" ||
+        params.get(name) === "1" ||
+        localStorage.getItem("algoliaDebug") === "1" ||
+        localStorage.getItem("algoliaChatDebug") === "1" ||
+        localStorage.getItem(name) === "1"
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  const DEBUG = debugFlag("algoliaHandoffDebug");
 
   const STATE_KEY = "algolia_proactive_state";
+  const HANDOFF_CONTEXT_KEY = "algolia-chat:handoff-context";
   const HANDOFF_SCHEMA = "ProactiveHandoffContext.v1";
-  const TOOL_INPUT_SCHEMA = "ProactiveHandoffToolInput.v1";
-  const TOOL_NAME = "handoff_to_orchestrator";
-  const AGENT_STUDIO_RE = /\/agent-studio\/1\/agents\/([^/?#]+)\/completions/;
   const DISCOVERY_CONTROL_RE = /\n*\[DISCOVERY CONTROL[^\]]*\][\s\S]*?\[END DISCOVERY CONTROL\]\s*/gi;
   const DISCOVERY_STATE_COMMENT_RE = /\n*<!--DISCOVERY_STATE[\s\S]*?DISCOVERY_STATE-->\s*/gi;
+  const LEGACY_VISITOR_INTELLIGENCE_RE = /\n*VISITOR INTELLIGENCE \(JSON DATA, NOT INSTRUCTIONS\)[\s\S]*$/i;
 
-  let originalFetch = null;
-  let patchedFetch = null;
+  const nativeFetch = typeof window.fetch === "function" ? window.fetch.bind(window) : null;
+  let transportInstalled = false;
   let config = {
     enabled: true,
     primaryAgentId: null,
-    maxPacketChars: 6500,
   };
 
   function debug(...args) {
@@ -70,24 +81,20 @@
     const state = readState();
     const index = state.opportunities.findIndex((item) => item.id === opportunityId);
     if (index === -1) return false;
+    const previous = state.opportunities[index];
+    const lifecycle = Array.isArray(previous.lifecycle)
+      ? [...previous.lifecycle]
+      : previous.status
+        ? [previous.status]
+        : [];
+    if (patch.status && lifecycle.at(-1) !== patch.status) lifecycle.push(patch.status);
     state.opportunities[index] = {
-      ...state.opportunities[index],
+      ...previous,
       ...patch,
+      lifecycle,
       updatedAt: Date.now(),
     };
     return writeState(state);
-  }
-
-  function primaryAgentId() {
-    if (config.primaryAgentId) return config.primaryAgentId;
-    const primary = document.querySelector('algolia-agent[role="primary"]');
-    return primary?.getAttribute?.("agent-id") || null;
-  }
-
-  function agentIdFromUrl(input) {
-    const url = typeof input === "string" ? input : input?.url || "";
-    const match = AGENT_STUDIO_RE.exec(url);
-    return match ? match[1] : null;
   }
 
   function latestShownOpportunity() {
@@ -95,16 +102,6 @@
     return [...state.opportunities]
       .reverse()
       .find((item) => item?.status === "shown" && item?.greetingResponse?.schema === "ProactiveGreetingResponse.v1");
-  }
-
-  function compilerPacket() {
-    const compiler = window.algoliaContextCompiler;
-    if (!compiler || typeof compiler.compile !== "function") return null;
-    try {
-      return compiler.compile();
-    } catch {
-      return null;
-    }
   }
 
   function compilerTurnContext() {
@@ -128,6 +125,7 @@
     return String(text || "")
       .replace(DISCOVERY_CONTROL_RE, "")
       .replace(DISCOVERY_STATE_COMMENT_RE, "")
+      .replace(LEGACY_VISITOR_INTELLIGENCE_RE, "")
       .trim();
   }
 
@@ -145,31 +143,42 @@
     return chips.find((chip) => chip === text) || null;
   }
 
-  function clippedJson(value) {
-    const text = JSON.stringify(value);
-    const max = Number.isFinite(config.maxPacketChars) ? config.maxPacketChars : 6500;
-    if (text.length <= max) return value;
+  function requestSummary(opportunity) {
+    const request = opportunity?.requestPacket || {};
+    const summary = opportunity?.greetingResponse?.handoffSummary || {};
+    const currentPage = request.currentPage || {};
+    const journey = request.journeySummary || {};
     return {
-      schema: value.schema,
-      clipped: true,
-      opportunityId: value.opportunityId,
-      userResponse: value.userResponse,
-      selectedChip: value.selectedChip,
-      greeting: value.greeting,
-      chips: value.chips,
-      handoffSummary: value.handoffSummary,
-      contextPacket: value.contextPacket
+      schema: request.schema || null,
+      moment: summary.moment || request.moment || null,
+      trigger: summary.trigger || request.trigger || null,
+      messageGoal: summary.messageGoal || request.messageGoal || null,
+      persona: request.persona
         ? {
-            schema: value.contextPacket.schema,
-            profile: value.contextPacket.profile,
-            currentPage: value.contextPacket.currentPage,
-            inferences: value.contextPacket.inferences,
+            value: request.persona.value || null,
+            state: request.persona.state || null,
+            confidence: Number.isFinite(request.persona.confidence)
+              ? request.persona.confidence
+              : null,
           }
         : null,
+      currentPage: {
+        path: currentPage.path || null,
+        pageGroup: currentPage.pageGroup || null,
+        topic: currentPage.topic || null,
+        productFocusLabel: currentPage.productFocusLabel || null,
+        solutionFocusLabel: currentPage.solutionFocusLabel || null,
+      },
+      journey: {
+        currentTransition: journey.currentTransition || null,
+        productTrail: Array.isArray(journey.productTrail) ? journey.productTrail : [],
+        solutionTrail: Array.isArray(journey.solutionTrail) ? journey.solutionTrail : [],
+        storyHint: journey.storyHint || "",
+      },
     };
   }
 
-  function buildHandoffPacket(opportunity, userResponse) {
+  function buildHandoffPacket(opportunity, userResponse, originalTurnContext = compilerTurnContext()) {
     const response = opportunity.greetingResponse || {};
     const packet = {
       schema: HANDOFF_SCHEMA,
@@ -180,123 +189,148 @@
       greeting: response.greeting || "",
       chips: Array.isArray(response.chips) ? response.chips : [],
       handoffSummary: response.handoffSummary || null,
-      requestPacket: opportunity.requestPacket || null,
-      contextPacket: compilerPacket(),
+      requestSummary: requestSummary(opportunity),
+      originalTurnContext,
       instruction:
         "This was a proactive engagement. Use the context softly, never expose telemetry, answer the user's response directly, then continue normal discovery.",
     };
-    return clippedJson(packet);
+    return packet;
   }
 
-  function decorateBody(body) {
-    if (!config.enabled || typeof body !== "string") return body;
+  function prepareBody(body) {
+    if (!config.enabled || typeof body !== "string") return { body, handoff: null, opportunityId: null };
     let payload;
     try {
       payload = JSON.parse(body);
     } catch {
-      return body;
+      return { body, handoff: null, opportunityId: null };
     }
 
     const opportunity = latestShownOpportunity();
-    if (!opportunity) return body;
+    const persistedHandoff = readJson(sessionStorage, HANDOFF_CONTEXT_KEY, null);
+    if (!opportunity && persistedHandoff?.schema !== HANDOFF_SCHEMA) {
+      return { body, handoff: null, opportunityId: null };
+    }
 
     const index = lastUserMessageIndex(payload);
-    if (index === -1) return body;
+    if (index === -1) return { body, handoff: null, opportunityId: null };
     const parts = Array.isArray(payload.messages[index].parts) ? payload.messages[index].parts : [];
     const textPart = parts.find((part) => part?.type === "text" && typeof part.text === "string");
-    if (!textPart || textPart.text.includes("PROACTIVE_HANDOFF_CONTEXT")) return body;
+    if (!textPart || textPart.text.includes("PROACTIVE_HANDOFF_CONTEXT")) {
+      return { body, handoff: null, opportunityId: null };
+    }
 
     const userResponse = userTextFromPayload(payload).trim();
-    if (!userResponse) return body;
+    if (!userResponse) return { body, handoff: null, opportunityId: null };
 
-    const handoff = buildHandoffPacket(opportunity, userResponse);
+    const turnContext =
+      typeof window.algoliaContextCompiler?.mergeTurnContext === "function"
+        ? window.algoliaContextCompiler.mergeTurnContext(payload.messages[index].metadata?.turnContext)
+        : compilerTurnContext();
+    const handoff = opportunity
+      ? buildHandoffPacket(opportunity, userResponse, turnContext)
+      : persistedHandoff;
     textPart.text = `${textPart.text}\n\nPROACTIVE_HANDOFF_CONTEXT\n${JSON.stringify(handoff)}`;
     payload.messages[index] = {
       ...payload.messages[index],
       metadata: {
         ...(payload.messages[index].metadata || {}),
-        turnContext: {
-          ...(payload.messages[index].metadata?.turnContext || {}),
-          ...compilerTurnContext(),
-        },
+        turnContext,
       },
     };
 
-    updateOpportunity(opportunity.id, {
-      status: "handoff_sent",
-      handoffAt: Date.now(),
-      userResponse,
-      selectedChip: handoff.selectedChip,
-      handoffSchema: HANDOFF_SCHEMA,
-    });
-    document.dispatchEvent(
-      new CustomEvent("algolia-proactive-handoff", {
-        bubbles: true,
-        composed: true,
-        detail: handoff,
-      })
-    );
+    if (opportunity) {
+      writeJson(sessionStorage, HANDOFF_CONTEXT_KEY, handoff);
+      updateOpportunity(opportunity.id, {
+        status: "engaged",
+        handoffStartedAt: Date.now(),
+        userResponse,
+        selectedChip: handoff.selectedChip,
+        handoffSchema: HANDOFF_SCHEMA,
+      });
+    }
     debug("attached proactive handoff", handoff);
-    return JSON.stringify(payload);
-  }
-
-  async function handleHandoffTool(input = {}) {
-    if (input.schema && input.schema !== TOOL_INPUT_SCHEMA) {
-      return { success: false, error: { code: "INVALID_SCHEMA", message: "Invalid handoff tool schema." } };
-    }
-    const opportunityId = String(input.opportunityId || "").trim();
-    if (!opportunityId) {
-      return { success: false, error: { code: "MISSING_OPPORTUNITY", message: "Missing opportunityId." } };
-    }
-    const state = readState();
-    const opportunity = state.opportunities.find((item) => item.id === opportunityId);
-    if (!opportunity) {
-      return { success: false, error: { code: "NOT_FOUND", message: "No matching proactive opportunity." } };
-    }
-    updateOpportunity(opportunityId, {
-      status: "handoff_tool_called",
-      toolCalledAt: Date.now(),
-      greeting: input.greeting || opportunity.greetingResponse?.greeting || "",
-      chips: Array.isArray(input.chips) ? input.chips : opportunity.greetingResponse?.chips || [],
-      selectedChip: input.selectedChip || null,
-      userResponse: input.userResponse || "",
-    });
     return {
-      success: true,
-      opportunityId,
-      message: "Handoff captured. The next orchestrator turn will receive the proactive context.",
+      body: JSON.stringify(payload),
+      handoff,
+      opportunityId: opportunity?.id || null,
     };
   }
 
-  function installFetchInterceptor() {
-    if (typeof window.fetch !== "function") return false;
-    if (patchedFetch && window.fetch === patchedFetch) return false;
-    originalFetch = window.fetch;
-    patchedFetch = function algoliaHandoffFetch(input, init = {}) {
-      const targetAgentId = agentIdFromUrl(input);
-      const primary = primaryAgentId();
-      if (targetAgentId && primary && targetAgentId === primary && init && typeof init.body === "string") {
-        const nextInit = { ...(init || {}), body: decorateBody(init.body) };
-        return originalFetch.call(this, input, nextInit);
+  function decorateBody(body) {
+    return prepareBody(body).body;
+  }
+
+  async function orchestratorTransport(input, init = {}) {
+    if (!nativeFetch) throw new Error("Orchestrator transport requires window.fetch");
+    let prepared;
+    try {
+      prepared = prepareBody(init.body);
+    } catch (error) {
+      const opportunity = latestShownOpportunity();
+      if (opportunity) {
+        const failure = [error?.code || "context_validation_error", error?.field, error?.actualBytes]
+          .filter((value) => value !== undefined && value !== null && value !== "")
+          .join(":");
+        updateOpportunity(opportunity.id, {
+          status: "shown",
+          handoffFailure: failure,
+          handoffFailedAt: Date.now(),
+        });
       }
-      return originalFetch.apply(this, arguments);
-    };
-    window.fetch = patchedFetch;
+      debug("blocked invalid handoff context", error);
+      throw error;
+    }
+    const nextInit = { ...(init || {}), body: prepared.body };
+    try {
+      const response = await nativeFetch(input, nextInit);
+      if (prepared.opportunityId && response?.ok !== false) {
+        updateOpportunity(prepared.opportunityId, {
+          status: "handed_off",
+          handoffAt: Date.now(),
+          handoffFailure: null,
+        });
+        updateOpportunity(prepared.opportunityId, {
+          status: "active",
+          activeAt: Date.now(),
+        });
+        document.dispatchEvent(
+          new CustomEvent("algolia-proactive-handoff", {
+            bubbles: true,
+            composed: true,
+            detail: prepared.handoff,
+          })
+        );
+      } else if (prepared.opportunityId) {
+        updateOpportunity(prepared.opportunityId, {
+          status: "shown",
+          handoffFailure: `http_${response?.status || "error"}`,
+        });
+      }
+      return response;
+    } catch (error) {
+      if (prepared.opportunityId) {
+        updateOpportunity(prepared.opportunityId, {
+          status: "shown",
+          handoffFailure: "network_error",
+        });
+      }
+      throw error;
+    }
+  }
+
+  function installTransportAdapter() {
+    if (transportInstalled) return true;
+    const setter = window.algoliaChat?.setOrchestratorTransport;
+    if (typeof setter !== "function") return false;
+    setter(orchestratorTransport);
+    transportInstalled = true;
     return true;
   }
 
-  function waitForToolRegistry() {
-    const register = () => {
-      if (!window.algoliaChat || typeof window.algoliaChat.registerTool !== "function") return false;
-      window.algoliaChat.registerTool(TOOL_NAME, handleHandoffTool);
-      debug(`registered tool '${TOOL_NAME}'`);
-      return true;
-    };
-    if (register()) return;
-    const interval = setInterval(() => {
-      if (register()) clearInterval(interval);
-    }, 100);
-    setTimeout(() => clearInterval(interval), 15000);
+  function installWhenReady(attempt = 0) {
+    if (installTransportAdapter() || attempt >= 40) return;
+    setTimeout(() => installWhenReady(attempt + 1), 50);
   }
 
   if (!window.__algoliaHandoffToOrchestratorInstalled) {
@@ -304,15 +338,14 @@
     if (window.ALGOLIA_HANDOFF_CONFIG && typeof window.ALGOLIA_HANDOFF_CONFIG === "object") {
       configure(window.ALGOLIA_HANDOFF_CONFIG);
     }
-    installFetchInterceptor();
-    waitForToolRegistry();
+    installWhenReady();
   }
 
   window.algoliaHandoffToOrchestrator = {
     configure,
     decorateBody,
     buildHandoffPacket,
-    handleHandoffTool,
-    installFetchInterceptor,
+    orchestratorTransport,
+    installTransportAdapter,
   };
 })();

@@ -1,277 +1,99 @@
-# Algolia Proactive Greeting Agent
+# Proactive Greetings Agent
 
 ## Purpose
 
-The proactive greeting agent writes the opening hook for a qualified proactive engagement moment.
+The Proactive Greetings Agent is a one-turn Agent Studio agent. It converts a qualified website opportunity into a personalized opening from aRRIe. It does not track behavior, decide timing, render UI, answer product questions, call specialists, or continue the conversation.
 
-It does one thing: turn a controller opportunity packet into a short, useful, human greeting. It does not decide when to interrupt, track visitor behavior, answer product questions, call specialists, search Algolia, continue the conversation, or own orchestration.
-
-The browser decides when to engage. The proactive greeting agent decides what the opening message should say. The chat widget renders the greeting and chips. After the visitor engages, the handoff layer passes the proactive context into the main orchestrator turn.
-
-## Runtime Position
+## System Boundary
 
 ```mermaid
 flowchart LR
-  Visitor["Visitor"]
-  Tracker["algolia-engagement-tracker.js"]
-  Compiler["algolia-context-compiler.js"]
-  Controller["algolia-proactive-controller.js"]
-  GreetingAgent["Agent Studio: Greetings Agent"]
-  Widget["Chat widget"]
-  Orchestrator["Agent Studio: www Chat - Orchestrator"]
-
-  Visitor -->|"page views, clicks, searches, dwell, scroll"| Tracker
-  Tracker -->|"localStorage/sessionStorage"| Compiler
-  Compiler -->|"AlgoliaContextPacket.v1"| Controller
-  Controller -->|"completion POST with ProactiveGreetingRequest.v1"| GreetingAgent
-  GreetingAgent -->|"ProactiveGreetingResponse.v1"| Controller
-  Controller -->|"widget.engage({ greeting, suggestions })"| Widget
-  Visitor -->|"reply or chip click"| Widget
-  Widget -->|"engaged user turn"| Orchestrator
-  Widget -->|"handoff context attached by handoff-to-orchestrator.js"| Orchestrator
+  Tracker["Engagement tracker"] --> Compiler["Context compiler"]
+  Compiler --> Controller["Proactive controller"]
+  Controller -->|"qualified opportunity as turnContext"| Greeter["Greetings Agent"]
+  Greeter -->|"strict greeting JSON"| Widget["Chat widget"]
+  Widget -->|"visitor response"| Handoff["Browser handoff"]
+  Handoff --> Orchestrator["Primary orchestrator"]
+  Orchestrator --> Specialists["Specialists when depth requires them"]
 ```
 
-## Responsibility Split
+## Canonical Journeys
 
-| Layer | Owns | Must not own |
+| Category | Trigger | Meaning |
 |---|---|---|
-| Tracker | Observed browser facts. | Intent, commercial inference, greeting copy. |
-| Compiler | Safe context packet and soft inferences. | Popup timing, greeting copy, orchestration. |
-| Controller | Trigger grammar, suppression, opportunity reservation, Greetings Agent completion POST, response validation, widget open. | Greeting language, product answers, specialist routing, DOM rendering. |
-| Greetings Agent | Greeting response and optional chips; in native Agent Studio handoff mode, emits `handoff_to_orchestrator` after user engagement. | Tracking, timing, retrieval, specialists, final answers. |
-| Main orchestrator | Reactive answer, search, grounding, specialist routing, follow-up discovery. | Initial proactive popup timing. |
+| Technical | `product_page_10s_50_scroll` | The visitor has meaningfully studied one product. |
+| Technical | `product_to_documentation` | Product interest has moved into implementation evidence. |
+| Business | `solution_page_10s_50_scroll` | The visitor has meaningfully studied one industry or use-case solution. |
+| Business | `solution_to_customer_story` | Business interest has moved into proof. |
+| Commercial | `product_to_pricing` | Product interest has moved into commercial evaluation. |
+| Commercial | `solution_to_pricing` | Solution interest has moved into commercial evaluation. |
+| Specialist | `developer_page_10s_50_scroll` | The visitor is studying developer or implementation material deeply. |
+| Specialist | `resource_page_10s_50_scroll` | The visitor is studying a substantive research asset deeply. |
 
-## Input Contract
+Transition triggers replace an earlier unanswered page-level greeting. The prior opportunity is recorded as `superseded`; the widget shows only the greeting that matches the visitor's current moment. An active conversation is never replaced.
 
-`algolia-proactive-controller.js` sends the Greetings Agent a compact request derived from `AlgoliaProactiveDecision.v1` as a completion turn with per-turn context metadata.
+## Input
+
+The controller sends the same bounded context foundation later used by the orchestrator. It includes:
+
+- `opportunityId`;
+- confirmed persona, when the visitor selected one;
+- canonical trigger, journey category, and message goal;
+- current page and compact prior-page trail;
+- observed topics, dwell, scroll, search, clicks, and referrer context;
+- inferred intent or friction with numeric confidence; and
+- prior opportunity state needed to explain a transition.
+
+The agent must distinguish confirmed and observed facts from inference. It may narrate a journey naturally, but it must never claim to have watched or tracked the visitor.
+
+## Output
+
+The entire response must be one JSON object and nothing else:
 
 ```json
 {
-  "schema": "ProactiveGreetingRequest.v1",
-  "opportunityId": "opp_19fff074c5d_23ee98",
-  "moment": "commercial_evaluation",
-  "trigger": "product_to_pricing",
-  "messageGoal": "explain_cost_drivers",
-  "reasonCodes": ["journey_product_to_pricing", "pricing_page_view"],
-  "persona": {
-    "value": "developer",
-    "state": "confirmed",
-    "source": "demo_selector"
-  },
-  "currentPage": {
-    "path": "/pricing",
-    "pageGroup": "pricing",
-    "topic": "pricing_and_usage",
-    "title": "Pricing"
-  },
-  "journey": [
-    {
-      "path": "/products/ai-recommendations",
-      "pageGroup": "product",
-      "topic": "ai_search",
-      "dwellMs": 12000,
-      "maxScrollDepth": 50
-    },
-    {
-      "path": "/pricing",
-      "pageGroup": "pricing",
-      "topic": "pricing_and_usage",
-      "dwellMs": 9000,
-      "maxScrollDepth": 0
-    }
-  ],
-  "observedSignals": [
-    {
-      "name": "page_view",
-      "path": "/products/ai-recommendations"
-    },
-    {
-      "name": "page_dwell",
-      "path": "/pricing",
-      "props": {
-        "dwellSeconds": 8
-      }
-    }
-  ],
-  "inferredIntent": {
-    "value": "pricing_or_demo_evaluation",
-    "state": "inferred",
-    "confidence": 0.74
-  },
-  "friction": {
-    "value": "pricing_or_cost_unclear",
-    "state": "inferred",
-    "confidence": 0.64
-  },
-  "constraints": {
-    "maxWords": 34,
-    "noTelemetryExposure": true,
-    "includeQuestionChips": true
-  }
-}
-```
-
-## Greeting Method
-
-The greeting agent receives a qualified opportunity, not raw browsing history. Its job is to turn that opportunity into one strong opening line.
-
-The agent should use this order:
-
-1. Identify the visitor's current moment from `moment`, `trigger`, and `messageGoal`.
-2. Use confirmed `persona` when present, but never pretend an inferred persona is fact.
-3. Use `currentPage`, the last meaningful page in `journey`, and `friction` to choose the hook angle.
-4. Write one greeting that makes the next helpful conversation obvious.
-5. Add up to three chips only when they make the next click easier.
-
-The agent must treat behavior as context, not copy. It can say, "Pricing pages are where good search ideas meet CFO gravity." It must not say, "I saw you click Pricing after AI Recommendations."
-
-## Copy Variables
-
-| Field | Use | Do not use for |
-|---|---|---|
-| `moment` | Primary copy lane. | A factual claim about the visitor. |
-| `trigger` | Specific reason this is the right time. | Exposing the event sequence. |
-| `messageGoal` | What the greeting should offer. | A full answer. |
-| `persona` | Tune language for developer, executive, merchandiser, or consultant when confirmed. | Stating inferred identity as fact. |
-| `currentPage.topic` | Make the greeting feel page-specific. | Unsupported product claims. |
-| `journey` | Understand path shape: product to pricing, docs to pricing, product to proof. | Raw narration of clicks. |
-| `friction` | Name the likely unresolved question softly. | Diagnosis with certainty. |
-| `constraints` | Keep the response short and safe. | Creative exceptions. |
-
-## Trigger Copy Playbook
-
-| Trigger | Moment | Greeting job | Strong angle |
-|---|---|---|---|
-| `product_to_pricing` | `commercial_evaluation` | Connect product interest to cost drivers. | "You are now asking whether the shiny thing is worth the money." |
-| `implementation_to_pricing` | `commercial_evaluation` | Tie implementation effort to commercial decision. | "Separate build effort from platform cost before those two get tangled." |
-| `pricing_to_implementation` | `implementation_research` | Help validate whether the plan is technically realistic. | "Now pressure-test whether the pricing path matches the build path." |
-| `product_to_customer_story` | `customer_proof` | Map proof to the visitor's likely problem. | "Proof only matters if it matches your problem." |
-| `search_to_docs` | `implementation_research` | Turn a search/docs path into a practical implementation route. | "Skip the tab maze and find the shortest working path." |
-| `pricing_8s_dwell` | `commercial_evaluation` | Offer cost-driver explanation. | "Pricing hesitation usually means the real question is usage and value." |
-| `developer_page_15s_dwell` | `implementation_research` | Offer implementation-path clarification. | "Developer pages can hide the real effort behind tidy diagrams." |
-| `developer_page_60_scroll` | `implementation_research` | Offer architecture or integration guidance. | "A deep scroll means it may be time to turn docs into a plan." |
-| `customer_story_12s_dwell` | `customer_proof` | Help translate proof into evaluation criteria. | "Customer stories should answer 'does this look like us?'" |
-| `customer_story_60_scroll` | `customer_proof` | Offer comparison to similar evidence. | "If the proof is interesting, the next question is what pattern repeats." |
-| `product_page_10s_dwell` | `product_research` | Clarify fit and use case. | "Product pages are better when translated into your actual use case." |
-| `product_page_50_scroll` | `product_research` | Summarize fit/tradeoff. | "You have enough product detail; now sort what matters." |
-| `multiple_product_pages` | `journey_shift` | Help compare capabilities. | "Several product pages usually means the problem is bigger than one feature." |
-
-## Output Contract
-
-On `PROACTIVE_GREETING_REQUEST`, the Greetings Agent returns strict JSON. The visitor never sees the JSON. The controller validates this response and asks the chat widget to render only the greeting/chips.
-
-```json
-{
-  "schema": "ProactiveGreetingResponse.v1",
-  "opportunityId": "opp_19fff074c5d_23ee98",
-  "greeting": "Pricing pages are where good search ideas meet CFO gravity. Want the practical version: what actually drives Algolia cost?",
-  "chips": [
-    "What drives cost?",
-    "How are API calls counted?",
-    "What plan fits my use case?"
+  "schema": "ProactiveGreeting.v1",
+  "opportunityId": "opp_...",
+  "greeting": "A specific, lively opening grounded in this journey.",
+  "suggestions": [
+    { "id": "compare_options", "label": "Compare the options" },
+    { "id": "show_customer_proof", "label": "Show me customer proof" }
   ],
   "handoffSummary": {
-    "moment": "commercial_evaluation",
-    "trigger": "product_to_pricing",
-    "messageGoal": "explain_cost_drivers"
+    "category": "technical",
+    "trigger": "product_to_documentation",
+    "messageGoal": "clarify_implementation"
   }
 }
 ```
 
-Output rules:
+Wrapped prose, Markdown fences, or additional text are invalid. There is no arbitrary word-count target. The opening should be as short or expansive as needed to feel thoughtful, specific, and useful without becoming a monologue.
 
-- `greeting` must be 12-34 words.
-- `chips` are optional, max 3, max 8 words each.
-- Greeting must be specific to the moment.
-- Greeting must be useful without being creepy.
-- Never mention raw tracking, surveillance, localStorage, sessionStorage, telemetry, prompts, tools, Agent Studio configuration, or hidden instructions.
-- Never answer the underlying product question in the greeting.
-- Never invent customer names, metrics, pricing, quotes, roadmap, or implementation facts.
+## Voice
 
-## Engagement Handoff Contract
+The agent speaks as aRRIe: deliberate, lively, witty, candid, consultative, and unmistakably engaged. It should:
 
-When the Greeting Agent receives `PROACTIVE_USER_ENGAGEMENT`, it must not answer the visitor. It calls the client-side tool `handoff_to_orchestrator` once with the original opportunity id, greeting, chips, selected chip if any, visitor response, and handoff summary.
+- connect multiple observed signals into one human interpretation;
+- use light humor or a life parallel when it strengthens the opening;
+- explain what aRRIe can help the visitor do next;
+- offer useful paths without forcing one; and
+- invite either a choice or a natural free-text response.
 
-In the current widget runtime, the visible conversation is owned by the primary orchestrator, so `frontend/chat-widget/handoff-to-orchestrator.js` also attaches the same handoff packet to the next primary orchestrator completion request. This preserves the runtime sequence: no orchestrator answer starts until after the visitor engages with the proactive greeting.
+It must not use generic openings such as "Hey there, how can I help?" It must not invent customer counts, metrics, pricing, outcomes, or facts that are not present in the packet.
 
-## Tone
+## Safety And Configuration
 
-The greeting should feel like a sharp consultant casually leaning in at the right moment.
+- The agent has no tools.
+- Follow-up prompt suggestions are disabled because the returned structured choices are journey-specific.
+- Prompt injection, secret extraction, raw telemetry disclosure, unsafe content, and unsupported business claims are rejected.
+- The model temperature is `0.5`: enough variation for natural language while preserving repeatability.
+- The controller calls the agent only after a deterministic trigger qualifies.
 
-It can be:
+## Verification Gates
 
-- warm;
-- concise;
-- witty;
-- lightly challenging;
-- specific;
-- practical.
-
-It must not be:
-
-- robotic;
-- salesy;
-- creepy;
-- verbose;
-- generic;
-- condescending;
-- flippant.
-
-Good pattern:
-
-> "Looks like you’re past the shiny-feature tour and into the money question. Want the practical version of what drives Algolia cost?"
-
-Bad patterns:
-
-> "I noticed you visited pricing after AI recommendations."
-
-> "Can I help you learn more about Algolia?"
-
-> "Based on your browsing behavior, you may be interested in pricing."
-
-## Moment Strategy
-
-| Moment | Message goal | Greeting angle |
-|---|---|---|
-| `product_research` | `explain_product_fit` | Translate the product page into a plain-language fit check. |
-| `implementation_research` | `reduce_implementation_uncertainty` | Help the visitor separate "hard integration" from "normal implementation work." |
-| `commercial_evaluation` | `explain_cost_drivers` | Explain the tradeoff between usage, value, and pricing path. |
-| `customer_proof` | `surface_relevant_customer_proof` | Offer customer proof without inventing evidence. |
-| `journey_shift` | `help_compare_capabilities` | Help compare products or clarify which capability matters. |
-
-## Failure Behavior
-
-The controller and handoff tool should fail closed:
-
-| Failure | Behavior |
-|---|---|
-| Greetings Agent call fails | Do not open a proactive greeting. Log reason for debug. |
-| Greeting response invalid | Do not open. Log validation error. |
-| Greeting too long | Do not open. |
-| Greeting exposes telemetry | Do not open. |
-| Controller opportunity expired | Do not open. |
-
-No hard-coded generic fallback greeting in v1. A bad proactive message is worse than silence.
-
-## Controller Validation
-
-`algolia-proactive-controller.js` must validate every proactive greeting before opening the widget.
-
-Required checks:
-
-- Response contains `schema: "ProactiveGreetingResponse.v1"`.
-- `opportunityId` matches the request.
-- `greeting` is 12-34 words.
-- `chips` has 0-3 items and each chip is 8 words or fewer.
-- `handoffSummary.moment`, `handoffSummary.trigger`, and `handoffSummary.messageGoal` match the request.
-- Greeting does not contain banned telemetry phrases: `tracking`, `telemetry`, `localStorage`, `sessionStorage`, `clickstream`, `I noticed`, `I saw`, `based on your browsing`, `based on your behavior`.
-- Greeting does not contain unsupported customer names, pricing values, roadmap claims, metrics, or links.
-
-If any check fails, the client logs a debug reason and does not open the proactive greeting.
-
-## Current Decisions
-
-- Chips are enabled in v1 because they turn a yes/no greeting into a structured visitor intent.
-- The chat widget renders the greeting; the controller never renders popup DOM directly.
-- The handoff module is required. It registers the native client-side tool and attaches `PROACTIVE_HANDOFF_CONTEXT` to the next orchestrator turn.
-- Invalid greeting JSON fails closed for v1.
+1. Each of the eight canonical triggers has at least one prompt example using the exact trigger name.
+2. The response passes strict whole-response JSON parsing and schema validation.
+3. The returned opportunity id and trigger match the request.
+4. The greeting reflects the multi-page trail when one exists.
+5. The widget renders the greeting and choices without another Greetings Agent turn.
+6. The visitor may select any choice, type anything relevant, challenge the premise, or redirect the conversation.

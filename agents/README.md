@@ -19,6 +19,8 @@ Important prompt files:
 - `prompts/system_algolia_orchestrator.md` — aRRIe personality, source authority, and turn flow for the main orchestrator.
 - `prompts/instructions_algolia_proactive_greeting.md` — proactive greeting JSON contract and examples.
 - `prompts/instructions_algolia_orchestrator.md` — grounded answer contract, retrieval choreography, specialist routing, and proactive handoff handling.
+- `prompts/system_algolia_developer_specialist.md` — source authority and bounded technical behavior for the Developer Specialist.
+- `prompts/instructions_algolia_developer_specialist.md` — Developer Specialist retrieval, grounding, answer shape, and engineering voice.
 
 Do not reintroduce the old names `agents/definitions/` or `agents/probes/`. Prompt source belongs
 in `agents/prompts/`; diagnostics belong in `agents/checks/`.

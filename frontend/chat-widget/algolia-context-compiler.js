@@ -2,19 +2,45 @@
   "use strict";
 
   const LABEL = "[Algolia Context Compiler]";
-  const DEBUG =
-    new URLSearchParams(location.search).get("algoliaChatDebug") === "1" ||
-    new URLSearchParams(location.search).get("algoliaContextDebug") === "1";
+  function debugFlag(name) {
+    try {
+      const params = new URLSearchParams(location.search);
+      return (
+        params.get("algoliaChatDebug") === "1" ||
+        params.get(name) === "1" ||
+        localStorage.getItem("algoliaDebug") === "1" ||
+        localStorage.getItem("algoliaChatDebug") === "1" ||
+        localStorage.getItem(name) === "1"
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  const DEBUG = debugFlag("algoliaContextDebug");
 
   const PROFILE_KEY = "algolia_profile";
   const SESSION_KEY = "algolia_session";
   const EVENTS_KEY = "algolia_events";
+  const VALIDATION_ERROR_KEY = "algolia_context_validation_error";
 
   const PACKET_SCHEMA = "AlgoliaContextPacket.v1";
+  const CANONICAL_JOURNEY_TRIGGERS = Object.freeze([
+    "product_page_10s_50_scroll",
+    "product_to_documentation",
+    "solution_page_10s_50_scroll",
+    "solution_to_customer_story",
+    "product_to_pricing",
+    "solution_to_pricing",
+    "developer_page_10s_50_scroll",
+    "resource_page_10s_50_scroll",
+  ]);
   const MAX_RECENT_EVENTS = 15;
   const MAX_TURN_CONTEXT_KEYS = 32;
   const MAX_TURN_CONTEXT_BYTES = 4096;
   const MAX_TURN_CONTEXT_VALUE_BYTES = 1024;
+  const JOURNEY_DWELL_MS = 5000;
+  const JOURNEY_SCROLL_DEPTH = 25;
   const AGENT_STUDIO_COMPLETIONS_RE = /\/agent-studio\/1\/agents\/[^/]+\/completions/;
   const SENSITIVE_PROP_RE =
     /email|phone|password|passwd|token|secret|api[_-]?key|credential|name|company|value/i;
@@ -489,12 +515,34 @@
     return `${signal.state || "observed"}:${signal.value}`;
   }
 
+  function qualifiedJourneySummary() {
+    const session = rawSnapshot().session || {};
+    const pages = Array.isArray(session.pages) ? session.pages : [];
+    return pages
+      .filter((page) => {
+        const group = page.pageGroup || classifyPage(page).pageGroup;
+        return (
+          group === "pricing" ||
+          (Number(page.dwellMs || 0) >= JOURNEY_DWELL_MS &&
+            Number(page.maxScrollDepth || 0) >= JOURNEY_SCROLL_DEPTH)
+        );
+      })
+      .slice(-6)
+      .map((page) => {
+        const classified = pageWithClassification(page);
+        const focus =
+          classified.productFocusLabel ||
+          classified.solutionFocusLabel ||
+          classified.topic ||
+          classified.title ||
+          "general";
+        return `${classified.pageGroup || "page"}:${clampText(focus, 80)}:${clampText(classified.path, 160)}`;
+      })
+      .join(" > ");
+  }
+
   function compileTurnContext() {
     const packet = compile();
-    const recentEventSummary = packet.recentEvents
-      .slice(-8)
-      .map((event) => `${event.name}:${event.props?.label || event.props?.query || event.path || ""}`)
-      .join(" | ");
     const priorEngagements = packet.session.engagementHistory
       .map((item) => `${item.messageGoal}:${item.status}`)
       .join(" | ");
@@ -509,10 +557,8 @@
       current_product_focus_label: packet.currentPage.productFocusLabel,
       current_solution_focus: inferenceValue(packet.observedSignals.currentSolutionFocus),
       current_solution_focus_label: packet.currentPage.solutionFocusLabel,
-      current_dwell_seconds: String(Math.round((packet.currentPage.dwellMs || 0) / 1000)),
-      current_scroll_depth: String(packet.currentPage.maxScrollDepth || 0),
       session_page_count: String(packet.session.pageCount || 0),
-      recent_events: recentEventSummary,
+      qualified_journey: qualifiedJourneySummary() || undefined,
       prior_engagements: priorEngagements || undefined,
       intent: inferenceValue(packet.inferences.intent),
       friction: inferenceValue(packet.inferences.friction),
@@ -524,24 +570,82 @@
     return enforceTurnContextLimits(context);
   }
 
+  function failTurnContext(code, field, actualBytes, limitBytes) {
+    const error = new Error(
+      `${code}: ${field || "turnContext"} is ${actualBytes} bytes; limit is ${limitBytes}`
+    );
+    error.name = "TurnContextValidationError";
+    error.code = code;
+    error.field = field || null;
+    error.actualBytes = actualBytes;
+    error.limitBytes = limitBytes;
+    const record = {
+      code,
+      field: field || null,
+      actualBytes,
+      limitBytes,
+      at: Date.now(),
+      path: currentPath(),
+    };
+    try {
+      sessionStorage.setItem(VALIDATION_ERROR_KEY, JSON.stringify(record));
+    } catch {}
+    debugLog("turnContext rejected", record);
+    throw error;
+  }
+
   function enforceTurnContextLimits(input) {
     const output = {};
-    for (const [key, value] of Object.entries(input)) {
-      if (!/^[a-zA-Z0-9_.-]{1,64}$/.test(key)) continue;
+    const entries = Object.entries(input || {}).filter(
+      ([, value]) => value !== undefined && value !== null && String(value) !== ""
+    );
+    if (entries.length > MAX_TURN_CONTEXT_KEYS) {
+      failTurnContext(
+        "turn_context_too_many_keys",
+        entries[MAX_TURN_CONTEXT_KEYS]?.[0] || null,
+        entries.length,
+        MAX_TURN_CONTEXT_KEYS
+      );
+    }
+    for (const [key, value] of entries) {
+      if (!/^[a-zA-Z0-9_.-]{1,64}$/.test(key)) {
+        failTurnContext("turn_context_invalid_key", key, byteLength(key), 64);
+      }
       if (value === undefined || value === null) continue;
-      let text = clampText(String(value), 1000);
+      const text = String(value);
       if (!text) continue;
-      while (byteLength(text) > MAX_TURN_CONTEXT_VALUE_BYTES) {
-        text = text.slice(0, Math.max(1, text.length - 20));
+      const valueBytes = byteLength(text);
+      if (valueBytes > MAX_TURN_CONTEXT_VALUE_BYTES) {
+        failTurnContext(
+          "turn_context_value_too_large",
+          key,
+          valueBytes,
+          MAX_TURN_CONTEXT_VALUE_BYTES
+        );
+      }
+      const candidate = { ...output, [key]: text };
+      const totalBytes = byteLength(JSON.stringify(candidate));
+      if (totalBytes > MAX_TURN_CONTEXT_BYTES) {
+        failTurnContext(
+          "turn_context_total_too_large",
+          key,
+          totalBytes,
+          MAX_TURN_CONTEXT_BYTES
+        );
       }
       output[key] = text;
-      if (Object.keys(output).length >= MAX_TURN_CONTEXT_KEYS) break;
-      if (byteLength(JSON.stringify(output)) > MAX_TURN_CONTEXT_BYTES) {
-        delete output[key];
-        break;
-      }
     }
+    try {
+      sessionStorage.removeItem(VALIDATION_ERROR_KEY);
+    } catch {}
     return output;
+  }
+
+  function mergeTurnContext(existing) {
+    return enforceTurnContextLimits({
+      ...(existing && typeof existing === "object" ? existing : {}),
+      ...compileTurnContext(),
+    });
   }
 
   function isAgentStudioCompletion(url) {
@@ -568,15 +672,12 @@
       .find(({ message }) => message?.role === "user")?.i;
     if (index === undefined) return body;
 
-    const turnContext = compileTurnContext();
+    const turnContext = mergeTurnContext(payload.messages[index].metadata?.turnContext);
     payload.messages[index] = {
       ...payload.messages[index],
       metadata: {
         ...(payload.messages[index].metadata || {}),
-        turnContext: {
-          ...(payload.messages[index].metadata?.turnContext || {}),
-          ...turnContext,
-        },
+        turnContext,
       },
     };
     debugLog("injected turnContext", turnContext);
@@ -620,10 +721,13 @@
     configure,
     compile,
     compileTurnContext,
+    mergeTurnContext,
     debug,
     installFetchInterceptor,
     uninstallFetchInterceptor,
+    injectTurnContextIntoBody,
     _injectTurnContextIntoBody: injectTurnContextIntoBody,
+    _canonicalJourneyTriggers: CANONICAL_JOURNEY_TRIGGERS,
   };
 
   window.algoliaContextCompiler = api;

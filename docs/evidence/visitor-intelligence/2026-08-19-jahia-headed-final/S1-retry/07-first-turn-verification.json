@@ -1,0 +1,62 @@
+{
+  "pass": true,
+  "errors": [],
+  "greetings": {
+    "requests": 1,
+    "byOpportunity": {
+      "opp_1a019e55765_a77415": 1
+    },
+    "afterVisitorResponse": 0
+  },
+  "firstTurn": {
+    "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "orchestratorRequests": 1,
+    "handoffBlocks": 1,
+    "requestId": 3,
+    "responseId": 4,
+    "responseStatus": 200,
+    "responseTextLength": 3878,
+    "routedToSpecialist": true,
+    "routingMode": "deterministic_client",
+    "specialistRequests": 1,
+    "specialistAction": "accept",
+    "specialistOutcome": "demoted",
+    "visibleResponderAgentIds": [
+      "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+    ],
+    "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+  },
+  "continuity": {
+    "orchestratorRequests": 0
+  },
+  "discovery": {
+    "pass": true,
+    "errors": [],
+    "visibleWraps": 1,
+    "visibleQuestions": 1,
+    "questions": [
+      "How can I use the Insights API to track events and actually drive search ROI?"
+    ]
+  },
+  "specialistRoutingDebug": {
+    "context": {
+      "context.version": "1",
+      "context.source": "deterministic_browser_signals",
+      "page.path": "/developers",
+      "page.title": "Developers",
+      "journey.paths": "/developers -> /developers",
+      "journey.page_count": "2",
+      "behavior.read_depth": "medium",
+      "conversation_id": "5b1373f4-014c-46c3-802b-7ca0cbe23ba7"
+    },
+    "query": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?",
+    "contentLength": 3878,
+    "visibleAnswerLength": 3396,
+    "toolNames": [],
+    "offer": {
+      "specialistKey": "tech",
+      "question": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?"
+    },
+    "hasHandler": true
+  }
+}

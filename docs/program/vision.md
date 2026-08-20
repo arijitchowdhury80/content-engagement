@@ -1,262 +1,239 @@
-# Vision Manifesto: Algolia.com As A Search-Led Website
+# Content Engagement Manifesto
 
-Date: 2026-08-05
-Status: Vision draft v3
+Date: 2026-08-15
+Status: Vision draft v4
 
 ## The Big Idea
 
-Algolia.com should not be a brochure about search.
+Algolia.com should not merely explain what Algolia can do. It should let every visitor experience it.
 
-Algolia.com should become the best public proof of Algolia's own product: a website where search is the primary engagement layer.
+Content Engagement turns a conventional content website into an intelligent, personalized service. It learns from the visitor's consented journey, understands what they may be trying to accomplish, engages at a useful moment, and brings forward the right Algolia knowledge, proof, specialist, and next action.
 
-The first thing built is a website experience redesign. The agentic concierge is a second, conditional layer.
+The internal parallel Algolia.com environment is the first proving ground. Production Algolia.com is the intended final execution and the most demanding showcase for the product. We use Algolia to help people discover Algolia.
 
-## Executive One-Page Pitch
+## The Business We Are Building
 
-Thesis: Algolia.com should move from brochure navigation to search-led discovery. The current site tells visitors Algolia is search. The proposed experience lets visitors use Algolia to discover Algolia.
+Content Engagement is bigger than a chat widget and broader than website search. It is a potential new Algolia business unit for organizations whose expertise is distributed across product pages, documentation, customer stories, support content, learning material, events, and institutional knowledge.
 
-Why now:
+The product combines:
 
-- Algolia already exposes search, AI prompts, source filters, and grouped results inside the current site search overlay.
-- The current website still presents Algolia like a conventional SaaS company.
-- A search-led experience would make the medium prove the message.
+- content search and retrieval
+- consented visitor intelligence
+- journey-aware proactive engagement
+- personalized and grounded conversation
+- specialist knowledge and orchestration
+- evidence-backed recommendations
+- measurable progression toward a useful business outcome
 
-Build scope, not an approval request:
+The central proposition is simple:
 
-- Nobody at Algolia has seen this idea. There is no decision pending and nothing to approve. The work is to build it, show it, and prove it — a demo is the argument.
-- Ask 1 and Ask 2 remain separate as *build scope*: the agentic layer must never block or delay the website demo.
+> Do not make visitors navigate your organizational structure to find your expertise. Bring the right expertise to them when it becomes useful.
 
-First deliverable:
+## The Problem
 
-- A working search-led algolia.com at a shareable URL — two concept frames on a real Algolia index of real algolia.com content — plus a one-page concept frame covering current site, search takeover moment, search-first north star, the agentic layer, phased path, and top risks.
-- The demo must be shareable without Arijit present, and every foreseeable objection (SEO, conversion, accessibility, latency, safety) must have a written answer on disk before it is shown.
+Most content websites are passive. They publish useful material and wait for visitors to discover the right page, interpret it, connect it to their situation, and decide what to do next.
 
-Novelty caveat:
+That model loses intent between pages. A visitor can explore several products, read implementation guidance, compare proof, and reach pricing while the website treats every page as an isolated request. The organization knows a great deal, but the visitor experiences only fragments.
 
-- The claim that no software company has done this remains unproven. Phase 0 must check prior attempts before the pitch frames this as category-first.
+Content Engagement connects those fragments into a journey.
 
-## The Strategic Shift
+## Who It Is For
 
-The first version of the idea was search-first navigation:
+The first proving ground uses an internal parallel copy of Algolia.com and representative internal testers. The final production audience is Algolia.com and its visitors:
 
-- replace or reduce traditional navigation
-- make the search bar the primary interface
-- map Products, Solutions, Pricing, Developers, Resources, Customer Stories, Contact Sales, and Login into search-led journeys
+- Developers evaluating implementation, integrations, documentation, and POC scope
+- Merchandisers and digital leaders improving discovery, conversion, basket size, and operational control
+- Executives evaluating value, differentiation, cost, risk, customer proof, and commercial fit
+- Consultants and analysts researching markets, industries, capabilities, and evidence
+- Existing customers looking for support, learning, expansion, and better ways to use Algolia
 
-That is Ask 1. It must stand on its own.
-
-Ask 1 experience:
-
-- the homepage can keep enough traditional structure to orient a CMO and a first-time visitor
-- the first meaningful click opens a search-led discovery layer
-- current nav becomes intent chips, filters, answer panels, result groups, and next-step actions
-- every non-negotiable journey still works: Products, Solutions, Pricing, Developers / Docs, Resources, Customer Stories, Contact Sales, and Login
-- the future-state version can remove most navigation and make the search box the website's front door
-
-The second version is agentic engagement:
-
-- the first click becomes the moment of engagement
-- search detects intent
-- the right agent takes over
-- the agent brings content, proof, answers, next actions, and specialist guidance
-- the website becomes a white-glove service layer, not a static set of pages
-
-That is Ask 2. It is a separate build phase, not a separate approval.
-
-## Two Different Build Scopes
-
-This work contains two related but different scopes. They are separated so the second cannot delay the first.
-
-### Ask 1: Website IA And Engagement Redesign
-
-What gets built and shown: a site model where search becomes the primary engagement layer.
-
-Scope:
-
-- current homepage and navigation audit
-- search takeover concept
-- search-first future-state concept
-- IA-to-search mapping
-- buyer journey prototype
-- analytics-backed phased rollout idea
-
-This is the demo that carries the brand and website argument.
-
-### Ask 2: Public Agentic Engagement Product
-
-What gets researched now and built only if capability allows: a public unauthenticated agentic layer on Algolia.com.
-
-Scope:
-
-- agent taxonomy
-- Agent Studio / neural search feasibility
-- prompt-injection and abuse controls
-- latency architecture
-- legal, security, sales, and brand governance
-- agent quality evals
-- production monitoring and rollback
-
-This is not only a website redesign. It is a public AI product surface. Its risk, latency, and governance models are researched in full now, but it is built into the demo only if Agent Studio and neural search can credibly support it. If they cannot, it ships as a designed layer with an honest label — never as implied capability.
+The broader product is for any organization with valuable content, complex visitor journeys, and a need to turn anonymous exploration into informed engagement.
 
 ## The Experience
 
-A visitor lands on Algolia.com.
+A visitor lands on the website and explores normally. The engagement tracker records consented, observable facts such as page views, navigation choices, searches, dwell, scroll progression, and conversion actions. The context compiler turns those facts into a bounded data packet. The proactive controller decides whether the current moment merits an interruption.
 
-In the CMO-adoptable concept, the first page can still feel familiar enough to build trust. But when the visitor clicks Products, Solutions, Developers, Resources, Pricing, or any major path, the site does not merely open a static page or mega-menu. It opens an intent-aware engagement layer.
+When it does, the Greetings Agent creates a personal opening grounded in the visitor's journey. The visitor can choose a path or respond freely. The main orchestrator then continues the conversation with the same context, searches Algolia-owned content, calls the right specialist when depth is needed, cites its evidence, and asks one thoughtful discovery question that advances the conversation.
 
-In the future-state concept, the visitor begins directly in that engagement layer.
+The experience is proactive and reactive at the same time:
 
-Either way, the website should feel like this:
+- Proactive engagement begins when behavior creates a useful moment.
+- Reactive engagement begins when the visitor asks directly.
+- Both paths converge on the same context, grounding, orchestration, specialists, personality, and business objective.
 
-> Tell us what you are trying to do. Algolia will guide you there.
+## What Makes It Different
 
-## Ask 1 Experience Model
+This is not a generic chatbot waiting in the corner.
 
-The visitor should not need to understand Algolia's sitemap before they can move.
+It is a white-glove digital concierge that:
 
-Current navigation becomes a progressive search journey:
+- understands the journey rather than only the latest page
+- distinguishes observed facts from inferred intent
+- explains Algolia through grounded documentation, customer evidence, and practical examples
+- brings a lively, human, consultative personality to the interaction
+- guides without trapping the visitor in a prescribed funnel
+- knows when specialist depth will improve the answer
+- makes uncertainty visible instead of inventing an answer
+- turns each engagement into learning for the product and the organization
 
-- visitor intent: explore products, solve a business problem, build with Algolia, compare pricing, learn from customers, get support, talk to sales
-- role or audience: ecommerce leader, product manager, developer, merchandiser, marketer, enterprise buyer
-- business context: ecommerce, B2B commerce, marketplaces, media, SaaS, higher education, grocery, fashion, auto parts
-- product capability: Search, Recommendations, Personalization, Analytics, Browse, Agent Studio, Ask AI, Data Enrichment, Integrations, Security
-- content type: product page, documentation, API guide, customer story, blog, webinar, academy, support article, tool, pricing
-- action: get started, contact sales, view pricing, open docs, book demo, read case study, login
+## The Value
 
-The wedge is simple: keep the front door familiar, then make every click prove Algolia.
+Content Engagement is designed to create value at three levels.
 
-## Ask 2 Conditional Agent Model
+### For the visitor
 
-The agent model is not a peer of the website frame concepts. It is a capability layer that can sit on top of either frame if the Phase 0 kill-switch spikes pass.
+- Less time spent hunting across pages
+- Faster understanding of products, implementation, value, and fit
+- Guidance shaped to their role, journey, and question
+- Credible evidence and direct source links
+- A clear next action without losing autonomy
 
-If capability research supports it, the layer could route visitors to specialists:
+### For Algolia
 
-- concierge for broad or ambiguous intent
-- product specialist for capabilities and product combinations
-- industry or use-case specialist for ecommerce, B2B commerce, marketplaces, media, SaaS, higher education, grocery, fashion, and auto parts
-- developer or integration specialist for APIs, SDKs, docs, UI components, MCP, and implementation paths
-- academy specialist for learning journeys
-- support specialist for troubleshooting and existing-customer needs
-- sales or solution consultant for pricing, enterprise readiness, procurement, demo, and contact-sales journeys
+- More meaningful engagement with website visitors
+- More qualified pathways toward demos, POCs, and sales conversations
+- Better visibility into what visitors are trying to accomplish
+- A mechanism for democratizing Algolia knowledge across audiences
+- A live environment for improving prompts, retrieval, routing, content, and experience
 
-The full agent taxonomy belongs in the research artifacts (`docs/design/agent-studio/models/33-agent-taxonomy-and-routing.md`). The manifesto only needs the scope line: the agentic layer is researched now and built only after the search-led website demo stands on its own.
+### For the product category
 
-## Not Just Chat
+- A new way to apply Algolia to content-rich digital properties
+- A bridge between search, personalization, agentic systems, and conversion
+- A reusable model for turning institutional knowledge into active customer engagement
 
-This should not become a generic chatbot.
+## Internal Proving Ground And Production Destination
 
-The engagement layer can include:
+The parallel internal Algolia.com environment is the proving ground. It lets the team exercise real website routes, real Algolia content, realistic visitor journeys, Agent Studio, and the complete frontend experience without exposing an unfinished system to production visitors.
 
-- answer panels
-- source-backed content cards
-- progressive filters
-- journey chips
-- specialist handoffs
-- proof bundles
-- implementation plans
-- buyer guides
-- interactive demos
-- avatar or narrated moments
-- sales handoff summaries
+Production Algolia.com is the intended final execution. Promotion happens only after internal testing establishes technical reliability, experience quality, grounding, safety, business relevance, and an acceptable operating model.
 
-The interface should feel conversational, navigational, and visual at the same time.
+The live test creates a continuous loop:
 
-## Conditional Content Requirements
+1. Observe consented visitor behavior.
+2. Compile the journey into usable context.
+3. Engage at a meaningful moment.
+4. Help the visitor reach a better decision or next action.
+5. Measure what worked and what failed.
+6. Improve the experience, prompts, routing, and product.
 
-Ask 1 needs a clean content model for current website pages, product pages, solutions, documentation, customer stories, pricing, resources, and conversion paths.
+## Business Outcomes
 
-Ask 2 would need structured agent access to:
+The product should ultimately be evaluated on outcomes, not the novelty of its interface.
 
-- current website pages
-- product pages
-- solution pages
-- industry pages
-- use-case pages
-- customer stories
-- documentation
-- API references
-- support knowledge base
-- Academy content
-- blog and resource center
-- webinars and events
-- demo videos
-- pricing and packaging
-- security and compliance
-- integrations
-- tools and assessments
-- analytics-derived popular journeys and search queries
+Primary outcome hypotheses:
 
-## Core Hypothesis
+- Increase meaningful engagement with Algolia content
+- Reduce abandonment during product, implementation, proof, and pricing journeys
+- Create more qualified leads and sales conversations
+- Help visitors reach demos, POCs, trials, and meetings with greater context
+- Make Algolia expertise accessible to more visitors and Algolians
+- Learn from recurring visitor needs and use those insights to improve the website and product
 
-If Algolia.com becomes search-led, the website itself becomes a proof point for Algolia search and discovery.
+These are hypotheses until testing and measurement support them. The project will not present unverified conversion claims as facts.
 
-If the agentic layer later passes safety, speed, governance, and eval bars, the website can also become a proof point for Agent Studio and neural search.
+## From Testing To Story
 
-The strongest executive pitch is:
+Testing, demonstration, and communication are one evidence chain.
 
-> Algolia should not ask visitors to read about discovery before they experience it.
+- The test plan proves whether each journey works and whether the experience creates value.
+- Test findings identify the strongest moments, weaknesses, and measurable claims.
+- The demo story turns those verified moments into a coherent business narrative.
+- Documentation preserves how the product works, why decisions were made, how it is operated, and how others can adopt it.
+- The press release explains the resulting product, problem, value, and ambition in Algolia's public language.
 
-## Ask 2 Trust Contract
+Documentation must remain synchronized with the product. The press release must not outrun the evidence. The demo must not hide failure paths. The test plan must evaluate the business experience, not only whether code executed.
 
-The agentic layer only works if it is trusted as a public brand surface. A public homepage agent is not a private productivity assistant. It is exposed to anonymous visitors, competitors, bots, prompt-injection attempts, scraping, screenshots, and deliberate cost attacks.
+## Product Principles
 
-The trust contract has five requirements:
+### Evidence before confidence
 
-- Fast by default: first useful response must feel instant, with search results and suggestions appearing before slower generated answers.
-- Source-backed by default: important answers should show the content, pages, docs, customer stories, or approved sources behind them.
-- Safe on a public surface: prompt injection, abuse, bot traffic, scraping, and cost attacks need rate limits, fallback modes, monitoring, and refusal rules.
-- Governed for high-risk claims: pricing, security, compliance, roadmap, benchmarks, customer proof, and competitive claims need approved sources, owners, freshness rules, and human handoff paths.
-- Continuously evaluated: agent quality needs golden conversations, adversarial tests, routing checks, citation faithfulness checks, transcript sampling, user feedback, and production monitoring.
+Algolia facts come from retrieved Algolia-owned sources. If current evidence is missing or conflicting, the agent says so.
 
-Without this trust contract, Ask 2 is a compelling demo but not an executive-ready public product surface.
+### Helpful, not creepy
+
+The experience can infer that a visitor may be interested in a topic, but it never exposes raw telemetry or claims certainty about private intent.
+
+### Engage with purpose
+
+A proactive interruption must earn attention by being specific, useful, and connected to a logical next step.
+
+### One journey, shared context
+
+Proactive and reactive experiences use compatible context and converge on the same orchestrator and specialist system.
+
+### Human character with professional judgment
+
+aRRIe is lively, witty, candid, and approachable. Personality supports understanding and trust; it never substitutes for evidence or becomes disrespectful.
+
+### Conversion through service
+
+The objective is not to force a visitor into a funnel. It is to provide enough value that the right next step becomes obvious and attractive.
+
+### Build, test, learn
+
+Every important experience has a contract, a test, evidence, an owner, and a feedback loop.
+
+## Team
+
+### Founding and sponsorship
+
+- Arijit Chowdhury: Founder
+- Codex: Founder-level technical and product partner
+- Piyush Patel: Executive sponsor
+
+### Delivery team
+
+- Aadhar Gupta: Senior Data Engineer
+- Harsh Arora: Senior Frontend Developer
+- Naveen Vedwal: CMS Architect
+- Rakesh Kumar: Adobe Architect
+- Tarun Sharma: Project Manager
+
+The team will test the live experience from technical, data, design, CMS, delivery, and business perspectives. Their findings will shape the product, demo, and external story.
+
+## How We Work
+
+The working method is deliberately evidence-led:
+
+1. Capture the raw idea without losing nuance.
+2. Shape it into an approved prompt and scope.
+3. Inspect the current system before planning.
+4. Create an implementation-ready plan with owners and verification gates.
+5. Build the smallest complete vertical slice.
+6. Test functionality, experience, grounding, business value, and failure behavior.
+7. Record decisions and evidence on disk.
+8. Review, repair, and rerun affected journeys.
+9. Promote only after local and live gates pass.
+
+Planning is useful only when it creates clearer execution. A planning round that does not change a decision, produce evidence, or create an executable artifact should stop.
 
 ## What Could Break
 
-- Marketing may resist losing control over carefully curated page journeys.
-- SEO could suffer if crawlable landing pages are hidden behind dynamic interactions.
-- Search takeover may make critical journeys slower or less findable than current navigation.
-- Buyer-facing value may be weaker than the internal brand thesis.
-- The first executive board may lack hard upside numbers until GA / Looker and implementation estimates are reviewed.
-- The agentic experience may feel like a chatbot bolted onto a website.
-- Visitors may not trust agent answers without citations and visible source content.
-- Specialist handoffs may feel theatrical if they do not improve usefulness.
-- Support and sales intent could blur if routing is weak.
-- Agent Studio capabilities must be researched before the concept is positioned as directly shippable.
-- Public prompt injection could make the homepage agent say something false, embarrassing, competitor-favorable, or off-brand.
-- Anonymous bot traffic could turn the homepage into an LLM cost and abuse surface.
-- Agentic latency could contradict Algolia's speed promise.
-- AI-generated pricing, security, compliance, roadmap, benchmark, or customer-proof claims could create legal, sales, or brand exposure if they are wrong or stale.
-- Without a continuous eval loop, there is no durable way to know whether agents are accurate, helpful, well-routed, and safe after launch.
+- Proactive engagement can feel intrusive, generic, or creepy.
+- Triggering can become unreliable across routes, load order, cooldowns, and session state.
+- A greeting can recognize the page but miss the broader journey.
+- Handoff can lose the visitor's response or context.
+- The orchestrator can answer without using the right specialist.
+- Stale content can produce confident but outdated claims.
+- Personality can disappear under rigid answer choreography.
+- Latency can undermine Algolia's promise of speed.
+- A public agent can attract abuse, prompt injection, scraping, and cost attacks.
+- A polished demo can imply business results that have not yet been measured.
 
-## What We Need To Research
+These are not reasons to avoid the product. They are the contract for how we test it.
 
-- How current Algolia.com content is structured.
-- How current navigation maps to intent, audience, context, capability, content type, and action.
-- How current site search is used and whether search users convert better.
-- What GA / Looker says about journey friction.
-- How real buyers, developers, sales reps, and solution consultants react to search-led navigation before the agentic layer is added.
-- What the strongest argument is for keeping the current site model.
-- What Agent Studio and neural search can credibly support today.
-- What agent types are needed for the prototype.
-- What content each agent needs access to.
-- What engagement modes feel premium rather than generic.
-- How to preserve SEO, accessibility, and trust.
-- How to protect a public unauthenticated agent from prompt injection, abuse, scraping, and cost attacks.
-- What latency budget is required so the experience reinforces Algolia's speed promise.
-- Which answer categories require approved source-only responses and legal/brand/security governance.
-- What agent-quality eval harness and transcript review loop would be required after launch.
+## The Current Mission
 
-## Product Direction
+Build and prove a complete Content Engagement journey on the internal parallel Algolia.com environment, then earn promotion to production Algolia.com:
 
-Build two website frame concepts:
+- observe the visitor
+- understand the journey
+- engage at the right moment
+- personalize the opening
+- continue through a grounded orchestrator
+- invoke specialist expertise when it improves the outcome
+- guide toward a useful next action
+- record enough evidence to improve the product and tell the business story honestly
 
-- CMO-adoptable wedge: traditional frame, search takes over after the first meaningful click.
-- Future-state provocation: Algolia.com becomes search-first from the first screen.
-
-Evaluate one optional capability layer:
-
-- Agentic concierge: only after Phase 0 safety, latency, governance, and eval checks pass.
-
-Both website frames should prove the same underlying idea:
-
-> Algolia.com is not a website you browse. It is a discovery experience that serves you.
+The demo is the narrative. The testing is the evidence. Documentation is the durable explanation. The press release is the external articulation. Production Algolia.com is the final execution.

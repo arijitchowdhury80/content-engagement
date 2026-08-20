@@ -1,0 +1,3476 @@
+{
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/ui-component-libraries?algoliaChatDebug=1&algoliaProactiveDebug=1&algoliaHandoffDebug=1&cb=hosted-s1-continuity",
+  "title": "Design seamless search experiences with InstantSearch | Algolia",
+  "controller": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "opportunityTtlMs": 600000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "documentationJourneyDwellMs": 10000,
+      "documentationJourneyScrollDepth": 50,
+      "proofJourneyDwellMs": 10000,
+      "proofJourneyScrollDepth": 50,
+      "implementationDwellMs": 10000,
+      "implementationScrollDepth": 50,
+      "resourceDwellMs": 10000,
+      "resourceScrollDepth": 50,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a019e55765_a77415",
+          "status": "active",
+          "lifecycle": [
+            "qualified",
+            "pending",
+            "shown",
+            "engaged",
+            "handed_off",
+            "active"
+          ],
+          "pageId": "page_813f5202e9951b6b081ac6da",
+          "pagePath": "/developers",
+          "moment": "implementation_research",
+          "trigger": "developer_page_10s_50_scroll",
+          "priority": 76,
+          "messageGoal": "reduce_implementation_uncertainty",
+          "reasonCodes": [
+            "developer_page",
+            "implementation_dwell",
+            "implementation_scroll"
+          ],
+          "createdAt": 1787140855654,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "implementation_research",
+            "trigger": "developer_page_10s_50_scroll",
+            "priority": 76,
+            "persona": {
+              "value": "developer",
+              "state": "inferred",
+              "confidence": 0.66,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_813f5202e9951b6b081ac6da",
+              "path": "/developers",
+              "title": "Developers",
+              "pageGroup": "developer",
+              "topic": "implementation",
+              "dwellMs": 10002,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": null,
+            "journeySummary": {
+              "currentTransition": "developer_page_10s_50_scroll",
+              "productTrail": [],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/developers",
+                  "title": "Developers",
+                  "pageGroup": "developer",
+                  "topic": "implementation"
+                },
+                {
+                  "path": "/developers",
+                  "title": "Developers",
+                  "pageGroup": "developer",
+                  "topic": "implementation"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/developers",
+                "title": "Developers",
+                "pageGroup": "developer",
+                "topic": "implementation",
+                "dwellMs": 1074,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/developers",
+                "title": "Developers",
+                "pageGroup": "developer",
+                "topic": "implementation",
+                "dwellMs": 10002,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/developers",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+                  "title": "Developers",
+                  "pageGroup": "developer",
+                  "topic": "implementation"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/developers",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+                  "title": "Developers",
+                  "pageGroup": "developer",
+                  "topic": "implementation"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/developers",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "developer",
+                  "topic": "implementation"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/developers",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "developer",
+                  "topic": "implementation"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/developers",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "developer",
+                  "topic": "implementation"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "implementation_research",
+              "state": "inferred",
+              "confidence": 0.69,
+              "evidence": [
+                "current_page:Developers /developers implementation",
+                "scroll_depth:/developers",
+                "page_dwell:/developers",
+                "page_dwell:/developers"
+              ]
+            },
+            "friction": {
+              "value": "development_effort_unclear",
+              "state": "inferred",
+              "confidence": 0.64,
+              "evidence": [
+                "current_page:Developers /developers implementation",
+                "scroll_depth:/developers",
+                "page_dwell:/developers",
+                "page_dwell:/developers"
+              ]
+            },
+            "messageGoal": "reduce_implementation_uncertainty",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "developer_page",
+              "implementation_dwell",
+              "implementation_scroll"
+            ],
+            "opportunityId": "opp_1a019e55765_a77415",
+            "createdAt": 1787140855654
+          },
+          "updatedAt": 1787140863306,
+          "failureReason": null,
+          "shownAt": 1787140861147,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a019e55765_a77415",
+            "greeting": "Alright, you’ve gone deep enough that 'just call the API' is no longer a satisfying answer. I can help turn the developer material into a concrete architecture or map out the shortest path to a working POC.",
+            "chips": [
+              "Map implementation path",
+              "Review architecture",
+              "Scope a quick POC"
+            ],
+            "handoffSummary": {
+              "moment": "implementation_research",
+              "trigger": "developer_page_10s_50_scroll",
+              "messageGoal": "reduce_implementation_uncertainty"
+            }
+          },
+          "handoffStartedAt": 1787140862564,
+          "userResponse": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?",
+          "selectedChip": null,
+          "handoffSchema": "ProactiveHandoffContext.v1",
+          "handoffAt": 1787140863306,
+          "handoffFailure": null,
+          "activeAt": 1787140863306
+        }
+      ],
+      "lastOpportunityAt": 1787140861147
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1787140953669,
+      "profile": {
+        "visitorId": "visitor_8ee672e33a55bef42502986c",
+        "visits": 3,
+        "persona": {
+          "value": "developer",
+          "state": "inferred",
+          "confidence": 0.66,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_75dc50275725145748093591",
+        "startedAt": 1787140840905,
+        "pageCount": 3,
+        "engagementHistory": [
+          {
+            "id": "eng_6a0fdb4021ff0a35999f8136",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1787140861143,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_7f1638455081766ed67b6c41",
+        "path": "/products/features/ui-component-libraries",
+        "title": "Design seamless search experiences with InstantSearch | Algolia",
+        "pageGroup": "product",
+        "topic": "instantsearch_implementation",
+        "productFocus": "instantsearch",
+        "productFocusLabel": "InstantSearch",
+        "dwellMs": 15001,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "instantsearch_implementation",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "currentProductFocus": {
+          "value": "instantsearch",
+          "label": "InstantSearch",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 3,
+          "page_dwell": 6,
+          "scroll_depth": 1,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_7847628c4dad9afae32d948f",
+          "name": "page_view",
+          "ts": 1787140840905,
+          "pageId": "page_55c7e51eb82b5c17d32de2ac",
+          "path": "/developers",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+            "title": "Developers",
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        },
+        {
+          "eventId": "evt_c25743e63ce8b163f6c7fe95",
+          "name": "page_view",
+          "ts": 1787140842360,
+          "pageId": "page_813f5202e9951b6b081ac6da",
+          "path": "/developers",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+            "title": "Developers",
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        },
+        {
+          "eventId": "evt_0bdaa8b16ab79003abcdd0f7",
+          "name": "page_dwell",
+          "ts": 1787140847362,
+          "pageId": "page_813f5202e9951b6b081ac6da",
+          "path": "/developers",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        },
+        {
+          "eventId": "evt_f7c0413410dd5230dfaf3e37",
+          "name": "page_dwell",
+          "ts": 1787140852362,
+          "pageId": "page_813f5202e9951b6b081ac6da",
+          "path": "/developers",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        },
+        {
+          "eventId": "evt_2cb7fd2e4776d27d77f797b3",
+          "name": "scroll_depth",
+          "ts": 1787140855645,
+          "pageId": "page_813f5202e9951b6b081ac6da",
+          "path": "/developers",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        },
+        {
+          "eventId": "evt_cb6f7ae3a0c331d228fbbf83",
+          "name": "page_dwell",
+          "ts": 1787140857361,
+          "pageId": "page_813f5202e9951b6b081ac6da",
+          "path": "/developers",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        },
+        {
+          "eventId": "evt_52287b9a84e2634371168451",
+          "name": "engagement_exposed",
+          "ts": 1787140861143,
+          "pageId": "page_813f5202e9951b6b081ac6da",
+          "path": "/developers",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_6a0fdb4021ff0a35999f8136",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_223bdd6074b90a04dcd0ec67",
+          "name": "chat_open",
+          "ts": 1787140861172,
+          "pageId": "page_813f5202e9951b6b081ac6da",
+          "path": "/developers",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        },
+        {
+          "eventId": "evt_31f025ffa13e4fce240c58cf",
+          "name": "page_view",
+          "ts": 1787140920372,
+          "pageId": "page_7f1638455081766ed67b6c41",
+          "path": "/products/features/ui-component-libraries",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/ui-component-libraries",
+            "title": "Design seamless search experiences with InstantSearch | Algolia",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "productFocus": "instantsearch",
+            "productFocusLabel": "InstantSearch"
+          }
+        },
+        {
+          "eventId": "evt_c80b00a2ac46119c8852a369",
+          "name": "page_dwell",
+          "ts": 1787140925373,
+          "pageId": "page_7f1638455081766ed67b6c41",
+          "path": "/products/features/ui-component-libraries",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "productFocus": "instantsearch",
+            "productFocusLabel": "InstantSearch"
+          }
+        },
+        {
+          "eventId": "evt_230007d7774d9bdc0b636c5f",
+          "name": "page_dwell",
+          "ts": 1787140930374,
+          "pageId": "page_7f1638455081766ed67b6c41",
+          "path": "/products/features/ui-component-libraries",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "productFocus": "instantsearch",
+            "productFocusLabel": "InstantSearch"
+          }
+        },
+        {
+          "eventId": "evt_dc571128a014a35e52b77b45",
+          "name": "page_dwell",
+          "ts": 1787140935372,
+          "pageId": "page_7f1638455081766ed67b6c41",
+          "path": "/products/features/ui-component-libraries",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "productFocus": "instantsearch",
+            "productFocusLabel": "InstantSearch"
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "developer",
+          "state": "inferred",
+          "confidence": 0.66,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "implementation_research",
+          "state": "inferred",
+          "confidence": 0.69,
+          "evidence": [
+            "current_page:Design seamless search experiences with InstantSearch | Algolia /products/features/ui-component-libraries instantsearch...",
+            "page_dwell:/products/features/ui-component-libraries",
+            "page_dwell:/products/features/ui-component-libraries",
+            "page_dwell:/products/features/ui-component-libraries"
+          ]
+        },
+        "friction": {
+          "value": "development_effort_unclear",
+          "state": "inferred",
+          "confidence": 0.64,
+          "evidence": [
+            "current_page:Design seamless search experiences with InstantSearch | Algolia /products/features/ui-component-libraries instantsearch...",
+            "page_dwell:/products/features/ui-component-libraries",
+            "page_dwell:/products/features/ui-component-libraries",
+            "page_dwell:/products/features/ui-component-libraries"
+          ]
+        },
+        "nextBestAction": {
+          "value": "answer_implementation_path",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "no_trigger_match",
+      "createdAt": 1787140953670
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "signal_received",
+        "at": 1787140840905,
+        "path": "/developers",
+        "detail": {
+          "name": "page_view",
+          "path": "/developers",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+            "title": "Developers",
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140840905,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140840906,
+        "path": "/developers",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140840906,
+        "path": "/developers",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140840970,
+        "path": "/developers",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140840970,
+        "path": "/developers",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/developers",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140840970,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140840971,
+        "path": "/developers",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140840971,
+        "path": "/developers",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787140842360,
+        "path": "/developers",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140842362,
+        "path": "/developers",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140842363,
+        "path": "/developers",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/developers",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140842363,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140842363,
+        "path": "/developers",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140842363,
+        "path": "/developers",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140842612,
+        "path": "/developers",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140842612,
+        "path": "/developers",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/developers",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140842612,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140842612,
+        "path": "/developers",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140842612,
+        "path": "/developers",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140843362,
+        "path": "/developers",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140843363,
+        "path": "/developers",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/developers",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140843363,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140843363,
+        "path": "/developers",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140843363,
+        "path": "/developers",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140844861,
+        "path": "/developers",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140844861,
+        "path": "/developers",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/developers",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140844861,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140844861,
+        "path": "/developers",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140844861,
+        "path": "/developers",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140847363,
+        "path": "/developers",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/developers",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140847365,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 5001,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 3,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140847365,
+        "path": "/developers",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140847366,
+        "path": "/developers",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140852363,
+        "path": "/developers",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/developers",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140852364,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 10002,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140852365,
+        "path": "/developers",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140852365,
+        "path": "/developers",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140855646,
+        "path": "/developers",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/developers",
+          "props": {
+            "depth": 50,
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140855647,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 10002,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140855649,
+        "path": "/developers",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "implementation_research",
+              "trigger": "developer_page_10s_50_scroll",
+              "priority": 76,
+              "pagePath": "/developers",
+              "reasonCodes": [
+                "developer_page",
+                "implementation_dwell",
+                "implementation_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1787140855650,
+        "path": "/developers",
+        "detail": {
+          "engage": true,
+          "moment": "implementation_research",
+          "trigger": "developer_page_10s_50_scroll",
+          "priority": 76,
+          "pagePath": "/developers",
+          "reasonCodes": [
+            "developer_page",
+            "implementation_dwell",
+            "implementation_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1787140855651,
+        "path": "/developers",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140855652,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 10002,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140855653,
+        "path": "/developers",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "implementation_research",
+              "trigger": "developer_page_10s_50_scroll",
+              "priority": 76,
+              "pagePath": "/developers",
+              "reasonCodes": [
+                "developer_page",
+                "implementation_dwell",
+                "implementation_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1787140855654,
+        "path": "/developers",
+        "detail": {
+          "opportunityId": "opp_1a019e55765_a77415",
+          "trigger": "developer_page_10s_50_scroll",
+          "moment": "implementation_research",
+          "messageGoal": "reduce_implementation_uncertainty",
+          "pagePath": "/developers"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1787140855656,
+        "path": "/developers",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1787140855658,
+        "path": "/developers",
+        "detail": {
+          "opportunityId": "opp_1a019e55765_a77415",
+          "trigger": "developer_page_10s_50_scroll",
+          "moment": "implementation_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1787140856496,
+        "path": "/developers",
+        "detail": {
+          "opportunityId": "opp_1a019e55765_a77415",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140857362,
+        "path": "/developers",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/developers",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "developer",
+            "topic": "implementation"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140857363,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 15000,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 6,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140857364,
+        "path": "/developers",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "implementation_research",
+              "trigger": "developer_page_10s_50_scroll",
+              "priority": 76,
+              "pagePath": "/developers",
+              "reasonCodes": [
+                "developer_page",
+                "implementation_dwell",
+                "implementation_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140857365,
+        "path": "/developers",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "implementation_research",
+            "trigger": "developer_page_10s_50_scroll",
+            "priority": 76,
+            "pagePath": "/developers",
+            "reasonCodes": [
+              "developer_page",
+              "implementation_dwell",
+              "implementation_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1787140861139,
+        "path": "/developers",
+        "detail": {
+          "opportunityId": "opp_1a019e55765_a77415",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a019e55765_a77415",
+          "greetingPreview": "Alright, you’ve gone deep enough that 'just call the API' is no longer a satisfying answer. I can help turn the developer material into a concrete architecture or map out the shor...",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140861144,
+        "path": "/developers",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/developers",
+          "props": {
+            "engagementId": "eng_6a0fdb4021ff0a35999f8136",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140861145,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 15000,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 7,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140861146,
+        "path": "/developers",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "implementation_research",
+              "trigger": "developer_page_10s_50_scroll",
+              "priority": 76,
+              "pagePath": "/developers",
+              "reasonCodes": [
+                "developer_page",
+                "implementation_dwell",
+                "implementation_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140861146,
+        "path": "/developers",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "implementation_research",
+            "trigger": "developer_page_10s_50_scroll",
+            "priority": 76,
+            "pagePath": "/developers",
+            "reasonCodes": [
+              "developer_page",
+              "implementation_dwell",
+              "implementation_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1787140861148,
+        "path": "/developers",
+        "detail": {
+          "opportunityId": "opp_1a019e55765_a77415",
+          "trigger": "developer_page_10s_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140861172,
+        "path": "/developers",
+        "detail": {
+          "name": "chat_open",
+          "path": "/developers",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140861173,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 15000,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 8,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140861174,
+        "path": "/developers",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "implementation_research",
+              "trigger": "developer_page_10s_50_scroll",
+              "priority": 76,
+              "pagePath": "/developers",
+              "reasonCodes": [
+                "developer_page",
+                "implementation_dwell",
+                "implementation_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140861174,
+        "path": "/developers",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "implementation_research",
+            "trigger": "developer_page_10s_50_scroll",
+            "priority": 76,
+            "pagePath": "/developers",
+            "reasonCodes": [
+              "developer_page",
+              "implementation_dwell",
+              "implementation_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140919494,
+        "path": "/developers",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 15000,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 8,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140919495,
+        "path": "/developers",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "implementation_research",
+              "trigger": "developer_page_10s_50_scroll",
+              "priority": 76,
+              "pagePath": "/developers",
+              "reasonCodes": [
+                "developer_page",
+                "implementation_dwell",
+                "implementation_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140919495,
+        "path": "/developers",
+        "detail": {
+          "reason": "conversation_already_active",
+          "decision": {
+            "engage": true,
+            "moment": "implementation_research",
+            "trigger": "developer_page_10s_50_scroll",
+            "priority": 76,
+            "pagePath": "/developers",
+            "reasonCodes": [
+              "developer_page",
+              "implementation_dwell",
+              "implementation_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787140920373,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140920383,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140920383,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/ui-component-libraries",
+          "props": null
+        }
+      },
+      {
+        "stage": "active_conversation_restored",
+        "at": 1787140920384,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "path": "/products/features/ui-component-libraries"
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140920385,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/ui-component-libraries",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "InstantSearch"
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [
+            "InstantSearch"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140920385,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140920385,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140920625,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140920626,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/ui-component-libraries",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140920627,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/ui-component-libraries",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "InstantSearch"
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [
+            "InstantSearch"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140920628,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140920629,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140921386,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140921386,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/ui-component-libraries",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140921387,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/ui-component-libraries",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "InstantSearch"
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [
+            "InstantSearch"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140921387,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140921387,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140922873,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140922875,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/features/ui-component-libraries",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140922877,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/ui-component-libraries",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "InstantSearch"
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [
+            "InstantSearch"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140922878,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140922878,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140925373,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/features/ui-component-libraries",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "productFocus": "instantsearch",
+            "productFocusLabel": "InstantSearch"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140925374,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/ui-component-libraries",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 5001,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "InstantSearch"
+          },
+          "pageCount": 3,
+          "recentEventCount": 10,
+          "productTrail": [
+            "InstantSearch"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140925374,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140925374,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140930375,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/features/ui-component-libraries",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "productFocus": "instantsearch",
+            "productFocusLabel": "InstantSearch"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140930377,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/ui-component-libraries",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 10003,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "InstantSearch"
+          },
+          "pageCount": 3,
+          "recentEventCount": 11,
+          "productTrail": [
+            "InstantSearch"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140930377,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140930378,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140935373,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/features/ui-component-libraries",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "productFocus": "instantsearch",
+            "productFocusLabel": "InstantSearch"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140935373,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/ui-component-libraries",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 15001,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "InstantSearch"
+          },
+          "pageCount": 3,
+          "recentEventCount": 12,
+          "productTrail": [
+            "InstantSearch"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140935373,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140935374,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140953669,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/features/ui-component-libraries",
+            "pageGroup": "product",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 15001,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "InstantSearch"
+          },
+          "pageCount": 3,
+          "recentEventCount": 12,
+          "productTrail": [
+            "InstantSearch"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140953669,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140953670,
+        "path": "/products/features/ui-component-libraries",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      }
+    ]
+  },
+  "profile": {
+    "schema": "AlgoliaEngagementProfile.v1",
+    "visitorId": "visitor_8ee672e33a55bef42502986c",
+    "userToken": "tok_9f83c2a3030deac2b094c572",
+    "tokenSource": "ephemeral",
+    "firstSeenAt": 1787140840905,
+    "lastSeenAt": 1787140920371,
+    "visits": 3,
+    "persona": null,
+    "traits": {}
+  },
+  "session": {
+    "schema": "AlgoliaEngagementSession.v1",
+    "sessionId": "sess_75dc50275725145748093591",
+    "startedAt": 1787140840905,
+    "lastSeenAt": 1787140935372,
+    "currentPageId": "page_7f1638455081766ed67b6c41",
+    "pages": [
+      {
+        "pageId": "page_55c7e51eb82b5c17d32de2ac",
+        "path": "/developers",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+        "title": "Developers",
+        "enteredAt": 1787140840905,
+        "dwellMs": 1074,
+        "maxScrollDepth": 0,
+        "pageGroup": "developer",
+        "topic": "implementation"
+      },
+      {
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "path": "/developers",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+        "title": "Developers",
+        "enteredAt": 1787140842360,
+        "dwellMs": 77548,
+        "maxScrollDepth": 50,
+        "pageGroup": "developer",
+        "topic": "implementation"
+      },
+      {
+        "pageId": "page_7f1638455081766ed67b6c41",
+        "path": "/products/features/ui-component-libraries",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/ui-component-libraries",
+        "title": "Design seamless search experiences with InstantSearch | Algolia",
+        "enteredAt": 1787140920371,
+        "dwellMs": 15001,
+        "maxScrollDepth": 0,
+        "pageGroup": "product",
+        "topic": "instantsearch_implementation",
+        "productFocus": "instantsearch",
+        "productFocusLabel": "InstantSearch"
+      }
+    ],
+    "engagementHistory": [
+      {
+        "id": "eng_6a0fdb4021ff0a35999f8136",
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1787140861143,
+        "status": "shown"
+      }
+    ]
+  },
+  "events": {
+    "schema": "AlgoliaEngagementEvents.v1",
+    "sessionId": "sess_75dc50275725145748093591",
+    "events": [
+      {
+        "eventId": "evt_7847628c4dad9afae32d948f",
+        "name": "page_view",
+        "ts": 1787140840905,
+        "isoTime": "2026-08-19T12:00:40.905Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_55c7e51eb82b5c17d32de2ac",
+        "path": "/developers",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+          "title": "Developers",
+          "pageGroup": "developer",
+          "topic": "implementation"
+        }
+      },
+      {
+        "eventId": "evt_c25743e63ce8b163f6c7fe95",
+        "name": "page_view",
+        "ts": 1787140842360,
+        "isoTime": "2026-08-19T12:00:42.360Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "path": "/developers",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+          "title": "Developers",
+          "pageGroup": "developer",
+          "topic": "implementation"
+        }
+      },
+      {
+        "eventId": "evt_0bdaa8b16ab79003abcdd0f7",
+        "name": "page_dwell",
+        "ts": 1787140847362,
+        "isoTime": "2026-08-19T12:00:47.362Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "path": "/developers",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "developer",
+          "topic": "implementation"
+        }
+      },
+      {
+        "eventId": "evt_f7c0413410dd5230dfaf3e37",
+        "name": "page_dwell",
+        "ts": 1787140852362,
+        "isoTime": "2026-08-19T12:00:52.362Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "path": "/developers",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "developer",
+          "topic": "implementation"
+        }
+      },
+      {
+        "eventId": "evt_2cb7fd2e4776d27d77f797b3",
+        "name": "scroll_depth",
+        "ts": 1787140855645,
+        "isoTime": "2026-08-19T12:00:55.645Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "path": "/developers",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "developer",
+          "topic": "implementation"
+        }
+      },
+      {
+        "eventId": "evt_cb6f7ae3a0c331d228fbbf83",
+        "name": "page_dwell",
+        "ts": 1787140857361,
+        "isoTime": "2026-08-19T12:00:57.361Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "path": "/developers",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "developer",
+          "topic": "implementation"
+        }
+      },
+      {
+        "eventId": "evt_52287b9a84e2634371168451",
+        "name": "engagement_exposed",
+        "ts": 1787140861143,
+        "isoTime": "2026-08-19T12:01:01.143Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "path": "/developers",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_6a0fdb4021ff0a35999f8136",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_223bdd6074b90a04dcd0ec67",
+        "name": "chat_open",
+        "ts": 1787140861172,
+        "isoTime": "2026-08-19T12:01:01.172Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "path": "/developers",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      },
+      {
+        "eventId": "evt_31f025ffa13e4fce240c58cf",
+        "name": "page_view",
+        "ts": 1787140920372,
+        "isoTime": "2026-08-19T12:02:00.372Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_7f1638455081766ed67b6c41",
+        "path": "/products/features/ui-component-libraries",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/features/ui-component-libraries",
+          "title": "Design seamless search experiences with InstantSearch | Algolia",
+          "pageGroup": "product",
+          "topic": "instantsearch_implementation",
+          "productFocus": "instantsearch",
+          "productFocusLabel": "InstantSearch"
+        }
+      },
+      {
+        "eventId": "evt_c80b00a2ac46119c8852a369",
+        "name": "page_dwell",
+        "ts": 1787140925373,
+        "isoTime": "2026-08-19T12:02:05.373Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_7f1638455081766ed67b6c41",
+        "path": "/products/features/ui-component-libraries",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "product",
+          "topic": "instantsearch_implementation",
+          "productFocus": "instantsearch",
+          "productFocusLabel": "InstantSearch"
+        }
+      },
+      {
+        "eventId": "evt_230007d7774d9bdc0b636c5f",
+        "name": "page_dwell",
+        "ts": 1787140930374,
+        "isoTime": "2026-08-19T12:02:10.374Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_7f1638455081766ed67b6c41",
+        "path": "/products/features/ui-component-libraries",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "product",
+          "topic": "instantsearch_implementation",
+          "productFocus": "instantsearch",
+          "productFocusLabel": "InstantSearch"
+        }
+      },
+      {
+        "eventId": "evt_dc571128a014a35e52b77b45",
+        "name": "page_dwell",
+        "ts": 1787140935372,
+        "isoTime": "2026-08-19T12:02:15.372Z",
+        "sessionId": "sess_75dc50275725145748093591",
+        "pageId": "page_7f1638455081766ed67b6c41",
+        "path": "/products/features/ui-component-libraries",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "product",
+          "topic": "instantsearch_implementation",
+          "productFocus": "instantsearch",
+          "productFocusLabel": "InstantSearch"
+        }
+      }
+    ]
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_1a019e55765_a77415",
+        "status": "active",
+        "lifecycle": [
+          "qualified",
+          "pending",
+          "shown",
+          "engaged",
+          "handed_off",
+          "active"
+        ],
+        "pageId": "page_813f5202e9951b6b081ac6da",
+        "pagePath": "/developers",
+        "moment": "implementation_research",
+        "trigger": "developer_page_10s_50_scroll",
+        "priority": 76,
+        "messageGoal": "reduce_implementation_uncertainty",
+        "reasonCodes": [
+          "developer_page",
+          "implementation_dwell",
+          "implementation_scroll"
+        ],
+        "createdAt": 1787140855654,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "implementation_research",
+          "trigger": "developer_page_10s_50_scroll",
+          "priority": 76,
+          "persona": {
+            "value": "developer",
+            "state": "inferred",
+            "confidence": 0.66,
+            "source": "behavior"
+          },
+          "currentPage": {
+            "pageId": "page_813f5202e9951b6b081ac6da",
+            "path": "/developers",
+            "title": "Developers",
+            "pageGroup": "developer",
+            "topic": "implementation",
+            "dwellMs": 10002,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": null,
+          "journeySummary": {
+            "currentTransition": "developer_page_10s_50_scroll",
+            "productTrail": [],
+            "solutionTrail": [],
+            "pageTrail": [
+              {
+                "path": "/developers",
+                "title": "Developers",
+                "pageGroup": "developer",
+                "topic": "implementation"
+              },
+              {
+                "path": "/developers",
+                "title": "Developers",
+                "pageGroup": "developer",
+                "topic": "implementation"
+              }
+            ],
+            "storyHint": ""
+          },
+          "journey": [
+            {
+              "path": "/developers",
+              "title": "Developers",
+              "pageGroup": "developer",
+              "topic": "implementation",
+              "dwellMs": 1074,
+              "maxScrollDepth": 0
+            },
+            {
+              "path": "/developers",
+              "title": "Developers",
+              "pageGroup": "developer",
+              "topic": "implementation",
+              "dwellMs": 10002,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/developers",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+                "title": "Developers",
+                "pageGroup": "developer",
+                "topic": "implementation"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/developers",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/developers",
+                "title": "Developers",
+                "pageGroup": "developer",
+                "topic": "implementation"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/developers",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "developer",
+                "topic": "implementation"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/developers",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "developer",
+                "topic": "implementation"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/developers",
+              "props": {
+                "depth": 50,
+                "pageGroup": "developer",
+                "topic": "implementation"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "implementation_research",
+            "state": "inferred",
+            "confidence": 0.69,
+            "evidence": [
+              "current_page:Developers /developers implementation",
+              "scroll_depth:/developers",
+              "page_dwell:/developers",
+              "page_dwell:/developers"
+            ]
+          },
+          "friction": {
+            "value": "development_effort_unclear",
+            "state": "inferred",
+            "confidence": 0.64,
+            "evidence": [
+              "current_page:Developers /developers implementation",
+              "scroll_depth:/developers",
+              "page_dwell:/developers",
+              "page_dwell:/developers"
+            ]
+          },
+          "messageGoal": "reduce_implementation_uncertainty",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "developer_page",
+            "implementation_dwell",
+            "implementation_scroll"
+          ],
+          "opportunityId": "opp_1a019e55765_a77415",
+          "createdAt": 1787140855654
+        },
+        "updatedAt": 1787140863306,
+        "failureReason": null,
+        "shownAt": 1787140861147,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a019e55765_a77415",
+          "greeting": "Alright, you’ve gone deep enough that 'just call the API' is no longer a satisfying answer. I can help turn the developer material into a concrete architecture or map out the shortest path to a working POC.",
+          "chips": [
+            "Map implementation path",
+            "Review architecture",
+            "Scope a quick POC"
+          ],
+          "handoffSummary": {
+            "moment": "implementation_research",
+            "trigger": "developer_page_10s_50_scroll",
+            "messageGoal": "reduce_implementation_uncertainty"
+          }
+        },
+        "handoffStartedAt": 1787140862564,
+        "userResponse": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?",
+        "selectedChip": null,
+        "handoffSchema": "ProactiveHandoffContext.v1",
+        "handoffAt": 1787140863306,
+        "handoffFailure": null,
+        "activeAt": 1787140863306
+      }
+    ],
+    "lastOpportunityAt": 1787140861147
+  },
+  "conversation": {
+    "version": 1,
+    "conversationId": "5b1373f4-014c-46c3-802b-7ca0cbe23ba7",
+    "turns": [
+      {
+        "id": "2ca04d48-2b68-464b-99b9-9a50d6fb0d3e",
+        "userMessageId": "f7340d77-226d-4565-8725-95db9f47cef4",
+        "query": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "df421653-00ff-4b08-a739-dd47eb96c78a",
+            "agent": "primary",
+            "status": "success",
+            "text": "The retrieved material does not verify the specific details requested, so I cannot present those claims as confirmed.",
+            "sources": [
+              {
+                "id": "d5e489be-c114-11ee-8c29-02f45315ff73",
+                "title": "Structuring Data for Optimal Search",
+                "url": "https://academy.algolia.com/training/86074850-b0b1-11ee-a537-0215f0d95509",
+                "source": "Academy"
+              },
+              {
+                "id": "01920b64-b259-746e-899c-141ccb9e83c5",
+                "title": "Introduction to Algolia",
+                "url": "https://academy.algolia.com/training/0191df8b-a981-7e06-9a15-76b551dfde8e",
+                "source": "Academy"
+              },
+              {
+                "id": "019d2583-cf80-755b-94ee-e538a6015a15",
+                "title": "Planning Your Event Strategy",
+                "url": "https://academy.algolia.com/training/019d1eb2-d848-755c-a836-09ad9191aca7",
+                "source": "Academy"
+              },
+              {
+                "id": "019d2583-cfa3-7572-8edb-ed1167697466",
+                "title": "Event Schema and Payloads",
+                "url": "https://academy.algolia.com/training/019d02b5-177c-7ea7-a028-d730027abb94",
+                "source": "Academy"
+              },
+              {
+                "id": "0199c719-fa57-759b-a880-7b1b0d5e7523",
+                "title": "Configuring Business Relevance via the API",
+                "url": "https://academy.algolia.com/training/cf0edb90-afe8-11ee-923a-063dd1a3276d",
+                "source": "Academy"
+              },
+              {
+                "id": "01946606-eea5-75bf-84fe-5ac3eedbc59c",
+                "title": "Customizing Relevance with Ranking and Filters",
+                "url": "https://academy.algolia.com/training/0191df91-bc46-7267-b9a2-7862cb5b77a2",
+                "source": "Academy"
+              },
+              {
+                "id": "019d2583-cfb2-781e-a413-76f6354de234",
+                "title": "Client-Side Capture (InstantSearch and Search Insights)",
+                "url": "https://academy.algolia.com/training/019d207e-a88b-7572-9845-11f9e98b7a71",
+                "source": "Academy"
+              },
+              {
+                "id": "01920b66-48d7-7ba0-bea3-f71f894db836",
+                "title": "Comparing Frontend and Backend Search Approaches",
+                "url": "https://academy.algolia.com/training/b25b7642-c06a-11ee-9a1d-065b7db101cb",
+                "source": "Academy"
+              },
+              {
+                "id": "https://www.algolia.com/doc/framework-integration/laravel/indexing/configure-index/-0",
+                "title": "Configure index",
+                "url": "https://www.algolia.com/doc/framework-integration/laravel/indexing/configure-index",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/sending-and-managing-data/prepare-your-data/-0",
+                "title": "Prepare your records for indexing | Algolia",
+                "url": "https://www.algolia.com/doc/guides/sending-and-managing-data/prepare-your-data",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/integration/magento-2/how-it-works/indexing/-6",
+                "title": "Indexing",
+                "url": "https://www.algolia.com/doc/integration/magento-2/how-it-works/indexing",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/tools/cli/commands/algolia-events/",
+                "title": "algolia events | CLI reference | Algolia",
+                "url": "https://www.algolia.com/doc/tools/cli/commands/algolia-events",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/sending-events/guides/validate/-0",
+                "title": "Validate your events | Algolia",
+                "url": "https://www.algolia.com/doc/guides/sending-events/guides/validate",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/sending-events/concepts/event-types/-0",
+                "title": "Event types | Algolia",
+                "url": "https://www.algolia.com/doc/guides/sending-events/concepts/event-types",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/managing-results/relevance-overview/",
+                "title": "Relevance overview | Algolia",
+                "url": "https://www.algolia.com/doc/guides/managing-results/relevance-overview",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/libraries/kotlin/v3/methods/search/",
+                "title": "Search API client",
+                "url": "https://www.algolia.com/doc/libraries/kotlin/v3/methods/search",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/libraries/scala/v2/methods/search/",
+                "title": "Search API client",
+                "url": "https://www.algolia.com/doc/libraries/scala/v2/methods/search",
+                "source": "Documentation"
+              },
+              {
+                "id": "en_5db03362-8c00-43c0-8e7a-d7c973244144_0_1",
+                "title": "How to optimize search indexing for top performance | Algolia",
+                "url": "https://www.algolia.com/blog/engineering/search-indexing-best-practices-for-top-performance-with-code-samples",
+                "source": "Blog"
+              },
+              {
+                "id": "10198044398993",
+                "title": "Does Algolia Analytics track \"view\" events automatically?",
+                "url": "https://support.algolia.com/hc/en-us/articles/10198044398993-Does-Algolia-Analytics-track-view-events-automatically",
+                "source": "Support"
+              },
+              {
+                "id": "10129991857297",
+                "title": "How do I apply ranking to DocSearch?",
+                "url": "https://support.algolia.com/hc/en-us/articles/10129991857297-How-do-I-apply-ranking-to-DocSearch",
+                "source": "Support"
+              },
+              {
+                "id": "en_6a9e5e31-a40f-4c2b-a61c-f0351af42d10",
+                "title": "Swift iOS API client for Search | Algolia",
+                "url": "https://www.algolia.com/developers/search-api-swift",
+                "source": "Developers"
+              }
+            ],
+            "searchCount": 21,
+            "rawHits": [
+              {
+                "keywords": [],
+                "abstract": "Master search implementation by optimizing data for Algolia. Learn to format data types, create efficient records with key attributes for optimal performance. Gain insights in this comprehensive course.",
+                "indexed_at": 1784670696210,
+                "published_at": 1761945600990,
+                "is404": false,
+                "environment": "prod20260722",
+                "source": "Academy",
+                "authors": [],
+                "language_code": "en",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Search Engineering Basics (ASEB)"
+                  ]
+                },
+                "objectID": "d5e489be-c114-11ee-8c29-02f45315ff73",
+                "algoliaDisabled": "false",
+                "category": "guide",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "url": "https://academy.algolia.com/training/86074850-b0b1-11ee-a537-0215f0d95509",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.210Z",
+                "transform_source": "algolia-academy",
+                "title": "Structuring Data for Optimal Search",
+                "tags": [
+                  "Search Optimization",
+                  "Implementation",
+                  "Searchable Attributes",
+                  "Filtering"
+                ],
+                "description": "Master search implementation by optimizing data for Algolia. Learn to format data types, create efficient records with key attributes for optimal performance. Gain insights in this comprehensive course."
+              },
+              {
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.210Z",
+                "environment": "prod20260722",
+                "language_code": "en",
+                "algoliaDisabled": "false",
+                "transform_source": "algolia-academy",
+                "title": "Structuring Data for Optimal Search",
+                "category": "guide",
+                "description": "Master search implementation by optimizing data for Algolia. Learn to format data types, create efficient records with key attributes for optimal performance. Gain insights in this comprehensive course.",
+                "abstract": "Master search implementation by optimizing data for Algolia. Learn to format data types, create efficient records with key attributes for optimal performance. Gain insights in this comprehensive course.",
+                "is404": false,
+                "source": "Academy",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "authors": [],
+                "indexed_at": 1784670696210,
+                "objectID": "0199aaf1-7fc0-7f95-83cb-320d8af18e71",
+                "url": "https://academy.algolia.com/training/86074850-b0b1-11ee-a537-0215f0d95509",
+                "keywords": [],
+                "published_at": 1761945302077,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Data Sources"
+                  ]
+                },
+                "tags": [
+                  "Search Optimization",
+                  "Implementation",
+                  "Searchable Attributes",
+                  "Filtering"
+                ]
+              },
+              {
+                "category": "Doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "language_code": "en",
+                "published_at": 1784670696126,
+                "authors": [],
+                "description": "Optimize the search experience with Laravel Scout and Algolia Scout Extended.",
+                "abstract": "Performance is important.On top of that, for a search to be successful, results need to be relevant ...",
+                "indexed_at": 1784670696126,
+                "lastUpdated": "2026-07-21T21:51:36.126Z",
+                "objectID": "https://www.algolia.com/doc/framework-integration/laravel/indexing/configure-index/-0",
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "tags": [],
+                "url": "/doc/framework-integration/laravel/indexing/configure-index",
+                "keywords": [],
+                "environment": "prod20260722",
+                "title": "Configure index",
+                "facets": {}
+              },
+              {
+                "transform_source": "algolia-com-doc",
+                "title": "Prepare your records for indexing | Algolia",
+                "category": "Doc",
+                "url": "/doc/guides/sending-and-managing-data/prepare-your-data",
+                "published_at": 1784670696103,
+                "lastUpdated": "2026-07-21T21:51:36.103Z",
+                "environment": "prod20260722",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "objectID": "https://www.algolia.com/doc/guides/sending-and-managing-data/prepare-your-data/-0",
+                "abstract": "How you format and structure your attributes and records in your index will affect your search resul...",
+                "indexed_at": 1784670696103,
+                "tags": [
+                  "Sending and managing data"
+                ],
+                "authors": [],
+                "description": "How to format and structure your attributes and records to improve search results with Algolia.",
+                "keywords": [],
+                "source": "Documentation",
+                "language_code": "en",
+                "facets": {}
+              },
+              {
+                "description": "Learn how the indexing works in the Algolia extension for Magento Open Source and Adobe Commerce",
+                "abstract": "Select one of the modifiers from the Options drop-down menu to make facet values searchable, not sea...",
+                "facets": {},
+                "objectID": "https://www.algolia.com/doc/integration/magento-2/how-it-works/indexing/-6",
+                "language_code": "en",
+                "indexed_at": 1784670696096,
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "url": "/doc/integration/magento-2/how-it-works/indexing",
+                "authors": [],
+                "published_at": 1784670696096,
+                "lastUpdated": "2026-07-21T21:51:36.096Z",
+                "environment": "prod20260722",
+                "source": "Documentation",
+                "title": "Indexing",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "tags": [],
+                "keywords": []
+              },
+              {
+                "transform_source": "algolia-com-doc",
+                "title": "Configure index",
+                "tags": [],
+                "description": "Optimize the search experience with Laravel Scout and Algolia Scout Extended.",
+                "keywords": [],
+                "objectID": "https://www.algolia.com/doc/framework-integration/laravel/indexing/configure-index",
+                "source": "Documentation",
+                "published_at": 1784670696173,
+                "lastUpdated": "2026-07-21T21:51:36.173Z",
+                "environment": "prod20260722",
+                "abstract": "Performance is important. On top of that, for a search to be successful, results need to be relevant...",
+                "indexed_at": 1784670696173,
+                "category": "Doc",
+                "authors": [],
+                "url": "/doc/framework-integration/laravel/indexing/configure-index",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "language_code": "en",
+                "facets": {}
+              },
+              {
+                "objectID": "en_5db03362-8c00-43c0-8e7a-d7c973244144_0_1",
+                "language_code": "en",
+                "facets": {
+                  "facet0": [
+                    "Engineering"
+                  ]
+                },
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/fast-indexing.webp",
+                "abstract": "Get a detailed view of indexing best practices (code samples included!) that will help you optimize your data and search indexing for speed and performance. Search indexing best practices for top performance (with code samples)",
+                "indexed_at": 1784670440096,
+                "published_at": 1677785400000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Engineering"
+                  ],
+                  "lvl2": [
+                    "by Peter Villani"
+                  ]
+                },
+                "keywords": [
+                  "engineering"
+                ],
+                "title": "How to optimize search indexing for top performance | Algolia",
+                "category": "Engineering",
+                "tags": [
+                  "Engineering"
+                ],
+                "url": "/blog/engineering/search-indexing-best-practices-for-top-performance-with-code-samples",
+                "description": "Get a detailed view of indexing best practices (code samples included!) that will help you optimize your data and search indexing for speed and performance.",
+                "is404": false,
+                "environment": "prod20260722",
+                "authors": [
+                  {
+                    "name": "Peter Villani",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/Peter-Villani.jpeg",
+                    "desc": "Sr. Tech & Business Writer"
+                  }
+                ],
+                "lastUpdated": "2026-07-21T21:47:20.096Z"
+              },
+              {
+                "published_at": 1784670696029,
+                "objectID": "https://www.algolia.com/doc/tools/cli/commands/algolia-events/",
+                "source": "Documentation",
+                "title": "algolia events | CLI reference | Algolia",
+                "lastUpdated": "2026-07-21T21:51:36.029Z",
+                "url": "/doc/tools/cli/commands/algolia-events",
+                "abstract": "Manage your Algolia events.Tail events.Region where your analytics data is stored and processed.If t...",
+                "indexed_at": 1784670696029,
+                "environment": "prod20260722",
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "tags": [],
+                "facets": {},
+                "authors": [],
+                "description": "Explore guides, code samples, integrations, and API reference documentation for building amazing Search and Discovery experiences with Algolia.",
+                "keywords": [],
+                "language_code": "en"
+              },
+              {
+                "lastUpdated": "2026-07-21T21:51:36.205Z",
+                "objectID": "10198044398993",
+                "category": "Analytics",
+                "tags": [],
+                "authors": [],
+                "keywords": [],
+                "abstract": "When using any of the following connectors in your front-end with the insights middleware, Algolia automatically sends default view events when hits are rendered.\n\nconnectAutocomplete:autocomplete\n\n\nconnectGeoSearch:geoSearch\n\n\nconnectHits:hits\n\n\nconnectInfiniteHits:infiniteHits\n\nIf you are sending events from your back end, it is best to send view events manually. Algolia does have access to the query results (\"hits\") in the network response, but these results may not necessarily reflect what the user views as there are a number of other front-end factors and customizations that could impact what is actually displayed to the user.By sending view events based on a search's queryID, you can ensure that these events accurately reflect the user experience.",
+                "language_code": "en",
+                "facets": {},
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Analytics"
+                  ],
+                  "lvl1": [
+                    "FAQs"
+                  ]
+                },
+                "source": "Support",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg",
+                "indexed_at": 1784670696205,
+                "environment": "prod20260722",
+                "algoliaDisabled": "false",
+                "title": "Does Algolia Analytics track \"view\" events automatically?",
+                "description": "When using any of the following connectors in your front-end with the insights middleware, Algolia automatically sends default view events when hits are rendered.\n\nconnectAutocomplete:autocomplete\n\n\nconnectGeoSearch:geoSearch\n\n\nconnectHits:hits\n\n\nconnectInfiniteHits:infiniteHits\n\nIf you are sending events from your back end, it is best to send view events manually. Algolia does have access to the query results (\"hits\") in the network response, but these results may not necessarily reflect what the user views as there are a number of other front-end factors and customizations that could impact what is actually displayed to the user.By sending view events based on a search's queryID, you can ensure that these events accurately reflect the user experience.",
+                "is404": false,
+                "transform_source": "zendesk-articles",
+                "url": "https://support.algolia.com/hc/en-us/articles/10198044398993-Does-Algolia-Analytics-track-view-events-automatically",
+                "published_at": 1768258016000
+              },
+              {
+                "title": "Validate your events | Algolia",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "keywords": [],
+                "indexed_at": 1784670696101,
+                "environment": "prod20260722",
+                "source": "Documentation",
+                "category": "Doc",
+                "abstract": "Events unlock Algolia’s most powerful features.To select the best way to track events, see Get start...",
+                "objectID": "https://www.algolia.com/doc/guides/sending-events/guides/validate/-0",
+                "transform_source": "algolia-com-doc",
+                "url": "/doc/guides/sending-events/guides/validate",
+                "published_at": 1784670696101,
+                "lastUpdated": "2026-07-21T21:51:36.101Z",
+                "tags": [],
+                "description": "Validate your click and conversion tracking implementation and make sure you get the most value.",
+                "language_code": "en",
+                "facets": {}
+              },
+              {
+                "indexed_at": 1784670696102,
+                "title": "Event types | Algolia",
+                "authors": [],
+                "lastUpdated": "2026-07-21T21:51:36.102Z",
+                "environment": "prod20260722",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "description": "Learn about the different events you can collect with the Algolia Insights API and the features they unlock",
+                "facets": {},
+                "published_at": 1784670696102,
+                "tags": [],
+                "abstract": "The Algolia Insights API accepts three types of events: click, conversion, and view events.By sendin...",
+                "objectID": "https://www.algolia.com/doc/guides/sending-events/concepts/event-types/-0",
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "url": "/doc/guides/sending-events/concepts/event-types",
+                "keywords": [],
+                "language_code": "en"
+              },
+              {
+                "algoliaDisabled": "false",
+                "transform_source": "algolia-academy",
+                "tags": [
+                  "ai search",
+                  "Dashboard",
+                  "InstantSearch",
+                  "Search Optimization"
+                ],
+                "authors": [],
+                "description": "Gain a foundational understanding of Algolia, including core concepts and terminology, to enhance your search implementation skills.",
+                "language_code": "en",
+                "facets": {},
+                "source": "Academy",
+                "keywords": [],
+                "published_at": 1761915903809,
+                "environment": "prod20260722",
+                "indexed_at": 1784670696212,
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "url": "https://academy.algolia.com/training/0191df8b-a981-7e06-9a15-76b551dfde8e",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Certified Developer (ACD)"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:51:36.212Z",
+                "objectID": "01920b64-b259-746e-899c-141ccb9e83c5",
+                "title": "Introduction to Algolia",
+                "category": "guide",
+                "abstract": "Gain a foundational understanding of Algolia, including core concepts and terminology, to enhance your search implementation skills.",
+                "is404": false
+              },
+              {
+                "environment": "prod20260722",
+                "keywords": [],
+                "language_code": "en",
+                "indexed_at": 1784670696210,
+                "algoliaDisabled": "false",
+                "source": "Academy",
+                "title": "Planning Your Event Strategy",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "facets": {},
+                "transform_source": "algolia-academy",
+                "url": "https://academy.algolia.com/training/019d1eb2-d848-755c-a836-09ad9191aca7",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Data Sources"
+                  ]
+                },
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:51:36.210Z",
+                "objectID": "019d2583-cf80-755b-94ee-e538a6015a15",
+                "abstract": "Master event strategy with P0/P1/P2 prioritization, KPI-event mapping, Algolia surface identification, identity strategy, and connector selection for enhanced AI and analytics.",
+                "category": "guide",
+                "tags": [
+                  "events",
+                  "eventstrategy",
+                  "event implementation",
+                  "events health"
+                ],
+                "authors": [],
+                "description": "Master event strategy with P0/P1/P2 prioritization, KPI-event mapping, Algolia surface identification, identity strategy, and connector selection for enhanced AI and analytics.",
+                "published_at": 1781639407460
+              },
+              {
+                "source": "Academy",
+                "transform_source": "algolia-academy",
+                "title": "Event Schema and Payloads",
+                "url": "https://academy.algolia.com/training/019d02b5-177c-7ea7-a028-d730027abb94",
+                "environment": "prod20260722",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "tags": [
+                  "events",
+                  "event schema",
+                  "event payload",
+                  "event implementation"
+                ],
+                "abstract": "Master event schema and payloads for Algolia's Insights API to improve AI features and analytics. Learn to identify and avoid common implementation errors, understand required fields, and create effective event payloads for clicks and conversions.",
+                "indexed_at": 1784670696210,
+                "published_at": 1774454106484,
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:51:36.210Z",
+                "algoliaDisabled": "false",
+                "category": "guide",
+                "keywords": [],
+                "language_code": "en",
+                "facets": {},
+                "authors": [],
+                "description": "Master event schema and payloads for Algolia's Insights API to improve AI features and analytics. Learn to identify and avoid common implementation errors, understand required fields, and create effective event payloads for clicks and conversions.",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Data Sources"
+                  ]
+                },
+                "objectID": "019d2583-cfa3-7572-8edb-ed1167697466"
+              },
+              {
+                "keywords": [],
+                "algoliaDisabled": "false",
+                "source": "Academy",
+                "transform_source": "algolia-academy",
+                "facets": {},
+                "title": "Configuring Business Relevance via the API",
+                "authors": [],
+                "indexed_at": 1784670696210,
+                "environment": "prod20260722",
+                "language_code": "en",
+                "category": "guide",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "tags": [
+                  "Attributes",
+                  "Textual Relevance",
+                  "ranking",
+                  "Sorting",
+                  "Dashboard",
+                  "api",
+                  "javascript",
+                  "ruby",
+                  "python",
+                  "php"
+                ],
+                "url": "https://academy.algolia.com/training/cf0edb90-afe8-11ee-923a-063dd1a3276d",
+                "description": "Understand how Algolia handles relevance, and learn how to configure it in the dashboard.",
+                "published_at": 1763067804502,
+                "is404": false,
+                "abstract": "Understand how Algolia handles relevance, and learn how to configure it in the dashboard.",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Search"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:51:36.210Z",
+                "objectID": "0199c719-fa57-759b-a880-7b1b0d5e7523"
+              },
+              {
+                "algoliaDisabled": "false",
+                "transform_source": "algolia-academy",
+                "authors": [],
+                "description": "Understand how Algolia handles relevance, and learn how to configure it in the dashboard.",
+                "language_code": "en",
+                "published_at": 1763051103003,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Search Engineering Basics (ASEB)"
+                  ]
+                },
+                "objectID": "ec3c16c8-c114-11ee-b0c5-065b7db101cb",
+                "title": "Configuring Business Relevance via the API",
+                "url": "https://academy.algolia.com/training/cf0edb90-afe8-11ee-923a-063dd1a3276d",
+                "keywords": [],
+                "abstract": "Understand how Algolia handles relevance, and learn how to configure it in the dashboard.",
+                "facets": {},
+                "environment": "prod20260722",
+                "source": "Academy",
+                "tags": [
+                  "Attributes",
+                  "Textual Relevance",
+                  "ranking",
+                  "Sorting",
+                  "Dashboard",
+                  "api",
+                  "javascript",
+                  "ruby",
+                  "python",
+                  "php"
+                ],
+                "indexed_at": 1784670696209,
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:51:36.209Z",
+                "category": "guide",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg"
+              },
+              {
+                "language_code": "en",
+                "url": "/doc/guides/managing-results/relevance-overview",
+                "abstract": "Relevance is finding results that match a query and ranking them so the best-matched results appear ...",
+                "transform_source": "algolia-com-doc",
+                "title": "Relevance overview | Algolia",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "keywords": [],
+                "facets": {},
+                "source": "Documentation",
+                "tags": [
+                  "Managing results"
+                ],
+                "authors": [],
+                "indexed_at": 1784670696109,
+                "published_at": 1784670696109,
+                "lastUpdated": "2026-07-21T21:51:36.109Z",
+                "environment": "prod20260722",
+                "objectID": "https://www.algolia.com/doc/guides/managing-results/relevance-overview/",
+                "category": "Doc",
+                "description": "Learn how to achieve strong relevance and improve it."
+              },
+              {
+                "published_at": 1752221271000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "DocSearch"
+                  ],
+                  "lvl1": [
+                    "Crawler"
+                  ]
+                },
+                "algoliaDisabled": "false",
+                "source": "Support",
+                "title": "How do I apply ranking to DocSearch?",
+                "tags": [],
+                "authors": [],
+                "abstract": "There are a couple of ways you can rank your DocSearch results.\nVia the Crawler configuration: we provide an option to boost the weight of a page by adding a pageRank field to the extractor (see documentation) directly in the Crawler config.\nYou can programmatically detect the page you’d like to boost by either:\n\n\nAnalyzing the URL that is being crawled\n\n\n\nThe URL object is available in the parameters of the recordExtractor, see documentation\n\n\n\nAdding some extra informations in your DOM (e.g. a latest meta tag in the head), and retrieve it using the available cheerio instance\n\n\nVia the Algolia dashboard: some ranking can be applied from the dashboard itself (Search &gt; Index &gt; Configuration &gt; Ranking and Sorting), see documentation. These settings are not overridden by the Crawler config at each crawl.",
+                "language_code": "en",
+                "category": "DocSearch",
+                "keywords": [],
+                "indexed_at": 1784670696206,
+                "is404": false,
+                "environment": "prod20260722",
+                "objectID": "10129991857297",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg",
+                "lastUpdated": "2026-07-21T21:51:36.206Z",
+                "transform_source": "zendesk-articles",
+                "url": "https://support.algolia.com/hc/en-us/articles/10129991857297-How-do-I-apply-ranking-to-DocSearch",
+                "description": "There are a couple of ways you can rank your DocSearch results.\nVia the Crawler configuration: we provide an option to boost the weight of a page by adding a pageRank field to the extractor (see documentation) directly in the Crawler config.\nYou can programmatically detect the page you’d like to boost by either:\n\n\nAnalyzing the URL that is being crawled\n\n\n\nThe URL object is available in the parameters of the recordExtractor, see documentation\n\n\n\nAdding some extra informations in your DOM (e.g. a latest meta tag in the head), and retrieve it using the available cheerio instance\n\n\nVia the Algolia dashboard: some ranking can be applied from the dashboard itself (Search &gt; Index &gt; Configuration &gt; Ranking and Sorting), see documentation. These settings are not overridden by the Crawler config at each crawl.",
+                "facets": {}
+              },
+              {
+                "category": "guide",
+                "authors": [],
+                "language_code": "en",
+                "published_at": 1761942004450,
+                "environment": "prod20260722",
+                "objectID": "01946606-eea5-75bf-84fe-5ac3eedbc59c",
+                "algoliaDisabled": "false",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "facets": {},
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Certified Advanced Business User (ACABU)"
+                  ]
+                },
+                "is404": false,
+                "transform_source": "algolia-academy",
+                "url": "https://academy.algolia.com/training/0191df91-bc46-7267-b9a2-7862cb5b77a2",
+                "description": "Learn how Algolia's tie-breaking algorithm works, customize ranking formulas, leverage custom ranking attributes, and implement filters for advanced search queries with an understanding of ranking metrics.",
+                "lastUpdated": "2026-07-21T21:51:36.212Z",
+                "source": "Academy",
+                "title": "Customizing Relevance with Ranking and Filters",
+                "tags": [
+                  "ranking",
+                  "relevance",
+                  "custom ranking"
+                ],
+                "keywords": [],
+                "abstract": "Learn how Algolia's tie-breaking algorithm works, customize ranking formulas, leverage custom ranking attributes, and implement filters for advanced search queries with an understanding of ranking metrics.",
+                "indexed_at": 1784670696212
+              },
+              {
+                "category": "guide",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "tags": [
+                  "ranking",
+                  "relevance",
+                  "custom ranking"
+                ],
+                "url": "https://academy.algolia.com/training/0191df91-bc46-7267-b9a2-7862cb5b77a2",
+                "description": "Learn how Algolia's tie-breaking algorithm works, customize ranking formulas, leverage custom ranking attributes, and implement filters for advanced search queries with an understanding of ranking metrics.",
+                "facets": {},
+                "published_at": 1761942004438,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Certified Developer (ACD)"
+                  ]
+                },
+                "algoliaDisabled": "false",
+                "source": "Academy",
+                "indexed_at": 1784670696212,
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:51:36.212Z",
+                "objectID": "01920b6c-63a8-722c-b3d5-0dc4eb6085f0",
+                "title": "Customizing Relevance with Ranking and Filters",
+                "authors": [],
+                "transform_source": "algolia-academy",
+                "keywords": [],
+                "abstract": "Learn how Algolia's tie-breaking algorithm works, customize ranking formulas, leverage custom ranking attributes, and implement filters for advanced search queries with an understanding of ranking metrics.",
+                "language_code": "en",
+                "environment": "prod20260722"
+              },
+              {
+                "keywords": [],
+                "objectID": "019d2583-cfb2-781e-a413-76f6354de234",
+                "source": "Academy",
+                "category": "guide",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "tags": [
+                  "events",
+                  "client-side capture",
+                  "event implementation",
+                  "InstantSearch",
+                  "search insights"
+                ],
+                "description": "This course teaches how to implement event capture using InstantSearch and the search-insights library. Developers learn automatic vs manual events, how to attach queryID + userToken, and how to validate implementation through Events Health.",
+                "abstract": "This course teaches how to implement event capture using InstantSearch and the search-insights library. Developers learn automatic vs manual events, how to attach queryID + userToken, and how to validate implementation through Events Health.",
+                "indexed_at": 1784670696210,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Data Sources"
+                  ]
+                },
+                "authors": [],
+                "language_code": "en",
+                "published_at": 1774454427230,
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:51:36.210Z",
+                "environment": "prod20260722",
+                "algoliaDisabled": "false",
+                "facets": {},
+                "transform_source": "algolia-academy",
+                "title": "Client-Side Capture (InstantSearch and Search Insights)",
+                "url": "https://academy.algolia.com/training/019d207e-a88b-7572-9845-11f9e98b7a71"
+              },
+              {
+                "algoliaDisabled": "false",
+                "category": "guide",
+                "tags": [
+                  "events",
+                  "client-side capture",
+                  "event implementation",
+                  "InstantSearch",
+                  "search insights"
+                ],
+                "language_code": "en",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Events Implementation for Developers"
+                  ]
+                },
+                "transform_source": "algolia-academy",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "authors": [],
+                "url": "https://academy.algolia.com/training/019d207e-a88b-7572-9845-11f9e98b7a71",
+                "abstract": "This course teaches how to implement event capture using InstantSearch and the search-insights library. Developers learn automatic vs manual events, how to attach queryID + userToken, and how to validate implementation through Events Health.",
+                "published_at": 1774454427212,
+                "description": "This course teaches how to implement event capture using InstantSearch and the search-insights library. Developers learn automatic vs manual events, how to attach queryID + userToken, and how to validate implementation through Events Health.",
+                "keywords": [],
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:51:36.210Z",
+                "objectID": "019d21d0-30b1-7766-814a-e59f06f26d70",
+                "source": "Academy",
+                "title": "Client-Side Capture (InstantSearch and Search Insights)",
+                "indexed_at": 1784670696210,
+                "facets": {},
+                "environment": "prod20260722"
+              },
+              {
+                "source": "Developers",
+                "title": "Swift iOS API client for Search | Algolia",
+                "keywords": [
+                  "swift",
+                  "go",
+                  "api client",
+                  "search api",
+                  "library",
+                  "client library",
+                  "official",
+                  "analytics",
+                  "indexing",
+                  "configuration",
+                  "api clients"
+                ],
+                "abstract": "Full-featured API client with indexing, configuration, and analytics support Programming language: Swift Client type: API clients",
+                "environment": "prod20260722",
+                "tags": [
+                  "swift",
+                  "go",
+                  "api client",
+                  "search api",
+                  "library",
+                  "client library",
+                  "official",
+                  "analytics",
+                  "indexing",
+                  "configuration",
+                  "api clients",
+                  "Swift",
+                  "API clients"
+                ],
+                "authors": [],
+                "url": "/developers/search-api-swift",
+                "hierarchicalCategories": {},
+                "objectID": "en_6a9e5e31-a40f-4c2b-a61c-f0351af42d10",
+                "thumbnail": "/sites/algolia-assets/files/developerdetailsassets/swift.svg",
+                "language_code": "en",
+                "indexed_at": 1784670466272,
+                "lastUpdated": "2026-07-21T21:47:46.272Z",
+                "transform_source": "aant-developersEntry",
+                "category": "Developer Resources",
+                "description": "Official Algolia search API client library for iOS (Swift). Index your data, configure your search, add analytics and much more.",
+                "facets": {},
+                "published_at": 1733323172434,
+                "is404": false
+              },
+              {
+                "objectID": "https://www.algolia.com/doc/libraries/kotlin/v3/methods/search/",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "keywords": [],
+                "facets": {},
+                "environment": "prod20260722",
+                "transform_source": "algolia-com-doc",
+                "description": "Search, configure, and mange your indices and records.",
+                "title": "Search API client",
+                "tags": [],
+                "authors": [],
+                "url": "/doc/libraries/kotlin/v3/methods/search",
+                "indexed_at": 1784670696065,
+                "published_at": 1784670696065,
+                "source": "Documentation",
+                "category": "Doc",
+                "abstract": "The Search API client is part of the algoliasearch-scala package.You can add this package to your bu...",
+                "language_code": "en",
+                "lastUpdated": "2026-07-21T21:51:36.065Z"
+              },
+              {
+                "keywords": [],
+                "abstract": "The Search API client is part of the algoliasearch-scala package.You can add this package to your bu...",
+                "language_code": "en",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.037Z",
+                "category": "Doc",
+                "authors": [],
+                "environment": "prod20260722",
+                "transform_source": "algolia-com-doc",
+                "tags": [],
+                "description": "Search, configure, and mange your indices and records.",
+                "published_at": 1784670696037,
+                "title": "Search API client",
+                "url": "/doc/libraries/scala/v2/methods/search",
+                "indexed_at": 1784670696037,
+                "objectID": "https://www.algolia.com/doc/libraries/scala/v2/methods/search/",
+                "source": "Documentation",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png"
+              },
+              {
+                "title": "Comparing Frontend and Backend Search Approaches",
+                "category": "guide",
+                "authors": [],
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:51:36.212Z",
+                "algoliaDisabled": "false",
+                "transform_source": "algolia-academy",
+                "tags": [
+                  "SearchImplementation",
+                  "FrontendSearch",
+                  "BackendVsFrontend",
+                  "AlgoliaPerformance",
+                  "UI Libraries"
+                ],
+                "description": "Optimize search implementation: Backend vs. Frontend. Explore speed, reliability, and user experience. Leverage Algolia's distributed search network for enhanced performance. Master UI libraries for efficient frontend search experiences.",
+                "language_code": "en",
+                "url": "https://academy.algolia.com/training/b25b7642-c06a-11ee-9a1d-065b7db101cb",
+                "keywords": [],
+                "facets": {},
+                "published_at": 1761741301458,
+                "environment": "prod20260722",
+                "objectID": "01920b66-48d7-7ba0-bea3-f71f894db836",
+                "indexed_at": 1784670696212,
+                "source": "Academy",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "abstract": "Optimize search implementation: Backend vs. Frontend. Explore speed, reliability, and user experience. Leverage Algolia's distributed search network for enhanced performance. Master UI libraries for efficient frontend search experiences.",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Certified Developer (ACD)"
+                  ]
+                }
+              },
+              {
+                "is404": false,
+                "url": "https://academy.algolia.com/training/b25b7642-c06a-11ee-9a1d-065b7db101cb",
+                "abstract": "Optimize search implementation: Backend vs. Frontend. Explore speed, reliability, and user experience. Leverage Algolia's distributed search network for enhanced performance. Master UI libraries for efficient frontend search experiences.",
+                "facets": {},
+                "published_at": 1761741301498,
+                "environment": "prod20260722",
+                "algoliaDisabled": "false",
+                "transform_source": "algolia-academy",
+                "authors": [],
+                "description": "Optimize search implementation: Backend vs. Frontend. Explore speed, reliability, and user experience. Leverage Algolia's distributed search network for enhanced performance. Master UI libraries for efficient frontend search experiences.",
+                "indexed_at": 1784670696211,
+                "objectID": "0199aacb-f217-7601-9164-b6d4c69898fe",
+                "source": "Academy",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "tags": [
+                  "SearchImplementation",
+                  "FrontendSearch",
+                  "BackendVsFrontend",
+                  "AlgoliaPerformance",
+                  "UI Libraries"
+                ],
+                "keywords": [],
+                "lastUpdated": "2026-07-21T21:51:36.211Z",
+                "title": "Comparing Frontend and Backend Search Approaches",
+                "category": "guide",
+                "language_code": "en",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "UI/UX"
+                  ]
+                }
+              }
+            ],
+            "admissionRejected": true,
+            "followUps": [
+              "Are you shaping a quick proof of concept, or planning the architecture for a production implementation?"
+            ]
+          }
+        ],
+        "deepDiveDeclined": false,
+        "deepDiveSpecialist": "tech",
+        "deepDiveQuery": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?",
+        "specialistLimitation": {
+          "agent": "tech",
+          "text": "I cannot provide a comprehensive blueprint for structuring records, events, ranking, and frontend responsibilities from the retrieved evidence. The search results provided high-level blog posts about search relevance, analytics, and API design, but they do not contain specific technical implementation guides or architectural blueprints for a Proof of Concept (PoC).\n\nBased on the available retrieved text, I can only provide the following limited factual map:\n\n### Technical Map\n*   **Event Tracking & ROI**: A page titled \"How and why events drive search ROI\" exists, which states that event data is \"at the heart of search optimization\" ([link](/blog/product/how-and-why-events-drive-search-roi)).\n*   **Search Relevance**: A page titled \"What is search relevance?\" discusses how fine-tuning relevance can lower bounce rates and increase conversions ([link](/blog/product/what-is-search-relevance)).\n*   **API Design**: A page titled \"Build multiple search interfaces with a one-to-many API-first design\" mentions delivering diverse experiences for different users via an API-first approach ([link](/blog/product/how-a-one-to-many-api-first-design-can-deliver-diverse-experiences-for-different-users)).\n*   **Frontend Experience**: A page titled \"Create an end-to-end search experience with autocomplete\" discusses building a composable front-end search with autocomplete and instant search results ([link](/blog/product/creating-an-end-to-end-search-experience-with-autocomplete-and-instant-search-results)).\n*   **Index Strategy**: A page titled \"Site search index strategy: how to match results to user intent\" discusses moving away from a \"one-size-fits-all\" strategy toward intent-based search ([link](/blog/product/site-search-index-strategy)).\n\n### Boundary: Missing Evidence\nThe retrieved text does **not** verify:\n*   **Record Structure**: Specific data modeling patterns, attribute naming, or JSON schemas for records.\n*   **Event Implementation**: The specific API methods or payload structures required to send events.\n*   **Ranking Configuration**: The specific order of ranking formulas or how to configure custom ranking in the dashboard/API.\n*   **Frontend Responsibilities**: A detailed breakdown of which logic should reside on the client-side versus the server-side.\n\n**Next Step:** To get precise implementation details, I recommend searching the official **Algolia Documentation** specifically for \"Indexing data,\" \"Insights API,\" and \"Ranking and Relevance.\" Would you like me to attempt a more targeted search for these specific technical guides?",
+          "followUps": [
+            "How can I use the Insights API to track events and actually drive search ROI?"
+          ]
+        }
+      },
+      {
+        "id": "04bfce7a-75f5-48e2-91c0-387625dfe531",
+        "userMessageId": "d428f21a-7ea2-445c-9173-dca25cdc25cb",
+        "query": "Now that I am looking at the UI libraries, how should that change the proof-of-concept boundary?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "bff7f85d-093c-468b-98fc-22ebc1866807",
+            "agent": "primary",
+            "status": "success",
+            "text": "The retrieved material does not verify the specific details requested, so I cannot present those claims as confirmed.",
+            "sources": [],
+            "searchCount": 0,
+            "rawHits": [],
+            "admissionRejected": true,
+            "followUps": [
+              "Would it help more to narrow the proof by your industry, use case, or target business outcome?"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "bodyText": "Join us:\nAlgolia DevCon 2026: Sep 30 - Oct 1, 2026 — VIRTUAL\nRegister Now\nUPDATE:\nUnlock the power of agentic AI with Agent Studio\nSee what's new\nCompany\nPartners\nSupport\nLogin\n\nEng\n\nProducts\nSolutions\nPricing\nDevelopers\nResources\nSearch or Ask AI\nFix your search\nGet started\n\nFILTER BY SOURCE\n\nDocumentation\n4,358\nSupport\n1,701\nBlog\n938\nWebsite\n472\nDevelopers\n288\nResources\n277\nAcademy\n144\nCustomer Stories\n83\n\nSUGGESTIONS\n\nAlgolia API integration\nAlgolia search benefits\nAlgolia scalability\nAI search for ecommerce\n\nPRODUCTS & RESOURCES\n\nAI Search\nWebsite • Products\nLearn more →\nSecurity Measures | Algolia\nWebsite • Distributed Secure\nLearn more →\nAgent Studio\nWebsite • Products\nLearn more →\nShow more results\nINSTANTSEARCH\nBuild modern search and agentic experiences faster\n\nUI components and SDKs that help developers ship high-performing search, discovery, recommendation, and conversational experiences across any device without building every interaction pattern from scratch.\n\nGet started\nRequest a demo\nBuilt to unlock the full potential of Algolia’s search infrastructure\n\nAlgolia’s UI Component Libraries help you turn powerful search APIs into fast, flexible frontend experiences. Start with proven search and discovery patterns, then extend them into AI-powered and agent-driven interactions with the control your team needs.\n\nSearch as you type\n\nShow relevant results from the first keystroke, powered by Algolia’s speed and relevance.\n\n \nFederated search\n\nSurface different types of content in a single, unified interface.\n\nTry it out\nFilters and facets\n\nHelp users narrow results quickly with customizable filtering and faceting components built for real-world catalogs.\n\nSorting & pagination\n\nGive users clear ways to explore results, compare options, and move through large result sets without friction.\n\nRecommend\n\nEncourage users to expand their search and browse to find similar or complementary items.\n\nAgent Studio SDK components\n\nBuild conversational interfaces, guided discovery flows, and agent-assisted workflows that connect search, product data, business logic, and LLM-powered experiences.\n\nRead the docs\nEnhance your UX\nImprove your user experience across all platforms\n\nInstantSearch packages best practices and proven design patterns into customizable components, so teams can build fast, intuitive search and discovery experiences for web, mobile, and native applications.\n\nUse ready-to-use widgets where they accelerate development, or customize the interface, behavior, and ranking logic where your experience needs more control.\n\nAdd AI-powered and conversational experiences\n\nMove beyond static search results with components that help users ask questions, refine intent, and discover the next best result faster.\nAgent Studio SDK components give developers building blocks for conversational search, retrieval-powered experiences, guided discovery, and intelligent workflows. Connect Algolia search and product data to LLM-powered interfaces while keeping control over how the experience looks, behaves, and performs.\n\nBuilt for developers\n\nAlgolia provides frontend libraries for the frameworks developers already use. Each library follows the concepts, coding patterns, and UX best practices of its framework, so teams can move quickly from a basic search UI to more advanced AI search and agent-driven experiences.\nBuild with prebuilt components, compose your own flows, and customize the experience end to end without giving up performance or flexibility.\n\nInstantSearch\n\nFor Vue\n\nRead the docs\nInstantSearch\n\nFor JavaScript\n\nRead the docs\nInstantSearch\n\nFor Angular\n\nRead the docs\nInstantSearch\n\nFor iOS\n\nRead the docs\nInstantSearch\n\nFor React & React Native\n\nRead the docs\nInstantSearch\n\nFor Android\n\nRead the docs\nThe most advanced companies experiment everyday with InstantSearch\n“After deploying Algolia, there’s less reliance on developer intervention to do everything that the business wants to do, and what the business is actually capable of doing is way beyond what they thought was possible in the old world.”\n\nRichard Migette\n\nE-commerce Project Leader Decathlon\n\nRead their story\nRecommended content\nStaples Canada: Harnessing AI to better serve the community\n\nStaples Canada needed a smart easy-to-use solution to track and scale their performance online. See how they upgraded their ecommerce experience with better search.\n\nRead more\n7 ways to get more out of Algolia search\n\nA checklist of practical, easy ways for Algolia customers to improve their search and boost conversion rates. Recommendations range from core relevance and UI design to improving search merchandising.\n\nRead more\n4 advanced tactics to improve your search\n\nWant your search & discovery to be like Amazon's and Netflix's? Get access to the best tips in this ebook.\n\nRead more\nSee more\nEnable anyone to build great Search & Discovery\nGet a demo\nStart free\nCareers\nContact Us\nAbout Algolia\nAnti-Modern Slavery Statement\nSocial networks\nGet the latest in AI search - straight to your inbox.\n©2026 Algolia - All rights reserved.\nCookie settings\nTrust Center\nPrivacy Policy\nTerms of service\nAcceptable Use Policy\nProactive suppressed: no_trigger_match",
+  "journey": "S1",
+  "expectedTrigger": "developer_page_10s_50_scroll",
+  "visitorResponse": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?",
+  "specialistAccepted": true,
+  "specialistDeclined": false,
+  "specialistAction": "accept",
+  "continuity": {
+    "sourcePath": "/developers",
+    "destinationPath": "/products/features/ui-component-libraries",
+    "conversationIdBefore": "5b1373f4-014c-46c3-802b-7ca0cbe23ba7",
+    "conversationIdAfter": "5b1373f4-014c-46c3-802b-7ca0cbe23ba7",
+    "turnCountBefore": 1,
+    "turnCountAfter": 2,
+    "restoredQueryVisible": true,
+    "followUp": "Now that I am looking at the UI libraries, how should that change the proof-of-concept boundary?"
+  },
+  "verification": {
+    "boundaries": {
+      "visitorResponseBoundaryId": 2,
+      "firstTurnBoundaryId": 16
+    },
+    "configuredOrchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "reset": {
+      "pass": true,
+      "errors": [],
+      "checks": {
+        "preseedCaptured": true,
+        "freshProfile": true,
+        "freshSession": true,
+        "eventsReset": true,
+        "proactiveCleared": true,
+        "conversationCleared": true,
+        "handoffCleared": true,
+        "unrelatedStatePreserved": true
+      },
+      "preseed": {
+        "profileVisitorId": "reset_probe_visitor",
+        "sessionId": "reset_probe_session",
+        "proactiveOpportunityId": "reset_probe_opportunity",
+        "conversationId": "reset_probe_conversation",
+        "handoffOpportunityId": "reset_probe_opportunity",
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      },
+      "post": {
+        "profileVisitorId": "visitor_8ee672e33a55bef42502986c",
+        "sessionId": "sess_75dc50275725145748093591",
+        "eventNames": [
+          "page_view"
+        ],
+        "proactiveOpportunityId": null,
+        "conversationId": null,
+        "handoffOpportunityId": null,
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      }
+    },
+    "firstTurnTraffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 1,
+        "byOpportunity": {
+          "opp_1a019e55765_a77415": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 3,
+        "responseId": 4,
+        "responseStatus": 200,
+        "responseTextLength": 3878,
+        "routedToSpecialist": true,
+        "routingMode": "deterministic_client",
+        "specialistRequests": 1,
+        "specialistAction": "accept",
+        "specialistOutcome": "demoted",
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 0
+      },
+      "discovery": {
+        "pass": true,
+        "errors": [],
+        "visibleWraps": 1,
+        "visibleQuestions": 1,
+        "questions": [
+          "How can I use the Insights API to track events and actually drive search ROI?"
+        ]
+      },
+      "specialistRoutingDebug": {
+        "context": {
+          "context.version": "1",
+          "context.source": "deterministic_browser_signals",
+          "page.path": "/developers",
+          "page.title": "Developers",
+          "journey.paths": "/developers -> /developers",
+          "journey.page_count": "2",
+          "behavior.read_depth": "medium",
+          "conversation_id": "5b1373f4-014c-46c3-802b-7ca0cbe23ba7"
+        },
+        "query": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?",
+        "contentLength": 3878,
+        "visibleAnswerLength": 3396,
+        "toolNames": [],
+        "offer": {
+          "specialistKey": "tech",
+          "question": "How should I structure records, events, ranking, and frontend responsibilities for an implementation proof of concept?"
+        },
+        "hasHandler": true
+      }
+    },
+    "traffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 1,
+        "byOpportunity": {
+          "opp_1a019e55765_a77415": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 3,
+        "responseId": 4,
+        "responseStatus": 200,
+        "responseTextLength": 3878,
+        "routedToSpecialist": true,
+        "routingMode": "deterministic_client",
+        "specialistRequests": 1,
+        "specialistAction": "accept",
+        "specialistOutcome": "demoted",
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 1
+      }
+    }
+  }
+}

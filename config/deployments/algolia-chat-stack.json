@@ -20,11 +20,58 @@
     ]
   },
   "agentStudio": {
+    "greetings": {
+      "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+      "name": "www Chat - Proactive Concierge",
+      "instructionsPath": "agents/prompts/instructions_algolia_proactive_greeting.md",
+      "systemPromptPath": "agents/prompts/system_algolia_arrie_concierge.md",
+      "configPatch": {
+        "temperature": 0.5
+      },
+      "toolsPolicy": "empty",
+      "evidenceRoot": "docs/evidence/agent-studio"
+    },
     "orchestrator": {
       "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
       "name": "www Chat - Orchestrator",
       "instructionsPath": "agents/prompts/instructions_algolia_orchestrator.md",
       "systemPromptPath": "agents/prompts/system_algolia_orchestrator.md",
+      "searchToolPatch": {
+        "toolName": "algolia_search_index",
+        "indexName": "Algolia_Prod_Copy_Vanilla",
+        "searchParameters": {
+          "filters": "environment:\"prod20260722\" AND language_code:\"en\" AND NOT is404:true"
+        }
+      },
+      "evidenceRoot": "docs/evidence/agent-studio",
+      "specialists": [
+        {
+          "key": "evidence",
+          "agentId": "c735a57d-d64e-4c4f-bea2-857a608d5a52",
+          "name": "Customer Evidence Specialist"
+        },
+        {
+          "key": "product",
+          "agentId": "24b23e23-26a6-4f98-9019-44746e1eb7f0",
+          "name": "Product Specialist"
+        },
+        {
+          "key": "tech",
+          "agentId": "cdac8765-5626-451a-87a0-f5a95aad7235",
+          "name": "Developer Specialist"
+        },
+        {
+          "key": "sales",
+          "agentId": "6e388624-2b08-4c70-8175-525612b7670a",
+          "name": "Sales Concierge"
+        }
+      ]
+    },
+    "developerSpecialist": {
+      "agentId": "cdac8765-5626-451a-87a0-f5a95aad7235",
+      "name": "www Chat – Developer Specialist",
+      "instructionsPath": "agents/prompts/instructions_algolia_developer_specialist.md",
+      "systemPromptPath": "agents/prompts/system_algolia_developer_specialist.md",
       "evidenceRoot": "docs/evidence/agent-studio"
     }
   }

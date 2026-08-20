@@ -1,0 +1,59 @@
+{
+  "pass": true,
+  "errors": [],
+  "greetings": {
+    "requests": 1,
+    "byOpportunity": {
+      "opp_1a019d5ec84_a8118d": 1
+    },
+    "afterVisitorResponse": 0
+  },
+  "firstTurn": {
+    "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "orchestratorRequests": 1,
+    "handoffBlocks": 1,
+    "requestId": 3,
+    "responseId": 5,
+    "responseStatus": 200,
+    "responseTextLength": 3341,
+    "routedToSpecialist": false,
+    "routingMode": null,
+    "specialistRequests": 0,
+    "specialistAction": null,
+    "specialistOutcome": null,
+    "visibleResponderAgentIds": [
+      "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+    ],
+    "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+  },
+  "continuity": {
+    "orchestratorRequests": 0
+  },
+  "discovery": {
+    "pass": true,
+    "errors": [],
+    "visibleWraps": 1,
+    "visibleQuestions": 1,
+    "questions": [
+      "Are you seeing more friction with \"out-of-stock\" abandonments or with shoppers struggling to navigate a massive catalog?"
+    ]
+  },
+  "specialistRoutingDebug": {
+    "context": {
+      "context.version": "1",
+      "context.source": "deterministic_browser_signals",
+      "page.path": "/industries/grocery",
+      "page.title": "Grocery",
+      "journey.paths": "/industries/grocery -> /industries/grocery",
+      "journey.page_count": "2",
+      "behavior.read_depth": "medium",
+      "conversation_id": "99321359-aa5a-4f59-8ce3-b29f295ef7d1"
+    },
+    "query": "Which grocery discovery problems usually create the largest commercial drag?",
+    "contentLength": 3341,
+    "visibleAnswerLength": 2916,
+    "toolNames": [],
+    "offer": null,
+    "hasHandler": true
+  }
+}

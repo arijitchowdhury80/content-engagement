@@ -2,9 +2,22 @@
   "use strict";
 
   const LABEL = "[Algolia Engagement Tracker]";
-  const DEBUG =
-    new URLSearchParams(location.search).get("algoliaChatDebug") === "1" ||
-    new URLSearchParams(location.search).get("algoliaEngagementDebug") === "1";
+  function debugFlag(name) {
+    try {
+      const params = new URLSearchParams(location.search);
+      return (
+        params.get("algoliaChatDebug") === "1" ||
+        params.get(name) === "1" ||
+        localStorage.getItem("algoliaDebug") === "1" ||
+        localStorage.getItem("algoliaChatDebug") === "1" ||
+        localStorage.getItem(name) === "1"
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  const DEBUG = debugFlag("algoliaEngagementDebug");
 
   const PROFILE_KEY = "algolia_profile";
   const SESSION_KEY = "algolia_session";
@@ -12,7 +25,23 @@
   const PROACTIVE_STATE_KEY = "algolia_proactive_state";
   const PENDING_GREETING_KEY = "algolia_pending_greeting";
   const PROACTIVE_DEBUG_KEY = "algolia_proactive_debug_log";
+  const CONTEXT_VALIDATION_ERROR_KEY = "algolia_context_validation_error";
+  const CONVERSATION_KEY = "algolia-chat:conversation";
+  const CONVERSATION_UI_KEY = "algolia-chat:conversation-ui";
+  const HANDOFF_CONTEXT_KEY = "algolia-chat:handoff-context";
   const TOKEN_KEY = "algolia_token";
+  const SESSION_STATE_KEYS = [
+    SESSION_KEY,
+    EVENTS_KEY,
+    TOKEN_KEY,
+    PROACTIVE_STATE_KEY,
+    PENDING_GREETING_KEY,
+    PROACTIVE_DEBUG_KEY,
+    CONTEXT_VALIDATION_ERROR_KEY,
+    CONVERSATION_KEY,
+    CONVERSATION_UI_KEY,
+    HANDOFF_CONTEXT_KEY,
+  ];
   const LEGACY_VISITOR_STATE_KEYS = [
     "acs_profile",
     "acs_session",
@@ -32,8 +61,8 @@
   const MAX_PAGES = 40;
   const MAX_ENGAGEMENTS = 20;
   const MAX_TEXT = 120;
-  const DWELL_MILESTONES_MS = [5000, 10000];
-  const SCROLL_MILESTONES = [50, 75, 100];
+  const DWELL_MILESTONES_MS = [5000, 10000, 15000];
+  const SCROLL_MILESTONES = [25, 50, 75, 100];
   const SAFE_UTM_KEYS = [
     "utm_source",
     "utm_medium",
@@ -49,6 +78,10 @@
   let session = null;
   let currentPageId = null;
   let currentPageStartedAt = Date.now();
+  let currentPageVisibleStartedAt = null;
+  let currentPageVisibleDwellMs = 0;
+  let dwellMilestoneTimers = [];
+  let reachedDwellMilestones = new Set();
   let currentScrollMilestone = 0;
   let routeWatchInstalled = false;
   let clickWatchInstalled = false;
@@ -265,7 +298,31 @@
     return clean;
   }
 
+  function explicitPageClassification() {
+    const metadata = {
+      ...(document.documentElement?.dataset || {}),
+      ...(document.body?.dataset || {}),
+    };
+    const pageGroup = truncate(metadata.algoliaPageGroup, 40);
+    const topic = truncate(metadata.algoliaTopic, 80);
+    if (!pageGroup || !topic) return null;
+
+    const classification = { pageGroup, topic };
+    const productFocus = truncate(metadata.algoliaProductFocus, 80);
+    const productFocusLabel = truncate(metadata.algoliaProductFocusLabel, 120);
+    const solutionFocus = truncate(metadata.algoliaSolutionFocus, 80);
+    const solutionFocusLabel = truncate(metadata.algoliaSolutionFocusLabel, 120);
+    if (productFocus) classification.productFocus = productFocus;
+    if (productFocusLabel) classification.productFocusLabel = productFocusLabel;
+    if (solutionFocus) classification.solutionFocus = solutionFocus;
+    if (solutionFocusLabel) classification.solutionFocusLabel = solutionFocusLabel;
+    return classification;
+  }
+
   function pageClassification(pathname = location.pathname) {
+    const explicit = explicitPageClassification();
+    if (explicit) return explicit;
+
     const path = pathname.toLowerCase();
     const text = `${path} ${document.title || ""}`.toLowerCase();
 
@@ -365,15 +422,17 @@
   function resetSessionForDemoIfRequested() {
     try {
       if (new URLSearchParams(location.search).get(RESET_QUERY_PARAM) !== "1") return;
-      sessionStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(EVENTS_KEY);
-      sessionStorage.removeItem(PROACTIVE_STATE_KEY);
+      clearAlgoliaSessionState();
       session = null;
       currentPageId = null;
-      debug("reset session-scoped proactive state from query parameter");
+      debug("reset Algolia session and chat state from query parameter");
     } catch {
       // Demo reset is best effort and must never break the page.
     }
+  }
+
+  function clearAlgoliaSessionState() {
+    for (const key of SESSION_STATE_KEYS) sessionStorage.removeItem(key);
   }
 
   function initializeProfile() {
@@ -514,9 +573,13 @@
   function trackPageView() {
     if (!isAllowed()) return;
     flushPageDwell();
+    clearDwellMilestoneTimers();
 
     currentPageId = id("page");
     currentPageStartedAt = Date.now();
+    currentPageVisibleStartedAt = document.hidden ? null : currentPageStartedAt;
+    currentPageVisibleDwellMs = 0;
+    reachedDwellMilestones = new Set();
     currentScrollMilestone = 0;
 
     const classification = pageClassification();
@@ -550,32 +613,74 @@
       utm: currentUtm(),
     });
 
+    scheduleDwellMilestones(page);
+  }
+
+  function visibleDwellMs(now = Date.now()) {
+    if (currentPageVisibleStartedAt === null) return currentPageVisibleDwellMs;
+    return currentPageVisibleDwellMs + Math.max(0, now - currentPageVisibleStartedAt);
+  }
+
+  function clearDwellMilestoneTimers() {
+    for (const timer of dwellMilestoneTimers) clearTimeout(timer);
+    dwellMilestoneTimers = [];
+  }
+
+  function recordDwellMilestone(page, milestone) {
+    if (currentPageId !== page.pageId || reachedDwellMilestones.has(milestone)) return;
+    if (visibleDwellMs() < milestone) return;
+    reachedDwellMilestones.add(milestone);
+    updatePageDwell();
+    track("page_dwell", {
+      dwellSeconds: Math.round(milestone / 1000),
+      pageGroup: page.pageGroup,
+      topic: page.topic,
+      productFocus: page.productFocus,
+      productFocusLabel: page.productFocusLabel,
+      solutionFocus: page.solutionFocus,
+      solutionFocusLabel: page.solutionFocusLabel,
+    });
+  }
+
+  function scheduleDwellMilestones(page = currentPage()) {
+    clearDwellMilestoneTimers();
+    if (!page || currentPageVisibleStartedAt === null) return;
+    const elapsed = visibleDwellMs();
     for (const milestone of DWELL_MILESTONES_MS) {
-      setTimeout(() => {
-        if (currentPageId !== page.pageId) return;
-        updatePageDwell();
-        track("page_dwell", {
-          dwellSeconds: Math.round(milestone / 1000),
-          pageGroup: page.pageGroup,
-          topic: page.topic,
-          productFocus: page.productFocus,
-          productFocusLabel: page.productFocusLabel,
-          solutionFocus: page.solutionFocus,
-          solutionFocusLabel: page.solutionFocusLabel,
-        });
-      }, milestone);
+      if (reachedDwellMilestones.has(milestone)) continue;
+      const remaining = milestone - elapsed;
+      if (remaining <= 0) recordDwellMilestone(page, milestone);
+      else {
+        dwellMilestoneTimers.push(
+          setTimeout(() => recordDwellMilestone(page, milestone), remaining)
+        );
+      }
     }
   }
 
   function updatePageDwell() {
     const page = currentPage();
     if (!page) return;
-    upsertCurrentPage({ dwellMs: Date.now() - currentPageStartedAt });
+    upsertCurrentPage({ dwellMs: visibleDwellMs() });
   }
 
   function flushPageDwell() {
     if (!currentPageId) return;
     updatePageDwell();
+  }
+
+  function pausePageDwell() {
+    if (currentPageVisibleStartedAt === null) return;
+    currentPageVisibleDwellMs = visibleDwellMs();
+    currentPageVisibleStartedAt = null;
+    clearDwellMilestoneTimers();
+    updatePageDwell();
+  }
+
+  function resumePageDwell() {
+    if (!currentPageId || currentPageVisibleStartedAt !== null || document.hidden) return;
+    currentPageVisibleStartedAt = Date.now();
+    scheduleDwellMilestones();
   }
 
   function scrollPercent() {
@@ -827,13 +932,8 @@
 
   function reset() {
     writeJson(localStorage, PROFILE_KEY, null);
-    writeJson(sessionStorage, SESSION_KEY, null);
-    writeJson(sessionStorage, EVENTS_KEY, null);
     try {
-      sessionStorage.removeItem(TOKEN_KEY);
-      sessionStorage.removeItem(PROACTIVE_STATE_KEY);
-      sessionStorage.removeItem(PENDING_GREETING_KEY);
-      sessionStorage.removeItem(PROACTIVE_DEBUG_KEY);
+      clearAlgoliaSessionState();
       for (const key of LEGACY_VISITOR_STATE_KEYS) {
         localStorage.removeItem(key);
         sessionStorage.removeItem(key);
@@ -891,8 +991,11 @@
     }
     window.addEventListener("popstate", () => setTimeout(trackPageView, 0));
     window.addEventListener("beforeunload", flushPageDwell);
+    window.addEventListener("pagehide", pausePageDwell);
+    window.addEventListener("pageshow", resumePageDwell);
     document.addEventListener("visibilitychange", () => {
-      if (document.hidden) flushPageDwell();
+      if (document.hidden) pausePageDwell();
+      else resumePageDwell();
     });
   }
 
@@ -921,6 +1024,9 @@
   function installChatWatcher() {
     if (chatWatchInstalled) return;
     chatWatchInstalled = true;
+    document.addEventListener("algolia-visitor-reset-requested", () => {
+      reset();
+    });
     document.addEventListener("algolia-chat-open-change", (event) => {
       track("chat_open", { open: !!event.detail?.open });
     });

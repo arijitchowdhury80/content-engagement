@@ -1,0 +1,2655 @@
+{
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/ebook-merchandising-edge-with-aws-and-algolia?algoliaChatDebug=1&algoliaProactiveDebug=1&algoliaHandoffDebug=1&cb=hosted-s2-continuity",
+  "title": "The Merchandising Edge with AWS and Algolia",
+  "controller": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "opportunityTtlMs": 600000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "documentationJourneyDwellMs": 10000,
+      "documentationJourneyScrollDepth": 50,
+      "proofJourneyDwellMs": 10000,
+      "proofJourneyScrollDepth": 50,
+      "implementationDwellMs": 10000,
+      "implementationScrollDepth": 50,
+      "resourceDwellMs": 10000,
+      "resourceScrollDepth": 50,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a019dc229c_79710b",
+          "status": "active",
+          "lifecycle": [
+            "qualified",
+            "pending",
+            "shown",
+            "engaged",
+            "handed_off",
+            "active"
+          ],
+          "pageId": "page_8f267c143d61985519a771ac",
+          "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "moment": "resource_research",
+          "trigger": "resource_page_10s_50_scroll",
+          "priority": 75,
+          "messageGoal": "connect_resource_insight_to_next_step",
+          "reasonCodes": [
+            "resource_page",
+            "resource_dwell",
+            "resource_scroll"
+          ],
+          "createdAt": 1787140252316,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "resource_research",
+            "trigger": "resource_page_10s_50_scroll",
+            "priority": 75,
+            "persona": {
+              "value": "unknown",
+              "state": "unknown",
+              "confidence": 0,
+              "source": "insufficient_signal"
+            },
+            "currentPage": {
+              "pageId": "page_8f267c143d61985519a771ac",
+              "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "title": "Unlock the power of agentic AI with Agent Studio",
+              "pageGroup": "resource",
+              "topic": "education",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": null,
+            "journeySummary": {
+              "currentTransition": "resource_page_10s_50_scroll",
+              "productTrail": [],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                  "title": "Unlock the power of agentic AI with Agent Studio",
+                  "pageGroup": "resource",
+                  "topic": "education"
+                },
+                {
+                  "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                  "title": "Unlock the power of agentic AI with Agent Studio",
+                  "pageGroup": "resource",
+                  "topic": "education"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "title": "Unlock the power of agentic AI with Agent Studio",
+                "pageGroup": "resource",
+                "topic": "education",
+                "dwellMs": 1082,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "title": "Unlock the power of agentic AI with Agent Studio",
+                "pageGroup": "resource",
+                "topic": "education",
+                "dwellMs": 10003,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                  "title": "Unlock the power of agentic AI with Agent Studio",
+                  "pageGroup": "resource",
+                  "topic": "education"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                  "title": "Unlock the power of agentic AI with Agent Studio",
+                  "pageGroup": "resource",
+                  "topic": "education"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "resource",
+                  "topic": "education"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "resource",
+                  "topic": "education"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "resource",
+                  "topic": "education"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "general_algolia_research",
+              "state": "inferred",
+              "confidence": 0.45,
+              "evidence": [
+                "current_page:Unlock the power of agentic AI with Agent Studio /resources/asset/infographic-unlock-the-power-of-agentic-ai education",
+                "scroll_depth:/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "page_dwell:/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "page_dwell:/resources/asset/infographic-unlock-the-power-of-agentic-ai"
+              ]
+            },
+            "friction": {
+              "value": "question_behind_question_unknown",
+              "state": "inferred",
+              "confidence": 0.38,
+              "evidence": []
+            },
+            "messageGoal": "connect_resource_insight_to_next_step",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "resource_page",
+              "resource_dwell",
+              "resource_scroll"
+            ],
+            "opportunityId": "opp_1a019dc229c_79710b",
+            "createdAt": 1787140252316
+          },
+          "updatedAt": 1787140260005,
+          "failureReason": null,
+          "shownAt": 1787140258007,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a019dc229c_79710b",
+            "greeting": "Nice, you've made it past the headline and into the part where the agentic AI research has to earn its keep. I can translate this into an executive takeaway, the actual implementation implications, or the proof behind the argument.",
+            "chips": [
+              "Give me the takeaway",
+              "Show implementation paths",
+              "Find the proof"
+            ],
+            "handoffSummary": {
+              "moment": "resource_research",
+              "trigger": "resource_page_10s_50_scroll",
+              "messageGoal": "connect_resource_insight_to_next_step"
+            }
+          },
+          "handoffStartedAt": 1787140259240,
+          "userResponse": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?",
+          "selectedChip": null,
+          "handoffSchema": "ProactiveHandoffContext.v1",
+          "handoffAt": 1787140260005,
+          "handoffFailure": null,
+          "activeAt": 1787140260005
+        }
+      ],
+      "lastOpportunityAt": 1787140258007
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1787140309300,
+      "profile": {
+        "visitorId": "visitor_09b812521fb964d4c159be93",
+        "visits": 3,
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "startedAt": 1787140237618,
+        "pageCount": 3,
+        "engagementHistory": [
+          {
+            "id": "eng_471c2674861556ac90a719a9",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1787140258004,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_eb358b2db52c38661e060d81",
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "title": "The Merchandising Edge with AWS and Algolia",
+        "pageGroup": "resource",
+        "topic": "commerce",
+        "dwellMs": 10003,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "commerce",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 3,
+          "page_dwell": 5,
+          "scroll_depth": 1,
+          "engagement_exposed": 1,
+          "chat_open": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_9f01c830a9a37f86ac429548",
+          "name": "page_view",
+          "ts": 1787140237619,
+          "pageId": "page_57fbf6bf20c745c58f6ff7e9",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "title": "Unlock the power of agentic AI with Agent Studio",
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        },
+        {
+          "eventId": "evt_a957ce7e5998f42afb2bd23d",
+          "name": "page_view",
+          "ts": 1787140239038,
+          "pageId": "page_8f267c143d61985519a771ac",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "title": "Unlock the power of agentic AI with Agent Studio",
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        },
+        {
+          "eventId": "evt_53466f0250bd54cbdbe7b870",
+          "name": "page_dwell",
+          "ts": 1787140244040,
+          "pageId": "page_8f267c143d61985519a771ac",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        },
+        {
+          "eventId": "evt_b38c0f2f2cfc98403effbb7b",
+          "name": "page_dwell",
+          "ts": 1787140249040,
+          "pageId": "page_8f267c143d61985519a771ac",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        },
+        {
+          "eventId": "evt_90a216551120d26179f41996",
+          "name": "scroll_depth",
+          "ts": 1787140252308,
+          "pageId": "page_8f267c143d61985519a771ac",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        },
+        {
+          "eventId": "evt_3afa069d7f576866fc33bf4b",
+          "name": "page_dwell",
+          "ts": 1787140254040,
+          "pageId": "page_8f267c143d61985519a771ac",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        },
+        {
+          "eventId": "evt_29cf044e78d1f4e78beeff17",
+          "name": "engagement_exposed",
+          "ts": 1787140258004,
+          "pageId": "page_8f267c143d61985519a771ac",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_471c2674861556ac90a719a9",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_25627de7a4ffe09d410e0f0e",
+          "name": "chat_open",
+          "ts": 1787140258018,
+          "pageId": "page_8f267c143d61985519a771ac",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        },
+        {
+          "eventId": "evt_3a4161739dcb7d1604af3a79",
+          "name": "page_view",
+          "ts": 1787140295951,
+          "pageId": "page_eb358b2db52c38661e060d81",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "title": "The Merchandising Edge with AWS and Algolia",
+            "pageGroup": "resource",
+            "topic": "commerce"
+          }
+        },
+        {
+          "eventId": "evt_f4cb360bdd650ceb2213d089",
+          "name": "page_dwell",
+          "ts": 1787140300953,
+          "pageId": "page_eb358b2db52c38661e060d81",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "resource",
+            "topic": "commerce"
+          }
+        },
+        {
+          "eventId": "evt_7a661e5f66defcd04d886621",
+          "name": "page_dwell",
+          "ts": 1787140305953,
+          "pageId": "page_eb358b2db52c38661e060d81",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "resource",
+            "topic": "commerce"
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "merchandiser",
+          "state": "inferred",
+          "confidence": 0.56,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "general_algolia_research",
+          "state": "inferred",
+          "confidence": 0.45,
+          "evidence": [
+            "current_page:The Merchandising Edge with AWS and Algolia /resources/asset/ebook-merchandising-edge-with-aws-and-algolia commerce",
+            "page_dwell:/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "page_dwell:/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "page_view:/resources/asset/ebook-merchandising-edge-with-aws-and-algolia"
+          ]
+        },
+        "friction": {
+          "value": "question_behind_question_unknown",
+          "state": "inferred",
+          "confidence": 0.38,
+          "evidence": []
+        },
+        "nextBestAction": {
+          "value": "answer_then_ask_discovery_question",
+          "state": "inferred",
+          "confidence": 0.44
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "no_trigger_match",
+      "createdAt": 1787140309300
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "signal_received",
+        "at": 1787140237619,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "page_view",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "title": "Unlock the power of agentic AI with Agent Studio",
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140237619,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140237619,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140237619,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787140239038,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140239039,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140239039,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140239040,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140239040,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140239040,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140239289,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140239289,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140239290,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140239290,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140239290,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140240047,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140240048,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140240048,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140240048,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140240048,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140241541,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140241541,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140241542,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140241542,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140241542,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140244040,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140244041,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 5002,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 3,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140244042,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140244042,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140249041,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140249042,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 10003,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140249042,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140249043,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140252309,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": {
+            "depth": 50,
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140252310,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140252312,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "resource_research",
+              "trigger": "resource_page_10s_50_scroll",
+              "priority": 75,
+              "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "reasonCodes": [
+                "resource_page",
+                "resource_dwell",
+                "resource_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1787140252313,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "engage": true,
+          "moment": "resource_research",
+          "trigger": "resource_page_10s_50_scroll",
+          "priority": 75,
+          "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "reasonCodes": [
+            "resource_page",
+            "resource_dwell",
+            "resource_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1787140252314,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140252315,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140252315,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "resource_research",
+              "trigger": "resource_page_10s_50_scroll",
+              "priority": 75,
+              "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "reasonCodes": [
+                "resource_page",
+                "resource_dwell",
+                "resource_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1787140252316,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "opportunityId": "opp_1a019dc229c_79710b",
+          "trigger": "resource_page_10s_50_scroll",
+          "moment": "resource_research",
+          "messageGoal": "connect_resource_insight_to_next_step",
+          "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1787140252317,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1787140252318,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "opportunityId": "opp_1a019dc229c_79710b",
+          "trigger": "resource_page_10s_50_scroll",
+          "moment": "resource_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1787140252781,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "opportunityId": "opp_1a019dc229c_79710b",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140254041,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "resource",
+            "topic": "education"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140254042,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 15003,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 6,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140254043,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "resource_research",
+              "trigger": "resource_page_10s_50_scroll",
+              "priority": 75,
+              "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "reasonCodes": [
+                "resource_page",
+                "resource_dwell",
+                "resource_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140254044,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "resource_research",
+            "trigger": "resource_page_10s_50_scroll",
+            "priority": 75,
+            "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "reasonCodes": [
+              "resource_page",
+              "resource_dwell",
+              "resource_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1787140258001,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "opportunityId": "opp_1a019dc229c_79710b",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a019dc229c_79710b",
+          "greetingPreview": "Nice, you've made it past the headline and into the part where the agentic AI research has to earn its keep. I can translate this into an executive takeaway, the actual implementa...",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140258004,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": {
+            "engagementId": "eng_471c2674861556ac90a719a9",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140258006,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 15003,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 7,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140258006,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "resource_research",
+              "trigger": "resource_page_10s_50_scroll",
+              "priority": 75,
+              "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "reasonCodes": [
+                "resource_page",
+                "resource_dwell",
+                "resource_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140258007,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "resource_research",
+            "trigger": "resource_page_10s_50_scroll",
+            "priority": 75,
+            "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "reasonCodes": [
+              "resource_page",
+              "resource_dwell",
+              "resource_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1787140258008,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "opportunityId": "opp_1a019dc229c_79710b",
+          "trigger": "resource_page_10s_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140258018,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "name": "chat_open",
+          "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140258019,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 15003,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 8,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140258020,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "resource_research",
+              "trigger": "resource_page_10s_50_scroll",
+              "priority": 75,
+              "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "reasonCodes": [
+                "resource_page",
+                "resource_dwell",
+                "resource_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140258020,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "resource_research",
+            "trigger": "resource_page_10s_50_scroll",
+            "priority": 75,
+            "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "reasonCodes": [
+              "resource_page",
+              "resource_dwell",
+              "resource_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140295243,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 15003,
+            "maxScrollDepth": 50
+          },
+          "pageCount": 2,
+          "recentEventCount": 8,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140295244,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "resource_research",
+              "trigger": "resource_page_10s_50_scroll",
+              "priority": 75,
+              "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "reasonCodes": [
+                "resource_page",
+                "resource_dwell",
+                "resource_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140295244,
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "detail": {
+          "reason": "conversation_already_active",
+          "decision": {
+            "engage": true,
+            "moment": "resource_research",
+            "trigger": "resource_page_10s_50_scroll",
+            "priority": 75,
+            "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "reasonCodes": [
+              "resource_page",
+              "resource_dwell",
+              "resource_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787140295952,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140295953,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140295953,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "props": null
+        }
+      },
+      {
+        "stage": "active_conversation_restored",
+        "at": 1787140295955,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia"
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140295955,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "pageGroup": "resource",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140295956,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140295956,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140296205,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140296205,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140296205,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "pageGroup": "resource",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140296206,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140296206,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140296954,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140296954,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140296955,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "pageGroup": "resource",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140296955,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140296956,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787140298452,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140298453,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140298454,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "pageGroup": "resource",
+            "topic": "commerce",
+            "dwellMs": 0,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 3,
+          "recentEventCount": 9,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140298455,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140298455,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140300954,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "resource",
+            "topic": "commerce"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140300958,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "pageGroup": "resource",
+            "topic": "commerce",
+            "dwellMs": 5003,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 3,
+          "recentEventCount": 10,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140300959,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140300959,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787140305954,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "resource",
+            "topic": "commerce"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140305955,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "pageGroup": "resource",
+            "topic": "commerce",
+            "dwellMs": 10003,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 3,
+          "recentEventCount": 11,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140305955,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140305956,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787140309300,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+            "pageGroup": "resource",
+            "topic": "commerce",
+            "dwellMs": 10003,
+            "maxScrollDepth": 0
+          },
+          "pageCount": 3,
+          "recentEventCount": 11,
+          "productTrail": [],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787140309300,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787140309300,
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      }
+    ]
+  },
+  "profile": {
+    "schema": "AlgoliaEngagementProfile.v1",
+    "visitorId": "visitor_09b812521fb964d4c159be93",
+    "userToken": "tok_774be773780492f65eb0c83c",
+    "tokenSource": "ephemeral",
+    "firstSeenAt": 1787140237618,
+    "lastSeenAt": 1787140295950,
+    "visits": 3,
+    "persona": null,
+    "traits": {}
+  },
+  "session": {
+    "schema": "AlgoliaEngagementSession.v1",
+    "sessionId": "sess_d2ab692074903151ff88d212",
+    "startedAt": 1787140237618,
+    "lastSeenAt": 1787140305953,
+    "currentPageId": "page_eb358b2db52c38661e060d81",
+    "pages": [
+      {
+        "pageId": "page_57fbf6bf20c745c58f6ff7e9",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "title": "Unlock the power of agentic AI with Agent Studio",
+        "enteredAt": 1787140237618,
+        "dwellMs": 1082,
+        "maxScrollDepth": 0,
+        "pageGroup": "resource",
+        "topic": "education"
+      },
+      {
+        "pageId": "page_8f267c143d61985519a771ac",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "title": "Unlock the power of agentic AI with Agent Studio",
+        "enteredAt": 1787140239037,
+        "dwellMs": 56440,
+        "maxScrollDepth": 50,
+        "pageGroup": "resource",
+        "topic": "education"
+      },
+      {
+        "pageId": "page_eb358b2db52c38661e060d81",
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "title": "The Merchandising Edge with AWS and Algolia",
+        "enteredAt": 1787140295950,
+        "dwellMs": 10003,
+        "maxScrollDepth": 0,
+        "pageGroup": "resource",
+        "topic": "commerce"
+      }
+    ],
+    "engagementHistory": [
+      {
+        "id": "eng_471c2674861556ac90a719a9",
+        "pageId": "page_8f267c143d61985519a771ac",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1787140258004,
+        "status": "shown"
+      }
+    ]
+  },
+  "events": {
+    "schema": "AlgoliaEngagementEvents.v1",
+    "sessionId": "sess_d2ab692074903151ff88d212",
+    "events": [
+      {
+        "eventId": "evt_9f01c830a9a37f86ac429548",
+        "name": "page_view",
+        "ts": 1787140237619,
+        "isoTime": "2026-08-19T11:50:37.619Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_57fbf6bf20c745c58f6ff7e9",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "title": "Unlock the power of agentic AI with Agent Studio",
+          "pageGroup": "resource",
+          "topic": "education"
+        }
+      },
+      {
+        "eventId": "evt_a957ce7e5998f42afb2bd23d",
+        "name": "page_view",
+        "ts": 1787140239038,
+        "isoTime": "2026-08-19T11:50:39.038Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_8f267c143d61985519a771ac",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "title": "Unlock the power of agentic AI with Agent Studio",
+          "pageGroup": "resource",
+          "topic": "education"
+        }
+      },
+      {
+        "eventId": "evt_53466f0250bd54cbdbe7b870",
+        "name": "page_dwell",
+        "ts": 1787140244040,
+        "isoTime": "2026-08-19T11:50:44.040Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_8f267c143d61985519a771ac",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "resource",
+          "topic": "education"
+        }
+      },
+      {
+        "eventId": "evt_b38c0f2f2cfc98403effbb7b",
+        "name": "page_dwell",
+        "ts": 1787140249040,
+        "isoTime": "2026-08-19T11:50:49.040Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_8f267c143d61985519a771ac",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "resource",
+          "topic": "education"
+        }
+      },
+      {
+        "eventId": "evt_90a216551120d26179f41996",
+        "name": "scroll_depth",
+        "ts": 1787140252308,
+        "isoTime": "2026-08-19T11:50:52.308Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_8f267c143d61985519a771ac",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "resource",
+          "topic": "education"
+        }
+      },
+      {
+        "eventId": "evt_3afa069d7f576866fc33bf4b",
+        "name": "page_dwell",
+        "ts": 1787140254040,
+        "isoTime": "2026-08-19T11:50:54.040Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_8f267c143d61985519a771ac",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "resource",
+          "topic": "education"
+        }
+      },
+      {
+        "eventId": "evt_29cf044e78d1f4e78beeff17",
+        "name": "engagement_exposed",
+        "ts": 1787140258004,
+        "isoTime": "2026-08-19T11:50:58.004Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_8f267c143d61985519a771ac",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_471c2674861556ac90a719a9",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_25627de7a4ffe09d410e0f0e",
+        "name": "chat_open",
+        "ts": 1787140258018,
+        "isoTime": "2026-08-19T11:50:58.018Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_8f267c143d61985519a771ac",
+        "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      },
+      {
+        "eventId": "evt_3a4161739dcb7d1604af3a79",
+        "name": "page_view",
+        "ts": 1787140295951,
+        "isoTime": "2026-08-19T11:51:35.951Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_eb358b2db52c38661e060d81",
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+          "title": "The Merchandising Edge with AWS and Algolia",
+          "pageGroup": "resource",
+          "topic": "commerce"
+        }
+      },
+      {
+        "eventId": "evt_f4cb360bdd650ceb2213d089",
+        "name": "page_dwell",
+        "ts": 1787140300953,
+        "isoTime": "2026-08-19T11:51:40.953Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_eb358b2db52c38661e060d81",
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "resource",
+          "topic": "commerce"
+        }
+      },
+      {
+        "eventId": "evt_7a661e5f66defcd04d886621",
+        "name": "page_dwell",
+        "ts": 1787140305953,
+        "isoTime": "2026-08-19T11:51:45.953Z",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "pageId": "page_eb358b2db52c38661e060d81",
+        "path": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "resource",
+          "topic": "commerce"
+        }
+      }
+    ]
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_1a019dc229c_79710b",
+        "status": "active",
+        "lifecycle": [
+          "qualified",
+          "pending",
+          "shown",
+          "engaged",
+          "handed_off",
+          "active"
+        ],
+        "pageId": "page_8f267c143d61985519a771ac",
+        "pagePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+        "moment": "resource_research",
+        "trigger": "resource_page_10s_50_scroll",
+        "priority": 75,
+        "messageGoal": "connect_resource_insight_to_next_step",
+        "reasonCodes": [
+          "resource_page",
+          "resource_dwell",
+          "resource_scroll"
+        ],
+        "createdAt": 1787140252316,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "resource_research",
+          "trigger": "resource_page_10s_50_scroll",
+          "priority": 75,
+          "persona": {
+            "value": "unknown",
+            "state": "unknown",
+            "confidence": 0,
+            "source": "insufficient_signal"
+          },
+          "currentPage": {
+            "pageId": "page_8f267c143d61985519a771ac",
+            "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+            "title": "Unlock the power of agentic AI with Agent Studio",
+            "pageGroup": "resource",
+            "topic": "education",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": null,
+          "journeySummary": {
+            "currentTransition": "resource_page_10s_50_scroll",
+            "productTrail": [],
+            "solutionTrail": [],
+            "pageTrail": [
+              {
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "title": "Unlock the power of agentic AI with Agent Studio",
+                "pageGroup": "resource",
+                "topic": "education"
+              },
+              {
+                "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "title": "Unlock the power of agentic AI with Agent Studio",
+                "pageGroup": "resource",
+                "topic": "education"
+              }
+            ],
+            "storyHint": ""
+          },
+          "journey": [
+            {
+              "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "title": "Unlock the power of agentic AI with Agent Studio",
+              "pageGroup": "resource",
+              "topic": "education",
+              "dwellMs": 1082,
+              "maxScrollDepth": 0
+            },
+            {
+              "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "title": "Unlock the power of agentic AI with Agent Studio",
+              "pageGroup": "resource",
+              "topic": "education",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "title": "Unlock the power of agentic AI with Agent Studio",
+                "pageGroup": "resource",
+                "topic": "education"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+                "title": "Unlock the power of agentic AI with Agent Studio",
+                "pageGroup": "resource",
+                "topic": "education"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "resource",
+                "topic": "education"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "resource",
+                "topic": "education"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "props": {
+                "depth": 50,
+                "pageGroup": "resource",
+                "topic": "education"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "general_algolia_research",
+            "state": "inferred",
+            "confidence": 0.45,
+            "evidence": [
+              "current_page:Unlock the power of agentic AI with Agent Studio /resources/asset/infographic-unlock-the-power-of-agentic-ai education",
+              "scroll_depth:/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "page_dwell:/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+              "page_dwell:/resources/asset/infographic-unlock-the-power-of-agentic-ai"
+            ]
+          },
+          "friction": {
+            "value": "question_behind_question_unknown",
+            "state": "inferred",
+            "confidence": 0.38,
+            "evidence": []
+          },
+          "messageGoal": "connect_resource_insight_to_next_step",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "resource_page",
+            "resource_dwell",
+            "resource_scroll"
+          ],
+          "opportunityId": "opp_1a019dc229c_79710b",
+          "createdAt": 1787140252316
+        },
+        "updatedAt": 1787140260005,
+        "failureReason": null,
+        "shownAt": 1787140258007,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a019dc229c_79710b",
+          "greeting": "Nice, you've made it past the headline and into the part where the agentic AI research has to earn its keep. I can translate this into an executive takeaway, the actual implementation implications, or the proof behind the argument.",
+          "chips": [
+            "Give me the takeaway",
+            "Show implementation paths",
+            "Find the proof"
+          ],
+          "handoffSummary": {
+            "moment": "resource_research",
+            "trigger": "resource_page_10s_50_scroll",
+            "messageGoal": "connect_resource_insight_to_next_step"
+          }
+        },
+        "handoffStartedAt": 1787140259240,
+        "userResponse": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?",
+        "selectedChip": null,
+        "handoffSchema": "ProactiveHandoffContext.v1",
+        "handoffAt": 1787140260005,
+        "handoffFailure": null,
+        "activeAt": 1787140260005
+      }
+    ],
+    "lastOpportunityAt": 1787140258007
+  },
+  "conversation": {
+    "version": 1,
+    "conversationId": "5f6a3556-84e9-4512-8944-55d5539cef28",
+    "turns": [
+      {
+        "id": "66994651-8daa-4682-a59c-9ae736b70955",
+        "userMessageId": "0b05c6b0-6869-487b-8f21-5e45009397a5",
+        "query": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "e452fab3-e607-4e20-9868-a60a5775c5b9",
+            "agent": "primary",
+            "status": "success",
+            "text": "The retrieved material does not verify the specific details requested, so I cannot present those claims as confirmed.",
+            "sources": [
+              {
+                "id": "en_d89f8ae4-be37-4d74-a89a-251f0f5b3ac6_0_4",
+                "title": "Agentic retrieval: a practical guide for enterprise AI",
+                "url": "https://www.algolia.com/blog/ai/agentic-retrieval",
+                "source": "Blog"
+              },
+              {
+                "id": "en_4b6955fd-bff0-41c4-8de1-ecd52347bc15_0_2",
+                "title": "Introducing Agent Studio: Build production-ready AI agents in weeks, not months",
+                "url": "https://www.algolia.com/blog/product/introducing-agent-studio",
+                "source": "Blog"
+              },
+              {
+                "id": "en_dcfea314-0395-4cae-a8c3-b0da2c70f9d4",
+                "title": "Three tools built with Agent Studio",
+                "url": "https://www.algolia.com/blog/product/three-tools-built-with-agent-studio",
+                "source": "Blog"
+              },
+              {
+                "id": "en_82078225-7c66-4992-a409-874c12244f67_0_99",
+                "title": "From months to minutes: Building production AI agents",
+                "url": "https://www.algolia.com/blog/engineering/building-production-ai-agents",
+                "source": "Blog"
+              },
+              {
+                "id": "en_dd0c4912-c2aa-4e29-bc35-d0ac3acf44aa_0_1",
+                "title": "Build and test your agentic AI experience with Algolia’s Agent Studio",
+                "url": "https://www.algolia.com/resources/asset/ebook-build-and-test-your-agentic-ai-experience-with-algolias-agent-studio",
+                "source": "Resources"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/algolia-ai/agent-studio",
+                "title": "Agent Studio",
+                "url": "https://www.algolia.com/doc/guides/algolia-ai/agent-studio",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/tools/overview",
+                "title": "Use tools in Agent Studio",
+                "url": "https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/tools/overview",
+                "source": "Documentation"
+              }
+            ],
+            "searchCount": 7,
+            "rawHits": [
+              {
+                "source": "Blog",
+                "facets": {
+                  "facet0": [
+                    "AI"
+                  ]
+                },
+                "published_at": 1774630055034,
+                "is404": false,
+                "transform_source": "aant-blogsEntry",
+                "category": "AI",
+                "authors": [
+                  {
+                    "name": "Allie Allegra",
+                    "desc": "Director, Product Marketing"
+                  }
+                ],
+                "url": "/blog/ai/agentic-retrieval",
+                "description": "Learn how agentic retrieval extends RAG with autonomous agents, why retrieval quality is critical, and how enterprises can leverage it to power reliable, scalable AI systems.",
+                "language_code": "en",
+                "objectID": "en_d89f8ae4-be37-4d74-a89a-251f0f5b3ac6_0_4",
+                "title": "Agentic retrieval: a practical guide for enterprise AI",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-agentic-retrieval-1920x1080.jpg",
+                "tags": [
+                  "AI"
+                ],
+                "lastUpdated": "2026-07-21T21:44:53.192Z",
+                "environment": "prod20260722",
+                "keywords": [
+                  "ai"
+                ],
+                "abstract": "Learn how agentic retrieval extends RAG with autonomous agents, why retrieval quality is critical, and how enterprises can leverage it to power reliable, scalable AI systems.",
+                "indexed_at": 1784670293192,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "AI"
+                  ],
+                  "lvl2": [
+                    "by Allie Allegra"
+                  ]
+                }
+              },
+              {
+                "title": "Build and test your agentic AI experience with Algolia’s Agent Studio",
+                "transform_source": "aant-resourceCenterContentItem",
+                "authors": [],
+                "abstract": "<p dir=\"ltr\">Ready to build agentic AI experiences? Gartner estimates that nearly one-third of all businesses will use agentic AI technology by 2028. But you won&#39;t need a team of seasoned developers to make it happen.</p>\n\n<p dir=\"ltr\">In this ebook, Algolia shares:&nbsp;</p>\n\n<ul>\n\t<li aria-level=\"1\" dir=\"ltr\">\n\t<p dir=\"ltr\" role=\"presentation\">How Agent Studio can help you build intelligent agents in minutes, not weeks</p>\n\t</li>\n\t<li aria-level=\"1\" dir=\"ltr\">\n\t<p dir=\"ltr\" role=\"presentation\">How to get the agentic user experience right&nbsp;</p>\n\t</li>\n\t<li aria-level=\"1\" dir=\"ltr\">\n\t<p dir=\"ltr\" role=\"presentation\">Real world examples that help improve customer experience or streamline internal processes.</p>\n\t</li>\n</ul>\n\n<p dir=\"ltr\">Ready to get started? Download our ebook to learn more about Agent Studio.</p>\n",
+                "facets": {
+                  "facet0": [
+                    [
+                      "Ebooks"
+                    ]
+                  ],
+                  "facet7": [
+                    "B2B Ecommerce",
+                    "B2C Ecommerce"
+                  ],
+                  "facet8": [
+                    "Merchandising",
+                    "Personalization"
+                  ]
+                },
+                "environment": "prod20260722",
+                "category": "Ebooks",
+                "url": "/resources/asset/ebook-build-and-test-your-agentic-ai-experience-with-algolias-agent-studio",
+                "keywords": [],
+                "indexed_at": 1784670292655,
+                "objectID": "en_dd0c4912-c2aa-4e29-bc35-d0ac3acf44aa_0_1",
+                "thumbnail": "/sites/algolia-assets/files/eBook/Build Agent Studio_thumb.png",
+                "tags": [],
+                "description": "<p dir=\"ltr\">Ready to build agentic AI experiences? Gartner estimates that nearly one-third of all businesses will use agentic AI technology by 2028. But you won&#39;t need a team of seasoned developers to make it happen.</p>\n\n<p dir=\"ltr\">In this ebook, Algolia shares:&nbsp;</p>\n\n<ul>\n\t<li aria-level=\"1\" dir=\"ltr\">\n\t<p dir=\"ltr\" role=\"presentation\">How Agent Studio can help you build intelligent agents in minutes, not weeks</p>\n\t</li>\n\t<li aria-level=\"1\" dir=\"ltr\">\n\t<p dir=\"ltr\" role=\"presentation\">How to get the agentic user experience right&nbsp;</p>\n\t</li>\n\t<li aria-level=\"1\" dir=\"ltr\">\n\t<p dir=\"ltr\" role=\"presentation\">Real world examples that help improve customer experience or streamline internal processes.</p>\n\t</li>\n</ul>\n\n<p dir=\"ltr\">Ready to get started? Download our ebook to learn more about Agent Studio.</p>\n",
+                "language_code": "en",
+                "published_at": 1784134999889,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Ebooks"
+                    ]
+                  ]
+                },
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:44:52.655Z",
+                "source": "Resources"
+              },
+              {
+                "title": "Introducing Agent Studio: Build production-ready AI agents in weeks, not months",
+                "authors": [
+                  {
+                    "name": "Patrick Loomis",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/patrick_loomis.jpg",
+                    "desc": "Senior Manager, Product Management"
+                  }
+                ],
+                "abstract": "With Agent Studio, in public beta now, you can build sophisticated AI agents that leverage your existing Algolia investments while maintaining the developer control and flexibility that drives innovation.",
+                "indexed_at": 1784670281313,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Product"
+                  ],
+                  "lvl2": [
+                    "by Patrick Loomis"
+                  ]
+                },
+                "is404": false,
+                "environment": "prod20260722",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-AI-Agents.jpg",
+                "tags": [
+                  "Product"
+                ],
+                "url": "/blog/product/introducing-agent-studio",
+                "description": "With Agent Studio, in public beta now, you can build sophisticated AI agents that leverage your existing Algolia investments while maintaining the developer control and flexibility that drives innovation.",
+                "keywords": [
+                  "product"
+                ],
+                "facets": {
+                  "facet0": [
+                    "Product"
+                  ]
+                },
+                "published_at": 1754412420000,
+                "lastUpdated": "2026-07-21T21:44:41.314Z",
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "category": "Product",
+                "language_code": "en",
+                "objectID": "en_4b6955fd-bff0-41c4-8de1-ecd52347bc15_0_2"
+              },
+              {
+                "objectID": "en_dcfea314-0395-4cae-a8c3-b0da2c70f9d4",
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-Agent-Studio-Dog-Food-1920x1080.jpg",
+                "authors": [
+                  {
+                    "name": "Brendan Cleary",
+                    "desc": "Product Marketing Manager"
+                  }
+                ],
+                "language_code": "en",
+                "published_at": 1765989900000,
+                "title": "Three tools built with Agent Studio",
+                "abstract": "Agent Studio powers multiple production tools here at Algolia (DocSearch Ask AI, Attribute Enrichment, and AI Assist). Here's a peek into what we've built to spur some ideas about what you might do with the all new Agent Studio powered by Algolia's retrieval platform. ",
+                "indexed_at": 1784670296785,
+                "environment": "prod20260722",
+                "category": "Product",
+                "url": "/blog/product/three-tools-built-with-agent-studio",
+                "description": "Agent Studio powers multiple production tools here at Algolia (DocSearch Ask AI, Attribute Enrichment, and AI Assist). Here's a peek into what we've built to spur some ideas about what you might do with the all new Agent Studio powered by Algolia's retrieval platform. ",
+                "is404": false,
+                "tags": [
+                  "Product"
+                ],
+                "keywords": [
+                  "product"
+                ],
+                "facets": {
+                  "facet0": [
+                    "Product"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Product"
+                  ],
+                  "lvl2": [
+                    "by Brendan Cleary"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:44:56.785Z"
+              },
+              {
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Engineering"
+                  ]
+                },
+                "environment": "prod20260722",
+                "source": "Blog",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-Agent-Studio.jpg",
+                "abstract": "Learn how Algolia's Agent Studio helps engineering teams build production-ready AI agents in minutes, overcoming common challenges like infrastructure, compliance, and product integration.",
+                "indexed_at": 1784670294457,
+                "lastUpdated": "2026-07-21T21:44:54.457Z",
+                "transform_source": "aant-blogsEntry",
+                "url": "/blog/engineering/building-production-ai-agents",
+                "facets": {
+                  "facet0": [
+                    "Engineering"
+                  ]
+                },
+                "published_at": 1761160800000,
+                "is404": false,
+                "title": "From months to minutes: Building production AI agents",
+                "category": "Engineering",
+                "description": "Learn how Algolia's Agent Studio helps engineering teams build production-ready AI agents in minutes, overcoming common challenges like infrastructure, compliance, and product integration.",
+                "keywords": [
+                  "engineering"
+                ],
+                "language_code": "en",
+                "objectID": "en_82078225-7c66-4992-a409-874c12244f67_0_99",
+                "tags": [
+                  "Engineering"
+                ],
+                "authors": []
+              },
+              {
+                "description": "Build generative AI experiences with real-time Algolia data and LLMs like OpenAI and Gemini.",
+                "abstract": "Agent Studio connects your chosen LLM to Algolia search and tools. It manages the end-to-end workflo...",
+                "indexed_at": 1784670696190,
+                "source": "Documentation",
+                "title": "Agent Studio",
+                "category": "Doc",
+                "url": "/doc/guides/algolia-ai/agent-studio",
+                "language_code": "en",
+                "lastUpdated": "2026-07-21T21:51:36.190Z",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "tags": [],
+                "authors": [],
+                "facets": {},
+                "environment": "prod20260722",
+                "objectID": "https://www.algolia.com/doc/guides/algolia-ai/agent-studio",
+                "keywords": [],
+                "published_at": 1784670696190,
+                "transform_source": "algolia-com-doc"
+              },
+              {
+                "lastUpdated": "2026-07-21T21:51:36.151Z",
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "keywords": [],
+                "facets": {},
+                "url": "/doc/guides/algolia-ai/agent-studio/how-to/tools/overview",
+                "abstract": "Tools let agents use real data and act on real systems. Instead of relying solely on their training ...",
+                "indexed_at": 1784670696151,
+                "environment": "prod20260722",
+                "title": "Use tools in Agent Studio",
+                "description": "Extend your agent's capabilities with built-in, client-side, and MCP tools.",
+                "language_code": "en",
+                "objectID": "https://www.algolia.com/doc/guides/algolia-ai/agent-studio/how-to/tools/overview",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "tags": [],
+                "authors": [],
+                "published_at": 1784670696151
+              }
+            ],
+            "admissionRejected": true,
+            "followUps": [
+              "Since you're looking at the strategic side of Agent Studio, would it be helpful to see how other companies have mapped their specific business friction to an agentic AI use case?"
+            ]
+          }
+        ],
+        "deepDiveDeclined": false,
+        "deepDiveSpecialist": "evidence",
+        "deepDiveQuery": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?",
+        "specialistLimitation": {
+          "agent": "evidence",
+          "text": "I cannot find the specific contents of the \"Unlock the Power of Agentic AI\" infographic in the available evidence records. \n\nPlease point me to the main assistant or provide more details about the specific claims made in the resource, and I can help you find matching customer evidence or ROI metrics to support those points.",
+          "followUps": [
+            "Would you like to go deeper on implementation, business value, or customer proof?"
+          ]
+        }
+      },
+      {
+        "id": "cb5e5fac-6397-47ac-bbf9-95d8e64f94f0",
+        "userMessageId": "6ad6e5ff-1bf9-4c77-9715-85b4d942b80d",
+        "query": "How does this second resource sharpen the business case?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "afe0dcd5-a5da-468c-8f5c-e7c10094f48f",
+            "agent": "primary",
+            "status": "error",
+            "text": "",
+            "sources": [],
+            "searchCount": 0,
+            "rawHits": [],
+            "error": "No answer text returned by the agent.",
+            "followUps": []
+          }
+        ]
+      }
+    ]
+  },
+  "bodyText": "Join us:\nAlgolia DevCon 2026: Sep 30 - Oct 1, 2026 — VIRTUAL\nRegister Now\nUPDATE:\nUnlock the power of agentic AI with Agent Studio\nSee what's new\nCompany\nPartners\nSupport\nLogin\n\nEng\n\nProducts\nSolutions\nPricing\nDevelopers\nResources\nSearch or Ask AI\nFix your search\nGet started\n\nFILTER BY SOURCE\n\nDocumentation\n4,358\nSupport\n1,701\nBlog\n938\nWebsite\n472\nDevelopers\n288\nResources\n277\nAcademy\n144\nCustomer Stories\n83\n\nSUGGESTIONS\n\nAlgolia API integration\nAlgolia search benefits\nAlgolia scalability\nAI search for ecommerce\n\nPRODUCTS & RESOURCES\n\nAI Search\nWebsite • Products\nLearn more →\nSecurity Measures | Algolia\nWebsite • Distributed Secure\nLearn more →\nAgent Studio\nWebsite • Products\nLearn more →\nShow more results\nEBOOK\nThe Merchandising Edge with AWS and Algolia\nAccess asset\nBack to all resources\nSummary\n\nGive your fashion merchandising a boost with AWS and Algolia’s intelligent fashion solution. \n\nRead the eBook to learn how Algolia's suite of user-friendly ecommerce tools help shoppers find and fall in love with the latest fashion trends.\n\nUnlock this asset\n*\nFirst Name:\n*\nLast Name:\n*\nBusiness Email\n*\nCompany\n*\nCountry\nSelect...\nUnited States\nAfghanistan\nAland Islands\nAlbania\nAlgeria\nAndorra\nAngola\nAnguilla\nAntarctica\nAntigua and Barbuda\nArgentina\nArmenia\nAruba\nAustralia\nAustria\nAzerbaijan\nBahamas\nBahrain\nBangladesh\nBarbados\nBelarus\nBelgium\nBelize\nBenin\nBermuda\nBhutan\nBolivia\nBonaire, Sint Eustatius and Saba\nBosnia and Herzegovina\nBotswana\nBouvet Island\nBrazil\nBritish Indian Ocean Territory\nBrunei Darussalam\nBulgaria\nBurkina Faso\nBurundi\nCambodia\nCameroon\nCanada\nCape Verde\nCayman Islands\nCentral African Republic\nChad\nChile\nChina\nChristmas Island\nCocos (Keeling) Islands\nColombia\nComoros\nCongo\nCongo, the Democratic Republic of the\nCook Islands\nCosta Rica\nCote d'Ivoire\nCroatia\nCuba\nCuraçao\nCyprus\nCzech Republic\nDenmark\nDjibouti\nDominica\nDominican Republic\nEcuador\nEgypt\nEl Salvador\nEquatorial Guinea\nEritrea\nEstonia\nEthiopia\nFalkland Islands (Malvinas)\nFaroe Islands\nFiji\nFinland\nFrance\nFrench Guiana\nFrench Polynesia\nFrench Southern Territories\nGabon\nGambia\nGeorgia\nGermany\nGhana\nGibraltar\nGreece\nGreenland\nGrenada\nGuadeloupe\nGuatemala\nGuernsey\nGuinea\nGuinea-Bissau\nGuyana\nHaiti\nHeard Island and McDonald Islands\nHoly See (Vatican City State)\nHonduras\nHong Kong\nHungary\nIceland\nIndia\nIndonesia\nIran\nIraq\nIreland\nIsle of Man\nIsrael\nItaly\nJamaica\nJapan\nJersey\nJordan\nKazakhstan\nKenya\nKiribati\nKorea, Democratic People's Republic of\nKuwait\nKyrgyzstan\nLaos\nLatvia\nLebanon\nLesotho\nLiberia\nLibya\nLiechtenstein\nLithuania\nLuxembourg\nMacao\nMacedonia, the former Yugoslav Republic of\nMadagascar\nMalawi\nMalaysia\nMaldives\nMali\nMalta\nMartinique\nMauritania\nMauritius\nMayotte\nMexico\nMoldova\nMonaco\nMongolia\nMontenegro\nMontserrat\nMorocco\nMozambique\nMyanmar\nNamibia\nNauru\nNepal\nNetherlands\nNew Caledonia\nNew Zealand\nNicaragua\nNiger\nNigeria\nNiue\nNorfolk Island\nNorway\nOman\nPakistan\nPalestine\nPanama\nPapua New Guinea\nParaguay\nPeru\nPhilippines\nPitcairn\nPoland\nPortugal\nPuerto Rico\nQatar\nReunion\nRomania\nRussian Federation\nRwanda\nSaint Barthélemy\nSaint Helena, Ascension and Tristan da Cunha\nSaint Kitts and Nevis\nSaint Lucia\nSaint Martin (French part)\nSaint Pierre and Miquelon\nSaint Vincent and the Grenadines\nSamoa\nSan Marino\nSao Tome and Principe\nSaudi Arabia\nSenegal\nSerbia\nSeychelles\nSierra Leone\nSingapore\nSint Maarten (Dutch part)\nSlovakia\nSlovenia\nSolomon Islands\nSomalia\nSouth Africa\nSouth Georgia and the South Sandwich Islands\nSouth Korea\nSouth Sudan\nSpain\nSri Lanka\nSudan\nSuriname\nSvalbard and Jan Mayen\nSwaziland\nSweden\nSwitzerland\nSyrian Arab Republic\nTaiwan\nTajikistan\nTanzania\nThailand\nTimor-Leste\nTogo\nTokelau\nTonga\nTrinidad and Tobago\nTunisia\nTurkey\nTurkmenistan\nTurks and Caicos Islands\nTuvalu\nUganda\nUkraine\nUnited Arab Emirates\nUnited Kingdom\nUruguay\nUzbekistan\nVanuatu\nVenezuela\nVietNam\nVirgin Islands, British\nWallis and Futuna\nWestern Sahara\nYemen\nZambia\nZimbabwe\nAccess The Resource\nRecommended Content\n\nPowered by Algolia AI Recommendations\n\nThe Merchandising Edge\nEBOOKS\nMobile ecommerce experience: pitfalls, tradeoffs, and solutions\nEBOOKS\nMerchandising of the future: Blending art and science\nVIDEOS\nEnable anyone to build great Search & Discovery\nGet a demo\nStart Free\nCareers\nContact Us\nAbout Algolia\nAnti-Modern Slavery Statement\nSocial networks\nGet the latest in AI search - straight to your inbox.\n©2026 Algolia - All rights reserved.\nCookie settings\nTrust Center\nPrivacy Policy\nTerms of service\nAcceptable Use Policy\nProactive suppressed: no_trigger_match",
+  "journey": "S2",
+  "expectedTrigger": "resource_page_10s_50_scroll",
+  "visitorResponse": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?",
+  "specialistAccepted": true,
+  "specialistDeclined": false,
+  "specialistAction": "accept",
+  "continuity": {
+    "sourcePath": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+    "destinationPath": "/resources/asset/ebook-merchandising-edge-with-aws-and-algolia",
+    "conversationIdBefore": "5f6a3556-84e9-4512-8944-55d5539cef28",
+    "conversationIdAfter": "5f6a3556-84e9-4512-8944-55d5539cef28",
+    "turnCountBefore": 1,
+    "turnCountAfter": 2,
+    "restoredQueryVisible": true,
+    "followUp": "How does this second resource sharpen the business case?"
+  },
+  "verification": {
+    "boundaries": {
+      "visitorResponseBoundaryId": 2,
+      "firstTurnBoundaryId": 16
+    },
+    "configuredOrchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "reset": {
+      "pass": true,
+      "errors": [],
+      "checks": {
+        "preseedCaptured": true,
+        "freshProfile": true,
+        "freshSession": true,
+        "eventsReset": true,
+        "proactiveCleared": true,
+        "conversationCleared": true,
+        "handoffCleared": true,
+        "unrelatedStatePreserved": true
+      },
+      "preseed": {
+        "profileVisitorId": "reset_probe_visitor",
+        "sessionId": "reset_probe_session",
+        "proactiveOpportunityId": "reset_probe_opportunity",
+        "conversationId": "reset_probe_conversation",
+        "handoffOpportunityId": "reset_probe_opportunity",
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      },
+      "post": {
+        "profileVisitorId": "visitor_09b812521fb964d4c159be93",
+        "sessionId": "sess_d2ab692074903151ff88d212",
+        "eventNames": [
+          "page_view"
+        ],
+        "proactiveOpportunityId": null,
+        "conversationId": null,
+        "handoffOpportunityId": null,
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      }
+    },
+    "firstTurnTraffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 1,
+        "byOpportunity": {
+          "opp_1a019dc229c_79710b": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 3,
+        "responseId": 4,
+        "responseStatus": 200,
+        "responseTextLength": 2533,
+        "routedToSpecialist": true,
+        "routingMode": "deterministic_client",
+        "specialistRequests": 1,
+        "specialistAction": "accept",
+        "specialistOutcome": "demoted",
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 0
+      },
+      "discovery": {
+        "pass": true,
+        "errors": [],
+        "visibleWraps": 1,
+        "visibleQuestions": 1,
+        "questions": [
+          "Since you're looking at the strategic side of Agent Studio, would it be helpful to see how other companies have mapped their specific business friction to an agentic AI use case?"
+        ]
+      },
+      "specialistRoutingDebug": {
+        "context": {
+          "context.version": "1",
+          "context.source": "deterministic_browser_signals",
+          "page.path": "/resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "page.title": "Unlock the power of agentic AI with Agent Studio",
+          "journey.paths": "/resources/asset/infographic-unlock-the-power-of-agentic-ai -> /resources/asset/infographic-unlock-the-power-of-agentic-ai",
+          "journey.page_count": "2",
+          "behavior.read_depth": "medium",
+          "conversation_id": "5f6a3556-84e9-4512-8944-55d5539cef28"
+        },
+        "query": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?",
+        "contentLength": 2533,
+        "visibleAnswerLength": 1852,
+        "toolNames": [],
+        "offer": {
+          "specialistKey": "evidence",
+          "question": "What is this resource’s business takeaway, what evidence supports it, and what should an evaluation team investigate next?"
+        },
+        "hasHandler": true
+      }
+    },
+    "traffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 1,
+        "byOpportunity": {
+          "opp_1a019dc229c_79710b": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 3,
+        "responseId": 4,
+        "responseStatus": 200,
+        "responseTextLength": 2533,
+        "routedToSpecialist": true,
+        "routingMode": "deterministic_client",
+        "specialistRequests": 1,
+        "specialistAction": "accept",
+        "specialistOutcome": "demoted",
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 2
+      }
+    }
+  }
+}

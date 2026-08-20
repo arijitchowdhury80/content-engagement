@@ -23,8 +23,9 @@ class MemoryStorage {
   }
 }
 
-function createHarness({ profile, session, events, locationPath = '/products/ai-recommendations' } = {}) {
+function createHarness({ profile, session, events, locationPath = '/products/ai-recommendations', initialLocal = {}, search = '' } = {}) {
   const localStorage = new MemoryStorage({
+    ...initialLocal,
     algolia_profile: JSON.stringify(profile ?? {
       schema: 'AlgoliaEngagementProfile.v1',
       visitorId: 'visitor_123',
@@ -113,10 +114,10 @@ function createHarness({ profile, session, events, locationPath = '/products/ai-
     URLSearchParams,
     TextEncoder,
     location: {
-      href: `https://www.algolia.com${locationPath}`,
+      href: `https://www.algolia.com${locationPath}${search}`,
       origin: 'https://www.algolia.com',
       pathname: locationPath,
-      search: '',
+      search,
     },
     document: { title: 'AI Recommendations' },
     fetch: async (url, options) => ({
@@ -137,6 +138,25 @@ function createHarness({ profile, session, events, locationPath = '/products/ai-
 
 function byteLength(value) {
   return new TextEncoder().encode(value).length;
+}
+
+function existingContextForExactMergedBytes(compiler, targetBytes) {
+  const existing = {};
+
+  for (let index = 0; index < 32; index += 1) {
+    const currentBytes = byteLength(JSON.stringify(compiler.mergeTurnContext(existing)));
+    if (currentBytes === targetBytes) return existing;
+
+    const key = `boundary_${index}`;
+    const oneByteCandidate = { ...existing, [key]: 'x' };
+    const oneByteTotal = byteLength(JSON.stringify(compiler.mergeTurnContext(oneByteCandidate)));
+    const entryOverhead = oneByteTotal - currentBytes - 1;
+    const valueBytes = Math.min(1024, targetBytes - currentBytes - entryOverhead);
+    assert.ok(valueBytes > 0, `cannot construct an exact ${targetBytes}-byte context`);
+    existing[key] = 'x'.repeat(valueBytes);
+  }
+
+  assert.fail(`could not construct an exact ${targetBytes}-byte context`);
 }
 
 test('compiles rich context from tracker state without downgrading confirmed persona', () => {
@@ -294,7 +314,44 @@ test('returns flat Agent Studio turn context within documented limits', () => {
   assert.equal(turnContext.persona, 'confirmed:developer');
   assert.equal(turnContext.current_topic, 'observed:ai_search');
   assert.match(turnContext.intent, /^inferred:ai_recommendations_evaluation:/);
+  assert.equal(turnContext.recent_events, undefined);
+  assert.equal(turnContext.current_dwell_seconds, undefined);
+  assert.equal(turnContext.current_scroll_depth, undefined);
+  assert.match(turnContext.qualified_journey, /pricing.*AI Recommendations/i);
   assert.doesNotMatch(serialized, /person@example.com/);
+});
+
+test('qualified journey summary uses the shared 5 second and 25 percent boundary', () => {
+  const buildPage = (pageId, dwellMs, maxScrollDepth) => ({
+    pageId,
+    path: `/products/${pageId}`,
+    title: pageId,
+    enteredAt: 1786750000000,
+    dwellMs,
+    maxScrollDepth,
+    pageGroup: 'product',
+    topic: pageId,
+  });
+  const { context } = createHarness({
+    session: {
+      schema: 'AlgoliaEngagementSession.v1',
+      sessionId: 'sess_123',
+      startedAt: 1786750000000,
+      currentPageId: 'qualified',
+      pages: [
+        buildPage('short-dwell', 4999, 25),
+        buildPage('shallow-scroll', 5000, 24),
+        buildPage('qualified', 5000, 25),
+      ],
+      engagementHistory: [],
+    },
+  });
+
+  const qualifiedJourney = context.algoliaContextCompiler.compileTurnContext().qualified_journey;
+
+  assert.match(qualifiedJourney, /qualified/);
+  assert.doesNotMatch(qualifiedJourney, /short-dwell/);
+  assert.doesNotMatch(qualifiedJourney, /shallow-scroll/);
 });
 
 test('weights recent events above older pages when choosing next useful context', () => {
@@ -356,6 +413,80 @@ test('injects turnContext into Agent Studio AI SDK v5 user message metadata', as
   assert.equal(body.messages[0].metadata.turnContext.current_topic, 'observed:ai_search');
 });
 
+test('rejects an oversized existing turnContext field instead of clipping it', () => {
+  const { context } = createHarness();
+  const body = JSON.stringify({
+    messages: [
+      {
+        role: 'user',
+        parts: [{ type: 'text', text: 'How hard is implementation?' }],
+        metadata: { turnContext: { oversized_field: 'x'.repeat(1025) } },
+      },
+    ],
+  });
+
+  assert.throws(
+    () => context.algoliaContextCompiler.injectTurnContextIntoBody(body),
+    (error) => {
+      assert.equal(error.code, 'turn_context_value_too_large');
+      assert.equal(error.field, 'oversized_field');
+      assert.equal(error.actualBytes, 1025);
+      assert.equal(error.limitBytes, 1024);
+      return true;
+    },
+  );
+
+  const recorded = JSON.parse(context.sessionStorage.getItem('algolia_context_validation_error'));
+  assert.equal(recorded.field, 'oversized_field');
+  assert.equal(recorded.actualBytes, 1025);
+});
+
+test('rejects turnContext above the total byte limit and identifies the field that crossed it', () => {
+  const { context } = createHarness();
+  const existing = Object.fromEntries(
+    Array.from({ length: 12 }, (_, index) => [`existing_${index}`, 'x'.repeat(350)]),
+  );
+
+  assert.throws(
+    () => context.algoliaContextCompiler.mergeTurnContext(existing),
+    (error) => {
+      assert.equal(error.code, 'turn_context_total_too_large');
+      assert.match(error.field, /^existing_/);
+      assert.ok(error.actualBytes > 4096);
+      assert.equal(error.limitBytes, 4096);
+      return true;
+    },
+  );
+});
+
+test('accepts turnContext at exactly 4096 bytes', () => {
+  const { context } = createHarness();
+  const compiler = context.algoliaContextCompiler;
+  const existing = existingContextForExactMergedBytes(compiler, 4096);
+
+  const merged = compiler.mergeTurnContext(existing);
+
+  assert.equal(byteLength(JSON.stringify(merged)), 4096);
+});
+
+test('rejects turnContext at exactly 4097 bytes', () => {
+  const { context } = createHarness();
+  const compiler = context.algoliaContextCompiler;
+  const existing = existingContextForExactMergedBytes(compiler, 4096);
+  const boundaryField = Object.keys(existing).at(-1);
+  existing[boundaryField] += 'x';
+
+  assert.throws(
+    () => compiler.mergeTurnContext(existing),
+    (error) => {
+      assert.equal(error.code, 'turn_context_total_too_large');
+      assert.equal(error.actualBytes, 4097);
+      assert.equal(error.limitBytes, 4096);
+      return true;
+    },
+  );
+});
+
 test('debug returns raw tracker state, rich packet, and flat turnContext', () => {
   const { context } = createHarness();
 
@@ -364,4 +495,19 @@ test('debug returns raw tracker state, rich packet, and flat turnContext', () =>
   assert.equal(debug.raw.profile.schema, 'AlgoliaEngagementProfile.v1');
   assert.equal(debug.compiled.schema, 'AlgoliaContextPacket.v1');
   assert.equal(debug.turnContext.persona, 'confirmed:developer');
+});
+
+test('debug mode can be enabled persistently from localStorage without URL flags', () => {
+  const logs = [];
+  const { context } = createHarness({ initialLocal: { algoliaDebug: '1' } });
+  context.console = {
+    ...console,
+    log(...args) {
+      logs.push(args);
+    },
+  };
+
+  context.algoliaContextCompiler.debug();
+
+  assert.ok(logs.some((args) => args[0] === '[Algolia Context Compiler]' && args[1] === 'debug'));
 });

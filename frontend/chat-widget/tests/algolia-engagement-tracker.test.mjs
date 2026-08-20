@@ -23,10 +23,12 @@ class MemoryStorage {
   }
 }
 
-function createHarness({ pathname = '/pricing', search = '?utm_source=paid_search&email=nope@example.com', title = 'Pricing', initialLocal = {}, initialSession = {}, initialEvents = {}, resetOnLogo = false } = {}) {
+function createHarness({ pathname = '/pricing', search = '?utm_source=paid_search&email=nope@example.com', title = 'Pricing', pageMetadata = {}, initialLocal = {}, initialSession = {}, initialEvents = {}, resetOnLogo = false, initialNow = Date.now() } = {}) {
   const listeners = new Map();
   const documentListeners = new Map();
   const documentDispatches = [];
+  const logs = [];
+  let now = initialNow;
   const localStorage = new MemoryStorage(initialLocal);
   const sessionStorage = new MemoryStorage({
     ...initialSession,
@@ -44,11 +46,21 @@ function createHarness({ pathname = '/pricing', search = '?utm_source=paid_searc
   };
 
   const context = {
-    console,
+    console: {
+      ...console,
+      log(...args) {
+        logs.push(args);
+      },
+    },
     localStorage,
     sessionStorage,
     URL,
     URLSearchParams,
+    Date: class extends Date {
+      static now() {
+        return now;
+      }
+    },
     setTimeout(fn) {
       return fn();
     },
@@ -57,6 +69,8 @@ function createHarness({ pathname = '/pricing', search = '?utm_source=paid_searc
       constructor(type, options = {}) {
         this.type = type;
         this.detail = options.detail;
+        this.bubbles = options.bubbles ?? false;
+        this.composed = options.composed ?? false;
       }
     },
     crypto: {
@@ -85,8 +99,8 @@ function createHarness({ pathname = '/pricing', search = '?utm_source=paid_searc
       referrer: 'https://www.algolia.com/products/ai-search?token=secret',
       hidden: false,
       cookie: '',
-      documentElement: { scrollHeight: 1000 },
-      body: { scrollHeight: 1000 },
+      documentElement: { scrollHeight: 1000, dataset: {} },
+      body: { scrollHeight: 1000, dataset: pageMetadata },
       querySelector(selector) {
         return selector === 'algolia-chat' ? chatElement : null;
       },
@@ -110,7 +124,17 @@ function createHarness({ pathname = '/pricing', search = '?utm_source=paid_searc
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(trackerPath, 'utf8'), context);
 
-  return { context, localStorage, sessionStorage, chatElement, documentDispatches };
+  return {
+    context,
+    localStorage,
+    sessionStorage,
+    chatElement,
+    documentDispatches,
+    logs,
+    advanceTime(ms) {
+      now += ms;
+    },
+  };
 }
 
 function parse(storage, key) {
@@ -138,6 +162,45 @@ test('captures page view with sanitized URL and safe UTM values', () => {
   assert.equal(pageView.props.referrer, 'https://www.algolia.com/products/ai-search');
   assert.deepEqual(pageView.props.utm, { utm_source: 'paid_search' });
   assert.equal(pageView.props.email, undefined);
+});
+
+test('emits the 25 percent scroll milestone required by proactive journeys', () => {
+  const { context, sessionStorage } = createHarness({ pathname: '/products/ai-search', search: '' });
+
+  context.document.documentElement.scrollHeight = 2000;
+  context.document.body.scrollHeight = 2000;
+  context.scrollY = 0;
+  context.dispatchWindowEvent('scroll');
+
+  const scrollEvents = parse(sessionStorage, 'algolia_events').events
+    .filter((event) => event.name === 'scroll_depth');
+  assert.equal(scrollEvents.length, 1);
+  assert.equal(scrollEvents[0].props.depth, 25);
+});
+
+test('dwell accumulates visible time and excludes time while the page is hidden', () => {
+  const { context, sessionStorage, advanceTime } = createHarness({
+    pathname: '/products/ai-search',
+    search: '',
+    initialNow: 1_000_000,
+  });
+
+  advanceTime(5_000);
+  context.document.hidden = true;
+  context.document.dispatchDocumentEvent('visibilitychange');
+  advanceTime(20_000);
+  context.dispatchWindowEvent('beforeunload');
+
+  let currentPage = parse(sessionStorage, 'algolia_session').pages[0];
+  assert.equal(currentPage.dwellMs, 5_000);
+
+  context.document.hidden = false;
+  context.document.dispatchDocumentEvent('visibilitychange');
+  advanceTime(5_000);
+  context.dispatchWindowEvent('pagehide');
+
+  currentPage = parse(sessionStorage, 'algolia_session').pages[0];
+  assert.equal(currentPage.dwellMs, 10_000);
 });
 
 test('redacts sensitive strings inside otherwise safe event props', () => {
@@ -258,6 +321,26 @@ test('classifies product feature focus on page views and events', () => {
   assert.equal(pageView.props.productFocusLabel, 'Personalization');
 });
 
+test('explicit page metadata takes precedence over an ambiguous rendered URL', () => {
+  const { sessionStorage } = createHarness({
+    pathname: '/cms/render/default/en/sites/www/home/content/commerce',
+    search: '',
+    title: 'Commerce experiences',
+    pageMetadata: {
+      algoliaPageGroup: 'solution',
+      algoliaTopic: 'commerce',
+      algoliaSolutionFocus: 'commerce',
+      algoliaSolutionFocusLabel: 'Commerce',
+    },
+  });
+
+  const page = parse(sessionStorage, 'algolia_session').pages[0];
+  assert.equal(page.pageGroup, 'solution');
+  assert.equal(page.topic, 'commerce');
+  assert.equal(page.solutionFocus, 'commerce');
+  assert.equal(page.solutionFocusLabel, 'Commerce');
+});
+
 test('classifies solution focus on page views and events', () => {
   const { sessionStorage } = createHarness({
     pathname: '/solutions/ecommerce',
@@ -277,23 +360,48 @@ test('classifies solution focus on page views and events', () => {
   assert.equal(pageView.props.solutionFocusLabel, 'Commerce');
 });
 
-test('algoliaProactiveReset clears session-scoped proactive state without deleting profile', () => {
+test('algoliaProactiveReset clears all Algolia session and chat state while preserving profile and unrelated storage', () => {
   const { localStorage, sessionStorage } = createHarness({
     pathname: '/products/features/personalization',
     search: '?algoliaProactiveReset=1',
+    initialLocal: {
+      algolia_profile: JSON.stringify({
+        schema: 'AlgoliaEngagementProfile.v1',
+        visitorId: 'visitor_keep',
+        persona: { value: 'developer', state: 'confirmed' },
+      }),
+      jahia_editor_preference: 'keep-me',
+    },
     initialSession: {
       algolia_session: JSON.stringify({ schema: 'AlgoliaEngagementSession.v1', sessionId: 'old', pages: [{ path: '/pricing' }] }),
       algolia_events: JSON.stringify({ schema: 'AlgoliaEngagementEvents.v1', sessionId: 'old', events: [{ name: 'chat_open' }] }),
       algolia_proactive_state: JSON.stringify({ opportunities: [{ id: 'old_opp' }] }),
+      algolia_pending_greeting: JSON.stringify({ opportunityId: 'old_opp' }),
+      algolia_proactive_debug_log: JSON.stringify([{ stage: 'old' }]),
+      algolia_context_validation_error: JSON.stringify({ field: 'journey_summary' }),
+      'algolia-chat:conversation': JSON.stringify({ version: 1, conversationId: 'old_chat', turns: [{ id: 'turn_1' }] }),
+      'algolia-chat:conversation-ui': JSON.stringify({ open: true, mode: 'docked' }),
+      'algolia-chat:handoff-context': JSON.stringify({ schema: 'ProactiveHandoffContext.v1', opportunityId: 'old_opp' }),
+      algolia_token: 'old_token',
+      jahia_route_state: 'keep-me-too',
     },
   });
 
-  assert.equal(parse(localStorage, 'algolia_profile').schema, 'AlgoliaEngagementProfile.v1');
+  assert.equal(parse(localStorage, 'algolia_profile').visitorId, 'visitor_keep');
+  assert.equal(parse(localStorage, 'algolia_profile').persona.value, 'developer');
+  assert.equal(localStorage.getItem('jahia_editor_preference'), 'keep-me');
+  assert.equal(sessionStorage.getItem('jahia_route_state'), 'keep-me-too');
   assert.notEqual(parse(sessionStorage, 'algolia_session').sessionId, 'old');
   assert.equal(parse(sessionStorage, 'algolia_events').events.some((event) => event.name === 'chat_open'), false);
   assert.equal(sessionStorage.getItem('algolia_proactive_state'), null);
+  assert.equal(sessionStorage.getItem('algolia_pending_greeting'), null);
+  assert.equal(sessionStorage.getItem('algolia_proactive_debug_log'), null);
+  assert.equal(sessionStorage.getItem('algolia_context_validation_error'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:conversation'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:conversation-ui'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:handoff-context'), null);
+  assert.equal(sessionStorage.getItem('algolia_token'), null);
 });
-
 
 test('reset clears only Algolia visitor state and starts a fresh tracked session', () => {
   const { context, localStorage, sessionStorage } = createHarness({
@@ -311,6 +419,9 @@ test('reset clears only Algolia visitor state and starts a fresh tracked session
       algolia_proactive_state: JSON.stringify({ opportunities: [{ id: 'old_opp' }] }),
       algolia_pending_greeting: JSON.stringify({ opportunityId: 'old_opp' }),
       algolia_proactive_debug_log: JSON.stringify([{ stage: 'old' }]),
+      'algolia-chat:conversation': JSON.stringify({ version: 1, conversationId: 'old_chat', turns: [{ id: 'turn_1' }] }),
+      'algolia-chat:conversation-ui': JSON.stringify({ open: true, mode: 'docked' }),
+      'algolia-chat:handoff-context': JSON.stringify({ schema: 'ProactiveHandoffContext.v1', opportunityId: 'old_opp' }),
       algolia_token: 'old_token',
       acs_token: 'legacy_token',
       jahia_route_state: 'keep-me-too',
@@ -330,6 +441,9 @@ test('reset clears only Algolia visitor state and starts a fresh tracked session
   assert.equal(sessionStorage.getItem('algolia_proactive_state'), null);
   assert.equal(sessionStorage.getItem('algolia_pending_greeting'), null);
   assert.equal(sessionStorage.getItem('algolia_proactive_debug_log'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:conversation'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:conversation-ui'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:handoff-context'), null);
   assert.notEqual(sessionStorage.getItem('algolia_token'), 'old_token');
   assert.equal(localStorage.getItem('acs_profile'), null);
   assert.equal(localStorage.getItem('acs_session'), null);
@@ -374,4 +488,53 @@ test('configured Assistant logo reset spins and clears visitor state', () => {
   assert.equal(animations.length, 1);
   assert.equal(animations[0].target, 'logo');
   assert.equal(animations[0].frames.at(-1).transform, 'rotate(360deg)');
+});
+
+test('bubbling composed visitor reset request invokes the full tracker reset', () => {
+  const { context, localStorage, sessionStorage } = createHarness({
+    initialLocal: {
+      algolia_profile: JSON.stringify({ visitorId: 'old_visitor' }),
+      jahia_editor_preference: 'keep-me',
+    },
+    initialSession: {
+      algolia_proactive_state: JSON.stringify({ opportunities: [{ id: 'old_opp' }] }),
+      algolia_pending_greeting: JSON.stringify({ opportunityId: 'old_opp' }),
+      algolia_proactive_debug_log: JSON.stringify([{ stage: 'old' }]),
+      'algolia-chat:conversation': JSON.stringify({ version: 1, conversationId: 'old_chat', turns: [{ id: 'turn_1' }] }),
+      'algolia-chat:conversation-ui': JSON.stringify({ open: true, mode: 'docked' }),
+      'algolia-chat:handoff-context': JSON.stringify({ schema: 'ProactiveHandoffContext.v1', opportunityId: 'old_opp' }),
+      jahia_route_state: 'keep-me-too',
+    },
+  });
+  const resetRequest = new context.CustomEvent('algolia-visitor-reset-requested', {
+    bubbles: true,
+    composed: true,
+    detail: { source: 'assistant_logo' },
+  });
+
+  context.document.dispatchEvent(resetRequest);
+
+  assert.equal(resetRequest.bubbles, true);
+  assert.equal(resetRequest.composed, true);
+  assert.notEqual(parse(localStorage, 'algolia_profile').visitorId, 'old_visitor');
+  assert.equal(localStorage.getItem('jahia_editor_preference'), 'keep-me');
+  assert.equal(sessionStorage.getItem('jahia_route_state'), 'keep-me-too');
+  assert.equal(sessionStorage.getItem('algolia_proactive_state'), null);
+  assert.equal(sessionStorage.getItem('algolia_pending_greeting'), null);
+  assert.equal(sessionStorage.getItem('algolia_proactive_debug_log'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:conversation'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:conversation-ui'), null);
+  assert.equal(sessionStorage.getItem('algolia-chat:handoff-context'), null);
+  assert.equal(parse(sessionStorage, 'algolia_events').events[0].name, 'page_view');
+});
+
+test('engagement debug can be enabled persistently from localStorage without URL flags', () => {
+  const { context, logs } = createHarness({
+    search: '',
+    initialLocal: { algoliaDebug: '1' },
+  });
+
+  context.algoliaEngagementTracker.configure({ maxEvents: 12 });
+
+  assert.ok(logs.some((args) => args[0] === '[Algolia Engagement Tracker]' && args[1] === 'configured'));
 });

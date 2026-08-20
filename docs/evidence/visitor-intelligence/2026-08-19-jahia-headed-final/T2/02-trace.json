@@ -1,0 +1,4916 @@
+{
+  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search?algoliaChatDebug=1&algoliaProactiveDebug=1&algoliaHandoffDebug=1&cb=hosted-t2-continuity",
+  "title": "AI Search | Algolia",
+  "controller": {
+    "config": {
+      "enabled": true,
+      "maxOpportunitiesPerSession": 3,
+      "cooldownMs": 120000,
+      "opportunityTtlMs": 600000,
+      "productDwellMs": 10000,
+      "productScrollDepth": 50,
+      "solutionDwellMs": 10000,
+      "solutionScrollDepth": 50,
+      "documentationJourneyDwellMs": 10000,
+      "documentationJourneyScrollDepth": 50,
+      "proofJourneyDwellMs": 10000,
+      "proofJourneyScrollDepth": 50,
+      "implementationDwellMs": 10000,
+      "implementationScrollDepth": 50,
+      "resourceDwellMs": 10000,
+      "resourceScrollDepth": 50,
+      "compatibilityMode": "ai-sdk-5",
+      "cache": false,
+      "memory": false
+    },
+    "state": {
+      "schema": "AlgoliaProactiveState.v1",
+      "opportunities": [
+        {
+          "id": "opp_1a019d5ef3f_f7848a",
+          "status": "dismissed",
+          "lifecycle": [
+            "qualified",
+            "pending",
+            "shown",
+            "dismissed"
+          ],
+          "pageId": "page_909ea693bc6430b990563170",
+          "pagePath": "/products/ai-search",
+          "moment": "product_research",
+          "trigger": "product_page_10s_50_scroll",
+          "priority": 66,
+          "messageGoal": "explain_product_fit",
+          "reasonCodes": [
+            "product_page",
+            "product_dwell",
+            "product_scroll"
+          ],
+          "createdAt": 1787139845951,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "persona": {
+              "value": "unknown",
+              "state": "unknown",
+              "confidence": 0,
+              "source": "insufficient_signal"
+            },
+            "currentPage": {
+              "pageId": "page_909ea693bc6430b990563170",
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 10002,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "ai_search",
+              "label": "AI Search",
+              "state": "observed",
+              "source": "current_product_page",
+              "pagePath": "/products/ai-search",
+              "pageTitle": "AI Search | Algolia"
+            },
+            "journeySummary": {
+              "currentTransition": "product_page_10s_50_scroll",
+              "productTrail": [
+                {
+                  "value": "ai_search",
+                  "label": "AI Search",
+                  "pagePath": "/products/ai-search",
+                  "pageTitle": "AI Search | Algolia"
+                }
+              ],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "AI Search"
+                },
+                {
+                  "path": "/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              ],
+              "storyHint": ""
+            },
+            "journey": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search",
+                "dwellMs": 1116,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search",
+                "dwellMs": 10002,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/products/ai-search",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/products/ai-search",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/products/ai-search",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/products/ai-search",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/products/ai-search",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "ai_recommendations_evaluation",
+              "state": "inferred",
+              "confidence": 0.72,
+              "evidence": [
+                "current_page:AI Search | Algolia /products/ai-search ai_search",
+                "scroll_depth:/products/ai-search",
+                "page_dwell:/products/ai-search",
+                "page_dwell:/products/ai-search"
+              ]
+            },
+            "friction": {
+              "value": "fit_and_value_unclear",
+              "state": "inferred",
+              "confidence": 0.62,
+              "evidence": [
+                "current_page:AI Search | Algolia /products/ai-search ai_search"
+              ]
+            },
+            "messageGoal": "explain_product_fit",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ],
+            "opportunityId": "opp_1a019d5ef3f_f7848a",
+            "createdAt": 1787139845951
+          },
+          "updatedAt": 1787139851040,
+          "failureReason": null,
+          "shownAt": 1787139850563,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a019d5ef3f_f7848a",
+            "greeting": "Hello, explorer. AI Search is earning a proper look today, so let’s skip the marketing fluff and figure out if it actually solves your specific friction or if it's just a shiny tool.",
+            "chips": [
+              "See a real-world example",
+              "Test the product fit",
+              "Compare to standard search"
+            ],
+            "handoffSummary": {
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "messageGoal": "explain_product_fit"
+            }
+          },
+          "dismissedAt": 1787139851040
+        },
+        {
+          "id": "opp_1a019d633f5_29dbfd",
+          "status": "active",
+          "lifecycle": [
+            "qualified",
+            "pending",
+            "shown",
+            "engaged",
+            "handed_off",
+            "active"
+          ],
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "pagePath": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "moment": "implementation_research",
+          "trigger": "product_to_documentation",
+          "priority": 85,
+          "messageGoal": "connect_product_interest_to_implementation",
+          "reasonCodes": [
+            "journey_product_to_documentation",
+            "documentation_depth"
+          ],
+          "createdAt": 1787139863541,
+          "requestPacket": {
+            "schema": "ProactiveGreetingRequest.v1",
+            "moment": "implementation_research",
+            "trigger": "product_to_documentation",
+            "priority": 85,
+            "persona": {
+              "value": "developer",
+              "state": "inferred",
+              "confidence": 0.66,
+              "source": "behavior"
+            },
+            "currentPage": {
+              "pageId": "page_99c14cb855a6941dfc13716b",
+              "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+              "title": "InstantSearch.js",
+              "pageGroup": "documentation",
+              "topic": "instantsearch_implementation",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            },
+            "contextualFocus": {
+              "value": "ai_search",
+              "label": "AI Search",
+              "state": "observed",
+              "source": "prior_product_page",
+              "pagePath": "/products/ai-search",
+              "pageTitle": "AI Search | Algolia"
+            },
+            "journeySummary": {
+              "currentTransition": "product_to_documentation",
+              "productTrail": [
+                {
+                  "value": "ai_search",
+                  "label": "AI Search",
+                  "pagePath": "/products/ai-search",
+                  "pageTitle": "AI Search | Algolia"
+                }
+              ],
+              "solutionTrail": [],
+              "pageTrail": [
+                {
+                  "path": "/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "AI Search"
+                },
+                {
+                  "path": "/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocusLabel": "AI Search"
+                },
+                {
+                  "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                  "title": "InstantSearch.js",
+                  "pageGroup": "documentation",
+                  "topic": "instantsearch_implementation"
+                }
+              ],
+              "storyHint": "The visitor moved from AI Search into documentation; frame this as technical validation of that product interest."
+            },
+            "journey": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search",
+                "dwellMs": 1116,
+                "maxScrollDepth": 0
+              },
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search",
+                "dwellMs": 19163,
+                "maxScrollDepth": 75
+              },
+              {
+                "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                "title": "InstantSearch.js",
+                "pageGroup": "documentation",
+                "topic": "instantsearch_implementation",
+                "dwellMs": 10003,
+                "maxScrollDepth": 50
+              }
+            ],
+            "observedSignals": [
+              {
+                "name": "page_view",
+                "path": "/products/ai-search",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/products/ai-search",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "title": "AI Search | Algolia",
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/products/ai-search",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/products/ai-search",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/products/ai-search",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/products/ai-search",
+                "props": {
+                  "dwellSeconds": 15,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "engagement_exposed",
+                "path": "/products/ai-search",
+                "props": {
+                  "engagementId": "eng_2bbe35f97fcab8a89efe96a8",
+                  "messageGoal": "proactive_concierge",
+                  "status": "shown"
+                }
+              },
+              {
+                "name": "chat_open",
+                "path": "/products/ai-search",
+                "props": {
+                  "open": true
+                }
+              },
+              {
+                "name": "chat_open",
+                "path": "/products/ai-search",
+                "props": {
+                  "open": false
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/products/ai-search",
+                "props": {
+                  "depth": 75,
+                  "pageGroup": "product",
+                  "topic": "ai_search",
+                  "productFocus": "ai_search",
+                  "productFocusLabel": "AI Search"
+                }
+              },
+              {
+                "name": "cta_click",
+                "path": "/products/ai-search",
+                "props": {
+                  "ctaType": "documentation",
+                  "label": "Read the AI Search docs",
+                  "href": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js"
+                }
+              },
+              {
+                "name": "page_view",
+                "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                "props": {
+                  "url": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                  "title": "InstantSearch.js",
+                  "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                  "pageGroup": "documentation",
+                  "topic": "instantsearch_implementation"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                "props": {
+                  "dwellSeconds": 5,
+                  "pageGroup": "documentation",
+                  "topic": "instantsearch_implementation"
+                }
+              },
+              {
+                "name": "page_dwell",
+                "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                "props": {
+                  "dwellSeconds": 10,
+                  "pageGroup": "documentation",
+                  "topic": "instantsearch_implementation"
+                }
+              },
+              {
+                "name": "scroll_depth",
+                "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                "props": {
+                  "depth": 50,
+                  "pageGroup": "documentation",
+                  "topic": "instantsearch_implementation"
+                }
+              }
+            ],
+            "inferredIntent": {
+              "value": "pricing_or_demo_evaluation",
+              "state": "inferred",
+              "confidence": 0.74,
+              "evidence": [
+                "current_page:InstantSearch.js /sites/www/doc/guides/building-search-ui/what-is-instantsearch/js instantsearch_implementation",
+                "cta_click:Read the AI Search docs"
+              ]
+            },
+            "friction": {
+              "value": "pricing_or_cost_unclear",
+              "state": "inferred",
+              "confidence": 0.68,
+              "evidence": [
+                "current_page:InstantSearch.js /sites/www/doc/guides/building-search-ui/what-is-instantsearch/js instantsearch_implementation"
+              ]
+            },
+            "messageGoal": "connect_product_interest_to_implementation",
+            "source": "browser_deterministic",
+            "tone": "sharp, useful, warm, lightly witty",
+            "constraints": {
+              "noTelemetryExposure": true,
+              "includeQuestionChips": true
+            },
+            "reasonCodes": [
+              "journey_product_to_documentation",
+              "documentation_depth"
+            ],
+            "opportunityId": "opp_1a019d633f5_29dbfd",
+            "createdAt": 1787139863541
+          },
+          "updatedAt": 1787139869115,
+          "failureReason": null,
+          "shownAt": 1787139868217,
+          "greetingResponse": {
+            "schema": "ProactiveGreetingResponse.v1",
+            "opportunityId": "opp_1a019d633f5_29dbfd",
+            "greeting": "Aha, we’ve crossed from AI Search curiosity into how this actually lives in your stack. Let me tell you a secret: this is my favorite corner, and I can help map the implementation path or scope a useful POC.",
+            "chips": [
+              "Map it to my stack",
+              "Scope a practical POC",
+              "Discuss cost drivers"
+            ],
+            "handoffSummary": {
+              "moment": "implementation_research",
+              "trigger": "product_to_documentation",
+              "messageGoal": "connect_product_interest_to_implementation"
+            }
+          },
+          "handoffStartedAt": 1787139868623,
+          "userResponse": "What should a credible React InstantSearch proof of concept include?",
+          "selectedChip": null,
+          "handoffSchema": "ProactiveHandoffContext.v1",
+          "handoffAt": 1787139869114,
+          "handoffFailure": null,
+          "activeAt": 1787139869115
+        }
+      ],
+      "lastOpportunityAt": 1787139868217
+    },
+    "packet": {
+      "schema": "AlgoliaContextPacket.v1",
+      "compiledAt": 1787139960002,
+      "profile": {
+        "visitorId": "visitor_c8e4d9e11985596e1ca4e0f1",
+        "visits": 4,
+        "persona": {
+          "value": "developer",
+          "state": "inferred",
+          "confidence": 0.66,
+          "source": "behavior"
+        }
+      },
+      "session": {
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "startedAt": 1787139831260,
+        "pageCount": 4,
+        "engagementHistory": [
+          {
+            "id": "eng_2bbe35f97fcab8a89efe96a8",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1787139850562,
+            "status": "shown"
+          },
+          {
+            "id": "eng_4bb77b9a370f9f1036e207e6",
+            "messageGoal": "proactive_concierge",
+            "shownAt": 1787139868216,
+            "status": "shown"
+          }
+        ]
+      },
+      "currentPage": {
+        "pageId": "page_815977ef9652d5e0cc1654e8",
+        "path": "/products/ai-search",
+        "title": "AI Search | Algolia",
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "ai_search",
+        "productFocusLabel": "AI Search",
+        "dwellMs": 15003,
+        "maxScrollDepth": 0
+      },
+      "observedSignals": {
+        "currentTopic": {
+          "value": "ai_search",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "currentProductFocus": {
+          "value": "ai_search",
+          "label": "AI Search",
+          "state": "observed",
+          "source": "current_page"
+        },
+        "eventCounts": {
+          "page_view": 4,
+          "page_dwell": 9,
+          "scroll_depth": 4,
+          "engagement_exposed": 2,
+          "chat_open": 3,
+          "cta_click": 1
+        }
+      },
+      "recentEvents": [
+        {
+          "eventId": "evt_3790c04b87e207c714ce3428",
+          "name": "chat_open",
+          "ts": 1787139851039,
+          "pageId": "page_909ea693bc6430b990563170",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "open": false
+          }
+        },
+        {
+          "eventId": "evt_f3b03083ddfeec8d352fee86",
+          "name": "scroll_depth",
+          "ts": 1787139851350,
+          "pageId": "page_909ea693bc6430b990563170",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "depth": 75,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_1e5fbf44b7a2cec2541fb992",
+          "name": "cta_click",
+          "ts": 1787139851622,
+          "pageId": "page_909ea693bc6430b990563170",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "ctaType": "documentation",
+            "label": "Read the AI Search docs",
+            "href": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js"
+          }
+        },
+        {
+          "eventId": "evt_2e5329b06be1f8e0117ca46f",
+          "name": "page_view",
+          "ts": 1787139852059,
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+            "title": "InstantSearch.js",
+            "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "pageGroup": "documentation",
+            "topic": "instantsearch_implementation"
+          }
+        },
+        {
+          "eventId": "evt_590acdc7d83e54009fee7024",
+          "name": "page_dwell",
+          "ts": 1787139857062,
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "documentation",
+            "topic": "instantsearch_implementation"
+          }
+        },
+        {
+          "eventId": "evt_99d647f2a30c9114f96a83e1",
+          "name": "page_dwell",
+          "ts": 1787139862062,
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "documentation",
+            "topic": "instantsearch_implementation"
+          }
+        },
+        {
+          "eventId": "evt_d79363fea5a09667a748c62a",
+          "name": "scroll_depth",
+          "ts": 1787139863539,
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "source": "observed",
+          "props": {
+            "depth": 50,
+            "pageGroup": "documentation",
+            "topic": "instantsearch_implementation"
+          }
+        },
+        {
+          "eventId": "evt_3247ea914646a244d732e8ee",
+          "name": "scroll_depth",
+          "ts": 1787139865322,
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "source": "observed",
+          "props": {
+            "depth": 75,
+            "pageGroup": "documentation",
+            "topic": "instantsearch_implementation"
+          }
+        },
+        {
+          "eventId": "evt_2c8d0c58c09d434e75100aff",
+          "name": "page_dwell",
+          "ts": 1787139867060,
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "documentation",
+            "topic": "instantsearch_implementation"
+          }
+        },
+        {
+          "eventId": "evt_7447016857658dda242fa2a7",
+          "name": "engagement_exposed",
+          "ts": 1787139868216,
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "source": "observed",
+          "props": {
+            "engagementId": "eng_4bb77b9a370f9f1036e207e6",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        },
+        {
+          "eventId": "evt_bf4b414ed3e2358a10e3f5ce",
+          "name": "chat_open",
+          "ts": 1787139868223,
+          "pageId": "page_99c14cb855a6941dfc13716b",
+          "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "source": "observed",
+          "props": {
+            "open": true
+          }
+        },
+        {
+          "eventId": "evt_e7451bcc8bd1c06b9b80c32c",
+          "name": "page_view",
+          "ts": 1787139915258,
+          "pageId": "page_815977ef9652d5e0cc1654e8",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_96e106ef17d91e387927dee1",
+          "name": "page_dwell",
+          "ts": 1787139920260,
+          "pageId": "page_815977ef9652d5e0cc1654e8",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_7e7716029a17b296bc163e88",
+          "name": "page_dwell",
+          "ts": 1787139925260,
+          "pageId": "page_815977ef9652d5e0cc1654e8",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        },
+        {
+          "eventId": "evt_ec1bc4604347b5255785a0af",
+          "name": "page_dwell",
+          "ts": 1787139930260,
+          "pageId": "page_815977ef9652d5e0cc1654e8",
+          "path": "/products/ai-search",
+          "source": "observed",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      ],
+      "inferences": {
+        "persona": {
+          "value": "developer",
+          "state": "inferred",
+          "confidence": 0.66,
+          "source": "behavior"
+        },
+        "intent": {
+          "value": "ai_recommendations_evaluation",
+          "state": "inferred",
+          "confidence": 0.72,
+          "evidence": [
+            "current_page:AI Search | Algolia /products/ai-search ai_search",
+            "page_dwell:/products/ai-search",
+            "page_dwell:/products/ai-search",
+            "page_dwell:/products/ai-search"
+          ]
+        },
+        "friction": {
+          "value": "fit_and_value_unclear",
+          "state": "inferred",
+          "confidence": 0.62,
+          "evidence": [
+            "current_page:AI Search | Algolia /products/ai-search ai_search",
+            "page_dwell:/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+            "scroll_depth:/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+            "scroll_depth:/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js"
+          ]
+        },
+        "nextBestAction": {
+          "value": "explain_feature_fit_with_example",
+          "state": "inferred",
+          "confidence": 0.66
+        }
+      }
+    },
+    "decision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "no_trigger_match",
+      "createdAt": 1787139960004
+    },
+    "credentials": {
+      "hasAppId": true,
+      "hasApiKey": true,
+      "hasGreetingsAgentId": true,
+      "hasFetch": true,
+      "sources": {
+        "appId": "algolia-instant-search",
+        "apiKey": "algolia-instant-search",
+        "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+      }
+    },
+    "trace": [
+      {
+        "stage": "signal_received",
+        "at": 1787139831260,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_view",
+          "path": "/products/ai-search",
+          "props": {
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139831260,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139831260,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139831260,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139831261,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139831261,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139831261,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 1,
+          "recentEventCount": 1,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139831261,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139831261,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787139832660,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139832661,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139832661,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139832662,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139832662,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139832662,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139832910,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139832910,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139832911,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139832911,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139832911,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139833660,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139833661,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139833661,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139833661,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139833661,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139835160,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139835161,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139835161,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 2,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139835161,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139835161,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139837661,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139837663,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 5001,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 3,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139837664,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139837664,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139842662,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139842663,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 10002,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 4,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139842663,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139842664,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139845949,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/products/ai-search",
+          "props": {
+            "depth": 50,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139845949,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 10002,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139845950,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "candidate_selected",
+        "at": 1787139845950,
+        "path": "/products/ai-search",
+        "detail": {
+          "engage": true,
+          "moment": "product_research",
+          "trigger": "product_page_10s_50_scroll",
+          "priority": 66,
+          "pagePath": "/products/ai-search",
+          "reasonCodes": [
+            "product_page",
+            "product_dwell",
+            "product_scroll"
+          ]
+        }
+      },
+      {
+        "stage": "pre_reserve_credentials_checked",
+        "at": 1787139845950,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139845951,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 10002,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 5,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139845951,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "opportunity_reserved",
+        "at": 1787139845951,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d5ef3f_f7848a",
+          "trigger": "product_page_10s_50_scroll",
+          "moment": "product_research",
+          "messageGoal": "explain_product_fit",
+          "pagePath": "/products/ai-search"
+        }
+      },
+      {
+        "stage": "credentials_checked",
+        "at": 1787139845952,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasAppId": true,
+          "hasApiKey": true,
+          "hasGreetingsAgentId": true,
+          "hasFetch": true,
+          "sources": {
+            "appId": "algolia-instant-search",
+            "apiKey": "algolia-instant-search",
+            "greetingsAgentId": "ALGOLIA_CONTEXT_ENGINE_CONFIG"
+          }
+        }
+      },
+      {
+        "stage": "greeting_request_started",
+        "at": 1787139845952,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d5ef3f_f7848a",
+          "trigger": "product_page_10s_50_scroll",
+          "moment": "product_research",
+          "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
+          "appId": "0EXRPAXB56"
+        }
+      },
+      {
+        "stage": "greeting_response_http",
+        "at": 1787139846701,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d5ef3f_f7848a",
+          "ok": true,
+          "status": 200
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139847663,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139847664,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15003,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 6,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139847665,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139847666,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "greeting_response_parsed",
+        "at": 1787139850561,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d5ef3f_f7848a",
+          "schema": "ProactiveGreetingResponse.v1",
+          "responseOpportunityId": "opp_1a019d5ef3f_f7848a",
+          "greetingPreview": "Hello, explorer. AI Search is earning a proper look today, so let’s skip the marketing fluff and figure out if it actually solves your specific friction or if it's just a shiny to...",
+          "chipCount": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139850562,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "engagement_exposed",
+          "path": "/products/ai-search",
+          "props": {
+            "engagementId": "eng_2bbe35f97fcab8a89efe96a8",
+            "messageGoal": "proactive_concierge",
+            "status": "shown"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139850562,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15003,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 7,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139850563,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139850563,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "widget_rendered",
+        "at": 1787139850563,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d5ef3f_f7848a",
+          "trigger": "product_page_10s_50_scroll",
+          "chips": 3
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139850567,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "chat_open",
+          "path": "/products/ai-search",
+          "props": {
+            "open": true
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139850567,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15003,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 8,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139850567,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139850567,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "chat_already_open",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139851039,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "chat_open",
+          "path": "/products/ai-search",
+          "props": {
+            "open": false
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139851039,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15003,
+            "maxScrollDepth": 50,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 9,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139851040,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139851040,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "cooldown_active",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "opportunity_dismissed",
+        "at": 1787139851040,
+        "path": "/products/ai-search",
+        "detail": {
+          "opportunityId": "opp_1a019d5ef3f_f7848a"
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139851351,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "scroll_depth",
+          "path": "/products/ai-search",
+          "props": {
+            "depth": 75,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139851351,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15003,
+            "maxScrollDepth": 75,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 10,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139851351,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139851352,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139851623,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "cta_click",
+          "path": "/products/ai-search",
+          "props": {
+            "ctaType": "documentation",
+            "label": "Read the AI Search docs",
+            "href": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139851623,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15003,
+            "maxScrollDepth": 75,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 2,
+          "recentEventCount": 11,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139851624,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 1,
+          "candidates": [
+            {
+              "engage": true,
+              "moment": "product_research",
+              "trigger": "product_page_10s_50_scroll",
+              "priority": 66,
+              "pagePath": "/products/ai-search",
+              "reasonCodes": [
+                "product_page",
+                "product_dwell",
+                "product_scroll"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139851624,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "already_eligible_for_page_moment",
+          "decision": {
+            "engage": true,
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "priority": 66,
+            "pagePath": "/products/ai-search",
+            "reasonCodes": [
+              "product_page",
+              "product_dwell",
+              "product_scroll"
+            ]
+          }
+        }
+      },
+      {
+        "stage": "controller_installed",
+        "at": 1787139915259,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasCompiler": true,
+          "hasChat": true,
+          "hasEngageElement": true
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139915260,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 0
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139915260,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "active_conversation_restored",
+        "at": 1787139915261,
+        "path": "/products/ai-search",
+        "detail": {
+          "path": "/products/ai-search"
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139915261,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139915262,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139915262,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139915509,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 250
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139915510,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139915511,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139915511,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139915511,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139916259,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 1000
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139916259,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139916260,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139916260,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139916260,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "scheduled_initial_evaluation",
+        "at": 1787139917759,
+        "path": "/products/ai-search",
+        "detail": {
+          "delay": 2500
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139917760,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "controller_ready",
+          "path": "/products/ai-search",
+          "props": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139917762,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 0,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139917762,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139917762,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139920261,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 5,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139920262,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 5003,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139920263,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139920263,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139925261,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 10,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139925262,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 10003,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139925263,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139925263,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "signal_received",
+        "at": 1787139930260,
+        "path": "/products/ai-search",
+        "detail": {
+          "name": "page_dwell",
+          "path": "/products/ai-search",
+          "props": {
+            "dwellSeconds": 15,
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search"
+          }
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139930261,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15003,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139930262,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139930262,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      },
+      {
+        "stage": "context_compiled",
+        "at": 1787139960003,
+        "path": "/products/ai-search",
+        "detail": {
+          "hasPacket": true,
+          "currentPage": {
+            "path": "/products/ai-search",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "dwellMs": 15003,
+            "maxScrollDepth": 0,
+            "productFocusLabel": "AI Search"
+          },
+          "pageCount": 4,
+          "recentEventCount": 15,
+          "productTrail": [
+            "AI Search"
+          ],
+          "solutionTrail": []
+        }
+      },
+      {
+        "stage": "candidates_evaluated",
+        "at": 1787139960003,
+        "path": "/products/ai-search",
+        "detail": {
+          "count": 0,
+          "candidates": []
+        }
+      },
+      {
+        "stage": "suppressed",
+        "at": 1787139960003,
+        "path": "/products/ai-search",
+        "detail": {
+          "reason": "no_trigger_match",
+          "decision": null
+        }
+      }
+    ]
+  },
+  "profile": {
+    "schema": "AlgoliaEngagementProfile.v1",
+    "visitorId": "visitor_c8e4d9e11985596e1ca4e0f1",
+    "userToken": "tok_3ea03962e709ce0277e9a90d",
+    "tokenSource": "ephemeral",
+    "firstSeenAt": 1787139831260,
+    "lastSeenAt": 1787139915257,
+    "visits": 4,
+    "persona": null,
+    "traits": {}
+  },
+  "session": {
+    "schema": "AlgoliaEngagementSession.v1",
+    "sessionId": "sess_c722c14ef66b762d6e5414c0",
+    "startedAt": 1787139831260,
+    "lastSeenAt": 1787139930260,
+    "currentPageId": "page_815977ef9652d5e0cc1654e8",
+    "pages": [
+      {
+        "pageId": "page_6af2127b1151938fb6784db0",
+        "path": "/products/ai-search",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+        "title": "AI Search | Algolia",
+        "enteredAt": 1787139831260,
+        "dwellMs": 1116,
+        "maxScrollDepth": 0,
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "ai_search",
+        "productFocusLabel": "AI Search"
+      },
+      {
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+        "title": "AI Search | Algolia",
+        "enteredAt": 1787139832659,
+        "dwellMs": 19163,
+        "maxScrollDepth": 75,
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "ai_search",
+        "productFocusLabel": "AI Search"
+      },
+      {
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "title": "InstantSearch.js",
+        "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+        "enteredAt": 1787139852059,
+        "dwellMs": 62926,
+        "maxScrollDepth": 75,
+        "pageGroup": "documentation",
+        "topic": "instantsearch_implementation"
+      },
+      {
+        "pageId": "page_815977ef9652d5e0cc1654e8",
+        "path": "/products/ai-search",
+        "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+        "title": "AI Search | Algolia",
+        "enteredAt": 1787139915257,
+        "dwellMs": 15003,
+        "maxScrollDepth": 0,
+        "pageGroup": "product",
+        "topic": "ai_search",
+        "productFocus": "ai_search",
+        "productFocusLabel": "AI Search"
+      }
+    ],
+    "engagementHistory": [
+      {
+        "id": "eng_2bbe35f97fcab8a89efe96a8",
+        "pageId": "page_909ea693bc6430b990563170",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1787139850562,
+        "status": "shown"
+      },
+      {
+        "id": "eng_4bb77b9a370f9f1036e207e6",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "messageGoal": "proactive_concierge",
+        "shownAt": 1787139868216,
+        "status": "shown"
+      }
+    ]
+  },
+  "events": {
+    "schema": "AlgoliaEngagementEvents.v1",
+    "sessionId": "sess_c722c14ef66b762d6e5414c0",
+    "events": [
+      {
+        "eventId": "evt_b593cacbc2e53ef4ba9e9dff",
+        "name": "page_view",
+        "ts": 1787139831260,
+        "isoTime": "2026-08-19T11:43:51.260Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_6af2127b1151938fb6784db0",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "title": "AI Search | Algolia",
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_f225ba7baf92cc6463676faf",
+        "name": "page_view",
+        "ts": 1787139832659,
+        "isoTime": "2026-08-19T11:43:52.659Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "title": "AI Search | Algolia",
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_d4139f5d9bc054bd99f925ca",
+        "name": "page_dwell",
+        "ts": 1787139837660,
+        "isoTime": "2026-08-19T11:43:57.660Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_2f9bb18956e0a5e05622f3e6",
+        "name": "page_dwell",
+        "ts": 1787139842661,
+        "isoTime": "2026-08-19T11:44:02.661Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_7275fcac5d8aca6f59479e9f",
+        "name": "scroll_depth",
+        "ts": 1787139845948,
+        "isoTime": "2026-08-19T11:44:05.948Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_d67b0a50a289bde797648458",
+        "name": "page_dwell",
+        "ts": 1787139847662,
+        "isoTime": "2026-08-19T11:44:07.662Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_8856553b8c13fc0694468282",
+        "name": "engagement_exposed",
+        "ts": 1787139850562,
+        "isoTime": "2026-08-19T11:44:10.562Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_2bbe35f97fcab8a89efe96a8",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_acf49a73c389e93a018c1cbb",
+        "name": "chat_open",
+        "ts": 1787139850567,
+        "isoTime": "2026-08-19T11:44:10.567Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      },
+      {
+        "eventId": "evt_3790c04b87e207c714ce3428",
+        "name": "chat_open",
+        "ts": 1787139851039,
+        "isoTime": "2026-08-19T11:44:11.039Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "open": false
+        }
+      },
+      {
+        "eventId": "evt_f3b03083ddfeec8d352fee86",
+        "name": "scroll_depth",
+        "ts": 1787139851350,
+        "isoTime": "2026-08-19T11:44:11.350Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "depth": 75,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_1e5fbf44b7a2cec2541fb992",
+        "name": "cta_click",
+        "ts": 1787139851622,
+        "isoTime": "2026-08-19T11:44:11.622Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_909ea693bc6430b990563170",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "ctaType": "documentation",
+          "label": "Read the AI Search docs",
+          "href": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js"
+        }
+      },
+      {
+        "eventId": "evt_2e5329b06be1f8e0117ca46f",
+        "name": "page_view",
+        "ts": 1787139852059,
+        "isoTime": "2026-08-19T11:44:12.059Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+          "title": "InstantSearch.js",
+          "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "pageGroup": "documentation",
+          "topic": "instantsearch_implementation"
+        }
+      },
+      {
+        "eventId": "evt_590acdc7d83e54009fee7024",
+        "name": "page_dwell",
+        "ts": 1787139857062,
+        "isoTime": "2026-08-19T11:44:17.062Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "documentation",
+          "topic": "instantsearch_implementation"
+        }
+      },
+      {
+        "eventId": "evt_99d647f2a30c9114f96a83e1",
+        "name": "page_dwell",
+        "ts": 1787139862062,
+        "isoTime": "2026-08-19T11:44:22.062Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "documentation",
+          "topic": "instantsearch_implementation"
+        }
+      },
+      {
+        "eventId": "evt_d79363fea5a09667a748c62a",
+        "name": "scroll_depth",
+        "ts": 1787139863539,
+        "isoTime": "2026-08-19T11:44:23.539Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "source": "observed",
+        "props": {
+          "depth": 50,
+          "pageGroup": "documentation",
+          "topic": "instantsearch_implementation"
+        }
+      },
+      {
+        "eventId": "evt_3247ea914646a244d732e8ee",
+        "name": "scroll_depth",
+        "ts": 1787139865322,
+        "isoTime": "2026-08-19T11:44:25.322Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "source": "observed",
+        "props": {
+          "depth": 75,
+          "pageGroup": "documentation",
+          "topic": "instantsearch_implementation"
+        }
+      },
+      {
+        "eventId": "evt_2c8d0c58c09d434e75100aff",
+        "name": "page_dwell",
+        "ts": 1787139867060,
+        "isoTime": "2026-08-19T11:44:27.060Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "documentation",
+          "topic": "instantsearch_implementation"
+        }
+      },
+      {
+        "eventId": "evt_7447016857658dda242fa2a7",
+        "name": "engagement_exposed",
+        "ts": 1787139868216,
+        "isoTime": "2026-08-19T11:44:28.216Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "source": "observed",
+        "props": {
+          "engagementId": "eng_4bb77b9a370f9f1036e207e6",
+          "messageGoal": "proactive_concierge",
+          "status": "shown"
+        }
+      },
+      {
+        "eventId": "evt_bf4b414ed3e2358a10e3f5ce",
+        "name": "chat_open",
+        "ts": 1787139868223,
+        "isoTime": "2026-08-19T11:44:28.223Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "source": "observed",
+        "props": {
+          "open": true
+        }
+      },
+      {
+        "eventId": "evt_e7451bcc8bd1c06b9b80c32c",
+        "name": "page_view",
+        "ts": 1787139915258,
+        "isoTime": "2026-08-19T11:45:15.258Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_815977ef9652d5e0cc1654e8",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+          "title": "AI Search | Algolia",
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_96e106ef17d91e387927dee1",
+        "name": "page_dwell",
+        "ts": 1787139920260,
+        "isoTime": "2026-08-19T11:45:20.260Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_815977ef9652d5e0cc1654e8",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 5,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_7e7716029a17b296bc163e88",
+        "name": "page_dwell",
+        "ts": 1787139925260,
+        "isoTime": "2026-08-19T11:45:25.260Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_815977ef9652d5e0cc1654e8",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 10,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      },
+      {
+        "eventId": "evt_ec1bc4604347b5255785a0af",
+        "name": "page_dwell",
+        "ts": 1787139930260,
+        "isoTime": "2026-08-19T11:45:30.260Z",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "pageId": "page_815977ef9652d5e0cc1654e8",
+        "path": "/products/ai-search",
+        "source": "observed",
+        "props": {
+          "dwellSeconds": 15,
+          "pageGroup": "product",
+          "topic": "ai_search",
+          "productFocus": "ai_search",
+          "productFocusLabel": "AI Search"
+        }
+      }
+    ]
+  },
+  "proactiveState": {
+    "schema": "AlgoliaProactiveState.v1",
+    "opportunities": [
+      {
+        "id": "opp_1a019d5ef3f_f7848a",
+        "status": "dismissed",
+        "lifecycle": [
+          "qualified",
+          "pending",
+          "shown",
+          "dismissed"
+        ],
+        "pageId": "page_909ea693bc6430b990563170",
+        "pagePath": "/products/ai-search",
+        "moment": "product_research",
+        "trigger": "product_page_10s_50_scroll",
+        "priority": 66,
+        "messageGoal": "explain_product_fit",
+        "reasonCodes": [
+          "product_page",
+          "product_dwell",
+          "product_scroll"
+        ],
+        "createdAt": 1787139845951,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "product_research",
+          "trigger": "product_page_10s_50_scroll",
+          "priority": 66,
+          "persona": {
+            "value": "unknown",
+            "state": "unknown",
+            "confidence": 0,
+            "source": "insufficient_signal"
+          },
+          "currentPage": {
+            "pageId": "page_909ea693bc6430b990563170",
+            "path": "/products/ai-search",
+            "title": "AI Search | Algolia",
+            "pageGroup": "product",
+            "topic": "ai_search",
+            "productFocus": "ai_search",
+            "productFocusLabel": "AI Search",
+            "dwellMs": 10002,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": {
+            "value": "ai_search",
+            "label": "AI Search",
+            "state": "observed",
+            "source": "current_product_page",
+            "pagePath": "/products/ai-search",
+            "pageTitle": "AI Search | Algolia"
+          },
+          "journeySummary": {
+            "currentTransition": "product_page_10s_50_scroll",
+            "productTrail": [
+              {
+                "value": "ai_search",
+                "label": "AI Search",
+                "pagePath": "/products/ai-search",
+                "pageTitle": "AI Search | Algolia"
+              }
+            ],
+            "solutionTrail": [],
+            "pageTrail": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocusLabel": "AI Search"
+              },
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            ],
+            "storyHint": ""
+          },
+          "journey": [
+            {
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 1116,
+              "maxScrollDepth": 0
+            },
+            {
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 10002,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/products/ai-search",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/products/ai-search",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/products/ai-search",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/products/ai-search",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/products/ai-search",
+              "props": {
+                "depth": 50,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "ai_recommendations_evaluation",
+            "state": "inferred",
+            "confidence": 0.72,
+            "evidence": [
+              "current_page:AI Search | Algolia /products/ai-search ai_search",
+              "scroll_depth:/products/ai-search",
+              "page_dwell:/products/ai-search",
+              "page_dwell:/products/ai-search"
+            ]
+          },
+          "friction": {
+            "value": "fit_and_value_unclear",
+            "state": "inferred",
+            "confidence": 0.62,
+            "evidence": [
+              "current_page:AI Search | Algolia /products/ai-search ai_search"
+            ]
+          },
+          "messageGoal": "explain_product_fit",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "product_page",
+            "product_dwell",
+            "product_scroll"
+          ],
+          "opportunityId": "opp_1a019d5ef3f_f7848a",
+          "createdAt": 1787139845951
+        },
+        "updatedAt": 1787139851040,
+        "failureReason": null,
+        "shownAt": 1787139850563,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a019d5ef3f_f7848a",
+          "greeting": "Hello, explorer. AI Search is earning a proper look today, so let’s skip the marketing fluff and figure out if it actually solves your specific friction or if it's just a shiny tool.",
+          "chips": [
+            "See a real-world example",
+            "Test the product fit",
+            "Compare to standard search"
+          ],
+          "handoffSummary": {
+            "moment": "product_research",
+            "trigger": "product_page_10s_50_scroll",
+            "messageGoal": "explain_product_fit"
+          }
+        },
+        "dismissedAt": 1787139851040
+      },
+      {
+        "id": "opp_1a019d633f5_29dbfd",
+        "status": "active",
+        "lifecycle": [
+          "qualified",
+          "pending",
+          "shown",
+          "engaged",
+          "handed_off",
+          "active"
+        ],
+        "pageId": "page_99c14cb855a6941dfc13716b",
+        "pagePath": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+        "moment": "implementation_research",
+        "trigger": "product_to_documentation",
+        "priority": 85,
+        "messageGoal": "connect_product_interest_to_implementation",
+        "reasonCodes": [
+          "journey_product_to_documentation",
+          "documentation_depth"
+        ],
+        "createdAt": 1787139863541,
+        "requestPacket": {
+          "schema": "ProactiveGreetingRequest.v1",
+          "moment": "implementation_research",
+          "trigger": "product_to_documentation",
+          "priority": 85,
+          "persona": {
+            "value": "developer",
+            "state": "inferred",
+            "confidence": 0.66,
+            "source": "behavior"
+          },
+          "currentPage": {
+            "pageId": "page_99c14cb855a6941dfc13716b",
+            "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+            "title": "InstantSearch.js",
+            "pageGroup": "documentation",
+            "topic": "instantsearch_implementation",
+            "dwellMs": 10003,
+            "maxScrollDepth": 50
+          },
+          "contextualFocus": {
+            "value": "ai_search",
+            "label": "AI Search",
+            "state": "observed",
+            "source": "prior_product_page",
+            "pagePath": "/products/ai-search",
+            "pageTitle": "AI Search | Algolia"
+          },
+          "journeySummary": {
+            "currentTransition": "product_to_documentation",
+            "productTrail": [
+              {
+                "value": "ai_search",
+                "label": "AI Search",
+                "pagePath": "/products/ai-search",
+                "pageTitle": "AI Search | Algolia"
+              }
+            ],
+            "solutionTrail": [],
+            "pageTrail": [
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocusLabel": "AI Search"
+              },
+              {
+                "path": "/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocusLabel": "AI Search"
+              },
+              {
+                "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                "title": "InstantSearch.js",
+                "pageGroup": "documentation",
+                "topic": "instantsearch_implementation"
+              }
+            ],
+            "storyHint": "The visitor moved from AI Search into documentation; frame this as technical validation of that product interest."
+          },
+          "journey": [
+            {
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 1116,
+              "maxScrollDepth": 0
+            },
+            {
+              "path": "/products/ai-search",
+              "title": "AI Search | Algolia",
+              "pageGroup": "product",
+              "topic": "ai_search",
+              "productFocus": "ai_search",
+              "productFocusLabel": "AI Search",
+              "dwellMs": 19163,
+              "maxScrollDepth": 75
+            },
+            {
+              "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+              "title": "InstantSearch.js",
+              "pageGroup": "documentation",
+              "topic": "instantsearch_implementation",
+              "dwellMs": 10003,
+              "maxScrollDepth": 50
+            }
+          ],
+          "observedSignals": [
+            {
+              "name": "page_view",
+              "path": "/products/ai-search",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/products/ai-search",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                "title": "AI Search | Algolia",
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/products/ai-search",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/products/ai-search",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/products/ai-search",
+              "props": {
+                "depth": 50,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/products/ai-search",
+              "props": {
+                "dwellSeconds": 15,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "engagement_exposed",
+              "path": "/products/ai-search",
+              "props": {
+                "engagementId": "eng_2bbe35f97fcab8a89efe96a8",
+                "messageGoal": "proactive_concierge",
+                "status": "shown"
+              }
+            },
+            {
+              "name": "chat_open",
+              "path": "/products/ai-search",
+              "props": {
+                "open": true
+              }
+            },
+            {
+              "name": "chat_open",
+              "path": "/products/ai-search",
+              "props": {
+                "open": false
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/products/ai-search",
+              "props": {
+                "depth": 75,
+                "pageGroup": "product",
+                "topic": "ai_search",
+                "productFocus": "ai_search",
+                "productFocusLabel": "AI Search"
+              }
+            },
+            {
+              "name": "cta_click",
+              "path": "/products/ai-search",
+              "props": {
+                "ctaType": "documentation",
+                "label": "Read the AI Search docs",
+                "href": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js"
+              }
+            },
+            {
+              "name": "page_view",
+              "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+              "props": {
+                "url": "https://tmp-content-eng-algolia.cloud.jahia.com/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+                "title": "InstantSearch.js",
+                "referrer": "https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search",
+                "pageGroup": "documentation",
+                "topic": "instantsearch_implementation"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+              "props": {
+                "dwellSeconds": 5,
+                "pageGroup": "documentation",
+                "topic": "instantsearch_implementation"
+              }
+            },
+            {
+              "name": "page_dwell",
+              "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+              "props": {
+                "dwellSeconds": 10,
+                "pageGroup": "documentation",
+                "topic": "instantsearch_implementation"
+              }
+            },
+            {
+              "name": "scroll_depth",
+              "path": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+              "props": {
+                "depth": 50,
+                "pageGroup": "documentation",
+                "topic": "instantsearch_implementation"
+              }
+            }
+          ],
+          "inferredIntent": {
+            "value": "pricing_or_demo_evaluation",
+            "state": "inferred",
+            "confidence": 0.74,
+            "evidence": [
+              "current_page:InstantSearch.js /sites/www/doc/guides/building-search-ui/what-is-instantsearch/js instantsearch_implementation",
+              "cta_click:Read the AI Search docs"
+            ]
+          },
+          "friction": {
+            "value": "pricing_or_cost_unclear",
+            "state": "inferred",
+            "confidence": 0.68,
+            "evidence": [
+              "current_page:InstantSearch.js /sites/www/doc/guides/building-search-ui/what-is-instantsearch/js instantsearch_implementation"
+            ]
+          },
+          "messageGoal": "connect_product_interest_to_implementation",
+          "source": "browser_deterministic",
+          "tone": "sharp, useful, warm, lightly witty",
+          "constraints": {
+            "noTelemetryExposure": true,
+            "includeQuestionChips": true
+          },
+          "reasonCodes": [
+            "journey_product_to_documentation",
+            "documentation_depth"
+          ],
+          "opportunityId": "opp_1a019d633f5_29dbfd",
+          "createdAt": 1787139863541
+        },
+        "updatedAt": 1787139869115,
+        "failureReason": null,
+        "shownAt": 1787139868217,
+        "greetingResponse": {
+          "schema": "ProactiveGreetingResponse.v1",
+          "opportunityId": "opp_1a019d633f5_29dbfd",
+          "greeting": "Aha, we’ve crossed from AI Search curiosity into how this actually lives in your stack. Let me tell you a secret: this is my favorite corner, and I can help map the implementation path or scope a useful POC.",
+          "chips": [
+            "Map it to my stack",
+            "Scope a practical POC",
+            "Discuss cost drivers"
+          ],
+          "handoffSummary": {
+            "moment": "implementation_research",
+            "trigger": "product_to_documentation",
+            "messageGoal": "connect_product_interest_to_implementation"
+          }
+        },
+        "handoffStartedAt": 1787139868623,
+        "userResponse": "What should a credible React InstantSearch proof of concept include?",
+        "selectedChip": null,
+        "handoffSchema": "ProactiveHandoffContext.v1",
+        "handoffAt": 1787139869114,
+        "handoffFailure": null,
+        "activeAt": 1787139869115
+      }
+    ],
+    "lastOpportunityAt": 1787139868217
+  },
+  "conversation": {
+    "version": 1,
+    "conversationId": "0ea999ab-f3c6-4ff2-addf-815be62bb52f",
+    "turns": [
+      {
+        "id": "1108328b-a136-4d50-b25b-0507346ca52e",
+        "userMessageId": "2beaf3ad-e469-4f50-90cd-04a3f2072686",
+        "query": "What should a credible React InstantSearch proof of concept include?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "deb6721b-f966-4c7b-ac64-493b3978d459",
+            "agent": "primary",
+            "status": "success",
+            "text": "The retrieved material does not verify the specific details requested, so I cannot present those claims as confirmed.",
+            "sources": [
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "title": "Implement backend search with React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "title": "Implement the OpenSearch protocol with React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/react",
+                "title": "Backend search with React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/installation/react",
+                "title": "Install React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/installation/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react",
+                "title": "What is React InstantSearch?",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react",
+                "title": "Get started with React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/resources/demos/react/",
+                "title": "UI examples for React InstantSearch | Algolia",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/resources/demos/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/going-further/optimize-search-request-usage/react/-0",
+                "title": "Optimize React InstantSearch search requests | Algolia",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/going-further/optimize-search-request-usage/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "en_13c05c2d-05cd-4254-a9ac-2596dd67a87b",
+                "title": "Instantsearch React UI component library | Algolia",
+                "url": "https://www.algolia.com/developers/mobile-web-instantsearch-react",
+                "source": "Developers"
+              },
+              {
+                "id": "en_5a953ff9-bf24-42f5-9aaa-89f0334972e7",
+                "title": "Building UI with React InstantSearch | Algolia",
+                "url": "https://www.algolia.com/developers/code-exchange/building-ui-with-instantsearch-react-hooks",
+                "source": "Developers"
+              },
+              {
+                "id": "en_748ac873-a6c3-4f5f-b306-5511ac6cd876",
+                "title": "Autocomplete with React InstantSearch",
+                "url": "https://www.algolia.com/developers/code-exchange/autocomplete-with-react-instantsearch",
+                "source": "Developers"
+              },
+              {
+                "id": "0199aac9-fa2e-7cae-8c5e-a46ea37139c1",
+                "title": "A Simple Path to Algolia Implementation",
+                "url": "https://academy.algolia.com/training/4c10335c-5bd5-11eb-ac92-06c0361096e5",
+                "source": "Academy"
+              },
+              {
+                "id": "en_65e18de7-9e64-415c-b9f7-24cc7394c35d_0_2",
+                "title": "How Algolia’s retrieval engine works, step by step",
+                "url": "https://www.algolia.com/blog/product/how-algolia-retrieval-engine-works",
+                "source": "Blog"
+              },
+              {
+                "id": "en_635ad78d-39e7-468c-9be1-de451346dca3",
+                "title": "Building an AI-powered MCP client for Algolia",
+                "url": "https://www.algolia.com/blog/engineering/building-an-ai-powered-mcp-client-for-algolia",
+                "source": "Blog"
+              },
+              {
+                "id": "en_2ba274b9-8772-49fb-8f09-47a95b493770",
+                "title": "Implement search & discovery on Azure stack | Algolia",
+                "url": "https://www.algolia.com/search-solutions/algolia-on-azure",
+                "source": "Website"
+              }
+            ],
+            "searchCount": 15,
+            "rawHits": [
+              {
+                "transform_source": "algolia-com-doc",
+                "title": "Implement backend search with React InstantSearch",
+                "tags": [],
+                "source": "Documentation",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "url": "/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "description": "Implement server-side search with React InstantSearch and Algolia's API clients.",
+                "language_code": "en",
+                "indexed_at": 1784670696151,
+                "lastUpdated": "2026-07-21T21:51:36.151Z",
+                "environment": "prod20260722",
+                "category": "Doc",
+                "authors": [],
+                "facets": {},
+                "published_at": 1784670696151,
+                "keywords": [],
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react"
+              },
+              {
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "url": "/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "description": "Learn how to integrate the OpenSearch protocol into your website with React InstantSearch.",
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "lastUpdated": "2026-07-21T21:51:36.156Z",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "keywords": [],
+                "indexed_at": 1784670696156,
+                "facets": {},
+                "source": "Documentation",
+                "language_code": "en",
+                "published_at": 1784670696156,
+                "title": "Implement the OpenSearch protocol with React InstantSearch",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "tags": [],
+                "authors": [],
+                "environment": "prod20260722"
+              },
+              {
+                "published_at": 1784670696155,
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "title": "Backend search with React InstantSearch",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "indexed_at": 1784670696155,
+                "lastUpdated": "2026-07-21T21:51:36.155Z",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/react",
+                "tags": [],
+                "authors": [],
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "language_code": "en",
+                "facets": {},
+                "environment": "prod20260722",
+                "category": "Doc",
+                "url": "/doc/guides/building-search-ui/going-further/backend-search/react",
+                "description": "Set up search on your backend with React InstantSearch.",
+                "keywords": []
+              },
+              {
+                "keywords": [],
+                "published_at": 1784670696177,
+                "environment": "prod20260722",
+                "url": "/doc/guides/building-search-ui/installation/react",
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "language_code": "en",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/installation/react",
+                "title": "Install React InstantSearch",
+                "category": "Doc",
+                "indexed_at": 1784670696177,
+                "facets": {},
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "description": "Learn how to install React InstantSearch from npm and include it in your React app.",
+                "lastUpdated": "2026-07-21T21:51:36.178Z",
+                "tags": []
+              },
+              {
+                "title": "What is React InstantSearch?",
+                "authors": [],
+                "url": "/doc/guides/building-search-ui/what-is-instantsearch/react",
+                "keywords": [],
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "description": "React InstantSearch is an open source library for building search interfaces.",
+                "language_code": "en",
+                "indexed_at": 1784670696179,
+                "environment": "prod20260722",
+                "category": "Doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "published_at": 1784670696179,
+                "lastUpdated": "2026-07-21T21:51:36.179Z",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react",
+                "tags": [],
+                "facets": {}
+              },
+              {
+                "authors": [],
+                "indexed_at": 1784670696177,
+                "published_at": 1784670696177,
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "language_code": "en",
+                "facets": {},
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "description": "Use React InstantSearch to create a dynamic, filterable search UI.",
+                "keywords": [],
+                "environment": "prod20260722",
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "title": "Get started with React InstantSearch",
+                "category": "Doc",
+                "url": "/doc/guides/building-search-ui/getting-started/react",
+                "lastUpdated": "2026-07-21T21:51:36.177Z",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react",
+                "tags": []
+              },
+              {
+                "tags": [],
+                "keywords": [],
+                "source": "Documentation",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "description": "Implement server-side search with React InstantSearch and Algolia's API clients.",
+                "language_code": "en",
+                "indexed_at": 1784670696121,
+                "published_at": 1784670696121,
+                "url": "/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "abstract": "This is the React InstantSearch v7 documentation. React InstantSearch v7 is the latest version of Re...",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.121Z",
+                "environment": "prod20260722",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react/-0",
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "title": "Implement backend search with React InstantSearch | Algolia"
+              },
+              {
+                "transform_source": "aant-developersEntry",
+                "description": "Build React JS front-end experiences with Instantsearch UI library. Fully customizable pre-built components to get started.",
+                "indexed_at": 1784670462842,
+                "objectID": "en_13c05c2d-05cd-4254-a9ac-2596dd67a87b",
+                "thumbnail": "/sites/algolia-assets/files/developerdetailsassets/react.svg",
+                "tags": [
+                  "go",
+                  "library",
+                  "react + algolia",
+                  "front-end libraries",
+                  "React + Algolia",
+                  "Front-end libraries"
+                ],
+                "keywords": [
+                  "go",
+                  "library",
+                  "react + algolia",
+                  "front-end libraries"
+                ],
+                "lastUpdated": "2026-07-21T21:47:42.842Z",
+                "title": "Instantsearch React UI component library | Algolia",
+                "category": "Developer Resources",
+                "authors": [],
+                "language_code": "en",
+                "hierarchicalCategories": {},
+                "environment": "prod20260722",
+                "source": "Developers",
+                "url": "/developers/mobile-web-instantsearch-react",
+                "abstract": "Build React JS front-end experiences with Instantsearch UI library. Fully customizable pre-built components to get started. Programming language: React + Algolia Client type: Front-end libraries",
+                "facets": {},
+                "published_at": 1733323197953,
+                "is404": false
+              },
+              {
+                "source": "Developers",
+                "category": "",
+                "authors": [
+                  {
+                    "name": "Algolia"
+                  }
+                ],
+                "description": " Building UI with React InstantSearch <p>Building UI with React InstantSearch</p>\n",
+                "language_code": "en",
+                "tags": [
+                  "Dev Tools",
+                  "dev tools",
+                  "supported"
+                ],
+                "indexed_at": 1784670537046,
+                "facets": {
+                  "facet1": [
+                    "Dev Tools"
+                  ],
+                  "facet2": [
+                    "React"
+                  ],
+                  "facet5": [
+                    "supported"
+                  ],
+                  "facet6": [
+                    "React InstantSearch"
+                  ]
+                },
+                "objectID": "en_5a953ff9-bf24-42f5-9aaa-89f0334972e7",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/thumbnails/en_5a953ff9-bf24-42f5-9aaa-89f0334972e7.png",
+                "keywords": [
+                  "dev tools"
+                ],
+                "is404": false,
+                "lastUpdated": "2026-07-21T21:48:57.046Z",
+                "transform_source": "aant-codeExchangeEntry",
+                "title": "Building UI with React InstantSearch | Algolia",
+                "url": "/developers/code-exchange/building-ui-with-instantsearch-react-hooks",
+                "abstract": " Building UI with React InstantSearch <p>Building UI with React InstantSearch</p>\n Technical features: React InstantSearch Use cases: Dev Tools",
+                "published_at": 1733315428831,
+                "hierarchicalCategories": {},
+                "environment": "prod20260722"
+              },
+              {
+                "description": "See a few examples for user interfaces built with React InstantSearch.",
+                "keywords": [],
+                "language_code": "en",
+                "published_at": 1784670696120,
+                "category": "Doc",
+                "tags": [],
+                "url": "/doc/guides/building-search-ui/resources/demos/react",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/resources/demos/react/",
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "authors": [],
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.120Z",
+                "environment": "prod20260722",
+                "title": "UI examples for React InstantSearch | Algolia",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "abstract": "This is the React InstantSearch v7 documentation. React InstantSearch v7 is the latest version of Re...",
+                "indexed_at": 1784670696120
+              },
+              {
+                "abstract": " Autocomplete with React InstantSearch <p>Typeahead dropdown menu with suggested searches built with Algolia Autocomplete and React</p>\n Technical features: React InstantSearch Use cases: ",
+                "lastUpdated": "2026-07-21T21:48:42.029Z",
+                "indexed_at": 1784670522029,
+                "environment": "prod20260722",
+                "category": "",
+                "url": "/developers/code-exchange/autocomplete-with-react-instantsearch",
+                "keywords": [],
+                "language_code": "en",
+                "facets": {
+                  "facet2": [
+                    "React"
+                  ],
+                  "facet5": [
+                    "supported"
+                  ],
+                  "facet6": [
+                    "React InstantSearch"
+                  ]
+                },
+                "published_at": 1733315497226,
+                "hierarchicalCategories": {},
+                "objectID": "en_748ac873-a6c3-4f5f-b306-5511ac6cd876",
+                "source": "Developers",
+                "transform_source": "aant-codeExchangeEntry",
+                "tags": [
+                  "supported"
+                ],
+                "authors": [],
+                "description": " Autocomplete with React InstantSearch <p>Typeahead dropdown menu with suggested searches built with Algolia Autocomplete and React</p>\n",
+                "is404": false,
+                "title": "Autocomplete with React InstantSearch",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/thumbnails/en_748ac873-a6c3-4f5f-b306-5511ac6cd876.png"
+              },
+              {
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "language_code": "en",
+                "authors": [],
+                "facets": {},
+                "published_at": 1784670696120,
+                "source": "Documentation",
+                "tags": [],
+                "url": "/doc/guides/building-search-ui/going-further/optimize-search-request-usage/react",
+                "abstract": "This is the React InstantSearch v7 documentation. React InstantSearch v7 is the latest version of Re...",
+                "indexed_at": 1784670696120,
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/optimize-search-request-usage/react/-0",
+                "transform_source": "algolia-com-doc",
+                "title": "Optimize React InstantSearch search requests | Algolia",
+                "category": "Doc",
+                "description": "Find areas to optimize the number of search requests and reduce billing in React InstantSearch.",
+                "keywords": [],
+                "lastUpdated": "2026-07-21T21:51:36.120Z",
+                "environment": "prod20260722"
+              },
+              {
+                "facets": {},
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Overview"
+                  ]
+                },
+                "source": "Academy",
+                "title": "A Simple Path to Algolia Implementation",
+                "keywords": [],
+                "published_at": 1761915910956,
+                "environment": "prod20260722",
+                "objectID": "0199aac9-fa2e-7cae-8c5e-a46ea37139c1",
+                "algoliaDisabled": "false",
+                "indexed_at": 1784670696211,
+                "lastUpdated": "2026-07-21T21:51:36.211Z",
+                "category": "guide",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "description": "Understand the four steps to implement Algolia: send your data, configure relevance, build the search UI, and iterate.",
+                "abstract": "Understand the four steps to implement Algolia: send your data, configure relevance, build the search UI, and iterate.",
+                "is404": false,
+                "transform_source": "algolia-academy",
+                "tags": [
+                  "Implementation"
+                ],
+                "authors": [],
+                "url": "https://academy.algolia.com/training/4c10335c-5bd5-11eb-ac92-06c0361096e5",
+                "language_code": "en"
+              },
+              {
+                "language_code": "en",
+                "indexed_at": 1784670696211,
+                "environment": "prod20260722",
+                "url": "https://academy.algolia.com/training/4c10335c-5bd5-11eb-ac92-06c0361096e5",
+                "is404": false,
+                "objectID": "019987cf-b2e4-7591-8da3-dc3d3307ba9c",
+                "algoliaDisabled": "false",
+                "transform_source": "algolia-academy",
+                "facets": {},
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Getting Started for Technical Users"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:51:36.211Z",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "tags": [
+                  "Implementation"
+                ],
+                "authors": [],
+                "abstract": "Understand the four steps to implement Algolia: send your data, configure relevance, build the search UI, and iterate.",
+                "published_at": 1761915910930,
+                "source": "Academy",
+                "title": "A Simple Path to Algolia Implementation",
+                "category": "guide",
+                "description": "Understand the four steps to implement Algolia: send your data, configure relevance, build the search UI, and iterate.",
+                "keywords": []
+              },
+              {
+                "title": "Implement backend search with React InstantSearch | Algolia",
+                "environment": "prod20260722",
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "tags": [],
+                "authors": [],
+                "abstract": "You can implement your own search client to query your backend which, in turn, uses the Algolia sear...",
+                "indexed_at": 1784670696121,
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "url": "/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "keywords": [],
+                "language_code": "en",
+                "published_at": 1784670696121,
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react/-1",
+                "source": "Documentation",
+                "description": "Implement server-side search with React InstantSearch and Algolia's API clients.",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.121Z"
+              },
+              {
+                "source": "Documentation",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "url": "/doc/guides/building-search-ui/getting-started/react",
+                "keywords": [],
+                "abstract": "When Algolia returns results, you want to list them in the UI.To do this, use the <Hits> widget.Repl...",
+                "published_at": 1784670696122,
+                "transform_source": "algolia-com-doc",
+                "environment": "prod20260722",
+                "description": "Use Algolia and React InstantSearch to build a search UI.",
+                "indexed_at": 1784670696122,
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react/-1",
+                "title": "Getting started with React InstantSearch | Algolia",
+                "category": "Doc",
+                "tags": [
+                  "Building search UI"
+                ],
+                "language_code": "en",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.122Z"
+              },
+              {
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-AI-Retrieval-1920x1080.jpg",
+                "url": "/blog/product/how-algolia-retrieval-engine-works",
+                "description": "Learn how Algolia’s retrieval engine works—from search request and preprocessing to multi-factor ranking and a learning feedback loop—to improve result relevance and precision.",
+                "language_code": "en",
+                "indexed_at": 1784670304099,
+                "is404": false,
+                "transform_source": "aant-blogsEntry",
+                "facets": {
+                  "facet0": [
+                    "Product"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Product"
+                  ],
+                  "lvl2": [
+                    "by Alex Webb"
+                  ]
+                },
+                "title": "How Algolia’s retrieval engine works, step by step",
+                "category": "Product",
+                "authors": [
+                  {
+                    "name": "Alex Webb",
+                    "desc": "Senior Director, Customer Solutions"
+                  }
+                ],
+                "keywords": [
+                  "product"
+                ],
+                "abstract": "Learn how Algolia’s retrieval engine works—from search request and preprocessing to multi-factor ranking and a learning feedback loop—to improve result relevance and precision.",
+                "published_at": 1773931080000,
+                "environment": "prod20260722",
+                "source": "Blog",
+                "tags": [
+                  "Product"
+                ],
+                "lastUpdated": "2026-07-21T21:45:04.099Z",
+                "objectID": "en_65e18de7-9e64-415c-b9f7-24cc7394c35d_0_2"
+              },
+              {
+                "environment": "prod20260722",
+                "source": "Blog",
+                "transform_source": "aant-blogsEntry",
+                "tags": [
+                  "Engineering"
+                ],
+                "authors": [],
+                "description": "Discover how to transform Algolia into a conversational AI using the Model Context Protocol (MCP), enabling natural language queries for search operations, index configurations, and real-time incident reports. ",
+                "language_code": "en",
+                "objectID": "en_635ad78d-39e7-468c-9be1-de451346dca3",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-AI-Powered-MCP-1920x1080.jpg",
+                "keywords": [
+                  "engineering"
+                ],
+                "indexed_at": 1784670303009,
+                "lastUpdated": "2026-07-21T21:45:03.009Z",
+                "category": "Engineering",
+                "published_at": 1761671700000,
+                "is404": false,
+                "title": "Building an AI-powered MCP client for Algolia",
+                "url": "/blog/engineering/building-an-ai-powered-mcp-client-for-algolia",
+                "abstract": "Discover how to transform Algolia into a conversational AI using the Model Context Protocol (MCP), enabling natural language queries for search operations, index configurations, and real-time incident reports. ",
+                "facets": {
+                  "facet0": [
+                    "Engineering"
+                  ]
+                },
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Engineering"
+                  ]
+                }
+              },
+              {
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/thumbnails/en_2ba274b9-8772-49fb-8f09-47a95b493770.png",
+                "url": "/search-solutions/algolia-on-azure",
+                "description": "The Algolia experience at ultra large scale\n\n&nbsp;\n",
+                "keywords": [],
+                "indexed_at": 1784670418577,
+                "published_at": 1733563643104,
+                "is404": false,
+                "environment": "prod20260722",
+                "objectID": "en_2ba274b9-8772-49fb-8f09-47a95b493770",
+                "tags": [],
+                "authors": [],
+                "abstract": "The Algolia experience at ultra large scale\n\n&nbsp;\n",
+                "facets": {},
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "search solutions"
+                  ],
+                  "lvl1": [
+                    "algolia on azure"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:46:58.577Z",
+                "source": "Website",
+                "transform_source": "jnt-page",
+                "category": "Website",
+                "language_code": "en",
+                "title": "Implement search & discovery on Azure stack | Algolia"
+              }
+            ],
+            "admissionRejected": true,
+            "followUps": [
+              "Are you shaping a quick proof of concept, or planning the architecture for a production implementation?"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "09922525-0876-40ae-9c4a-ece57afe5fea",
+        "userMessageId": "1108cd96-69ba-430f-a66c-afbd541eef56",
+        "query": "Back on the product page, which proof-of-concept decision should I make first?",
+        "handoff": false,
+        "deepDiveOffered": false,
+        "segments": [
+          {
+            "messageId": "ee1a5398-2bb7-479f-a0c7-649880eaac2f",
+            "agent": "primary",
+            "status": "success",
+            "text": "The retrieved material does not verify the specific details requested, so I cannot present those claims as confirmed.",
+            "sources": [
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "title": "Implement backend search with React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "title": "Implement the OpenSearch protocol with React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react",
+                "title": "Get started with React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/react",
+                "title": "Backend search with React InstantSearch",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/-1",
+                "title": "Use React InstantSearch with React Native | Algolia",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "https://www.algolia.com/doc/guides/building-search-ui/installation/react/-1",
+                "title": "How to install React InstantSearch | Algolia",
+                "url": "https://www.algolia.com/doc/guides/building-search-ui/installation/react",
+                "source": "Documentation"
+              },
+              {
+                "id": "en_5a953ff9-bf24-42f5-9aaa-89f0334972e7",
+                "title": "Building UI with React InstantSearch | Algolia",
+                "url": "https://www.algolia.com/developers/code-exchange/building-ui-with-instantsearch-react-hooks",
+                "source": "Developers"
+              },
+              {
+                "id": "en_13c05c2d-05cd-4254-a9ac-2596dd67a87b",
+                "title": "Instantsearch React UI component library | Algolia",
+                "url": "https://www.algolia.com/developers/mobile-web-instantsearch-react",
+                "source": "Developers"
+              },
+              {
+                "id": "en_4aff79eb-b93c-4c84-8409-51a31c0eae09",
+                "title": "Partner Enablement: How to implement Algolia successfully",
+                "url": "https://www.algolia.com/resources/asset/webinar-partnerenablement-2",
+                "source": "Resources"
+              },
+              {
+                "id": "en_0338d957-adab-44ca-8aa6-d59fe4332362_0_1",
+                "title": "Algolia AI Guidelines for Candidates",
+                "url": "https://www.algolia.com/blog/algolia/algolia-ai-guidelines-for-candidates",
+                "source": "Blog"
+              },
+              {
+                "id": "en_635ad78d-39e7-468c-9be1-de451346dca3",
+                "title": "Building an AI-powered MCP client for Algolia",
+                "url": "https://www.algolia.com/blog/engineering/building-an-ai-powered-mcp-client-for-algolia",
+                "source": "Blog"
+              },
+              {
+                "id": "en_a36ae2ee-7bdd-410e-9aa2-91c1535d3a37_0_1",
+                "title": "3 biggest barriers to relevant, personalized AI search | Algolia",
+                "url": "https://www.algolia.com/blog/algolia/removing-roadblocks-a-closer-look-at-the-three-biggest-barriers-to-relevant-personalized-ai-powered-search",
+                "source": "Blog"
+              },
+              {
+                "id": "0199aac9-fa2e-7cae-8c5e-a46ea37139c1",
+                "title": "A Simple Path to Algolia Implementation",
+                "url": "https://academy.algolia.com/training/4c10335c-5bd5-11eb-ac92-06c0361096e5",
+                "source": "Academy"
+              },
+              {
+                "id": "4406981894033",
+                "title": "How long does it take to implement Algolia Search?",
+                "url": "https://support.algolia.com/hc/en-us/articles/4406981894033-How-long-does-it-take-to-implement-Algolia-Search",
+                "source": "Support"
+              }
+            ],
+            "searchCount": 14,
+            "rawHits": [
+              {
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "tags": [],
+                "lastUpdated": "2026-07-21T21:51:36.151Z",
+                "environment": "prod20260722",
+                "keywords": [],
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "language_code": "en",
+                "authors": [],
+                "url": "/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "indexed_at": 1784670696151,
+                "facets": {},
+                "published_at": 1784670696151,
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "title": "Implement backend search with React InstantSearch",
+                "category": "Doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "description": "Implement server-side search with React InstantSearch and Algolia's API clients."
+              },
+              {
+                "lastUpdated": "2026-07-21T21:51:36.156Z",
+                "environment": "prod20260722",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "indexed_at": 1784670696156,
+                "title": "Implement the OpenSearch protocol with React InstantSearch",
+                "category": "Doc",
+                "keywords": [],
+                "language_code": "en",
+                "source": "Documentation",
+                "tags": [],
+                "url": "/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "description": "Learn how to integrate the OpenSearch protocol into your website with React InstantSearch.",
+                "facets": {},
+                "published_at": 1784670696156,
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "transform_source": "algolia-com-doc",
+                "authors": []
+              },
+              {
+                "source": "Documentation",
+                "url": "/doc/guides/building-search-ui/getting-started/react",
+                "keywords": [],
+                "published_at": 1784670696177,
+                "transform_source": "algolia-com-doc",
+                "title": "Get started with React InstantSearch",
+                "authors": [],
+                "description": "Use React InstantSearch to create a dynamic, filterable search UI.",
+                "lastUpdated": "2026-07-21T21:51:36.177Z",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react",
+                "category": "Doc",
+                "tags": [],
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "language_code": "en",
+                "indexed_at": 1784670696177,
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "facets": {},
+                "environment": "prod20260722"
+              },
+              {
+                "source": "Documentation",
+                "transform_source": "algolia-com-doc",
+                "tags": [],
+                "authors": [],
+                "url": "/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react",
+                "indexed_at": 1784670696121,
+                "lastUpdated": "2026-07-21T21:51:36.121Z",
+                "title": "Implement backend search with React InstantSearch | Algolia",
+                "description": "Implement server-side search with React InstantSearch and Algolia's API clients.",
+                "abstract": "This is the React InstantSearch v7 documentation. React InstantSearch v7 is the latest version of Re...",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/in-depth/backend-instantsearch/react/-0",
+                "category": "Doc",
+                "keywords": [],
+                "language_code": "en",
+                "facets": {},
+                "published_at": 1784670696121,
+                "environment": "prod20260722"
+              },
+              {
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "tags": [],
+                "language_code": "en",
+                "indexed_at": 1784670696155,
+                "source": "Documentation",
+                "title": "Backend search with React InstantSearch",
+                "keywords": [],
+                "abstract": "This is the React InstantSearch v7 documentation. If you’re upgrading from v6, see the upgrade guide...",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.155Z",
+                "environment": "prod20260722",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/backend-search/react",
+                "url": "/doc/guides/building-search-ui/going-further/backend-search/react",
+                "published_at": 1784670696155,
+                "authors": [],
+                "description": "Set up search on your backend with React InstantSearch."
+              },
+              {
+                "url": "/doc/guides/building-search-ui/getting-started/react",
+                "keywords": [],
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "published_at": 1784670696122,
+                "description": "Use Algolia and React InstantSearch to build a search UI.",
+                "abstract": "This is the React InstantSearch v7 documentation. React InstantSearch v7 is the latest version of Re...",
+                "indexed_at": 1784670696122,
+                "lastUpdated": "2026-07-21T21:51:36.122Z",
+                "environment": "prod20260722",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react/-0",
+                "source": "Documentation",
+                "title": "Getting started with React InstantSearch | Algolia",
+                "authors": [],
+                "language_code": "en",
+                "facets": {},
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "tags": [
+                  "Building search UI"
+                ]
+              },
+              {
+                "environment": "prod20260722",
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react/-0",
+                "url": "/doc/guides/building-search-ui/ui-and-ux-patterns/opensearch/react",
+                "description": "Learn how to integrate the OpenSearch protocol into your website with React InstantSearch.",
+                "title": "Implement the OpenSearch protocol with React InstantSearch | Algolia",
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "tags": [],
+                "authors": [],
+                "language_code": "en",
+                "indexed_at": 1784670696117,
+                "published_at": 1784670696117,
+                "source": "Documentation",
+                "keywords": [],
+                "abstract": "This is the React InstantSearch v7 documentation. React InstantSearch v7 is the latest version of Re...",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.117Z"
+              },
+              {
+                "published_at": 1784670696120,
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/going-further/native/react/-1",
+                "category": "Doc",
+                "keywords": [],
+                "language_code": "en",
+                "source": "Documentation",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "url": "/doc/guides/building-search-ui/going-further/native/react",
+                "indexed_at": 1784670696120,
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.120Z",
+                "abstract": "The <InstantSearch> wrapper connects your InstantSearch app to your Algolia application.Replace INDE...",
+                "environment": "prod20260722",
+                "transform_source": "algolia-com-doc",
+                "title": "Use React InstantSearch with React Native | Algolia",
+                "tags": [],
+                "description": "How to create a React InstantSearch app using React Native."
+              },
+              {
+                "title": "Building UI with React InstantSearch | Algolia",
+                "url": "/developers/code-exchange/building-ui-with-instantsearch-react-hooks",
+                "keywords": [
+                  "dev tools"
+                ],
+                "abstract": " Building UI with React InstantSearch <p>Building UI with React InstantSearch</p>\n Technical features: React InstantSearch Use cases: Dev Tools",
+                "language_code": "en",
+                "published_at": 1733315428831,
+                "category": "",
+                "authors": [
+                  {
+                    "name": "Algolia"
+                  }
+                ],
+                "facets": {
+                  "facet1": [
+                    "Dev Tools"
+                  ],
+                  "facet2": [
+                    "React"
+                  ],
+                  "facet5": [
+                    "supported"
+                  ],
+                  "facet6": [
+                    "React InstantSearch"
+                  ]
+                },
+                "objectID": "en_5a953ff9-bf24-42f5-9aaa-89f0334972e7",
+                "source": "Developers",
+                "description": " Building UI with React InstantSearch <p>Building UI with React InstantSearch</p>\n",
+                "indexed_at": 1784670537046,
+                "lastUpdated": "2026-07-21T21:48:57.046Z",
+                "transform_source": "aant-codeExchangeEntry",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/thumbnails/en_5a953ff9-bf24-42f5-9aaa-89f0334972e7.png",
+                "tags": [
+                  "Dev Tools",
+                  "dev tools",
+                  "supported"
+                ],
+                "hierarchicalCategories": {},
+                "is404": false,
+                "environment": "prod20260722"
+              },
+              {
+                "indexed_at": 1784670462842,
+                "facets": {},
+                "source": "Developers",
+                "transform_source": "aant-developersEntry",
+                "thumbnail": "/sites/algolia-assets/files/developerdetailsassets/react.svg",
+                "language_code": "en",
+                "hierarchicalCategories": {},
+                "is404": false,
+                "authors": [],
+                "description": "Build React JS front-end experiences with Instantsearch UI library. Fully customizable pre-built components to get started.",
+                "abstract": "Build React JS front-end experiences with Instantsearch UI library. Fully customizable pre-built components to get started. Programming language: React + Algolia Client type: Front-end libraries",
+                "published_at": 1733323197953,
+                "objectID": "en_13c05c2d-05cd-4254-a9ac-2596dd67a87b",
+                "title": "Instantsearch React UI component library | Algolia",
+                "category": "Developer Resources",
+                "tags": [
+                  "go",
+                  "library",
+                  "react + algolia",
+                  "front-end libraries",
+                  "React + Algolia",
+                  "Front-end libraries"
+                ],
+                "url": "/developers/mobile-web-instantsearch-react",
+                "environment": "prod20260722",
+                "keywords": [
+                  "go",
+                  "library",
+                  "react + algolia",
+                  "front-end libraries"
+                ],
+                "lastUpdated": "2026-07-21T21:47:42.842Z"
+              },
+              {
+                "published_at": 1784670696122,
+                "lastUpdated": "2026-07-21T21:51:36.122Z",
+                "title": "Getting started with React InstantSearch | Algolia",
+                "keywords": [],
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/getting-started/react/-1",
+                "category": "Doc",
+                "url": "/doc/guides/building-search-ui/getting-started/react",
+                "description": "Use Algolia and React InstantSearch to build a search UI.",
+                "indexed_at": 1784670696122,
+                "facets": {},
+                "environment": "prod20260722",
+                "transform_source": "algolia-com-doc",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "abstract": "When Algolia returns results, you want to list them in the UI.To do this, use the <Hits> widget.Repl...",
+                "source": "Documentation",
+                "tags": [
+                  "Building search UI"
+                ],
+                "language_code": "en"
+              },
+              {
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/docs-placeholder.png",
+                "authors": [],
+                "keywords": [],
+                "source": "Documentation",
+                "url": "/doc/guides/building-search-ui/installation/react",
+                "language_code": "en",
+                "environment": "prod20260722",
+                "transform_source": "algolia-com-doc",
+                "category": "Doc",
+                "tags": [
+                  "Building search UI"
+                ],
+                "description": "Learn how to install React InstantSearch from npm and include it in your React app.",
+                "abstract": "If you don’t use a package manager and a build tool, you can include React InstantSearch directly fr...",
+                "published_at": 1784670696120,
+                "lastUpdated": "2026-07-21T21:51:36.120Z",
+                "title": "How to install React InstantSearch | Algolia",
+                "indexed_at": 1784670696120,
+                "facets": {},
+                "objectID": "https://www.algolia.com/doc/guides/building-search-ui/installation/react/-1"
+              },
+              {
+                "published_at": 1765230875120,
+                "category": "Webinars",
+                "authors": [],
+                "keywords": [],
+                "language_code": "en",
+                "source": "Resources",
+                "transform_source": "aant-resourceCenterContentItem",
+                "title": "Partner Enablement: How to implement Algolia successfully",
+                "description": "<p>During this session, Algolia&#39;s Lead Channel Solution Engineer shares the steps and best practices to implement Algolia successfully. We cover all the business and technical information you&rsquo;ll need to know as a partner regarding how to implement Algolia including:</p>\n\n<ul>\n <li>Useful pre-sales resources</li>\n <li>Guided onboarding &amp; stakeholders involved</li>\n <li>Typical Implementation timeline</li>\n</ul>\n",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Resources"
+                  ],
+                  "lvl1": [
+                    [
+                      "Webinars"
+                    ]
+                  ]
+                },
+                "is404": false,
+                "tags": [],
+                "url": "/resources/asset/webinar-partnerenablement-2",
+                "facets": {
+                  "facet0": [
+                    [
+                      "Webinars"
+                    ]
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:45:41.221Z",
+                "environment": "prod20260722",
+                "objectID": "en_4aff79eb-b93c-4c84-8409-51a31c0eae09",
+                "thumbnail": "/sites/algolia-assets/files/Resource thumbnails/Partner Enablement- How to implement Algolia successfully.webp",
+                "abstract": "<p>During this session, Algolia&#39;s Lead Channel Solution Engineer shares the steps and best practices to implement Algolia successfully. We cover all the business and technical information you&rsquo;ll need to know as a partner regarding how to implement Algolia including:</p>\n\n<ul>\n <li>Useful pre-sales resources</li>\n <li>Guided onboarding &amp; stakeholders involved</li>\n <li>Typical Implementation timeline</li>\n</ul>\n",
+                "indexed_at": 1784670341221
+              },
+              {
+                "authors": [
+                  {
+                    "name": "Vincenzzo Marino",
+                    "imgpath": "/sites/algolia-assets/files/blogs/authorimages/vinny-vincenzzo-marino.jpg",
+                    "desc": "Senior Technical Recruiter"
+                  }
+                ],
+                "abstract": "Thinking of applying to work at Algolia? In this blog, one of our senior recruiters explains Algolia's guidelines for candidates on using AI tools responsibly during the hiring process. Learn what's acceptable and what's not, focusing on authenticity, transparency, and showcasing your unique skills.",
+                "is404": false,
+                "url": "/blog/algolia/algolia-ai-guidelines-for-candidates",
+                "facets": {
+                  "facet0": [
+                    "Algolia"
+                  ]
+                },
+                "source": "Blog",
+                "keywords": [
+                  "algolia"
+                ],
+                "language_code": "en",
+                "published_at": 1762367640000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Algolia"
+                  ],
+                  "lvl2": [
+                    "by Vincenzzo Marino"
+                  ]
+                },
+                "environment": "prod20260722",
+                "transform_source": "aant-blogsEntry",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-AI-Candidate-Guidelines-1920x1080.jpg",
+                "description": "Thinking of applying to work at Algolia? In this blog, one of our senior recruiters explains Algolia's guidelines for candidates on using AI tools responsibly during the hiring process. Learn what's acceptable and what's not, focusing on authenticity, transparency, and showcasing your unique skills.",
+                "indexed_at": 1784670288446,
+                "lastUpdated": "2026-07-21T21:44:48.446Z",
+                "objectID": "en_0338d957-adab-44ca-8aa6-d59fe4332362_0_1",
+                "title": "Algolia AI Guidelines for Candidates",
+                "category": "Algolia",
+                "tags": [
+                  "Algolia"
+                ]
+              },
+              {
+                "algoliaDisabled": "false",
+                "keywords": [],
+                "abstract": "Understand the four steps to implement Algolia: send your data, configure relevance, build the search UI, and iterate.",
+                "language_code": "en",
+                "indexed_at": 1784670696211,
+                "facets": {},
+                "published_at": 1761915910956,
+                "is404": false,
+                "category": "guide",
+                "description": "Understand the four steps to implement Algolia: send your data, configure relevance, build the search UI, and iterate.",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Algolia Overview"
+                  ]
+                },
+                "objectID": "0199aac9-fa2e-7cae-8c5e-a46ea37139c1",
+                "source": "Academy",
+                "transform_source": "algolia-academy",
+                "title": "A Simple Path to Algolia Implementation",
+                "authors": [],
+                "environment": "prod20260722",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "tags": [
+                  "Implementation"
+                ],
+                "url": "https://academy.algolia.com/training/4c10335c-5bd5-11eb-ac92-06c0361096e5",
+                "lastUpdated": "2026-07-21T21:51:36.211Z"
+              },
+              {
+                "source": "Academy",
+                "title": "A Simple Path to Algolia Implementation",
+                "url": "https://academy.algolia.com/training/4c10335c-5bd5-11eb-ac92-06c0361096e5",
+                "abstract": "Understand the four steps to implement Algolia: send your data, configure relevance, build the search UI, and iterate.",
+                "facets": {},
+                "algoliaDisabled": "false",
+                "transform_source": "algolia-academy",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/academy-placeholder.jpg",
+                "keywords": [],
+                "indexed_at": 1784670696211,
+                "published_at": 1761915910930,
+                "is404": false,
+                "language_code": "en",
+                "category": "guide",
+                "tags": [
+                  "Implementation"
+                ],
+                "authors": [],
+                "description": "Understand the four steps to implement Algolia: send your data, configure relevance, build the search UI, and iterate.",
+                "objectID": "019987cf-b2e4-7591-8da3-dc3d3307ba9c",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Getting Started for Technical Users"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:51:36.211Z",
+                "environment": "prod20260722"
+              },
+              {
+                "indexed_at": 1784670303009,
+                "facets": {
+                  "facet0": [
+                    "Engineering"
+                  ]
+                },
+                "published_at": 1761671700000,
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Engineering"
+                  ]
+                },
+                "lastUpdated": "2026-07-21T21:45:03.009Z",
+                "objectID": "en_635ad78d-39e7-468c-9be1-de451346dca3",
+                "source": "Blog",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/BP-AI-Powered-MCP-1920x1080.jpg",
+                "tags": [
+                  "Engineering"
+                ],
+                "is404": false,
+                "transform_source": "aant-blogsEntry",
+                "category": "Engineering",
+                "abstract": "Discover how to transform Algolia into a conversational AI using the Model Context Protocol (MCP), enabling natural language queries for search operations, index configurations, and real-time incident reports. ",
+                "language_code": "en",
+                "title": "Building an AI-powered MCP client for Algolia",
+                "authors": [],
+                "description": "Discover how to transform Algolia into a conversational AI using the Model Context Protocol (MCP), enabling natural language queries for search operations, index configurations, and real-time incident reports. ",
+                "environment": "prod20260722",
+                "url": "/blog/engineering/building-an-ai-powered-mcp-client-for-algolia",
+                "keywords": [
+                  "engineering"
+                ]
+              },
+              {
+                "indexed_at": 1784670696209,
+                "category": "Getting Started",
+                "tags": [],
+                "authors": [],
+                "url": "https://support.algolia.com/hc/en-us/articles/4406981894033-How-long-does-it-take-to-implement-Algolia-Search",
+                "keywords": [],
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Getting Started"
+                  ],
+                  "lvl1": [
+                    "FAQs"
+                  ]
+                },
+                "objectID": "4406981894033",
+                "language_code": "en",
+                "facets": {},
+                "lastUpdated": "2026-07-21T21:51:36.209Z",
+                "environment": "prod20260722",
+                "algoliaDisabled": "false",
+                "title": "How long does it take to implement Algolia Search?",
+                "abstract": "It depends on a lot of parameters like the organization of your data, what you want to do with Algolia, and the UI of your website/application.You can get it up and running in 5 minutes. The most complex implementations can take a few weeks. With the majority of our customers having a fully functional search experience in 1 to 10 days after they sign-up. Because we handle most of the back-end heavy-lifting, most of the work is usually to redesign and rethink the User Experience of your website or application. Of course, we’re more than happy to help you through all the process, don’t hesitate to send us an email if you happen to have a question.",
+                "published_at": 1767608367000,
+                "is404": false,
+                "source": "Support",
+                "transform_source": "zendesk-articles",
+                "thumbnail": "https://enriched-search-playwright-screenshots.s3.us-east-1.amazonaws.com/support-placeholder.jpg",
+                "description": "It depends on a lot of parameters like the organization of your data, what you want to do with Algolia, and the UI of your website/application.You can get it up and running in 5 minutes. The most complex implementations can take a few weeks. With the majority of our customers having a fully functional search experience in 1 to 10 days after they sign-up. Because we handle most of the back-end heavy-lifting, most of the work is usually to redesign and rethink the User Experience of your website or application. Of course, we’re more than happy to help you through all the process, don’t hesitate to send us an email if you happen to have a question."
+              },
+              {
+                "category": "Algolia",
+                "tags": [
+                  "Algolia"
+                ],
+                "abstract": "Recently, Algolia Co-Founder and CTO, Julien Lemoine, wrote an article for insideBIGDATA about the first step involved in identifying problems specific to the business that AI can solve – this article is the first of several pieces to be published. Removing roadblocks: A closer look at the three biggest barriers to relevant, personalized AI-Powered Search",
+                "hierarchicalCategories": {
+                  "lvl0": [
+                    "Blog"
+                  ],
+                  "lvl1": [
+                    "Algolia"
+                  ],
+                  "lvl2": [
+                    "by Julien Lemoine"
+                  ]
+                },
+                "environment": "prod20260722",
+                "objectID": "en_a36ae2ee-7bdd-410e-9aa2-91c1535d3a37_0_1",
+                "title": "3 biggest barriers to relevant, personalized AI search | Algolia",
+                "url": "/blog/algolia/removing-roadblocks-a-closer-look-at-the-three-biggest-barriers-to-relevant-personalized-ai-powered-search",
+                "description": "Recently, Algolia Co-Founder and CTO, Julien Lemoine, wrote an article for insideBIGDATA about the first step involved in identifying problems specific to the business that AI can solve – this article is the first of several pieces to be published.",
+                "indexed_at": 1784670291233,
+                "source": "Blog",
+                "thumbnail": "/sites/algolia-assets/files/blogs/bannerimages/removing-roadblocks-a-closer.webp",
+                "authors": [
+                  {
+                    "name": "Julien Lemoine",
+                    "desc": "Co-founder & former CTO at Algolia"
+                  }
+                ],
+                "facets": {
+                  "facet0": [
+                    "Algolia"
+                  ]
+                },
+                "published_at": 1690801980000,
+                "lastUpdated": "2026-07-21T21:44:51.233Z",
+                "transform_source": "aant-blogsEntry",
+                "keywords": [
+                  "algolia"
+                ],
+                "language_code": "en",
+                "is404": false
+              }
+            ],
+            "admissionRejected": true,
+            "followUps": [
+              "Would it help more to narrow the proof by your industry, use case, or target business outcome?"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "bodyText": "Join us:\nAlgolia DevCon 2026: Sep 30 - Oct 1, 2026 — VIRTUAL\nRegister Now\nCompany\nPartners\nSupport\nLogin\n\nEng\n\nProducts\nSolutions\nPricing\nDevelopers\nResources\nSearch or Ask AI\nFix your search\nGet started\n\nFILTER BY SOURCE\n\nDocumentation\n4,358\nSupport\n1,701\nBlog\n938\nWebsite\n472\nDevelopers\n288\nResources\n277\nAcademy\n144\nCustomer Stories\n83\n\nSUGGESTIONS\n\nAlgolia API integration\nAlgolia search benefits\nAlgolia scalability\nAI search for ecommerce\n\nPRODUCTS & RESOURCES\n\nAI Search\nWebsite • Products\nLearn more →\nSecurity Measures | Algolia\nWebsite • Distributed Secure\nLearn more →\nAgent Studio\nWebsite • Products\nLearn more →\nShow more results\nAI SEARCH\nAI search that understands intent and takes action\n\nDeliver relevant results quickly, with search that learns from behavior, adapts in real time, and continuously improves the experience you deliver.\n\nGet a demo\nGet started\nMore than 18,000 customers in 150+ countries trust Algolia\nThe AI Search advantage\n\nAlgolia is designed for the complexity of real user behavior: messy queries, shifting trends, and constantly changing catalogs.\nIt handles scale and delivers consistent relevance without requiring constant manual tuning—backed by years of unmatched expertise in search relevance and optimization. Help your customers find what they want faster, leading to stronger engagement, higher conversion rates, and reduced support costs.\n\nAn API-first search solution for just about any use case, industry, or team\n\nFlexible by design, ready for real-world complexity\nAlgolia fits into your architecture and adapts to how your teams work so you can move faster without rethinking your stack. More importantly, you can use search as the foundation for agent-driven experiences.\n\nIndustry\n\nAcross retail, manufacturing, media, financial services and more, Algolia helps teams improve discovery and drive measurable business impact, from higher conversion to stronger customer satisfaction.\n\nSee all industries\nUse case\n\nFrom improving site-wide discovery to powering visual or mobile-first search, Algolia helps you build search-native experiences that can extend into conversational and agent-driven interactions.\n\nSee all use cases\nTeams\n\nBuilt for both technical and business users alike, Algolia makes it easy to collaborate on search, from optimizing relevance to managing merchandising and editing.\n\nSee all departments\nFrom search results to interactive discovery\n\nDeliver fast, accurate results with a hybrid engine that understands intent, so users can find what they need and keep exploring through conversation.\n\nControl when you need it. Automation when you don’t.\n\nShape results around your specific goals, or let the system optimize for you. Algolia continuously evaluates performance and adjusts to what drives impact, so you can focus on strategy instead of constant tuning.\n\nDrive performance with smarter ranking\n\nAI Ranking uses real interaction data to refine relevance. It identifies what converts, adjusts automatically, and removes the need for manual rule management.\n\nCuration at your fingertips\n\nSet rules to promote or demote specific items, run A/B tests to measure impact, and see exactly why results appear where they do.\n\nBuilt for performance at any scale\n\nAlgolia processes more than 1 billion queries every 5 seconds, with an average response time under 20 milliseconds. Your search experience stays reliable even during peak traffic.\n\nFeatures\n\nEverything you need to deliver intelligent search experiences AI-powered search.\n\nNeuralSearch\n\nHybrid vector and keyword-powered search\n\nAI Ranking\n\nBoost results dynamically to drive KPIs\n\nPersonalization\n\nTailor results for each user\n\nAI Synonyms\n\nAutomatically detects new synonyms to deliver better results\n\nInstantSearch\n\nResults that appear instantly\n\nRules\n\nOptimize ranking for specific queries\n\nAnalytics\n\n Understand your users to uncover opportunities\n\nA/B testing\n\nDesign the best-performing relevance strategies. Rules: Optimize ranking for specific \n\nMerchandising\n\nCurate results for promotional campaigns\n\nCrawler\n\nAutomatically extract and enrich your content\n\nAutocomplete\n\nGuide users to the right content with typo tolerance\n\nQuery categorization\n\nBetter results categorized for each query\n\nConnect easily with the tools and platforms you already use\n\nGet up and running quickly with pre-built integrations on some of the most popular platforms.\n\nSee all integrations\nThe future of search is agentic\n\nMove beyond static results. Build conversational interfaces, generate dynamic content, and create workflows where search actively supports discovery and decision-making.\n\nAgent Studio\n\nCreate, test, and deploy AI agents, quickly.\n\nRead more about Agent Studio\nGenerative Experiences\nAsk AI\nMCP Server\nREQUEST A DEMO\nSee how Algolia fits your use case\n\nShare your goals, challenges, and architecture—we’ll show you how Algolia performs in environments like yours.\n\nValidate performance and scalability\nExplore integrations and implementation paths\nCompare approaches to relevance and AI\nGet recommendations tailored to your business\n \n*\nFirst Name\n*\nLast Name\n*\nBusiness Email\n*\nPhone\n*\nCompany\n*\nCountry\nSelect...\nUnited States\nAfghanistan\nAland Islands\nAlbania\nAlgeria\nAndorra\nAngola\nAnguilla\nAntarctica\nAntigua and Barbuda\nArgentina\nArmenia\nAruba\nAustralia\nAustria\nAzerbaijan\nBahamas\nBahrain\nBangladesh\nBarbados\nBelarus\nBelgium\nBelize\nBenin\nBermuda\nBhutan\nBolivia\nBonaire, Sint Eustatius and Saba\nBosnia and Herzegovina\nBotswana\nBouvet Island\nBrazil\nBritish Indian Ocean Territory\nBrunei Darussalam\nBulgaria\nBurkina Faso\nBurundi\nCambodia\nCameroon\nCanada\nCape Verde\nCayman Islands\nCentral African Republic\nChad\nChile\nChina\nChristmas Island\nCocos (Keeling) Islands\nColombia\nComoros\nCongo\nCongo, the Democratic Republic of the\nCook Islands\nCosta Rica\nCote d'Ivoire\nCroatia\nCuba\nCuraçao\nCyprus\nCzech Republic\nDenmark\nDjibouti\nDominica\nDominican Republic\nEcuador\nEgypt\nEl Salvador\nEquatorial Guinea\nEritrea\nEstonia\nEthiopia\nFalkland Islands (Malvinas)\nFaroe Islands\nFiji\nFinland\nFrance\nFrench Guiana\nFrench Polynesia\nFrench Southern Territories\nGabon\nGambia\nGeorgia\nGermany\nGhana\nGibraltar\nGreece\nGreenland\nGrenada\nGuadeloupe\nGuatemala\nGuernsey\nGuinea\nGuinea-Bissau\nGuyana\nHaiti\nHeard Island and McDonald Islands\nHoly See (Vatican City State)\nHonduras\nHong Kong\nHungary\nIceland\nIndia\nIndonesia\nIran\nIraq\nIreland\nIsle of Man\nIsrael\nItaly\nJamaica\nJapan\nJersey\nJordan\nKazakhstan\nKenya\nKiribati\nKorea, Democratic People's Republic of\nKuwait\nKyrgyzstan\nLaos\nLatvia\nLebanon\nLesotho\nLiberia\nLibya\nLiechtenstein\nLithuania\nLuxembourg\nMacao\nMacedonia, the former Yugoslav Republic of\nMadagascar\nMalawi\nMalaysia\nMaldives\nMali\nMalta\nMartinique\nMauritania\nMauritius\nMayotte\nMexico\nMoldova\nMonaco\nMongolia\nMontenegro\nMontserrat\nMorocco\nMozambique\nMyanmar\nNamibia\nNauru\nNepal\nNetherlands\nNew Caledonia\nNew Zealand\nNicaragua\nNiger\nNigeria\nNiue\nNorfolk Island\nNorway\nOman\nPakistan\nPalestine\nPanama\nPapua New Guinea\nParaguay\nPeru\nPhilippines\nPitcairn\nPoland\nPortugal\nPuerto Rico\nQatar\nReunion\nRomania\nRussian Federation\nRwanda\nSaint Barthélemy\nSaint Helena, Ascension and Tristan da Cunha\nSaint Kitts and Nevis\nSaint Lucia\nSaint Martin (French part)\nSaint Pierre and Miquelon\nSaint Vincent and the Grenadines\nSamoa\nSan Marino\nSao Tome and Principe\nSaudi Arabia\nSenegal\nSerbia\nSeychelles\nSierra Leone\nSingapore\nSint Maarten (Dutch part)\nSlovakia\nSlovenia\nSolomon Islands\nSomalia\nSouth Africa\nSouth Georgia and the South Sandwich Islands\nSouth Korea\nSouth Sudan\nSpain\nSri Lanka\nSudan\nSuriname\nSvalbard and Jan Mayen\nSwaziland\nSweden\nSwitzerland\nSyrian Arab Republic\nTaiwan\nTajikistan\nTanzania\nThailand\nTimor-Leste\nTogo\nTokelau\nTonga\nTrinidad and Tobago\nTunisia\nTurkey\nTurkmenistan\nTurks and Caicos Islands\nTuvalu\nUganda\nUkraine\nUnited Arab Emirates\nUnited Kingdom\nUruguay\nUzbekistan\nVanuatu\nVenezuela\nVietNam\nVirgin Islands, British\nWallis and Futuna\nWestern Sahara\nYemen\nZambia\nZimbabwe\nGet In Touch\nAlgolia AI Search FAQs\nWhat is AI Search and how does it work?\nHow fast is Algolia AI Search?\nWhat types of content or data can AI Search handle?\nHow is Algolia different from other AI search engines?\nWhat are the key features of Algolia AI Search?\nWhat industries and use cases is Algolia’s AI Search best for?\nHow does Algolia’s AI Search improve conversion rates?\nCan Algolia AI Search handle multiple languages?\nHow does personalization work in Algolia AI Search?\nDoes AI Search require coding to implement?\nIs Algolia scalable for high-traffic websites?\nHow easy is it to implement AI Search?\nHow can I measure and optimize AI Search?\nHow can I try Algolia AI Search?\nEnable anyone to build great Search & Discovery\nGet a demo\nStart free\nCareers\nContact Us\nAbout Algolia\nAnti-Modern Slavery Statement\nSocial networks\nGet the latest in AI search - straight to your inbox.\n©2026 Algolia - All rights reserved.\nCookie settings\nTrust Center\nPrivacy Policy\nTerms of service\nAcceptable Use Policy\nProactive suppressed: no_trigger_match",
+  "journey": "T2",
+  "expectedTrigger": "product_to_documentation",
+  "visitorResponse": "What should a credible React InstantSearch proof of concept include?",
+  "specialistAccepted": false,
+  "specialistDeclined": false,
+  "specialistAction": null,
+  "continuity": {
+    "sourcePath": "/sites/www/doc/guides/building-search-ui/what-is-instantsearch/js",
+    "destinationPath": "/products/ai-search",
+    "conversationIdBefore": "0ea999ab-f3c6-4ff2-addf-815be62bb52f",
+    "conversationIdAfter": "0ea999ab-f3c6-4ff2-addf-815be62bb52f",
+    "turnCountBefore": 1,
+    "turnCountAfter": 2,
+    "restoredQueryVisible": true,
+    "followUp": "Back on the product page, which proof-of-concept decision should I make first?"
+  },
+  "verification": {
+    "boundaries": {
+      "visitorResponseBoundaryId": 4,
+      "firstTurnBoundaryId": 16
+    },
+    "configuredOrchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "reset": {
+      "pass": true,
+      "errors": [],
+      "checks": {
+        "preseedCaptured": true,
+        "freshProfile": true,
+        "freshSession": true,
+        "eventsReset": true,
+        "proactiveCleared": true,
+        "conversationCleared": true,
+        "handoffCleared": true,
+        "unrelatedStatePreserved": true
+      },
+      "preseed": {
+        "profileVisitorId": "reset_probe_visitor",
+        "sessionId": "reset_probe_session",
+        "proactiveOpportunityId": "reset_probe_opportunity",
+        "conversationId": "reset_probe_conversation",
+        "handoffOpportunityId": "reset_probe_opportunity",
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      },
+      "post": {
+        "profileVisitorId": "visitor_c8e4d9e11985596e1ca4e0f1",
+        "sessionId": "sess_c722c14ef66b762d6e5414c0",
+        "eventNames": [
+          "page_view"
+        ],
+        "proactiveOpportunityId": null,
+        "conversationId": null,
+        "handoffOpportunityId": null,
+        "unrelatedLocal": "reset_probe_keep_local",
+        "unrelatedSession": "reset_probe_keep_session"
+      }
+    },
+    "firstTurnTraffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 2,
+        "byOpportunity": {
+          "opp_1a019d5ef3f_f7848a": 1,
+          "opp_1a019d633f5_29dbfd": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 5,
+        "responseId": 7,
+        "responseStatus": 200,
+        "responseTextLength": 3639,
+        "routedToSpecialist": false,
+        "routingMode": null,
+        "specialistRequests": 0,
+        "specialistAction": null,
+        "specialistOutcome": null,
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 0
+      },
+      "discovery": {
+        "pass": true,
+        "errors": [],
+        "visibleWraps": 1,
+        "visibleQuestions": 1,
+        "questions": [
+          "Are you shaping a quick proof of concept, or planning the architecture for a production implementation?"
+        ]
+      },
+      "specialistRoutingDebug": null
+    },
+    "traffic": {
+      "pass": true,
+      "errors": [],
+      "greetings": {
+        "requests": 2,
+        "byOpportunity": {
+          "opp_1a019d5ef3f_f7848a": 1,
+          "opp_1a019d633f5_29dbfd": 1
+        },
+        "afterVisitorResponse": 0
+      },
+      "firstTurn": {
+        "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+        "orchestratorRequests": 1,
+        "handoffBlocks": 1,
+        "requestId": 5,
+        "responseId": 7,
+        "responseStatus": 200,
+        "responseTextLength": 3639,
+        "routedToSpecialist": false,
+        "routingMode": null,
+        "specialistRequests": 0,
+        "specialistAction": null,
+        "specialistOutcome": null,
+        "visibleResponderAgentIds": [
+          "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+        ],
+        "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+      },
+      "continuity": {
+        "orchestratorRequests": 1
+      }
+    }
+  }
+}

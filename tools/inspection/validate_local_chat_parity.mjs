@@ -156,6 +156,61 @@ async function seedProductJourney(page) {
   });
 }
 
+async function installQualifiedAiSearchSeed(page) {
+  await page.addInitScript(() => {
+    if (location.pathname !== '/products/ai-search') return;
+    const now = Date.now();
+    const sessionId = 'local_docs_sess_123';
+    const productPage = {
+      pageId: 'page_ai_search',
+      path: '/products/ai-search',
+      url: `${location.origin}/products/ai-search`,
+      title: 'AI Search | Local Chat Parity',
+      enteredAt: now - 7000,
+      dwellMs: 5000,
+      maxScrollDepth: 25,
+      pageGroup: 'product',
+      topic: 'ai_search',
+      productFocus: 'ai_search',
+      productFocusLabel: 'AI Search',
+    };
+    sessionStorage.setItem(
+      'algolia_session',
+      JSON.stringify({
+        schema: 'AlgoliaEngagementSession.v1',
+        sessionId,
+        startedAt: now - 7000,
+        lastSeenAt: now,
+        currentPageId: productPage.pageId,
+        pages: [productPage],
+        engagementHistory: [],
+      })
+    );
+    sessionStorage.setItem(
+      'algolia_events',
+      JSON.stringify({
+        schema: 'AlgoliaEngagementEvents.v1',
+        sessionId,
+        events: [{
+          eventId: 'evt_ai_search_qualified',
+          name: 'scroll_depth',
+          ts: now,
+          pageId: productPage.pageId,
+          path: productPage.path,
+          source: 'observed',
+          props: {
+            depth: 50,
+            pageGroup: 'product',
+            topic: 'ai_search',
+            productFocus: 'ai_search',
+            productFocusLabel: 'AI Search',
+          },
+        }],
+      })
+    );
+  });
+}
+
 async function main() {
   const { server, baseUrl } = await startServer();
   const browser = await chromium.launch({ headless: true });
@@ -257,6 +312,37 @@ async function main() {
     assert.ok(result.traceStages.includes('greeting_response_parsed'));
     assert.ok(result.traceStages.includes('widget_rendered'));
 
+    await installQualifiedAiSearchSeed(page);
+    await page.goto(`${baseUrl}/products/ai-search?algoliaChatDebug=1&algoliaProactiveDebug=1`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await page.waitForFunction(() => !!window.algoliaEngagementTracker && !!window.algoliaContextCompiler);
+
+    const docsCta = page.locator('a[data-local-action="cta_docs"]');
+    assert.equal(
+      await docsCta.getAttribute('href'),
+      '/doc/guides/building-search-ui/what-is-instantsearch/js/'
+    );
+    await docsCta.click();
+    await page.waitForURL('**/doc/guides/building-search-ui/what-is-instantsearch/js/');
+    await page.waitForFunction(() => {
+      const packet = window.algoliaContextCompiler?.compile?.();
+      return packet?.currentPage?.path === '/doc/guides/building-search-ui/what-is-instantsearch/js/';
+    });
+
+    const docsContinuity = await page.evaluate(() => {
+      const session = JSON.parse(sessionStorage.getItem('algolia_session') || '{}');
+      return {
+        sessionId: session.sessionId,
+        currentPath: session.pages?.find((item) => item.pageId === session.currentPageId)?.path,
+        qualifiedProduct: session.pages?.find((item) => item.pageId === 'page_ai_search') || null,
+      };
+    });
+    assert.equal(docsContinuity.sessionId, 'local_docs_sess_123');
+    assert.equal(docsContinuity.currentPath, '/doc/guides/building-search-ui/what-is-instantsearch/js/');
+    assert.equal(docsContinuity.qualifiedProduct?.dwellMs, 5000);
+    assert.equal(docsContinuity.qualifiedProduct?.maxScrollDepth, 25);
+
     console.log(
       JSON.stringify(
         {
@@ -274,6 +360,7 @@ async function main() {
           },
           traceStages: result.traceStages.slice(-8),
           agentCalls: agentCalls.length + result.localAgentCalls,
+          docsContinuity,
         },
         null,
         2

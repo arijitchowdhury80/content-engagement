@@ -1,0 +1,417 @@
+import importlib.util
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import call, patch
+
+
+MODULE_PATH = Path(__file__).resolve().parents[1] / "deploy_jahia_engagement_tracker.py"
+SPEC = importlib.util.spec_from_file_location("deploy_jahia_engagement_tracker", MODULE_PATH)
+MODULE = importlib.util.module_from_spec(SPEC)
+assert SPEC.loader is not None
+SPEC.loader.exec_module(MODULE)
+
+
+def file_node(content: str) -> dict:
+    return {
+        "children": {
+            "nodes": [
+                {
+                    "name": "jcr:content",
+                    "properties": [{"name": "jcr:data", "value": content}],
+                }
+            ]
+        }
+    }
+
+
+def block_html(version: str = "20260818-runtime-y") -> str:
+    return (
+        '<div class="algolia-chat-embed" data-release="existing-release">\n'
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-chat.js?chat={version}"></script>\n'
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-proactive-controller.js?proactive={version}"></script>\n'
+        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/'
+        f'algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme={version}"></script>\n'
+        "</div>"
+    )
+
+
+def controller_state(html: str, content: str) -> dict:
+    return {
+        "capturedAt": "2026-08-19T00:00:00+00:00",
+        "mode": "controller-only",
+        "controllerVersion": MODULE.CONTROLLER_ONLY_VERSION,
+        "target": {
+            "controller": MODULE.PROACTIVE_CONTROLLER,
+            "block": MODULE.BLOCK_PATH,
+        },
+        "edit": {
+            "blockHtml": html,
+            "proactiveControllerNode": file_node(content),
+        },
+        "live": {
+            "blockHtml": html,
+            "proactiveControllerNode": file_node(content),
+        },
+    }
+
+
+def chat_state(html: str, content: str) -> dict:
+    return {
+        "capturedAt": "2026-08-19T00:00:00+00:00",
+        "mode": "chat-only",
+        "chatVersion": MODULE.CHAT_ONLY_VERSION,
+        "target": {
+            "chat": MODULE.CHAT,
+            "block": MODULE.BLOCK_PATH,
+        },
+        "edit": {
+            "blockHtml": html,
+            "chatNode": file_node(content),
+        },
+        "live": {
+            "blockHtml": html,
+            "chatNode": file_node(content),
+        },
+    }
+
+
+class ControllerOnlyHtmlTests(unittest.TestCase):
+    def test_uses_new_august_19_controller_cache_token(self):
+        self.assertEqual(MODULE.CONTROLLER_ONLY_VERSION, "20260819-controller-a")
+        updated = MODULE.update_controller_block_html(block_html())
+
+        self.assertIn("proactive=20260819-controller-a", updated)
+        self.assertIn(
+            'data-proactive-controller-release="20260819-controller-a"', updated
+        )
+
+    def test_changes_only_controller_query_and_controller_marker(self):
+        original = block_html()
+        updated = MODULE.update_controller_block_html(original)
+        expected = original.replace(
+            '<div class="algolia-chat-embed" data-release="existing-release">',
+            '<div class="algolia-chat-embed" data-release="existing-release" '
+            'data-proactive-controller-release="20260819-controller-a">',
+        ).replace(
+            "proactive=20260818-runtime-y",
+            "proactive=20260819-controller-a",
+        )
+
+        self.assertEqual(updated, expected)
+        self.assertIn("chat=20260818-runtime-y", updated)
+        self.assertIn("theme=20260818-runtime-y", updated)
+        self.assertIn('data-release="existing-release"', updated)
+
+    def test_replaces_existing_controller_marker_idempotently(self):
+        current = block_html().replace(
+            'data-release="existing-release"',
+            'data-release="existing-release" data-proactive-controller-release="old"',
+        )
+        once = MODULE.update_controller_block_html(current)
+        twice = MODULE.update_controller_block_html(once)
+
+        self.assertEqual(once, twice)
+        self.assertEqual(once.count("data-proactive-controller-release="), 1)
+
+    def test_fails_closed_when_controller_tag_is_missing_or_duplicated(self):
+        missing = block_html().replace("algolia-proactive-controller.js", "missing.js")
+        with self.assertRaisesRegex(RuntimeError, "exactly one proactive controller"):
+            MODULE.update_controller_block_html(missing)
+
+        controller_tag = block_html().splitlines()[2]
+        duplicate = block_html() + controller_tag
+        with self.assertRaisesRegex(RuntimeError, "exactly one proactive controller"):
+            MODULE.update_controller_block_html(duplicate)
+
+
+class CredentialLoadingTests(unittest.TestCase):
+    def test_process_environment_takes_precedence_over_env_local(self):
+        with tempfile.TemporaryDirectory() as directory:
+            env_local = Path(directory) / ".env.local"
+            env_local.write_text("JHIA_API_TOKEN=repo-local-token\n", encoding="utf-8")
+            with patch.object(MODULE, "ENV_LOCAL", env_local), patch.dict(
+                MODULE.os.environ,
+                {"JHIA_API_TOKEN": "process-token"},
+                clear=True,
+            ):
+                authorization = MODULE.load_token()
+
+        self.assertEqual(authorization, "APIToken process-token")
+
+    def test_loads_spelled_jhia_api_token_from_env_local_with_api_token_prefix(self):
+        self.assertEqual(MODULE.ENV_LOCAL, MODULE.ROOT / ".env.local")
+        with tempfile.TemporaryDirectory() as directory:
+            env_local = Path(directory) / ".env.local"
+            env_local.write_text('JHIA_API_TOKEN="synthetic-test-token"\n', encoding="utf-8")
+            with patch.object(MODULE, "ENV_LOCAL", env_local), patch.dict(
+                MODULE.os.environ, {}, clear=True
+            ):
+                authorization = MODULE.load_token()
+
+        self.assertEqual(authorization, "APIToken synthetic-test-token")
+
+    def test_missing_token_never_uses_personal_or_legacy_fallbacks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing_env_local = Path(directory) / ".env.local"
+            with patch.object(MODULE, "ENV_LOCAL", missing_env_local), patch.dict(
+                MODULE.os.environ,
+                {"JAHIA_AUTHORIZATION": "Bearer legacy-authorization"},
+                clear=True,
+            ), patch.object(
+                MODULE.Path,
+                "home",
+                side_effect=AssertionError("personal home directory was consulted"),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "JHIA_API_TOKEN"):
+                    MODULE.load_token()
+
+
+class ControllerOnlyDeploymentTests(unittest.TestCase):
+    def test_plan_declares_exact_mutation_allowlist_and_exclusions(self):
+        original = block_html()
+        before = controller_state(original, "old controller")
+        next_html = MODULE.update_controller_block_html(original)
+        plan = MODULE.controller_only_plan(before, "new controller", next_html)
+
+        self.assertEqual(
+            [(item["operation"], item["path"]) for item in plan["mutationAllowlist"]],
+            [
+                ("upsert", MODULE.PROACTIVE_CONTROLLER),
+                ("setBlockHtml", MODULE.BLOCK_PATH),
+                ("publish", MODULE.PROACTIVE_CONTROLLER_CONTENT),
+                ("publish", MODULE.PROACTIVE_CONTROLLER),
+                ("createVersion", MODULE.BLOCK_PATH),
+                ("publish", MODULE.BLOCK_PATH),
+            ],
+        )
+        self.assertIn(MODULE.THEME, plan["excluded"]["theme"])
+        self.assertNotIn(MODULE.PROACTIVE_CONTROLLER, plan["excluded"]["runtimeFiles"])
+        self.assertEqual(plan["excluded"]["subtrees"], [MODULE.FILES_PATH, "/sites/www/home/drift"])
+        self.assertEqual(
+            [item["subtree"] for item in plan["mutationAllowlist"] if item["operation"] == "publish"],
+            [False, False, False],
+        )
+
+    def test_apply_updates_and_publishes_only_controller_and_block(self):
+        controller_content = MODULE.PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")
+        original = block_html()
+        expected_html = MODULE.update_controller_block_html(original)
+        before = controller_state(original, "old controller")
+        after = controller_state(expected_html, controller_content)
+
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+            MODULE, "EVIDENCE_DIR", Path(directory)
+        ), patch.object(
+            MODULE, "controller_snapshot", side_effect=[before, after]
+        ), patch.object(
+            MODULE, "upsert_file", return_value={"updated": True}
+        ) as upsert, patch.object(
+            MODULE, "set_block_html", return_value={"updated": True}
+        ) as set_html, patch.object(
+            MODULE, "publish", return_value={"published": True}
+        ) as publish, patch.object(
+            MODULE, "version_block", return_value={"versioned": True}
+        ) as version:
+            result = MODULE.run_controller_only(apply=True)
+
+        self.assertEqual(result, 0)
+        upsert.assert_called_once_with(MODULE.PROACTIVE_CONTROLLER, controller_content)
+        set_html.assert_called_once_with(expected_html)
+        self.assertEqual(
+            publish.call_args_list,
+            [
+                call(MODULE.PROACTIVE_CONTROLLER_CONTENT, subtree=False),
+                call(MODULE.PROACTIVE_CONTROLLER, subtree=False),
+                call(MODULE.BLOCK_PATH, subtree=False),
+            ],
+        )
+        version.assert_called_once_with()
+
+    def test_dry_run_writes_evidence_without_mutating(self):
+        original = block_html()
+        before = controller_state(original, "old controller")
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+            MODULE, "EVIDENCE_DIR", Path(directory)
+        ), patch.object(
+            MODULE, "controller_snapshot", return_value=before
+        ), patch.object(MODULE, "upsert_file") as upsert, patch.object(
+            MODULE, "set_block_html"
+        ) as set_html, patch.object(MODULE, "publish") as publish:
+            result = MODULE.run_controller_only(apply=False)
+            evidence = Path(directory)
+            self.assertTrue((evidence / "before-snapshot.json").exists())
+            self.assertTrue((evidence / "deployment-plan.json").exists())
+
+        self.assertEqual(result, 0)
+        upsert.assert_not_called()
+        set_html.assert_not_called()
+        publish.assert_not_called()
+
+    def test_validation_requires_edit_and_live_sha_and_exact_block(self):
+        content = "new controller"
+        expected_html = MODULE.update_controller_block_html(block_html())
+        state = controller_state(expected_html, content)
+        checks = MODULE.validate_controller_only(state, content, expected_html)
+        self.assertTrue(checks["pass"])
+        self.assertEqual(checks["editControllerSha256"], MODULE.sha256(content))
+        self.assertEqual(checks["liveControllerSha256"], MODULE.sha256(content))
+
+        state["live"]["proactiveControllerNode"] = file_node("stale controller")
+        self.assertFalse(
+            MODULE.validate_controller_only(state, content, expected_html)["pass"]
+        )
+
+
+class ChatOnlyHtmlTests(unittest.TestCase):
+    def test_changes_only_chat_query_and_chat_marker(self):
+        original = block_html()
+        updated = MODULE.update_chat_block_html(original)
+        expected = original.replace(
+            '<div class="algolia-chat-embed" data-release="existing-release">',
+            '<div class="algolia-chat-embed" data-release="existing-release" '
+            f'data-chat-release="{MODULE.CHAT_ONLY_VERSION}">',
+        ).replace(
+            "chat=20260818-runtime-y",
+            f"chat={MODULE.CHAT_ONLY_VERSION}",
+        )
+
+        self.assertEqual(updated, expected)
+        self.assertIn("proactive=20260818-runtime-y", updated)
+        self.assertIn("theme=20260818-runtime-y", updated)
+        self.assertIn('data-release="existing-release"', updated)
+
+    def test_replaces_existing_chat_marker_idempotently(self):
+        current = block_html().replace(
+            'data-release="existing-release"',
+            'data-release="existing-release" data-chat-release="old"',
+        )
+        once = MODULE.update_chat_block_html(current)
+        twice = MODULE.update_chat_block_html(once)
+
+        self.assertEqual(once, twice)
+        self.assertEqual(once.count("data-chat-release="), 1)
+
+    def test_fails_closed_when_chat_tag_is_missing_or_duplicated(self):
+        missing = block_html().replace("algolia-chat.js", "missing.js")
+        with self.assertRaisesRegex(RuntimeError, "exactly one algolia-chat.js"):
+            MODULE.update_chat_block_html(missing)
+
+        chat_tag = block_html().splitlines()[1]
+        duplicate = block_html() + chat_tag
+        with self.assertRaisesRegex(RuntimeError, "exactly one algolia-chat.js"):
+            MODULE.update_chat_block_html(duplicate)
+
+
+class ChatOnlyDeploymentTests(unittest.TestCase):
+    def test_cli_routes_chat_only_to_narrow_runner(self):
+        with patch.object(MODULE.sys, "argv", ["deploy", "--chat-only", "--apply"]), patch.object(
+            MODULE, "run_chat_only", return_value=7
+        ) as run_chat, patch.object(MODULE, "snapshot") as full_snapshot:
+            result = MODULE.main()
+
+        self.assertEqual(result, 7)
+        run_chat.assert_called_once_with(True)
+        full_snapshot.assert_not_called()
+
+    def test_plan_declares_exact_mutation_allowlist_and_exclusions(self):
+        original = block_html()
+        before = chat_state(original, "old chat")
+        next_html = MODULE.update_chat_block_html(original)
+        plan = MODULE.chat_only_plan(before, "new chat", next_html)
+
+        self.assertEqual(
+            [(item["operation"], item["path"]) for item in plan["mutationAllowlist"]],
+            [
+                ("upsert", MODULE.CHAT),
+                ("setBlockHtml", MODULE.BLOCK_PATH),
+                ("publish", MODULE.CHAT_CONTENT),
+                ("publish", MODULE.CHAT),
+                ("createVersion", MODULE.BLOCK_PATH),
+                ("publish", MODULE.BLOCK_PATH),
+            ],
+        )
+        self.assertIn(MODULE.PROACTIVE_CONTROLLER, plan["excluded"]["runtimeFiles"])
+        self.assertNotIn(MODULE.CHAT, plan["excluded"]["runtimeFiles"])
+        self.assertEqual(
+            plan["excluded"]["subtrees"],
+            [MODULE.FILES_PATH, "/sites/www/home/drift"],
+        )
+        self.assertEqual(
+            [item["subtree"] for item in plan["mutationAllowlist"] if item["operation"] == "publish"],
+            [False, False, False],
+        )
+
+    def test_apply_updates_and_publishes_only_chat_and_block(self):
+        chat_content = MODULE.CHAT_SRC.read_text(encoding="utf-8")
+        original = block_html()
+        expected_html = MODULE.update_chat_block_html(original)
+        before = chat_state(original, "old chat")
+        after = chat_state(expected_html, chat_content)
+
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+            MODULE, "EVIDENCE_DIR", Path(directory)
+        ), patch.object(
+            MODULE, "chat_snapshot", side_effect=[before, after]
+        ), patch.object(
+            MODULE, "upsert_file", return_value={"updated": True}
+        ) as upsert, patch.object(
+            MODULE, "set_block_html", return_value={"updated": True}
+        ) as set_html, patch.object(
+            MODULE, "publish", return_value={"published": True}
+        ) as publish, patch.object(
+            MODULE, "version_block", return_value={"versioned": True}
+        ) as version:
+            result = MODULE.run_chat_only(apply=True)
+
+        self.assertEqual(result, 0)
+        upsert.assert_called_once_with(MODULE.CHAT, chat_content)
+        set_html.assert_called_once_with(expected_html)
+        self.assertEqual(
+            publish.call_args_list,
+            [
+                call(MODULE.CHAT_CONTENT, subtree=False),
+                call(MODULE.CHAT, subtree=False),
+                call(MODULE.BLOCK_PATH, subtree=False),
+            ],
+        )
+        version.assert_called_once_with()
+
+    def test_dry_run_snapshots_and_writes_plan_without_mutating(self):
+        original = block_html()
+        before = chat_state(original, "old chat")
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+            MODULE, "EVIDENCE_DIR", Path(directory)
+        ), patch.object(
+            MODULE, "chat_snapshot", return_value=before
+        ) as snapshot, patch.object(MODULE, "upsert_file") as upsert, patch.object(
+            MODULE, "set_block_html"
+        ) as set_html, patch.object(MODULE, "publish") as publish:
+            result = MODULE.run_chat_only(apply=False)
+            evidence = Path(directory)
+            self.assertTrue((evidence / "before-snapshot.json").exists())
+            self.assertTrue((evidence / "deployment-plan.json").exists())
+
+        self.assertEqual(result, 0)
+        snapshot.assert_called_once_with()
+        upsert.assert_not_called()
+        set_html.assert_not_called()
+        publish.assert_not_called()
+
+    def test_validation_requires_edit_and_live_sha_and_exact_block(self):
+        content = "new chat"
+        expected_html = MODULE.update_chat_block_html(block_html())
+        state = chat_state(expected_html, content)
+        checks = MODULE.validate_chat_only(state, content, expected_html)
+        self.assertTrue(checks["pass"])
+        self.assertEqual(checks["editChatSha256"], MODULE.sha256(content))
+        self.assertEqual(checks["liveChatSha256"], MODULE.sha256(content))
+
+        state["live"]["chatNode"] = file_node("stale chat")
+        self.assertFalse(MODULE.validate_chat_only(state, content, expected_html)["pass"])
+
+
+if __name__ == "__main__":
+    unittest.main()

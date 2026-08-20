@@ -1,0 +1,35 @@
+{
+  "pass": true,
+  "errors": [],
+  "checks": {
+    "preseedCaptured": true,
+    "freshProfile": true,
+    "freshSession": true,
+    "eventsReset": true,
+    "proactiveCleared": true,
+    "conversationCleared": true,
+    "handoffCleared": true,
+    "unrelatedStatePreserved": true
+  },
+  "preseed": {
+    "profileVisitorId": "reset_probe_visitor",
+    "sessionId": "reset_probe_session",
+    "proactiveOpportunityId": "reset_probe_opportunity",
+    "conversationId": "reset_probe_conversation",
+    "handoffOpportunityId": "reset_probe_opportunity",
+    "unrelatedLocal": "reset_probe_keep_local",
+    "unrelatedSession": "reset_probe_keep_session"
+  },
+  "post": {
+    "profileVisitorId": "visitor_c91f07a35fbbe3fae0ab93cb",
+    "sessionId": "sess_8486b165630d47d633a55633",
+    "eventNames": [
+      "page_view"
+    ],
+    "proactiveOpportunityId": null,
+    "conversationId": null,
+    "handoffOpportunityId": null,
+    "unrelatedLocal": "reset_probe_keep_local",
+    "unrelatedSession": "reset_probe_keep_session"
+  }
+}

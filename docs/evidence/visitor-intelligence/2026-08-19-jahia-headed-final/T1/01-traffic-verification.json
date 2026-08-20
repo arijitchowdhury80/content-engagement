@@ -1,0 +1,32 @@
+{
+  "pass": true,
+  "errors": [],
+  "greetings": {
+    "requests": 1,
+    "byOpportunity": {
+      "opp_1a019d3a75e_e2292d": 1
+    },
+    "afterVisitorResponse": 0
+  },
+  "firstTurn": {
+    "orchestratorAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "orchestratorRequests": 1,
+    "handoffBlocks": 1,
+    "requestId": 3,
+    "responseId": 4,
+    "responseStatus": 200,
+    "responseTextLength": 2951,
+    "routedToSpecialist": false,
+    "routingMode": null,
+    "specialistRequests": 0,
+    "specialistAction": null,
+    "specialistOutcome": null,
+    "visibleResponderAgentIds": [
+      "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+    ],
+    "finalResponderAgentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6"
+  },
+  "continuity": {
+    "orchestratorRequests": 1
+  }
+}

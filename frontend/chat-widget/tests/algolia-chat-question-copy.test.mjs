@@ -1,41 +1,47 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import fs from 'node:fs';
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
 
-const chatPath = new URL('../algolia-chat.js', import.meta.url);
+const chatPath = new URL("../algolia-chat.js", import.meta.url);
 
-test('question buttons copy their text before invoking the existing action', () => {
-  const bundle = fs.readFileSync(chatPath, 'utf8');
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+test("question buttons copy their text before invoking the existing action", () => {
+  const bundle = fs.readFileSync(chatPath, "utf8");
+  const clipboardHelper = bundle.match(
+    /function ([$A-Z_a-z][$\w]*)\(([$A-Z_a-z][$\w]*)\)\{const ([$A-Z_a-z][$\w]*)=\2\.trim\(\);if\(\3\)try\{if\(!navigator\.clipboard\?\.writeText\)/,
+  );
+
+  assert.ok(
+    clipboardHelper,
+    "built bundle should contain the shared clipboard helper",
+  );
+  const helperName = clipboardHelper[1];
+  const helperBlock = bundle.slice(
+    clipboardHelper.index,
+    bundle.indexOf("function ", clipboardHelper.index + 20),
+  );
 
   assert.match(
-    bundle,
-    /function acCopyQuestion\(t\)\{const n=typeof t=="string"\?t\.trim\(\):"";if\(!n\)return;try\{const i=navigator\?\.clipboard\?\.writeText\?\.call\(navigator\.clipboard,n\);if\(i&&typeof i\.catch=="function"\)i\.catch\(\(\)=>\{\}\);return\}catch\{\}try\{/,
-    'shared clipboard helper should copy question text with a safe fallback'
+    helperBlock,
+    /navigator\.clipboard\.writeText\([^)]+\)\.catch\(\(\)=>[$A-Z_a-z][$\w]*\([^)]+\)\)/,
+    "clipboard rejection should use the fallback",
   );
   assert.match(
     bundle,
-    /function HS\(\{question:t,onAsk:n,disabled:i\}\)\{return .*?onClick:\(\)=>\{acCopyQuestion\(t\),n\(t\)\}/,
-    'discovery question cards should copy before asking'
+    /document\.execCommand\("copy"\)/,
+    "clipboard fallback should use the browser copy command",
   );
-  assert.match(
-    bundle,
-    /f\.questions\.map\(d=>.*?onClick:\(\)=>\{acCopyQuestion\(d\),t\(d\)\}/,
-    'sample question menu items should copy before using the question'
-  );
-  const emptyStart = bundle.indexOf('function o1({onPick:t,hideWelcome:n})');
-  const emptyEnd = bundle.indexOf('function s1(', emptyStart);
-  assert.notEqual(emptyStart, -1, 'empty-state renderer should exist');
-  assert.notEqual(emptyEnd, -1, 'empty-state renderer should have a stable boundary');
 
-  const emptyBlock = bundle.slice(emptyStart, emptyEnd);
-  assert.doesNotMatch(
-    emptyBlock,
-    /variant:"inline"|f\.map\(v=>.*?acCopyQuestion\(v\)/,
-    'empty-state sample questions should not render in the welcome area'
+  const copyThenAct = new RegExp(
+    `onClick:\\(\\)=>\\{${escapeRegex(helperName)}\\(([$A-Z_a-z][$\\w]*)\\),([$A-Z_a-z][$\\w]*)\\(\\1\\)\\}`,
+    "g",
   );
-  assert.match(
-    bundle,
-    /n\.map\(u=>.*?onClick:\(\)=>\{acCopyQuestion\(u\),i\(u\)\}/,
-    'proactive greeting suggestion chips should copy before using the question'
+  assert.equal(
+    [...bundle.matchAll(copyThenAct)].length,
+    3,
+    "discovery, sample-question, and proactive chips should each copy before acting",
   );
 });

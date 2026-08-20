@@ -12,6 +12,7 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
+from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -92,7 +93,43 @@ def agent_summary(agent: dict) -> dict:
     }
 
 
-def deploy_orchestrator(manifest: dict, apply: bool, run_id: str) -> dict:
+def merge_config(current: dict | None, patch: dict | None) -> dict:
+    """Apply declared top-level Agent Studio config changes without dropping live controls."""
+    return {**(current or {}), **(patch or {})}
+
+
+def patch_search_tool(tools: list[dict], patch: dict) -> list[dict]:
+    """Patch one declared search index while preserving every other tool field."""
+    patched = deepcopy(tools)
+    matching_tools = [tool for tool in patched if tool.get("name") == patch["toolName"]]
+    if len(matching_tools) != 1:
+        raise RuntimeError(
+            f"Expected exactly one tool named {patch['toolName']!r}; found {len(matching_tools)}"
+        )
+
+    tool = matching_tools[0]
+    matching_indices = [
+        index for index in (tool.get("indices") or []) if index.get("index") == patch["indexName"]
+    ]
+    if len(matching_indices) != 1:
+        raise RuntimeError(
+            f"Expected exactly one index named {patch['indexName']!r}; found {len(matching_indices)}"
+        )
+
+    index = matching_indices[0]
+    index["searchParameters"] = {
+        **(index.get("searchParameters") or {}),
+        **(patch.get("searchParameters") or {}),
+    }
+    return patched
+
+
+def build_search_tool_payload(tools: list[dict], patch: dict) -> dict:
+    """Build a tool-only Agent Studio payload; prompts and agent config are out of scope."""
+    return {"tools": patch_search_tool(tools, patch)}
+
+
+def deploy_search_tool(manifest: dict, apply: bool, run_id: str) -> dict:
     env = load_env()
     env_spec = manifest["environment"]
     app_id = env.get(env_spec["algoliaAppIdEnv"])
@@ -103,11 +140,75 @@ def deploy_orchestrator(manifest: dict, apply: bool, run_id: str) -> dict:
         )
 
     spec = manifest["agentStudio"]["orchestrator"]
+    patch = spec["searchToolPatch"]
     url = BASE_AGENT_URL_TEMPLATE.format(app=app_id, agent_id=spec["agentId"])
-    evidence_dir = ROOT / spec["evidenceRoot"] / f"chat-stack-deploy-{run_id}" / "orchestrator"
+    evidence_dir = ROOT / spec["evidenceRoot"] / f"chat-stack-deploy-{run_id}" / "orchestrator-search"
+    before = request_json("GET", url, app_id, admin_key)
+    payload = build_search_tool_payload(before.get("tools") or [], patch)
+    packet = {
+        "target": {
+            "surface": "Agent Studio",
+            "agentId": spec["agentId"],
+            "name": spec["name"],
+            "url": url,
+        },
+        "scope": "orchestrator search tool only",
+        "searchToolPatch": patch,
+        "payloadKeys": sorted(payload.keys()),
+        "rollback": {"tools": before.get("tools") or []},
+        "apply": apply,
+    }
+    write_json(evidence_dir / "before-snapshot.json", before)
+    write_json(evidence_dir / "mutation-packet.json", packet)
+
+    result = {
+        "target": "orchestrator-search",
+        "apply": apply,
+        "evidenceDir": str(evidence_dir.relative_to(ROOT)),
+        "packet": str((evidence_dir / "mutation-packet.json").relative_to(ROOT)),
+    }
+    if not apply:
+        result["pass"] = True
+        result["message"] = "dry-run tool-only packet created; no Agent Studio mutation applied"
+        return result
+
+    request_json("PATCH", url, app_id, admin_key, payload)
+    after = request_json("GET", url, app_id, admin_key)
+    write_json(evidence_dir / "after-readback.json", after)
+    expected_tools = payload["tools"]
+    checks = {
+        "tools_match": after.get("tools") == expected_tools,
+        "instructions_unchanged": after.get("instructions") == before.get("instructions"),
+        "system_prompt_unchanged": after.get("systemPrompt") == before.get("systemPrompt"),
+        "config_unchanged": after.get("config") == before.get("config"),
+        "provider_unchanged": after.get("providerId") == before.get("providerId"),
+        "model_unchanged": after.get("model") == before.get("model"),
+    }
+    validation = {"pass": all(checks.values()), "checks": checks}
+    write_json(evidence_dir / "validation.json", validation)
+    result["pass"] = validation["pass"]
+    result["validation"] = str((evidence_dir / "validation.json").relative_to(ROOT))
+    return result
+
+
+def deploy_agent(manifest: dict, role: str, apply: bool, run_id: str) -> dict:
+    env = load_env()
+    env_spec = manifest["environment"]
+    app_id = env.get(env_spec["algoliaAppIdEnv"])
+    admin_key = env.get(env_spec["algoliaAdminApiKeyEnv"])
+    if not app_id or not admin_key:
+        raise RuntimeError(
+            f"Missing {env_spec['algoliaAppIdEnv']} or {env_spec['algoliaAdminApiKeyEnv']} in environment/.env.local"
+        )
+
+    spec = manifest["agentStudio"][role]
+    url = BASE_AGENT_URL_TEMPLATE.format(app=app_id, agent_id=spec["agentId"])
+    evidence_dir = ROOT / spec["evidenceRoot"] / f"chat-stack-deploy-{run_id}" / role
     before = request_json("GET", url, app_id, admin_key)
     next_instructions = (ROOT / spec["instructionsPath"]).read_text(encoding="utf-8")
     next_system_prompt = (ROOT / spec["systemPromptPath"]).read_text(encoding="utf-8")
+    config_patch = spec.get("configPatch") or {}
+    next_config = merge_config(before.get("config"), config_patch)
 
     packet = {
         "target": {
@@ -122,6 +223,8 @@ def deploy_orchestrator(manifest: dict, apply: bool, run_id: str) -> dict:
             "instructionsHash": sha256(next_instructions),
             "systemPromptPath": spec["systemPromptPath"],
             "systemPromptHash": sha256(next_system_prompt),
+            "configPatch": config_patch,
+            "toolsPolicy": spec.get("toolsPolicy", "preserve"),
         },
         "rollback": {
             "instructions": before.get("instructions") or "",
@@ -133,7 +236,8 @@ def deploy_orchestrator(manifest: dict, apply: bool, run_id: str) -> dict:
             "Read back the agent after PATCH.",
             "Verify instructionsHash equals intendedValue.instructionsHash.",
             "Verify systemPromptHash equals intendedValue.systemPromptHash.",
-            "Verify providerId, model, tool count, and config key set remain unchanged.",
+            "Verify providerId, model, and config key set remain unchanged.",
+            "Verify the declared tools policy is satisfied.",
         ],
         "apply": apply,
     }
@@ -141,7 +245,7 @@ def deploy_orchestrator(manifest: dict, apply: bool, run_id: str) -> dict:
     write_json(evidence_dir / "mutation-packet.json", packet)
 
     result = {
-        "target": "orchestrator",
+        "target": role,
         "apply": apply,
         "evidenceDir": str(evidence_dir.relative_to(ROOT)),
         "packet": str((evidence_dir / "mutation-packet.json").relative_to(ROOT)),
@@ -155,6 +259,10 @@ def deploy_orchestrator(manifest: dict, apply: bool, run_id: str) -> dict:
         "instructions": next_instructions,
         "systemPrompt": next_system_prompt,
     }
+    if config_patch:
+        payload["config"] = next_config
+    if spec.get("toolsPolicy") == "empty":
+        payload["tools"] = []
     request_json("PATCH", url, app_id, admin_key, payload)
     after = request_json("GET", url, app_id, admin_key)
     write_json(evidence_dir / "after-readback.json", after)
@@ -166,8 +274,20 @@ def deploy_orchestrator(manifest: dict, apply: bool, run_id: str) -> dict:
         "system_prompt_hash": after_summary["systemPromptHash"] == sha256(next_system_prompt),
         "provider_unchanged": after_summary["providerId"] == before_summary["providerId"],
         "model_unchanged": after_summary["model"] == before_summary["model"],
-        "tool_count_unchanged": after_summary["toolCount"] == before_summary["toolCount"],
-        "config_keys_unchanged": after_summary["configKeys"] == before_summary["configKeys"],
+        "tools_policy_satisfied": (
+            after_summary["toolCount"] == 0
+            if spec.get("toolsPolicy") == "empty"
+            else after_summary["toolCount"] == before_summary["toolCount"]
+        ),
+        "config_patch_applied": all(
+            (after.get("config") or {}).get(key) == value
+            for key, value in config_patch.items()
+        ),
+        "unpatched_config_preserved": all(
+            (after.get("config") or {}).get(key) == value
+            for key, value in (before.get("config") or {}).items()
+            if key not in config_patch
+        ),
     }
     validation = {
         "pass": all(checks.values()),
@@ -214,7 +334,19 @@ def run_jahia(manifest: dict, apply: bool, run_id: str) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--target", choices=["all", "jahia", "orchestrator"], default="all")
+    parser.add_argument(
+        "--target",
+        choices=[
+            "all",
+            "jahia",
+            "agent-studio",
+            "greetings",
+            "orchestrator",
+            "orchestrator-search",
+            "developer-specialist",
+        ],
+        default="all",
+    )
     parser.add_argument("--apply", action="store_true", help="Apply mutations. Omit for dry-run.")
     args = parser.parse_args()
 
@@ -223,8 +355,14 @@ def main() -> int:
     results = []
     if args.target in {"all", "jahia"}:
         results.append(run_jahia(manifest, args.apply, run_id))
-    if args.target in {"all", "orchestrator"}:
-        results.append(deploy_orchestrator(manifest, args.apply, run_id))
+    if args.target in {"all", "agent-studio", "greetings"}:
+        results.append(deploy_agent(manifest, "greetings", args.apply, run_id))
+    if args.target in {"all", "agent-studio", "orchestrator"}:
+        results.append(deploy_agent(manifest, "orchestrator", args.apply, run_id))
+    if args.target == "orchestrator-search":
+        results.append(deploy_search_tool(manifest, args.apply, run_id))
+    if args.target in {"all", "agent-studio", "developer-specialist"}:
+        results.append(deploy_agent(manifest, "developerSpecialist", args.apply, run_id))
 
     summary = {
         "manifest": str(MANIFEST.relative_to(ROOT)),
