@@ -36,6 +36,7 @@ FIXTURE = SITE_DIR / "index.html"
 UAT_STANDALONE = ROOT / "testing" / "team-uat" / "content-engagement-team-uat.html"
 ENV_FILE = ROOT / ".env.local"
 
+HOST = "127.0.0.1"                   # loopback only; not configurable, see assert_loopback
 COMPARE_ROUTE = "/__compare/production"
 MAX_BODY_BYTES = 256 * 1024          # a chat turn is tiny; refuse anything larger
 UPSTREAM_TIMEOUT = 60
@@ -53,6 +54,27 @@ def ssl_context() -> ssl.SSLContext:
     if os.path.exists(system_ca):
         return ssl.create_default_context(cafile=system_ca)
     return ssl.create_default_context()
+
+
+def assert_loopback(host: str) -> str:
+    """Refuse any bind address that is not loopback.
+
+    This process forwards requests to production carrying the approved production
+    Origin. Exposing it on a LAN or all interfaces would hand that capability to
+    anyone who can reach the port, so the bind address is not configurable and is
+    re-checked here as defence in depth.
+    """
+    import ipaddress
+
+    try:
+        if not ipaddress.ip_address(host).is_loopback:
+            raise ValueError
+    except ValueError:
+        raise SystemExit(
+            f"Refusing to bind {host!r}: this proxy forwards to production with the "
+            "approved Origin and must stay loopback-only. Use 127.0.0.1."
+        ) from None
+    return host
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -195,7 +217,6 @@ class LocalParityHandler(http.server.SimpleHTTPRequestHandler):
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--host", default="127.0.0.1", help="loopback only by default")
     parser.add_argument("--port", type=int, default=5177)
     args = parser.parse_args()
 
@@ -204,9 +225,9 @@ def main() -> int:
     if not UAT_STANDALONE.exists():
         raise SystemExit(f"Missing standalone team UAT deck: {UAT_STANDALONE}")
 
-    with socketserver.TCPServer((args.host, args.port), LocalParityHandler) as httpd:
-        print(f"Local chat parity server: http://{args.host}:{args.port}/")
-        print(f"Team UAT deck: http://{args.host}:{args.port}/team-uat")
+    with socketserver.TCPServer((assert_loopback(HOST), args.port), LocalParityHandler) as httpd:
+        print(f"Local chat parity server: http://{HOST}:{args.port}/")
+        print(f"Team UAT deck: http://{HOST}:{args.port}/team-uat")
         if PROD_APP_ID and PROD_SEARCH_KEY and PROD_AGENT_ID:
             print(f"Compare production route: POST {COMPARE_ROUTE} -> {PROD_APP_ID}/{PROD_AGENT_ID}")
         else:

@@ -88,6 +88,11 @@
     convId = crypto.randomUUID();
     locked = false;
     clearLog();
+    // Repaint immediately. Without this the toggle keeps aria-disabled until some
+    // unrelated later mutation happens to drive reconcile(), so a reset can look
+    // like it did not restore the choice.
+    const t = sroot()?.querySelector(`#${TOGGLE_ID}`);
+    if (t) paintToggle(t);
     log("reset:", reason, "gen", generation);
   }
 
@@ -188,12 +193,11 @@
   }
 
   function scanForNewQuestions() {
-    const bubbles = userBubbles();
-    // Deliberately NOT gated on isExpanded(): a question asked while the chat is
-    // docked must still reach production, otherwise turn two would carry a
-    // history that no longer matches the conversation on the left.
-    if (!compareOn) return;
-    bubbles.forEach((el) => {
+    // Deliberately NOT gated on isExpanded() or on compareOn: the first question
+    // of a conversation freezes the choice EITHER WAY. Returning early when
+    // Compare was off left it unlocked, so it could be switched on mid-conversation
+    // and turn two would carry a history that never contained turn one.
+    userBubbles().forEach((el) => {
       if (seenBubbles.has(el)) return;
       seenBubbles.add(el);
       if (!locked) {
@@ -203,7 +207,8 @@
         const t = sroot()?.querySelector(`#${TOGGLE_ID}`);
         if (t) paintToggle(t);
       }
-      enqueueQuestion((el.textContent || "").trim());
+      // Only dispatch when Compare is on; the lock above happens regardless.
+      if (compareOn) enqueueQuestion((el.textContent || "").trim());
     });
   }
 

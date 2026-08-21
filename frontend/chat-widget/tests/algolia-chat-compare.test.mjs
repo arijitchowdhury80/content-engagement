@@ -6,6 +6,7 @@ import { execFileSync } from 'node:child_process';
 
 const comparePath = new URL('../algolia-chat-compare.js', import.meta.url);
 const deployScript = new URL('../../../tools/deployment/deploy_jahia_engagement_tracker.py', import.meta.url);
+const parityServer = new URL('../../../tools/local_chat_parity_server.py', import.meta.url);
 
 /* ------------------------------------------------------------------ fake DOM */
 
@@ -182,14 +183,25 @@ test('compare off: asking a question never calls production', async () => {
   assert.equal(h.fetchCalls.length, 0);
 });
 
-test('enabling compare does not replay existing user bubbles', async () => {
+test('a conversation already in progress never replays, and cannot enable Compare', async () => {
   const h = createHarness();
   h.addBubble('asked before compare was on');
   await h.settle();
+
+  // The first question locks the choice, so Compare can no longer be switched on.
+  assert.equal(h.api().state().locked, true);
   h.clickToggle();
   await h.settle();
-  assert.equal(h.toggle().getAttribute('aria-pressed'), 'true');
-  assert.equal(h.fetchCalls.length, 0, 'history must not be replayed');
+  assert.equal(h.api().state().compareOn, false, 'cannot enable mid-conversation');
+  assert.equal(h.fetchCalls.length, 0, 'existing history is never replayed');
+
+  // After a reset the earlier bubble must still not be resent.
+  (h.documentListeners['algolia-visitor-state-reset'] || []).forEach((fn) => fn({ detail: {} }));
+  await h.settle();
+  h.clickToggle();                                     // now selectable again
+  await h.settle();
+  assert.equal(h.api().state().compareOn, true);
+  assert.equal(h.fetchCalls.length, 0, 'bubbles seen before the reset are not replayed');
 });
 
 test('two turns run in order and turn two carries turn one in history', async () => {
@@ -213,6 +225,34 @@ test('two turns run in order and turn two carries turn one in history', async ()
   assert.equal(second.messages[1].role, 'assistant');
   assert.equal(second.messages[2].parts[0].text, 'second question');
   assert.equal(first.id, second.id, 'conversation id is stable across turns');
+});
+
+test('question one locks the choice even when Compare was left OFF', async () => {
+  const h = createHarness();
+  assert.equal(h.toggle().getAttribute('aria-pressed'), 'false', 'starts off');
+
+  h.addBubble('question one, asked with Compare off');
+  await h.settle();
+
+  // the first bubble must freeze the choice in whichever state it was left
+  assert.equal(h.toggle().getAttribute('aria-disabled'), 'true', 'toggle is disabled after turn one');
+  assert.equal(h.api().state().locked, true);
+
+  h.clickToggle();                                     // must be inert while locked
+  await h.settle();
+  assert.equal(h.api().state().compareOn, false, 'cannot be enabled mid-conversation');
+  assert.equal(h.toggle().getAttribute('aria-pressed'), 'false');
+  assert.equal(h.fetchCalls.length, 0, 'no production request is ever made');
+
+  // a reset must make it selectable again
+  (h.documentListeners['algolia-visitor-state-reset'] || []).forEach((fn) => fn({ detail: {} }));
+  await h.settle();
+  assert.equal(h.api().state().locked, false, 'reset unlocks the choice');
+  assert.notEqual(h.toggle().getAttribute('aria-disabled'), 'true', 'toggle is selectable again');
+
+  h.clickToggle();                                     // now it may be enabled
+  await h.settle();
+  assert.equal(h.api().state().compareOn, true);
 });
 
 test('compare is fixed for the conversation once a question is asked', async () => {
@@ -437,6 +477,36 @@ test('apply mode refuses to deploy when the production key is missing', () => {
   // the key itself must never be echoed into logs or evidence
   assert.equal(/print\([^)]*compare_prod_search_key\(\)/.test(source), false, 'key must not be printed');
   assert.match(source, /"compareProductionKeyResolved": bool\(compare_prod_search_key\(\)\)/);
+});
+
+test('the local production proxy binds loopback only', () => {
+  const program = [
+    'import importlib.util, pathlib, sys',
+    'path = pathlib.Path(sys.argv[1])',
+    "spec = importlib.util.spec_from_file_location('parity', path)",
+    'm = importlib.util.module_from_spec(spec)',
+    'spec.loader.exec_module(m)',
+    'print("HOST", m.HOST)',
+    'print("ACCEPT_V4", m.assert_loopback("127.0.0.1") == "127.0.0.1")',
+    'print("ACCEPT_V6", m.assert_loopback("::1") == "::1")',
+    'ok = True',
+    'for bad in ("0.0.0.0", "192.168.1.10", "10.0.0.5", "::"):',
+    '    try:',
+    '        m.assert_loopback(bad); ok = False',
+    '    except SystemExit: pass',
+    'print("REJECTS_NON_LOOPBACK", ok)',
+  ].join('\n');
+  const out = execFileSync('python3', ['-c', program, parityServer.pathname], { encoding: 'utf8' });
+  assert.match(out, /HOST 127\.0\.0\.1/);
+  assert.match(out, /ACCEPT_V4 True/);
+  assert.match(out, /ACCEPT_V6 True/);
+  assert.match(out, /REJECTS_NON_LOOPBACK True/, '0.0.0.0 and LAN addresses must be refused');
+
+  // the bind address must not be reachable through the CLI at all
+  const source = fs.readFileSync(parityServer, 'utf8');
+  assert.equal(source.includes('"--host"'), false, '--host must be removed');
+  assert.equal(source.includes('args.host'), false, 'nothing may read a host argument');
+  assert.match(source, /assert_loopback\(HOST\)/, 'the bind must be validated');
 });
 
 test('the parity site loads Compare and routes production through the parity server', () => {
