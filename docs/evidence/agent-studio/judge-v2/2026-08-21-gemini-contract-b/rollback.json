@@ -1,0 +1,18 @@
+{
+  "operation": "run the executable rollback command only after restoring the prior Jahia block",
+  "manifest": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/.local/deployment-state/judge-v2/2026-08-21-gemini-contract-b/rollback-manifest.json",
+  "createdAgentIds": [
+    {
+      "role": "skeptic",
+      "id": "abd89d65-21f5-4909-a7cc-dfeb1428198c"
+    },
+    {
+      "role": "referee",
+      "id": "fa9b6f74-cdfb-40f0-ac86-f34e76721331"
+    },
+    {
+      "role": "advocate",
+      "id": "2216fdec-d9f7-4112-a9df-4f0ca341b15a"
+    }
+  ]
+}

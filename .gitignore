@@ -56,3 +56,5 @@ SESSION.md
 docs/research/search-experience/.cache-enhanced-census.jsonl
 docs/operations/enrichment/.selection-registry.jsonl.lock
 docs/operations/enrichment/_archive/
+production_comparison/runs/
+.local/deployment-state/

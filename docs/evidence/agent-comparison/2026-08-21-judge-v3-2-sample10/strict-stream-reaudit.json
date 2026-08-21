@@ -1,0 +1,11 @@
+{
+  "auditedAt": "2026-08-21T05:20:11Z",
+  "parserContract": "Reject malformed non-DONE SSE data, error, abort, data-error, data-agent-error, and data-guardrail-violation events",
+  "sourceRun": "production_comparison/runs/2026-08-21T04-18-17-310Z/results.json",
+  "auditedRows": 10,
+  "auditedAnswerStreams": 20,
+  "auditedJudgeStreams": 54,
+  "findings": [],
+  "pass": true,
+  "rerunRequired": false
+}

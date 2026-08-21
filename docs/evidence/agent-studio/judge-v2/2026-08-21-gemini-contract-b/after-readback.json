@@ -1,0 +1,35 @@
+{
+  "runId": "2026-08-21-gemini-contract-b",
+  "agents": {
+    "skeptic": {
+      "id": "abd89d65-21f5-4909-a7cc-dfeb1428198c",
+      "name": "www Chat - Confidence Skeptic v3.3-gemini-contract-b",
+      "status": "published",
+      "model": "gemini-2.5-flash",
+      "providerId": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
+      "toolCount": 0,
+      "instructionsHash": "b685d8ca2218aca47c7c1e614f2c66f54a52c1f4d4eb450726b297075cf4abf2",
+      "configHash": "14dc075ad94dfb20495f2ef26865be442829e25094242d9156eaf47c5075a9b4"
+    },
+    "referee": {
+      "id": "fa9b6f74-cdfb-40f0-ac86-f34e76721331",
+      "name": "www Chat - Confidence Referee v3.3-gemini-contract-b",
+      "status": "published",
+      "model": "gemini-2.5-flash",
+      "providerId": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
+      "toolCount": 0,
+      "instructionsHash": "9fbb568437c5c04e18a577690ab6ffb648228154a7a35a4892ebd6f73ea4173e",
+      "configHash": "14dc075ad94dfb20495f2ef26865be442829e25094242d9156eaf47c5075a9b4"
+    },
+    "advocate": {
+      "id": "2216fdec-d9f7-4112-a9df-4f0ca341b15a",
+      "name": "www Chat - Confidence Advocate v3.3-gemini-contract-b",
+      "status": "published",
+      "model": "gemini-2.5-flash",
+      "providerId": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
+      "toolCount": 0,
+      "instructionsHash": "89b82f709ea57476dec879b65eb3c8cf9d847cd01406b30e6b4ab3abffe421c1",
+      "configHash": "14dc075ad94dfb20495f2ef26865be442829e25094242d9156eaf47c5075a9b4"
+    }
+  }
+}
