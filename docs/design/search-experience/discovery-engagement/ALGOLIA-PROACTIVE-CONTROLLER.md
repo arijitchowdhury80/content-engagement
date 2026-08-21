@@ -44,10 +44,10 @@ The controller evaluates candidates in priority order and selects the highest el
 | Customer proof | `solution_to_customer_story` | Current page is a customer story and a prior page was solution/industry. | 81 | `surface_relevant_customer_proof` |
 | Implementation research | `search_to_docs` | Current page is developer/docs and recent site search included implementation terms. | 80 | `answer_implementation_path` |
 | Commercial evaluation | `pricing_8s_dwell` | Current page is pricing/demo/contact after a qualifying source page reached 5 seconds dwell and 25% scroll. | 78 | `explain_cost_drivers` |
-| Implementation research | `developer_page_10s_50_scroll` | Current page is developer/docs with at least 5 seconds dwell and 25% scroll. | 76 | `reduce_implementation_uncertainty` |
+| Implementation research | `developer_page_5s_25_scroll` | Current page is developer/docs with at least 5 seconds dwell and 25% scroll. | 76 | `reduce_implementation_uncertainty` |
 | Customer proof | `solution_to_customer_story` | Current page is a customer story with at least 5 seconds dwell and 25% scroll after a qualifying solution page. | 72 | `surface_relevant_customer_proof` |
-| Product research | `product_page_10s_50_scroll` | Current page is product with at least 5 seconds dwell and 25% scroll. | 66 | `explain_product_fit` |
-| Solution research | `solution_page_10s_50_scroll` | Current page is solution/industry with at least 5 seconds dwell and 25% scroll. | 65 | `explain_solution_fit` |
+| Product research | `product_page_5s_25_scroll` | Current page is product with at least 5 seconds dwell and 25% scroll. | 66 | `explain_product_fit` |
+| Solution research | `solution_page_5s_25_scroll` | Current page is solution/industry with at least 5 seconds dwell and 25% scroll. | 65 | `explain_solution_fit` |
 | Journey shift | `multiple_product_pages` | Session includes at least two product pages. | 62 | `help_compare_capabilities` |
 | Journey shift | `multiple_solution_pages` | Session includes at least two solution/industry pages. | 61 | `help_compare_solution_paths` |
 

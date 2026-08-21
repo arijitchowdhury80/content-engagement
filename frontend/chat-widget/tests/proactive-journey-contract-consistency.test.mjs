@@ -6,14 +6,14 @@ const root = new URL('../../../', import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), 'utf8');
 
 const triggers = [
-  'product_page_10s_50_scroll',
+  'product_page_5s_25_scroll',
   'product_to_documentation',
-  'solution_page_10s_50_scroll',
+  'solution_page_5s_25_scroll',
   'solution_to_customer_story',
   'product_to_pricing',
   'solution_to_pricing',
-  'developer_page_10s_50_scroll',
-  'resource_page_10s_50_scroll',
+  'developer_page_5s_25_scroll',
+  'resource_page_5s_25_scroll',
 ];
 
 const layers = {

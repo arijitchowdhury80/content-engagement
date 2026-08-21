@@ -107,7 +107,7 @@ test('local parity proves one greeting, one proactive handoff, and one grounded 
     await page.waitForFunction(() => {
       const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state') || '{}');
       return (state.opportunities || []).some(
-        (item) => item.trigger === 'product_page_10s_50_scroll' && item.status === 'shown'
+        (item) => item.trigger === 'product_page_5s_25_scroll' && item.status === 'shown'
       );
     });
 
@@ -121,7 +121,7 @@ test('local parity proves one greeting, one proactive handoff, and one grounded 
     const proof = await page.evaluate(() => {
       const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state') || '{}');
       const opportunity = (state.opportunities || []).find(
-        (item) => item.trigger === 'product_page_10s_50_scroll'
+        (item) => item.trigger === 'product_page_5s_25_scroll'
       );
       const root = document.querySelector('algolia-chat').shadowRoot;
       return {

@@ -79,7 +79,7 @@ The UI must use these labels exactly. It must not use the vague word "query" alo
 | Source rendering | `chat-central/src/chat/components/SourcePills.tsx` | Rendering and opening a source pill | A retrieval; source pills should create no search request |
 | Person intelligence | `chat-central/src/person/personAgent.ts` | Person sub-agent, retry, cache hit/miss, and orchestrator completion legs | Search usage inside those agents |
 | Specialist handoff | `chat-central/src/chat/turnRunner.ts` | A separate specialist completion leg after consent | Search usage inside the specialist |
-| Judge path | `chat-central/src/judge/hostedJudgeClient.ts` and `chat-central/src/judge/chiefJudge.ts` | Hosted judge HTTP calls or Agent Studio judge completions | Search usage unless the judge has its own Search tool |
+| Judge path | Agent Studio chief judge and its three role judges | Agent Studio judge completions | Search usage unless a judge has its own Search tool |
 | Agent Studio conversation | Get Conversation API | Stored messages, token totals, tool parts, Search-tool arguments, conversation totals | Exact Search API request count, billed request count, resolved per-message model/cost |
 | Account usage | Usage API | Aggregate search operations and search requests for a time period | Assignment to a conversation, turn, or tool call |
 

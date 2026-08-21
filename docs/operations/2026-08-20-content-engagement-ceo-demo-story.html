@@ -1,0 +1,1295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Content Engagement CEO demo story</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --algolia-blue: #003DFF;
+      --algolia-blue-700: #0031cc;
+      --algolia-blue-100: #e6ecff;
+      --algolia-blue-050: #f2f5ff;
+      --accent-cyan: #00B6FF;
+      --accent-green: #00C29A;
+      --accent-coral: #FF7A59;
+      --gray-000: #ffffff;
+      --gray-050: #f7f8fb;
+      --gray-100: #eef0f5;
+      --gray-200: #e1e4ec;
+      --gray-300: #c7ccd8;
+      --gray-500: #6b7280;
+      --gray-700: #2f3447;
+      --gray-800: #1c2033;
+      --gray-900: #0e1224;
+      --ink: #021046;
+      --font-display: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-body: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --shadow-sm: 0 2px 4px rgba(2, 16, 70, 0.06), 0 1px 2px rgba(2, 16, 70, 0.04);
+      --shadow-lg: 0 18px 40px rgba(2, 16, 70, 0.10), 0 4px 12px rgba(2, 16, 70, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--gray-050);
+      color: var(--gray-700);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--algolia-blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--algolia-blue);
+      outline-offset: 3px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    p {
+      margin: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: var(--ink);
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 980px;
+      font-size: clamp(36px, 5.2vw, 74px);
+      line-height: 1.04;
+      color: white;
+    }
+
+    h2 {
+      font-size: clamp(27px, 3.2vw, 44px);
+      line-height: 1.12;
+    }
+
+    h3 {
+      font-size: clamp(19px, 2vw, 26px);
+      line-height: 1.25;
+    }
+
+    h4 {
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .hero {
+      min-height: 88vh;
+      padding: 28px clamp(20px, 5vw, 72px) 64px;
+      background:
+        radial-gradient(circle at 82% 16%, rgba(0, 182, 255, 0.32), transparent 26vw),
+        radial-gradient(circle at 78% 78%, rgba(0, 194, 154, 0.24), transparent 30vw),
+        var(--gray-900);
+      color: white;
+      display: grid;
+      align-items: stretch;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 52px;
+    }
+
+    .wordmark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .mark {
+      width: 30px;
+      height: 30px;
+      border: 2px solid white;
+      border-radius: 50%;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .mark::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      bottom: 2px;
+      width: 10px;
+      height: 2px;
+      background: white;
+      transform: rotate(42deg);
+      border-radius: 999px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .nav-links a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: white;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.06fr) minmax(320px, 0.74fr);
+      gap: clamp(28px, 5vw, 72px);
+      align-items: end;
+      padding-top: 56px;
+    }
+
+    .eyebrow {
+      color: var(--accent-cyan);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 24px;
+    }
+
+    .hero-copy p {
+      max-width: 860px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: clamp(18px, 1.7vw, 23px);
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .button.primary {
+      background: white;
+      color: var(--algolia-blue);
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: white;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .hero-panel {
+      background: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .panel-head strong {
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .panel-head span {
+      color: var(--gray-500);
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .thesis-stack {
+      padding: 18px 20px 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .thesis-item {
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--gray-050);
+    }
+
+    .thesis-item b {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .thesis-item span {
+      color: var(--gray-700);
+      font-size: 13px;
+    }
+
+    .section {
+      padding: clamp(52px, 7vw, 92px) clamp(20px, 5vw, 72px);
+    }
+
+    .section.white {
+      background: white;
+    }
+
+    .section.blue {
+      background: var(--algolia-blue);
+      color: white;
+    }
+
+    .section.blue h2,
+    .section.blue h3,
+    .section.blue h4,
+    .section.blue p {
+      color: white;
+    }
+
+    .section-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .section-heading {
+      display: grid;
+      gap: 14px;
+      max-width: 930px;
+      margin-bottom: 28px;
+    }
+
+    .section-heading p {
+      max-width: 850px;
+      color: var(--gray-700);
+      font-size: 17px;
+    }
+
+    .section.blue .section-heading p {
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .time-card,
+    .story-card,
+    .screen-card,
+    .matrix-card,
+    .backup-card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .time-card {
+      min-height: 168px;
+      padding: 18px;
+      display: grid;
+      align-content: start;
+      gap: 12px;
+    }
+
+    .time-card .time {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--algolia-blue);
+      font-weight: 600;
+    }
+
+    .time-card p {
+      color: var(--gray-700);
+      font-size: 14px;
+    }
+
+    .demo-act {
+      padding: 56px 0;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .demo-act:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .act-header {
+      display: grid;
+      grid-template-columns: minmax(0, 0.75fr) minmax(300px, 0.45fr);
+      gap: 28px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+
+    .act-kicker {
+      color: var(--algolia-blue);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .act-summary {
+      margin-top: 12px;
+      max-width: 820px;
+      color: var(--gray-700);
+      font-size: 17px;
+    }
+
+    .value-box {
+      background: var(--gray-900);
+      color: white;
+      border-radius: 8px;
+      padding: 20px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .value-box h4 {
+      color: white;
+    }
+
+    .value-box p {
+      color: rgba(255, 255, 255, 0.84);
+      font-size: 14px;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .story-card {
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .story-card h4 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon {
+      width: 22px;
+      height: 22px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 6px;
+      background: var(--algolia-blue-100);
+      color: var(--algolia-blue);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .story-card p,
+    .story-card li {
+      color: var(--gray-700);
+      font-size: 14px;
+    }
+
+    .story-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .quote {
+      border-left: 3px solid var(--algolia-blue);
+      padding: 12px 14px;
+      background: var(--algolia-blue-050);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.48;
+    }
+
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .screen-card {
+      overflow: hidden;
+      display: grid;
+      background: var(--gray-000);
+    }
+
+    .screen-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: var(--gray-100);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .screen-card a {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .screen-card a:hover .screen-caption b {
+      color: var(--algolia-blue);
+    }
+
+    .screen-caption {
+      padding: 13px 14px 15px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .screen-caption b {
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .screen-caption span {
+      color: var(--gray-500);
+      font-size: 12px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      border: 1px solid var(--gray-200);
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: white;
+      color: var(--gray-700);
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+
+    a.pill,
+    a.pill:hover {
+      text-decoration: none;
+    }
+
+    a.pill:hover {
+      border-color: var(--algolia-blue);
+      color: var(--algolia-blue);
+    }
+
+    .pill.blue {
+      background: var(--algolia-blue);
+      border-color: var(--algolia-blue);
+      color: white;
+    }
+
+    .inline-path {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 6px;
+      padding: 2px 7px;
+      background: var(--gray-100);
+      color: var(--algolia-blue);
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      overflow-wrap: anywhere;
+    }
+
+    .route-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .route-action {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: white;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .route-action:hover {
+      border-color: var(--algolia-blue);
+      color: var(--algolia-blue);
+      text-decoration: none;
+    }
+
+
+    .callout {
+      margin-top: 18px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      background: var(--gray-050);
+      padding: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .callout strong {
+      color: var(--ink);
+    }
+
+    .run-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .run-table th,
+    .run-table td {
+      border-bottom: 1px solid var(--gray-200);
+      padding: 13px 14px;
+      vertical-align: top;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .run-table th {
+      color: var(--ink);
+      background: var(--gray-050);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .run-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.92em;
+      background: var(--gray-100);
+      border-radius: 5px;
+      padding: 2px 5px;
+      color: var(--ink);
+    }
+
+    .matrix-grid,
+    .backup-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .matrix-card,
+    .backup-card {
+      padding: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .matrix-card p,
+    .backup-card p {
+      color: var(--gray-700);
+      font-size: 14px;
+    }
+
+    .label {
+      width: fit-content;
+      border-radius: 6px;
+      padding: 4px 8px;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .label.keep {
+      background: rgba(0, 194, 154, 0.14);
+      color: #00735d;
+    }
+
+    .label.roadmap {
+      background: rgba(255, 122, 89, 0.16);
+      color: #a64021;
+    }
+
+    .label.remove {
+      background: rgba(225, 29, 72, 0.1);
+      color: #9f1239;
+    }
+
+    .footer-cta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .footer-cta p {
+      max-width: 760px;
+      color: rgba(255, 255, 255, 0.88);
+      margin-top: 10px;
+    }
+
+    .print-note {
+      color: var(--gray-500);
+      font-size: 13px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid,
+      .act-header,
+      .footer-cta {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .story-grid,
+      .screen-grid,
+      .matrix-grid,
+      .backup-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .hero {
+        min-height: auto;
+        padding-bottom: 44px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+
+      .hero-grid {
+        padding-top: 34px;
+      }
+
+      .timeline,
+      .story-grid,
+      .screen-grid,
+      .matrix-grid,
+      .backup-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .run-table,
+      .run-table tbody,
+      .run-table tr,
+      .run-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .run-table thead {
+        display: none;
+      }
+
+      .run-table td {
+        border-bottom: 0;
+        padding: 10px 14px;
+      }
+
+      .run-table tr {
+        border-bottom: 1px solid var(--gray-200);
+        padding: 7px 0;
+      }
+
+      .run-table td::before {
+        content: attr(data-label);
+        display: block;
+        color: var(--gray-500);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .nav-links,
+      .hero-actions {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .section,
+      .hero {
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <section class="hero" id="top">
+      <div class="topbar">
+        <div class="wordmark">
+          <span class="mark" aria-hidden="true"></span>
+          <span>Algolia Content Engagement</span>
+        </div>
+        <nav class="nav-links" aria-label="Page sections">
+          <a href="#run">10-minute run</a>
+          <a href="#acts">Showcase paths</a>
+          <a href="#backup">Backup paths</a>
+        </nav>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div>
+            <div class="eyebrow">Evening CEO demo runbook</div>
+            <h1>Show Content Engagement through three reliable showcase paths</h1>
+          </div>
+          <p>
+            The story for Stephen Lynch, Piyush Patel, and the senior stakeholder room:
+            Algolia already has the retrieval, AI, and agent building blocks. Content Engagement
+            packages them into a new use case that recognizes intent, opens a grounded
+            conversation, and guides qualified visitors toward proof or evaluation.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#run">Review tonight's script</a>
+            <a class="button secondary" href="#ask-ai">See the Ask AI contrast</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Demo thesis">
+          <div class="panel-head">
+            <strong>What this demo must prove</strong>
+            <span>10 min</span>
+          </div>
+          <div class="thesis-stack">
+            <div class="thesis-item">
+              <b>Business thesis</b>
+              <span>Content Engagement is the new use case. The internal parallel Algolia.com environment is the proving ground. Production Algolia.com is the destination after evidence earns promotion.</span>
+            </div>
+            <div class="thesis-item">
+              <b>Tonight's showcase paths</b>
+              <span>On-page intent recognition, Grocery -> H-E-B proof progression, and Enterprise Search -> Pricing commercial evaluation.</span>
+            </div>
+            <div class="thesis-item">
+              <b>Critical framing</b>
+              <span>These are deliberately selected reliable paths through a broader category-driven journey graph, not the only paths the system supports.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section white" id="run">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div class="eyebrow">Run of show</div>
+          <h2>The 10-minute story</h2>
+          <p>
+            Three representative use cases, one narrative. The eight-route UAT matrix remains the broader testing contract. Tonight we pick stable paths that let the room see the business use case without implying hardcoded limits.
+          </p>
+        </div>
+
+        <div class="timeline">
+          <article class="time-card">
+            <div class="time">0:00-1:00</div>
+            <h3>Set the thesis</h3>
+            <p>Position Content Engagement as a new application of Algolia's AI Search & Retrieval platform, not another chatbot surface.</p>
+          </article>
+          <article class="time-card">
+            <div class="time">1:00-3:00</div>
+            <h3>On-page intent</h3>
+            <p>Show Product-only and Solution-only as two examples of the same dwell-and-scroll capability.</p>
+          </article>
+          <article class="time-card">
+            <div class="time">3:00-5:30</div>
+            <h3>Business proof</h3>
+            <p>Move from Grocery to the H-E-B customer story and show grounded proof progression.</p>
+          </article>
+          <article class="time-card">
+            <div class="time">5:30-8:15</div>
+            <h3>Commercial evaluation</h3>
+            <p>Move from Enterprise Search to Pricing through the real "Learn more about pricing" link.</p>
+          </article>
+          <article class="time-card">
+            <div class="time">8:15-10:00</div>
+            <h3>Evidence and ask</h3>
+            <p>Show the release gate, assumptions, recovery paths, and the promotion decision needed next.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ask-ai">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div class="eyebrow">Opening frame</div>
+          <h2>The Ask AI contrast</h2>
+          <p>
+            The room already knows Ask AI. We do not compete by saying "we built another Ask AI."
+            We compete by showing a bigger use case for Algolia's existing strengths.
+          </p>
+        </div>
+
+        <table class="run-table">
+          <thead>
+            <tr>
+              <th>Question</th>
+              <th>Ask AI product posture</th>
+              <th>Content Engagement posture</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Question">When does engagement start?</td>
+              <td data-label="Ask AI">After the visitor decides to ask a question.</td>
+              <td data-label="Content Engagement">When consented behavior shows meaningful page intent or a supported journey progression.</td>
+            </tr>
+            <tr>
+              <td data-label="Question">What does the system know?</td>
+              <td data-label="Ask AI">The user's explicit question and retrieved content.</td>
+              <td data-label="Content Engagement">The question, page category, journey context, source page, destination page, dwell, scroll, and business moment.</td>
+            </tr>
+            <tr>
+              <td data-label="Question">What is the business motion?</td>
+              <td data-label="Ask AI">Answer and educate.</td>
+              <td data-label="Content Engagement">Answer, guide, qualify, route, and move the visitor toward proof, evaluation, POC, or sales conversation.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <strong>Presenter line</strong>
+          <p>
+            "Ask AI is powerful when someone raises their hand. Content Engagement is what happens when the website can tell the visitor is almost ready to raise their hand, then starts the right grounded conversation."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section white" id="acts">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div class="eyebrow">Showcase paths</div>
+          <h2>Step-by-step script</h2>
+          <p>
+            Each use case answers four questions for the presenter: what are we showing, who are we showing it to, what are we clicking, and which screens are we pulling.
+          </p>
+        </div>
+
+        <article class="demo-act" id="act-on-page">
+          <div class="act-header">
+            <div>
+              <div class="act-kicker">Use case 1 - 1:00 to 3:00</div>
+              <h2>On-page intent recognition</h2>
+              <p class="act-summary">
+                A visitor dwells at least five seconds and scrolls at least 25 percent on a Product page or a Solution page. The system recognizes meaningful on-page intent and opens a personalized proactive greeting.
+              </p>
+              <div class="pill-row">
+                <span class="pill blue">Canonical singleton capability</span>
+                <a class="pill" href="https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search" target="_blank" rel="noopener">Product: /products/ai-search</a>
+                <a class="pill" href="https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery" target="_blank" rel="noopener">Solution: /industries/grocery</a>
+                <span class="pill">5s dwell + 25% scroll</span>
+              </div>
+            </div>
+            <div class="value-box">
+              <h4>Value shown</h4>
+              <p>More engagement from visitors who are showing intent but have not typed a question, opened chat, or clicked a CTA yet.</p>
+            </div>
+          </div>
+
+          <div class="story-grid">
+            <div class="story-card">
+              <h4><span class="icon">1</span>What we show</h4>
+              <p>Product-only and Solution-only are two examples of one broader on-page capability, not separate magic tricks.</p>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">2</span>Who sees it</h4>
+              <p>Stephen, Piyush, product leadership, marketing, revenue leadership, and the delivery team.</p>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">3</span>What we click</h4>
+              <ul>
+                <li>Reset once with the Algolia Assistant logo</li>
+                <li>Open <a class="inline-path" href="https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search" target="_blank" rel="noopener">/products/ai-search</a> or <a class="inline-path" href="https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery" target="_blank" rel="noopener">/industries/grocery</a></li>
+                <li>Keep the tab visible for five seconds</li>
+                <li>Scroll beyond 25 percent</li>
+                <li>Wait for the proactive greeting</li>
+              </ul>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">4</span>Expected behavior</h4>
+              <p>A page-specific greeting appears after both thresholds are met and offers useful directions without mentioning tracking.</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <strong>Presenter line</strong>
+            <p class="quote">"Before we move across pages, start with the simplest signal: the visitor is leaning into this page. The system sees enough intent to help, but it does not need to pretend it knows more than it does."</p>
+            <div class="route-actions" aria-label="On-page intent route links">
+              <a class="route-action" href="https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search" target="_blank" rel="noopener">Open Product example</a>
+              <a class="route-action" href="https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery" target="_blank" rel="noopener">Open Solution example</a>
+            </div>
+          </div>
+
+          <div class="screen-grid" aria-label="On-page intent screen pulls">
+            <figure class="screen-card">
+              <a href="https://tmp-content-eng-algolia.cloud.jahia.com/products/ai-search" target="_blank" rel="noopener">
+                <img src="assets/content-engagement-ceo-demo/ai-search.png" alt="Verified internal AI Search product page">
+                <figcaption class="screen-caption">
+                  <b>Open Product example</b>
+                  <span>Verified internal page: /products/ai-search</span>
+                </figcaption>
+              </a>
+            </figure>
+            <figure class="screen-card">
+              <a href="https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery" target="_blank" rel="noopener">
+                <img src="assets/content-engagement-ceo-demo/grocery.png" alt="Verified internal Grocery solution page">
+                <figcaption class="screen-caption">
+                  <b>Open Solution example</b>
+                  <span>Verified internal page: /industries/grocery</span>
+                </figcaption>
+              </a>
+            </figure>
+          </div>
+        </article>
+
+        <article class="demo-act" id="act-proof">
+          <div class="act-header">
+            <div>
+              <div class="act-kicker">Use case 2 - 3:00 to 5:30</div>
+              <h2>Business proof progression</h2>
+              <p class="act-summary">
+                The visitor starts on Grocery, then clicks the direct H-E-B customer story link. The system recognizes that the visitor moved from business priority to proof.
+              </p>
+              <div class="pill-row">
+                <span class="pill blue">Canonical proof demo</span>
+                <a class="pill" href="https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery" target="_blank" rel="noopener">/industries/grocery</a>
+                <a class="pill" href="https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico" target="_blank" rel="noopener">/customers/h-e-b-mexico</a>
+                <span class="pill">Trigger: solution_to_customer_story</span>
+              </div>
+            </div>
+            <div class="value-box">
+              <h4>Value shown</h4>
+              <p>Grounded customer evidence, faster buying confidence, and a proof conversation tied to the visitor's business context.</p>
+            </div>
+          </div>
+
+          <div class="story-grid">
+            <div class="story-card">
+              <h4><span class="icon">1</span>What we show</h4>
+              <p>Content Engagement connects "I care about this business problem" to "show me proof from a similar customer."</p>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">2</span>Who sees it</h4>
+              <p>The executive room sees marketing content, customer proof, and sales readiness become one guided experience.</p>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">3</span>What we click</h4>
+              <ul>
+                <li>Reset once with the Algolia Assistant logo</li>
+                <li>Open <a class="inline-path" href="https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery" target="_blank" rel="noopener">/industries/grocery</a></li>
+                <li>Dwell five seconds and scroll 25 percent</li>
+                <li>Leave the source greeting unanswered</li>
+                <li>Click <strong>Read their story</strong> to <a class="inline-path" href="https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico" target="_blank" rel="noopener">/customers/h-e-b-mexico</a></li>
+              </ul>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">4</span>Expected behavior</h4>
+              <p>The destination greeting connects grocery priorities to H-E-B proof, then the answer stays grounded in current source evidence.</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <strong>Presenter line</strong>
+            <p class="quote">"This is the proof moment. We are not sending the visitor to a generic chatbot. We are carrying their grocery context into the customer story they chose."</p>
+            <div class="route-actions" aria-label="Business proof route links">
+              <a class="route-action" href="https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery" target="_blank" rel="noopener">Open Grocery source</a>
+              <a class="route-action" href="https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico" target="_blank" rel="noopener">Open H-E-B destination</a>
+            </div>
+          </div>
+
+          <div class="screen-grid" aria-label="Business proof screen pulls">
+            <figure class="screen-card">
+              <a href="https://tmp-content-eng-algolia.cloud.jahia.com/industries/grocery" target="_blank" rel="noopener">
+                <img src="assets/content-engagement-ceo-demo/grocery.png" alt="Verified internal Grocery solution page">
+                <figcaption class="screen-caption">
+                  <b>Open Grocery source</b>
+                  <span>Verified internal page: /industries/grocery</span>
+                </figcaption>
+              </a>
+            </figure>
+            <figure class="screen-card">
+              <a href="https://tmp-content-eng-algolia.cloud.jahia.com/customers/h-e-b-mexico" target="_blank" rel="noopener">
+                <img src="assets/content-engagement-ceo-demo/heb-mexico.png" alt="Verified internal H-E-B Mexico customer story page">
+                <figcaption class="screen-caption">
+                  <b>Open H-E-B destination</b>
+                  <span>Verified internal page: /customers/h-e-b-mexico</span>
+                </figcaption>
+              </a>
+            </figure>
+          </div>
+        </article>
+
+        <article class="demo-act" id="act-commercial">
+          <div class="act-header">
+            <div>
+              <div class="act-kicker">Use case 3 - 5:30 to 8:15</div>
+              <h2>Commercial Evaluation Visitor Path</h2>
+              <p class="act-summary">
+                The visitor starts on Enterprise Search, then follows the real "Learn more about pricing" link to Pricing. The system recognizes a commercial-buyer moment: value, cost, effort, evaluation, and next step.
+              </p>
+              <div class="pill-row">
+                <span class="pill blue">Canonical commercial demo</span>
+                <a class="pill" href="https://tmp-content-eng-algolia.cloud.jahia.com/use-cases/enterprise" target="_blank" rel="noopener">/use-cases/enterprise</a>
+                <a class="pill" href="https://tmp-content-eng-algolia.cloud.jahia.com/pricing" target="_blank" rel="noopener">/pricing</a>
+                <span class="pill">Trigger: solution_to_pricing</span>
+              </div>
+            </div>
+            <div class="value-box">
+              <h4>Value shown</h4>
+              <p>Better commercial qualification and next-action guidance at the exact point a business evaluator moves from solution interest to pricing.</p>
+            </div>
+          </div>
+
+          <div class="story-grid">
+            <div class="story-card">
+              <h4><span class="icon">1</span>What we show</h4>
+              <p>A real solution-to-pricing route turns content engagement into a cost, value, and evaluation conversation.</p>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">2</span>Who sees it</h4>
+              <p>The CEO and revenue stakeholders see the conversion motion. Product and engineering see the trigger grammar behind it.</p>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">3</span>What we click</h4>
+              <ul>
+                <li>Reset once with the Algolia Assistant logo</li>
+                <li>Open <a class="inline-path" href="https://tmp-content-eng-algolia.cloud.jahia.com/use-cases/enterprise" target="_blank" rel="noopener">/use-cases/enterprise</a></li>
+                <li>Dwell five seconds and scroll 25 percent</li>
+                <li>Leave the source greeting unanswered</li>
+                <li>Click <strong>Learn more about pricing</strong> to <a class="inline-path" href="https://tmp-content-eng-algolia.cloud.jahia.com/pricing" target="_blank" rel="noopener">/pricing</a></li>
+              </ul>
+            </div>
+            <div class="story-card">
+              <h4><span class="icon">4</span>Expected behavior</h4>
+              <p>The pricing greeting carries Enterprise Search context into a grounded commercial conversation without inventing prices, quotas, ROI, or conversion metrics.</p>
+            </div>
+          </div>
+
+          <div class="callout">
+            <strong>Greeting voice example</strong>
+            <p class="quote">"Looks like Enterprise Search is turning into a value and pricing question. Good place to pause. Let's talk about what moves the needle."</p>
+            <p>This is a voice example for the demo, not a guaranteed verbatim model output. Product -> Pricing remains supported, but it is not tonight's primary live commercial story.</p>
+            <div class="route-actions" aria-label="Commercial evaluation route links">
+              <a class="route-action" href="https://tmp-content-eng-algolia.cloud.jahia.com/use-cases/enterprise" target="_blank" rel="noopener">Open Enterprise Search source</a>
+              <a class="route-action" href="https://tmp-content-eng-algolia.cloud.jahia.com/pricing" target="_blank" rel="noopener">Open Pricing destination</a>
+            </div>
+          </div>
+
+          <div class="screen-grid" aria-label="Commercial evaluation screen pulls">
+            <figure class="screen-card">
+              <a href="https://tmp-content-eng-algolia.cloud.jahia.com/use-cases/enterprise" target="_blank" rel="noopener">
+                <img src="assets/content-engagement-ceo-demo/enterprise-search.png" alt="Verified internal Enterprise Search use case page">
+                <figcaption class="screen-caption">
+                  <b>Open Enterprise Search source</b>
+                  <span>Verified internal page: /use-cases/enterprise</span>
+                </figcaption>
+              </a>
+            </figure>
+            <figure class="screen-card">
+              <a href="https://tmp-content-eng-algolia.cloud.jahia.com/pricing" target="_blank" rel="noopener">
+                <img src="assets/content-engagement-ceo-demo/pricing.png" alt="Verified internal Pricing page">
+                <figcaption class="screen-caption">
+                  <b>Open Pricing destination</b>
+                  <span>Verified internal page: /pricing</span>
+                </figcaption>
+              </a>
+            </figure>
+          </div>
+
+          <table class="run-table" style="margin-top: 18px;">
+            <thead>
+              <tr>
+                <th>Presenter move</th>
+                <th>Say this</th>
+                <th>Point to</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Presenter move">On Enterprise Search</td>
+                <td data-label="Say this">"The visitor is not just reading. They have spent time and depth on a solution page, so the system can infer a business problem without making private or unsupported claims."</td>
+                <td data-label="Point to">Solution page context, dwell, and scroll</td>
+              </tr>
+              <tr>
+                <td data-label="Presenter move">Click pricing link</td>
+                <td data-label="Say this">"The real pricing link changes the job. We are now in commercial evaluation."</td>
+                <td data-label="Point to">Immediate Solution -> Pricing edge</td>
+              </tr>
+              <tr>
+                <td data-label="Presenter move">Greeting appears</td>
+                <td data-label="Say this">"This is the moment that can become a qualified lead, a POC conversation, or a sales meeting, while staying grounded in Algolia content."</td>
+                <td data-label="Point to">Greeting, chips, sources, and handoff context</td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <section class="section white" id="backup">
+      <div class="section-inner">
+        <div class="section-heading">
+          <div class="eyebrow">Recovery paths</div>
+          <h2>Backup script for demo risk</h2>
+          <p>
+            The CEO demo should feel live, but it should not depend on luck. Each risk has a planned recovery that still tells the Content Engagement story.
+          </p>
+        </div>
+
+        <div class="backup-grid">
+          <article class="backup-card">
+            <h3>On-page greeting does not trigger</h3>
+            <p>Reset once, keep the tab visible, wait five seconds, and confirm 25 percent scroll. If it still fails, use the verified page links to show the intended path and mark the trigger as needing live investigation.</p>
+          </article>
+          <article class="backup-card">
+            <h3>H-E-B path does not fire</h3>
+            <p>Confirm the direct Grocery -> H-E-B route was used and the source greeting stayed unanswered. Do not switch to a different customer story unless the page exposes that exact link.</p>
+          </article>
+          <article class="backup-card">
+            <h3>Enterprise pricing path does not fire</h3>
+            <p>Confirm the real "Learn more about pricing" link was clicked from Enterprise Search. Product -> Pricing remains supported, but do not present it as tonight's canonical commercial-buyer path.</p>
+          </article>
+          <article class="backup-card">
+            <h3>Latency is high</h3>
+            <p>Keep narrating the state transition: tracker, compiler, controller, greeting request, grounded handoff. Then use the screen pull while the live answer catches up.</p>
+          </article>
+          <article class="backup-card">
+            <h3>Answer lacks proof</h3>
+            <p>Ask a narrower follow-up tied to the current page, then show source tiles or trace evidence. Do not invent case studies, ROI, conversion metrics, or pricing details.</p>
+          </article>
+          <article class="backup-card">
+            <h3>Executive asks "is this just Ask AI?"</h3>
+            <p>Answer: "Ask AI is an answer surface. Content Engagement is a journey-aware business motion that uses retrieval, agents, and website behavior to guide the next action."</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section blue">
+      <div class="section-inner footer-cta">
+        <div>
+          <div class="eyebrow" style="color: rgba(255,255,255,0.78);">Close</div>
+          <h2>What we expect to achieve</h2>
+          <p>
+            By the end of the demo, Stephen and the stakeholder room should agree that Content Engagement is a credible new Algolia use case worth packaging, hardening through fresh testing, and preparing for production Algolia.com after promotion gates are met.
+          </p>
+          <p class="print-note" style="color: rgba(255,255,255,0.7);">
+            Updated August 20, 2026 for the evening demo. Route pages, CTA targets, and screenshots were verified against the internal Jahia environment.
+          </p>
+        </div>
+        <a class="button primary" href="#top">Back to top</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

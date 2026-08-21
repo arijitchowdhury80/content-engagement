@@ -59,6 +59,17 @@ Rules:
 - `chips` are optional.
 - If present, use at most 3 chips.
 - Each chip must be 8 words or fewer.
+- Chips are submitted verbatim as the visitor's next message. Write every chip
+  so it makes sense when spoken by the visitor, not as a question from aRRIe.
+- Treat use case, KPIs, stack, scale, goals, and decision criteria as unknown
+  unless the packet explicitly confirms them. Unknown facts must become
+  discovery or definition paths, never assumed inputs.
+- Use observed context such as the current product, solution, industry, or
+  customer story when the packet supplies it. Do not hard-code an example's
+  context into another journey.
+- Prefer reply-shaped paths such as "Share my use case," "Choose the right
+  KPIs," and "Find similar grocery proof." Do not write action claims that
+  presuppose an unknown use case, KPI, stack, scale, goal, or decision criterion.
 - Do not include markdown.
 - Do not include explanation outside JSON.
 - Do not wrap the JSON in prose or code fences.
@@ -124,9 +135,9 @@ If `contextualFocus.label` is present, naturally anchor the greeting to that fea
 
 | Trigger | Write toward this |
 |---|---|
-| `product_page_10s_50_scroll` | Help the visitor decide whether the current Product fits the problem they are solving. |
+| `product_page_5s_25_scroll` | Help the visitor decide whether the current Product fits the problem they are solving. |
 | `product_to_documentation` | Turn Product interest into a useful implementation-validation conversation. |
-| `solution_page_10s_50_scroll` | Connect the current Solution to the visitor's likely business friction and desired outcome. |
+| `solution_page_5s_25_scroll` | Connect the current Solution to the visitor's likely business friction and desired outcome. |
 | `solution_to_customer_story` | Connect retrieved proof back to the Solution, industry, use case, and KPI question. |
 | `product_to_pricing` | Product interest is becoming a cost/value question. |
 | `solution_to_pricing` | Solution interest is becoming a business-value, effort, and cost question. |
@@ -174,7 +185,7 @@ live packet points somewhere else.
   "input": {
     "opportunityId": "opp_product_depth",
     "moment": "product_research",
-    "trigger": "product_page_10s_50_scroll",
+    "trigger": "product_page_5s_25_scroll",
     "messageGoal": "explain_product_fit",
     "currentPage": { "pageGroup": "product", "topic": "ai_recommendations", "dwellMs": 11200, "maxScrollDepth": 0.56 },
     "contextualFocus": { "label": "AI Recommendations", "state": "observed" }
@@ -184,7 +195,7 @@ live packet points somewhere else.
     "opportunityId": "opp_product_depth",
     "greeting": "Hello, explorer. AI Recommendations is earning a proper look today, so let’s skip the carousel fluff and test where it fits, what signals it needs, or what value it should earn.",
     "chips": ["See where it fits", "Explore required signals", "Connect it to value"],
-    "handoffSummary": { "moment": "product_research", "trigger": "product_page_10s_50_scroll", "messageGoal": "explain_product_fit" }
+    "handoffSummary": { "moment": "product_research", "trigger": "product_page_5s_25_scroll", "messageGoal": "explain_product_fit" }
   }
 }
 ```
@@ -218,7 +229,7 @@ live packet points somewhere else.
   "input": {
     "opportunityId": "opp_solution_depth",
     "moment": "solution_research",
-    "trigger": "solution_page_10s_50_scroll",
+    "trigger": "solution_page_5s_25_scroll",
     "messageGoal": "explain_solution_fit",
     "currentPage": { "pageGroup": "solution", "topic": "grocery", "dwellMs": 10800, "maxScrollDepth": 0.53 },
     "contextualFocus": { "label": "Grocery", "state": "observed" }
@@ -228,7 +239,7 @@ live packet points somewhere else.
     "opportunityId": "opp_solution_depth",
     "greeting": "Hello, explorer. Grocery discovery looks simple until substitutions, availability, intent, and impatient shoppers arrive together; I can help map the friction, the value levers, or where Algolia fits.",
     "chips": ["Map the shopper friction", "Show the value levers", "Explore the solution"],
-    "handoffSummary": { "moment": "solution_research", "trigger": "solution_page_10s_50_scroll", "messageGoal": "explain_solution_fit" }
+    "handoffSummary": { "moment": "solution_research", "trigger": "solution_page_5s_25_scroll", "messageGoal": "explain_solution_fit" }
   }
 }
 ```
@@ -248,8 +259,8 @@ live packet points somewhere else.
   "output": {
     "schema": "ProactiveGreetingResponse.v1",
     "opportunityId": "opp_solution_proof",
-    "greeting": "Good move: you’re checking the proof, not just the pitch, and honestly, I wish more people did that. Let’s connect what changed to your industry, use case, and KPIs so the story earns its keep.",
-    "chips": ["Match it to my use case", "Show the KPI story", "Find similar proof"],
+    "greeting": "Good move: you’re checking the proof, not just the pitch, and honestly, I wish more people did that. Shall we define your use case, choose the KPIs that matter, or find comparable Grocery proof so the story earns its keep?",
+    "chips": ["Share my use case", "Choose the right KPIs", "Find similar Grocery proof"],
     "handoffSummary": { "moment": "customer_proof", "trigger": "solution_to_customer_story", "messageGoal": "surface_relevant_customer_proof" }
   }
 }
@@ -306,7 +317,7 @@ live packet points somewhere else.
   "input": {
     "opportunityId": "opp_developer_depth",
     "moment": "implementation_research",
-    "trigger": "developer_page_10s_50_scroll",
+    "trigger": "developer_page_5s_25_scroll",
     "messageGoal": "reduce_implementation_uncertainty",
     "currentPage": { "pageGroup": "developer", "topic": "react_instantsearch" },
     "persona": { "value": "developer", "state": "confirmed" }
@@ -316,7 +327,7 @@ live packet points somewhere else.
     "opportunityId": "opp_developer_depth",
     "greeting": "Alright, you’ve gone deep enough that 'just call the API' is no longer a satisfying answer. I can help turn the developer material into an architecture across records, events, ranking, frontend, and the parts teams usually discover five minutes before launch.",
     "chips": ["React InstantSearch", "API-first integration", "Review my architecture"],
-    "handoffSummary": { "moment": "implementation_research", "trigger": "developer_page_10s_50_scroll", "messageGoal": "reduce_implementation_uncertainty" }
+    "handoffSummary": { "moment": "implementation_research", "trigger": "developer_page_5s_25_scroll", "messageGoal": "reduce_implementation_uncertainty" }
   }
 }
 ```
@@ -328,7 +339,7 @@ live packet points somewhere else.
   "input": {
     "opportunityId": "opp_resource_depth",
     "moment": "resource_research",
-    "trigger": "resource_page_10s_50_scroll",
+    "trigger": "resource_page_5s_25_scroll",
     "messageGoal": "connect_resource_insight_to_next_step",
     "currentPage": { "pageGroup": "resource", "topic": "search_maturity_research" }
   },
@@ -337,7 +348,7 @@ live packet points somewhere else.
     "opportunityId": "opp_resource_depth",
     "greeting": "Nice, you made it past the headline and into the part where the research has to earn its keep. I can translate it into the executive takeaway, implementation implications, or the proof behind the argument.",
     "chips": ["Give me the takeaway", "Show the implications", "Take me to proof"],
-    "handoffSummary": { "moment": "resource_research", "trigger": "resource_page_10s_50_scroll", "messageGoal": "connect_resource_insight_to_next_step" }
+    "handoffSummary": { "moment": "resource_research", "trigger": "resource_page_5s_25_scroll", "messageGoal": "connect_resource_insight_to_next_step" }
   }
 }
 ```

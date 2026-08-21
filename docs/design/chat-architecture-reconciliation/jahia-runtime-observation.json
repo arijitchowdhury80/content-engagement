@@ -1,0 +1,185 @@
+{
+  "schema": "JahiaRuntimeObservation.v1",
+  "runId": "2026-08-20-001",
+  "capturedAt": "2026-08-20T23:40:04.024280+00:00",
+  "target": "/sites/www/home/drift/custom-code-block",
+  "versions": {
+    "trackerVersion": "20260819-runtime-z",
+    "contextCompilerVersion": "20260819-runtime-z",
+    "engageVersion": "20260819-runtime-z",
+    "chatVersion": "20260819-runtime-z"
+  },
+  "edit": {
+    "blockHtmlLength": 11296,
+    "blockHtmlSha256": "8c8c06905205f8d06a9c1efbcecfb6b922fedfa54062a50242990bd2187c4146",
+    "scriptOrder": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-answer-rhythm-balanced-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js?judgeReview=20260820-semantic-grounding-authority-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=20260820-semantic-grounding-authority-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260820-navigation-edge-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260820-navigation-edge-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260820-navigation-edge-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=20260819-runtime-z",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260819-runtime-z",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js"
+    ],
+    "nodes": {
+      "oldTrackerNode": null,
+      "chatNode": {
+        "path": "/sites/www/files/algolia-chat.js",
+        "contentLength": 526878,
+        "contentSha256": "cb4a6027eac5dc8987455802052173b4a51f00140067ccb9e088738ba59341c8"
+      },
+      "newTrackerNode": {
+        "path": "/sites/www/files/algolia-engagement-tracker.js",
+        "contentLength": 38022,
+        "contentSha256": "d9367a20083b0331c1f1f65b0c92a529e38ce631b70b8021da34f7961f6ce22d"
+      },
+      "contextCompilerNode": {
+        "path": "/sites/www/files/algolia-context-compiler.js",
+        "contentLength": 29568,
+        "contentSha256": "7c0243284da486b91a37d7bfb58bdbcfcba929cb12e498b7865e5097732124fd"
+      },
+      "proactiveControllerNode": {
+        "path": "/sites/www/files/algolia-proactive-controller.js",
+        "contentLength": 55522,
+        "contentSha256": "62e94b6b5ccc9c2bcc2c850e34cbd303db0c51e728d7a8a0d1d4bb73940cde42"
+      },
+      "handoffToOrchestratorNode": {
+        "path": "/sites/www/files/handoff-to-orchestrator.js",
+        "contentLength": 11996,
+        "contentSha256": "2087a6c45cdb2c221340fbd66ebe53dc1c673edc6124275899287e234d14f710"
+      },
+      "engageNode": {
+        "path": "/sites/www/files/algolia-chat-engage.js",
+        "contentLength": 6705,
+        "contentSha256": "1480169a5bd52b6dbec7e5b7f7077d5c401ef59c14b1d83ff8478bd77310b507"
+      },
+      "themeNode": {
+        "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js",
+        "contentLength": 18526,
+        "contentSha256": "9b7d3cc14940f9b360e548c54325a5b7221dce42ad64667e0ba58deec2690488"
+      }
+    }
+  },
+  "live": {
+    "blockHtmlLength": 11296,
+    "blockHtmlSha256": "8c8c06905205f8d06a9c1efbcecfb6b922fedfa54062a50242990bd2187c4146",
+    "scriptOrder": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-answer-rhythm-balanced-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js?judgeReview=20260820-semantic-grounding-authority-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=20260820-semantic-grounding-authority-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260820-navigation-edge-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260820-navigation-edge-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260820-navigation-edge-a",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=20260819-runtime-z",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260819-runtime-z",
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js"
+    ],
+    "nodes": {
+      "oldTrackerNode": null,
+      "chatNode": {
+        "path": "/sites/www/files/algolia-chat.js",
+        "contentLength": 526878,
+        "contentSha256": "cb4a6027eac5dc8987455802052173b4a51f00140067ccb9e088738ba59341c8"
+      },
+      "newTrackerNode": {
+        "path": "/sites/www/files/algolia-engagement-tracker.js",
+        "contentLength": 38022,
+        "contentSha256": "d9367a20083b0331c1f1f65b0c92a529e38ce631b70b8021da34f7961f6ce22d"
+      },
+      "contextCompilerNode": {
+        "path": "/sites/www/files/algolia-context-compiler.js",
+        "contentLength": 29568,
+        "contentSha256": "7c0243284da486b91a37d7bfb58bdbcfcba929cb12e498b7865e5097732124fd"
+      },
+      "proactiveControllerNode": {
+        "path": "/sites/www/files/algolia-proactive-controller.js",
+        "contentLength": 55522,
+        "contentSha256": "62e94b6b5ccc9c2bcc2c850e34cbd303db0c51e728d7a8a0d1d4bb73940cde42"
+      },
+      "handoffToOrchestratorNode": {
+        "path": "/sites/www/files/handoff-to-orchestrator.js",
+        "contentLength": 11996,
+        "contentSha256": "2087a6c45cdb2c221340fbd66ebe53dc1c673edc6124275899287e234d14f710"
+      },
+      "engageNode": {
+        "path": "/sites/www/files/algolia-chat-engage.js",
+        "contentLength": 6705,
+        "contentSha256": "1480169a5bd52b6dbec7e5b7f7077d5c401ef59c14b1d83ff8478bd77310b507"
+      },
+      "themeNode": {
+        "path": "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js",
+        "contentLength": 18526,
+        "contentSha256": "9b7d3cc14940f9b360e548c54325a5b7221dce42ad64667e0ba58deec2690488"
+      }
+    }
+  },
+  "rawSnapshotSha256": "ed8a8cb326934782bdcc0da87fafe328a9a5b959304c101ea7194b2f192b6426",
+  "rawSnapshotLocation": "restricted external archive; intentionally not committed",
+  "browserObservation": {
+    "capturedAt": "2026-08-20T23:48:00Z",
+    "url": "https://tmp-content-eng-algolia.cloud.jahia.com/?algoliaChatDebug=1",
+    "actions": [
+      "opened the chat panel",
+      "inspected DOM and open shadow-root semantics",
+      "closed the chat panel"
+    ],
+    "prohibitedActionsNotPerformed": [
+      "no chat turn sent",
+      "no browser storage inspected or changed",
+      "no consent choice changed",
+      "no Agent Studio or index mutation"
+    ],
+    "host": {
+      "tag": "algolia-chat",
+      "shadowRoot": true,
+      "attributes": {
+        "auto-engage": "true",
+        "auto-engage-toggle": "",
+        "brand-name": "Algolia",
+        "canonical-base-url": "https://www.algolia.com",
+        "corpus-name": "Algolia documentation, guides and API reference",
+        "default-open-mode": "docked",
+        "discovery-enabled": "true",
+        "launcher-icon": "/files/live/sites/algolia-assets/files/icons/algolia-logo-for-favicon.svg",
+        "logo": "/files/live/sites/algolia-assets/files/icons/algolia-logo-for-favicon.svg",
+        "product-title": "Algolia Assistant",
+        "reset-visitor-state-on-logo": "",
+        "sample-questions-group-cap": "0",
+        "show-welcome": "true",
+        "theme": "algolia"
+      }
+    },
+    "openState": {
+      "dialogName": "AI chat",
+      "heading": "Hello, how can I help you today?",
+      "composerLabel": "Ask a question",
+      "sendButtonLabel": "Send message",
+      "sendDisabledWhenEmpty": true,
+      "progressbarLabel": "Answer preparation progress",
+      "semanticParts": [
+        "panel",
+        "chat-content",
+        "header",
+        "composer",
+        "composer-input",
+        "composer-send"
+      ],
+      "dataStates": [],
+      "labeledHeaderControls": [
+        "Algolia — reset conversation",
+        "Start a new conversation",
+        "Auto-suggestions on — click to stop the chat opening on its own",
+        "Minimize to corner",
+        "Close chat"
+      ]
+    },
+    "proactiveDecision": {
+      "schema": "AlgoliaProactiveDecision.v1",
+      "engage": false,
+      "reason": "no_trigger_match"
+    }
+  },
+  "mutationPerformed": false
+}

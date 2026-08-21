@@ -23,10 +23,9 @@ CONFIG_FALLBACKS = (
     Path.home() / ".codex/config.toml.disabled-20260817-233846",
     Path.home() / ".codex/config.toml.bak-jahia-mcp-2026-08-12",
 )
-ENDPOINT = "https://tmp-content-eng-algolia.cloud.jahia.com/modules/graphql"
+DEFAULT_JAHIA_BASE_URL = "https://tmp-content-eng-algolia.cloud.jahia.com"
 FILE_NAME = "content-engagement-team-uat.html"
 FILE_PATH = f"/sites/www/files/{FILE_NAME}"
-LIVE_URL = f"https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/{FILE_NAME}"
 EVIDENCE = ROOT / "docs/evidence/deployments/team-uat"
 
 
@@ -51,11 +50,14 @@ def load_authorization(
     config_files: tuple[Path, ...] = (CONFIG, *CONFIG_FALLBACKS),
 ) -> str:
     values = environ if environ is not None else os.environ
-    token = values.get("JHIA_API_TOKEN", "").strip() or read_env_value(
-        env_file, "JHIA_API_TOKEN"
+    token = (
+        values.get("JAHIA_API_TOKEN", "").strip()
+        or values.get("JHIA_API_TOKEN", "").strip()
+        or read_env_value(env_file, "JAHIA_API_TOKEN")
+        or read_env_value(env_file, "JHIA_API_TOKEN")
     )
     if token:
-        return f"APIToken {token}"
+        return token if token.startswith("APIToken ") else f"APIToken {token}"
 
     authorization = values.get("JAHIA_AUTHORIZATION", "").strip()
     if authorization:
@@ -72,21 +74,48 @@ def load_authorization(
             return match.group(1)
 
     raise RuntimeError(
-        "Jahia credentials not found in JHIA_API_TOKEN, repo .env.local, "
+        "Jahia credentials not found in JAHIA_API_TOKEN, JHIA_API_TOKEN, repo .env.local, "
         "JAHIA_AUTHORIZATION, or Codex config backups"
     )
 
 
+def load_base_url(
+    environ: dict[str, str] | None = None,
+    env_file: Path = ENV_FILE,
+) -> str:
+    values = environ if environ is not None else os.environ
+    return (
+        values.get("JAHIA_BASE_URL", "").strip()
+        or values.get("JHIA_BASE_URL", "").strip()
+        or read_env_value(env_file, "JAHIA_BASE_URL")
+        or read_env_value(env_file, "JHIA_BASE_URL")
+        or DEFAULT_JAHIA_BASE_URL
+    ).rstrip("/")
+
+
+def ssl_context() -> ssl.SSLContext:
+    try:
+        import certifi
+
+        return ssl.create_default_context(cafile=certifi.where())
+    except Exception:
+        return ssl.create_default_context()
+
+
+def live_url() -> str:
+    return f"{load_base_url()}/files/live/sites/www/files/{FILE_NAME}"
+
+
 def graphql(query: str, variables: dict | None = None) -> dict:
     request = urllib.request.Request(
-        ENDPOINT,
+        f"{load_base_url()}/modules/graphql",
         data=json.dumps({"query": query, "variables": variables or {}}).encode("utf-8"),
         headers={
             "Content-Type": "application/json",
             "Authorization": load_authorization(),
         },
     )
-    with urllib.request.urlopen(request, timeout=60, context=ssl._create_unverified_context()) as response:
+    with urllib.request.urlopen(request, timeout=60, context=ssl_context()) as response:
         result = json.loads(response.read().decode("utf-8"))
     if result.get("errors"):
         raise RuntimeError(json.dumps(result["errors"], indent=2))
@@ -199,7 +228,7 @@ def main() -> int:
         "capturedAt": datetime.now(timezone.utc).isoformat(),
         "source": str(SOURCE),
         "path": FILE_PATH,
-        "liveUrl": LIVE_URL,
+        "liveUrl": live_url(),
         "bytes": len(html.encode("utf-8")),
         "sha256": sha256(html),
         "applied": args.apply,

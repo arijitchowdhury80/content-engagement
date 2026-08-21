@@ -22,12 +22,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ENV_LOCAL = ROOT / ".env.local"
-ENDPOINT = "https://tmp-content-eng-algolia.cloud.jahia.com/modules/graphql"
+DEFAULT_JAHIA_BASE_URL = "https://tmp-content-eng-algolia.cloud.jahia.com"
+ENDPOINT = f"{DEFAULT_JAHIA_BASE_URL}/modules/graphql"
 BLOCK_PATH = "/sites/www/home/drift/custom-code-block"
 FILES_PATH = "/sites/www/files"
 OLD_TRACKER = "/sites/www/files/algolia-chat-tracker.js"
 CHAT = "/sites/www/files/algolia-chat.js"
 CHAT_CONTENT = f"{CHAT}/jcr:content"
+CONFIDENCE_BADGE = "/sites/www/files/algolia-confidence-badge.js"
+CONFIDENCE_BADGE_CONTENT = f"{CONFIDENCE_BADGE}/jcr:content"
 NEW_TRACKER = "/sites/www/files/algolia-engagement-tracker.js"
 CONTEXT_COMPILER = "/sites/www/files/algolia-context-compiler.js"
 PROACTIVE_CONTROLLER = "/sites/www/files/algolia-proactive-controller.js"
@@ -38,6 +41,7 @@ HANDOFF_TO_ORCHESTRATOR = "/sites/www/files/handoff-to-orchestrator.js"
 ENGAGE = "/sites/www/files/algolia-chat-engage.js"
 THEME = "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
 CHAT_SRC = ROOT / "frontend/chat-widget/algolia-chat.js"
+CONFIDENCE_BADGE_SRC = ROOT / "frontend/chat-widget/algolia-confidence-badge.js"
 TRACKER_SRC = ROOT / "frontend/chat-widget/algolia-engagement-tracker.js"
 CONTEXT_COMPILER_SRC = ROOT / "frontend/chat-widget/algolia-context-compiler.js"
 PROACTIVE_CONTROLLER_SRC = ROOT / "frontend/chat-widget/algolia-proactive-controller.js"
@@ -48,6 +52,7 @@ EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/
 RUNTIME_VERSION = "20260819-runtime-z"
 CHAT_VERSION = RUNTIME_VERSION
 CHAT_ONLY_VERSION = "20260819-chat-b"
+JUDGE_RUNTIME_VERSION = "20260820-semantic-grounding-authority-a"
 JOURNEY_RUNTIME_VERSION = "20260820-navigation-edge-a"
 TRACKER_VERSION = RUNTIME_VERSION
 CONTEXT_COMPILER_VERSION = RUNTIME_VERSION
@@ -84,30 +89,52 @@ def jahia_api_token_authorization(token: str) -> str:
     return f"APIToken {token}"
 
 
-def load_token() -> str:
-    if token := os.environ.get("JHIA_API_TOKEN"):
-        return jahia_api_token_authorization(token)
+def load_env_value(*keys: str) -> str | None:
+    for key in keys:
+        if value := os.environ.get(key):
+            return value
 
-    if token := dotenv_value(ENV_LOCAL, "JHIA_API_TOKEN"):
+    for key in keys:
+        if value := dotenv_value(ENV_LOCAL, key):
+            return value
+
+    return None
+
+
+def load_base_url() -> str:
+    return (load_env_value("JAHIA_BASE_URL", "JHIA_BASE_URL") or DEFAULT_JAHIA_BASE_URL).rstrip("/")
+
+
+def load_token() -> str:
+    if token := load_env_value("JAHIA_API_TOKEN", "JHIA_API_TOKEN"):
         return jahia_api_token_authorization(token)
 
     raise RuntimeError(
-        "Jahia API token not found in JHIA_API_TOKEN or repository-local .env.local"
+        "Jahia API token not found in JAHIA_API_TOKEN, JHIA_API_TOKEN, "
+        "or repository-local .env.local"
     )
+
+
+def ssl_context() -> ssl.SSLContext:
+    try:
+        import certifi
+
+        return ssl.create_default_context(cafile=certifi.where())
+    except Exception:
+        return ssl.create_default_context()
 
 
 def graphql(query: str, variables: dict | None = None) -> dict:
     payload = json.dumps({"query": query, "variables": variables or {}}).encode("utf-8")
     request = urllib.request.Request(
-        ENDPOINT,
+        f"{load_base_url()}/modules/graphql",
         data=payload,
         headers={
             "Content-Type": "application/json",
             "Authorization": load_token(),
         },
     )
-    context = ssl._create_unverified_context()
-    with urllib.request.urlopen(request, timeout=60, context=context) as response:
+    with urllib.request.urlopen(request, timeout=60, context=ssl_context()) as response:
         data = json.loads(response.read().decode("utf-8"))
     if data.get("errors"):
         raise RuntimeError(json.dumps(data["errors"], indent=2))
@@ -154,6 +181,32 @@ def block_html(workspace: str = "EDIT") -> str:
     }
     """ % workspace
     return graphql(query)["data"]["jcr"]["nodeByPath"]["property"]["value"]
+
+
+def access_check() -> dict:
+    """Verify authenticated read access without exposing credentials or mutating Jahia."""
+    load_token()
+    edit_node = node(BLOCK_PATH, "EDIT")
+    live_node = node(BLOCK_PATH, "LIVE")
+    edit_html = block_html("EDIT")
+    live_html = block_html("LIVE")
+    checks = {
+        "mode": "check-access",
+        "baseUrl": load_base_url(),
+        "graphqlEndpoint": f"{load_base_url()}/modules/graphql",
+        "tokenConfigured": True,
+        "editWorkspaceRead": bool(edit_node and edit_html),
+        "liveWorkspaceRead": bool(live_node and live_html),
+        "validatedPath": BLOCK_PATH,
+    }
+    checks["pass"] = checks["editWorkspaceRead"] and checks["liveWorkspaceRead"]
+    return checks
+
+
+def run_access_check() -> int:
+    checks = access_check()
+    print(json.dumps(checks, indent=2))
+    return 0 if checks["pass"] else 1
 
 
 def write_json(path: Path, payload: dict) -> None:
@@ -261,6 +314,30 @@ def chat_snapshot() -> dict:
         "live": {
             "blockHtml": block_html("LIVE"),
             "chatNode": node(CHAT, "LIVE"),
+        },
+    }
+
+
+def judge_runtime_snapshot() -> dict:
+    """Capture only the Agent Studio judge runtime files and their Drift block."""
+    return {
+        "capturedAt": datetime.now(timezone.utc).isoformat(),
+        "mode": "judge-runtime-only",
+        "judgeRuntimeVersion": JUDGE_RUNTIME_VERSION,
+        "target": {
+            "chat": CHAT,
+            "confidenceBadge": CONFIDENCE_BADGE,
+            "block": BLOCK_PATH,
+        },
+        "edit": {
+            "blockHtml": block_html("EDIT"),
+            "chatNode": node(CHAT, "EDIT"),
+            "confidenceBadgeNode": node(CONFIDENCE_BADGE, "EDIT"),
+        },
+        "live": {
+            "blockHtml": block_html("LIVE"),
+            "chatNode": node(CHAT, "LIVE"),
+            "confidenceBadgeNode": node(CONFIDENCE_BADGE, "LIVE"),
         },
     }
 
@@ -508,6 +585,43 @@ def update_chat_block_html(current: str) -> str:
             f" {marker}",
             embed,
             count=1,
+        )
+    else:
+        updated_embed = embed[:-1] + f" {marker}>"
+    return next_html.replace(embed, updated_embed, 1)
+
+
+def update_judge_runtime_block_html(current: str) -> str:
+    """Change only the chat and confidence-badge cache keys plus one release marker."""
+    replacements = (
+        ("algolia-chat.js", "chat"),
+        ("algolia-confidence-badge.js", "judgeReview"),
+    )
+    next_html = current
+    for filename, query_name in replacements:
+        pattern = re.compile(
+            rf'(<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/'
+            rf'sites/www/files/{re.escape(filename)})(?:\?[^"\n]*)?(\"></script>)'
+        )
+        if len(pattern.findall(next_html)) != 1:
+            raise RuntimeError(
+                f"Judge-runtime deployment requires exactly one {filename} script tag"
+            )
+        next_html = pattern.sub(
+            rf'\1?{query_name}={JUDGE_RUNTIME_VERSION}\2', next_html, count=1
+        )
+
+    embed_pattern = re.compile(r'<div\b[^>]*\bclass="[^"]*\balgolia-chat-embed\b[^"]*"[^>]*>')
+    embeds = embed_pattern.findall(next_html)
+    if len(embeds) != 1:
+        raise RuntimeError(
+            "Judge-runtime deployment requires exactly one algolia-chat-embed element"
+        )
+    embed = embeds[0]
+    marker = f'data-judge-runtime-release="{JUDGE_RUNTIME_VERSION}"'
+    if re.search(r'\sdata-judge-runtime-release="[^"]*"', embed):
+        updated_embed = re.sub(
+            r'\sdata-judge-runtime-release="[^"]*"', f" {marker}", embed, count=1
         )
     else:
         updated_embed = embed[:-1] + f" {marker}>"
@@ -926,6 +1040,159 @@ def run_chat_only(apply: bool) -> int:
     return 0 if checks["pass"] else 1
 
 
+def validate_judge_runtime_only(
+    snapshot_after: dict,
+    chat_content: str,
+    badge_content: str,
+    expected_html: str,
+) -> dict:
+    edit_chat = file_content(snapshot_after["edit"]["chatNode"])
+    live_chat = file_content(snapshot_after["live"]["chatNode"])
+    edit_badge = file_content(snapshot_after["edit"]["confidenceBadgeNode"])
+    live_badge = file_content(snapshot_after["live"]["confidenceBadgeNode"])
+    edit_html = snapshot_after["edit"]["blockHtml"]
+    live_html = snapshot_after["live"]["blockHtml"]
+    marker = f'data-judge-runtime-release="{JUDGE_RUNTIME_VERSION}"'
+    chat_query = f"chat={JUDGE_RUNTIME_VERSION}"
+    badge_query = f"judgeReview={JUDGE_RUNTIME_VERSION}"
+    checks = {
+        "mode": "judge-runtime-only",
+        "judgeRuntimeVersion": JUDGE_RUNTIME_VERSION,
+        "expectedChatSha256": sha256(chat_content),
+        "expectedConfidenceBadgeSha256": sha256(badge_content),
+        "editChatSha256": sha256(edit_chat) if edit_chat is not None else None,
+        "liveChatSha256": sha256(live_chat) if live_chat is not None else None,
+        "editConfidenceBadgeSha256": sha256(edit_badge) if edit_badge is not None else None,
+        "liveConfidenceBadgeSha256": sha256(live_badge) if live_badge is not None else None,
+        "editChatMatchesSource": edit_chat == chat_content,
+        "liveChatMatchesSource": live_chat == chat_content,
+        "editConfidenceBadgeMatchesSource": edit_badge == badge_content,
+        "liveConfidenceBadgeMatchesSource": live_badge == badge_content,
+        "editBlockMatchesExpected": edit_html == expected_html,
+        "liveBlockMatchesExpected": live_html == expected_html,
+        "editBlockHasChatQuery": chat_query in edit_html,
+        "liveBlockHasChatQuery": chat_query in live_html,
+        "editBlockHasBadgeQuery": badge_query in edit_html,
+        "liveBlockHasBadgeQuery": badge_query in live_html,
+        "editBlockHasJudgeMarker": marker in edit_html,
+        "liveBlockHasJudgeMarker": marker in live_html,
+    }
+    metadata = {
+        "mode",
+        "judgeRuntimeVersion",
+        "expectedChatSha256",
+        "expectedConfidenceBadgeSha256",
+        "editChatSha256",
+        "liveChatSha256",
+        "editConfidenceBadgeSha256",
+        "liveConfidenceBadgeSha256",
+    }
+    checks["pass"] = all(value for key, value in checks.items() if key not in metadata)
+    return checks
+
+
+def judge_runtime_only_plan(
+    before: dict,
+    chat_content: str,
+    badge_content: str,
+    next_html: str,
+) -> dict:
+    return {
+        "mode": "judge-runtime-only",
+        "target": {
+            "chat": CHAT,
+            "confidenceBadge": CONFIDENCE_BADGE,
+            "block": BLOCK_PATH,
+        },
+        "intended": {
+            "judgeRuntimeVersion": JUDGE_RUNTIME_VERSION,
+            "chatSha256": sha256(chat_content),
+            "confidenceBadgeSha256": sha256(badge_content),
+            "chatCacheQuery": f"chat={JUDGE_RUNTIME_VERSION}",
+            "confidenceBadgeCacheQuery": f"judgeReview={JUDGE_RUNTIME_VERSION}",
+            "blockHtmlSha256": sha256(next_html),
+        },
+        "mutationAllowlist": [
+            {"operation": "upsert", "path": CHAT},
+            {"operation": "upsert", "path": CONFIDENCE_BADGE},
+            {"operation": "setBlockHtml", "path": BLOCK_PATH},
+            {"operation": "publish", "path": CHAT_CONTENT, "subtree": False},
+            {"operation": "publish", "path": CHAT, "subtree": False},
+            {"operation": "publish", "path": CONFIDENCE_BADGE_CONTENT, "subtree": False},
+            {"operation": "publish", "path": CONFIDENCE_BADGE, "subtree": False},
+            {"operation": "createVersion", "path": BLOCK_PATH},
+            {"operation": "publish", "path": BLOCK_PATH, "subtree": True},
+        ],
+        "excluded": {
+            "runtimeFiles": [
+                NEW_TRACKER,
+                CONTEXT_COMPILER,
+                PROACTIVE_CONTROLLER,
+                HANDOFF_TO_ORCHESTRATOR,
+                ENGAGE,
+            ],
+            "theme": THEME,
+            "subtrees": [FILES_PATH, "/sites/www/home/drift"],
+        },
+        "rollback": {
+            "restoreChatFrom": "before-snapshot.json edit.chatNode",
+            "restoreConfidenceBadgeFrom": "before-snapshot.json edit.confidenceBadgeNode",
+            "restoreBlockHtmlFrom": "before-snapshot.json edit.blockHtml",
+        },
+        "before": {
+            "editChatSha256": sha256(file_content(before["edit"]["chatNode"]) or ""),
+            "liveChatSha256": sha256(file_content(before["live"]["chatNode"]) or ""),
+            "editConfidenceBadgeSha256": sha256(
+                file_content(before["edit"]["confidenceBadgeNode"]) or ""
+            ),
+            "liveConfidenceBadgeSha256": sha256(
+                file_content(before["live"]["confidenceBadgeNode"]) or ""
+            ),
+            "editBlockHtmlSha256": sha256(before["edit"]["blockHtml"]),
+            "liveBlockHtmlSha256": sha256(before["live"]["blockHtml"]),
+        },
+    }
+
+
+def run_judge_runtime_only(apply: bool) -> int:
+    before = judge_runtime_snapshot()
+    write_json(EVIDENCE_DIR / "before-snapshot.json", before)
+    chat_content = CHAT_SRC.read_text(encoding="utf-8")
+    badge_content = CONFIDENCE_BADGE_SRC.read_text(encoding="utf-8")
+    next_html = update_judge_runtime_block_html(before["edit"]["blockHtml"])
+    plan = judge_runtime_only_plan(before, chat_content, badge_content, next_html)
+    write_json(EVIDENCE_DIR / "deployment-plan.json", plan)
+    if not apply:
+        print(json.dumps(plan, indent=2))
+        return 0
+
+    mutations = {
+        "upsertChat": upsert_file(CHAT, chat_content),
+        "upsertConfidenceBadge": upsert_file(CONFIDENCE_BADGE, badge_content),
+        "setBlockHtml": set_block_html(next_html),
+        "publishChatContent": publish(CHAT_CONTENT, subtree=False),
+        "publishChat": publish(CHAT, subtree=False),
+        "publishConfidenceBadgeContent": publish(CONFIDENCE_BADGE_CONTENT, subtree=False),
+        "publishConfidenceBadge": publish(CONFIDENCE_BADGE, subtree=False),
+        "versionBlock": version_block(),
+        "publishBlock": publish(BLOCK_PATH, subtree=True),
+    }
+    write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
+
+    after = judge_runtime_snapshot()
+    checks = validate_judge_runtime_only(after, chat_content, badge_content, next_html)
+    for _ in range(8):
+        if checks["pass"]:
+            break
+        time.sleep(2)
+        after = judge_runtime_snapshot()
+        checks = validate_judge_runtime_only(after, chat_content, badge_content, next_html)
+    write_json(EVIDENCE_DIR / "after-readback.json", after)
+    write_json(EVIDENCE_DIR / "deployment-validation.json", checks)
+    print(json.dumps(checks, indent=2))
+    return 0 if checks["pass"] else 1
+
+
 def validate_journey_runtime_only(
     snapshot_after: dict,
     tracker_content: str,
@@ -1110,6 +1377,11 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true")
     parser.add_argument(
+        "--check-access",
+        action="store_true",
+        help="Perform authenticated EDIT and LIVE reads without mutating Jahia.",
+    )
+    parser.add_argument(
         "--logo-reset-only",
         action="store_true",
         help="Deploy only the engagement tracker and logo-reset markup.",
@@ -1123,6 +1395,11 @@ def main() -> int:
         "--chat-only",
         action="store_true",
         help="Deploy only algolia-chat.js and its Drift cache marker.",
+    )
+    parser.add_argument(
+        "--judge-runtime-only",
+        action="store_true",
+        help="Deploy only the Agent Studio judge runtime files and Drift cache markers.",
     )
     parser.add_argument(
         "--journey-runtime-only",
@@ -1139,19 +1416,27 @@ def main() -> int:
         )
 
     selected_modes = [
+        args.check_access,
         args.logo_reset_only,
         args.controller_only,
         args.chat_only,
+        args.judge_runtime_only,
         args.journey_runtime_only,
     ]
     if sum(selected_modes) > 1:
         parser.error(
             "narrow deployment modes are mutually exclusive"
         )
+    if args.check_access:
+        if args.apply:
+            parser.error("--check-access is read-only and cannot be combined with --apply")
+        return run_access_check()
     if args.controller_only:
         return run_controller_only(args.apply)
     if args.chat_only:
         return run_chat_only(args.apply)
+    if args.judge_runtime_only:
+        return run_judge_runtime_only(args.apply)
     if args.journey_runtime_only:
         return run_journey_runtime_only(args.apply)
 

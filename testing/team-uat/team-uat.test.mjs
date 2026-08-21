@@ -23,14 +23,14 @@ const all = [app, html, css, readme, canonical].join("\n");
 const scenarioIds = ["T1", "T2", "B1", "B2", "C1", "C2", "S1", "S2"];
 const categories = ["Technical", "Business", "Commercial", "Specialist"];
 const triggers = [
-  "product_page_10s_50_scroll",
+  "product_page_5s_25_scroll",
   "product_to_documentation",
-  "solution_page_10s_50_scroll",
+  "solution_page_5s_25_scroll",
   "solution_to_customer_story",
   "product_to_pricing",
   "solution_to_pricing",
-  "developer_page_10s_50_scroll",
-  "resource_page_10s_50_scroll",
+  "developer_page_5s_25_scroll",
+  "resource_page_5s_25_scroll",
 ];
 const evidenceByJourney = {
   T1: {

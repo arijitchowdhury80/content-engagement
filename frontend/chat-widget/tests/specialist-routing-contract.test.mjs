@@ -81,7 +81,7 @@ test('an explicit visitor request for a configured specialist is mandatory routi
 
 test('multi-part developer-depth architecture questions deterministically route to tech', () => {
   for (const prompt of [systemPrompt, instructions]) {
-    assert.match(prompt, /developer_page_10s_50_scroll/);
+    assert.match(prompt, /developer_page_5s_25_scroll/);
     assert.match(prompt, /multi-part implementation\s+or architecture question/i);
     assert.match(prompt, /at least two/i);
     assert.match(prompt, /must call\s+`ask_specialist` with `specialist_key: "tech"`/i);

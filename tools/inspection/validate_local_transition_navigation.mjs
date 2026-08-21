@@ -14,7 +14,7 @@ const fixturePath = join(siteDir, 'index.html');
 const scenarios = [
   {
     trigger: 'product_to_documentation',
-    sourceTrigger: 'product_page_10s_50_scroll',
+    sourceTrigger: 'product_page_5s_25_scroll',
     sourcePath: '/products/features/ui-component-libraries',
     sourceLabel: 'UI Component Libraries',
     targetPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
@@ -24,7 +24,7 @@ const scenarios = [
   },
   {
     trigger: 'solution_to_customer_story',
-    sourceTrigger: 'solution_page_10s_50_scroll',
+    sourceTrigger: 'solution_page_5s_25_scroll',
     sourcePath: '/solutions/ecommerce',
     sourceLabel: 'Ecommerce',
     targetPath: '/customers/harry-rosen',
@@ -34,7 +34,7 @@ const scenarios = [
   },
   {
     trigger: 'product_to_pricing',
-    sourceTrigger: 'product_page_10s_50_scroll',
+    sourceTrigger: 'product_page_5s_25_scroll',
     sourcePath: '/products/ai-recommendations',
     sourceLabel: 'AI Recommendations',
     targetPath: '/pricing',
@@ -44,7 +44,7 @@ const scenarios = [
   },
   {
     trigger: 'solution_to_pricing',
-    sourceTrigger: 'solution_page_10s_50_scroll',
+    sourceTrigger: 'solution_page_5s_25_scroll',
     sourcePath: '/solutions/marketplace',
     sourceLabel: 'Marketplace',
     targetPath: '/pricing',

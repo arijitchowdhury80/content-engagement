@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Structured TL;DR Answer Mockup</title>
+  <style>
+    :root {
+      --blue: #003dff;
+      --navy: #23263b;
+      --body: #36395a;
+      --muted: #7778af;
+      --line: #d6d6e7;
+      --surface: #f7f8ff;
+      font-family: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      background: #edf1ff;
+      color: var(--body);
+    }
+
+    .frame {
+      width: 1040px;
+      border: 1px solid #dfe4f6;
+      border-radius: 18px;
+      background: var(--surface);
+      box-shadow: 0 22px 60px -42px rgba(35, 38, 59, 0.5);
+      overflow: hidden;
+    }
+
+    .header {
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .canvas {
+      padding: 28px 44px 34px;
+    }
+
+    .question-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .question {
+      width: min(670px, 82%);
+      border-radius: 18px 18px 6px 18px;
+      background: var(--blue);
+      color: white;
+      padding: 13px 18px;
+      font-size: 13px;
+      line-height: 1.45;
+      box-shadow: 0 14px 26px -20px rgba(0, 61, 255, 0.92);
+    }
+
+    .avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #dfe4ff;
+      flex: 0 0 auto;
+      position: relative;
+    }
+
+    .avatar::before {
+      content: "";
+      position: absolute;
+      inset: 4px 6px 8px;
+      border-radius: 50%;
+      background: #7778af;
+    }
+
+    .avatar::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      bottom: 3px;
+      height: 5px;
+      border-radius: 8px 8px 4px 4px;
+      background: #7778af;
+    }
+
+    .answer {
+      width: min(760px, 100%);
+    }
+
+    .label {
+      margin: 0 0 8px;
+      color: #6670ad;
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .tldr {
+      margin-bottom: 18px;
+      padding: 15px 17px 16px;
+      border: 1px solid rgba(205, 214, 247, 0.9);
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffffff, #f0f5ff);
+      box-shadow:
+        0 12px 26px -22px rgba(20, 33, 76, 0.28),
+        inset 0 1px rgba(255, 255, 255, 0.95);
+    }
+
+    .tldr p {
+      margin: 0;
+      color: var(--navy);
+      font-size: 15px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .details {
+      padding-left: 17px;
+      border-left: 2px solid rgba(0, 61, 255, 0.22);
+    }
+
+    .details .label {
+      margin-bottom: 10px;
+    }
+
+    .detail-line {
+      margin: 0;
+      color: var(--navy);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .detail-line + .detail-line {
+      margin-top: 8px;
+    }
+
+    .downstream {
+      width: min(760px, 100%);
+      margin-top: 24px;
+      padding-top: 17px;
+      border-top: 1px solid rgba(0, 61, 255, 0.16);
+    }
+
+    .sources-label {
+      margin: 0 0 10px;
+      color: #6670ad;
+      font-size: 10px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid #cfd7f8;
+      background: linear-gradient(135deg, #fff, #edf5ff);
+      box-shadow: 0 7px 16px rgba(46, 61, 120, 0.12), inset 0 1px rgba(255, 255, 255, 0.9);
+      color: #5d66a1;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .pill b {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .followup {
+      width: min(760px, 100%);
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(237,245,255,0.82));
+      box-shadow: 0 12px 28px -22px rgba(20, 33, 76, 0.28), inset 0 1px rgba(255, 255, 255, 0.95);
+      color: var(--navy);
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .note {
+      width: 1040px;
+      margin: 18px auto 0;
+      color: #5f679d;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <main class="frame" aria-label="Structured TL;DR answer concept">
+      <div class="header" aria-hidden="true"></div>
+      <section class="canvas">
+        <div class="question-row">
+          <div class="question">What counts as an API call, keystrokes, filters applied, or page loads, and does that change how I should configure rate limiting to control cost?</div>
+          <div class="avatar" aria-hidden="true"></div>
+        </div>
+
+        <article class="answer">
+          <section class="tldr" aria-label="TL;DR">
+            <h2 class="label">TL;DR</h2>
+            <p>Yes. Almost every interaction that asks an Algolia index for data can count as a billable search request.</p>
+          </section>
+
+          <section class="details" aria-label="Details">
+            <h2 class="label">Details</h2>
+            <p class="detail-line">Autocomplete can send a request on each keystroke, filters can trigger new searches, and page loads can initialize queries automatically.</p>
+            <p class="detail-line">The cost strategy should focus on debouncing, bot protection, caching, and search keys scoped to the right usage, not blocking legitimate search behavior.</p>
+          </section>
+        </article>
+
+        <section class="downstream" aria-label="Sources">
+          <p class="sources-label">Sources</p>
+          <div class="pills">
+            <span class="pill">Documentation <b>8</b></span>
+            <span class="pill">Support <b>12</b></span>
+            <span class="pill">Blog <b>3</b></span>
+          </div>
+        </section>
+
+        <div class="followup">Are you trying to control cost for a public search page, an internal dashboard, or a backend-triggered workflow?</div>
+      </section>
+    </main>
+    <p class="note">Contract shown here: every answer renders the same skeleton. TL;DR is one crisp summary line. Details is exactly two supporting lines. Sources and follow-up stay below the answer structure.</p>
+  </div>
+</body>
+</html>

@@ -16,7 +16,6 @@ function specialistFixture() {
 <html><head><meta charset="utf-8">
 <script>
   window.__specialistPresentationCalls = [];
-  window.__specialistJudgeRequests = [];
   const specialistMode = new URLSearchParams(location.search).get('mode') || 'unsourced';
   const stream = (frames) => {
     const encoder = new TextEncoder();
@@ -29,19 +28,6 @@ function specialistFixture() {
   };
   window.fetch = async (input, init = {}) => {
     const url = String(input instanceof Request ? input.url : input);
-    if (url.includes('/api/judge')) {
-      const body = JSON.parse(init.body || '{}');
-      window.__specialistJudgeRequests.push(body);
-      const answer = body.panels?.[0]?.answer || '';
-      const gateTripped = specialistMode === 'rejected' && answer.includes('99.99%');
-      return new Response(JSON.stringify({ panels: [{
-        panelId: 'main', dims: { grounding: gateTripped ? 2 : 9, coverage: 9, depth: 8, relevance: 9 },
-        synthesizedScore: gateTripped ? 3 : 9, composite: gateTripped ? 3 : 8.8,
-        preGateScore: 8.8, gateTripped, borderline: false,
-        flaggedClaims: gateTripped ? [{ claim: '99.99% conversion growth', reason: 'unsupported', certainty: 1 }] : [],
-        perJudge: [], rationale: gateTripped ? 'material unsupported claim' : 'grounded'
-      }] }), { status: 200, headers: { 'content-type': 'application/json' } });
-    }
     if (url.includes('/agent-studio/1/agents/local_orchestrator_agent/')) {
       window.__specialistPresentationCalls.push('orchestrator');
       return stream([
@@ -247,7 +233,6 @@ test('confidence evaluation cannot demote sourced specialist output', async () =
         limitationCount: root.querySelectorAll('.acs-specialist-limitation').length,
         discoveryCount: root.querySelectorAll('.acs-followup-card').length,
         calls: window.__specialistPresentationCalls,
-        judgeRequests: window.__specialistJudgeRequests,
         persisted: sessionStorage.getItem('algolia-chat:conversation'),
       };
     });
@@ -257,7 +242,6 @@ test('confidence evaluation cannot demote sourced specialist output', async () =
     assert.equal(result.sourceSectionCount, 2, 'primary and specialist sources must both render');
     assert.equal(result.limitationCount, 0);
     assert.equal(result.discoveryCount, 1, JSON.stringify(result));
-    assert.equal(result.judgeRequests.length, 0, 'this fixture has no confidence evaluator configured');
     assert.deepEqual(result.calls, ['orchestrator', 'specialist']);
   } finally {
     await context.close();

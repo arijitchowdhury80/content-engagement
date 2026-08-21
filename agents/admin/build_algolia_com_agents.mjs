@@ -33,6 +33,12 @@ function loadPrompt(file) {
   if (s.includes('[[SHARED_GROUNDING]]')) {
     s = s.replace('[[SHARED_GROUNDING]]', readFileSync(join(PROMPTS_DIR, '_shared_grounding_algolia.md'), 'utf8').trim());
   }
+  if (s.includes('[[SHARED_JUDGE_RUBRIC_V2]]')) {
+    s = s.replace(
+      '[[SHARED_JUDGE_RUBRIC_V2]]',
+      readFileSync(join(PROMPTS_DIR, 'judge', '_shared_judge_rubric_v2.md'), 'utf8').trim(),
+    );
+  }
   return s;
 }
 
