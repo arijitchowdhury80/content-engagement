@@ -674,5 +674,46 @@ class JourneyRuntimeOnlyDeploymentTests(unittest.TestCase):
         )
 
 
+class TransientJcrRetryTests(unittest.TestCase):
+    def test_publish_retries_eventual_path_visibility(self):
+        with patch.object(
+            MODULE,
+            "graphql",
+            side_effect=[
+                RuntimeError("javax.jcr.PathNotFoundException"),
+                {"data": {"jcr": {"target": {"node": {"path": "/asset"}}}}},
+            ],
+        ) as graphql, patch.object(MODULE.time, "sleep") as sleep:
+            result = MODULE.publish("/asset/jcr:content", subtree=False)
+
+        self.assertEqual(result["data"]["jcr"]["target"]["node"]["path"], "/asset")
+        self.assertEqual(graphql.call_count, 2)
+        sleep.assert_called_once_with(0.5)
+
+    def test_block_write_never_blindly_retries_stale_item_save(self):
+        with patch.object(
+            MODULE,
+            "graphql",
+            side_effect=[
+                RuntimeError("javax.jcr.InvalidItemStateException: stale item.save()"),
+            ],
+        ) as graphql, patch.object(MODULE.time, "sleep") as sleep:
+            with self.assertRaisesRegex(RuntimeError, "InvalidItemStateException"):
+                MODULE.set_block_html("restored")
+
+        self.assertEqual(graphql.call_count, 1)
+        sleep.assert_not_called()
+
+    def test_non_transient_publish_error_is_not_retried(self):
+        with patch.object(
+            MODULE, "graphql", side_effect=RuntimeError("permission denied")
+        ) as graphql, patch.object(MODULE.time, "sleep") as sleep:
+            with self.assertRaisesRegex(RuntimeError, "permission denied"):
+                MODULE.publish("/asset", subtree=False)
+
+        self.assertEqual(graphql.call_count, 1)
+        sleep.assert_not_called()
+
+
 if __name__ == "__main__":
     unittest.main()

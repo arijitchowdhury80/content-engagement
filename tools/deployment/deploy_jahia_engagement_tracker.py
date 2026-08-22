@@ -675,6 +675,22 @@ def update_journey_runtime_block_html(current: str) -> str:
     return next_html.replace(embed, updated_embed, 1)
 
 
+def retry_eventual_path(operation, *, attempts: int = 5, delay: float = 0.5):
+    """Retry a newly created Jahia path until its publication session sees it.
+
+    File creation and publication use separate JCR sessions, so a just-created
+    descendant can briefly report PathNotFound. InvalidItemState is deliberately
+    not retried here because it can represent a real concurrent edit.
+    """
+    for attempt in range(attempts):
+        try:
+            return operation()
+        except RuntimeError as error:
+            if "PathNotFoundException" not in str(error) or attempt + 1 >= attempts:
+                raise
+            time.sleep(delay * (attempt + 1))
+
+
 def set_block_html(html: str) -> dict:
     mutation = """
     mutation SetBlockHtml($html: String!) {
@@ -715,7 +731,9 @@ def publish(path: str, subtree: bool = False) -> dict:
       }
     }
     """
-    return graphql(mutation, {"path": path, "subtree": subtree})
+    return retry_eventual_path(
+        lambda: graphql(mutation, {"path": path, "subtree": subtree})
+    )
 
 
 def delete_old_tracker() -> dict:

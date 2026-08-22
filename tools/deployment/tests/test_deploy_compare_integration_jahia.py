@@ -149,6 +149,31 @@ def test_rollback_refuses_concurrent_block_change(tmp_path, monkeypatch):
         module.restore(plan)
 
 
+def test_rollback_stale_retry_rechecks_cas_and_never_overwrites_concurrent_edit(monkeypatch):
+    before = "before"
+    deployed = "deployed"
+    concurrent = "someone else's edit"
+    reads = iter([deployed, before, concurrent, before])
+    writes = []
+
+    monkeypatch.setattr(module.jahia, "block_html", lambda _workspace: next(reads))
+    monkeypatch.setattr(
+        module.jahia,
+        "set_block_html",
+        lambda html: writes.append(html) or (_ for _ in ()).throw(
+            RuntimeError("javax.jcr.InvalidItemStateException")
+        ),
+    )
+    monkeypatch.setattr(module.time, "sleep", lambda _seconds: None)
+
+    with pytest.raises(RuntimeError, match="concurrent change"):
+        module.restore_block_with_cas(
+            before,
+            {module.sha256(before), module.sha256(deployed)},
+        )
+    assert writes == [before], "a changed block must prevent the second mutation attempt"
+
+
 def test_deployer_has_no_broad_publish_or_stable_asset_overwrite():
     source = (ROOT / "tools/deployment/deploy_compare_integration_jahia.py").read_text(encoding="utf-8")
     assert 'publish("/sites/www/files"' not in source
