@@ -433,6 +433,56 @@ ${discoveryMarker}`;
   }
 });
 
+test('analogy-only canvas still splits into TLDR tile and Details', async () => {
+  const text = `Comparing one grocery success story to another is like comparing two high-performing kitchens—the menu might be different, but the secret is always in how they manage the chaos of the pantry to get the right dish to the table instantly.
+
+If you liked the H-E-B México approach, you want to look at how other grocery teams handle the digital aisle.
+
+- Albertsons: They are using Algolia for agentic shopping experiences.
+- Industry-Wide Trends: Grocery teams are using AI to handle repeat purchase flows.
+
+My recommendation: look for similar frictions, not just similar stories.
+
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'high-performing kitchens');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const labels = [...root.querySelectorAll('.acs-answer-section-label')]
+        .map((node) => node.textContent.trim())
+        .filter(Boolean);
+      const tldr = root.querySelector('.acs-answer-tldr');
+      const analogy = root.querySelector('.acs-answer-analogy');
+      const short = root.querySelector('.acs-answer-short');
+      const details = root.querySelector('.acs-answer-details');
+      return {
+        labels,
+        tldrText: tldr?.textContent.replace(/\s+/g, ' ').trim(),
+        analogyText: analogy?.textContent.replace(/\s+/g, ' ').trim(),
+        hasShortBlock: Boolean(short),
+        detailsText: details?.textContent.replace(/\s+/g, ' ').trim(),
+        tldrCount: root.querySelectorAll('.acs-answer-tldr').length,
+        detailsCount: root.querySelectorAll('.acs-answer-details').length,
+      };
+    });
+
+    assert.equal(result.tldrCount, 1);
+    assert.equal(result.detailsCount, 1);
+    assert.ok(result.labels.includes('TL;DR'));
+    assert.ok(result.labels.includes('Details'));
+    assert.match(result.analogyText, /high-performing kitchens/);
+    assert.match(result.tldrText, /high-performing kitchens/);
+    assert.equal(result.hasShortBlock, false);
+    assert.doesNotMatch(result.tldrText, /Albertsons/);
+    assert.match(result.detailsText, /Details\s*If you liked the H-E-B/);
+    assert.match(result.detailsText, /Albertsons/);
+    assert.match(result.detailsText, /My recommendation/);
+  } finally {
+    await page.close();
+  }
+});
+
 test('one-paragraph answer does not force a broken TLDR split', async () => {
   const text = `A single direct answer should stay flat when there is no separate short-version block.
 
@@ -446,6 +496,8 @@ ${discoveryMarker}`;
         tldrTiles: root.querySelectorAll('.acs-answer-tldr').length,
         answerLayers: root.querySelectorAll('.acs-answer-layer').length,
         detailsLabels: root.querySelectorAll('.acs-answer-details-label').length,
+        tldrLabels: [...root.querySelectorAll('.acs-answer-section-label')]
+          .filter((node) => node.textContent.trim() === 'TL;DR').length,
         answerText: root.textContent.replace(/\s+/g, ' ').trim(),
       };
     });
@@ -453,6 +505,7 @@ ${discoveryMarker}`;
     assert.equal(result.tldrTiles, 0);
     assert.equal(result.answerLayers, 0);
     assert.equal(result.detailsLabels, 0);
+    assert.equal(result.tldrLabels, 0);
     assert.match(result.answerText, /single direct answer/);
   } finally {
     await page.close();
