@@ -1,0 +1,23 @@
+{
+  "assetUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-judge-v2-9ff1a9f14102.js",
+  "proof": {
+    "assetLoaded": true,
+    "labels": [
+      "TL;DR",
+      "Details",
+      "Sources"
+    ],
+    "hasTldrTile": true,
+    "hasAnalogy": true,
+    "analogyFontStyle": "italic",
+    "hasShortBlock": false,
+    "hasDetails": true,
+    "tldrText": "API calls are like little door swings at a very busy store: one customer entering is harmless, but autocomplete, filters, page loads, bots, and eager widgets can turn that door into a blur.",
+    "detailsText": "DetailsIf you want predictable cost, treat every search request as something worth shaping rather than something to discover on the invoice.Debounce ordinary typing.Avoid duplicate page-load searches.Put server-side throttling in front of shared backend traffic.Supporting evidence: Rate limiting API",
+    "sourceText": "SourcesDocumentation1Support1",
+    "followupText": "Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?",
+    "progress": "100%",
+    "errors": []
+  },
+  "errors": []
+}

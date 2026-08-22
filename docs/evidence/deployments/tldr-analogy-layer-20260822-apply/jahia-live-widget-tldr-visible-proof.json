@@ -1,0 +1,20 @@
+{
+  "pageUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?codexProof=1787389179085",
+  "chatAsset": "algolia-chat-judge-v2-9ff1a9f14102.js",
+  "assetInfo": {
+    "hasExpectedAsset": true
+  },
+  "proof": {
+    "labels": [
+      "TL;DR",
+      "Details",
+      "Sources"
+    ],
+    "hasTldrTile": true,
+    "hasDetails": true,
+    "hasSources": true,
+    "hasFollowup": true,
+    "analogyFontStyle": "italic",
+    "progress": "100%"
+  }
+}
