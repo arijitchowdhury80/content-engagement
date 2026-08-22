@@ -11,7 +11,6 @@ import os
 import re
 import sys
 import time
-import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -160,11 +159,7 @@ def create_immutable(asset: dict) -> dict:
 
 
 def fetch_bytes(url: str) -> bytes:
-    request = urllib.request.Request(url, headers={"User-Agent": "algolia-judge-v2-readback/1"})
-    with urllib.request.urlopen(request, timeout=60, context=jahia.ssl_context()) as response:
-        if response.status != 200:
-            raise RuntimeError(f"Public readback failed for {url}: HTTP {response.status}")
-        return response.read()
+    return jahia.fetch_public_bytes(url, user_agent="algolia-judge-v2-readback/1")
 
 
 def live_companion_overrides() -> dict[str, dict[str, str]]:

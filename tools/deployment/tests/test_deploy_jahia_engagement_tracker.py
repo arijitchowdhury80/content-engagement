@@ -714,6 +714,101 @@ class TransientJcrRetryTests(unittest.TestCase):
         self.assertEqual(graphql.call_count, 1)
         sleep.assert_not_called()
 
+    def test_public_readback_retries_cdn_404_then_returns_exact_bytes(self):
+        class Response:
+            status = 200
+            sent = False
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def read(self, _size):
+                if self.sent:
+                    return b""
+                self.sent = True
+                return b"published bytes"
+
+        missing = MODULE.urllib.error.HTTPError(
+            "https://example.invalid/asset.js", 404, "not found", None, None
+        )
+        with patch.object(
+            MODULE.urllib.request, "urlopen", side_effect=[missing, Response()]
+        ) as urlopen, patch.object(MODULE.time, "sleep") as sleep:
+            observed = MODULE.fetch_public_bytes(
+                "https://example.invalid/asset.js", attempts=2, delay=0.25
+            )
+
+        self.assertEqual(observed, b"published bytes")
+        self.assertEqual(urlopen.call_count, 2)
+        sleep.assert_called_once_with(0.25)
+
+    def test_public_readback_does_not_retry_forbidden(self):
+        forbidden = MODULE.urllib.error.HTTPError(
+            "https://example.invalid/asset.js", 403, "forbidden", None, None
+        )
+        with patch.object(
+            MODULE.urllib.request, "urlopen", side_effect=forbidden
+        ) as urlopen, patch.object(MODULE.time, "sleep") as sleep:
+            with self.assertRaises(MODULE.urllib.error.HTTPError):
+                MODULE.fetch_public_bytes("https://example.invalid/asset.js")
+
+        self.assertEqual(urlopen.call_count, 1)
+        sleep.assert_not_called()
+
+    def test_public_readback_retries_connection_reset(self):
+        class Response:
+            status = 200
+            sent = False
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def read(self, _size):
+                if self.sent:
+                    return b""
+                self.sent = True
+                return b"complete"
+
+        with patch.object(
+            MODULE.urllib.request,
+            "urlopen",
+            side_effect=[ConnectionResetError("reset"), Response()],
+        ) as urlopen, patch.object(MODULE.time, "sleep"):
+            observed = MODULE.fetch_public_bytes(
+                "https://example.invalid/asset.js", attempts=2, delay=0
+            )
+
+        self.assertEqual(observed, b"complete")
+        self.assertEqual(urlopen.call_count, 2)
+
+    def test_public_readback_does_not_retry_certificate_failure(self):
+        certificate_error = MODULE.urllib.error.URLError(
+            MODULE.ssl.SSLCertVerificationError("certificate verify failed")
+        )
+        with patch.object(
+            MODULE.urllib.request, "urlopen", side_effect=certificate_error
+        ) as urlopen, patch.object(MODULE.time, "sleep") as sleep:
+            with self.assertRaises(MODULE.urllib.error.URLError):
+                MODULE.fetch_public_bytes("https://example.invalid/asset.js")
+
+        self.assertEqual(urlopen.call_count, 1)
+        sleep.assert_not_called()
+
+    def test_public_readback_deadline_can_abort_before_network_io(self):
+        with patch.object(MODULE.urllib.request, "urlopen") as urlopen:
+            with self.assertRaisesRegex(TimeoutError, "deadline exceeded"):
+                MODULE.fetch_public_bytes(
+                    "https://example.invalid/asset.js", deadline_seconds=0
+                )
+
+        urlopen.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

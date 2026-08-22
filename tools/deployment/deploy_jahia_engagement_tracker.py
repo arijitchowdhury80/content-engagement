@@ -8,6 +8,7 @@ and the Drift custom-code block script references.
 from __future__ import annotations
 
 import argparse
+import http.client
 import hashlib
 import json
 import os
@@ -15,6 +16,7 @@ import re
 import ssl
 import sys
 import time
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -689,6 +691,56 @@ def retry_eventual_path(operation, *, attempts: int = 5, delay: float = 0.5):
             if "PathNotFoundException" not in str(error) or attempt + 1 >= attempts:
                 raise
             time.sleep(delay * (attempt + 1))
+
+
+def fetch_public_bytes(
+    url: str,
+    *,
+    attempts: int = 12,
+    delay: float = 2.0,
+    deadline_seconds: float = 30.0,
+    per_attempt_timeout: float = 5.0,
+    user_agent: str = "algolia-jahia-public-readback/1",
+) -> bytes:
+    """Read a newly published URL through bounded CDN-propagation retries."""
+    deadline = time.monotonic() + deadline_seconds
+    for attempt in range(attempts):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError(f"Public readback deadline exceeded for {url}")
+        request = urllib.request.Request(url, headers={"User-Agent": user_agent})
+        try:
+            with urllib.request.urlopen(
+                request,
+                timeout=min(per_attempt_timeout, remaining),
+                context=ssl_context(),
+            ) as response:
+                if response.status != 200:
+                    raise RuntimeError(f"Public readback failed for {url}: HTTP {response.status}")
+                chunks = []
+                while True:
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError(f"Public readback deadline exceeded for {url}")
+                    chunk = response.read(64 * 1024)
+                    if not chunk:
+                        return b"".join(chunks)
+                    chunks.append(chunk)
+        except urllib.error.HTTPError as error:
+            retryable = error.code == 404 or 500 <= error.code < 600
+            if not retryable or attempt + 1 >= attempts:
+                raise
+        except urllib.error.URLError as error:
+            retryable = isinstance(error.reason, (TimeoutError, ConnectionError))
+            if not retryable or attempt + 1 >= attempts:
+                raise
+        except (TimeoutError, ConnectionError, http.client.IncompleteRead):
+            if attempt + 1 >= attempts:
+                raise
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError(f"Public readback deadline exceeded for {url}")
+        time.sleep(min(delay, remaining))
+    raise AssertionError("unreachable")
 
 
 def set_block_html(html: str) -> dict:
