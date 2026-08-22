@@ -32,6 +32,30 @@ after(async () => {
   await browser?.close();
 });
 
+test('final answer preserves previously retrieved sources when completion omits hits', () => {
+  const bundle = fs.readFileSync(chatPath, 'utf8');
+  const finalizerStart = bundle.indexOf('async function iR(');
+  const finalizerEnd = bundle.indexOf('async function aR(', finalizerStart);
+  const finalizer = bundle.slice(finalizerStart, finalizerEnd);
+
+  assert.notEqual(finalizerStart, -1, 'orchestrator finalizer must exist');
+  assert.match(
+    finalizer,
+    /turnsRef\.current\.find\([^)]*\)\?\.segments\[0\]/,
+    'finalization must read the current streaming segment before committing the final answer'
+  );
+  assert.match(
+    finalizer,
+    /[A-Za-z_$][\w$]*\.hits\?\.length\?[A-Za-z_$][\w$]*\.hits:[A-Za-z_$][\w$]*\?\.rawHits\?\?\[\]/,
+    'finalization must keep progress-time raw hits when the terminal payload has no hits'
+  );
+  assert.match(
+    finalizer,
+    /[A-Za-z_$][\w$]*\.length\?[A-Za-z_$][\w$]*:[A-Za-z_$][\w$]*\?\.sources\?\?\[\]/,
+    'finalization must keep progress-time source pills when the terminal payload has no sources'
+  );
+});
+
 function completionFrames(content = answer) {
   return [
     {
