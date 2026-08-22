@@ -49,6 +49,20 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.doesNotMatch(bundle, /not present verbatim in any retrieved source \(deterministic check\)/);
   });
 
+  test(`${bundleName} preserves streamed retrieval evidence at finalization`, () => {
+    const bundle = readBundle(bundleName);
+
+    assert.match(bundle, /rawEvidence:s\.evidenceEvents\?\.length\?s\.evidenceEvents:P\?\.rawEvidence\?\?\[\]/);
+    assert.doesNotMatch(bundle, /rawEvidence:s\.evidenceEvents\?\?P\?\.rawEvidence\?\?\[\]/);
+  });
+
+  test(`${bundleName} never asks semantic judges to score an empty evidence packet`, () => {
+    const bundle = readBundle(bundleName);
+
+    assert.match(bundle, /!u\.evidencePacket\.events\.length\|\|!u\.evidencePacket\.passageIndex\.length/);
+    assert.match(bundle, /no retrieval evidence was captured for this answer/);
+  });
+
   test(`${bundleName} supports only Agent Studio judge transport`, () => {
     const bundle = readBundle(bundleName);
 
