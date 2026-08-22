@@ -745,6 +745,21 @@
     return JSON.stringify(payload);
   }
 
+  // Finalize a completion body exactly once. Callers that use this API must send
+  // the returned string through fetchPrepared(), which bypasses the global
+  // interceptor and therefore cannot inject a second, later context snapshot.
+  function prepareCompletionBody(body) {
+    return injectTurnContextIntoBody(body);
+  }
+
+  function fetchPrepared(input, init = {}) {
+    const sender = originalFetch || (window.fetch !== patchedFetch ? window.fetch : null);
+    if (typeof sender !== "function") {
+      throw new Error("No native fetch is available for a prepared completion request");
+    }
+    return sender.call(window, input, init);
+  }
+
   function installFetchInterceptor() {
     if (typeof window.fetch !== "function") return false;
     if (patchedFetch && window.fetch === patchedFetch) return false;
@@ -754,7 +769,7 @@
         return originalFetch.apply(this, arguments);
       }
       const nextInit = { ...(init || {}) };
-      nextInit.body = injectTurnContextIntoBody(nextInit.body);
+      nextInit.body = prepareCompletionBody(nextInit.body);
       return originalFetch.call(this, input, nextInit);
     };
     window.fetch = patchedFetch;
@@ -786,6 +801,8 @@
     debug,
     installFetchInterceptor,
     uninstallFetchInterceptor,
+    prepareCompletionBody,
+    fetchPrepared,
     injectTurnContextIntoBody,
     _injectTurnContextIntoBody: injectTurnContextIntoBody,
     _canonicalJourneyTriggers: CANONICAL_JOURNEY_TRIGGERS,
