@@ -19,6 +19,7 @@ function reportFor(evaluationPacket, overrides = {}) {
         sentenceId: unit.sentenceId,
         classification: 'factual',
         claims: [{
+          claimText: unit.text,
           verdict: 'supported',
           materiality: 'material',
           centralToAnswer: true,
@@ -73,16 +74,24 @@ test('treats headings as assessable non-factual units and validates semantic evi
   assert.equal(validated.value.unresolved.length, 0);
 });
 
-test('conservatively normalizes a proofless supported claim instead of accepting or retrying it', async () => {
+test('rejects a proofless supported claim so transport retries instead of manufacturing an unverifiable finding', async () => {
   const packet = await evaluation();
   const report = reportFor(packet);
   report.sentenceAssessments[1].claims[0].evidencePassageIds = [];
   const validated = core.validateJudgeReport('skeptic', report, packet);
-  assert.equal(validated.ok, true, validated.errors.join('; '));
-  assert.equal(validated.value.sentenceAssessments[1].claims[0].verdict, 'unverifiable');
-  assert.equal(validated.value.sentenceAssessments[1].claims[0].evidenceRefs.length, 0);
-  assert.equal(validated.value.unresolved.length, 1);
-  assert.match(validated.value.unresolved[0].reason, /no evidence passage ID/);
+  assert.equal(validated.ok, false);
+  assert.equal(validated.value, null);
+  assert.match(validated.errors.join('; '), /supported claim requires evidencePassageIds/);
+});
+
+test('rejects malformed claims instead of treating them as a non-factual sentence', async () => {
+  const packet = await evaluation();
+  const report = reportFor(packet);
+  report.sentenceAssessments[1].claims = { verdict: 'supported' };
+  const validated = core.validateJudgeReport('referee', report, packet);
+  assert.equal(validated.ok, false);
+  assert.equal(validated.value, null);
+  assert.match(validated.errors.join('; '), /claims must be an array/);
 });
 
 test('derives sentence classification mechanically from claims and ignores model label variants', async () => {
@@ -120,6 +129,7 @@ test('resolves exact answer and evidence text mechanically from validated IDs', 
       sentenceId: packet.answerManifest[0].sentenceId,
       classification: 'factual',
       claims: [{
+        claimText: 'uses source-backed guidance',
         verdict: 'supported', materiality: 'minor', centralToAnswer: false,
         evidencePassageIds: [passageId], reason: 'supported',
       }],
@@ -128,7 +138,9 @@ test('resolves exact answer and evidence text mechanically from validated IDs', 
   };
   const validated = core.validateJudgeReport('referee', report, packet);
   assert.equal(validated.ok, true);
-  assert.equal(validated.value.sentenceAssessments[0].claims[0].claim, '**Architecture Fit** uses source-backed guidance.');
+  assert.equal(validated.value.sentenceAssessments[0].claims[0].claim, 'uses source-backed guidance');
+  assert.equal(validated.value.sentenceAssessments[0].claims[0].start, packet.answer.indexOf('uses source-backed guidance'));
+  assert.equal(validated.value.sentenceAssessments[0].claims[0].end, packet.answer.indexOf('uses source-backed guidance') + 'uses source-backed guidance'.length);
   assert.equal(validated.value.sentenceAssessments[0].claims[0].evidenceRefs[0].excerpt, 'Architecture Fit uses source-backed guidance.');
   assert.equal(packet.evidencePacket.passageIndex.find((item) => item.evidencePassageId === passageId).text, 'Architecture Fit uses source-backed guidance.');
 });
@@ -166,6 +178,7 @@ test('rejects unknown and duplicate evidence passage IDs', async () => {
       sentenceId: repeatedPacket.answerManifest[0].sentenceId,
       classification: 'factual',
       claims: [{
+        claimText: repeatedPacket.answerManifest[0].text,
         verdict: 'supported', materiality: 'minor', centralToAnswer: false,
         evidencePassageIds: [descriptionPassageId, descriptionPassageId, 'fabricated-id'], reason: 'bad',
       }],
@@ -181,6 +194,7 @@ function unresolvedReport(packet, role, { verdict = 'unverifiable', materiality 
   const base = reportFor(packet);
   const factual = base.sentenceAssessments.find((item) => item.classification === 'factual');
   factual.claims = [{
+    claimText: factual.claims[0].claimText,
     verdict, materiality, centralToAnswer,
     evidencePassageIds: verdict === 'contradicted' ? [packet.evidencePacket.passageIndex.find((item) => item.fieldPath === '/output/hits/0/description').evidencePassageId] : [],
     reason: `${role} found a grounding problem.`,
@@ -232,6 +246,7 @@ test('does not manufacture consensus from different claims in the same sentence'
       sentenceId,
       classification: 'factual',
       claims: [0, 1].map((claimIndex) => ({
+        claimText: claimIndex === 0 ? 'InstantSearch supports React' : 'the plan guarantees unlimited requests',
         verdict: claimIndex === unsupportedIndex ? 'unverifiable' : 'supported',
         materiality: 'minor',
         centralToAnswer: false,
@@ -253,7 +268,7 @@ test('does not manufacture consensus from different claims in the same sentence'
   assert.equal(result.groundingStatus, 'disagreement');
 });
 
-test('treats different claim counts for one sentence as disagreement', async () => {
+test('uses the exact span for consensus even when judges enumerate claims differently', async () => {
   const packet = await core.createEvaluationPackage({
     question: 'What is supported?',
     answer: 'InstantSearch supports React, and the plan guarantees unlimited requests.',
@@ -266,10 +281,20 @@ test('treats different claim counts for one sentence as disagreement', async () 
     sentenceAssessments: [{
       sentenceId,
       classification: 'factual',
-      claims: Array.from({ length: claimCount }, () => ({
+      claims: claimCount === 1 ? [{
+        claimText: 'the plan guarantees unlimited requests',
         verdict: 'unverifiable', materiality: 'minor', centralToAnswer: false,
         evidencePassageIds: [], reason: 'Not verified.',
-      })),
+      }] : [{
+        claimText: 'InstantSearch supports React',
+        verdict: 'supported', materiality: 'minor', centralToAnswer: false,
+        evidencePassageIds: [packet.evidencePacket.passageIndex.find((item) => item.fieldPath === '/output/hits/0/text').evidencePassageId],
+        reason: 'Supported.',
+      }, {
+        claimText: 'the plan guarantees unlimited requests',
+        verdict: 'unverifiable', materiality: 'minor', centralToAnswer: false,
+        evidencePassageIds: [], reason: 'Not verified.',
+      }],
     }],
     summary: 'Claim segmentation differs.',
   }, packet);
@@ -283,7 +308,40 @@ test('treats different claim counts for one sentence as disagreement', async () 
       summary: 'No concern.',
     }, packet),
   ]);
+  assert.equal(result.flaggedClaims.length, 1);
+  assert.equal(result.flaggedClaims[0].claim, 'the plan guarantees unlimited requests');
+  assert.equal(result.appliedCap, null);
+  assert.equal(result.groundingStatus, 'needs_review');
+});
+
+test('does not manufacture consensus from spans that share only a conjunction', async () => {
+  const packet = await core.createEvaluationPackage({
+    question: 'What is supported?',
+    answer: 'Alpha is supported and beta is unsupported.',
+    hits: [{ text: 'Alpha is supported.' }],
+  });
+  const sentenceId = packet.answerManifest[0].sentenceId;
+  const makeReport = (role, claimText) => core.validateJudgeReport(role, {
+    dimensionScores: { grounding: 6, completeness: 9, depth: 8, relevance: 10 },
+    dimensionRationales: { grounding: 'One concern.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Direct.' },
+    sentenceAssessments: [{ sentenceId, claims: [{
+      claimText, verdict: 'unverifiable', materiality: 'material', centralToAnswer: false,
+      evidencePassageIds: [], reason: 'Not verified.',
+    }] }],
+    summary: 'One concern.',
+  }, packet);
+  const result = core.aggregateJudgeReports([
+    makeReport('skeptic', 'Alpha is supported and'),
+    makeReport('referee', 'and beta is unsupported'),
+    core.validateJudgeReport('advocate', {
+      dimensionScores: { grounding: 10, completeness: 9, depth: 8, relevance: 10 },
+      dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Direct.' },
+      sentenceAssessments: [{ sentenceId, claims: [] }],
+      summary: 'No concern.',
+    }, packet),
+  ]);
   assert.equal(result.flaggedClaims.length, 0);
+  assert.equal(result.disagreements.length, 2);
   assert.equal(result.appliedCap, null);
   assert.equal(result.groundingStatus, 'disagreement');
 });
@@ -299,6 +357,34 @@ test('a single centrality vote cannot impose a consensus grounding cap', async (
   assert.equal(result.flaggedClaims.length, 1);
   assert.equal(result.flaggedClaims[0].centralToAnswer, false);
   assert.equal(result.appliedCap, 6);
+});
+
+test('rejects paraphrased claimText and resolves repeated exact claims left to right', async () => {
+  const packet = await core.createEvaluationPackage({
+    question: 'What is repeated?',
+    answer: 'API access is available, and API access is available.',
+    hits: [{ text: 'API access is available.' }],
+  });
+  const sentenceId = packet.answerManifest[0].sentenceId;
+  const passageId = packet.evidencePacket.passageIndex.find((item) => item.fieldPath === '/output/hits/0/text').evidencePassageId;
+  const base = {
+    dimensionScores: { grounding: 10, completeness: 10, depth: 8, relevance: 10 },
+    dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Direct.' },
+    sentenceAssessments: [{ sentenceId, claims: [0, 1].map(() => ({
+      claimText: 'API access is available', verdict: 'supported', materiality: 'minor', centralToAnswer: false,
+      evidencePassageIds: [passageId], reason: 'Supported.',
+    })) }],
+    summary: 'Supported.',
+  };
+  const valid = core.validateJudgeReport('referee', base, packet);
+  assert.equal(valid.ok, true, valid.errors.join('; '));
+  assert.deepEqual(valid.value.sentenceAssessments[0].claims.map((claim) => claim.start), [0, 29]);
+
+  const paraphrased = structuredClone(base);
+  paraphrased.sentenceAssessments[0].claims[0].claimText = 'The API can be accessed';
+  const invalid = core.validateJudgeReport('referee', paraphrased, packet);
+  assert.equal(invalid.ok, false);
+  assert.match(invalid.errors.join('; '), /not an exact substring/);
 });
 
 test('two valid judges produce a provisional result and fewer than two are unavailable', async () => {

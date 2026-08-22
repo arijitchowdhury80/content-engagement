@@ -92,17 +92,52 @@ def test_private_state_is_permission_restricted(tmp_path):
     assert os.stat(path).st_mode & 0o777 == 0o600
 
 
+def test_new_immutable_asset_waits_for_exact_edit_readback(monkeypatch):
+    asset = {"path": "/sites/www/files/new.js", "content": "const ready = true;", "sha256": "hash"}
+    states = iter([None, None, {"path": asset["path"]}])
+    monkeypatch.setattr(module, "safe_node", lambda _path, _workspace: next(states))
+    monkeypatch.setattr(module.jahia, "upsert_file", lambda path, content: {"path": path, "content": content})
+    monkeypatch.setattr(module.jahia, "file_content", lambda _node: asset["content"])
+    monkeypatch.setattr(module.time, "sleep", lambda _seconds: None)
+
+    result = module.create_immutable(asset)
+
+    assert result == {"path": asset["path"], "operation": "create", "sha256": "hash"}
+
+
+def test_live_companion_overrides_preserve_exact_badge_and_chat_bytes(monkeypatch):
+    badge_url = f"{module.PUBLIC}/algolia-confidence-badge-judge-v2-aaaaaaaaaaaa.js"
+    chat_url = f"{module.PUBLIC}/algolia-chat-judge-v2-bbbbbbbbbbbb.js"
+    monkeypatch.setattr(module.jahia, "block_html", lambda workspace: (
+        f'<script src="{badge_url}"></script>\n<script src="{chat_url}"></script>'
+    ))
+    payloads = {badge_url: b"badge live bytes", chat_url: b"chat live bytes"}
+    monkeypatch.setattr(module, "fetch_bytes", lambda url: payloads[url])
+
+    overrides = module.live_companion_overrides()
+    assets = module.immutable_assets(overrides)
+
+    assert assets["badge"]["content"] == "badge live bytes"
+    assert assets["chat"]["content"] == "chat live bytes"
+    assert assets["badge"]["source"] == f"live:{badge_url}"
+    assert assets["chat"]["source"] == f"live:{chat_url}"
+
+
 def test_post_publish_validation_failure_has_automatic_block_rollback():
     source = (ROOT / "tools/deployment/deploy_judge_v2_jahia.py").read_text(encoding="utf-8")
-    assert source.count('rollback = restore(rollback_path)') >= 2
+    assert source.count('rollback = restore(rollback_path)') >= 3
     assert 'failed-validation-rollback.json' in source
     assert 'publishDriftSubtree' in source
     assert 'republishDriftSubtreeAfterStaleLiveReadback' in source
     assert 'jahia.publish(BLOCK, subtree=True)' in source
     assert 'interrupted_cutover_recovery' in source
     assert 'outside the exact interrupted judge cutover' in source
-    assert source.count('except Exception as rollback_error:') == 2
-    assert source.count('rollback = {"pass": False, "error": str(rollback_error)}') == 2
+    assert source.count('except Exception as rollback_error:') == 3
+    assert source.count('rollback = {"pass": False, "error": str(rollback_error)}') == 3
+    assert 'failed-mutation-rollback.json' in source
+    assert 'skipped": not block_mutated' not in source
+    assert '"operation": "attempted"' in source
+    assert 'mutations[f"asset_{key}"] = create_immutable(asset)' in source
 
 
 def test_rollback_refuses_to_overwrite_a_concurrent_block_change(tmp_path, monkeypatch):

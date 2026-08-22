@@ -311,6 +311,25 @@
     return result;
   }
 
+  function resolveClaimSpan(unit, claimText, searchStart, errors, prefix) {
+    if (typeof claimText !== "string" || !claimText.trim()) {
+      errors.push(`${prefix} claimText must be a non-empty exact substring of its answer sentence`);
+      return null;
+    }
+    const localStart = unit.text.indexOf(claimText, searchStart);
+    if (localStart === -1) {
+      errors.push(`${prefix} claimText is not an exact substring of its answer sentence in claim order`);
+      return null;
+    }
+    return {
+      claim: claimText,
+      localStart,
+      localEnd: localStart + claimText.length,
+      start: unit.start + localStart,
+      end: unit.start + localStart + claimText.length,
+    };
+  }
+
   function validateJudgeReport(role, report, evaluation) {
     const errors = [];
     if (!ROLES.includes(role)) errors.push(`invalid judge role: ${role}`);
@@ -337,31 +356,30 @@
       }
       if (seen.has(sentenceId)) errors.push(`${prefix} duplicates ${sentenceId}`);
       seen.add(sentenceId);
-      const claims = Array.isArray(assessment.claims) ? assessment.claims : [];
+      if (!Array.isArray(assessment?.claims)) errors.push(`${prefix}.claims must be an array`);
+      const claims = Array.isArray(assessment?.claims) ? assessment.claims : [];
       const classification = claims.length > 0 ? "factual" : "not_factual";
       const validatedClaims = [];
+      let claimSearchStart = 0;
       for (const [claimIndex, claim] of claims.entries()) {
         const claimPrefix = `${prefix}.claims[${claimIndex}]`;
-        let verdict = claim?.verdict;
-        let evidencePassageIds = claim?.evidencePassageIds;
-        let reason = claim?.reason;
-        if ((verdict === "supported" || verdict === "contradicted") && (!Array.isArray(evidencePassageIds) || evidencePassageIds.length === 0)) {
-          verdict = "unverifiable";
-          evidencePassageIds = [];
-          reason = `${String(reason || "").trim()} The judge supplied no evidence passage ID, so code conservatively treated this claim as unverifiable.`.trim();
-        }
+        const verdict = claim?.verdict;
+        const evidencePassageIds = claim?.evidencePassageIds;
+        const reason = claim?.reason;
         if (!VERDICTS.has(verdict)) errors.push(`${claimPrefix} has invalid verdict`);
         if (!MATERIALITIES.has(claim?.materiality)) errors.push(`${claimPrefix} has invalid materiality`);
         if (typeof claim?.centralToAnswer !== "boolean") errors.push(`${claimPrefix} centralToAnswer must be boolean`);
         if (typeof reason !== "string" || !reason.trim()) errors.push(`${claimPrefix} reason is required`);
+        const claimSpan = resolveClaimSpan(unit, claim?.claimText, claimSearchStart, errors, claimPrefix);
+        if (claimSpan) claimSearchStart = claimSpan.localEnd;
         const evidenceRefs = validateEvidenceRefs(evidencePassageIds, verdict, passages, errors, claimPrefix);
         const validated = {
           sentenceId,
           claimIndex,
           claimCount: claims.length,
-          claim: unit.text,
-          start: unit.start,
-          end: unit.end,
+          claim: claimSpan?.claim || "",
+          start: claimSpan?.start ?? unit.start,
+          end: claimSpan?.end ?? unit.start,
           verdict,
           materiality: claim.materiality,
           centralToAnswer: claim.centralToAnswer,
@@ -401,9 +419,7 @@
 
   function overlap(a, b) {
     if (a.sentenceId !== b.sentenceId) return false;
-    if (a.claimIndex !== b.claimIndex) return false;
-    if (a.claimCount !== b.claimCount) return false;
-    return Math.max(a.start, b.start) < Math.min(a.end, b.end);
+    return a.start === b.start && a.end === b.end;
   }
 
   function findingCap(finding) {
@@ -451,8 +467,8 @@
       sentenceId: representative.sentenceId,
       claimIndex: representative.claimIndex,
       claimCount: representative.claimCount,
-      start: Math.min(...findings.map((finding) => finding.start)),
-      end: Math.max(...findings.map((finding) => finding.end)),
+      start: representative.start,
+      end: representative.end,
       verdict: representative.verdict,
       materiality: representative.materiality,
       centralToAnswer: findings.filter((finding) => finding.centralToAnswer).length >= requiredVotes,

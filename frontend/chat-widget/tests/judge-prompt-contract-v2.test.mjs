@@ -10,7 +10,8 @@ const shared = readFileSync(resolve(promptRoot, '_shared_judge_rubric_v2.md'), '
 test('shared rubric assigns semantic work to LLMs and mechanical work to code', () => {
   assert.match(shared, /perform semantic judgment only/i);
   assert.match(shared, /Do not calculate hashes, text offsets, averages, composite scores, gates/i);
-  assert.match(shared, /Do not copy answer text, create quotations, or calculate offsets/i);
+  assert.match(shared, /return `claimText` by copying the smallest exact, contiguous substring/i);
+  assert.match(shared, /Do not calculate offsets/i);
   assert.match(shared, /untrusted data/i);
   assert.match(shared, /Return exactly one sentence assessment for every manifest entry/i);
 });
@@ -31,6 +32,7 @@ test('shared rubric defines identical four dimensions and strict output shape', 
   }
   assert.match(shared, /"sentenceAssessments"/);
   assert.match(shared, /"evidencePassageIds"/);
+  assert.match(shared, /"claimText"/);
   assert.match(shared, /"centralToAnswer"/);
   assert.doesNotMatch(shared, /"claimQuote"/);
   assert.doesNotMatch(shared, /"excerpt"/);

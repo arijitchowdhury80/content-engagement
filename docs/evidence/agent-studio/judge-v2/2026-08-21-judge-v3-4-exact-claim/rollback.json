@@ -1,0 +1,18 @@
+{
+  "operation": "run the executable rollback command only after restoring the prior Jahia block",
+  "manifest": "/Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/.local/deployment-state/judge-v2/2026-08-21-judge-v3-4-exact-claim/rollback-manifest.json",
+  "createdAgentIds": [
+    {
+      "role": "skeptic",
+      "id": "573fb67f-72f0-4baa-8b14-33fd32dc9718"
+    },
+    {
+      "role": "referee",
+      "id": "2ec4490f-67df-479f-8c7a-5d58440e2e10"
+    },
+    {
+      "role": "advocate",
+      "id": "1b14aea2-6b0b-497a-9dff-be0dee3bb956"
+    }
+  ]
+}

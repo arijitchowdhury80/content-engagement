@@ -112,7 +112,7 @@ test('judge transport retries valid JSON followed by a stream error instead of a
   const report = {
     dimensionScores: { grounding: 10, completeness: 10, depth: 10, relevance: 10 },
     dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Deep.', relevance: 'Relevant.' },
-    sentenceAssessments: [{ sentenceId: 'S1', classification: 'factual', claims: [{ verdict: 'supported', materiality: 'minor', centralToAnswer: false, evidencePassageIds: ['P1'], reason: 'Supported.' }] }],
+    sentenceAssessments: [{ sentenceId: 'S1', classification: 'factual', claims: [{ claimText: 'Answer.', verdict: 'supported', materiality: 'minor', centralToAnswer: false, evidencePassageIds: ['P1'], reason: 'Supported.' }] }],
     summary: 'Valid.',
   };
   const fetchImpl = async () => {
@@ -139,7 +139,7 @@ test('judge transport retries valid JSON followed by a malformed SSE frame', asy
   const report = {
     dimensionScores: { grounding: 10, completeness: 10, depth: 10, relevance: 10 },
     dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Deep.', relevance: 'Relevant.' },
-    sentenceAssessments: [{ sentenceId: 'S1', classification: 'factual', claims: [{ verdict: 'supported', materiality: 'minor', centralToAnswer: false, evidencePassageIds: ['P1'], reason: 'Supported.' }] }],
+    sentenceAssessments: [{ sentenceId: 'S1', classification: 'factual', claims: [{ claimText: 'Answer.', verdict: 'supported', materiality: 'minor', centralToAnswer: false, evidencePassageIds: ['P1'], reason: 'Supported.' }] }],
     summary: 'Valid.',
   };
   const fetchImpl = async () => {
@@ -163,7 +163,7 @@ test('judge transport retries valid JSON followed by a guardrail terminal frame'
   const report = {
     dimensionScores: { grounding: 10, completeness: 10, depth: 10, relevance: 10 },
     dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Deep.', relevance: 'Relevant.' },
-    sentenceAssessments: [{ sentenceId: 'S1', classification: 'factual', claims: [{ verdict: 'supported', materiality: 'minor', centralToAnswer: false, evidencePassageIds: ['P1'], reason: 'Supported.' }] }],
+    sentenceAssessments: [{ sentenceId: 'S1', classification: 'factual', claims: [{ claimText: 'Answer.', verdict: 'supported', materiality: 'minor', centralToAnswer: false, evidencePassageIds: ['P1'], reason: 'Supported.' }] }],
     summary: 'Valid.',
   };
   const fetchImpl = async () => {
@@ -242,6 +242,7 @@ test('a judge retry receives the deterministic validation errors from its prior 
       dimensionRationales: { grounding: 'Central claim is unsupported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Relevant.' },
       sentenceAssessments: [{
         sentenceId: requests.length === 1 ? 'UNKNOWN' : 'S1', classification: 'factual', claims: [{
+          claimText: 'The answer makes a central unsupported claim.',
           verdict: 'unverifiable', materiality: 'critical', centralToAnswer: true,
           evidencePassageIds: [], reason: 'The evidence does not establish the claim.',
         }],
@@ -261,6 +262,36 @@ test('a judge retry receives the deterministic validation errors from its prior 
   ]);
 });
 
+test('a supported claim without evidence IDs is retried and never converted into an unverifiable finding', async () => {
+  const requests = [];
+  const evaluation = {
+    evaluationId: 'evaluation-proof-contract', question: 'Question?', answer: 'Supported answer.',
+    answerManifest: [{ sentenceId: 'S1', text: 'Supported answer.', start: 0, end: 17 }],
+    evidenceHash: 'evidence-hash',
+    evidencePacket: { passages: [{ evidencePassageId: 'P1', eventId: 'E1', fieldPath: '/text', text: 'Supported answer.' }] },
+  };
+  const fetchImpl = async (_url, init) => {
+    const input = JSON.parse(JSON.parse(init.body).messages[0].parts[0].text);
+    requests.push(input);
+    const report = {
+      dimensionScores: { grounding: 10, completeness: 10, depth: 9, relevance: 10 },
+      dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Relevant.' },
+      sentenceAssessments: [{ sentenceId: 'S1', claims: [{
+        claimText: 'Supported answer.', verdict: 'supported', materiality: 'material', centralToAnswer: true,
+        evidencePassageIds: requests.length === 1 ? [] : ['P1'], reason: 'The evidence supports the answer.',
+      }] }],
+      summary: 'Review complete.',
+    };
+    return new Response(`data: ${JSON.stringify({ type: 'text-delta', delta: JSON.stringify(report) })}`, { status: 200 });
+  };
+
+  const result = await callRoleJudge('referee', 'agent', 'APP', 'key', evaluation, { fetchImpl });
+  assert.equal(result.ok, true);
+  assert.equal(result.attempts, 2);
+  assert.match(requests[1].validationFeedback.join('; '), /supported claim requires evidencePassageIds/);
+  assert.equal(result.value.unresolved.length, 0);
+});
+
 test('transport failures are never copied into trusted judge validation feedback', async () => {
   const requests = [];
   const evaluation = {
@@ -277,6 +308,7 @@ test('transport failures are never copied into trusted judge validation feedback
       dimensionScores: { grounding: 10, completeness: 8, depth: 8, relevance: 9 },
       dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Relevant.' },
       sentenceAssessments: [{ sentenceId: 'S1', classification: 'factual', claims: [{
+        claimText: 'Supported answer.',
         verdict: 'supported', materiality: 'material', centralToAnswer: true,
         evidencePassageIds: ['P1'], reason: 'The passage supports the claim.',
       }] }],

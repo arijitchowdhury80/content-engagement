@@ -32,15 +32,17 @@ SOURCES = {
 }
 
 
-def immutable_assets() -> dict[str, dict[str, str]]:
+def immutable_assets(content_overrides: dict[str, dict[str, str]] | None = None) -> dict[str, dict[str, str]]:
+    content_overrides = content_overrides or {}
     assets = {}
     for key, source in SOURCES.items():
-        content = source.read_text(encoding="utf-8")
+        override = content_overrides.get(key)
+        content = override["content"] if override else source.read_text(encoding="utf-8")
         digest = jahia.sha256(content)
         stem = {"core": "algolia-judge-core", "badge": "algolia-confidence-badge", "chat": "algolia-chat"}[key]
         filename = f"{stem}-judge-v2-{digest[:12]}.js"
         assets[key] = {
-            "source": str(source.relative_to(ROOT)),
+            "source": override["source"] if override else str(source.relative_to(ROOT)),
             "content": content,
             "sha256": digest,
             "filename": filename,
@@ -146,6 +148,14 @@ def create_immutable(asset: dict) -> dict:
             raise RuntimeError(f"Immutable asset collision at {asset['path']}")
         return {"path": asset["path"], "operation": "reuse", "sha256": asset["sha256"]}
     jahia.upsert_file(asset["path"], asset["content"])
+    for attempt in range(8):
+        created = safe_node(asset["path"], "EDIT")
+        if created is not None and (jahia.file_content(created) or "") == asset["content"]:
+            break
+        if attempt < 7:
+            time.sleep(0.5)
+    else:
+        raise RuntimeError(f"Immutable asset was not readable with its exact content after creation: {asset['path']}")
     return {"path": asset["path"], "operation": "create", "sha256": asset["sha256"]}
 
 
@@ -155,6 +165,20 @@ def fetch_bytes(url: str) -> bytes:
         if response.status != 200:
             raise RuntimeError(f"Public readback failed for {url}: HTTP {response.status}")
         return response.read()
+
+
+def live_companion_overrides() -> dict[str, dict[str, str]]:
+    live_html = jahia.block_html("LIVE")
+    overrides = {}
+    for key, stem in {"badge": "algolia-confidence-badge", "chat": "algolia-chat"}.items():
+        urls = re.findall(
+            rf'<script src="({re.escape(PUBLIC)}/{stem}(?:-judge-v2-[a-f0-9]{{12}})?\.js(?:\?[^"\n]*)?)"></script>',
+            live_html,
+        )
+        if len(urls) != 1:
+            raise RuntimeError(f"Expected exactly one live {key} companion script; found {len(urls)}")
+        overrides[key] = {"source": f"live:{urls[0]}", "content": fetch_bytes(urls[0]).decode("utf-8")}
+    return overrides
 
 
 def validate(after: dict, assets: dict, expected_html: str, agent_ids: dict, public_checks: dict | None = None) -> dict:
@@ -236,6 +260,7 @@ def main() -> int:
     parser.add_argument("--skeptic")
     parser.add_argument("--referee")
     parser.add_argument("--advocate")
+    parser.add_argument("--preserve-live-companions", action="store_true")
     parser.add_argument("--evidence-dir", type=Path)
     args = parser.parse_args()
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -251,7 +276,7 @@ def main() -> int:
         parser.error("--skeptic, --referee, and --advocate are required unless --rollback is used")
     agent_ids = {"skeptic": args.skeptic, "referee": args.referee, "advocate": args.advocate}
     validate_agent_ids(agent_ids)
-    assets = immutable_assets()
+    assets = immutable_assets(live_companion_overrides() if args.preserve_live_companions else None)
     before = private_snapshot(assets)
     expected_html = update_block_html(before["edit"]["blockHtml"], assets, agent_ids)
     interrupted_cutover_recovery = False
@@ -277,7 +302,7 @@ def main() -> int:
     })
     plan = {
         "apply": args.apply,
-        "scope": "three immutable assets plus one exact Drift block",
+        "scope": "local judge core with preserved live companions plus one exact Drift block" if args.preserve_live_companions else "three immutable assets plus one exact Drift block",
         "assets": {key: {field: value for field, value in asset.items() if field != "content"} for key, asset in assets.items()},
         "agentIds": agent_ids,
         "expectedBlockSha256": jahia.sha256(expected_html),
@@ -293,22 +318,34 @@ def main() -> int:
         return 0
 
     mutations = {}
-    block_mutated = False
     try:
-        mutations = {f"asset_{key}": create_immutable(asset) for key, asset in assets.items()}
+        for key, asset in assets.items():
+            mutations[f"asset_{key}"] = {
+                "path": asset["path"],
+                "operation": "attempted",
+                "sha256": asset["sha256"],
+            }
+            mutations[f"asset_{key}"] = create_immutable(asset)
         if jahia.sha256(jahia.block_html("EDIT")) != jahia.sha256(before["edit"]["blockHtml"]):
             raise RuntimeError("Drift block changed after snapshot; aborting concurrent overwrite")
         mutations["setBlockHtml"] = jahia.set_block_html(expected_html)
-        block_mutated = True
         for key, asset in assets.items():
             mutations[f"publish_{key}_content"] = jahia.publish(f"{asset['path']}/jcr:content", subtree=False)
             mutations[f"publish_{key}"] = jahia.publish(asset["path"], subtree=False)
         mutations["versionBlock"] = jahia.version_block()
         mutations["publishDriftSubtree"] = jahia.publish("/sites/www/home/drift", subtree=True)
         mutations["publishBlock"] = jahia.publish(BLOCK, subtree=True)
-    except Exception:
-        if block_mutated:
-            restore(rollback_path)
+    except Exception as error:
+        try:
+            rollback = restore(rollback_path)
+        except Exception as rollback_error:
+            rollback = {"pass": False, "error": str(rollback_error)}
+        jahia.write_json(evidence_dir / "failed-mutation-rollback.json", {
+            "pass": False,
+            "error": str(error),
+            "rollback": rollback,
+            "mutations": mutations,
+        })
         raise
     jahia.write_json(evidence_dir / "mutation-results.json", mutations)
     try:

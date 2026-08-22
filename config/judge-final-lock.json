@@ -1,6 +1,7 @@
 {
   "status": "locked",
   "lockedAt": "2026-08-21",
+  "lastApprovedChange": "Exact claim-span validation and retry-only handling for malformed evidence references",
   "changePolicy": "No judge prompt, model, agent, scoring, grounding, aggregation, transport, lifecycle, or presentation change without Arijit's explicit approval.",
   "provider": {
     "id": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
@@ -9,21 +10,21 @@
     "thinkingBudget": 0
   },
   "agents": {
-    "skeptic": "abd89d65-21f5-4909-a7cc-dfeb1428198c",
-    "referee": "fa9b6f74-cdfb-40f0-ac86-f34e76721331",
-    "advocate": "2216fdec-d9f7-4112-a9df-4f0ca341b15a"
+    "skeptic": "573fb67f-72f0-4baa-8b14-33fd32dc9718",
+    "referee": "2ec4490f-67df-479f-8c7a-5d58440e2e10",
+    "advocate": "1b14aea2-6b0b-497a-9dff-be0dee3bb956"
   },
   "protectedFileSha256": {
-    "agents/prompts/judge/_shared_judge_rubric_v2.md": "405679bc9bf735457f2fb0a8996f3e0c94275cbcc0c876bc84f5a7703efd59ae",
+    "agents/prompts/judge/_shared_judge_rubric_v2.md": "26c0e31df26328f253620416f2a1ed6c911a1cef3b3490bb67afeee5eaa1372d",
     "agents/prompts/judge/instructions_judge_skeptic.md": "d942808a7d586dcdfb6c58a5c226a8e783bf0df5059f573eba72ed48413d3397",
     "agents/prompts/judge/instructions_judge_referee.md": "c9244620e4b701b03cf383a7a5a92dcb450c853650a9e147ededc9f513b47da2",
     "agents/prompts/judge/instructions_judge_advocate.md": "adb77ed3d28b5a383498b7a027dffee2f52fa3cbf420d57b6ec0d41817c709db",
-    "frontend/chat-widget/algolia-judge-core.js": "e41ad840af5fdbb03c52dd143b70ff9be6d3d289bb2e08420801734cf26476d9",
+    "frontend/chat-widget/algolia-judge-core.js": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
     "frontend/chat-widget/algolia-confidence-badge.js": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37"
   },
   "liveAssetSha256": {
-    "core": "e41ad840af5fdbb03c52dd143b70ff9be6d3d289bb2e08420801734cf26476d9",
+    "core": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
     "badge": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
-    "chat": "94159b5f0d5b06dd86f86b11aa8805b748df24a32f5f3795e28236c17b01ab64"
+    "chat": "4bf758dd9415632959628ec84272e2f29b8df3336d8d563f326753bd085393dc"
   }
 }

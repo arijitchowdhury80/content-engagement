@@ -76,7 +76,8 @@ ANSWER_MANIFEST contains deterministic sentence identifiers. Return exactly one 
 
 - Return an empty `claims` array when the entire manifest entry contains no substantive factual claim.
 - Otherwise return one claim object for every independently checkable substantive claim in that entry, in the same left-to-right order in which the claims appear. The receiving code derives the factual/not-factual classification and assigns the mechanical claim index from the claims array.
-- Do not copy answer text, create quotations, or calculate offsets. The application resolves the exact answer text and highlight span mechanically from `sentenceId`.
+- For each claim, return `claimText` by copying the smallest exact, contiguous substring of the manifest entry that expresses that claim. Preserve capitalization, punctuation, Markdown, and whitespace exactly. Do not paraphrase, normalize, or include unrelated surrounding clauses.
+- Selecting the relevant claim words is semantic work. Do not calculate offsets. The application verifies `claimText` against `sentenceId` and calculates the exact highlight offsets mechanically.
 - `materiality` is `minor`, `material`, or `critical` based on the effect of the claim on the usefulness and correctness of the answer.
 - `centralToAnswer` is true only when removing or reversing the claim would materially change the answer to the user's central question.
 
@@ -123,6 +124,7 @@ Return only one JSON object, with no markdown or prose around it:
       "sentenceId": "copy the exact bound sentenceId from ANSWER_MANIFEST",
       "claims": [
         {
+          "claimText": "copy the smallest exact contiguous answer substring that expresses this claim",
           "verdict": "supported | unverifiable | contradicted",
           "materiality": "minor | material | critical",
           "centralToAnswer": false,

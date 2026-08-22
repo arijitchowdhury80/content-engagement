@@ -67,6 +67,7 @@ function fixture() {
             sentenceId: unit.sentenceId,
             classification: 'factual',
             claims: [{
+              claimText: unit.text,
               verdict: isUnsupported ? 'contradicted' : 'supported',
               materiality: isUnsupported ? 'critical' : 'material',
               centralToAnswer: isUnsupported,

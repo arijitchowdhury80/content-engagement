@@ -20,9 +20,9 @@
     "origin": "https://tmp-content-eng-algolia.cloud.jahia.com",
     "keyEnv": "JUDGE_SEARCH_KEY",
     "agents": {
-      "skeptic": "abd89d65-21f5-4909-a7cc-dfeb1428198c",
-      "referee": "fa9b6f74-cdfb-40f0-ac86-f34e76721331",
-      "advocate": "2216fdec-d9f7-4112-a9df-4f0ca341b15a"
+      "skeptic": "573fb67f-72f0-4baa-8b14-33fd32dc9718",
+      "referee": "2ec4490f-67df-479f-8c7a-5d58440e2e10",
+      "advocate": "1b14aea2-6b0b-497a-9dff-be0dee3bb956"
     }
   }
 }

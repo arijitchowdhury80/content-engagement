@@ -9,11 +9,11 @@ No judge prompt, model, Agent Studio agent, grounding rule, scoring rule, aggreg
 - Provider: `google_genai`
 - Model: `gemini-2.5-flash`
 - Thinking budget: `0`
-- Skeptic: `abd89d65-21f5-4909-a7cc-dfeb1428198c`
-- Referee: `fa9b6f74-cdfb-40f0-ac86-f34e76721331`
-- Advocate: `2216fdec-d9f7-4112-a9df-4f0ca341b15a`
+- Skeptic: `573fb67f-72f0-4baa-8b14-33fd32dc9718`
+- Referee: `2ec4490f-67df-479f-8c7a-5d58440e2e10`
+- Advocate: `1b14aea2-6b0b-497a-9dff-be0dee3bb956`
 
-The three Agent Studio judges independently score grounding, completeness, depth, and relevance against the same complete evidence packet. Code performs mechanical validation, conservative proof-state normalization, consensus, averaging, and published score caps. There is no localhost judge and no arbitrary elapsed-time scoring deadline.
+The three Agent Studio judges independently score grounding, completeness, depth, and relevance against the same complete evidence packet. Judges select the smallest exact answer substring for each semantic claim; code verifies that text and computes highlight offsets. Missing proof IDs or invalid claim text fail validation and retry instead of being converted into semantic grounding failures. Code performs consensus, averaging, and published score caps. There is no localhost judge and no arbitrary elapsed-time scoring deadline.
 
 ## Enforcement
 
@@ -21,10 +21,11 @@ The three Agent Studio judges independently score grounding, completeness, depth
 
 ## Final Validation
 
-- 265 JavaScript tests passed.
-- 8 Jahia deployment tests passed.
+- 273 JavaScript tests passed across the chat widget and comparison runner.
+- 10 Jahia deployment tests passed.
 - Exact Jahia edit, live, public asset, load-order, and agent-ID readback passed.
 - The former live failure query completed with all three judges in a headed browser.
 - Final observed panel: Skeptic `9.3`, Referee `9.7`, Advocate `9.3`; composite `9.4/10`.
+- Exact-claim live smoke panel: Skeptic `9.7`, Referee `10.0`, Advocate `10.0`; one precise sentence selected for review while the answer remained visible.
 
-Authoritative deployment evidence: `docs/evidence/deployments/2026-08-21-judge-v3-3-gemini-final-recovery/`.
+Authoritative deployment evidence: `docs/evidence/deployments/2026-08-21-judge-v3-4-exact-claim-reviewed/`.
