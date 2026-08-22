@@ -266,6 +266,24 @@ def create_immutable(asset: dict) -> dict:
     raise RuntimeError(f"Immutable asset readback failed: {asset['path']}")
 
 
+def restore_block_with_cas(before: str, allowed_hashes: set[str], attempts: int = 5) -> dict:
+    """Restore EDIT while refusing to cross a concurrent block change."""
+    for attempt in range(attempts):
+        current = {workspace: jahia.block_html(workspace) for workspace in ["EDIT", "LIVE"]}
+        unexpected = [
+            workspace for workspace, html in current.items() if sha256(html) not in allowed_hashes
+        ]
+        if unexpected:
+            raise RuntimeError(f"Rollback refused after concurrent change in: {', '.join(unexpected)}")
+        try:
+            return jahia.set_block_html(before)
+        except RuntimeError as error:
+            if "InvalidItemStateException" not in str(error) or attempt + 1 >= attempts:
+                raise
+            time.sleep(0.5 * (attempt + 1))
+    raise AssertionError("unreachable")
+
+
 def restore(plan_path: Path) -> dict:
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     before = plan["beforeBlockHtml"]
@@ -274,12 +292,13 @@ def restore(plan_path: Path) -> dict:
     if sha256(before) != before_hash:
         raise RuntimeError("Rollback plan is corrupted")
     current = {workspace: jahia.block_html(workspace) for workspace in ["EDIT", "LIVE"]}
-    unexpected = [name for name, html in current.items() if sha256(html) not in {before_hash, deployed_hash}]
+    allowed_hashes = {before_hash, deployed_hash}
+    unexpected = [name for name, html in current.items() if sha256(html) not in allowed_hashes]
     if unexpected:
         raise RuntimeError(f"Rollback refused after concurrent change in: {', '.join(unexpected)}")
     if all(sha256(value) == before_hash for value in current.values()):
         return {"pass": True, "alreadyRestored": True, "sha256": before_hash}
-    jahia.set_block_html(before)
+    restore_block_with_cas(before, allowed_hashes)
     jahia.version_block()
     jahia.publish(BLOCK, subtree=True)
     for _ in range(8):
