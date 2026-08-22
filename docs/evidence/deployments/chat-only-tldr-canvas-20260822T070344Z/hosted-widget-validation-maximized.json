@@ -1,0 +1,48 @@
+{
+  "scriptReferenceCount": 1,
+  "completionRequests": 7,
+  "progress": "100%",
+  "sizeMode": "maximized",
+  "hasAnalogy": true,
+  "analogyFontStyle": "italic",
+  "hasShort": true,
+  "shortFontStyle": "normal",
+  "tldrText": "API calls are like little door swings at a very busy store: one customer entering is harmless, but autocomplete, filters, page loads, bots, and eager widgets can turn that door into a blur.Short version: yes, almost every interaction that requests data from an Algolia index counts as a billable search request.",
+  "labels": [
+    {
+      "text": "TL;DR",
+      "fontWeight": "600",
+      "textTransform": "uppercase",
+      "letterSpacing": "0.44px",
+      "color": "rgb(119, 122, 175)"
+    },
+    {
+      "text": "Details",
+      "fontWeight": "600",
+      "textTransform": "uppercase",
+      "letterSpacing": "0.44px",
+      "color": "rgb(119, 122, 175)"
+    },
+    {
+      "text": "Sources",
+      "fontWeight": "600",
+      "textTransform": "uppercase",
+      "letterSpacing": "0.44px",
+      "color": "rgb(119, 122, 175)"
+    }
+  ],
+  "detailsBodyHeadings": [],
+  "sourceText": "SourcesDocumentation1Support1",
+  "followupText": "Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?",
+  "followupCount": 1,
+  "detailsContainsFollowup": false,
+  "tooltipCount": 0,
+  "blackBars": 0,
+  "browserErrors": [
+    "Failed to load resource: the server responded with a status of 404 ()",
+    "Access to fetch at 'https://dashboard.algolia.com/static/current_user' from origin 'https://tmp-content-eng-algolia.cloud.jahia.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "Failed to load resource: net::ERR_FAILED",
+    "There was a problem with the fetch operation: TypeError: Failed to fetch\n    at window.fetch (<anonymous>:17:12)\n    at window.fetch (https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home.html?algoliaChatDebug=1&t=1787382668976:4879:21)\n    at algoliaContextFetch (https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260820-navigation-edge-a:754:30)\n    at HTMLDocument.<anonymous> (https://tmp-content-eng-algolia.cloud.jahia.com/modules/algolia-base-template/javascript/currentUser.js:4:16)"
+  ],
+  "passed": true
+}

@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-08-22T07:06:08.229351+00:00",
+  "mode": "chat-only-tldr-canvas",
+  "source": "frontend/chat-widget/algolia-chat.js",
+  "oldChatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-judge-v2-b3eb4af7e6ea.js",
+  "newChatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-judge-v2-8478b3e11631.js",
+  "newAssetPath": "/sites/www/files/algolia-chat-judge-v2-8478b3e11631.js",
+  "newSha256": "8478b3e1163110b06a7562525d66e0f59d7f4285b46267ec63771fcb4796aa51",
+  "protectedCompanionUrls": [
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js?theme=20260815-answer-rhythm-balanced-a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-judge-core-judge-v2-8cb19d39aece.js",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=20260820-navigation-edge-a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=20260820-navigation-edge-a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=20260820-navigation-edge-a",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=20260819-runtime-z",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=20260819-runtime-z",
+    "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-form-tool.js"
+  ],
+  "beforeEditSha256": "bd0e6358e28023f83ed961a857b5f028cfff868c5a634406732ad8cb80d99838",
+  "beforeLiveSha256": "bd0e6358e28023f83ed961a857b5f028cfff868c5a634406732ad8cb80d99838",
+  "expectedDeployedSha256": "377f69abbca1db609f7cde49c4477e4b96aef5b00844f45b7bb6c2f8559cee78"
+}

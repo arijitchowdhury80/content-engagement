@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-08-22T07:06:42.410853+00:00",
+  "mode": "readback-corrected",
+  "newChatUrl": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-judge-v2-8478b3e11631.js",
+  "checks": {
+    "newChatReferencedInEditOnce": true,
+    "newChatReferencedInLiveOnce": true,
+    "newChatReferencedRenderedOnce": true,
+    "oldChatAbsentInEdit": true,
+    "oldChatAbsentInLive": true,
+    "oldChatAbsentRendered": true,
+    "editLiveBlocksMatch": true,
+    "editAssetHashMatches": true,
+    "liveAssetHashMatches": true,
+    "publicAssetHashMatches": true,
+    "protectedCompanionsUnchangedInEdit": true,
+    "protectedCompanionsUnchangedInLive": true,
+    "protectedCompanionsUnchangedRendered": true,
+    "renderedScriptSetContainsNewChatOnce": true
+  },
+  "pass": true
+}

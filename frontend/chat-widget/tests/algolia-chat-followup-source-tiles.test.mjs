@@ -299,12 +299,31 @@ ${discoveryMarker}`;
       const labelStyle = label ? getComputedStyle(label) : null;
       const detailsLabel = root.querySelector('.acs-answer-details-label');
       const detailsLabelStyle = detailsLabel ? getComputedStyle(detailsLabel) : null;
+      const sourcesLabel = root.querySelector('.acs-source-section .acs-answer-section-label');
+      const sourcesLabelStyle = sourcesLabel ? getComputedStyle(sourcesLabel) : null;
+      const analogy = root.querySelector('.acs-answer-analogy');
+      const short = root.querySelector('.acs-answer-short');
+      const analogyStyle = analogy ? getComputedStyle(analogy) : null;
+      const shortStyle = short ? getComputedStyle(short) : null;
       return {
         labelText: label?.textContent.trim(),
         labelWeight: labelStyle?.fontWeight,
+        labelTransform: labelStyle?.textTransform,
+        labelLetterSpacing: labelStyle?.letterSpacing,
         detailsLabelWeight: detailsLabelStyle?.fontWeight,
+        detailsLabelText: detailsLabel?.textContent.trim(),
+        detailsLabelTransform: detailsLabelStyle?.textTransform,
+        detailsLabelLetterSpacing: detailsLabelStyle?.letterSpacing,
+        sourcesLabelText: sourcesLabel?.textContent.trim(),
+        sourcesLabelWeight: sourcesLabelStyle?.fontWeight,
+        sourcesLabelTransform: sourcesLabelStyle?.textTransform,
+        sourcesLabelLetterSpacing: sourcesLabelStyle?.letterSpacing,
         detailsTopPadding: getComputedStyle(details).paddingTop,
         hasAnalogyTreatmentHook: Boolean(root.querySelector('.acs-answer-analogy')),
+        analogyText: analogy?.textContent.replace(/\s+/g, ' ').trim(),
+        analogyFontStyle: analogyStyle?.fontStyle,
+        shortText: short?.textContent.replace(/\s+/g, ' ').trim(),
+        shortFontStyle: shortStyle?.fontStyle,
         tldrBlocks,
         tldrText: tldr?.textContent.replace(/\s+/g, ' ').trim(),
         detailsText: details?.textContent.replace(/\s+/g, ' ').trim(),
@@ -323,10 +342,22 @@ ${discoveryMarker}`;
     }, { question: followUp, inlineQuestion: modelInlineFollowUp });
 
     assert.equal(result.labelText, 'TL;DR');
+    assert.equal(result.detailsLabelText, 'Details');
+    assert.equal(result.sourcesLabelText, 'Sources');
     assert.ok(Number(result.labelWeight) >= 700 || result.labelWeight === 'bold');
     assert.ok(Number(result.detailsLabelWeight) >= 700 || result.detailsLabelWeight === 'bold');
+    assert.ok(Number(result.sourcesLabelWeight) >= 700 || result.sourcesLabelWeight === 'bold');
+    assert.equal(result.labelTransform, 'uppercase');
+    assert.equal(result.detailsLabelTransform, 'uppercase');
+    assert.equal(result.sourcesLabelTransform, 'uppercase');
+    assert.equal(result.labelLetterSpacing, result.detailsLabelLetterSpacing);
+    assert.equal(result.detailsLabelLetterSpacing, result.sourcesLabelLetterSpacing);
     assert.equal(result.detailsTopPadding, '20px');
-    assert.equal(result.hasAnalogyTreatmentHook, false);
+    assert.equal(result.hasAnalogyTreatmentHook, true);
+    assert.match(result.analogyText, /little door swings/);
+    assert.equal(result.analogyFontStyle, 'italic');
+    assert.match(result.shortText, /Short version: yes/);
+    assert.notEqual(result.shortFontStyle, 'italic');
     assert.match(result.tldrBlocks[0], /little door swings/);
     assert.match(result.tldrBlocks[1], /Short version: yes/);
     assert.match(result.tldrText, /little door swings/);
@@ -351,9 +382,17 @@ ${discoveryMarker}`;
 });
 
 test('TLDR treatment is limited to the first primary answer in a conversation', async () => {
-  const page = await createWidgetPage();
+  const layeredAnswer = `Implementation planning is like setting a table before the guests arrive: the plates matter, but the sequence matters more.
+
+Short version: start with the smallest working search path, then harden the data and events around it.
+
+## Details
+Use one integration path first, validate relevance, then expand the controls.
+
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(layeredAnswer) });
   try {
-    await waitForAnswer(page);
+    await waitForAnswerText(page, 'Short version: start with the smallest working search path');
     const composer = page.locator('algolia-chat').locator('textarea');
     await composer.waitFor({ state: 'visible' });
     await page.waitForFunction(() => {
@@ -375,6 +414,9 @@ test('TLDR treatment is limited to the first primary answer in a conversation', 
         detailsLabels: root.querySelectorAll('.acs-answer-details-label').length,
         tldrLabels: labels.filter((label) => label === 'TL;DR').length,
         assistantLabels: labels.filter((label) => label === 'Assistant').length,
+        detailsText: root.querySelector('.acs-answer-details')?.textContent.replace(/\s+/g, ' ').trim(),
+        detailsBodyHeadings: [...root.querySelectorAll('.acs-answer-details h1, .acs-answer-details h2, .acs-answer-details h3')]
+          .map((node) => node.textContent.trim()),
         turnCount: JSON.parse(sessionStorage.getItem('algolia-chat:conversation')).turns.length,
       };
     });
@@ -383,8 +425,94 @@ test('TLDR treatment is limited to the first primary answer in a conversation', 
     assert.equal(result.tldrTiles, 1);
     assert.equal(result.answerLayers, 1);
     assert.equal(result.detailsLabels, 1);
+    assert.deepEqual(result.detailsBodyHeadings, []);
     assert.equal(result.tldrLabels, 1);
     assert.equal(result.assistantLabels, 0);
+  } finally {
+    await page.close();
+  }
+});
+
+test('one-paragraph answer does not force a broken TLDR split', async () => {
+  const text = `A single direct answer should stay flat when there is no separate short-version block.
+
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'single direct answer');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      return {
+        tldrTiles: root.querySelectorAll('.acs-answer-tldr').length,
+        answerLayers: root.querySelectorAll('.acs-answer-layer').length,
+        detailsLabels: root.querySelectorAll('.acs-answer-details-label').length,
+        answerText: root.textContent.replace(/\s+/g, ' ').trim(),
+      };
+    });
+
+    assert.equal(result.tldrTiles, 0);
+    assert.equal(result.answerLayers, 0);
+    assert.equal(result.detailsLabels, 0);
+    assert.match(result.answerText, /single direct answer/);
+  } finally {
+    await page.close();
+  }
+});
+
+test('heading-first answer stays flat instead of forcing the heading into TLDR', async () => {
+  const text = `## Practical answer
+Use rate limits where traffic concentrates, then debounce normal typing.
+
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'Practical answer');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      return {
+        tldrTiles: root.querySelectorAll('.acs-answer-tldr').length,
+        headingText: [...root.querySelectorAll('p, h1, h2, h3')]
+          .map((node) => node.textContent.trim())
+          .find((value) => value === 'Practical answer'),
+      };
+    });
+
+    assert.equal(result.tldrTiles, 0);
+    assert.equal(result.headingText, 'Practical answer');
+  } finally {
+    await page.close();
+  }
+});
+
+test('markerless trailing discovery question is rendered only in the follow-up tile', async () => {
+  const inlineQuestion =
+    'Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?';
+  const text = `API calls are like little door swings at a busy store: one customer entering is harmless, but eager widgets can turn that door into a blur.
+
+Short version: yes, almost every interaction that requests data from an Algolia index counts as a billable search request.
+
+## The mechanism
+Use debounce for normal typing and rate limits for abusive clients.
+
+${inlineQuestion}`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'Short version: yes');
+    const result = await page.evaluate((question) => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const tldr = root.querySelector('.acs-answer-tldr');
+      const details = root.querySelector('.acs-answer-details');
+      const followWrap = root.querySelector('.acs-followup-wrap');
+      return {
+        questionInTldr: tldr?.textContent.includes(question),
+        questionInDetails: details?.textContent.includes(question),
+        questionInFollowUp: followWrap?.textContent.includes(question),
+      };
+    }, inlineQuestion);
+
+    assert.equal(result.questionInTldr, false);
+    assert.equal(result.questionInDetails, false);
+    assert.equal(result.questionInFollowUp, true);
   } finally {
     await page.close();
   }
