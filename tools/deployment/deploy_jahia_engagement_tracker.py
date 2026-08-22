@@ -483,7 +483,7 @@ def update_block_html(current: str) -> str:
         next_html,
     )
     next_html = re.sub(
-        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-context-compiler\.js(?:\?[^"]*)?"></script>',
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/algolia-context-compiler(?:-compare-[a-f0-9]{12})?\.js(?:\?[^"]*)?"></script>',
         context_compiler_tag,
         next_html,
     )
@@ -493,7 +493,7 @@ def update_block_html(current: str) -> str:
         next_html,
     )
     next_html = re.sub(
-        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/handoff-to-orchestrator\.js(?:\?[^"]*)?"></script>',
+        r'<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/sites/www/files/handoff-to-orchestrator(?:-compare-[a-f0-9]{12})?\.js(?:\?[^"]*)?"></script>',
         handoff_tag,
         next_html,
     )
@@ -631,22 +631,28 @@ def update_judge_runtime_block_html(current: str) -> str:
 def update_journey_runtime_block_html(current: str) -> str:
     """Change only tracker, compiler, and controller cache keys and release marker."""
     assets = (
-        ("algolia-engagement-tracker.js", "tracker"),
-        ("algolia-context-compiler.js", "context"),
-        ("algolia-proactive-controller.js", "proactive"),
+        (r"algolia-engagement-tracker\.js", "algolia-engagement-tracker.js", "tracker"),
+        (
+            r"algolia-context-compiler(?:-compare-[a-f0-9]{12})?\.js",
+            "algolia-context-compiler.js",
+            "context",
+        ),
+        (r"algolia-proactive-controller\.js", "algolia-proactive-controller.js", "proactive"),
     )
     next_html = current
-    for filename, query_name in assets:
+    for filename_pattern, filename_label, query_name in assets:
         pattern = re.compile(
             rf'(<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/'
-            rf'sites/www/files/{re.escape(filename)})(?:\?[^"\n]*)?(\"></script>)'
+            rf'sites/www/files/){filename_pattern}(?:\?[^"\n]*)?(\"></script>)'
         )
         if len(pattern.findall(next_html)) != 1:
             raise RuntimeError(
-                f"Journey-runtime deployment requires exactly one {filename} script tag"
+                f"Journey-runtime deployment requires exactly one {filename_label} script tag"
             )
         next_html = pattern.sub(
-            rf'\1?{query_name}={JOURNEY_RUNTIME_VERSION}\2', next_html, count=1
+            rf'\1{filename_label}?{query_name}={JOURNEY_RUNTIME_VERSION}\2',
+            next_html,
+            count=1,
         )
 
     embed_pattern = re.compile(r'<div\b[^>]*\bclass="[^"]*\balgolia-chat-embed\b[^"]*"[^>]*>')
@@ -741,11 +747,11 @@ def validate(snapshot_after: dict) -> dict:
         "liveHtmlReferencesChat": "algolia-chat.js" in live_html,
         "liveHtmlReferencesChatVersion": f"chat={CHAT_VERSION}" in live_html,
         "liveHtmlReferencesTrackerVersion": f"tracker={TRACKER_VERSION}" in live_html,
-        "liveHtmlReferencesContextCompiler": "algolia-context-compiler.js" in live_html,
+        "liveHtmlReferencesContextCompiler": "algolia-context-compiler" in live_html,
         "liveHtmlReferencesContextCompilerVersion": f"context={CONTEXT_COMPILER_VERSION}" in live_html,
         "liveHtmlReferencesProactiveController": "algolia-proactive-controller.js" in live_html,
         "liveHtmlReferencesProactiveControllerVersion": f"proactive={PROACTIVE_CONTROLLER_VERSION}" in live_html,
-        "liveHtmlReferencesHandoffToOrchestrator": "handoff-to-orchestrator.js" in live_html,
+        "liveHtmlReferencesHandoffToOrchestrator": "handoff-to-orchestrator" in live_html,
         "liveHtmlReferencesHandoffToOrchestratorVersion": f"handoff={HANDOFF_TO_ORCHESTRATOR_VERSION}" in live_html,
         "liveHtmlReferencesEngageVersion": f"engage={ENGAGE_VERSION}" in live_html,
         "liveHtmlReferencesTheme": "algolia-chat-theme-algolia-modal-greeting-width-20260815a.js" in live_html,
@@ -772,11 +778,11 @@ def edit_has_expected_html(snapshot_after: dict) -> bool:
             f"tracker={TRACKER_VERSION}" in edit_html,
             "algolia-chat.js" in edit_html,
             f"chat={CHAT_VERSION}" in edit_html,
-            "algolia-context-compiler.js" in edit_html,
+            "algolia-context-compiler" in edit_html,
             f"context={CONTEXT_COMPILER_VERSION}" in edit_html,
             "algolia-proactive-controller.js" in edit_html,
             f"proactive={PROACTIVE_CONTROLLER_VERSION}" in edit_html,
-            "handoff-to-orchestrator.js" in edit_html,
+            "handoff-to-orchestrator" in edit_html,
             f"handoff={HANDOFF_TO_ORCHESTRATOR_VERSION}" in edit_html,
             f"engage={ENGAGE_VERSION}" in edit_html,
             "algolia-chat-theme-algolia-modal-greeting-width-20260815a.js" in edit_html,
@@ -1468,9 +1474,9 @@ def main() -> int:
             "oldTrackerReferenced": "algolia-chat-tracker.js" in current_html,
             "chatReferenced": "algolia-chat.js" in current_html,
             "newTrackerReferenced": "algolia-engagement-tracker.js" in current_html,
-            "contextCompilerReferenced": "algolia-context-compiler.js" in current_html,
+            "contextCompilerReferenced": "algolia-context-compiler" in current_html,
             "proactiveControllerReferenced": "algolia-proactive-controller.js" in current_html,
-            "handoffToOrchestratorReferenced": "handoff-to-orchestrator.js" in current_html,
+            "handoffToOrchestratorReferenced": "handoff-to-orchestrator" in current_html,
             "themeReferenced": "algolia-chat-theme-algolia" in current_html,
             "releaseMarkers": re.findall(r'data-release="([^"]+)"', current_html),
             "chatExists": before["edit"]["chatNode"] is not None,

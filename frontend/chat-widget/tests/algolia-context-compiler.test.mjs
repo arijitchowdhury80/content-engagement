@@ -463,6 +463,25 @@ test('injects turnContext into Agent Studio AI SDK v5 user message metadata', as
   assert.equal(body.messages[0].metadata.turnContext.current_topic, 'observed:ai_search');
 });
 
+test('prepared completion bodies bypass the interceptor without a second mutation', async () => {
+  const { context } = createHarness();
+  const compiler = context.algoliaContextCompiler;
+  const input = JSON.stringify({
+    id: 'conversation-1',
+    messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Compare this' }] }],
+  });
+
+  const prepared = compiler.prepareCompletionBody(input);
+  const response = await compiler.fetchPrepared(
+    'https://0EXRPAXB56.algolia.net/agent-studio/1/agents/agent/completions',
+    { method: 'POST', body: prepared },
+  );
+
+  assert.equal(response.options.body, prepared, 'terminal sender must preserve the exact string');
+  const sent = JSON.parse(response.options.body);
+  assert.equal(sent.messages[0].metadata.turnContext.persona, 'confirmed:developer');
+});
+
 test('rejects an oversized existing turnContext field instead of clipping it', () => {
   const { context } = createHarness();
   const body = JSON.stringify({

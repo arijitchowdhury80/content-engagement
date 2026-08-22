@@ -1,5 +1,6 @@
 # credentials — symlink to commons/rendered/*.env, never commit
 .env.local
+.env.compare.local
 .env
 *.env
 

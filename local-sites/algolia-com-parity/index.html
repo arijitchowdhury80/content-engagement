@@ -453,7 +453,8 @@
           });
         }
         if (requestUrl.includes(`/agent-studio/1/agents/${LOCAL_ORCHESTRATOR_AGENT_ID}/`)) {
-          const request = JSON.parse(options.body || "{}");
+          const rawBody = String(options.body || "{}");
+          const request = JSON.parse(rawBody);
           const persistedRequests = JSON.parse(
             sessionStorage.getItem("algolia-local-orchestrator-requests") || "[]"
           );
@@ -467,6 +468,10 @@
           window.__localOrchestratorRequests = [
             ...(window.__localOrchestratorRequests || []),
             request,
+          ];
+          window.__localOrchestratorRequestBodies = [
+            ...(window.__localOrchestratorRequestBodies || []),
+            rawBody,
           ];
           return streamResponse(localOrchestratorFrames(request));
         }
@@ -538,6 +543,14 @@
     <script src="/chat/algolia-chat-engage.js"></script>
     <script src="/chat/algolia-chat-form-tool.js"></script>
     <script src="/chat/algolia-confidence-badge.js"></script>
+    <script>
+      // Compare-with-production. localhost is not on the production agent's
+      // approved-domains list, so the turn is forwarded by the parity server,
+      // which holds the key. The path deliberately avoids "/agent-studio/1/agents/"
+      // so the local greeting mock above does not intercept it.
+      window.ACS_COMPARE = { prod: { proxyPath: "/__compare/production" } };
+    </script>
+    <script src="/chat/algolia-chat-compare.js"></script>
   </head>
   <body>
     <header>

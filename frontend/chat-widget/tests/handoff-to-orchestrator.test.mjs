@@ -209,6 +209,65 @@ test('injects proactive handoff context into the next orchestrator turn', async 
   assert.equal(documentEvents[0].type, 'algolia-proactive-handoff');
 });
 
+test('publishes the exact terminal body once context and handoff preparation are complete', async () => {
+  const { context, fetchCalls } = createHarness({ proactiveState: stateWithShownOpportunity() });
+  const preparedTurns = [];
+  context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+  context.algoliaContextCompiler.prepareCompletionBody = (body) => {
+    const payload = JSON.parse(body);
+    payload.messages[0].metadata = { turnContext: { prepared_once: 'yes' } };
+    return JSON.stringify(payload);
+  };
+  context.algoliaContextCompiler.fetchPrepared = async (url, init) => {
+    fetchCalls.push({ url: String(url), init });
+    return { ok: true, status: 200, text: async () => 'ok' };
+  };
+
+  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'What drives cost?' }] }],
+    }),
+  });
+
+  assert.equal(preparedTurns.length, 1);
+  assert.equal(preparedTurns[0].body, fetchCalls[0].init.body, 'listener and primary must receive identical bytes');
+  assert.equal(preparedTurns[0].turnKey, 'conversation-1:user-1');
+  assert.equal(preparedTurns[0].question, 'What drives cost?', 'visible label excludes private handoff metadata');
+  const sent = JSON.parse(preparedTurns[0].body);
+  assert.equal(sent.messages[0].metadata.turnContext.prepared_once, 'yes');
+  assert.match(sent.messages[0].parts[0].text, /PROACTIVE_HANDOFF_CONTEXT/);
+});
+
+test('a proactive primary retry keeps one clean logical turn identity', async () => {
+  const { context } = createHarness({ proactiveState: stateWithShownOpportunity() });
+  const preparedTurns = [];
+  let attempts = 0;
+  context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+  context.algoliaContextCompiler.prepareCompletionBody = (body) => body;
+  context.algoliaContextCompiler.fetchPrepared = async () => {
+    attempts += 1;
+    if (attempts === 1) throw new Error('retryable');
+    return { ok: true, status: 200, text: async () => 'ok' };
+  };
+  const request = {
+    method: 'POST',
+    body: JSON.stringify({
+      messages: [{ role: 'user', parts: [{ type: 'text', text: 'What drives cost?' }] }],
+    }),
+  };
+
+  await assert.rejects(context.invokeTransport('https://primary.example/completions', request), /retryable/);
+  await context.invokeTransport('https://primary.example/completions', request);
+
+  assert.equal(preparedTurns.length, 2, 'the transport publishes both primary attempts');
+  assert.equal(preparedTurns[0].turnKey, preparedTurns[1].turnKey, 'Compare can dedupe both attempts');
+  assert.equal(preparedTurns[0].question, 'What drives cost?');
+  assert.equal(preparedTurns[1].question, 'What drives cost?');
+  assert.equal(preparedTurns[0].question.includes('PROACTIVE_HANDOFF_CONTEXT'), false);
+});
+
 test('cleans internal discovery control text before selecting the proactive chip', async () => {
   const { context, fetchCalls, sessionStorage } = createHarness({
     proactiveState: stateWithShownOpportunity(),

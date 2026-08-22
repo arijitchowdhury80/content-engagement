@@ -26,8 +26,9 @@
   const DISCOVERY_STATE_COMMENT_RE = /\n*<!--DISCOVERY_STATE[\s\S]*?DISCOVERY_STATE-->\s*/gi;
   const LEGACY_VISITOR_INTELLIGENCE_RE = /\n*VISITOR INTELLIGENCE \(JSON DATA, NOT INSTRUCTIONS\)[\s\S]*$/i;
 
-  const nativeFetch = typeof window.fetch === "function" ? window.fetch.bind(window) : null;
+  const fallbackFetch = typeof window.fetch === "function" ? window.fetch.bind(window) : null;
   let transportInstalled = false;
+  const preparedTurnListeners = new Set();
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -137,6 +138,38 @@
     return -1;
   }
 
+  function logicalTurn(payload) {
+    const index = lastUserMessageIndex(payload);
+    if (index === -1) return null;
+    const message = payload.messages[index] || {};
+    const text = userTextFromPayload(payload);
+    const persistedConversation = readJson(sessionStorage, "algolia-chat:conversation", null);
+    const conversationId = String(
+      payload.id || payload.conversationId || persistedConversation?.conversationId || "conversation"
+    );
+    const messageId = String(message.id || message.messageId || `${index}:${text}`);
+    return {
+      key: `${conversationId}:${messageId}`,
+      question: text,
+    };
+  }
+
+  function subscribePreparedTurn(listener) {
+    if (typeof listener !== "function") throw new TypeError("Prepared-turn listener must be a function");
+    preparedTurnListeners.add(listener);
+    return () => preparedTurnListeners.delete(listener);
+  }
+
+  function notifyPreparedTurn(detail) {
+    for (const listener of preparedTurnListeners) {
+      try {
+        listener(detail);
+      } catch (error) {
+        debug("prepared-turn listener failed (contained)", error);
+      }
+    }
+  }
+
   function selectedChip(response, userResponse) {
     const text = String(userResponse || "").trim();
     const chips = Array.isArray(response?.chips) ? response.chips : [];
@@ -223,10 +256,13 @@
     const userResponse = userTextFromPayload(payload).trim();
     if (!userResponse) return { body, handoff: null, opportunityId: null };
 
+    const existingTurnContext = payload.messages[index].metadata?.turnContext;
     const turnContext =
-      typeof window.algoliaContextCompiler?.mergeTurnContext === "function"
-        ? window.algoliaContextCompiler.mergeTurnContext(payload.messages[index].metadata?.turnContext)
-        : compilerTurnContext();
+      existingTurnContext && typeof existingTurnContext === "object"
+        ? existingTurnContext
+        : typeof window.algoliaContextCompiler?.mergeTurnContext === "function"
+          ? window.algoliaContextCompiler.mergeTurnContext(existingTurnContext)
+          : compilerTurnContext();
     const handoff = opportunity
       ? buildHandoffPacket(opportunity, userResponse, turnContext)
       : persistedHandoff;
@@ -262,10 +298,27 @@
   }
 
   async function orchestratorTransport(input, init = {}) {
-    if (!nativeFetch) throw new Error("Orchestrator transport requires window.fetch");
+    const compiler = window.algoliaContextCompiler;
+    const sendPrepared =
+      typeof compiler?.fetchPrepared === "function"
+        ? compiler.fetchPrepared.bind(compiler)
+        : fallbackFetch;
+    if (!sendPrepared) throw new Error("Orchestrator transport requires window.fetch");
     let prepared;
+    let turn = null;
     try {
-      prepared = prepareBody(init.body);
+      const contextBody =
+        typeof compiler?.prepareCompletionBody === "function"
+          ? compiler.prepareCompletionBody(init.body)
+          : init.body;
+      // Correlate and label the visitor turn before proactive handoff decorates
+      // the user text with its private control packet. The prepared body emitted
+      // below remains the exact on-wire body; only the visible label/dedupe key
+      // comes from the clean logical turn.
+      try {
+        turn = logicalTurn(JSON.parse(contextBody));
+      } catch {}
+      prepared = prepareBody(contextBody);
     } catch (error) {
       const opportunity = latestShownOpportunity();
       if (opportunity) {
@@ -282,8 +335,15 @@
       throw error;
     }
     const nextInit = { ...(init || {}), body: prepared.body };
+    if (turn) {
+      notifyPreparedTurn(Object.freeze({
+        body: prepared.body,
+        turnKey: turn.key,
+        question: turn.question,
+      }));
+    }
     try {
-      const response = await nativeFetch(input, nextInit);
+      const response = await sendPrepared(input, nextInit);
       if (prepared.opportunityId && response?.ok !== false) {
         updateOpportunity(prepared.opportunityId, {
           status: "handed_off",
@@ -347,5 +407,6 @@
     buildHandoffPacket,
     orchestratorTransport,
     installTransportAdapter,
+    subscribePreparedTurn,
   };
 })();

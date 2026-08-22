@@ -13,11 +13,28 @@
       "algolia-chat-theme-algolia-modal-greeting-width-20260815a.js",
       "algolia-chat.js",
       "algolia-engagement-tracker.js",
-      "algolia-context-compiler.js",
+      "algolia-context-compiler",
       "algolia-proactive-controller.js",
-      "handoff-to-orchestrator.js",
-      "algolia-chat-engage.js"
-    ]
+      "handoff-to-orchestrator",
+      "algolia-chat-engage.js",
+      "algolia-chat-compare-"
+    ],
+    "compareWithProduction": {
+      "script": "frontend/chat-widget/algolia-chat-compare.js",
+      "deploymentTool": "tools/deployment/deploy_compare_integration_jahia.py",
+      "immutableAssets": [
+        "algolia-context-compiler-compare-<sha12>.js",
+        "handoff-to-orchestrator-compare-<sha12>.js",
+        "algolia-chat-compare-<sha12>.js"
+      ],
+      "productionAgent": {
+        "appId": "1QDAWL72TQ",
+        "agentId": "ebff018c-66e1-44df-b33a-2a58a0188840",
+        "index": "ALGOLIA_WWW_PROD_V2",
+        "searchKeyEnv": "PROD_ASKAI_SEARCH_KEY",
+        "note": "Controlled same-input benchmark. Both agents receive the identical finalized body, including current session and page context. Before deployment, record verification that the browser key is read-only, correctly scoped, monitored, and revocable; no proxy is deployed on Jahia."
+      }
+    }
   },
   "agentStudio": {
     "greetings": {
