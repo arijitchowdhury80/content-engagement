@@ -201,6 +201,14 @@ test('toggle mounts in the header, expanded, and starts off', () => {
   assert.equal(t.parentElement.getAttribute('part'), 'header', 'must be a direct header child');
 });
 
+test('normal centered panel remains eligible on a wide viewport', () => {
+  const h = createHarness({ chatWidth: 1080, viewportWidth: 2266 });
+  assert.ok(h.toggle(), '1080px normal panel must not be mistaken for the docked panel');
+  h.setExpanded(false);
+  h.flush();
+  assert.equal(h.toggle(), null, 'the narrower docked panel must still hide Compare');
+});
+
 test('compare off: asking a question never calls production', async () => {
   const h = createHarness();
   h.addBubble('What is NeuralSearch?');

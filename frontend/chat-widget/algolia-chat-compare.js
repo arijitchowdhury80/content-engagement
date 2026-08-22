@@ -62,7 +62,13 @@
   function isExpanded() {
     const p = q('[part="panel"]');
     if (!p) return false;
-    return p.getBoundingClientRect().width >= window.innerWidth * 0.6;
+    // The widget's normal centered panel is capped at 1080px. Comparing only
+    // against a viewport percentage therefore misclassifies it as collapsed on
+    // wide monitors (for example 1080px / 2266px). A real comparison workspace
+    // is either at least 60% of the viewport or at least 720px wide; the docked
+    // panel is smaller than both thresholds.
+    const expandedWidth = Math.min(720, window.innerWidth * 0.6);
+    return p.getBoundingClientRect().width >= expandedWidth;
   }
 
   // ------------------------------------------------------------ turn state ---
