@@ -7,13 +7,14 @@ import { resolve } from 'node:path';
 const root = resolve(import.meta.dirname, '../../..');
 const readJson = async (path) => JSON.parse(await readFile(resolve(root, path), 'utf8'));
 
-test('final judge files and immutable Gemini agents remain explicitly locked', async () => {
+test('final judge files and immutable OpenAI agents remain explicitly locked', async () => {
   const lock = await readJson('config/judge-final-lock.json');
   const config = await readJson('production_comparison/config.json');
 
   assert.equal(lock.status, 'locked');
   assert.match(lock.changePolicy, /explicit approval/);
-  assert.equal(lock.provider.model, 'gemini-2.5-flash');
+  assert.equal(lock.provider.name, 'OpenAI');
+  assert.equal(lock.provider.model, 'gpt-5.4-mini');
   assert.deepEqual(config.judges.agents, lock.agents);
 
   for (const [path, expected] of Object.entries(lock.protectedFileSha256)) {

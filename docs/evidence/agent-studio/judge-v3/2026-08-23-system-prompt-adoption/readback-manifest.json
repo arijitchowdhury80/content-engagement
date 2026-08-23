@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "appId": "0EXRPAXB56",
+  "release": "v3.4-system-prompt-ab-a",
+  "sourceAgents": {
+    "skeptic": {
+      "id": "573fb67f-72f0-4baa-8b14-33fd32dc9718",
+      "name": "www Chat - Confidence Skeptic v3.4",
+      "status": "published",
+      "model": "gpt-5.4-mini",
+      "providerId": "e14c1f5e-7c24-4451-a342-940e427f769b",
+      "toolCount": 0,
+      "systemPromptHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "instructionsHash": "e52ebb34402f164225ddd1c8cb461065a998308afeecf885a8e15d713cc8292c",
+      "configHash": "ac093354db5620e25427d067c7df89fb0de2b63d417e635731cf3057a421f2c4",
+      "exactConfigHash": "bb281578a89bdaa4daee5d5892f6a916f0d7eca8e37ac14374c129cae68ef02f"
+    },
+    "referee": {
+      "id": "2ec4490f-67df-479f-8c7a-5d58440e2e10",
+      "name": "www Chat - Confidence Referee v3.4",
+      "status": "published",
+      "model": "gpt-5.4-mini",
+      "providerId": "e14c1f5e-7c24-4451-a342-940e427f769b",
+      "toolCount": 0,
+      "systemPromptHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "instructionsHash": "aaecb1cfbc13a28f8c0689c6b0ded27db71d2fac5cad7c508e1143e591145274",
+      "configHash": "ac093354db5620e25427d067c7df89fb0de2b63d417e635731cf3057a421f2c4",
+      "exactConfigHash": "df05c5d9c36e665375a5ac5318a5b89b904112b5c2aed527a4823565ae8bb4da"
+    },
+    "advocate": {
+      "id": "1b14aea2-6b0b-497a-9dff-be0dee3bb956",
+      "name": "www Chat - Confidence Advocate v3.4",
+      "status": "published",
+      "model": "gpt-5.4-mini",
+      "providerId": "e14c1f5e-7c24-4451-a342-940e427f769b",
+      "toolCount": 0,
+      "systemPromptHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "instructionsHash": "22f3ca6a540733beb9b60a3317daadbf90ed5a4630bc203e8331d06b76046934",
+      "configHash": "ac093354db5620e25427d067c7df89fb0de2b63d417e635731cf3057a421f2c4",
+      "exactConfigHash": "45b7a5939824eca5f630e295ba73dbc9a7f58d1d29b2c22849ae4c550c0b5c33"
+    }
+  },
+  "adoptedAgents": {
+    "skeptic": {
+      "id": "2fd41081-a5a1-4532-8049-1fa2f1338037",
+      "name": "www Chat - Confidence Skeptic Candidate v3.4-system-prompt-ab-a",
+      "status": "published",
+      "model": "gpt-5.4-mini",
+      "providerId": "e14c1f5e-7c24-4451-a342-940e427f769b",
+      "toolCount": 0,
+      "systemPromptHash": "0785b7fe2afaeb7e973ce1537fa49ae416be8d9cbb0bac054d932fbda0d04f99",
+      "instructionsHash": "cdd3a2704fb72d59be274ae713106aeb5b17c95ddb2a5aa8b528c5ec3b929652",
+      "configHash": "ac093354db5620e25427d067c7df89fb0de2b63d417e635731cf3057a421f2c4",
+      "exactConfigHash": "8a11c2be34e16963b71c38d215530f6ba2b54853ea7a5b32fe2d62f1a82f5f34"
+    },
+    "referee": {
+      "id": "f4e7ed7d-96b2-4900-8d21-40a5cfe950d0",
+      "name": "www Chat - Confidence Referee Candidate v3.4-system-prompt-ab-a",
+      "status": "published",
+      "model": "gpt-5.4-mini",
+      "providerId": "e14c1f5e-7c24-4451-a342-940e427f769b",
+      "toolCount": 0,
+      "systemPromptHash": "0785b7fe2afaeb7e973ce1537fa49ae416be8d9cbb0bac054d932fbda0d04f99",
+      "instructionsHash": "64cbf3ac50ab1ed33182d8caf9620aa9437a47c7b43bfa23eaa757713950f11b",
+      "configHash": "ac093354db5620e25427d067c7df89fb0de2b63d417e635731cf3057a421f2c4",
+      "exactConfigHash": "7dc56b7d9158f2354ecd3f2eb82eb4db65ad624c7e384a169cf20273fd93592b"
+    },
+    "advocate": {
+      "id": "36a85e07-8415-4d34-8428-53574dc608f2",
+      "name": "www Chat - Confidence Advocate Candidate v3.4-system-prompt-ab-a",
+      "status": "published",
+      "model": "gpt-5.4-mini",
+      "providerId": "e14c1f5e-7c24-4451-a342-940e427f769b",
+      "toolCount": 0,
+      "systemPromptHash": "0785b7fe2afaeb7e973ce1537fa49ae416be8d9cbb0bac054d932fbda0d04f99",
+      "instructionsHash": "92146bec224cd3e606da693954f2ce13a243eb50b29723eaa19d6d1c4a2f8afd",
+      "configHash": "ac093354db5620e25427d067c7df89fb0de2b63d417e635731cf3057a421f2c4",
+      "exactConfigHash": "812099e9a33b2ccb5440b8fd785183a29df883b5d1d67ceee3c6f25a91b8814b"
+    }
+  },
+  "promptHashes": {
+    "systemPrompt": "0785b7fe2afaeb7e973ce1537fa49ae416be8d9cbb0bac054d932fbda0d04f99",
+    "instructions": {
+      "skeptic": "cdd3a2704fb72d59be274ae713106aeb5b17c95ddb2a5aa8b528c5ec3b929652",
+      "referee": "64cbf3ac50ab1ed33182d8caf9620aa9437a47c7b43bfa23eaa757713950f11b",
+      "advocate": "92146bec224cd3e606da693954f2ce13a243eb50b29723eaa19d6d1c4a2f8afd"
+    }
+  },
+  "verification": {
+    "allAdoptedAgentsPublished": true,
+    "allAdoptedAgentsUseOpenAIModel": true,
+    "allAdoptedAgentsToolFree": true,
+    "sharedSystemPromptHashMatches": true,
+    "roleInstructionHashesMatch": true,
+    "distinctAdoptedIds": true,
+    "pass": true
+  }
+}
