@@ -1,30 +1,30 @@
 {
   "status": "locked",
-  "lockedAt": "2026-08-21",
-  "lastApprovedChange": "Exact claim-span validation and retry-only handling for malformed evidence references",
+  "lockedAt": "2026-08-23",
+  "lastApprovedChange": "Adopt the validated v3 shared system prompt and role-only judge instructions",
   "changePolicy": "No judge prompt, model, agent, scoring, grounding, aggregation, transport, lifecycle, or presentation change without Arijit's explicit approval.",
   "provider": {
-    "id": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
-    "name": "google_genai",
-    "model": "gemini-2.5-flash",
-    "thinkingBudget": 0
+    "id": "e14c1f5e-7c24-4451-a342-940e427f769b",
+    "name": "OpenAI",
+    "model": "gpt-5.4-mini"
   },
   "agents": {
-    "skeptic": "573fb67f-72f0-4baa-8b14-33fd32dc9718",
-    "referee": "2ec4490f-67df-479f-8c7a-5d58440e2e10",
-    "advocate": "1b14aea2-6b0b-497a-9dff-be0dee3bb956"
+    "skeptic": "2fd41081-a5a1-4532-8049-1fa2f1338037",
+    "referee": "f4e7ed7d-96b2-4900-8d21-40a5cfe950d0",
+    "advocate": "36a85e07-8415-4d34-8428-53574dc608f2"
   },
   "protectedFileSha256": {
     "agents/prompts/judge/_shared_judge_rubric_v2.md": "26c0e31df26328f253620416f2a1ed6c911a1cef3b3490bb67afeee5eaa1372d",
-    "agents/prompts/judge/instructions_judge_skeptic.md": "d942808a7d586dcdfb6c58a5c226a8e783bf0df5059f573eba72ed48413d3397",
-    "agents/prompts/judge/instructions_judge_referee.md": "c9244620e4b701b03cf383a7a5a92dcb450c853650a9e147ededc9f513b47da2",
-    "agents/prompts/judge/instructions_judge_advocate.md": "adb77ed3d28b5a383498b7a027dffee2f52fa3cbf420d57b6ec0d41817c709db",
+    "agents/prompts/judge/candidate/system_prompt_judge_v3.md": "26c0e31df26328f253620416f2a1ed6c911a1cef3b3490bb67afeee5eaa1372d",
+    "agents/prompts/judge/candidate/instructions_skeptic.md": "e5f8b07a46212c348493f4294083fabe1dfa39ffd207c32e841d6d2a86be5d7d",
+    "agents/prompts/judge/candidate/instructions_referee.md": "e53eb4e47c627c8c8ebed9b6431f0059912426d14de029c71531a7281ced19f1",
+    "agents/prompts/judge/candidate/instructions_advocate.md": "38dca091aa91be155d86f8d1394bdc4c17c3893c920c9524487429e2bf2c271a",
     "frontend/chat-widget/algolia-judge-core.js": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
     "frontend/chat-widget/algolia-confidence-badge.js": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37"
   },
   "liveAssetSha256": {
     "core": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
     "badge": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
-    "chat": "4bf758dd9415632959628ec84272e2f29b8df3336d8d563f326753bd085393dc"
+    "chat": "9ff1a9f1410271cd027f27fd2af60dfc1310465cc8d0a274c2bb214906c9a0f6"
   }
 }
