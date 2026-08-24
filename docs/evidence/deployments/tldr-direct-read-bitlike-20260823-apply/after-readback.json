@@ -1,0 +1,45 @@
+{
+  "capturedAt": "2026-08-24T01:59:37.263054+00:00",
+  "edit": {
+    "blockSha256": "6261c3b3ef4fb9f8a4cebba31199bbeb4ee840e059cf6a362744fe95c47b62be",
+    "blockLength": 11671,
+    "assets": {
+      "core": {
+        "path": "/sites/www/files/algolia-judge-core-judge-v2-8cb19d39aece.js",
+        "sha256": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
+        "length": 24022
+      },
+      "badge": {
+        "path": "/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js",
+        "sha256": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
+        "length": 6993
+      },
+      "chat": {
+        "path": "/sites/www/files/algolia-chat-judge-v2-b342b57b9dca.js",
+        "sha256": "b342b57b9dcabe2365efd7d42789a90077a177e7895318202e637e3fea960ff2",
+        "length": 528048
+      }
+    }
+  },
+  "live": {
+    "blockSha256": "6261c3b3ef4fb9f8a4cebba31199bbeb4ee840e059cf6a362744fe95c47b62be",
+    "blockLength": 11671,
+    "assets": {
+      "core": {
+        "path": "/sites/www/files/algolia-judge-core-judge-v2-8cb19d39aece.js",
+        "sha256": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
+        "length": 24022
+      },
+      "badge": {
+        "path": "/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js",
+        "sha256": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
+        "length": 6993
+      },
+      "chat": {
+        "path": "/sites/www/files/algolia-chat-judge-v2-b342b57b9dca.js",
+        "sha256": "b342b57b9dcabe2365efd7d42789a90077a177e7895318202e637e3fea960ff2",
+        "length": 528048
+      }
+    }
+  }
+}
