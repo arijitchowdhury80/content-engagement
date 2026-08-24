@@ -29,7 +29,7 @@
   // <algolia-chat> hasn't been parsed yet at this point in the document, so read
   // its app-id lazily (by the time a completions call happens, it's in the DOM).
   const getAppId = () => document.querySelector('algolia-chat')?.getAttribute('app-id');
-  const getTelemetryBase = () => window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ || '';
+  const getTelemetryBase = () => window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ || 'https://tmp-content-eng-algolia.cloud.jahia.com';
   // The node this Action is bound to (see module README) — algolia-assets,
   // not www, since anonymous action dispatch is blocked on www. Short-form
   // path (no /cms/render/{mode}/{lang}/ prefix) — that's what actually
