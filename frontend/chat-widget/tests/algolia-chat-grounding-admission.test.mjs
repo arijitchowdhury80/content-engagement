@@ -422,6 +422,8 @@ test('a judge gate never hides, replaces, or regenerates the streamed answer', a
       firstRequest: first.judgeRequests[0],
     }));
     assert.equal(first.badgeVerdict.gateTripped, true);
+    assert.equal(first.badgeVerdict.composite, 6.8);
+    assert.equal(first.badgeVerdict.appliedCap, null);
     assert.deepEqual(
       first.badgeVerdict.unsupportedTerms.map(({ term }) => term),
       ['The Enterprise plan guarantees 99.99% annual conversion growth.'],
@@ -431,6 +433,26 @@ test('a judge gate never hides, replaces, or regenerates the streamed answer', a
       .shadowRoot
       .querySelectorAll('[data-source-review="unsupported-term"]').length);
     assert.equal(highlightedClaims, 1);
+
+    const badgeText = await run.page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const badge = root.querySelector('algolia-confidence-badge');
+      badge.shadowRoot.querySelector('button').click();
+      return badge.shadowRoot.textContent;
+    });
+    await run.page.waitForFunction(() => Boolean(document
+      .querySelector('algolia-chat')
+      .shadowRoot
+      .querySelector('[role="dialog"][aria-label="Answer evaluation breakdown"]')));
+    const drawerText = await run.page.evaluate(() => document
+      .querySelector('algolia-chat')
+      .shadowRoot
+      .querySelector('[role="dialog"][aria-label="Answer evaluation breakdown"]')
+      .textContent);
+    assert.match(badgeText, /Confidence6\.8\/10.*1 to review/);
+    assert.match(drawerText, /Overall · four-dimension panel mean/);
+    assert.match(drawerText, /grounding concern is shown separately/i);
+    assert.doesNotMatch(drawerText, /cap(?:ped)? (?:at|the composite)/i);
 
     await run.page.evaluate(() => {
       document.querySelector('algolia-chat').shadowRoot.querySelector('.acs-followup-card').click();
@@ -452,7 +474,7 @@ test('deterministic confidence checks never become a second completion', async (
     assert.equal(result.segment.admissionRewritten, undefined);
     assert.equal(result.agentRequestCount, 1);
     assert.equal(result.judgeRequestCount, 3);
-    assert.equal(result.badgeVerdict.composite, 8.7);
+    assert.equal(result.badgeVerdict.composite, 9);
     assert.equal(result.badgeVerdict.gateTripped, false);
     assert.equal(result.badgeVerdict.grounded, undefined);
     assert.deepEqual(
@@ -468,7 +490,7 @@ test('deterministic confidence checks never become a second completion', async (
       };
     });
     assert.equal(presentation.highlightedTerms, 0);
-    assert.match(presentation.badgeText, /Confidence8\.7\/10/);
+    assert.match(presentation.badgeText, /Confidence9\.0\/10/);
   } finally {
     await closeScenario(run);
   }
@@ -478,7 +500,7 @@ test('source title metadata grounds the Forrester study reference', async () => 
   const run = await openScenario('metadataGrounded');
   try {
     const result = await runtimeState(run.page);
-    assert.equal(result.badgeVerdict.composite, 8.7);
+    assert.equal(result.badgeVerdict.composite, 9);
     assert.equal(result.badgeVerdict.gateTripped, false);
     assert.equal(result.badgeVerdict.deterministicGrounding.grounded, true);
     assert.deepEqual(result.badgeVerdict.deterministicGrounding.unsupportedTerms, []);
@@ -520,7 +542,7 @@ test('one unavailable role produces an explicit provisional two-judge score', as
     assert.equal(result.badgeVerdict.provisional, true);
     assert.equal(result.badgeVerdict.validJudgeCount, 2);
     assert.equal(result.badgeVerdict.groundingStatus, 'disagreement');
-    assert.equal(result.badgeVerdict.composite, 8.7);
+    assert.equal(result.badgeVerdict.composite, 9);
   } finally {
     await closeScenario(run);
   }

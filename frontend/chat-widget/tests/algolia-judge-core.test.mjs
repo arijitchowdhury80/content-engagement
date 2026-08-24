@@ -271,7 +271,7 @@ function unresolvedReport(packet, role, { verdict = 'unverifiable', materiality 
   return core.validateJudgeReport(role, base, packet);
 }
 
-test('calculates quality in code and applies consensus grounding caps', async () => {
+test('keeps grounding consensus separate from the four-dimension composite', async () => {
   const packet = await evaluation();
   const reports = [
     unresolvedReport(packet, 'skeptic', { verdict: 'contradicted', materiality: 'material', score: 3 }),
@@ -280,10 +280,36 @@ test('calculates quality in code and applies consensus grounding caps', async ()
   ];
   const result = core.aggregateJudgeReports(reports);
   assert.equal(result.qualityBase, 9);
-  assert.equal(result.appliedCap, 3);
-  assert.equal(result.composite, 3);
+  assert.equal(result.appliedCap, null);
+  assert.equal(result.composite, 8.2);
+  assert.equal(result.gateTripped, true);
   assert.equal(result.groundingStatus, 'unsupported');
   assert.equal(result.flaggedClaims.length, 1);
+  assert.doesNotMatch(result.rationale, /cap/i);
+});
+
+test('reports the arithmetic mean of the four displayed panel dimensions', async () => {
+  const packet = await evaluation();
+  const scores = [
+    { grounding: 5, completeness: 7, depth: 6, relevance: 8 },
+    { grounding: 6, completeness: 8, depth: 6, relevance: 8 },
+    { grounding: 7, completeness: 8, depth: 7, relevance: 8 },
+  ];
+  const reports = ['skeptic', 'referee', 'advocate'].map((role, index) => core.validateJudgeReport(
+    role,
+    reportFor(packet, { dimensionScores: scores[index] }),
+    packet,
+  ));
+  const result = core.aggregateJudgeReports(reports);
+  assert.deepEqual(result.dims, {
+    grounding: 6,
+    completeness: 7.7,
+    depth: 6.3,
+    relevance: 8,
+    coverage: 7.7,
+  });
+  assert.equal(result.composite, 7);
+  assert.equal(result.composite, Math.round((6 + 7.7 + 6.3 + 8) / 4 * 10) / 10);
 });
 
 test('never calls a dissenting three-judge panel grounded', async () => {
@@ -414,7 +440,7 @@ test('does not manufacture consensus from spans that share only a conjunction', 
   assert.equal(result.groundingStatus, 'disagreement');
 });
 
-test('a single centrality vote cannot impose a consensus grounding cap', async () => {
+test('a single centrality vote cannot escalate the panel grounding status', async () => {
   const packet = await evaluation();
   const reports = [
     unresolvedReport(packet, 'skeptic', { verdict: 'contradicted', materiality: 'critical', centralToAnswer: true, score: 1 }),
@@ -424,7 +450,8 @@ test('a single centrality vote cannot impose a consensus grounding cap', async (
   const result = core.aggregateJudgeReports(reports);
   assert.equal(result.flaggedClaims.length, 1);
   assert.equal(result.flaggedClaims[0].centralToAnswer, false);
-  assert.equal(result.appliedCap, 6);
+  assert.equal(result.appliedCap, null);
+  assert.equal(result.gateTripped, true);
 });
 
 test('rejects paraphrased claimText and resolves repeated exact claims left to right', async () => {

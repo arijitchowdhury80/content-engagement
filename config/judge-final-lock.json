@@ -1,7 +1,7 @@
 {
   "status": "locked",
   "lockedAt": "2026-08-23",
-  "lastApprovedChange": "Adopt the validated v3.3 semantic partition and deterministic reconciliation contract",
+  "lastApprovedChange": "Separate the four-dimension composite from grounding review status",
   "changePolicy": "No judge prompt, model, agent, scoring, grounding, aggregation, transport, lifecycle, or presentation change without Arijit's explicit approval.",
   "provider": {
     "id": "e14c1f5e-7c24-4451-a342-940e427f769b",
@@ -19,12 +19,12 @@
     "agents/prompts/judge/candidate/instructions_skeptic.md": "e5f8b07a46212c348493f4294083fabe1dfa39ffd207c32e841d6d2a86be5d7d",
     "agents/prompts/judge/candidate/instructions_referee.md": "e53eb4e47c627c8c8ebed9b6431f0059912426d14de029c71531a7281ced19f1",
     "agents/prompts/judge/candidate/instructions_advocate.md": "38dca091aa91be155d86f8d1394bdc4c17c3893c920c9524487429e2bf2c271a",
-    "frontend/chat-widget/algolia-judge-core.js": "201e3c4972c2c7d65b143884e76273418491be04a26cf43ea2ab29f55ae3d390",
-    "frontend/chat-widget/algolia-confidence-badge.js": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37"
+    "frontend/chat-widget/algolia-judge-core.js": "9a7fdd2700ccb57f9bd9397ffab7c17712ecdcb421c25dafee5be0546a0c9006",
+    "frontend/chat-widget/algolia-confidence-badge.js": "4cc3a70b85053a9d4db881ba066d309f8265f01c4522c588771c6bfc90858722"
   },
   "liveAssetSha256": {
-    "core": "201e3c4972c2c7d65b143884e76273418491be04a26cf43ea2ab29f55ae3d390",
-    "badge": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
-    "chat": "b342b57b9dcabe2365efd7d42789a90077a177e7895318202e637e3fea960ff2"
+    "core": "9a7fdd2700ccb57f9bd9397ffab7c17712ecdcb421c25dafee5be0546a0c9006",
+    "badge": "4cc3a70b85053a9d4db881ba066d309f8265f01c4522c588771c6bfc90858722",
+    "chat": "bfdbf0391172c8e87dbe3400ae8d8edebb891515270255792e1e4c2a4c720ab6"
   }
 }

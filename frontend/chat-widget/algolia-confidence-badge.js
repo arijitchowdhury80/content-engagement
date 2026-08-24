@@ -27,8 +27,6 @@
   }
 
   function tone(verdict) {
-    if (verdict.groundingStatus === "unsupported") return "negative";
-    if (verdict.groundingStatus === "needs_review" || verdict.groundingStatus === "disagreement" || verdict.provisional) return "notice";
     if (verdict.composite >= 7.5) return "positive";
     if (verdict.composite >= 5) return "notice";
     return "negative";
@@ -109,7 +107,7 @@
       node.title = interpolate(this._labels.scoredTitle, { score });
       node.setAttribute("aria-label", interpolate(this._labels.scoredAriaLabel, { score }));
       node.append(element(this._labels.label), element(score, "badge__score"), element(this._labels.scoreDenom, "badge__denom"));
-      if (verdict.gateTripped && flagged) node.append(element(interpolate(this._labels.flaggedCount, { count: flagged }), "badge__flagged"));
+      if (flagged) node.append(element(interpolate(this._labels.flaggedCount, { count: flagged }), "badge__flagged"));
       node.addEventListener("click", () => this.dispatchEvent(new CustomEvent("open-judge", {
         detail: { verdict }, bubbles: true, composed: true,
       })));

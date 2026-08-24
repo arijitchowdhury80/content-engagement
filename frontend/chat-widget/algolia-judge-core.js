@@ -454,7 +454,7 @@
     return a.start === b.start && a.end === b.end;
   }
 
-  function findingCap(finding) {
+  function findingSeverityScore(finding) {
     if (finding.verdict === "unverifiable") {
       if (finding.centralToAnswer || finding.materiality === "critical") return 3;
       if (finding.materiality === "material") return 6;
@@ -487,13 +487,13 @@
     const byRole = new Map;
     for (const finding of group.findings) {
       const prior = byRole.get(finding.role);
-      if (!prior || findingCap(finding) < findingCap(prior)) byRole.set(finding.role, finding);
+      if (!prior || findingSeverityScore(finding) < findingSeverityScore(prior)) byRole.set(finding.role, finding);
     }
     const findings = [...byRole.values()];
     if (findings.length < requiredVotes) return null;
-    const caps = findings.map(findingCap).sort((a, b) => a - b);
-    const consensusCap = caps[requiredVotes - 1];
-    const representative = findings.slice().sort((a, b) => findingCap(a) - findingCap(b))[requiredVotes - 1];
+    const severityScores = findings.map(findingSeverityScore).sort((a, b) => a - b);
+    const consensusSeverityScore = severityScores[requiredVotes - 1];
+    const representative = findings.slice().sort((a, b) => findingSeverityScore(a) - findingSeverityScore(b))[requiredVotes - 1];
     return {
       claim: representative.claim,
       sentenceId: representative.sentenceId,
@@ -504,7 +504,7 @@
       verdict: representative.verdict,
       materiality: representative.materiality,
       centralToAnswer: findings.filter((finding) => finding.centralToAnswer).length >= requiredVotes,
-      cap: consensusCap,
+      severityScore: consensusSeverityScore,
       judgeCount: findings.length,
       judges: findings.map((finding) => finding.role),
       reasons: findings.map((finding) => finding.reason),
@@ -517,7 +517,7 @@
     const participation = result.provisional ? `${result.validJudgeCount} of 3 judges returned valid reports, so this score is provisional.` : "All three judges returned valid complete reports.";
     if (result.groundingStatus === "grounded") return `${participation} No judge found an unresolved factual claim in the retrieved evidence.`;
     if (result.groundingStatus === "disagreement") return `${participation} At least one judge found an unresolved factual claim, but the panel did not reach gate consensus.`;
-    return `${participation} The panel confirmed ${result.flaggedClaims.length} grounding finding${result.flaggedClaims.length === 1 ? "" : "s"}; the quality score was capped at ${result.appliedCap}.`;
+    return `${participation} The panel confirmed ${result.flaggedClaims.length} grounding finding${result.flaggedClaims.length === 1 ? "" : "s"}. The composite remains the mean of all four panel dimensions; grounding concerns are shown separately for review.`;
   }
 
   function aggregateJudgeReports(reports, options = {}) {
@@ -547,16 +547,13 @@
       judges: [...new Set(group.findings.map((finding) => finding.role))],
       reasons: group.findings.map((finding) => finding.reason),
     }));
-    let appliedCap = flaggedClaims.length ? Math.min(...flaggedClaims.map((finding) => finding.cap)) : 10;
-    const minorConsensus = flaggedClaims.filter((finding) => finding.cap === 10);
-    if (minorConsensus.length >= 3) appliedCap = Math.min(appliedCap, 6);
     const hasAnyConcern = groups.length > 0;
     let groundingStatus;
     if (valid.length === 3 && !hasAnyConcern) groundingStatus = "grounded";
-    else if (flaggedClaims.some((finding) => finding.cap <= 3)) groundingStatus = "unsupported";
+    else if (flaggedClaims.some((finding) => finding.severityScore <= 3)) groundingStatus = "unsupported";
     else if (flaggedClaims.length > 0) groundingStatus = "needs_review";
     else groundingStatus = "disagreement";
-    const composite = round1(Math.min(qualityBase, appliedCap));
+    const composite = round1(mean(DIMENSIONS.map((dimension) => dims[dimension])));
     const result = {
       ...base,
       status: base.provisional ? "provisional" : "complete",
@@ -564,8 +561,8 @@
       dims: { ...dims, coverage: dims.completeness },
       qualityBase,
       composite,
-      appliedCap: appliedCap < 10 ? appliedCap : null,
-      gateTripped: appliedCap < 10,
+      appliedCap: null,
+      gateTripped: flaggedClaims.length > 0,
       flaggedClaims,
       disagreements,
       perJudge: valid.map((report) => ({ role: report.role, scores: report.dimensionScores, summary: report.summary })),

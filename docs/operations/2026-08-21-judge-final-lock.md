@@ -12,13 +12,13 @@ No judge prompt, model, Agent Studio agent, grounding rule, scoring rule, aggreg
 - Referee: `320a52d9-4217-406b-8902-15688fdb4d1f`
 - Advocate: `50843dd4-eab8-473b-ab44-7dda69d7557d`
 
-The three Agent Studio judges independently score grounding, completeness, depth, and relevance against the same complete evidence packet. Every agent uses the shared `ALGOLIA-JUDGE-V3.3` system prompt; its instructions contain only the Skeptic, Referee, or Advocate lens. Judges partition exact non-factual spans from factual claims. Code verifies exact text, discards claims that overlap an explicit non-factual span, derives the final unit classification mechanically, and computes highlight offsets. Missing proof IDs or invalid claim text fail validation and retry instead of being converted into semantic grounding failures. Code performs consensus, averaging, and published score caps. There is no localhost judge and no arbitrary elapsed-time scoring deadline.
+The three Agent Studio judges independently score grounding, completeness, depth, and relevance against the same complete evidence packet. Every agent uses the shared `ALGOLIA-JUDGE-V3.3` system prompt; its instructions contain only the Skeptic, Referee, or Advocate lens. Judges partition exact non-factual spans from factual claims. Code verifies exact text, discards claims that overlap an explicit non-factual span, derives the final unit classification mechanically, and computes highlight offsets. Missing proof IDs or invalid claim text fail validation and retry instead of being converted into semantic grounding failures. Code performs consensus and averages the four displayed panel dimensions into the composite. Grounding findings remain a separate review status and never overwrite that score. There is no localhost judge and no arbitrary elapsed-time scoring deadline.
 
 ## Enforcement
 
 `config/judge-final-lock.json` records the immutable agent IDs and protected file hashes. `frontend/chat-widget/tests/judge-final-lock.test.mjs` fails when a protected judge file or agent ID changes. The shared chat bundle is protected by behavioral contract tests so unrelated chat presentation work is not blocked by a whole-bundle hash.
 
-The 2026-08-23 semantic repair changed the three judge agent references, the source-of-truth prompt, semantic partition validation, and sentence handling. It did not change the orchestrator, evidence packet, dimensions, scoring formula, grounding cap, or presentation.
+The approved 2026-08-23 composite repair changed deterministic aggregation and presentation only: the composite is now the mean of Grounding, Completeness, Depth, and Relevance, while grounding consensus remains a separate review signal. It did not change the orchestrator, evidence packet, judge prompts, model, or Agent Studio agents.
 
 ## Final Validation
 
