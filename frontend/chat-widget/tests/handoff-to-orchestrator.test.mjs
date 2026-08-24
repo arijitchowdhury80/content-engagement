@@ -130,6 +130,40 @@ function stateWithShownOpportunity() {
           moment: 'commercial_evaluation',
           trigger: 'product_to_pricing',
           messageGoal: 'explain_cost_drivers',
+          currentPage: {
+            pageId: 'page_pricing',
+            path: '/pricing',
+            title: 'Pricing',
+            pageGroup: 'pricing',
+          },
+          currentNavigationEdge: {
+            navigationType: 'navigate',
+            sourcePageId: 'page_product',
+            sourcePath: '/products/ai-search',
+            destinationPageId: 'page_pricing',
+            destinationPath: '/pricing',
+            edgeId: 'page_product->page_pricing',
+            isImmediate: true,
+          },
+          contextualFocus: {
+            value: 'ai_search',
+            label: 'AI Search',
+            state: 'observed',
+          },
+          journeyContext: {
+            currentTransition: 'product_to_pricing',
+            origin: { pageId: 'page_product', path: '/products/ai-search', label: 'AI Search', pageGroup: 'product' },
+            destination: { pageId: 'page_pricing', path: '/pricing', label: 'Pricing', pageGroup: 'pricing' },
+            broaderJourney: {
+              productTrail: [{ value: 'ai_search', label: 'AI Search', pagePath: '/products/ai-search' }],
+              solutionTrail: [],
+              pageTrail: [
+                { pageId: 'page_product', path: '/products/ai-search', label: 'AI Search', pageGroup: 'product' },
+                { pageId: 'page_pricing', path: '/pricing', label: 'Pricing', pageGroup: 'pricing' },
+              ],
+            },
+            journeyNarrativeHint: 'AI Search interest has moved into cost and value evaluation.',
+          },
         },
         greetingResponse: {
           schema: 'ProactiveGreetingResponse.v1',
@@ -165,8 +199,9 @@ test('registers an explicit orchestrator transport without patching global fetch
 });
 
 test('injects proactive handoff context into the next orchestrator turn', async () => {
+  const proactiveState = stateWithShownOpportunity();
   const { context, fetchCalls, sessionStorage, documentEvents } = createHarness({
-    proactiveState: stateWithShownOpportunity(),
+    proactiveState,
     primaryAgentId: 'orchestrator_123',
   });
 
@@ -195,8 +230,13 @@ test('injects proactive handoff context into the next orchestrator turn', async 
   assert.equal(packet.userResponse, 'What drives cost?');
   assert.equal(packet.greeting, 'Pricing pages are where good search ideas meet CFO gravity. Want the practical version?');
   assert.equal(packet.originalTurnContext.context_schema, 'AlgoliaTurnContext.v1');
-  assert.equal(packet.requestSummary.trigger, 'product_to_pricing');
-  assert.equal(packet.requestPacket, undefined);
+  assert.equal(
+    JSON.stringify(packet.requestPacket),
+    JSON.stringify(proactiveState.opportunities[0].requestPacket),
+    'handoff must preserve the exact Greetings Agent request packet'
+  );
+  assert.equal(packet.requestPacket.journeyContext.origin.label, 'AI Search');
+  assert.equal(packet.requestPacket.journeyContext.destination.label, 'Pricing');
   assert.equal(packet.contextPacket, undefined);
   assert.equal(sent.messages[0].metadata.turnContext.context_schema, 'AlgoliaTurnContext.v1');
 
@@ -365,7 +405,7 @@ test('handoff debug can be enabled persistently from localStorage without URL fl
   assert.ok(logs.some((args) => args[0] === '[Algolia Handoff To Orchestrator]' && args[1] === 'configured'));
 });
 
-test('creates a compact handoff summary without raw event or oversized request data', () => {
+test('preserves the exact required request packet without merging unrelated compiler data', () => {
   const state = stateWithShownOpportunity();
   state.opportunities[0].requestPacket = {
     ...state.opportunities[0].requestPacket,
@@ -387,10 +427,28 @@ test('creates a compact handoff summary without raw event or oversized request d
   );
 
   const serialized = JSON.stringify(packet);
-  assert.ok(Buffer.byteLength(serialized) < 4096);
-  assert.equal(packet.requestSummary.trigger, 'product_to_pricing');
   assert.equal(packet.originalTurnContext.qualified_journey, 'product:AI Search > pricing:Pricing');
-  assert.doesNotMatch(serialized, /private telemetry|person@example.com|"detail"|recentEvents/);
+  assert.equal(
+    JSON.stringify(packet.requestPacket),
+    JSON.stringify(state.opportunities[0].requestPacket),
+    'handoff must not cap, summarize, or reconstruct the original request packet'
+  );
+  assert.match(serialized, /person@example\.com|"detail"|recentEvents/);
+  assert.doesNotMatch(serialized, /private telemetry/);
+});
+
+test('refuses proactive handoff when the canonical request packet is missing', () => {
+  const state = stateWithShownOpportunity();
+  delete state.opportunities[0].requestPacket;
+  const { context } = createHarness({ proactiveState: state });
+
+  assert.throws(
+    () => context.algoliaHandoffToOrchestrator.buildHandoffPacket(
+      state.opportunities[0],
+      'Help me define my use case.',
+    ),
+    /complete ProactiveGreetingRequest\.v1 packet/,
+  );
 });
 
 test('reattaches the original proactive handoff and fresh page context on later orchestrator turns', async () => {

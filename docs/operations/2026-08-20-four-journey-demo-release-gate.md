@@ -4,7 +4,7 @@
 
 Today's demo prioritizes three representative use cases:
 
-1. On-page intent recognition: a Product page or Solution page after 5 seconds dwell and 25% scroll.
+1. On-page intent recognition: a Product page or Solution page after 3 seconds dwell and 30% scroll.
 2. Business proof progression: Grocery solution to the H-E-B customer case study.
 3. Commercial evaluation progression: Enterprise Search solution to Pricing.
 
@@ -26,7 +26,7 @@ One logo click could previously reach two tracker reset paths: the tracker captu
 
 ## Acceptance
 
-- Singleton identifiers are `product_page_5s_25_scroll` and `solution_page_5s_25_scroll`.
+- Singleton identifiers are `product_page_3s_30_scroll` and `solution_page_3s_30_scroll`.
 - One logo click produces one reset receipt and one fresh visitor/session identity.
 - Previous conversation, proactive state, pending greeting, and handoff context are absent.
 - A pre-reset greeting response cannot render after reset.

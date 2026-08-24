@@ -31,6 +31,22 @@ function transform(html) {
   });
 }
 
+function transformProactiveRuntime(html) {
+  const program = [
+    'import importlib.util, pathlib, sys',
+    'path = pathlib.Path(sys.argv[1])',
+    "spec = importlib.util.spec_from_file_location('deploy', path)",
+    'module = importlib.util.module_from_spec(spec)',
+    'spec.loader.exec_module(module)',
+    'print(module.update_proactive_runtime_block_html(sys.stdin.read()), end="")',
+  ].join('; ');
+
+  return execFileSync('python3', ['-c', program, deploymentScript.pathname], {
+    input: html,
+    encoding: 'utf8',
+  });
+}
+
 test('Jahia transform enables Assistant logo visitor reset exactly once', () => {
   const html = [
     '<div data-release="test">',
@@ -69,4 +85,45 @@ test('narrow Jahia deployment publishes the tracker content subtree', () => {
 
   assert.match(source, /"publishNewTracker": publish\(NEW_TRACKER, subtree=True\)/);
   assert.match(source, /"liveTrackerMatchesSource"/);
+});
+
+test('proactive-runtime-only deployment changes only controller and handoff references', () => {
+  const source = readFileSync(deploymentScript, 'utf8');
+  const versionMatch = source.match(/^PROACTIVE_RUNTIME_ONLY_VERSION = "([^"]+)"/m);
+  assert.ok(versionMatch, 'deployment script should declare a proactive runtime version');
+  const version = versionMatch[1];
+  const original = [
+    '<div class="algolia-chat-embed" data-chat-release="keep">',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=keep"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=keep"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=keep"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=old"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=old"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=keep"></script>',
+    '</div>',
+  ].join('\n');
+
+  const transformed = transformProactiveRuntime(original);
+
+  assert.match(transformed, new RegExp(`proactive=${version}`));
+  assert.match(transformed, /handoff-to-orchestrator-compare-[a-f0-9]{12}\.js/);
+  assert.match(transformed, new RegExp(`data-proactive-runtime-release="${version}"`));
+  for (const unchanged of ['chat=keep', 'tracker=keep', 'context=keep', 'engage=keep']) {
+    assert.match(transformed, new RegExp(unchanged));
+  }
+});
+
+test('proactive-runtime-only CLI and mutation allowlist exclude unrelated runtime files', () => {
+  const source = readFileSync(deploymentScript, 'utf8');
+  const proactiveRuntimeOnly = source.slice(
+    source.indexOf('def proactive_runtime_only_plan('),
+    source.indexOf('def validate_chat_only('),
+  );
+
+  assert.match(source, /"--proactive-runtime-only"/);
+  assert.match(source, /return run_proactive_runtime_only\(args\.apply\)/);
+  assert.match(proactiveRuntimeOnly, /"runtimeFiles": \[CHAT, NEW_TRACKER, CONTEXT_COMPILER, ENGAGE\]/);
+  assert.match(proactiveRuntimeOnly, /"subtrees": \[FILES_PATH, "\/sites\/www\/home\/drift"\]/);
+  assert.match(proactiveRuntimeOnly, /"operation": "publish", "path": BLOCK_PATH, "subtree": True/);
+  assert.match(proactiveRuntimeOnly, /"publishBlock": publish\(BLOCK_PATH, subtree=True\)/);
 });

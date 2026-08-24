@@ -64,7 +64,7 @@ Rules must operate on categories and observed page metadata. Individual URLs may
 ### Product depth
 
 - Applies to any page classified as `product`.
-- Confirmed threshold: at least 10 seconds of dwell and at least 50% scroll depth.
+- Confirmed threshold: at least 3 seconds of dwell and at least 30% scroll depth.
 - Expected result: one Product Research opportunity grounded in the current product/topic.
 - This is the entry point for the technical journey: Product -> Documentation.
 
@@ -72,8 +72,7 @@ Rules must operate on categories and observed page metadata. Individual URLs may
 
 - The tracker must retain the product context when the visitor follows a product link into its documentation.
 - The documentation-page opportunity must incorporate both the prior product and the current documentation topic.
-- Confirmed destination dwell: 10 seconds.
-- Destination depth was described as 40% or 50%; choose one only after explicit confirmation.
+- Confirmed destination threshold: at least 3 seconds of dwell and at least 30% scroll depth.
 - The greeting should frame the moment as moving from product interest into implementation validation without sounding like surveillance.
 
 ### Return path
@@ -86,7 +85,7 @@ Rules must operate on categories and observed page metadata. Individual URLs may
 ### Solution depth
 
 - Applies to any page classified as `solution`.
-- Confirmed threshold: at least 10 seconds of dwell and at least 50% scroll depth.
+- Confirmed threshold: at least 3 seconds of dwell and at least 30% scroll depth.
 - Expected result: one Solution Research opportunity grounded in the current solution/industry focus.
 - This is the entry point for the business journey: Solution -> Customer Story/Proof.
 

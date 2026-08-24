@@ -1,5 +1,7 @@
 # Transition And Grounding Reliability
 
+> Historical record. The active proactive threshold was superseded on 2026-08-23 by the canonical 3-second dwell and 30% scroll contract. The 5-second/25% values below describe the release investigated at the time and are not current configuration.
+
 ## Scope
 
 - Prevent a grounded streamed answer from being replaced after completion.

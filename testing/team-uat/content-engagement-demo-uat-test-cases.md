@@ -14,14 +14,14 @@ All eight journeys were recaptured in a visible browser against the internal Jah
 
 | Scenario | Canonical trigger | Browser evidence | Runtime trace |
 |---|---|---|---|
-| T1 | `product_page_5s_25_scroll` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T1/01-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T1/01-trace.json) |
+| T1 | `product_page_3s_30_scroll` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T1/01-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T1/01-trace.json) |
 | T2 | `product_to_documentation` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T2/02-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/T2/02-trace.json) |
-| B1 | `solution_page_5s_25_scroll` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B1/03-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B1/03-trace.json) |
+| B1 | `solution_page_3s_30_scroll` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B1/03-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B1/03-trace.json) |
 | B2 | `solution_to_customer_story` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B2/04-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/B2/04-trace.json) |
 | C1 | `product_to_pricing` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/C1/05-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/C1/05-trace.json) |
 | C2 | `solution_to_pricing` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/C2/06-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/C2/06-trace.json) |
-| S1 | `developer_page_5s_25_scroll` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S1-retry/07-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S1-retry/07-trace.json) |
-| S2 | `resource_page_5s_25_scroll` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S2/08-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S2/08-trace.json) |
+| S1 | `developer_page_3s_30_scroll` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S1-retry/07-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S1-retry/07-trace.json) |
+| S2 | `resource_page_3s_30_scroll` | [Answer](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S2/08-answer.png) | [Trace](../../docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S2/08-trace.json) |
 
 ### Current Acceptance Baseline
 
@@ -72,12 +72,12 @@ For every failure, capture the URL, screenshot or recording, approximate time, v
 
 1. Reset the journey.
 2. Open **Products -> AI Search**.
-3. Keep the page visible for at least 5 seconds.
-4. Scroll to at least 25% depth.
+3. Keep the page visible for at least 3 seconds.
+4. Scroll to at least 30% depth.
 5. Wait briefly for the concierge. Do not open it yourself.
 6. Respond naturally using any chip or your own text.
 
-**Expected trigger:** `product_page_5s_25_scroll`
+**Expected trigger:** `product_page_3s_30_scroll`
 
 **Expected experience**
 
@@ -101,11 +101,11 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 **Steps**
 
 1. Reset the journey.
-2. Open **Products -> AI Search** and dwell at least 5 seconds.
-3. Scroll beyond 25% and let the product greeting appear. Leave that greeting unanswered.
+2. Open **Products -> AI Search** and dwell at least 3 seconds.
+3. Scroll beyond 30% and let the product greeting appear. Leave that greeting unanswered.
 4. Open the multilingual AI Search FAQ and click **Read the AI Search docs**.
 5. Confirm the internal InstantSearch.js documentation route opens without leaving the internal site.
-6. On documentation, dwell at least 5 seconds and scroll beyond 25%.
+6. On documentation, dwell at least 3 seconds and scroll beyond 30%.
 7. Wait for the destination greeting to replace the first greeting. Only then respond naturally.
 
 **Expected trigger:** `product_to_documentation`
@@ -131,11 +131,11 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 
 1. Reset the journey.
 2. Open **Solutions -> Grocery**.
-3. Keep it visible for at least 5 seconds.
-4. Scroll to at least 25% depth.
+3. Keep it visible for at least 3 seconds.
+4. Scroll to at least 30% depth.
 5. Wait for the concierge and respond naturally.
 
-**Expected trigger:** `solution_page_5s_25_scroll`
+**Expected trigger:** `solution_page_3s_30_scroll`
 
 **Expected experience**
 
@@ -156,10 +156,10 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 **Steps**
 
 1. Reset the journey.
-2. Open a solution page, dwell at least 5 seconds, and scroll beyond 25%.
+2. Open a solution page, dwell at least 3 seconds, and scroll beyond 30%.
 3. Let the solution greeting appear. Leave that greeting unanswered.
 4. Follow a visible customer story, case study, proof, or Customers link.
-5. On the proof page, dwell at least 5 seconds and scroll beyond 25%.
+5. On the proof page, dwell at least 3 seconds and scroll beyond 30%.
 6. Wait for the destination greeting to replace the first greeting. Only then respond naturally.
 
 **Expected trigger:** `solution_to_customer_story`
@@ -184,7 +184,7 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 **Steps**
 
 1. Reset the journey.
-2. Open **Products -> AI Search**, dwell at least 5 seconds, and scroll beyond 25%.
+2. Open **Products -> AI Search**, dwell at least 3 seconds, and scroll beyond 30%.
 3. Let the product greeting appear. Leave that greeting unanswered.
 4. Use website navigation to open Pricing.
 5. Wait for the destination greeting to replace the first greeting.
@@ -210,7 +210,7 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 **Steps**
 
 1. Reset the journey.
-2. Open **Solutions -> Grocery**, dwell at least 5 seconds, and scroll beyond 25%.
+2. Open **Solutions -> Grocery**, dwell at least 3 seconds, and scroll beyond 30%.
 3. Let the solution greeting appear. Leave that greeting unanswered.
 4. Use website navigation to open Pricing.
 5. Wait for the destination greeting to replace the first greeting.
@@ -240,10 +240,10 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 1. Reset the journey.
 2. Open **Developers**.
 3. Continue beyond the hero into substantive implementation content.
-4. Keep the page visible for at least 5 seconds and scroll to at least 25% depth.
+4. Keep the page visible for at least 3 seconds and scroll to at least 30% depth.
 5. Wait for the concierge and respond naturally, including technical challenges.
 
-**Expected trigger:** `developer_page_5s_25_scroll`
+**Expected trigger:** `developer_page_3s_30_scroll`
 
 **Expected experience**
 
@@ -265,10 +265,10 @@ The canonical logical destination is `/sites/www/doc/guides/building-search-ui/w
 1. Reset the journey.
 2. Open the **Unlock the Power of Agentic AI** resource.
 3. Move beyond the hero or library overview into substantive content.
-4. Keep the page visible for at least 5 seconds and scroll to at least 25% depth.
+4. Keep the page visible for at least 3 seconds and scroll to at least 30% depth.
 5. Wait for the concierge and respond naturally.
 
-**Expected trigger:** `resource_page_5s_25_scroll`
+**Expected trigger:** `resource_page_3s_30_scroll`
 
 **Expected experience**
 

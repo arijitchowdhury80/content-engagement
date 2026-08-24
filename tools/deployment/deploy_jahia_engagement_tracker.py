@@ -25,6 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ENV_LOCAL = ROOT / ".env.local"
 DEFAULT_JAHIA_BASE_URL = "https://tmp-content-eng-algolia.cloud.jahia.com"
+PUBLIC_FILES_URL = f"{DEFAULT_JAHIA_BASE_URL}/files/live/sites/www/files"
 ENDPOINT = f"{DEFAULT_JAHIA_BASE_URL}/modules/graphql"
 BLOCK_PATH = "/sites/www/home/drift/custom-code-block"
 FILES_PATH = "/sites/www/files"
@@ -40,6 +41,7 @@ PROACTIVE_CONTROLLER_CONTENT = f"{PROACTIVE_CONTROLLER}/jcr:content"
 TRACKER_CONTENT = f"{NEW_TRACKER}/jcr:content"
 CONTEXT_COMPILER_CONTENT = f"{CONTEXT_COMPILER}/jcr:content"
 HANDOFF_TO_ORCHESTRATOR = "/sites/www/files/handoff-to-orchestrator.js"
+HANDOFF_TO_ORCHESTRATOR_CONTENT = f"{HANDOFF_TO_ORCHESTRATOR}/jcr:content"
 ENGAGE = "/sites/www/files/algolia-chat-engage.js"
 THEME = "/sites/www/files/algolia-chat-theme-algolia-modal-greeting-width-20260815a.js"
 CHAT_SRC = ROOT / "frontend/chat-widget/algolia-chat.js"
@@ -55,11 +57,12 @@ RUNTIME_VERSION = "20260819-runtime-z"
 CHAT_VERSION = RUNTIME_VERSION
 CHAT_ONLY_VERSION = "20260819-chat-b"
 JUDGE_RUNTIME_VERSION = "20260820-semantic-grounding-authority-a"
-JOURNEY_RUNTIME_VERSION = "20260820-navigation-edge-a"
+JOURNEY_RUNTIME_VERSION = "20260823-threshold-3s-30"
 TRACKER_VERSION = RUNTIME_VERSION
 CONTEXT_COMPILER_VERSION = RUNTIME_VERSION
 PROACTIVE_CONTROLLER_VERSION = RUNTIME_VERSION
 CONTROLLER_ONLY_VERSION = "20260819-controller-a"
+PROACTIVE_RUNTIME_ONLY_VERSION = "20260823-shared-packet-a"
 HANDOFF_TO_ORCHESTRATOR_VERSION = RUNTIME_VERSION
 ENGAGE_VERSION = RUNTIME_VERSION
 THEME_VERSION = "20260815-answer-rhythm-balanced-a"
@@ -295,6 +298,61 @@ def controller_snapshot() -> dict:
         "live": {
             "blockHtml": block_html("LIVE"),
             "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "LIVE"),
+        },
+    }
+
+
+def referenced_handoff_path(block: str) -> str:
+    pattern = re.compile(
+        rf'<script src="{re.escape(PUBLIC_FILES_URL)}/'
+        r'(handoff-to-orchestrator(?:-compare-[a-f0-9]{12})?\.js)'
+        r'(?:\?[^"\n]*)?"></script>'
+    )
+    matches = pattern.findall(block)
+    if len(matches) != 1:
+        raise RuntimeError(
+            "Proactive-runtime deployment requires exactly one referenced handoff asset"
+        )
+    return f"{FILES_PATH}/{matches[0]}"
+
+
+def proactive_handoff_asset(content: str) -> dict:
+    digest = sha256(content)
+    filename = f"handoff-to-orchestrator-compare-{digest[:12]}.js"
+    return {
+        "path": f"{FILES_PATH}/{filename}",
+        "contentPath": f"{FILES_PATH}/{filename}/jcr:content",
+        "url": f"{PUBLIC_FILES_URL}/{filename}",
+        "sha256": digest,
+    }
+
+
+def proactive_runtime_snapshot(handoff_path: str | None = None) -> dict:
+    """Capture only the controller, handoff, and block owned by this release."""
+    edit_html = block_html("EDIT")
+    live_html = block_html("LIVE")
+    edit_handoff_path = handoff_path or referenced_handoff_path(edit_html)
+    live_handoff_path = handoff_path or referenced_handoff_path(live_html)
+    return {
+        "capturedAt": datetime.now(timezone.utc).isoformat(),
+        "mode": "proactive-runtime-only",
+        "proactiveRuntimeVersion": PROACTIVE_RUNTIME_ONLY_VERSION,
+        "target": {
+            "controller": PROACTIVE_CONTROLLER,
+            "handoff": handoff_path,
+            "block": BLOCK_PATH,
+        },
+        "edit": {
+            "blockHtml": edit_html,
+            "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "EDIT"),
+            "handoffPath": edit_handoff_path,
+            "handoffToOrchestratorNode": node(edit_handoff_path, "EDIT"),
+        },
+        "live": {
+            "blockHtml": live_html,
+            "proactiveControllerNode": node(PROACTIVE_CONTROLLER, "LIVE"),
+            "handoffPath": live_handoff_path,
+            "handoffToOrchestratorNode": node(live_handoff_path, "LIVE"),
         },
     }
 
@@ -552,6 +610,61 @@ def update_controller_block_html(current: str) -> str:
     if re.search(r'\sdata-proactive-controller-release="[^"]*"', embed):
         updated_embed = re.sub(
             r'\sdata-proactive-controller-release="[^"]*"',
+            f" {marker}",
+            embed,
+            count=1,
+        )
+    else:
+        updated_embed = embed[:-1] + f" {marker}>"
+    return next_html.replace(embed, updated_embed, 1)
+
+
+def update_proactive_runtime_block_html(current: str, handoff_url: str | None = None) -> str:
+    """Change only controller and handoff cache keys plus one release marker."""
+    controller_pattern = re.compile(
+        r'(<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/'
+        r'sites/www/files/algolia-proactive-controller\.js)(?:\?[^"\n]*)?(\"></script>)'
+    )
+    if len(controller_pattern.findall(current)) != 1:
+        raise RuntimeError(
+            "Proactive-runtime deployment requires exactly one controller script tag"
+        )
+    next_html = controller_pattern.sub(
+        rf'\1?proactive={PROACTIVE_RUNTIME_ONLY_VERSION}\2',
+        current,
+        count=1,
+    )
+
+    handoff_asset = proactive_handoff_asset(
+        HANDOFF_TO_ORCHESTRATOR_SRC.read_text(encoding="utf-8")
+    )
+    handoff_url = handoff_url or handoff_asset["url"]
+    handoff_pattern = re.compile(
+        rf'<script src="{re.escape(PUBLIC_FILES_URL)}/'
+        r'handoff-to-orchestrator(?:-compare-[a-f0-9]{12})?\.js'
+        r'(?:\?[^"\n]*)?"></script>'
+    )
+    if len(handoff_pattern.findall(next_html)) != 1:
+        raise RuntimeError(
+            "Proactive-runtime deployment requires exactly one handoff script tag"
+        )
+    next_html = handoff_pattern.sub(
+        f'<script src="{handoff_url}"></script>',
+        next_html,
+        count=1,
+    )
+
+    embed_pattern = re.compile(r'<div\b[^>]*\bclass="[^"]*\balgolia-chat-embed\b[^"]*"[^>]*>')
+    embed_matches = embed_pattern.findall(next_html)
+    if len(embed_matches) != 1:
+        raise RuntimeError(
+            "Proactive-runtime deployment requires exactly one algolia-chat-embed element"
+        )
+    embed = embed_matches[0]
+    marker = f'data-proactive-runtime-release="{PROACTIVE_RUNTIME_ONLY_VERSION}"'
+    if re.search(r'\sdata-proactive-runtime-release="[^"]*"', embed):
+        updated_embed = re.sub(
+            r'\sdata-proactive-runtime-release="[^"]*"',
             f" {marker}",
             embed,
             count=1,
@@ -990,6 +1103,160 @@ def run_controller_only(apply: bool) -> int:
         time.sleep(2)
         after = controller_snapshot()
         checks = validate_controller_only(after, controller_content, next_html)
+    write_json(EVIDENCE_DIR / "after-readback.json", after)
+    write_json(EVIDENCE_DIR / "deployment-validation.json", checks)
+    print(json.dumps(checks, indent=2))
+    return 0 if checks["pass"] else 1
+
+
+def validate_proactive_runtime_only(
+    snapshot_after: dict,
+    controller_content: str,
+    handoff_content: str,
+    handoff_asset: dict,
+    expected_html: str,
+) -> dict:
+    edit_controller = file_content(snapshot_after["edit"]["proactiveControllerNode"])
+    live_controller = file_content(snapshot_after["live"]["proactiveControllerNode"])
+    edit_handoff = file_content(snapshot_after["edit"]["handoffToOrchestratorNode"])
+    live_handoff = file_content(snapshot_after["live"]["handoffToOrchestratorNode"])
+    edit_html = snapshot_after["edit"]["blockHtml"]
+    live_html = snapshot_after["live"]["blockHtml"]
+    marker = f'data-proactive-runtime-release="{PROACTIVE_RUNTIME_ONLY_VERSION}"'
+    controller_query = f"proactive={PROACTIVE_RUNTIME_ONLY_VERSION}"
+    checks = {
+        "mode": "proactive-runtime-only",
+        "proactiveRuntimeVersion": PROACTIVE_RUNTIME_ONLY_VERSION,
+        "editControllerMatchesSource": edit_controller == controller_content,
+        "liveControllerMatchesSource": live_controller == controller_content,
+        "editHandoffMatchesSource": edit_handoff == handoff_content,
+        "liveHandoffMatchesSource": live_handoff == handoff_content,
+        "editBlockMatchesExpected": edit_html == expected_html,
+        "liveBlockMatchesExpected": live_html == expected_html,
+        "editBlockHasControllerQuery": controller_query in edit_html,
+        "liveBlockHasControllerQuery": controller_query in live_html,
+        "editBlockHasImmutableHandoff": handoff_asset["url"] in edit_html,
+        "liveBlockHasImmutableHandoff": handoff_asset["url"] in live_html,
+        "editBlockHasReleaseMarker": marker in edit_html,
+        "liveBlockHasReleaseMarker": marker in live_html,
+    }
+    checks["pass"] = all(
+        value
+        for key, value in checks.items()
+        if key not in {"mode", "proactiveRuntimeVersion"}
+    )
+    return checks
+
+
+def proactive_runtime_only_plan(
+    before: dict,
+    controller_content: str,
+    handoff_content: str,
+    handoff_asset: dict,
+    next_html: str,
+) -> dict:
+    return {
+        "mode": "proactive-runtime-only",
+        "target": {
+            "controller": PROACTIVE_CONTROLLER,
+            "handoff": handoff_asset["path"],
+            "block": BLOCK_PATH,
+        },
+        "intended": {
+            "proactiveRuntimeVersion": PROACTIVE_RUNTIME_ONLY_VERSION,
+            "controllerSha256": sha256(controller_content),
+            "handoffSha256": sha256(handoff_content),
+            "handoffUrl": handoff_asset["url"],
+            "blockHtmlSha256": sha256(next_html),
+        },
+        "mutationAllowlist": [
+            {"operation": "upsert", "path": PROACTIVE_CONTROLLER},
+            {"operation": "upsertImmutable", "path": handoff_asset["path"]},
+            {"operation": "setBlockHtml", "path": BLOCK_PATH},
+            {"operation": "publish", "path": PROACTIVE_CONTROLLER_CONTENT, "subtree": False},
+            {"operation": "publish", "path": PROACTIVE_CONTROLLER, "subtree": False},
+            {"operation": "publish", "path": handoff_asset["contentPath"], "subtree": False},
+            {"operation": "publish", "path": handoff_asset["path"], "subtree": False},
+            {"operation": "createVersion", "path": BLOCK_PATH},
+            {"operation": "publish", "path": BLOCK_PATH, "subtree": True},
+        ],
+        "excluded": {
+            "runtimeFiles": [CHAT, NEW_TRACKER, CONTEXT_COMPILER, ENGAGE],
+            "theme": THEME,
+            "subtrees": [FILES_PATH, "/sites/www/home/drift"],
+        },
+        "rollback": {
+            "restoreControllerFrom": "before-snapshot.json edit.proactiveControllerNode",
+            "restoreHandoffBy": "restore the prior block HTML; immutable handoff assets are never overwritten",
+            "restoreBlockHtmlFrom": "before-snapshot.json edit.blockHtml",
+        },
+    }
+
+
+def run_proactive_runtime_only(apply: bool) -> int:
+    controller_content = PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")
+    handoff_content = HANDOFF_TO_ORCHESTRATOR_SRC.read_text(encoding="utf-8")
+    handoff_asset = proactive_handoff_asset(handoff_content)
+    before = proactive_runtime_snapshot()
+    write_json(EVIDENCE_DIR / "before-snapshot.json", before)
+    next_html = update_proactive_runtime_block_html(
+        before["edit"]["blockHtml"],
+        handoff_asset["url"],
+    )
+    if before["edit"]["blockHtml"] != before["live"]["blockHtml"]:
+        recovered_live_html = update_proactive_runtime_block_html(
+            before["live"]["blockHtml"],
+            handoff_asset["url"],
+        )
+        if recovered_live_html != next_html:
+            raise RuntimeError(
+                "EDIT and LIVE blocks differ outside this scoped proactive release"
+            )
+    plan = proactive_runtime_only_plan(
+        before,
+        controller_content,
+        handoff_content,
+        handoff_asset,
+        next_html,
+    )
+    write_json(EVIDENCE_DIR / "deployment-plan.json", plan)
+    if not apply:
+        print(json.dumps(plan, indent=2))
+        return 0
+
+    mutations = {
+        "upsertProactiveController": upsert_file(PROACTIVE_CONTROLLER, controller_content),
+        "upsertHandoffToOrchestrator": upsert_file(handoff_asset["path"], handoff_content),
+        "setBlockHtml": set_block_html(next_html),
+        "publishProactiveControllerContent": publish(PROACTIVE_CONTROLLER_CONTENT, subtree=False),
+        "publishProactiveController": publish(PROACTIVE_CONTROLLER, subtree=False),
+        "publishHandoffContent": publish(handoff_asset["contentPath"], subtree=False),
+        "publishHandoff": publish(handoff_asset["path"], subtree=False),
+        "versionBlock": version_block(),
+        "publishBlock": publish(BLOCK_PATH, subtree=True),
+    }
+    write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
+
+    after = proactive_runtime_snapshot(handoff_asset["path"])
+    checks = validate_proactive_runtime_only(
+        after,
+        controller_content,
+        handoff_content,
+        handoff_asset,
+        next_html,
+    )
+    for _ in range(8):
+        if checks["pass"]:
+            break
+        time.sleep(2)
+        after = proactive_runtime_snapshot(handoff_asset["path"])
+        checks = validate_proactive_runtime_only(
+            after,
+            controller_content,
+            handoff_content,
+            handoff_asset,
+            next_html,
+        )
     write_json(EVIDENCE_DIR / "after-readback.json", after)
     write_json(EVIDENCE_DIR / "deployment-validation.json", checks)
     print(json.dumps(checks, indent=2))
@@ -1482,6 +1749,11 @@ def main() -> int:
         action="store_true",
         help="Deploy only tracker, context compiler, proactive controller, and their cache markers.",
     )
+    parser.add_argument(
+        "--proactive-runtime-only",
+        action="store_true",
+        help="Deploy only the proactive controller, orchestrator handoff, and their cache markers.",
+    )
     parser.add_argument("--evidence-dir", type=Path)
     args = parser.parse_args()
     if args.evidence_dir:
@@ -1498,6 +1770,7 @@ def main() -> int:
         args.chat_only,
         args.judge_runtime_only,
         args.journey_runtime_only,
+        args.proactive_runtime_only,
     ]
     if sum(selected_modes) > 1:
         parser.error(
@@ -1515,6 +1788,8 @@ def main() -> int:
         return run_judge_runtime_only(args.apply)
     if args.journey_runtime_only:
         return run_journey_runtime_only(args.apply)
+    if args.proactive_runtime_only:
+        return run_proactive_runtime_only(args.apply)
 
     before = snapshot()
     write_json(EVIDENCE_DIR / "before-snapshot.json", before)

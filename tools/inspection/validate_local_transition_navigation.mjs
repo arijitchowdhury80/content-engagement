@@ -14,7 +14,7 @@ const fixturePath = join(siteDir, 'index.html');
 const scenarios = [
   {
     trigger: 'product_to_documentation',
-    sourceTrigger: 'product_page_5s_25_scroll',
+    sourceTrigger: 'product_page_3s_30_scroll',
     sourcePath: '/products/features/ui-component-libraries',
     sourceLabel: 'UI Component Libraries',
     targetPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
@@ -24,7 +24,7 @@ const scenarios = [
   },
   {
     trigger: 'solution_to_customer_story',
-    sourceTrigger: 'solution_page_5s_25_scroll',
+    sourceTrigger: 'solution_page_3s_30_scroll',
     sourcePath: '/solutions/ecommerce',
     sourceLabel: 'Ecommerce',
     targetPath: '/customers/harry-rosen',
@@ -34,7 +34,7 @@ const scenarios = [
   },
   {
     trigger: 'product_to_pricing',
-    sourceTrigger: 'product_page_5s_25_scroll',
+    sourceTrigger: 'product_page_3s_30_scroll',
     sourcePath: '/products/ai-recommendations',
     sourceLabel: 'AI Recommendations',
     targetPath: '/pricing',
@@ -44,7 +44,7 @@ const scenarios = [
   },
   {
     trigger: 'solution_to_pricing',
-    sourceTrigger: 'solution_page_5s_25_scroll',
+    sourceTrigger: 'solution_page_3s_30_scroll',
     sourcePath: '/solutions/marketplace',
     sourceLabel: 'Marketplace',
     targetPath: '/pricing',
@@ -103,7 +103,7 @@ async function qualifyCurrentPage(page) {
     const current = (session.pages || []).find(
       (item) => item.pageId === session.currentPageId
     );
-    return current?.path === location.pathname && current?.dwellMs >= 5_000;
+    return current?.path === location.pathname && current?.dwellMs >= 3_000;
   });
   await page.evaluate(() => {
     const root = document.scrollingElement || document.documentElement;
@@ -114,7 +114,7 @@ async function qualifyCurrentPage(page) {
     const current = (session.pages || []).find(
       (item) => item.pageId === session.currentPageId
     );
-    return current?.dwellMs >= 5_000 && current?.maxScrollDepth >= 25;
+    return current?.dwellMs >= 3_000 && current?.maxScrollDepth >= 30;
   });
 }
 
@@ -158,7 +158,7 @@ async function runScenario(browser, baseUrl, scenario) {
       );
       return {
         sessionId: session.sessionId,
-        qualified: current?.dwellMs >= 5_000 && current?.maxScrollDepth >= 25,
+        qualified: current?.dwellMs >= 3_000 && current?.maxScrollDepth >= 30,
         readinessEvents: window.__localParityReadinessEvents.length,
       };
     });
@@ -177,15 +177,16 @@ async function runScenario(browser, baseUrl, scenario) {
       const opportunity = (state.opportunities || []).find(
         (item) => item.trigger === trigger && item.status === 'shown'
       );
-      const journeySummary = opportunity?.requestPacket?.journeySummary || {};
+      const broaderJourney =
+        opportunity?.requestPacket?.journeyContext?.broaderJourney || {};
       return {
         sessionId: session.sessionId,
         pagePaths: (session.pages || []).map((item) => item.path),
         transitionShown: !!opportunity,
         greeting: opportunity?.greetingResponse?.greeting || '',
         focusLabels: [
-          ...(journeySummary.productTrail || []).map((item) => item.label),
-          ...(journeySummary.solutionTrail || []).map((item) => item.label),
+          ...(broaderJourney.productTrail || []).map((item) => item.label),
+          ...(broaderJourney.solutionTrail || []).map((item) => item.label),
         ],
         traceStages: (window.algoliaProactiveController.debug().trace || []).map(
           (item) => item.stage

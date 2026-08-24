@@ -175,7 +175,7 @@ test('compiles rich context from tracker state without downgrading confirmed per
 
 test('exposes the immediate navigation edge while preserving the complete page trail', () => {
   const pages = [
-    { pageId: 'product', path: '/products/ai-search', title: 'AI Search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 },
+    { pageId: 'product', path: '/products/ai-search', title: 'AI Search', pageGroup: 'product', topic: 'ai_search', dwellMs: 3000, maxScrollDepth: 30 },
     { pageId: 'resource', path: '/resources/guide', title: 'Guide', pageGroup: 'resource', topic: 'research', dwellMs: 1000, maxScrollDepth: 5 },
     {
       pageId: 'pricing', path: '/pricing', title: 'Pricing', pageGroup: 'pricing', topic: 'pricing_and_usage',
@@ -281,8 +281,8 @@ test('classifies enterprise use-case context as a solution', () => {
         path: '/use-cases/enterprise',
         title: 'Enterprise Search',
         enteredAt: 1786750060000,
-        dwellMs: 5000,
-        maxScrollDepth: 25,
+        dwellMs: 3000,
+        maxScrollDepth: 30,
       }],
       engagementHistory: [],
     },
@@ -371,7 +371,7 @@ test('returns flat Agent Studio turn context within documented limits', () => {
   assert.doesNotMatch(serialized, /person@example.com/);
 });
 
-test('qualified journey summary uses the shared 5 second and 25 percent boundary', () => {
+test('qualified journey summary uses the shared 3 second and 30 percent boundary', () => {
   const buildPage = (pageId, dwellMs, maxScrollDepth) => ({
     pageId,
     path: `/products/${pageId}`,
@@ -389,9 +389,9 @@ test('qualified journey summary uses the shared 5 second and 25 percent boundary
       startedAt: 1786750000000,
       currentPageId: 'qualified',
       pages: [
-        buildPage('short-dwell', 4999, 25),
-        buildPage('shallow-scroll', 5000, 24),
-        buildPage('qualified', 5000, 25),
+        buildPage('short-dwell', 2999, 30),
+        buildPage('shallow-scroll', 3000, 29),
+        buildPage('qualified', 3000, 30),
       ],
       engagementHistory: [],
     },

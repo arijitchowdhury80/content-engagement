@@ -7,10 +7,10 @@ This change establishes two deterministic proactive journeys and a safe UAT rese
 ## Interaction Contract
 
 - Clicking the Algolia Assistant header logo resets only Content Engagement visitor state, spins once as acknowledgement, and starts a fresh tracked session.
-- Product pages qualify after 15 seconds of dwell and 50% scroll depth.
-- Product to Documentation qualifies after the destination documentation page reaches 10 seconds and 50% scroll depth.
-- Solution pages qualify after 15 seconds of dwell and 50% scroll depth.
-- Solution to Customer Proof qualifies after the destination story reaches 10 seconds and 50% scroll depth.
+- Product pages qualify after 3 seconds of dwell and 30% scroll depth.
+- Product to Documentation qualifies after the destination documentation page reaches 3 seconds and 30% scroll depth.
+- Solution pages qualify after 3 seconds of dwell and 30% scroll depth.
+- Solution to Customer Proof qualifies after the destination story reaches 3 seconds and 30% scroll depth.
 - A greeting that was merely shown and then closed does not consume the later cross-page transition.
 - A visitor who engages and hands off to the orchestrator is not interrupted by another proactive greeting.
 

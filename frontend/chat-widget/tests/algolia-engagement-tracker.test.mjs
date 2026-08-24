@@ -191,7 +191,7 @@ test('records the immediate source and destination edge for a normal navigation'
         startedAt: now - 10_000,
         lastSeenAt: now - 1_000,
         currentPageId: 'page_product',
-        pages: [{ pageId: 'page_product', path: '/products/ai-search', title: 'AI Search', dwellMs: 5000, maxScrollDepth: 25, pageGroup: 'product', topic: 'ai_search' }],
+        pages: [{ pageId: 'page_product', path: '/products/ai-search', title: 'AI Search', dwellMs: 3000, maxScrollDepth: 30, pageGroup: 'product', topic: 'ai_search' }],
         engagementHistory: [],
       }),
     },
@@ -227,18 +227,18 @@ test('classifies SPA push, SPA pop, and persisted history restoration distinctly
   assert.equal(current.navigationType, 'back_forward');
 });
 
-test('emits the 25 percent scroll milestone required by proactive journeys', () => {
+test('emits the 30 percent scroll milestone required by proactive journeys', () => {
   const { context, sessionStorage } = createHarness({ pathname: '/products/ai-search', search: '' });
 
   context.document.documentElement.scrollHeight = 2000;
   context.document.body.scrollHeight = 2000;
-  context.scrollY = 0;
+  context.scrollY = 100;
   context.dispatchWindowEvent('scroll');
 
   const scrollEvents = parse(sessionStorage, 'algolia_events').events
     .filter((event) => event.name === 'scroll_depth');
   assert.equal(scrollEvents.length, 1);
-  assert.equal(scrollEvents[0].props.depth, 25);
+  assert.equal(scrollEvents[0].props.depth, 30);
 });
 
 test('dwell accumulates visible time and excludes time while the page is hidden', () => {
@@ -248,18 +248,18 @@ test('dwell accumulates visible time and excludes time while the page is hidden'
     initialNow: 1_000_000,
   });
 
-  advanceTime(5_000);
+  advanceTime(3_000);
   context.document.hidden = true;
   context.document.dispatchDocumentEvent('visibilitychange');
   advanceTime(20_000);
   context.dispatchWindowEvent('beforeunload');
 
   let currentPage = parse(sessionStorage, 'algolia_session').pages[0];
-  assert.equal(currentPage.dwellMs, 5_000);
+  assert.equal(currentPage.dwellMs, 3_000);
 
   context.document.hidden = false;
   context.document.dispatchDocumentEvent('visibilitychange');
-  advanceTime(5_000);
+  advanceTime(7_000);
   context.dispatchWindowEvent('pagehide');
 
   currentPage = parse(sessionStorage, 'algolia_session').pages[0];

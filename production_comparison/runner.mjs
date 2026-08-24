@@ -1,5 +1,5 @@
-import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -33,7 +33,7 @@ export function createLimiter(limit) {
   };
 }
 
-function loadLocalEnv(path = resolve(root, '.env.local')) {
+export function loadLocalEnv(path = resolve(root, '.env.local')) {
   const values = { ...process.env };
   if (!existsSync(path)) return values;
   for (const raw of readFileSync(path, 'utf8').split(/\r?\n/)) {
@@ -134,6 +134,12 @@ function completionUrl(appId, agentId) {
 }
 
 async function fetchTextWithTimeout(url, options, timeoutMs = DEFAULT_TIMEOUT_MS, fetchImpl = fetch) {
+  if (timeoutMs === null || Number(timeoutMs) <= 0) {
+    const response = await fetchImpl(url, options);
+    const text = await response.text();
+    if (!response.ok) throw new Error(`HTTP ${response.status}: ${text.slice(0, 500)}`);
+    return text;
+  }
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(new Error(`Request timed out after ${timeoutMs}ms`)), timeoutMs);
   try {
@@ -179,8 +185,12 @@ export function strictJson(value) {
 }
 
 export async function callRoleJudge(role, agentId, appId, apiKey, evaluation, options = {}) {
+  const startedAt = (options.now || Date.now)();
   let lastError;
-  let validationFeedback = [];
+  let failureKind = null;
+  let validationFeedback = Array.isArray(options.initialValidationFeedback)
+    ? options.initialValidationFeedback.map(String)
+    : [];
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     const attemptId = `${evaluation.evaluationId}:${role}:${Date.now()}:${attempt}`;
     options.onJudgeProgress?.({ phase: 'start', role, attempt, evaluationId: evaluation.evaluationId });
@@ -205,13 +215,15 @@ export async function callRoleJudge(role, agentId, appId, apiKey, evaluation, op
       const validated = core.validateJudgeReport(role, strictJson(parsed.answer), evaluation);
       if (validated.ok) {
         options.onJudgeProgress?.({ phase: 'complete', role, attempt, evaluationId: evaluation.evaluationId });
-        return { ...validated, attempts: attempt, rawStream: raw };
+        return { ...validated, attempts: attempt, durationMs: Math.max(0, (options.now || Date.now)() - startedAt), rawStream: raw };
       }
       lastError = new Error(validated.errors.join('; '));
+      failureKind = 'validation';
       validationFeedback = validated.errors;
       options.onJudgeProgress?.({ phase: 'retry', role, attempt, evaluationId: evaluation.evaluationId, error: lastError.message });
     } catch (error) {
       lastError = error;
+      failureKind = 'transport';
       validationFeedback = [];
       options.onJudgeProgress?.({ phase: 'retry', role, attempt, evaluationId: evaluation.evaluationId, error: error instanceof Error ? error.message : String(error) });
     } finally {
@@ -219,15 +231,18 @@ export async function callRoleJudge(role, agentId, appId, apiKey, evaluation, op
     }
   }
   options.onJudgeProgress?.({ phase: 'failed', role, evaluationId: evaluation.evaluationId, error: lastError instanceof Error ? lastError.message : String(lastError) });
-  return { ok: false, role, errors: [lastError instanceof Error ? lastError.message : String(lastError)] };
+  return {
+    ok: false,
+    role,
+    attempts: 2,
+    durationMs: Math.max(0, (options.now || Date.now)() - startedAt),
+    errors: [lastError instanceof Error ? lastError.message : String(lastError)],
+    failureKind,
+    ...(failureKind === 'validation' ? { validationErrors: [...validationFeedback] } : {}),
+  };
 }
 
-export async function judgeAnswer(question, answerResult, judges, apiKey, options = {}) {
-  const evaluation = await core.createEvaluationPackage({
-    question,
-    answer: answerResult.answer,
-    evidenceEvents: answerResult.evidenceEvents,
-  });
+export async function judgeEvaluation(evaluation, judges, apiKey, options = {}) {
   if (!evaluation.evidencePacket.events.length || !evaluation.evidencePacket.passages.length) {
     return { status: 'unavailable', error: 'The answer returned no usable retrieval evidence; semantic grounding cannot be evaluated.', evaluation };
   }
@@ -246,6 +261,15 @@ export async function judgeAnswer(question, answerResult, judges, apiKey, option
     { ...options, origin: judges.origin || options.origin },
   )));
   return { ...core.aggregateJudgeReports(reports), evaluation, reports };
+}
+
+export async function judgeAnswer(question, answerResult, judges, apiKey, options = {}) {
+  const evaluation = await core.createEvaluationPackage({
+    question,
+    answer: answerResult.answer,
+    evidenceEvents: answerResult.evidenceEvents,
+  });
+  return judgeEvaluation(evaluation, judges, apiKey, options);
 }
 
 export async function compareQuestion(question, config, keys, options = {}) {
@@ -360,13 +384,19 @@ export async function mapLimit(values, limit, mapper) {
   return results;
 }
 
-async function main() {
+export async function runCli(argv = process.argv.slice(2)) {
   const rawConfig = JSON.parse(await readFile(resolve(here, 'config.json'), 'utf8'));
-  const rejudgeIndex = process.argv.indexOf('--rejudge');
-  const rejudgePath = rejudgeIndex >= 0 ? process.argv[rejudgeIndex + 1] : null;
+  const rejudgeIndex = argv.indexOf('--rejudge');
+  const rejudgePath = rejudgeIndex >= 0 ? argv[rejudgeIndex + 1] : null;
   if (rejudgeIndex >= 0 && !rejudgePath) throw new Error('--rejudge requires a results.json path.');
+  const unknown = rejudgeIndex < 0
+    ? argv
+    : argv.filter((_value, index) => index !== rejudgeIndex && index !== rejudgeIndex + 1);
+  if (unknown.length) throw new Error(`Unknown argument: ${unknown[0]}`);
   const priorRun = rejudgePath ? JSON.parse(await readFile(resolve(rejudgePath), 'utf8')) : null;
-  const questions = priorRun ? priorRun.rows.map((row) => row.question) : JSON.parse(await readFile(resolve(here, 'questions.json'), 'utf8'));
+  const questions = priorRun
+    ? priorRun.rows.map((row) => row.question)
+    : JSON.parse(await readFile(resolve(here, 'questions.json'), 'utf8'));
   const env = loadLocalEnv();
   const config = applyJudgeAgentOverrides(rawConfig, env);
   const keys = {
@@ -374,7 +404,9 @@ async function main() {
     production: env[config.production.keyEnv],
     judge: env[config.judges.keyEnv] || env[config.flagship.keyEnv],
   };
-  for (const [name, value] of Object.entries(keys)) if (!value) throw new Error(`Missing ${name} API key environment variable.`);
+  for (const [name, value] of Object.entries(keys)) {
+    if (!value) throw new Error(`Missing ${name} API key environment variable.`);
+  }
   const runId = new Date().toISOString().replace(/[:.]/g, '-');
   const outputDir = resolve(here, 'runs', runId);
   await mkdir(outputDir, { recursive: true });
@@ -411,9 +443,11 @@ async function main() {
       await persistCheckpoint(index, row);
       process.stderr.write(`[${index + 1}/${questions.length}] checkpoint saved\n`);
       return row;
-    }
-    catch (error) {
-      const failure = { verdict: { status: 'unavailable', error: error instanceof Error ? error.message : String(error) }, answer: '' };
+    } catch (error) {
+      const failure = {
+        verdict: { status: 'unavailable', error: error instanceof Error ? error.message : String(error) },
+        answer: '',
+      };
       const row = { question, flagship: failure, production: failure };
       await persistCheckpoint(index, row);
       return row;
@@ -424,7 +458,9 @@ async function main() {
     contractVersion: core.CONTRACT_VERSION,
     createdAt: new Date().toISOString(),
     ...(rejudgePath ? { rejudgedFrom: resolve(rejudgePath) } : {}),
-    config, rows, summary: summarize(rows),
+    config,
+    rows,
+    summary: summarize(rows),
   };
   await writeFile(resolve(outputDir, 'results.json'), JSON.stringify(result, null, 2) + '\n');
   await writeFile(resolve(outputDir, 'report.html'), renderHtml(result));
@@ -432,5 +468,5 @@ async function main() {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  main().catch((error) => { console.error(error); process.exitCode = 1; });
+  runCli().catch((error) => { console.error(error); process.exitCode = 1; });
 }

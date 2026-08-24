@@ -13,18 +13,18 @@ action chips that assumed unknown visitor facts. Because a chip is submitted
 verbatim as the visitor's next message, those labels both overclaimed context
 and produced an ambiguous handoff turn.
 
-## Fix
+## Canonical Fix
 
 - Treat use case, KPIs, stack, scale, goals, and decision criteria as unknown
   unless the proactive packet explicitly confirms them.
 - Require every chip to read naturally as a visitor-authored message.
-- Use discovery-shaped choices such as `Share my use case` and
-  `Choose the right KPIs`.
+- Use open discovery choices such as `Help me define my use case` and
+  `Which KPIs should I measure?`.
 - Use observed packet context dynamically for proof choices, for example
-  `Find similar Grocery proof` when Grocery is present in the packet.
+  `Show me comparable Grocery proof` when Grocery is present in the packet.
 - Remove the stale phrases from prompt context entirely.
 
-## Verification
+## Local Verification
 
 `node --test frontend/chat-widget/tests/proactive-journey-prompt-examples.test.mjs frontend/chat-widget/tests/proactive-journey-contract-consistency.test.mjs`
 
@@ -52,10 +52,11 @@ Readback evidence:
 - System prompt after SHA-256:
   `8f7e1d5dc5f682798715db59fead29f3b87a6f956722d31756bc2c4718407fae`
 - Agent remained published after save.
-- Existing `10s_50_scroll` trigger labels were preserved; no trigger or runtime
-  behavior changed in this release.
+- That release preserved the then-current `10s_50_scroll` labels. The active
+  runtime contract now uses the canonical 3-second dwell and 30% scroll
+  threshold documented in `2026-08-23-proactive-threshold-3s-30.md`.
 
-The Agent Studio smoke request for Grocery customer proof returned:
+The published Agent Studio smoke request for Grocery customer proof returned:
 
 - `Share my use case`
 - `Choose the right KPIs`
@@ -63,6 +64,21 @@ The Agent Studio smoke request for Grocery customer proof returned:
 
 The generated greeting connected Grocery and H-E-B context while treating the
 visitor's use case and KPIs as unknown.
+
+## Follow-Up Correction
+
+Subsequent review found that `Share my use case` still asks the visitor to
+disclose a use case that may not yet be formed. The canonical prompt now uses a
+more open discovery posture:
+
+- `Help me define my use case`
+- `Which KPIs should I measure?`
+- `Show me comparable Grocery proof`
+
+The corresponding greeting invites the visitor to define the use case, decide
+which KPIs matter, or inspect comparable proof. This follow-up correction is
+local only until a separate Agent Studio snapshot, dry-run, approval, apply,
+readback, and smoke verification are completed.
 
 Rollback: restore the private before snapshots through the same Agent Studio
 save-and-readback sequence.

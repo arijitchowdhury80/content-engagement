@@ -1,5 +1,7 @@
 # Wave 1: Algolia Implementation Audit
 
+> Historical audit. Trigger identifiers recorded below describe the artifacts inspected during this wave. The active canonical singleton identifiers were superseded on 2026-08-23 by `product_page_3s_30_scroll`, `solution_page_3s_30_scroll`, `developer_page_3s_30_scroll`, and `resource_page_3s_30_scroll`.
+
 Baseline: `algolia-com` at `2a1f9ccc330990cf9f4b3be7e7a343887e22285e`
 Snapshot manifest: `258732bcb33f1c4f9febf038d2ea2a4c56494a07abbd7536fde50d0866ceb5e6`
 Scope coverage: 105/105 `architecture_included` files

@@ -241,7 +241,7 @@ async function flushAsyncControllerWork() {
   }
 }
 
-test('product research triggers at 5 visible seconds and 25 percent scroll', () => {
+test('product research triggers at 3 visible seconds and 30 percent scroll', () => {
   const { context } = createHarness({
     pages: [
       page({
@@ -249,8 +249,8 @@ test('product research triggers at 5 visible seconds and 25 percent scroll', () 
         path: '/products/ai-recommendations',
         pageGroup: 'product',
         topic: 'ai_search',
-        dwellMs: 5000,
-        maxScrollDepth: 25,
+        dwellMs: 3000,
+        maxScrollDepth: 30,
       }),
     ],
   });
@@ -259,14 +259,14 @@ test('product research triggers at 5 visible seconds and 25 percent scroll', () 
 
   assert.equal(decision.engage, true);
   assert.equal(decision.moment, 'product_research');
-  assert.equal(decision.trigger, 'product_page_5s_25_scroll');
+  assert.equal(decision.trigger, 'product_page_3s_30_scroll');
   assert.equal(decision.messageGoal, 'explain_product_fit');
   assert.ok(decision.priority >= 60);
   assert.ok(decision.reasonCodes.includes('product_page'));
   assert.equal(decision.agentPromptPacket.currentPage.path, '/products/ai-recommendations');
 });
 
-test('developer depth requires 5 visible seconds and 25 percent scroll', () => {
+test('developer depth requires 3 visible seconds and 30 percent scroll', () => {
   const { context } = createHarness({
     locationPath: '/developers',
     pages: [
@@ -275,8 +275,8 @@ test('developer depth requires 5 visible seconds and 25 percent scroll', () => {
         path: '/developers',
         pageGroup: 'developer',
         topic: 'implementation',
-        dwellMs: 5000,
-        maxScrollDepth: 25,
+        dwellMs: 3000,
+        maxScrollDepth: 30,
       }),
     ],
   });
@@ -285,23 +285,23 @@ test('developer depth requires 5 visible seconds and 25 percent scroll', () => {
 
   assert.equal(decision.engage, true);
   assert.equal(decision.moment, 'implementation_research');
-  assert.equal(decision.trigger, 'developer_page_5s_25_scroll');
+  assert.equal(decision.trigger, 'developer_page_3s_30_scroll');
   assert.equal(decision.messageGoal, 'reduce_implementation_uncertainty');
 });
 
 test('all eight canonical journeys honor below, exact, and above trigger boundaries', () => {
   const singlePageCases = [
-    ['product_page_5s_25_scroll', '/products/ai-search', 'product'],
-    ['solution_page_5s_25_scroll', '/solutions/ecommerce', 'solution'],
-    ['developer_page_5s_25_scroll', '/developers', 'developer'],
-    ['resource_page_5s_25_scroll', '/resources', 'resource'],
+    ['product_page_3s_30_scroll', '/products/ai-search', 'product'],
+    ['solution_page_3s_30_scroll', '/solutions/ecommerce', 'solution'],
+    ['developer_page_3s_30_scroll', '/developers', 'developer'],
+    ['resource_page_3s_30_scroll', '/resources', 'resource'],
   ];
   for (const [trigger, path, pageGroup] of singlePageCases) {
     for (const [dwellMs, maxScrollDepth, expected] of [
-      [4999, 25, false],
-      [5000, 24, false],
-      [5000, 25, true],
-      [5001, 26, true],
+      [2999, 30, false],
+      [3000, 29, false],
+      [3000, 30, true],
+      [3001, 31, true],
     ]) {
       const { context } = createHarness({
         locationPath: path,
@@ -318,12 +318,12 @@ test('all eight canonical journeys honor below, exact, and above trigger boundar
   ];
   for (const [trigger, sourcePath, sourceGroup, destinationPath, destinationGroup] of depthTransitions) {
     for (const [sourceDwell, sourceScroll, destinationDwell, destinationScroll, expected] of [
-      [4999, 25, 5000, 25, false],
-      [5000, 24, 5000, 25, false],
-      [5000, 25, 4999, 25, false],
-      [5000, 25, 5000, 24, false],
-      [5000, 25, 5000, 25, true],
-      [5001, 26, 5001, 26, true],
+      [2999, 30, 3000, 30, false],
+      [3000, 29, 3000, 30, false],
+      [3000, 30, 2999, 30, false],
+      [3000, 30, 3000, 29, false],
+      [3000, 30, 3000, 30, true],
+      [3001, 31, 3001, 31, true],
     ]) {
       const { context } = createHarness({
         locationPath: destinationPath,
@@ -343,10 +343,10 @@ test('all eight canonical journeys honor below, exact, and above trigger boundar
   ];
   for (const [trigger, sourcePath, sourceGroup] of pricingTransitions) {
     for (const [dwellMs, maxScrollDepth, expected] of [
-      [4999, 25, false],
-      [5000, 24, false],
-      [5000, 25, true],
-      [5001, 26, true],
+      [2999, 30, false],
+      [3000, 29, false],
+      [3000, 30, true],
+      [3001, 31, true],
     ]) {
       const { context } = createHarness({
         locationPath: '/pricing',
@@ -467,8 +467,8 @@ test('enterprise search use case qualifies the canonical solution-to-pricing dem
         topic: 'industry_solution',
         solutionFocus: 'enterprise',
         solutionFocusLabel: 'Enterprise',
-        dwellMs: 5000,
-        maxScrollDepth: 25,
+        dwellMs: 3000,
+        maxScrollDepth: 30,
       }),
       page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
     ],
@@ -570,12 +570,16 @@ test('product to pricing summarizes multi-product journey for greeting personali
   assert.equal(decision.trigger, 'product_to_pricing');
   assert.equal(decision.agentPromptPacket.contextualFocus.label, 'AI Recommendations');
   assert.equal(
-    decision.agentPromptPacket.journeySummary.productTrail.map((item) => item.label).join(' > '),
+    decision.agentPromptPacket.journeyContext.broaderJourney.productTrail.map((item) => item.label).join(' > '),
     'Search > Personalization > AI Recommendations'
   );
-  assert.equal(decision.agentPromptPacket.journeySummary.currentTransition, 'product_to_pricing');
-  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /Search, Personalization, and AI Recommendations/);
-  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /cost\/value question/);
+  assert.equal(decision.agentPromptPacket.journeyContext.currentTransition, 'product_to_pricing');
+  assert.match(decision.agentPromptPacket.journeyContext.journeyNarrativeHint, /Search, Personalization, and AI Recommendations/);
+  assert.match(decision.agentPromptPacket.journeyContext.journeyNarrativeHint, /cost\/value question/);
+  assert.equal(decision.agentPromptPacket.journeyContext.origin.label, 'AI Recommendations');
+  assert.equal(decision.agentPromptPacket.journeyContext.destination.label, 'Pricing');
+  assert.equal(decision.agentPromptPacket.journeyContext.currentNavigationEdge.isImmediate, true);
+  assert.match(decision.agentPromptPacket.journeyContext.journeyNarrativeHint, /cost\/value question/);
 });
 
 test('solution to pricing summarizes multi-solution journey for greeting personalization', () => {
@@ -620,12 +624,18 @@ test('solution to pricing summarizes multi-solution journey for greeting persona
   assert.equal(decision.agentPromptPacket.contextualFocus.label, 'Marketplace');
   assert.equal(decision.agentPromptPacket.contextualFocus.type, 'solution');
   assert.equal(
-    decision.agentPromptPacket.journeySummary.solutionTrail.map((item) => item.label).join(' > '),
+    decision.agentPromptPacket.journeyContext.broaderJourney.solutionTrail.map((item) => item.label).join(' > '),
     'Commerce > Marketplace'
   );
-  assert.equal(decision.agentPromptPacket.journeySummary.currentTransition, 'solution_to_pricing');
-  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /Commerce and Marketplace/);
-  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /commercial evaluation/);
+  assert.equal(decision.agentPromptPacket.journeyContext.currentTransition, 'solution_to_pricing');
+  assert.match(decision.agentPromptPacket.journeyContext.journeyNarrativeHint, /Commerce and Marketplace/);
+  assert.match(decision.agentPromptPacket.journeyContext.journeyNarrativeHint, /commercial evaluation/);
+  assert.equal(decision.agentPromptPacket.journeyContext.origin.label, 'Marketplace');
+  assert.equal(decision.agentPromptPacket.journeyContext.destination.label, 'Pricing');
+  assert.equal(
+    decision.agentPromptPacket.journeyContext.broaderJourney.solutionTrail.map((item) => item.label).join(' > '),
+    'Commerce > Marketplace'
+  );
 });
 
 test('product to pricing overrides stale lower-priority product dwell opportunity', () => {
@@ -689,9 +699,9 @@ test('unshown opportunities do not consume session cap or cooldown', () => {
       schema: 'AlgoliaProactiveState.v1',
       lastOpportunityAt: Date.now(),
       opportunities: [
-        { id: 'opp_1', status: 'greeting_failed', pageId: 'page_old_1', pagePath: '/products/search', moment: 'product_research', trigger: 'product_page_5s_25_scroll', priority: 66 },
-        { id: 'opp_2', status: 'greeting_requested', pageId: 'page_old_2', pagePath: '/products/features/personalization', moment: 'product_research', trigger: 'product_page_5s_25_scroll', priority: 66 },
-        { id: 'opp_3', status: 'greeting_rejected', pageId: 'page_old_3', pagePath: '/developers', moment: 'implementation_research', trigger: 'developer_page_5s_25_scroll', priority: 76 },
+        { id: 'opp_1', status: 'greeting_failed', pageId: 'page_old_1', pagePath: '/products/search', moment: 'product_research', trigger: 'product_page_3s_30_scroll', priority: 66 },
+        { id: 'opp_2', status: 'greeting_requested', pageId: 'page_old_2', pagePath: '/products/features/personalization', moment: 'product_research', trigger: 'product_page_3s_30_scroll', priority: 66 },
+        { id: 'opp_3', status: 'greeting_rejected', pageId: 'page_old_3', pagePath: '/developers', moment: 'implementation_research', trigger: 'developer_page_3s_30_scroll', priority: 76 },
       ],
     },
     pages: [
@@ -710,7 +720,7 @@ test('unshown opportunities do not consume session cap or cooldown', () => {
   const decision = opportunity(context);
 
   assert.equal(decision.engage, true);
-  assert.equal(decision.trigger, 'product_page_5s_25_scroll');
+  assert.equal(decision.trigger, 'product_page_3s_30_scroll');
 });
 
 test('product to customer story is not a canonical journey trigger', () => {
@@ -742,11 +752,11 @@ test('product to customer story is not a canonical journey trigger', () => {
   assert.equal(decision.reason, 'no_trigger_match');
 });
 
-test('generic product engagement requires both 5 visible seconds and 25 percent scroll', () => {
+test('generic product engagement requires both 3 visible seconds and 30 percent scroll', () => {
   for (const [dwellMs, maxScrollDepth, expected] of [
-    [5000, 24, false],
-    [4999, 25, false],
-    [5000, 25, true],
+    [3000, 29, false],
+    [2999, 30, false],
+    [3000, 30, true],
   ]) {
     const { context } = createHarness({
       locationPath: '/products/arbitrary-future-product',
@@ -761,15 +771,15 @@ test('generic product engagement requires both 5 visible seconds and 25 percent 
     });
     const decision = opportunity(context);
     assert.equal(decision.engage, expected);
-    if (expected) assert.equal(decision.trigger, 'product_page_5s_25_scroll');
+    if (expected) assert.equal(decision.trigger, 'product_page_3s_30_scroll');
   }
 });
 
-test('generic solution engagement requires both 5 visible seconds and 25 percent scroll', () => {
+test('generic solution engagement requires both 3 visible seconds and 30 percent scroll', () => {
   for (const [dwellMs, maxScrollDepth, expected] of [
-    [5000, 24, false],
-    [4999, 25, false],
-    [5000, 25, true],
+    [3000, 29, false],
+    [2999, 30, false],
+    [3000, 30, true],
   ]) {
     const { context } = createHarness({
       locationPath: '/solutions/grocery',
@@ -786,7 +796,7 @@ test('generic solution engagement requires both 5 visible seconds and 25 percent
     });
     const decision = opportunity(context);
     assert.equal(decision.engage, expected);
-    if (expected) assert.equal(decision.trigger, 'solution_page_5s_25_scroll');
+    if (expected) assert.equal(decision.trigger, 'solution_page_3s_30_scroll');
   }
 });
 
@@ -819,7 +829,7 @@ test('product to documentation waits for destination engagement and preserves pr
   const decision = opportunity(context);
   assert.equal(decision.trigger, 'product_to_documentation');
   assert.equal(decision.agentPromptPacket.contextualFocus.label, 'AI Recommendations');
-  assert.match(decision.agentPromptPacket.journeySummary.storyHint, /technical validation/i);
+  assert.match(decision.agentPromptPacket.journeyContext.journeyNarrativeHint, /technical validation/i);
 });
 
 test('solution to customer proof waits for destination engagement', () => {
@@ -847,7 +857,11 @@ test('solution to customer proof waits for destination engagement', () => {
     ],
   });
 
-  assert.equal(opportunity(context).trigger, 'solution_to_customer_story');
+  const decision = opportunity(context);
+  assert.equal(decision.trigger, 'solution_to_customer_story');
+  assert.equal(decision.agentPromptPacket.journeyContext.origin.label, 'Grocery');
+  assert.equal(decision.agentPromptPacket.journeyContext.destination.pageGroup, 'customer_story');
+  assert.match(decision.agentPromptPacket.journeyContext.journeyNarrativeHint, /Grocery/);
 });
 
 test('transition journeys require qualified sources and qualified depth destinations', () => {
@@ -856,17 +870,17 @@ test('transition journeys require qualified sources and qualified depth destinat
       name: 'product source below dwell',
       locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
       pages: [
-        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 4999, maxScrollDepth: 25 }),
-        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 5000, maxScrollDepth: 25 }),
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 2999, maxScrollDepth: 30 }),
+        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 3000, maxScrollDepth: 30 }),
       ],
-      expected: 'developer_page_5s_25_scroll',
+      expected: 'developer_page_3s_30_scroll',
     },
     {
       name: 'documentation destination below scroll',
       locationPath: '/doc/guides/building-search-ui/what-is-instantsearch/js/',
       pages: [
-        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 }),
-        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 5000, maxScrollDepth: 24 }),
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 3000, maxScrollDepth: 30 }),
+        page({ pageId: 'page_current', path: '/doc/guides/building-search-ui/what-is-instantsearch/js/', pageGroup: 'documentation', topic: 'implementation', dwellMs: 3000, maxScrollDepth: 29 }),
       ],
       expected: null,
     },
@@ -874,8 +888,8 @@ test('transition journeys require qualified sources and qualified depth destinat
       name: 'solution source below scroll',
       locationPath: '/customers/heb-mexico',
       pages: [
-        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 5000, maxScrollDepth: 24 }),
-        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 5000, maxScrollDepth: 25 }),
+        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 3000, maxScrollDepth: 29 }),
+        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 3000, maxScrollDepth: 30 }),
       ],
       expected: null,
     },
@@ -883,8 +897,8 @@ test('transition journeys require qualified sources and qualified depth destinat
       name: 'proof destination below dwell',
       locationPath: '/customers/heb-mexico',
       pages: [
-        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 5000, maxScrollDepth: 25 }),
-        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 4999, maxScrollDepth: 25 }),
+        page({ pageId: 'page_solution', path: '/solutions/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 3000, maxScrollDepth: 30 }),
+        page({ pageId: 'page_current', path: '/customers/heb-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 2999, maxScrollDepth: 30 }),
       ],
       expected: null,
     },
@@ -922,28 +936,28 @@ test('every transition family requires the immediately preceding qualified sourc
     {
       name: 'product to documentation',
       forbiddenTrigger: 'product_to_documentation',
-      source: page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 }),
+      source: page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 3000, maxScrollDepth: 30 }),
       intermediate: page({ pageId: 'resource', path: '/resources/guide', pageGroup: 'resource', topic: 'research' }),
-      destination: page({ pageId: 'docs', path: '/doc/guides/search', pageGroup: 'documentation', topic: 'implementation', dwellMs: 5000, maxScrollDepth: 25 }),
+      destination: page({ pageId: 'docs', path: '/doc/guides/search', pageGroup: 'documentation', topic: 'implementation', dwellMs: 3000, maxScrollDepth: 30 }),
     },
     {
       name: 'solution to customer proof',
       forbiddenTrigger: 'solution_to_customer_story',
-      source: page({ pageId: 'solution', path: '/industries/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 5000, maxScrollDepth: 25 }),
+      source: page({ pageId: 'solution', path: '/industries/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 3000, maxScrollDepth: 30 }),
       intermediate: page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search' }),
-      destination: page({ pageId: 'proof', path: '/customers/h-e-b-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 5000, maxScrollDepth: 25 }),
+      destination: page({ pageId: 'proof', path: '/customers/h-e-b-mexico', pageGroup: 'customer_story', topic: 'customer_proof', dwellMs: 3000, maxScrollDepth: 30 }),
     },
     {
       name: 'product to pricing',
       forbiddenTrigger: 'product_to_pricing',
-      source: page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 }),
+      source: page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 3000, maxScrollDepth: 30 }),
       intermediate: page({ pageId: 'resource', path: '/resources/guide', pageGroup: 'resource', topic: 'research' }),
       destination: page({ pageId: 'pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
     },
     {
       name: 'solution to pricing',
       forbiddenTrigger: 'solution_to_pricing',
-      source: page({ pageId: 'solution', path: '/industries/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 5000, maxScrollDepth: 25 }),
+      source: page({ pageId: 'solution', path: '/industries/grocery', pageGroup: 'solution', topic: 'grocery', dwellMs: 3000, maxScrollDepth: 30 }),
       intermediate: page({ pageId: 'resource', path: '/resources/guide', pageGroup: 'resource', topic: 'research' }),
       destination: page({ pageId: 'pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage' }),
     },
@@ -962,7 +976,7 @@ test('every transition family requires the immediately preceding qualified sourc
 
 test('reload, back-forward, and SPA pop never qualify transitions', () => {
   for (const navigationType of ['reload', 'back_forward', 'spa_pop']) {
-    const source = page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 });
+    const source = page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 3000, maxScrollDepth: 30 });
     const destination = page({
       pageId: 'pricing',
       path: '/pricing',
@@ -988,8 +1002,8 @@ test('a returned page can qualify an unseen singleton but a shown path-trigger p
     path: '/products/ai-search/',
     pageGroup: 'product',
     topic: 'ai_search',
-    dwellMs: 5000,
-    maxScrollDepth: 25,
+    dwellMs: 3000,
+    maxScrollDepth: 30,
     navigationType: 'back_forward',
     sourcePageId: 'resource',
     sourcePath: '/resources/guide',
@@ -1003,7 +1017,7 @@ test('a returned page can qualify an unseen singleton but a shown path-trigger p
     returned,
   ];
   const unseen = createHarness({ currentPageId: returned.pageId, locationPath: returned.path, pages });
-  assert.equal(opportunity(unseen.context).trigger, 'product_page_5s_25_scroll');
+  assert.equal(opportunity(unseen.context).trigger, 'product_page_3s_30_scroll');
 
   const alreadyShown = createHarness({
     currentPageId: returned.pageId,
@@ -1016,7 +1030,7 @@ test('a returned page can qualify an unseen singleton but a shown path-trigger p
         pageId: 'product_first',
         pagePath: '/products/ai-search',
         moment: 'product_research',
-        trigger: 'product_page_5s_25_scroll',
+        trigger: 'product_page_3s_30_scroll',
       }],
     },
   });
@@ -1026,7 +1040,7 @@ test('a returned page can qualify an unseen singleton but a shown path-trigger p
 });
 
 test('transition deduplication uses edge identity plus trigger', () => {
-  const source = page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 });
+  const source = page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 3000, maxScrollDepth: 30 });
   const destination = page({
     pageId: 'pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage',
     navigationType: 'navigate', sourcePageId: 'product', sourcePath: '/products/ai-search',
@@ -1049,7 +1063,7 @@ test('transition deduplication uses edge identity plus trigger', () => {
 });
 
 test('transition deduplication recognizes controller state created before edge metadata existed', () => {
-  const source = page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 5000, maxScrollDepth: 25 });
+  const source = page({ pageId: 'product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 3000, maxScrollDepth: 30 });
   const destination = page({
     pageId: 'pricing', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage',
     navigationType: 'navigate', sourcePageId: 'product', sourcePath: '/products/ai-search',
@@ -1111,7 +1125,7 @@ test('an open unanswered greeting yields to a stronger immediate journey transit
         shownAt: now - 20000,
         pageId: 'page_product',
         moment: 'product_research',
-        trigger: 'product_page_5s_25_scroll',
+        trigger: 'product_page_3s_30_scroll',
         priority: 66,
       }],
       lastOpportunityAt: now - 20000,
@@ -1142,7 +1156,7 @@ test('a trailing terminal opportunity does not hide the replaceable visible sour
           shownAt: now - 20000,
           pageId: 'page_solution',
           moment: 'solution_research',
-          trigger: 'solution_page_5s_25_scroll',
+          trigger: 'solution_page_3s_30_scroll',
           priority: 65,
         },
         {
@@ -1150,7 +1164,7 @@ test('a trailing terminal opportunity does not hide the replaceable visible sour
           status: 'superseded',
           pageId: 'page_stale',
           moment: 'product_research',
-          trigger: 'product_page_5s_25_scroll',
+          trigger: 'product_page_3s_30_scroll',
           priority: 66,
         },
       ],
@@ -1211,7 +1225,7 @@ test('the newest visible opportunity blocks replacement when an older greeting i
           shownAt: now - 20000,
           pageId: 'page_older',
           moment: 'product_research',
-          trigger: 'product_page_5s_25_scroll',
+          trigger: 'product_page_3s_30_scroll',
           priority: 66,
         },
         {
@@ -1295,7 +1309,7 @@ test('a closed unengaged greeting is superseded in stored state by a stronger tr
         shownAt: now - 20000,
         pageId: 'page_product',
         moment: 'product_research',
-        trigger: 'product_page_5s_25_scroll',
+        trigger: 'product_page_3s_30_scroll',
         priority: 66,
       }],
       lastOpportunityAt: now - 20000,
@@ -1385,7 +1399,7 @@ test('an open unanswered solution greeting is replaced by the immediate customer
         pageId: 'page_solution',
         pagePath: '/industries/grocery',
         moment: 'solution_research',
-        trigger: 'solution_page_5s_25_scroll',
+        trigger: 'solution_page_3s_30_scroll',
         priority: 65,
       }],
       lastOpportunityAt: now - 20000,
@@ -1466,11 +1480,11 @@ test('search to docs does not bypass the canonical developer depth rule', () => 
   assert.equal(decision.reason, 'no_trigger_match');
 });
 
-test('resource depth requires 5 visible seconds and 25 percent scroll', () => {
+test('resource depth requires 3 visible seconds and 30 percent scroll', () => {
   for (const [dwellMs, maxScrollDepth, expected] of [
-    [5000, 24, false],
-    [4999, 25, false],
-    [5000, 25, true],
+    [3000, 29, false],
+    [2999, 30, false],
+    [3000, 30, true],
   ]) {
     const { context } = createHarness({
       locationPath: '/resources/guides/search-platform-evaluation',
@@ -1485,7 +1499,7 @@ test('resource depth requires 5 visible seconds and 25 percent scroll', () => {
     });
     const decision = opportunity(context);
     assert.equal(decision.engage, expected);
-    if (expected) assert.equal(decision.trigger, 'resource_page_5s_25_scroll');
+    if (expected) assert.equal(decision.trigger, 'resource_page_3s_30_scroll');
   }
 });
 
@@ -1646,7 +1660,7 @@ test('expires a stale unengaged opportunity and records the terminal lifecycle s
         pageId: 'page_previous',
         pagePath: '/products/ai-recommendations',
         moment: 'product_research',
-        trigger: 'product_page_5s_25_scroll',
+        trigger: 'product_page_3s_30_scroll',
         priority: 66,
         createdAt: now - 5000,
         shownAt: now - 4000,
@@ -1677,7 +1691,7 @@ test('records a shown greeting as dismissed when the visitor closes it', () => {
         pageId: 'page_current',
         pagePath: '/products/ai-search',
         moment: 'product_research',
-        trigger: 'product_page_5s_25_scroll',
+        trigger: 'product_page_3s_30_scroll',
         priority: 66,
         createdAt: now,
         shownAt: now,
@@ -1714,7 +1728,7 @@ test('dismissed source greetings suppress same-page duplicates without blocking 
         dwellMs: 10000,
         maxScrollDepth: 50,
       }),
-      sourceTrigger: 'product_page_5s_25_scroll',
+      sourceTrigger: 'product_page_3s_30_scroll',
       destinationTrigger: 'product_to_pricing',
     },
     {
@@ -1729,7 +1743,7 @@ test('dismissed source greetings suppress same-page duplicates without blocking 
         dwellMs: 10000,
         maxScrollDepth: 50,
       }),
-      sourceTrigger: 'solution_page_5s_25_scroll',
+      sourceTrigger: 'solution_page_3s_30_scroll',
       destinationTrigger: 'solution_to_pricing',
     },
   ];
@@ -1835,7 +1849,7 @@ test('does not expire or dismiss an active opportunity', () => {
         pageId: 'page_current',
         pagePath: '/products/ai-search',
         moment: 'product_research',
-        trigger: 'product_page_5s_25_scroll',
+        trigger: 'product_page_3s_30_scroll',
         priority: 66,
         createdAt: now - 5000,
         updatedAt: now - 4000,
@@ -2180,7 +2194,7 @@ test('a chat-open event from the previous page does not suppress the current-pag
 
   const decision = opportunity(context);
   assert.equal(decision.engage, true);
-  assert.equal(decision.trigger, 'product_page_5s_25_scroll');
+  assert.equal(decision.trigger, 'product_page_3s_30_scroll');
 });
 
 test('debug trace can be enabled persistently from localStorage without URL flags', () => {
@@ -2220,7 +2234,7 @@ test('trigger grammar contains exactly the eight canonical journeys', () => {
       name: 'product depth',
       locationPath: '/products/ai-recommendations',
       pages: [page({ pageId: 'page_current', path: '/products/ai-recommendations', pageGroup: 'product', topic: 'ai_search', dwellMs: 10000, maxScrollDepth: 50 })],
-      expected: 'product_page_5s_25_scroll',
+      expected: 'product_page_3s_30_scroll',
     },
     {
       name: 'product to documentation',
@@ -2235,7 +2249,7 @@ test('trigger grammar contains exactly the eight canonical journeys', () => {
       name: 'solution depth',
       locationPath: '/solutions/ecommerce',
       pages: [page({ pageId: 'page_current', path: '/solutions/ecommerce', pageGroup: 'solution', topic: 'commerce', dwellMs: 10000, maxScrollDepth: 50 })],
-      expected: 'solution_page_5s_25_scroll',
+      expected: 'solution_page_3s_30_scroll',
     },
     {
       name: 'solution to proof',
@@ -2268,13 +2282,13 @@ test('trigger grammar contains exactly the eight canonical journeys', () => {
       name: 'developer depth',
       locationPath: '/developers',
       pages: [page({ pageId: 'page_current', path: '/developers', pageGroup: 'developer', topic: 'implementation', dwellMs: 10000, maxScrollDepth: 50 })],
-      expected: 'developer_page_5s_25_scroll',
+      expected: 'developer_page_3s_30_scroll',
     },
     {
       name: 'resource depth',
       locationPath: '/resources/guides/search-platform-evaluation',
       pages: [page({ pageId: 'page_current', path: '/resources/guides/search-platform-evaluation', pageGroup: 'resource', topic: 'evaluation', dwellMs: 10000, maxScrollDepth: 50 })],
-      expected: 'resource_page_5s_25_scroll',
+      expected: 'resource_page_3s_30_scroll',
     },
   ];
 
@@ -2296,7 +2310,7 @@ test('legacy trigger paths do not create opportunities', () => {
       name: 'unqualified product to pricing',
       locationPath: '/pricing',
       pages: [
-        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 4999, maxScrollDepth: 25 }),
+        page({ pageId: 'page_product', path: '/products/ai-search', pageGroup: 'product', topic: 'ai_search', dwellMs: 2999, maxScrollDepth: 30 }),
         page({ pageId: 'page_current', path: '/pricing', pageGroup: 'pricing', topic: 'pricing_and_usage', dwellMs: 9000 }),
       ],
     },
@@ -2491,8 +2505,8 @@ test('visitor reset prevents a pre-reset greeting response from rendering', asyn
         path: '/products/ai-search',
         pageGroup: 'product',
         topic: 'ai_search',
-        dwellMs: 5000,
-        maxScrollDepth: 25,
+        dwellMs: 3000,
+        maxScrollDepth: 30,
       }),
     ],
     fetchImpl: async (_url, init) => {
@@ -2508,7 +2522,7 @@ test('visitor reset prevents a pre-reset greeting response from rendering', asyn
             chips: ['Explore product fit'],
             handoffSummary: {
               moment: 'product_research',
-              trigger: 'product_page_5s_25_scroll',
+              trigger: 'product_page_3s_30_scroll',
               messageGoal: 'explain_product_fit',
             },
           }),
@@ -2802,7 +2816,7 @@ test('controller can use algolia-chat credentials when instant search is absent'
             chips: ['Show examples', 'Compare use cases'],
             handoffSummary: {
               moment: 'solution_research',
-              trigger: 'solution_page_5s_25_scroll',
+              trigger: 'solution_page_3s_30_scroll',
               messageGoal: 'explain_solution_fit',
             },
           }),
@@ -2899,7 +2913,7 @@ test('debug status keeps a rendered greeting recognizable when later signals see
           chips: ['Show the practical value'],
           handoffSummary: {
             moment: 'product_research',
-            trigger: 'product_page_5s_25_scroll',
+            trigger: 'product_page_3s_30_scroll',
             messageGoal: 'explain_product_fit',
           },
         }),
@@ -2921,7 +2935,7 @@ test('debug status keeps a rendered greeting recognizable when later signals see
   assert.equal(context.__algoliaProactiveLastSuppression.reason, 'chat_already_open');
   assert.equal(
     context.__algoliaProactiveLastStatus.message,
-    'Proactive greeting active: product_page_5s_25_scroll'
+    'Proactive greeting active: product_page_3s_30_scroll'
   );
 });
 
