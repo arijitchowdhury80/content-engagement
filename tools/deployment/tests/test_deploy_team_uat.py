@@ -19,7 +19,8 @@ class LoadAuthorizationTest(unittest.TestCase):
             self.assertEqual(
                 MODULE.load_authorization(
                     {
-                        "JHIA_API_TOKEN": "process-secret",
+                        "JAHIA_API_TOKEN": "process-secret",
+                        "JHIA_API_TOKEN": "legacy-secret",
                         "JAHIA_AUTHORIZATION": "Bearer legacy",
                     },
                     missing,
@@ -34,7 +35,7 @@ class LoadAuthorizationTest(unittest.TestCase):
             env_file = root / ".env.local"
             config_file = root / "config.toml"
             env_file.write_text(
-                'JHIA_API_TOKEN="repo-secret"\n', encoding="utf-8"
+                'JAHIA_API_TOKEN="repo-secret"\n', encoding="utf-8"
             )
             config_file.write_text(
                 '[mcp_servers.jahia]\nauthorization = "Bearer config"\n',
@@ -47,6 +48,26 @@ class LoadAuthorizationTest(unittest.TestCase):
                     (config_file,),
                 ),
                 "APIToken repo-secret",
+            )
+
+    def test_supports_legacy_misspelled_token_as_fallback(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory) / "missing"
+            self.assertEqual(
+                MODULE.load_authorization(
+                    {"JHIA_API_TOKEN": "legacy-secret"}, missing, (missing,)
+                ),
+                "APIToken legacy-secret",
+            )
+
+    def test_loads_canonical_base_url_and_strips_trailing_slash(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory) / "missing"
+            self.assertEqual(
+                MODULE.load_base_url(
+                    {"JAHIA_BASE_URL": "https://jahia.example/"}, missing
+                ),
+                "https://jahia.example",
             )
 
     def test_falls_back_to_legacy_process_authorization(self):

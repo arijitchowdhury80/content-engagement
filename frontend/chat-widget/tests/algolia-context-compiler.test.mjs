@@ -173,6 +173,29 @@ test('compiles rich context from tracker state without downgrading confirmed per
   assert.ok(packet.recentEvents.some((event) => event.name === 'nav_click'));
 });
 
+test('exposes the immediate navigation edge while preserving the complete page trail', () => {
+  const pages = [
+    { pageId: 'product', path: '/products/ai-search', title: 'AI Search', pageGroup: 'product', topic: 'ai_search', dwellMs: 3000, maxScrollDepth: 30 },
+    { pageId: 'resource', path: '/resources/guide', title: 'Guide', pageGroup: 'resource', topic: 'research', dwellMs: 1000, maxScrollDepth: 5 },
+    {
+      pageId: 'pricing', path: '/pricing', title: 'Pricing', pageGroup: 'pricing', topic: 'pricing_and_usage',
+      navigationType: 'navigate', sourcePageId: 'resource', sourcePath: '/resources/guide',
+      destinationPageId: 'pricing', destinationPath: '/pricing', edgeId: 'resource-to-pricing',
+    },
+  ];
+  const { context } = createHarness({
+    locationPath: '/pricing',
+    session: { schema: 'AlgoliaEngagementSession.v1', sessionId: 'sess_123', startedAt: 1786750000000, currentPageId: 'pricing', pages, engagementHistory: [] },
+  });
+  const packet = context.algoliaContextCompiler.compile();
+
+  assert.equal(packet.session.pages.length, 3);
+  assert.equal(packet.session.currentEdge.sourcePageId, 'resource');
+  assert.equal(packet.session.currentEdge.destinationPageId, 'pricing');
+  assert.equal(packet.session.currentEdge.edgeId, 'resource-to-pricing');
+  assert.equal(packet.session.currentEdge.isImmediate, true);
+});
+
 test('preserves product feature focus for downstream personalization', () => {
   const { context } = createHarness({
     locationPath: '/products/features/personalization',
@@ -243,6 +266,33 @@ test('preserves solution focus for downstream personalization', () => {
   assert.equal(packet.observedSignals.currentSolutionFocus.value, 'commerce');
   assert.equal(turnContext.current_solution_focus, 'observed:commerce');
   assert.equal(turnContext.current_solution_focus_label, 'Commerce');
+});
+
+test('classifies enterprise use-case context as a solution', () => {
+  const { context } = createHarness({
+    locationPath: '/use-cases/enterprise',
+    session: {
+      schema: 'AlgoliaEngagementSession.v1',
+      sessionId: 'sess_enterprise',
+      startedAt: 1786750000000,
+      currentPageId: 'page_current',
+      pages: [{
+        pageId: 'page_current',
+        path: '/use-cases/enterprise',
+        title: 'Enterprise Search',
+        enteredAt: 1786750060000,
+        dwellMs: 3000,
+        maxScrollDepth: 30,
+      }],
+      engagementHistory: [],
+    },
+  });
+
+  const packet = context.algoliaContextCompiler.compile();
+
+  assert.equal(packet.currentPage.pageGroup, 'solution');
+  assert.equal(packet.currentPage.solutionFocus, 'enterprise');
+  assert.equal(packet.currentPage.solutionFocusLabel, 'Enterprise');
 });
 
 test('infers intent, friction, and persona softly with confidence and evidence', () => {
@@ -321,7 +371,7 @@ test('returns flat Agent Studio turn context within documented limits', () => {
   assert.doesNotMatch(serialized, /person@example.com/);
 });
 
-test('qualified journey summary uses the shared 5 second and 25 percent boundary', () => {
+test('qualified journey summary uses the shared 3 second and 30 percent boundary', () => {
   const buildPage = (pageId, dwellMs, maxScrollDepth) => ({
     pageId,
     path: `/products/${pageId}`,
@@ -339,9 +389,9 @@ test('qualified journey summary uses the shared 5 second and 25 percent boundary
       startedAt: 1786750000000,
       currentPageId: 'qualified',
       pages: [
-        buildPage('short-dwell', 4999, 25),
-        buildPage('shallow-scroll', 5000, 24),
-        buildPage('qualified', 5000, 25),
+        buildPage('short-dwell', 2999, 30),
+        buildPage('shallow-scroll', 3000, 29),
+        buildPage('qualified', 3000, 30),
       ],
       engagementHistory: [],
     },
@@ -411,6 +461,25 @@ test('injects turnContext into Agent Studio AI SDK v5 user message metadata', as
   const body = JSON.parse(calls[0].options.body);
   assert.equal(body.messages[0].metadata.turnContext.persona, 'confirmed:developer');
   assert.equal(body.messages[0].metadata.turnContext.current_topic, 'observed:ai_search');
+});
+
+test('prepared completion bodies bypass the interceptor without a second mutation', async () => {
+  const { context } = createHarness();
+  const compiler = context.algoliaContextCompiler;
+  const input = JSON.stringify({
+    id: 'conversation-1',
+    messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Compare this' }] }],
+  });
+
+  const prepared = compiler.prepareCompletionBody(input);
+  const response = await compiler.fetchPrepared(
+    'https://0EXRPAXB56.algolia.net/agent-studio/1/agents/agent/completions',
+    { method: 'POST', body: prepared },
+  );
+
+  assert.equal(response.options.body, prepared, 'terminal sender must preserve the exact string');
+  const sent = JSON.parse(response.options.body);
+  assert.equal(sent.messages[0].metadata.turnContext.persona, 'confirmed:developer');
 });
 
 test('rejects an oversized existing turnContext field instead of clipping it', () => {

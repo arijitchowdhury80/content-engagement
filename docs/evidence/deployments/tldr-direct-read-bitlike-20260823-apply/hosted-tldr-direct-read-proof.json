@@ -1,0 +1,20 @@
+{
+  "pass": true,
+  "proof": {
+    "chatAssets": [
+      "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-judge-v2-b342b57b9dca.js"
+    ],
+    "tldrLabel": true,
+    "hasTldrTile": true,
+    "hasAnalogy": true,
+    "analogyFontStyle": "italic",
+    "hasShortRead": true,
+    "detailsHasBullets": true,
+    "hasSources": true,
+    "hasFollowUpTile": true,
+    "followUpDuplicatedInAnswer": false,
+    "headerProgress": "100%",
+    "completionRequests": null
+  },
+  "interceptedCompletionRequests": 7
+}

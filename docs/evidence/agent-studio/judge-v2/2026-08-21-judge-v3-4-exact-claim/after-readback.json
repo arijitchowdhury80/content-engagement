@@ -1,0 +1,35 @@
+{
+  "runId": "2026-08-21-judge-v3-4-exact-claim",
+  "agents": {
+    "skeptic": {
+      "id": "573fb67f-72f0-4baa-8b14-33fd32dc9718",
+      "name": "www Chat - Confidence Skeptic v3.4",
+      "status": "published",
+      "model": "gemini-2.5-flash",
+      "providerId": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
+      "toolCount": 0,
+      "instructionsHash": "e52ebb34402f164225ddd1c8cb461065a998308afeecf885a8e15d713cc8292c",
+      "configHash": "14dc075ad94dfb20495f2ef26865be442829e25094242d9156eaf47c5075a9b4"
+    },
+    "referee": {
+      "id": "2ec4490f-67df-479f-8c7a-5d58440e2e10",
+      "name": "www Chat - Confidence Referee v3.4",
+      "status": "published",
+      "model": "gemini-2.5-flash",
+      "providerId": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
+      "toolCount": 0,
+      "instructionsHash": "aaecb1cfbc13a28f8c0689c6b0ded27db71d2fac5cad7c508e1143e591145274",
+      "configHash": "14dc075ad94dfb20495f2ef26865be442829e25094242d9156eaf47c5075a9b4"
+    },
+    "advocate": {
+      "id": "1b14aea2-6b0b-497a-9dff-be0dee3bb956",
+      "name": "www Chat - Confidence Advocate v3.4",
+      "status": "published",
+      "model": "gemini-2.5-flash",
+      "providerId": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
+      "toolCount": 0,
+      "instructionsHash": "22f3ca6a540733beb9b60a3317daadbf90ed5a4630bc203e8331d06b76046934",
+      "configHash": "14dc075ad94dfb20495f2ef26865be442829e25094242d9156eaf47c5075a9b4"
+    }
+  }
+}

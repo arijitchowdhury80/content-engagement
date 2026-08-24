@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Content Engagement demo script</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #003DFF;
+      --ink: #021046;
+      --text: #2f3447;
+      --muted: #6b7280;
+      --line: #e1e4ec;
+      --wash: #f7f8fb;
+      --soft-blue: #f2f5ff;
+      --dark: #0e1224;
+      --white: #ffffff;
+      --green: #00C29A;
+      --font: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--wash);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus-visible {
+      outline: 3px solid var(--blue);
+      outline-offset: 3px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      color: var(--ink);
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .shell {
+      min-height: 100vh;
+    }
+
+    .hero {
+      background: var(--dark);
+      color: var(--white);
+      padding: 28px clamp(20px, 5vw, 72px) 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 42px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .mark {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--white);
+      border-radius: 50%;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .mark::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      bottom: 2px;
+      width: 10px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--white);
+      transform: rotate(42deg);
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 8px;
+      padding: 9px 12px;
+      color: var(--white);
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 420px);
+      gap: clamp(28px, 5vw, 72px);
+      align-items: end;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      color: #00B6FF;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      max-width: 820px;
+      color: var(--white);
+      font-size: clamp(38px, 5vw, 72px);
+      line-height: 1.04;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero-copy p {
+      max-width: 780px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: clamp(18px, 1.8vw, 22px);
+    }
+
+    .snapshot {
+      background: var(--white);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .snapshot h2 {
+      font-size: 18px;
+    }
+
+    .snapshot-row {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .snapshot-row strong {
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .snapshot-row span {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    section {
+      padding: clamp(44px, 6vw, 76px) clamp(20px, 5vw, 72px);
+    }
+
+    .inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .section-head {
+      max-width: 860px;
+      margin-bottom: 22px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1.12;
+    }
+
+    .section-head p {
+      font-size: 17px;
+      color: var(--text);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+      min-height: 100%;
+      box-shadow: 0 2px 4px rgba(2, 16, 70, 0.05);
+    }
+
+    .card h3 {
+      font-size: 22px;
+      line-height: 1.22;
+    }
+
+    .label {
+      width: fit-content;
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 6px;
+      padding: 4px 8px;
+      background: var(--soft-blue);
+      color: var(--blue);
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .label.reactive {
+      background: rgba(0, 194, 154, 0.12);
+      color: #00735d;
+    }
+
+    .label.todo {
+      background: rgba(255, 122, 89, 0.14);
+      color: #a64021;
+    }
+
+    .path {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--ink);
+      background: var(--wash);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .question {
+      border-left: 3px solid var(--green);
+      background: #f1fffb;
+      padding: 12px 14px;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    .flow-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+    }
+
+    .flow-list li + li {
+      margin-top: 6px;
+    }
+
+    .annotation-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .annotation {
+      background: var(--white);
+      border: 1px dashed #b7bfd0;
+      border-radius: 8px;
+      padding: 14px;
+      min-height: 82px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+    }
+
+    .annotation strong {
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .annotation span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer {
+      background: var(--blue);
+      color: var(--white);
+    }
+
+    .footer h2,
+    .footer p {
+      color: var(--white);
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .two-col,
+      .three-col,
+      .annotation-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero" id="top">
+      <div class="topbar">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <span>Algolia Content Engagement</span>
+        </div>
+        <nav aria-label="Demo sections">
+          <a href="#reactive">Reactive</a>
+          <a href="#proactive">Proactive</a>
+          <a href="#annotations">Annotations</a>
+        </nav>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div>
+            <div class="eyebrow">Simple demo script</div>
+            <h1>Two ways Content Engagement helps a visitor move forward</h1>
+          </div>
+        </div>
+
+        <aside class="snapshot" aria-label="30 second summary">
+          <h2>30-second read</h2>
+          <div class="snapshot-row">
+            <strong>Reactive flow</strong>
+            <span>The visitor asks. Algolia answers with TL/DR, details, links, docs, and follow-up questions.</span>
+          </div>
+          <div class="snapshot-row">
+            <strong>Proactive flow</strong>
+            <span>The visitor shows intent. Algolia opens a personalized path to proof or pricing.</span>
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <section id="reactive">
+      <div class="inner">
+        <div class="section-head">
+          <div class="eyebrow">Half 1</div>
+          <h2>Reactive flow</h2>
+          <p>The visitor asks a question directly. The demo should show that the answer is useful, grounded, and easy to continue.</p>
+        </div>
+
+        <div class="two-col">
+          <article class="card">
+            <span class="label reactive">Question 1</span>
+            <h3>Business user question</h3>
+            <p class="question">"How can a non-technical marketing team improve search results day to day without waiting on developers, and what business outcomes should leadership watch?"</p>
+            <p>Expected story: answer starts with a TL/DR, explains how business teams can act, connects that control to outcomes without inventing ROI, includes inline links, and asks one useful follow-up.</p>
+          </article>
+
+          <article class="card">
+            <span class="label reactive">Question 2</span>
+            <h3>Technical user question</h3>
+            <p class="question">"We have an ERP, PIM, and CMS already. Is Algolia API-first enough to add enterprise search without replatforming, and what should the first POC prove?"</p>
+            <p>Expected story: answer explains architecture fit in plain English, links to docs or implementation material, separates integration risk from implementation effort, and asks one focused follow-up.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="proactive">
+      <div class="inner">
+        <div class="section-head">
+          <div class="eyebrow">Half 2</div>
+          <h2>Proactive flow</h2>
+          <p>The visitor does not ask first. The site recognizes behavior and opens a relevant conversation.</p>
+        </div>
+
+        <div class="three-col">
+          <article class="card">
+            <span class="label">Technical user</span>
+            <h3>Product to proof</h3>
+            <p class="path">Product page -> technical proof, docs, or implementation evidence</p>
+            <ol class="flow-list">
+              <li>Visitor studies a product page.</li>
+              <li>System recognizes technical evaluation intent.</li>
+              <li>Greeting offers implementation proof and docs.</li>
+            </ol>
+          </article>
+
+          <article class="card">
+            <span class="label">Business user</span>
+            <h3>Solution to proof</h3>
+            <p class="path">Solution page -> customer proof</p>
+            <ol class="flow-list">
+              <li>Visitor studies a solution page.</li>
+              <li>Visitor moves to a customer story.</li>
+              <li>Greeting connects the business problem to proof.</li>
+            </ol>
+          </article>
+
+          <article class="card">
+            <span class="label">Commercial user</span>
+            <h3>Product or solution to pricing</h3>
+            <p class="path">Product or solution page -> pricing</p>
+            <ol class="flow-list">
+              <li>Visitor studies product or solution value.</li>
+              <li>Visitor moves to pricing.</li>
+              <li>Greeting frames cost, value, effort, and next step.</li>
+            </ol>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="annotations">
+      <div class="inner">
+        <div class="section-head">
+          <div class="eyebrow">Build later</div>
+          <h2>Screenshot annotation slots</h2>
+          <p>We will add screenshots manually and annotate the answer model. For now, this is only the structure.</p>
+        </div>
+
+        <div class="annotation-grid">
+          <div class="annotation">
+            <strong>TL/DR</strong>
+            <span>Short first answer</span>
+          </div>
+          <div class="annotation">
+            <strong>Details</strong>
+            <span>Deeper explanation</span>
+          </div>
+          <div class="annotation">
+            <strong>Inline hyperlinks</strong>
+            <span>Clickable source paths</span>
+          </div>
+          <div class="annotation">
+            <strong>Docs</strong>
+            <span>Technical references</span>
+          </div>
+          <div class="annotation">
+            <strong>Follow-up questions</strong>
+            <span>Next useful step</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="footer">
+      <div class="inner">
+        <div class="section-head">
+          <div class="eyebrow" style="color: rgba(255,255,255,0.75);">Outcome</div>
+          <h2>What the demo should prove</h2>
+          <p>Content Engagement turns Algolia.com from static content into guided evaluation: answer when asked, engage when intent appears, and move the visitor toward proof or pricing.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

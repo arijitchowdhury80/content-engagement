@@ -1,0 +1,21 @@
+{
+  "editBlockMatches": true,
+  "liveBlockMatches": true,
+  "chiefAttributeAbsent": true,
+  "coreLoadsBeforeChat": true,
+  "threeRoleIdsPresent": true,
+  "edit_core_hash": true,
+  "edit_badge_hash": true,
+  "edit_chat_hash": true,
+  "live_core_hash": true,
+  "live_badge_hash": true,
+  "live_chat_hash": true,
+  "public_core_hash": true,
+  "public_badge_hash": true,
+  "public_chat_hash": true,
+  "renderedPageExactAssets": true,
+  "renderedPageExactJudgeAssetSet": true,
+  "renderedPageLoadOrder": true,
+  "renderedPageJudgeIds": true,
+  "pass": true
+}

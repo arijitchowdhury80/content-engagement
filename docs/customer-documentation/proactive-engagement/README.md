@@ -66,17 +66,17 @@ The controller evaluates deterministic page and transition moments:
 
 | Moment | Example triggers | Goal |
 |---|---|---|
-| Product research | Product page reaches 5 seconds and 25% scroll | Help clarify the current capability and its fit. |
-| Solution research | Solution page reaches 5 seconds and 25% scroll | Connect an industry or use-case need to an outcome. |
+| Product research | Product page reaches 3 seconds and 30% scroll | Help clarify the current capability and its fit. |
+| Solution research | Solution page reaches 3 seconds and 30% scroll | Connect an industry or use-case need to an outcome. |
 | Technical progression | Qualified product page followed by the same-origin documentation route | Carry product interest into implementation guidance. |
 | Customer proof | Qualified solution page followed by a customer story | Connect the business need to grounded proof. |
 | Commercial evaluation | Qualified product or solution page followed by Pricing | Explain cost and value in the context of the preceding research. |
 
-The controller owns the trigger decision. The Greetings Agent receives the selected moment, trigger, goal, persona, current page, `journeySummary`, raw journey, observed signals, inferred intent, friction, and `contextualFocus`.
+The controller owns the trigger decision. The Greetings Agent receives the selected moment, trigger, goal, persona, current page, canonical `journeyContext`, raw journey, observed signals, inferred intent, friction, and `contextualFocus`.
 
 `contextualFocus` is the most specific observed product or feature context available. On a product page it comes from the current page. On a follow-on commercial page, such as Product → Pricing, it comes from the prior product page. For example, `/products/features/personalization` followed by `/pricing` sends `contextualFocus.label = "Personalization"` so the greeting can talk about Personalization value and cost instead of generic pricing.
 
-`journeySummary` is the higher-level story layer for personalization. It contains a bounded `productTrail`, recent `pageTrail`, `currentTransition`, and a safe internal `storyHint`. For example, Search → Personalization → AI Recommendations → Pricing sends a product trail with all three product interests and a story hint that frames the greeting as a cross-capability cost/value question. The visitor should not hear the raw path narrated back; the greeting should translate the pattern into a useful hook.
+`journeyContext` is the single story contract for personalization. It contains the qualified immediate `origin`, current `destination`, `currentNavigationEdge`, a bounded `broaderJourney` with product, solution, and page trails, and a safe internal `journeyNarrativeHint`. For example, Search → Personalization → AI Recommendations → Pricing sends Pricing as the destination, AI Recommendations as the immediate origin, all three product interests in the broader trail, and framing guidance for a cross-capability cost/value question. The visitor should not hear the raw path narrated back; the greeting should translate the pattern into a useful hook.
 
 In debug mode, `?algoliaProactiveDebug=1` exposes the latest suppression reason in `window.__algoliaProactiveLastSuppression`, dispatches `algolia-proactive-suppressed`, and displays a small debug status badge when the DOM is available. This makes invisible blocks such as `chat_already_open`, `cooldown_active`, or `already_eligible_for_page_moment` observable during QA.
 

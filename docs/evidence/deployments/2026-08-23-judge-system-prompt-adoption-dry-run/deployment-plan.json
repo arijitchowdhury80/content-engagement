@@ -1,0 +1,82 @@
+{
+  "apply": false,
+  "scope": "local judge core with preserved live companions plus one exact Drift block",
+  "assets": {
+    "core": {
+      "source": "frontend/chat-widget/algolia-judge-core.js",
+      "sha256": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
+      "filename": "algolia-judge-core-judge-v2-8cb19d39aece.js",
+      "path": "/sites/www/files/algolia-judge-core-judge-v2-8cb19d39aece.js",
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-judge-core-judge-v2-8cb19d39aece.js"
+    },
+    "badge": {
+      "source": "live:https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js",
+      "sha256": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
+      "filename": "algolia-confidence-badge-judge-v2-f296211cff9c.js",
+      "path": "/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js",
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js"
+    },
+    "chat": {
+      "source": "live:https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-judge-v2-9ff1a9f14102.js",
+      "sha256": "9ff1a9f1410271cd027f27fd2af60dfc1310465cc8d0a274c2bb214906c9a0f6",
+      "filename": "algolia-chat-judge-v2-9ff1a9f14102.js",
+      "path": "/sites/www/files/algolia-chat-judge-v2-9ff1a9f14102.js",
+      "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-judge-v2-9ff1a9f14102.js"
+    }
+  },
+  "agentIds": {
+    "skeptic": "2fd41081-a5a1-4532-8049-1fa2f1338037",
+    "referee": "f4e7ed7d-96b2-4900-8d21-40a5cfe950d0",
+    "advocate": "36a85e07-8415-4d34-8428-53574dc608f2"
+  },
+  "expectedBlockSha256": "aed3ff323e266a912ad6435a6c0536e4f0d4de4ae41014bf558afbddb914f33b",
+  "before": {
+    "capturedAt": "2026-08-23T23:34:43.992856+00:00",
+    "edit": {
+      "blockSha256": "c89be6a958aa288019f1f772352141dfa745a9e2a88d0768d0e634f3de509b7e",
+      "blockLength": 11671,
+      "assets": {
+        "core": {
+          "path": "/sites/www/files/algolia-judge-core-judge-v2-8cb19d39aece.js",
+          "sha256": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
+          "length": 24022
+        },
+        "badge": {
+          "path": "/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js",
+          "sha256": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
+          "length": 6993
+        },
+        "chat": {
+          "path": "/sites/www/files/algolia-chat-judge-v2-9ff1a9f14102.js",
+          "sha256": "9ff1a9f1410271cd027f27fd2af60dfc1310465cc8d0a274c2bb214906c9a0f6",
+          "length": 527997
+        }
+      }
+    },
+    "live": {
+      "blockSha256": "c89be6a958aa288019f1f772352141dfa745a9e2a88d0768d0e634f3de509b7e",
+      "blockLength": 11671,
+      "assets": {
+        "core": {
+          "path": "/sites/www/files/algolia-judge-core-judge-v2-8cb19d39aece.js",
+          "sha256": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
+          "length": 24022
+        },
+        "badge": {
+          "path": "/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js",
+          "sha256": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
+          "length": 6993
+        },
+        "chat": {
+          "path": "/sites/www/files/algolia-chat-judge-v2-9ff1a9f14102.js",
+          "sha256": "9ff1a9f1410271cd027f27fd2af60dfc1310465cc8d0a274c2bb214906c9a0f6",
+          "length": 527997
+        }
+      }
+    }
+  },
+  "privateSnapshotSha256": "cbc27647ffd9d2ad5a6aa35cd880dc4440f239e79ee6f9061b7d7bd3deb7e784",
+  "rollbackCommand": "python3 tools/deployment/deploy_judge_v2_jahia.py --rollback /Users/arijitchowdhury/Dropbox/AI-Development/algolia-com/.local/deployment-state/judge-v2-jahia/20260823T233443Z/rollback-manifest.json",
+  "oldAssetsRemainUntouched": true,
+  "interruptedCutoverRecovery": false
+}

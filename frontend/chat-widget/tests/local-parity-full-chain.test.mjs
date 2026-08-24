@@ -56,7 +56,7 @@ async function qualifyCurrentPage(page) {
     const current = (session.pages || []).find(
       (item) => item.pageId === session.currentPageId
     );
-    return current?.path === location.pathname && current?.dwellMs >= 10_000;
+    return current?.path === location.pathname && current?.dwellMs >= 3_000;
   });
   await page.evaluate(() => {
     const root = document.scrollingElement || document.documentElement;
@@ -67,7 +67,7 @@ async function qualifyCurrentPage(page) {
     const current = (session.pages || []).find(
       (item) => item.pageId === session.currentPageId
     );
-    return current?.maxScrollDepth >= 50;
+    return current?.maxScrollDepth >= 30;
   });
 }
 
@@ -107,7 +107,7 @@ test('local parity proves one greeting, one proactive handoff, and one grounded 
     await page.waitForFunction(() => {
       const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state') || '{}');
       return (state.opportunities || []).some(
-        (item) => item.trigger === 'product_page_10s_50_scroll' && item.status === 'shown'
+        (item) => item.trigger === 'product_page_3s_30_scroll' && item.status === 'shown'
       );
     });
 
@@ -121,7 +121,7 @@ test('local parity proves one greeting, one proactive handoff, and one grounded 
     const proof = await page.evaluate(() => {
       const state = JSON.parse(sessionStorage.getItem('algolia_proactive_state') || '{}');
       const opportunity = (state.opportunities || []).find(
-        (item) => item.trigger === 'product_page_10s_50_scroll'
+        (item) => item.trigger === 'product_page_3s_30_scroll'
       );
       const root = document.querySelector('algolia-chat').shadowRoot;
       return {

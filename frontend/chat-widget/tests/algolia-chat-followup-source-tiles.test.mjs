@@ -32,6 +32,30 @@ after(async () => {
   await browser?.close();
 });
 
+test('final answer preserves previously retrieved sources when completion omits hits', () => {
+  const bundle = fs.readFileSync(chatPath, 'utf8');
+  const finalizerStart = bundle.indexOf('async function iR(');
+  const finalizerEnd = bundle.indexOf('async function aR(', finalizerStart);
+  const finalizer = bundle.slice(finalizerStart, finalizerEnd);
+
+  assert.notEqual(finalizerStart, -1, 'orchestrator finalizer must exist');
+  assert.match(
+    finalizer,
+    /turnsRef\.current\.find\([^)]*\)\?\.segments\[0\]/,
+    'finalization must read the current streaming segment before committing the final answer'
+  );
+  assert.match(
+    finalizer,
+    /[A-Za-z_$][\w$]*\.hits\?\.length\?[A-Za-z_$][\w$]*\.hits:[A-Za-z_$][\w$]*\?\.rawHits\?\?\[\]/,
+    'finalization must keep progress-time raw hits when the terminal payload has no hits'
+  );
+  assert.match(
+    finalizer,
+    /[A-Za-z_$][\w$]*\.length\?[A-Za-z_$][\w$]*:[A-Za-z_$][\w$]*\?\.sources\?\?\[\]/,
+    'finalization must keep progress-time source pills when the terminal payload has no sources'
+  );
+});
+
 function completionFrames(content = answer) {
   return [
     {
@@ -98,27 +122,15 @@ async function createWidgetPage({ frames = completionFrames(), streamError = nul
     await route.continue();
   });
   await page.goto('http://localhost/');
+  await page.evaluate(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
   await page.evaluate(
     ({ responseFrames, errorMessage }) => {
       window.__completionRequests = [];
       window.fetch = async (input, init = {}) => {
         const url = String(input instanceof Request ? input.url : input);
-        if (url.includes('/api/judge')) {
-          return new Response(JSON.stringify({
-            panels: [{
-              panelId: 'primary',
-              dims: { grounding: 9, coverage: 9, depth: 8, relevance: 9 },
-              synthesizedScore: 9,
-              composite: 8.8,
-              preGateScore: 8.8,
-              gateTripped: false,
-              borderline: false,
-              flaggedClaims: [],
-              perJudge: [],
-              rationale: 'The answer is supported by the retrieved source.',
-            }],
-          }), { status: 200, headers: { 'content-type': 'application/json' } });
-        }
         if (url.includes('/agent-studio/1/agents/') && url.includes('/completions')) {
           window.__completionRequests.push(JSON.parse(String(init.body ?? '{}')));
           const encoder = new TextEncoder();
@@ -227,6 +239,340 @@ async function waitForAnswer(page) {
   }
 }
 
+async function waitForAnswerText(page, text) {
+  await page.waitForFunction(
+    (expectedText) => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      const persisted = JSON.parse(sessionStorage.getItem('algolia-chat:conversation') ?? 'null');
+      const segment = persisted?.turns?.[0]?.segments?.[0];
+      return segment?.status === 'success' && root?.textContent?.includes(expectedText);
+    },
+    text,
+    { timeout: 8_000 }
+  );
+}
+
+async function waitForTurnCount(page, expectedCount) {
+  await page.waitForFunction(
+    (count) => {
+      const persisted = JSON.parse(sessionStorage.getItem('algolia-chat:conversation') ?? 'null');
+      return persisted?.turns?.length === count &&
+        persisted.turns.every((turn) => turn.segments?.[0]?.status === 'success');
+    },
+    expectedCount,
+    { timeout: 8_000 }
+  );
+}
+
+test('analogy canvas and consultant read render as a TLDR tile before flat details', async () => {
+  const modelInlineFollowUp =
+    'Are you planning for a specific amount of monthly search traffic or record volume?';
+  const layeredAnswer = `API calls are like little door swings at a busy store: one customer entering is harmless, but autocomplete, filters, page loads, bots, and eager widgets can turn that door into a blur.
+
+Short version: yes, almost every interaction that requests data from an Algolia index counts as a billable search request.
+
+## The mechanism
+Use the controls that match the traffic source:
+
+- Debounce ordinary typing.
+- Rate-limit abusive clients.
+
+## Recommendation
+Start with frontend debounce, then protect shared backends with server-side throttling.
+
+${modelInlineFollowUp}
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(layeredAnswer) });
+  try {
+    await waitForAnswerText(page, 'Short version: yes');
+    const result = await page.evaluate(({ question, inlineQuestion }) => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const tldr = root.querySelector('.acs-answer-tldr');
+      const tldrBlocks = [...(tldr?.firstElementChild?.children ?? [])]
+        .map((node) => node.textContent.replace(/\s+/g, ' ').trim())
+        .filter(Boolean);
+      const details = root.querySelector('.acs-answer-details');
+      const sources = root.querySelector('.acs-source-section');
+      const followWrap = root.querySelector('.acs-followup-wrap');
+      const label = [...root.querySelectorAll('span')]
+        .find((node) => node.textContent.trim() === 'TL;DR');
+      const labelStyle = label ? getComputedStyle(label) : null;
+      const detailsLabel = root.querySelector('.acs-answer-details-label');
+      const detailsLabelStyle = detailsLabel ? getComputedStyle(detailsLabel) : null;
+      const sourcesLabel = root.querySelector('.acs-source-section .acs-answer-section-label');
+      const sourcesLabelStyle = sourcesLabel ? getComputedStyle(sourcesLabel) : null;
+      const analogy = root.querySelector('.acs-answer-analogy');
+      const short = root.querySelector('.acs-answer-short');
+      const analogyStyle = analogy ? getComputedStyle(analogy) : null;
+      const shortStyle = short ? getComputedStyle(short) : null;
+      return {
+        labelText: label?.textContent.trim(),
+        labelWeight: labelStyle?.fontWeight,
+        labelTransform: labelStyle?.textTransform,
+        labelLetterSpacing: labelStyle?.letterSpacing,
+        detailsLabelWeight: detailsLabelStyle?.fontWeight,
+        detailsLabelText: detailsLabel?.textContent.trim(),
+        detailsLabelTransform: detailsLabelStyle?.textTransform,
+        detailsLabelLetterSpacing: detailsLabelStyle?.letterSpacing,
+        sourcesLabelText: sourcesLabel?.textContent.trim(),
+        sourcesLabelWeight: sourcesLabelStyle?.fontWeight,
+        sourcesLabelTransform: sourcesLabelStyle?.textTransform,
+        sourcesLabelLetterSpacing: sourcesLabelStyle?.letterSpacing,
+        detailsTopPadding: getComputedStyle(details).paddingTop,
+        hasAnalogyTreatmentHook: Boolean(root.querySelector('.acs-answer-analogy')),
+        analogyText: analogy?.textContent.replace(/\s+/g, ' ').trim(),
+        analogyFontStyle: analogyStyle?.fontStyle,
+        shortText: short?.textContent.replace(/\s+/g, ' ').trim(),
+        shortFontStyle: shortStyle?.fontStyle,
+        tldrBlocks,
+        tldrText: tldr?.textContent.replace(/\s+/g, ' ').trim(),
+        detailsText: details?.textContent.replace(/\s+/g, ' ').trim(),
+        questionInTldr: tldr?.textContent.includes(question),
+        questionInDetails: details?.textContent.includes(question),
+        inlineQuestionInTldr: tldr?.textContent.includes(inlineQuestion),
+        inlineQuestionInDetails: details?.textContent.includes(inlineQuestion),
+        followQuestion: followWrap?.textContent.includes(question),
+        inlineQuestionInFollowUp: followWrap?.textContent.includes(inlineQuestion),
+        detailsAfterTldr: Boolean(tldr.compareDocumentPosition(details) & Node.DOCUMENT_POSITION_FOLLOWING),
+        sourcesAfterDetails: Boolean(details.compareDocumentPosition(sources) & Node.DOCUMENT_POSITION_FOLLOWING),
+        followAfterSources: Boolean(sources.compareDocumentPosition(followWrap) & Node.DOCUMENT_POSITION_FOLLOWING),
+        tldrBackground: getComputedStyle(tldr).backgroundImage,
+        tldrShadow: getComputedStyle(tldr).boxShadow,
+      };
+    }, { question: followUp, inlineQuestion: modelInlineFollowUp });
+
+    assert.equal(result.labelText, 'TL;DR');
+    assert.equal(result.detailsLabelText, 'Details');
+    assert.equal(result.sourcesLabelText, 'Sources');
+    assert.ok(Number(result.labelWeight) >= 700 || result.labelWeight === 'bold');
+    assert.ok(Number(result.detailsLabelWeight) >= 700 || result.detailsLabelWeight === 'bold');
+    assert.ok(Number(result.sourcesLabelWeight) >= 700 || result.sourcesLabelWeight === 'bold');
+    assert.equal(result.labelTransform, 'uppercase');
+    assert.equal(result.detailsLabelTransform, 'uppercase');
+    assert.equal(result.sourcesLabelTransform, 'uppercase');
+    assert.equal(result.labelLetterSpacing, result.detailsLabelLetterSpacing);
+    assert.equal(result.detailsLabelLetterSpacing, result.sourcesLabelLetterSpacing);
+    assert.equal(result.detailsTopPadding, '20px');
+    assert.equal(result.hasAnalogyTreatmentHook, true);
+    assert.match(result.analogyText, /little door swings/);
+    assert.equal(result.analogyFontStyle, 'italic');
+    assert.match(result.shortText, /Short version: yes/);
+    assert.notEqual(result.shortFontStyle, 'italic');
+    assert.match(result.tldrBlocks[0], /little door swings/);
+    assert.match(result.tldrBlocks[1], /Short version: yes/);
+    assert.match(result.tldrText, /little door swings/);
+    assert.match(result.tldrText, /Short version: yes/);
+    assert.doesNotMatch(result.tldrText, /The mechanism/);
+    assert.match(result.detailsText, /Details\s*The mechanism/);
+    assert.match(result.detailsText, /Recommendation/);
+    assert.equal(result.questionInTldr, false);
+    assert.equal(result.questionInDetails, false);
+    assert.equal(result.inlineQuestionInTldr, false);
+    assert.equal(result.inlineQuestionInDetails, false);
+    assert.equal(result.followQuestion, true);
+    assert.equal(result.inlineQuestionInFollowUp, false);
+    assert.equal(result.detailsAfterTldr, true);
+    assert.equal(result.sourcesAfterDetails, true);
+    assert.equal(result.followAfterSources, true);
+    assert.match(result.tldrBackground, /linear-gradient/);
+    assert.notEqual(result.tldrShadow, 'none');
+  } finally {
+    await page.close();
+  }
+});
+
+test('TLDR treatment is limited to the first primary answer in a conversation', async () => {
+  const layeredAnswer = `Implementation planning is like setting a table before the guests arrive: the plates matter, but the sequence matters more.
+
+Short version: start with the smallest working search path, then harden the data and events around it.
+
+## Details
+Use one integration path first, validate relevance, then expand the controls.
+
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(layeredAnswer) });
+  try {
+    await waitForAnswerText(page, 'Short version: start with the smallest working search path');
+    const composer = page.locator('algolia-chat').locator('textarea');
+    await composer.waitFor({ state: 'visible' });
+    await page.waitForFunction(() => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      return root?.querySelector('textarea')?.disabled === false;
+    });
+    await composer.fill('What about the next implementation step?');
+    await composer.press('Enter');
+    await waitForTurnCount(page, 2);
+
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const labels = [...root.querySelectorAll('span')]
+        .map((node) => node.textContent.trim())
+        .filter(Boolean);
+      return {
+        tldrTiles: root.querySelectorAll('.acs-answer-tldr').length,
+        answerLayers: root.querySelectorAll('.acs-answer-layer').length,
+        detailsLabels: root.querySelectorAll('.acs-answer-details-label').length,
+        tldrLabels: labels.filter((label) => label === 'TL;DR').length,
+        assistantLabels: labels.filter((label) => label === 'Assistant').length,
+        detailsText: root.querySelector('.acs-answer-details')?.textContent.replace(/\s+/g, ' ').trim(),
+        detailsBodyHeadings: [...root.querySelectorAll('.acs-answer-details h1, .acs-answer-details h2, .acs-answer-details h3')]
+          .map((node) => node.textContent.trim()),
+        turnCount: JSON.parse(sessionStorage.getItem('algolia-chat:conversation')).turns.length,
+      };
+    });
+
+    assert.equal(result.turnCount, 2);
+    assert.equal(result.tldrTiles, 1);
+    assert.equal(result.answerLayers, 1);
+    assert.equal(result.detailsLabels, 1);
+    assert.deepEqual(result.detailsBodyHeadings, []);
+    assert.equal(result.tldrLabels, 1);
+    assert.equal(result.assistantLabels, 0);
+  } finally {
+    await page.close();
+  }
+});
+
+test('analogy canvas and unlabeled direct read stay together in TLDR', async () => {
+  const text = `Comparing one grocery success story to another is a bit like comparing two high-performing kitchens—the menu might be different, but the secret is always in how they manage the chaos of the pantry to get the right dish to the table instantly.
+
+If you liked the H-E-B México approach, you want to look at how other grocery teams handle the digital aisle.
+
+- Albertsons: They are using Algolia for agentic shopping experiences.
+- Industry-Wide Trends: Grocery teams are using AI to handle repeat purchase flows.
+
+My recommendation: look for similar frictions, not just similar stories.
+
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'high-performing kitchens');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const labels = [...root.querySelectorAll('.acs-answer-section-label')]
+        .map((node) => node.textContent.trim())
+        .filter(Boolean);
+      const tldr = root.querySelector('.acs-answer-tldr');
+      const analogy = root.querySelector('.acs-answer-analogy');
+      const short = root.querySelector('.acs-answer-short');
+      const details = root.querySelector('.acs-answer-details');
+      return {
+        labels,
+        tldrText: tldr?.textContent.replace(/\s+/g, ' ').trim(),
+        analogyText: analogy?.textContent.replace(/\s+/g, ' ').trim(),
+        shortText: short?.textContent.replace(/\s+/g, ' ').trim(),
+        hasShortBlock: Boolean(short),
+        detailsText: details?.textContent.replace(/\s+/g, ' ').trim(),
+        tldrCount: root.querySelectorAll('.acs-answer-tldr').length,
+        detailsCount: root.querySelectorAll('.acs-answer-details').length,
+      };
+    });
+
+    assert.equal(result.tldrCount, 1);
+    assert.equal(result.detailsCount, 1);
+    assert.ok(result.labels.includes('TL;DR'));
+    assert.ok(result.labels.includes('Details'));
+    assert.match(result.analogyText, /high-performing kitchens/);
+    assert.match(result.tldrText, /high-performing kitchens/);
+    assert.equal(result.hasShortBlock, true);
+    assert.match(result.shortText, /If you liked the H-E-B/);
+    assert.match(result.tldrText, /If you liked the H-E-B/);
+    assert.doesNotMatch(result.tldrText, /Albertsons/);
+    assert.match(result.detailsText, /Albertsons/);
+    assert.match(result.detailsText, /My recommendation/);
+  } finally {
+    await page.close();
+  }
+});
+
+test('one-paragraph answer does not force a broken TLDR split', async () => {
+  const text = `A single direct answer should stay flat when there is no separate short-version block.
+
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'single direct answer');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      return {
+        tldrTiles: root.querySelectorAll('.acs-answer-tldr').length,
+        answerLayers: root.querySelectorAll('.acs-answer-layer').length,
+        detailsLabels: root.querySelectorAll('.acs-answer-details-label').length,
+        tldrLabels: [...root.querySelectorAll('.acs-answer-section-label')]
+          .filter((node) => node.textContent.trim() === 'TL;DR').length,
+        answerText: root.textContent.replace(/\s+/g, ' ').trim(),
+      };
+    });
+
+    assert.equal(result.tldrTiles, 0);
+    assert.equal(result.answerLayers, 0);
+    assert.equal(result.detailsLabels, 0);
+    assert.equal(result.tldrLabels, 0);
+    assert.match(result.answerText, /single direct answer/);
+  } finally {
+    await page.close();
+  }
+});
+
+test('heading-first answer stays flat instead of forcing the heading into TLDR', async () => {
+  const text = `## Practical answer
+Use rate limits where traffic concentrates, then debounce normal typing.
+
+${discoveryMarker}`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'Practical answer');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      return {
+        tldrTiles: root.querySelectorAll('.acs-answer-tldr').length,
+        headingText: [...root.querySelectorAll('p, h1, h2, h3')]
+          .map((node) => node.textContent.trim())
+          .find((value) => value === 'Practical answer'),
+      };
+    });
+
+    assert.equal(result.tldrTiles, 0);
+    assert.equal(result.headingText, 'Practical answer');
+  } finally {
+    await page.close();
+  }
+});
+
+test('markerless trailing discovery question is rendered only in the follow-up tile', async () => {
+  const inlineQuestion =
+    'Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?';
+  const text = `API calls are like little door swings at a busy store: one customer entering is harmless, but eager widgets can turn that door into a blur.
+
+Short version: yes, almost every interaction that requests data from an Algolia index counts as a billable search request.
+
+## The mechanism
+Use debounce for normal typing and rate limits for abusive clients.
+
+${inlineQuestion}`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'Short version: yes');
+    const result = await page.evaluate((question) => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const tldr = root.querySelector('.acs-answer-tldr');
+      const details = root.querySelector('.acs-answer-details');
+      const followWrap = root.querySelector('.acs-followup-wrap');
+      return {
+        questionInTldr: tldr?.textContent.includes(question),
+        questionInDetails: details?.textContent.includes(question),
+        questionInFollowUp: followWrap?.textContent.includes(question),
+      };
+    }, inlineQuestion);
+
+    assert.equal(result.questionInTldr, false);
+    assert.equal(result.questionInDetails, false);
+    assert.equal(result.questionInFollowUp, true);
+  } finally {
+    await page.close();
+  }
+});
+
 test('follow-up renders after sources with separated source and discovery sections', async () => {
   const page = await createWidgetPage();
   try {
@@ -290,16 +636,21 @@ test('answer markdown preserves section and list spacing', async () => {
       const list = root.querySelector('ul');
       const markdown = quickTake?.parentElement;
       return {
-        markdownClasses: markdown.className,
-        quickTakeClasses: quickTake.className,
-        mechanismClasses: mechanism.className,
-        listClasses: list.className,
+        markdownClasses: markdown?.className ?? null,
+        quickTakeClasses: quickTake?.className ?? null,
+        mechanismClasses: mechanism?.className ?? null,
+        listClasses: list?.className ?? null,
+        visibleBlocks: textBlocks.map((node) => node.textContent.trim()).slice(0, 12),
       };
     });
 
+    assert.ok(result.markdownClasses, `missing markdown block: ${JSON.stringify(result.visibleBlocks)}`);
+    assert.ok(result.quickTakeClasses, `missing Quick take block: ${JSON.stringify(result.visibleBlocks)}`);
+    assert.ok(result.mechanismClasses, `missing The mechanism block: ${JSON.stringify(result.visibleBlocks)}`);
+    assert.ok(result.listClasses, `missing list block: ${JSON.stringify(result.visibleBlocks)}`);
     assert.match(result.markdownClasses, /\bgap-3\b/);
     assert.match(result.quickTakeClasses, /\bmt-1\b/);
-    assert.match(result.mechanismClasses, /\bmt-5\b/);
+    assert.match(result.mechanismClasses, /\bmt-[15]\b/);
     assert.match(result.listClasses, /\bspace-y-2\b/);
   } finally {
     await page.close();
@@ -336,21 +687,19 @@ test('source group and source links use the shipped white-to-blue glass treatmen
   }
 });
 
-test('completion request constrains discovery to the grounded exchange', async () => {
+test('completion request keeps discovery state out of the visitor message', async () => {
   const page = await createWidgetPage();
   try {
     await waitForAnswer(page);
-    const requestText = await page.evaluate(() => JSON.stringify(window.__completionRequests));
+    const request = await page.evaluate(() => window.__completionRequests[0]);
+    const userPart = request.messages[0].parts.find((part) => part.type === 'text');
+    const turnContext = request.messages[0].metadata.turnContext;
 
-    assert.match(
-      requestText,
-      /The follow-up must be anchored in the visitor's visible question and the answer you just gave/
-    );
-    assert.match(
-      requestText,
-      /Do not introduce broad audience, traffic, catalog, support-deflection, or buyer-intent forks unless the visitor or retrieved evidence already raised them/
-    );
-    assert.doesNotMatch(requestText, /diagnostic fork with 2-3 plausible paths/);
+    assert.equal(userPart.text, 'How should I configure rate limiting?');
+    assert.equal(turnContext['discovery.turn'], '1');
+    assert.match(turnContext['discovery.unknown'], /intent/);
+    assert.doesNotMatch(JSON.stringify(request), /DISCOVERY CONTROL/);
+    assert.doesNotMatch(JSON.stringify(request), /never quote this block/);
   } finally {
     await page.close();
   }

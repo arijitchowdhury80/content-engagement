@@ -231,18 +231,18 @@
         appId: "0EXRPAXB56",
         apiKey: "local_search_key",
         greetingsAgentId: "local_greetings_agent",
-        productDwellMs: 10000,
-        productScrollDepth: 50,
-        solutionDwellMs: 10000,
-        solutionScrollDepth: 50,
-        documentationJourneyDwellMs: 10000,
-        documentationJourneyScrollDepth: 50,
-        proofJourneyDwellMs: 10000,
-        proofJourneyScrollDepth: 50,
-        implementationDwellMs: 10000,
-        implementationScrollDepth: 50,
-        resourceDwellMs: 10000,
-        resourceScrollDepth: 50,
+        productDwellMs: 3000,
+        productScrollDepth: 30,
+        solutionDwellMs: 3000,
+        solutionScrollDepth: 30,
+        documentationJourneyDwellMs: 3000,
+        documentationJourneyScrollDepth: 30,
+        proofJourneyDwellMs: 3000,
+        proofJourneyScrollDepth: 30,
+        implementationDwellMs: 3000,
+        implementationScrollDepth: 30,
+        resourceDwellMs: 3000,
+        resourceScrollDepth: 30,
       };
 
       window.ALGOLIA_VISITOR_CONFIG = {
@@ -263,12 +263,12 @@
         const packetText = text.replace(/^PROACTIVE_GREETING_REQUEST\s*/, "");
         const packet = JSON.parse(packetText);
         const trail =
-          packet.journeySummary?.productTrail?.map((item) => item.label).join(", ") ||
-          packet.journeySummary?.solutionTrail?.map((item) => item.label).join(", ") ||
+          packet.journeyContext?.broaderJourney?.productTrail?.map((item) => item.label).join(", ") ||
+          packet.journeyContext?.broaderJourney?.solutionTrail?.map((item) => item.label).join(", ") ||
           packet.currentPage?.title ||
           "this path";
         const greetingFixtures = {
-          product_page_10s_50_scroll: {
+          product_page_3s_30_scroll: {
             greeting: `Hello, explorer, looks like ${trail} has earned a proper look. Want to separate the interesting capability from what could actually move the needle?`,
             chips: ["Show customer proof", "Compare tradeoffs", "Implementation reality"],
           },
@@ -276,7 +276,7 @@
             greeting: `Aha, ${trail} caught your attention and now you are in the documentation. Excellent; this is where product interest meets implementation reality, so want the clean technical path?`,
             chips: ["Map the implementation", "Bring in a specialist", "Show the tradeoffs"],
           },
-          solution_page_10s_50_scroll: {
+          solution_page_3s_30_scroll: {
             greeting: `Hello, explorer, looks like ${trail} is the business problem on your mind. Let us get past the broad promises and pin down the outcome that matters in your world.`,
             chips: ["Map the business outcome", "Show relevant products", "Find customer proof"],
           },
@@ -292,11 +292,11 @@
             greeting: `Good stop: you moved from ${trail} into pricing, which usually means the business case is getting real. Want to connect value, effort, and cost without the usual hand-waving?`,
             chips: ["Build the value case", "Explain cost drivers", "Scope the next step"],
           },
-          developer_page_10s_50_scroll: {
+          developer_page_3s_30_scroll: {
             greeting: `And let me tell you a secret: the developer corner is the best corner in the house. Want the direct route from ${trail} to a working implementation?`,
             chips: ["Plan the architecture", "Scope a POC", "Bring in a specialist"],
           },
-          resource_page_10s_50_scroll: {
+          resource_page_3s_30_scroll: {
             greeting: `You are digging through ${trail}, which tells me the headline was not enough. Good; want the strongest guide, proof point, or practical next step for what you are exploring?`,
             chips: ["Find the best guide", "Show customer proof", "Recommend a next step"],
           },
@@ -453,7 +453,8 @@
           });
         }
         if (requestUrl.includes(`/agent-studio/1/agents/${LOCAL_ORCHESTRATOR_AGENT_ID}/`)) {
-          const request = JSON.parse(options.body || "{}");
+          const rawBody = String(options.body || "{}");
+          const request = JSON.parse(rawBody);
           const persistedRequests = JSON.parse(
             sessionStorage.getItem("algolia-local-orchestrator-requests") || "[]"
           );
@@ -467,6 +468,10 @@
           window.__localOrchestratorRequests = [
             ...(window.__localOrchestratorRequests || []),
             request,
+          ];
+          window.__localOrchestratorRequestBodies = [
+            ...(window.__localOrchestratorRequestBodies || []),
+            rawBody,
           ];
           return streamResponse(localOrchestratorFrames(request));
         }
@@ -529,6 +534,7 @@
       };
     </script>
     <script src="/chat/algolia-chat-theme-algolia.js"></script>
+    <script src="/chat/algolia-judge-core.js"></script>
     <script src="/chat/algolia-chat.js"></script>
     <script src="/chat/algolia-engagement-tracker.js"></script>
     <script src="/chat/algolia-context-compiler.js"></script>
@@ -537,6 +543,14 @@
     <script src="/chat/algolia-chat-engage.js"></script>
     <script src="/chat/algolia-chat-form-tool.js"></script>
     <script src="/chat/algolia-confidence-badge.js"></script>
+    <script>
+      // Compare-with-production. localhost is not on the production agent's
+      // approved-domains list, so the turn is forwarded by the parity server,
+      // which holds the key. The path deliberately avoids "/agent-studio/1/agents/"
+      // so the local greeting mock above does not intercept it.
+      window.ACS_COMPARE = { prod: { proxyPath: "/__compare/production" } };
+    </script>
+    <script src="/chat/algolia-chat-compare.js"></script>
   </head>
   <body>
     <header>

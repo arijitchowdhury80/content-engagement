@@ -1,0 +1,41 @@
+{
+  "progress": "100%",
+  "hasAnalogy": true,
+  "analogyFontStyle": "italic",
+  "hasShort": true,
+  "shortFontStyle": "normal",
+  "tldrText": "API calls are like little door swings at a very busy store: one customer entering is harmless, but autocomplete, filters, page loads, bots, and eager widgets can turn that door into a blur.Short version: yes, almost every interaction that requests data from an Algolia index counts as a billable search request.",
+  "labels": [
+    {
+      "text": "TL;DR",
+      "fontWeight": "700",
+      "textTransform": "uppercase",
+      "letterSpacing": "1.44px",
+      "color": "rgb(26, 26, 26)"
+    },
+    {
+      "text": "Details",
+      "fontWeight": "700",
+      "textTransform": "uppercase",
+      "letterSpacing": "1.44px",
+      "color": "rgb(26, 26, 26)"
+    },
+    {
+      "text": "Sources",
+      "fontWeight": "700",
+      "textTransform": "uppercase",
+      "letterSpacing": "1.44px",
+      "color": "rgb(26, 26, 26)"
+    }
+  ],
+  "detailsText": "DetailsDebounce ordinary typing, avoid duplicate page-load searches, and protect shared backend traffic with server-side throttling.Supporting evidence: Rate limiting API keys | Understand search request usage",
+  "detailsBodyHeadings": [],
+  "sourceText": "SourcesDocumentation1Support1",
+  "followupText": "Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?",
+  "followupCount": 1,
+  "detailsContainsFollowup": false,
+  "tooltipCount": 0,
+  "blackBars": 0,
+  "browserErrors": [],
+  "passed": true
+}

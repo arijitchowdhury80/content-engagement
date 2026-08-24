@@ -1,0 +1,28 @@
+{
+  "flagship": {
+    "label": "Flagship",
+    "appId": "0EXRPAXB56",
+    "indexName": "Algolia_Prod_Copy_Vanilla",
+    "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
+    "keyEnv": "FLAGSHIP_SEARCH_KEY",
+    "origin": "https://tmp-content-eng-algolia.cloud.jahia.com"
+  },
+  "production": {
+    "label": "Production",
+    "appId": "1QDAWL72TQ",
+    "indexName": "ALGOLIA_WWW_PROD_V2",
+    "agentId": "ebff018c-66e1-44df-b33a-2a58a0188840",
+    "keyEnv": "PRODUCTION_SEARCH_KEY",
+    "origin": "https://www.algolia.com"
+  },
+  "judges": {
+    "appId": "0EXRPAXB56",
+    "origin": "https://tmp-content-eng-algolia.cloud.jahia.com",
+    "keyEnv": "JUDGE_SEARCH_KEY",
+    "agents": {
+      "skeptic": "d6783522-e8fb-4622-b139-205d9c238c0d",
+      "referee": "320a52d9-4217-406b-8902-15688fdb4d1f",
+      "advocate": "50843dd4-eab8-473b-ab44-7dda69d7557d"
+    }
+  }
+}

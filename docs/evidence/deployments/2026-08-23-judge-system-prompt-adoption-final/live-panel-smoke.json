@@ -1,0 +1,84 @@
+{
+  "capturedAt": "2026-08-23T23:36:25.600Z",
+  "appId": "0EXRPAXB56",
+  "agentIds": {
+    "skeptic": "2fd41081-a5a1-4532-8049-1fa2f1338037",
+    "referee": "f4e7ed7d-96b2-4900-8d21-40a5cfe950d0",
+    "advocate": "36a85e07-8415-4d34-8428-53574dc608f2"
+  },
+  "packetHashes": {
+    "question": "f731c49537559e4c9c5cbb413a49fa8a481ebbf2022385ffa0c8348c177b7c61",
+    "answer": "64f78ce768388b8d71c3b79f01cc4a5b10605a81aa63accae3037071c1e0ae7d",
+    "evidence": "1192b1e7e43d991e410363fe2cd9983073b5d622d92331176e02ec3c4f797c51",
+    "manifest": "a383a2da2fcf84b49f3922ab07682bc7f9e5a32ca4db98873d5ee93f1e43b853",
+    "evaluation": "bdaf4cb42117aa3db7ca97ce8202bb66f59c377202374b1f3227b04bcdaa7ed1"
+  },
+  "status": "complete",
+  "composite": 6,
+  "roleReports": [
+    {
+      "role": "skeptic",
+      "ok": true,
+      "attempts": 1,
+      "durationMs": 19335,
+      "errors": []
+    },
+    {
+      "role": "referee",
+      "ok": true,
+      "attempts": 2,
+      "durationMs": 30928,
+      "errors": []
+    },
+    {
+      "role": "advocate",
+      "ok": true,
+      "attempts": 1,
+      "durationMs": 19367,
+      "errors": []
+    }
+  ],
+  "progress": [
+    {
+      "phase": "start",
+      "role": "skeptic",
+      "attempt": 1
+    },
+    {
+      "phase": "start",
+      "role": "referee",
+      "attempt": 1
+    },
+    {
+      "phase": "start",
+      "role": "advocate",
+      "attempt": 1
+    },
+    {
+      "phase": "retry",
+      "role": "referee",
+      "attempt": 1
+    },
+    {
+      "phase": "start",
+      "role": "referee",
+      "attempt": 2
+    },
+    {
+      "phase": "complete",
+      "role": "skeptic",
+      "attempt": 1
+    },
+    {
+      "phase": "complete",
+      "role": "advocate",
+      "attempt": 1
+    },
+    {
+      "phase": "complete",
+      "role": "referee",
+      "attempt": 2
+    }
+  ],
+  "pass": true
+}

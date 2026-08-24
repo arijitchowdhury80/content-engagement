@@ -1,0 +1,49 @@
+{
+  "schema": "ChatArchitectureBaselineManifest.v1",
+  "runId": "2026-08-20-001",
+  "createdAt": "2026-08-20T23:39:03.575Z",
+  "immutableSnapshots": [
+    {
+      "baselineId": "algolia-com",
+      "role": "current_algolia_implementation",
+      "head": "2a1f9ccc330990cf9f4b3be7e7a343887e22285e",
+      "branch": "main",
+      "remotes": [
+        "origin\thttps://github.com/arijitchowdhury80/content-engagement.git (fetch)",
+        "origin\thttps://github.com/arijitchowdhury80/content-engagement.git (push)"
+      ],
+      "fileCount": 1991,
+      "dirtyStatusEntryCount": 232,
+      "snapshotManifestSha256": "258732bcb33f1c4f9febf038d2ea2a4c56494a07abbd7536fde50d0866ceb5e6",
+      "verification": "status-before equals status-after; live-before manifest equals live-after manifest; snapshot hashes verified"
+    },
+    {
+      "baselineId": "sajid-upstream",
+      "role": "pristine_sajid_upstream",
+      "head": "e06c6b5ff20c8576bec01fdf000981cd8873cc06",
+      "branch": null,
+      "remotes": [
+        "origin\thttps://github.com/smomin/algolia-central-chat-widget.git (fetch)",
+        "origin\thttps://github.com/smomin/algolia-central-chat-widget.git (push)"
+      ],
+      "fileCount": 270,
+      "dirtyStatusEntryCount": 0,
+      "snapshotManifestSha256": "469f6bf0753f8d542e041dca06bfd39b6ce2b5ff012bc8298b46055f287b14de",
+      "verification": "status-before equals status-after; live-before manifest equals live-after manifest; snapshot hashes verified"
+    },
+    {
+      "baselineId": "shared-integration",
+      "role": "local_shared_integration",
+      "head": "f5a399589ab2dfc21210fbfa525a25cedb464cd4",
+      "branch": "fix/specialist-routing-blockers",
+      "remotes": [
+        "origin\thttps://github.com/smomin/algolia-central-chat-widget.git (fetch)",
+        "origin\thttps://github.com/smomin/algolia-central-chat-widget.git (push)"
+      ],
+      "fileCount": 1188,
+      "dirtyStatusEntryCount": 75,
+      "snapshotManifestSha256": "74fb8fe1b8372ae8dc45fa8b1ea09c8f06485d6e134609b1ecb810bb39d2b619",
+      "verification": "status-before equals status-after; live-before manifest equals live-after manifest; snapshot hashes verified"
+    }
+  ]
+}

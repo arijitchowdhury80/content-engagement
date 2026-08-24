@@ -13,7 +13,7 @@ const fixturePath = join(siteDir, 'index.html');
 
 const scenarios = [
   {
-    trigger: 'product_page_10s_50_scroll',
+    trigger: 'product_page_3s_30_scroll',
     current: page('/products/ai-search', 'product', 'AI Search'),
   },
   {
@@ -30,7 +30,7 @@ const scenarios = [
     ),
   },
   {
-    trigger: 'solution_page_10s_50_scroll',
+    trigger: 'solution_page_3s_30_scroll',
     current: page('/solutions/ecommerce', 'solution', 'Ecommerce'),
   },
   {
@@ -49,11 +49,11 @@ const scenarios = [
     current: page('/pricing', 'pricing', 'Pricing', false),
   },
   {
-    trigger: 'developer_page_10s_50_scroll',
+    trigger: 'developer_page_3s_30_scroll',
     current: page('/developers', 'developer', 'Developer Hub'),
   },
   {
-    trigger: 'resource_page_10s_50_scroll',
+    trigger: 'resource_page_3s_30_scroll',
     current: page('/resources', 'resource', 'Resources'),
   },
 ];

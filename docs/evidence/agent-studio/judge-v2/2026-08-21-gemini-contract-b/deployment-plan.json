@@ -1,0 +1,61 @@
+{
+  "runId": "2026-08-21-gemini-contract-b",
+  "agentRelease": "v3.3-gemini-contract-b",
+  "apply": true,
+  "appId": "0EXRPAXB56",
+  "immutableCreateOnly": true,
+  "providerOverride": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
+  "modelOverride": "gemini-2.5-flash",
+  "thinkingBudget": 0,
+  "roles": {
+    "skeptic": {
+      "source": {
+        "id": "a4c3846b-e538-4c9c-8e39-1bb15a21f2c2",
+        "name": "www Confidence – Skeptic Judge",
+        "status": "published",
+        "model": "medium",
+        "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+        "toolCount": 0,
+        "instructionsHash": "84d1b881f9ed6f60818d573ed67ca463c010250c052f5195207931a8ff86fb74",
+        "configHash": "c65fc769b0fe89fedb21c9674b40a76b94e1b29ab54417664a7d733f82adec60"
+      },
+      "targetName": "www Chat - Confidence Skeptic v3.3-gemini-contract-b",
+      "instructionsPath": "agents/prompts/judge/instructions_judge_skeptic.md",
+      "payloadHash": "1d8b9567ee10de8014cb974fa7facf150f7a4ad1f5cd562a6858eff5ca266a2e",
+      "existingTarget": null
+    },
+    "referee": {
+      "source": {
+        "id": "c43d7374-801a-4d0f-aa09-ca12830565c3",
+        "name": "www Confidence – Referee Judge",
+        "status": "published",
+        "model": "medium",
+        "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+        "toolCount": 0,
+        "instructionsHash": "9320dbf4f56a2894a2c7fd86b7513a7f7d2507f8df62fe2c6972cb6171aa2e9e",
+        "configHash": "c65fc769b0fe89fedb21c9674b40a76b94e1b29ab54417664a7d733f82adec60"
+      },
+      "targetName": "www Chat - Confidence Referee v3.3-gemini-contract-b",
+      "instructionsPath": "agents/prompts/judge/instructions_judge_referee.md",
+      "payloadHash": "f4462e5d3fc7a50d46e845d31859a05e5866fceef78378ea9b901e009c9ff649",
+      "existingTarget": null
+    },
+    "advocate": {
+      "source": {
+        "id": "f14b8ddf-2285-422c-89e5-180d7fa0b3bf",
+        "name": "www Confidence – Advocate Judge",
+        "status": "published",
+        "model": "medium",
+        "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+        "toolCount": 0,
+        "instructionsHash": "e96bc4d619c1df5d1f7b85bf98eea7ec7c41d21c1e32009aa6c15b2a54952518",
+        "configHash": "c65fc769b0fe89fedb21c9674b40a76b94e1b29ab54417664a7d733f82adec60"
+      },
+      "targetName": "www Chat - Confidence Advocate v3.3-gemini-contract-b",
+      "instructionsPath": "agents/prompts/judge/instructions_judge_advocate.md",
+      "payloadHash": "621d52c4fc22aaa11a4c34e242370da5da65d81a6e9c380e34fceafa6dbbde59",
+      "existingTarget": null
+    }
+  },
+  "privateSnapshotHash": "d40bcd360d7c832a2809c9897f89428b2243b053e09fd2a04ec88683220412fb"
+}

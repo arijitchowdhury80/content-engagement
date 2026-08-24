@@ -1,1 +1,129 @@
-(function(){"use strict";const b=":host{display:inline-flex}.badge{display:inline-flex;width:-moz-fit-content;width:fit-content;align-items:center;gap:6px;border-radius:var(--algolia-radius-full, 9999px);border:1px solid;padding:4px 12px;font-size:var(--algolia-fs-xs, 12px);font-weight:var(--algolia-fw-medium, 500);font-family:var(--algolia-font-sans, system-ui, sans-serif);line-height:1.4;white-space:nowrap;cursor:default;text-decoration:none;box-sizing:border-box}button.badge{-moz-appearance:none;appearance:none;-webkit-appearance:none;background:none;cursor:pointer;transition:color var(--algolia-dur-fast, .12s) var(--algolia-ease, cubic-bezier(.4, 0, .2, 1)),background-color var(--algolia-dur-fast, .12s) var(--algolia-ease, cubic-bezier(.4, 0, .2, 1)),border-color var(--algolia-dur-fast, .12s) var(--algolia-ease, cubic-bezier(.4, 0, .2, 1)),box-shadow var(--algolia-dur-fast, .12s) var(--algolia-ease, cubic-bezier(.4, 0, .2, 1))}button.badge:disabled{cursor:default}button.badge:hover:not(:disabled){box-shadow:var(--algolia-shadow-1, 0 1px 4px rgba(0, 0, 0, .08))}button.badge:focus-visible{outline:2px solid var(--algolia-focus, #3a3a3a);outline-offset:2px}.badge--muted{border-color:var(--algolia-border, #e0e0e0);background-color:var(--algolia-surface-2, #f0f0f0);color:var(--algolia-text-muted, #757575)}.badge--unavailable{opacity:.6}.badge--positive{border-color:var(--algolia-positive, #2e7d46);background-color:var(--algolia-positive-bg, #e6f4ea);color:var(--algolia-positive, #2e7d46)}.badge--notice{border-color:var(--algolia-notice, #a15c00);background-color:var(--algolia-notice-bg, #fbeedd);color:var(--algolia-notice, #a15c00)}.badge--negative{border-color:var(--algolia-negative, #b3261e);background-color:var(--algolia-negative-bg, #fbe9e7);color:var(--algolia-negative, #b3261e)}.badge__score{font-weight:var(--algolia-fw-bold, 700)}.badge__denom{opacity:.7}.badge__chevron{opacity:.6}.badge__flagged{margin-left:2px;border-left:1px solid currentColor;padding-left:6px}.badge__scoring{animation:badge-pulse 1.5s cubic-bezier(.4,0,.6,1) infinite}@media(prefers-reduced-motion:reduce){.badge__scoring{animation:none}}@keyframes badge-pulse{0%,to{opacity:1}50%{opacity:.4}}",g={scoringAriaLabel:"Confidence score in progress",label:"Confidence",scoringStatus:"· scoring…",scoreDenom:"/10",scoredTitleNormal:"Confidence {score}/10 — click for the 3-judge breakdown.",scoredTitleGate:"Confidence {score}/10 — material grounding review needed ({flagged} flagged). Click for the full breakdown.",scoredAriaLabel:"Confidence {score} out of 10. Open the judge breakdown.",flaggedCount:"{count} to review",unavailableAriaLabel:"Confidence score unavailable ({reason})",unavailableFallbackTail:"· unavailable",unavailableFallbackHint:"Judge service unavailable",errors:{auth:{tail:"· auth required",hint:"The judge service rejected the request (401/403). Set VITE_JUDGE_API_KEY for the hosted judge, or run a local judge."},"rate-limit":{tail:"· rate limited",hint:"The judge service is rate-limiting this client (429). Wait a moment and try again."},offline:{tail:"· offline",hint:"Couldn’t reach the judge service (network/CORS/DNS). Check VITE_JUDGE_URL and that the judge is running."},server:{tail:"· service error",hint:"The judge service returned an error (5xx). It may be down or misconfigured."},"bad-response":{tail:"· unavailable",hint:"The judge service replied, but the response could not be read."}},groundingLabel:"Grounding",groundedLabel:"Grounded",groundedTitle:"All {checked} verbatim-checkable term(s) in this answer were located in the cited sources. Click for the full breakdown.",groundedAdvisoryDetail:"{count} to review",groundedAdvisoryTitle:"All {checked} verbatim-checkable term(s) were located in the cited sources. {count} advisory review note(s) did not affect the grounding status — click to read them.",unverifiedLabelOne:"1 term to review",unverifiedLabelMany:"{count} terms to review",unverifiedTitle:"{count} term(s) need review against the cited sources{terms}. Click for the full breakdown.",unverifiedAriaLabel:"{count} term(s) need review. Open the judge breakdown.",groundedAriaLabel:"Grounded. Open the judge breakdown.",nothingToVerifyDetail:"· nothing to verify",nothingToVerifyTitle:"This answer makes no verbatim-checkable claim (no API names, identifiers, or figures), so there was nothing to verify. Click for the judge panel’s reading."};function d(r,e){return r.replace(/\{(\w+)\}/g,(t,a)=>a in e?String(e[a]):`{${a}}`)}function h(r){return r.gateTripped?"negative":r.composite>=7.5?"positive":r.composite>=5?"notice":"negative"}function f(r,e){const t=r.unsupportedTerms??[],a=t.length,n=t.slice(0,3).map(s=>s.term).join(", ");return{tone:"negative",label:a===1?e.unverifiedLabelOne:d(e.unverifiedLabelMany,{count:a}),title:d(e.unverifiedTitle,{count:a,terms:n?`: ${n}${a>3?", …":""}`:""}),ariaLabel:d(e.unverifiedAriaLabel,{count:a})}}function p(r,e){const t=r.termsChecked??0;if(t===0)return{tone:"muted",label:e.groundingLabel,detail:e.nothingToVerifyDetail,title:e.nothingToVerifyTitle,ariaLabel:e.nothingToVerifyTitle};const a=r.flaggedClaims.length;return{tone:"positive",label:e.groundedLabel,title:a>0?d(e.groundedAdvisoryTitle,{checked:t,count:a}):d(e.groundedTitle,{checked:t}),ariaLabel:e.groundedAriaLabel}}function v(r,e){return r.grounded?p(r,e):f(r,e)}function m(r,e){return r?.errorKind?e.errors[r.errorKind]:void 0}function _(r,e){return r?.tail??e.unavailableFallbackTail}function C(r,e,t){return r?.hint??e??t.unavailableFallbackHint}function o(r,e){const t=document.createElement("span");return e&&(t.className=e),t.textContent=r,t}class w extends HTMLElement{_verdict=null;_scoring=!1;_shadow=null;_labels={...g,errors:{...g.errors}};static get observedAttributes(){return["verdict","scoring","labels"]}get verdict(){return this._verdict}set verdict(e){this._verdict=e,this._render()}get scoring(){return this._scoring}set scoring(e){this._scoring=e,this._render()}set labels(e){this._labels={...g,...e,errors:{...g.errors,...e.errors??{}}},this._render()}get labels(){return this._labels}connectedCallback(){if(!this._shadow){this._shadow=this.attachShadow({mode:"open"});const e=document.createElement("style");e.textContent=b,this._shadow.appendChild(e)}this._render()}attributeChangedCallback(e,t,a){if(e==="verdict"){if(a===null||a==="")this._verdict=null;else try{this._verdict=JSON.parse(a)}catch{this._verdict=null}this._render()}else if(e==="scoring")this._scoring=a!==null,this._render();else if(e==="labels"&&a)try{this.labels=JSON.parse(a)}catch{}}_renderScoring(){const e=this._labels,t=document.createElement("span");t.className="badge badge--muted",t.setAttribute("aria-live","polite"),t.setAttribute("aria-label",e.scoringAriaLabel);const a=o("⚖");return a.setAttribute("aria-hidden","true"),t.appendChild(a),t.appendChild(o(e.label)),t.appendChild(o(e.scoringStatus,"badge__scoring")),t}_renderUnavailable(e){const t=this._labels,a=m(e,t),n=_(a,t),s=C(a,e?.error,t),l=document.createElement("span");l.className="badge badge--muted badge--unavailable",l.setAttribute("title",s),l.setAttribute("aria-label",d(t.unavailableAriaLabel,{reason:n.replace(/^\u00b7\s*/,"")}));const i=o("⚖");return i.setAttribute("aria-hidden","true"),l.appendChild(i),l.appendChild(o(t.label)),l.appendChild(o(n)),l}_renderScored(e){const t=this._labels,a=h(e),n=e.flaggedClaims.length,s=e.composite.toFixed(1),l=e.gateTripped?d(t.scoredTitleGate,{score:s,flagged:n}):d(t.scoredTitleNormal,{score:s}),i=document.createElement("button");i.type="button",i.className=`badge badge--${a}`,i.title=l,i.setAttribute("aria-label",d(t.scoredAriaLabel,{score:s}));const c=o("⚖");c.setAttribute("aria-hidden","true"),i.appendChild(c),i.appendChild(o(t.label)),i.appendChild(o(s,"badge__score")),i.appendChild(o(t.scoreDenom,"badge__denom")),e.gateTripped&&n>0&&i.appendChild(o(d(t.flaggedCount,{count:n}),"badge__flagged"));const u=o("›","badge__chevron");return u.setAttribute("aria-hidden","true"),i.appendChild(u),i.addEventListener("click",()=>{this.dispatchEvent(new CustomEvent("open-judge",{detail:{verdict:e},bubbles:!0,composed:!0}))}),i}_renderGrounding(e){const{tone:t,label:a,detail:n,title:s,ariaLabel:l}=v(e,this._labels),i=document.createElement("button");i.type="button",i.className=`badge badge--${t}`,i.title=s,i.setAttribute("aria-label",l);const c=o(t==="positive"?"✓":"⚖");c.setAttribute("aria-hidden","true"),i.appendChild(c),i.appendChild(o(a)),n&&i.appendChild(o(n,"badge__flagged"));const u=o("›","badge__chevron");return u.setAttribute("aria-hidden","true"),i.appendChild(u),i.addEventListener("click",()=>{this.dispatchEvent(new CustomEvent("open-judge",{detail:{verdict:e},bubbles:!0,composed:!0}))}),i}_render(){if(!this._shadow)return;const e=this._shadow.querySelector(".badge");e&&e.remove();const{_verdict:t,_scoring:a}=this;let n;a&&!t?n=this._renderScoring():!t||t.error?n=this._renderUnavailable(t):t.grounded!==void 0?n=this._renderGrounding(t):n=this._renderScored(t),this._shadow.appendChild(n)}}customElements.get("algolia-confidence-badge")||customElements.define("algolia-confidence-badge",w)})();
+(function () {
+  "use strict";
+
+  const CSS = `:host{display:inline-flex}.badge{display:inline-flex;width:fit-content;align-items:center;gap:6px;border-radius:var(--algolia-radius-full,9999px);border:1px solid;padding:4px 12px;font-size:var(--algolia-fs-xs,12px);font-weight:var(--algolia-fw-medium,500);font-family:var(--algolia-font-sans,system-ui,sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}.badge--muted{border-color:var(--algolia-border,#e0e0e0);background:var(--algolia-surface-2,#f0f0f0);color:var(--algolia-text-muted,#757575)}.badge--unavailable{opacity:.6}.badge--positive{border-color:var(--algolia-positive,#2e7d46);background:var(--algolia-positive-bg,#e6f4ea);color:var(--algolia-positive,#2e7d46)}.badge--notice{border-color:var(--algolia-notice,#a15c00);background:var(--algolia-notice-bg,#fbeedd);color:var(--algolia-notice,#a15c00)}.badge--negative{border-color:var(--algolia-negative,#b3261e);background:var(--algolia-negative-bg,#fbe9e7);color:var(--algolia-negative,#b3261e)}button.badge{appearance:none;background:none;cursor:pointer}button.badge:focus-visible{outline:2px solid var(--algolia-focus,#3a3a3a);outline-offset:2px}.badge__score{font-weight:var(--algolia-fw-bold,700)}.badge__denom{opacity:.7}.badge__flagged{margin-left:2px;border-left:1px solid currentColor;padding-left:6px}.badge__scoring{animation:badge-pulse 1.5s ease-in-out infinite}@media(prefers-reduced-motion:reduce){.badge__scoring{animation:none}}@keyframes badge-pulse{50%{opacity:.4}}`;
+  const DEFAULTS = {
+    label: "Confidence",
+    scoreDenom: "/10",
+    scoringStatus: "scoring...",
+    scoringAriaLabel: "Confidence score in progress",
+    scoredAriaLabel: "Confidence {score} out of 10. Open the judge breakdown.",
+    scoredTitle: "Confidence {score}/10. Open the three-judge breakdown.",
+    flaggedCount: "{count} to review",
+    unavailableAriaLabel: "Confidence score unavailable: {reason}",
+    unavailableTail: "unavailable",
+    unavailableHint: "Agent Studio judging is unavailable.",
+  };
+
+  function interpolate(template, values) {
+    return template.replace(/\{(\w+)\}/g, (_match, key) => key in values ? String(values[key]) : `{${key}}`);
+  }
+
+  function element(text, className) {
+    const node = document.createElement("span");
+    if (className) node.className = className;
+    node.textContent = text;
+    return node;
+  }
+
+  function tone(verdict) {
+    if (verdict.composite >= 7.5) return "positive";
+    if (verdict.composite >= 5) return "notice";
+    return "negative";
+  }
+
+  class AlgoliaConfidenceBadge extends HTMLElement {
+    _verdict = null;
+    _scoring = false;
+    _shadow = null;
+    _labels = { ...DEFAULTS };
+
+    static get observedAttributes() { return ["verdict", "scoring", "labels"]; }
+    get verdict() { return this._verdict; }
+    set verdict(value) { this._verdict = value; this._render(); }
+    get scoring() { return this._scoring; }
+    set scoring(value) { this._scoring = value; this._render(); }
+    get labels() { return this._labels; }
+    set labels(value) { this._labels = { ...DEFAULTS, ...(value || {}) }; this._render(); }
+
+    connectedCallback() {
+      if (!this._shadow) {
+        this._shadow = this.attachShadow({ mode: "open" });
+        const style = document.createElement("style");
+        style.textContent = CSS;
+        this._shadow.appendChild(style);
+      }
+      this._render();
+    }
+
+    attributeChangedCallback(name, _oldValue, value) {
+      if (name === "verdict") {
+        if (!value) this._verdict = null;
+        else try { this._verdict = JSON.parse(value); } catch { this._verdict = null; }
+      } else if (name === "scoring") {
+        this._scoring = value !== null;
+      } else if (name === "labels" && value) {
+        try { this.labels = JSON.parse(value); } catch {}
+      }
+      this._render();
+    }
+
+    _renderScoring() {
+      const judges = Array.isArray(this._verdict?.perJudge) ? this._verdict.perJudge : [];
+      const completed = judges.filter((judge) => judge.state === "complete").length;
+      const total = judges.length;
+      const node = this._verdict?.panelPending ? document.createElement("button") : document.createElement("span");
+      if (node.tagName === "BUTTON") node.type = "button";
+      node.className = "badge badge--muted";
+      node.setAttribute("aria-live", "polite");
+      node.setAttribute("aria-label", this._labels.scoringAriaLabel);
+      node.append(
+        element(this._labels.label),
+        element(total ? `${completed}/${total} judged` : this._labels.scoringStatus, "badge__scoring"),
+      );
+      if (node.tagName === "BUTTON") {
+        node.addEventListener("click", () => this.dispatchEvent(new CustomEvent("open-judge", {
+          detail: { verdict: this._verdict }, bubbles: true, composed: true,
+        })));
+      }
+      return node;
+    }
+
+    _renderUnavailable(verdict) {
+      const reason = verdict?.error || this._labels.unavailableHint;
+      const node = element("", "badge badge--muted badge--unavailable");
+      node.title = reason;
+      node.setAttribute("aria-label", interpolate(this._labels.unavailableAriaLabel, { reason }));
+      node.append(element(this._labels.label), element(this._labels.unavailableTail));
+      return node;
+    }
+
+    _renderScored(verdict) {
+      const score = verdict.composite.toFixed(1);
+      const flagged = Array.isArray(verdict.flaggedClaims) ? verdict.flaggedClaims.length : 0;
+      const node = document.createElement("button");
+      node.type = "button";
+      node.className = `badge badge--${tone(verdict)}`;
+      node.title = interpolate(this._labels.scoredTitle, { score });
+      node.setAttribute("aria-label", interpolate(this._labels.scoredAriaLabel, { score }));
+      node.append(element(this._labels.label), element(score, "badge__score"), element(this._labels.scoreDenom, "badge__denom"));
+      if (flagged) node.append(element(interpolate(this._labels.flaggedCount, { count: flagged }), "badge__flagged"));
+      node.addEventListener("click", () => this.dispatchEvent(new CustomEvent("open-judge", {
+        detail: { verdict }, bubbles: true, composed: true,
+      })));
+      return node;
+    }
+
+    _render() {
+      if (!this._shadow) return;
+      this._shadow.querySelector(".badge")?.remove();
+      let node;
+      if (this._scoring || this._verdict?.panelPending === true) node = this._renderScoring();
+      else if (!this._verdict || this._verdict.error || !Number.isFinite(this._verdict.composite)) node = this._renderUnavailable(this._verdict);
+      else node = this._renderScored(this._verdict);
+      this._shadow.appendChild(node);
+    }
+  }
+
+  if (!customElements.get("algolia-confidence-badge")) customElements.define("algolia-confidence-badge", AlgoliaConfidenceBadge);
+})();

@@ -167,8 +167,8 @@ async function installQualifiedAiSearchSeed(page) {
       url: `${location.origin}/products/ai-search`,
       title: 'AI Search | Local Chat Parity',
       enteredAt: now - 7000,
-      dwellMs: 5000,
-      maxScrollDepth: 25,
+      dwellMs: 3000,
+      maxScrollDepth: 30,
       pageGroup: 'product',
       topic: 'ai_search',
       productFocus: 'ai_search',
@@ -306,7 +306,9 @@ async function main() {
     assert.equal(result.packet.schema, 'AlgoliaContextPacket.v1');
     assert.equal(result.packet.currentPath, '/products/ai-recommendations');
     assert.ok(result.shownOpportunity?.requestPacket?.journey?.length >= 2);
-    assert.ok(result.shownOpportunity?.requestPacket?.journeySummary?.productTrail?.length >= 2);
+    assert.ok(
+      result.shownOpportunity?.requestPacket?.journeyContext?.broaderJourney?.productTrail?.length >= 2
+    );
     assert.equal(result.localAgentCalls + agentCalls.length, 1);
     assert.ok(result.opportunities.some((item) => item.status === 'shown'));
     assert.ok(result.traceStages.includes('greeting_response_parsed'));
@@ -340,8 +342,8 @@ async function main() {
     });
     assert.equal(docsContinuity.sessionId, 'local_docs_sess_123');
     assert.equal(docsContinuity.currentPath, '/doc/guides/building-search-ui/what-is-instantsearch/js/');
-    assert.equal(docsContinuity.qualifiedProduct?.dwellMs, 5000);
-    assert.equal(docsContinuity.qualifiedProduct?.maxScrollDepth, 25);
+    assert.equal(docsContinuity.qualifiedProduct?.dwellMs, 3000);
+    assert.equal(docsContinuity.qualifiedProduct?.maxScrollDepth, 30);
 
     console.log(
       JSON.stringify(
@@ -356,7 +358,8 @@ async function main() {
             moment: result.shownOpportunity.moment,
             trigger: result.shownOpportunity.trigger,
             journeyLength: result.shownOpportunity.requestPacket.journey.length,
-            productTrail: result.shownOpportunity.requestPacket.journeySummary.productTrail,
+            productTrail:
+              result.shownOpportunity.requestPacket.journeyContext.broaderJourney.productTrail,
           },
           traceStages: result.traceStages.slice(-8),
           agentCalls: agentCalls.length + result.localAgentCalls,

@@ -108,14 +108,19 @@ test('processing trace drives the header gradient fill from real progress state'
     'header remounts must seed progress from the host CSS variable before accepting later events'
   );
   assert.match(
-    header,
-    /==="loading"&&[A-Za-z_$][\w$]*<50&&[A-Za-z_$][\w$]*>=95,[A-Za-z_$][\w$]*=[A-Za-z_$][\w$]*\?0:/,
-    'a new loading run must be allowed to reset progress after the prior answer completed'
+    progressEmitter,
+    /function __arrieResetHeaderProgress\([^)]*\)[\s\S]{0,180}[A-Za-z_$][\w$]*\([A-Za-z_$][\w$]*,0,!0\)/,
+    'new run resets must be explicit, not inferred from arbitrary late loading events'
   );
   assert.match(
+    bundle,
+    /async function aR\([^)]*\)\{[\s\S]{0,160}__arrieResetHeaderProgress\(\),[A-Za-z_$][\w$]*\(\{status:"loading"/,
+    'a new answer run must reset progress only at the run boundary'
+  );
+  assert.doesNotMatch(
     header,
-    /[A-Za-z_$][\w$]*\([A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*\)/,
-    'header reset writes must tell the progress helper to snap instead of animating backwards'
+    /==="loading"&&[A-Za-z_$][\w$]*<50&&[A-Za-z_$][\w$]*>=95/,
+    'late loading events must not reset or lower a completed header'
   );
   assert.doesNotMatch(bundle, literal(legacyHeaderProgressVar));
   assert.doesNotMatch(bundle, literal(legacyWorkingAttr));
@@ -218,7 +223,7 @@ test('rendered header progress does not fall back to retrieval progress after st
     await page.waitForTimeout(100);
     assert.equal(await hostProgress(), '100%');
 
-    const resetRead = await page.evaluate(() => {
+    const lateLoadingRead = await page.evaluate(() => {
       globalThis.dispatchEvent(
         new CustomEvent('algolia-chat-processing-progress', {
           detail: { status: 'loading', progress: 33 },
@@ -229,15 +234,10 @@ test('rendered header progress does not fall back to retrieval progress after st
       return {
         progress: widget?.style.getPropertyValue('--algolia-header-progress'),
         resetting: widget?.hasAttribute('data-algolia-progress-resetting'),
-        transition: header ? getComputedStyle(header, '::before').transitionDuration : '',
       };
     });
-    assert.equal(resetRead.progress, '33%');
-    assert.equal(resetRead.resetting, true);
-    assert.notEqual(resetRead.transition, '0.9s');
-    await page.waitForFunction(
-      () => document.querySelector('algolia-chat')?.style.getPropertyValue('--algolia-header-progress') === '33%'
-    );
+    assert.equal(lateLoadingRead.progress, '100%');
+    assert.equal(lateLoadingRead.resetting, false);
   } finally {
     await page.close();
   }

@@ -81,7 +81,7 @@ test('an explicit visitor request for a configured specialist is mandatory routi
 
 test('multi-part developer-depth architecture questions deterministically route to tech', () => {
   for (const prompt of [systemPrompt, instructions]) {
-    assert.match(prompt, /developer_page_10s_50_scroll/);
+    assert.match(prompt, /developer_page_3s_30_scroll/);
     assert.match(prompt, /multi-part implementation\s+or architecture question/i);
     assert.match(prompt, /at least two/i);
     assert.match(prompt, /must call\s+`ask_specialist` with `specialist_key: "tech"`/i);
@@ -98,4 +98,10 @@ test('thin snippet evidence cannot be expanded into invented business or technic
     assert.match(prompt, /product behavior/i);
     assert.match(prompt, /state the evidence limit/i);
   }
+});
+
+test('orchestrator must search before streaming substantive factual answers', () => {
+  assert.match(instructions, /first assistant action must be\s+a call to `algolia_search_index`/i);
+  assert.match(instructions, /Do not stream answer prose, an analogy canvas,\s+links, recommendations, or a discovery question before the search result/i);
+  assert.match(instructions, /Migration, implementation, comparison, pricing,\s+customer proof, product, API, analytics, personalization, support, and best\s+practice questions are substantive factual turns/i);
 });

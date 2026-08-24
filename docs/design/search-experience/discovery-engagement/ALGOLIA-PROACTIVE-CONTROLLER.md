@@ -43,11 +43,11 @@ The controller evaluates candidates in priority order and selects the highest el
 | Customer proof | `product_to_customer_story` | Current page is a customer story and a prior page was product. | 82 | `surface_relevant_customer_proof` |
 | Customer proof | `solution_to_customer_story` | Current page is a customer story and a prior page was solution/industry. | 81 | `surface_relevant_customer_proof` |
 | Implementation research | `search_to_docs` | Current page is developer/docs and recent site search included implementation terms. | 80 | `answer_implementation_path` |
-| Commercial evaluation | `pricing_8s_dwell` | Current page is pricing/demo/contact after a qualifying source page reached 5 seconds dwell and 25% scroll. | 78 | `explain_cost_drivers` |
-| Implementation research | `developer_page_10s_50_scroll` | Current page is developer/docs with at least 5 seconds dwell and 25% scroll. | 76 | `reduce_implementation_uncertainty` |
-| Customer proof | `solution_to_customer_story` | Current page is a customer story with at least 5 seconds dwell and 25% scroll after a qualifying solution page. | 72 | `surface_relevant_customer_proof` |
-| Product research | `product_page_10s_50_scroll` | Current page is product with at least 5 seconds dwell and 25% scroll. | 66 | `explain_product_fit` |
-| Solution research | `solution_page_10s_50_scroll` | Current page is solution/industry with at least 5 seconds dwell and 25% scroll. | 65 | `explain_solution_fit` |
+| Commercial evaluation | `pricing_8s_dwell` | Current page is pricing/demo/contact after a qualifying source page reached 3 seconds dwell and 30% scroll. | 78 | `explain_cost_drivers` |
+| Implementation research | `developer_page_3s_30_scroll` | Current page is developer/docs with at least 3 seconds dwell and 30% scroll. | 76 | `reduce_implementation_uncertainty` |
+| Customer proof | `solution_to_customer_story` | Current page is a customer story with at least 3 seconds dwell and 30% scroll after a qualifying solution page. | 72 | `surface_relevant_customer_proof` |
+| Product research | `product_page_3s_30_scroll` | Current page is product with at least 3 seconds dwell and 30% scroll. | 66 | `explain_product_fit` |
+| Solution research | `solution_page_3s_30_scroll` | Current page is solution/industry with at least 3 seconds dwell and 30% scroll. | 65 | `explain_solution_fit` |
 | Journey shift | `multiple_product_pages` | Session includes at least two product pages. | 62 | `help_compare_capabilities` |
 | Journey shift | `multiple_solution_pages` | Session includes at least two solution/industry pages. | 61 | `help_compare_solution_paths` |
 
@@ -75,18 +75,18 @@ Defaults:
 {
   "maxOpportunitiesPerSession": 3,
   "cooldownMs": 120000,
-  "productDwellMs": 5000,
-  "productScrollDepth": 25,
-  "solutionDwellMs": 5000,
-  "solutionScrollDepth": 25,
-  "documentationJourneyDwellMs": 5000,
-  "documentationJourneyScrollDepth": 25,
-  "proofJourneyDwellMs": 5000,
-  "proofJourneyScrollDepth": 25,
-  "implementationDwellMs": 5000,
-  "implementationScrollDepth": 25,
-  "resourceDwellMs": 5000,
-  "resourceScrollDepth": 25
+  "productDwellMs": 3000,
+  "productScrollDepth": 30,
+  "solutionDwellMs": 3000,
+  "solutionScrollDepth": 30,
+  "documentationJourneyDwellMs": 3000,
+  "documentationJourneyScrollDepth": 30,
+  "proofJourneyDwellMs": 3000,
+  "proofJourneyScrollDepth": 30,
+  "implementationDwellMs": 3000,
+  "implementationScrollDepth": 30,
+  "resourceDwellMs": 3000,
+  "resourceScrollDepth": 30
 }
 ```
 

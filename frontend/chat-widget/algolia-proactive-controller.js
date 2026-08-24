@@ -52,18 +52,18 @@
     maxOpportunitiesPerSession: 3,
     cooldownMs: 120000,
     opportunityTtlMs: 600000,
-    productDwellMs: 5000,
-    productScrollDepth: 25,
-    solutionDwellMs: 5000,
-    solutionScrollDepth: 25,
-    documentationJourneyDwellMs: 5000,
-    documentationJourneyScrollDepth: 25,
-    proofJourneyDwellMs: 5000,
-    proofJourneyScrollDepth: 25,
-    implementationDwellMs: 5000,
-    implementationScrollDepth: 25,
-    resourceDwellMs: 5000,
-    resourceScrollDepth: 25,
+    productDwellMs: 3000,
+    productScrollDepth: 30,
+    solutionDwellMs: 3000,
+    solutionScrollDepth: 30,
+    documentationJourneyDwellMs: 3000,
+    documentationJourneyScrollDepth: 30,
+    proofJourneyDwellMs: 3000,
+    proofJourneyScrollDepth: 30,
+    implementationDwellMs: 3000,
+    implementationScrollDepth: 30,
+    resourceDwellMs: 3000,
+    resourceScrollDepth: 30,
     compatibilityMode: COMPLETIONS_COMPATIBILITY_MODE,
     cache: false,
     memory: false,
@@ -71,6 +71,8 @@
 
   let config = { ...DEFAULTS };
   let activeConversationRestored = false;
+  let runtimeGeneration = 0;
+  let greetingAbortController = null;
 
   function debug(...args) {
     if (DEBUG) console.log(LABEL, ...args);
@@ -123,6 +125,7 @@
           }
         : null,
       pageCount: pages.length,
+      currentEdge: packet?.session?.currentEdge || null,
       recentEventCount: recentEvents(packet).length,
       productTrail: uniqueProductTrail(pages).map((item) => item.label),
       solutionTrail: uniqueSolutionTrail(pages).map((item) => item.label),
@@ -140,6 +143,8 @@
       pagePath: decision.pagePath,
       reasonCodes: decision.reasonCodes,
       opportunityId: decision.opportunityId,
+      edgeId: decision.edgeId,
+      navigationType: decision.navigationType,
     };
   }
 
@@ -152,6 +157,14 @@
       productScrollDepth: config.productScrollDepth,
       solutionDwellMs: config.solutionDwellMs,
       solutionScrollDepth: config.solutionScrollDepth,
+      documentationJourneyDwellMs: config.documentationJourneyDwellMs,
+      documentationJourneyScrollDepth: config.documentationJourneyScrollDepth,
+      proofJourneyDwellMs: config.proofJourneyDwellMs,
+      proofJourneyScrollDepth: config.proofJourneyScrollDepth,
+      implementationDwellMs: config.implementationDwellMs,
+      implementationScrollDepth: config.implementationScrollDepth,
+      resourceDwellMs: config.resourceDwellMs,
+      resourceScrollDepth: config.resourceScrollDepth,
       hasAppId: !!config.appId,
       hasApiKey: !!(config.apiKey || config.searchKey),
       hasGreetingsAgentId: !!(config.greetingsAgentId || config.greetingAgentId),
@@ -491,8 +504,81 @@
     return `https://${appId}.algolia.net/agent-studio/1/agents/${agentId}/completions?${params.toString()}`;
   }
 
-  function priorPage(pages, predicate) {
-    return [...pages].slice(0, -1).reverse().find(predicate) || null;
+  function canonicalPath(path) {
+    const clean = String(path || "/").split(/[?#]/)[0].replace(/\/+$/, "");
+    return clean || "/";
+  }
+
+  function opportunityEdge(item) {
+    const packetEdge = item?.requestPacket?.currentNavigationEdge ||
+      item?.requestPacket?.session?.currentEdge || {};
+    return {
+      edgeId: item?.edgeId || packetEdge.edgeId || null,
+      sourcePageId: item?.sourcePageId || packetEdge.sourcePageId || null,
+      sourcePath: item?.sourcePath || packetEdge.sourcePath || null,
+      destinationPageId: item?.destinationPageId || packetEdge.destinationPageId || item?.pageId || null,
+      destinationPath: item?.destinationPath || packetEdge.destinationPath || item?.pagePath || null,
+    };
+  }
+
+  function opportunityMatchesDecision(item, decision) {
+    if (!item || !decision || item.trigger !== decision.trigger) return false;
+    if (!isJourneyTransition(decision)) {
+      return canonicalPath(item.pagePath) === canonicalPath(decision.pagePath);
+    }
+    if (item.dedupeKey) return item.dedupeKey === decision.dedupeKey;
+
+    const edge = opportunityEdge(item);
+    if (edge.edgeId) return edge.edgeId === decision.edgeId;
+    if (edge.sourcePageId && edge.destinationPageId) {
+      return edge.sourcePageId === decision.sourcePageId &&
+        edge.destinationPageId === decision.destinationPageId;
+    }
+    if (edge.sourcePath && edge.destinationPath) {
+      return canonicalPath(edge.sourcePath) === canonicalPath(decision.sourcePath) &&
+        canonicalPath(edge.destinationPath) === canonicalPath(decision.destinationPath);
+    }
+
+    // Pre-edge controller state only retained the destination in pagePath.
+    return canonicalPath(item.pagePath) === canonicalPath(decision.destinationPath);
+  }
+
+  function currentNavigationEdge(packet) {
+    const page = currentPage(packet);
+    const pages = sessionPages(packet);
+    const currentIndex = pages.findIndex((item) => item?.pageId === page?.pageId);
+    const immediateSource = currentIndex > 0 ? pages[currentIndex - 1] : null;
+    const explicit = packet?.session?.currentEdge;
+    const sourcePageId = explicit?.sourcePageId || page?.sourcePageId || immediateSource?.pageId || null;
+    const sourcePath = explicit?.sourcePath || page?.sourcePath || immediateSource?.path || null;
+    const destinationPageId = explicit?.destinationPageId || page?.destinationPageId || page?.pageId || null;
+    const destinationPath = explicit?.destinationPath || page?.destinationPath || page?.path || location.pathname;
+    const navigationType = explicit?.navigationType || page?.navigationType || (immediateSource ? "navigate" : "initial");
+    const edgeId = explicit?.edgeId || page?.edgeId ||
+      (sourcePageId && destinationPageId ? `${sourcePageId}->${destinationPageId}` : null);
+    const isImmediate = explicit?.isImmediate === false
+      ? false
+      : !!immediateSource &&
+        sourcePageId === immediateSource.pageId &&
+        destinationPageId === page?.pageId &&
+        (!sourcePath || canonicalPath(sourcePath) === canonicalPath(immediateSource.path));
+    return {
+      navigationType,
+      sourcePageId,
+      sourcePath,
+      destinationPageId,
+      destinationPath,
+      edgeId,
+      isImmediate,
+      sourcePage: isImmediate ? immediateSource : null,
+    };
+  }
+
+  function qualifyingTransitionSource(packet) {
+    const edge = currentNavigationEdge(packet);
+    if (!edge.isImmediate || !edge.edgeId) return null;
+    if (!["navigate", "spa_push"].includes(edge.navigationType)) return null;
+    return edge.sourcePage;
   }
 
   function visibleOpportunities(state) {
@@ -608,11 +694,10 @@
     if (currentFocus) return currentFocus;
     const currentSolutionFocus = solutionFocus(page);
     if (currentSolutionFocus) return currentSolutionFocus;
-    const priorProduct = priorPage(sessionPages(packet), isProduct);
-    const priorFocus = productFocus(priorProduct);
+    const immediateSource = currentNavigationEdge(packet).sourcePage;
+    const priorFocus = productFocus(immediateSource);
     if (priorFocus) return { ...priorFocus, source: "prior_product_page" };
-    const priorSolution = priorPage(sessionPages(packet), isSolution);
-    const priorSolutionFocus = solutionFocus(priorSolution);
+    const priorSolutionFocus = solutionFocus(immediateSource);
     return priorSolutionFocus ? { ...priorSolutionFocus, source: "prior_solution_page" } : null;
   }
 
@@ -663,50 +748,88 @@
     return `${values.slice(0, -1).join(", ")}, and ${values.at(-1)}`;
   }
 
-  function journeySummaryFor(packet, fields) {
+  function journeyPageContext(page) {
+    if (!page) return null;
+    const label = String(
+      page.productFocusLabel ||
+      page.solutionFocusLabel ||
+      page.title ||
+      cleanFocusLabel(page.path)
+    ).trim();
+    return {
+      pageId: page.pageId || null,
+      path: page.path || null,
+      title: page.title || null,
+      pageGroup: page.pageGroup || null,
+      topic: page.topic || null,
+      productFocus: page.productFocus || null,
+      productFocusLabel: page.productFocusLabel || null,
+      solutionFocus: page.solutionFocus || null,
+      solutionFocusLabel: page.solutionFocusLabel || null,
+      label: label || null,
+    };
+  }
+
+  function journeyContextFor(packet, fields) {
     const pages = sessionPages(packet);
     const productTrail = uniqueProductTrail(pages);
     const solutionTrail = uniqueSolutionTrail(pages);
     const currentTransition = fields.trigger || null;
-    let storyHint = "";
+    const edge = currentNavigationEdge(packet);
+    const transition = String(currentTransition).includes("_to_");
+    const pageTrail = pages
+      .map((item) => journeyPageContext(item))
+      .filter(Boolean)
+      .slice(-6);
+    let journeyNarrativeHint = "";
     const productList = humanList(productTrail);
     const solutionList = humanList(solutionTrail);
 
     if (currentTransition === "product_to_pricing" && productTrail.length > 1) {
-      storyHint = `The visitor explored ${productList} before pricing; frame this as a cost/value question across those capabilities.`;
+      journeyNarrativeHint = `The visitor explored ${productList} before pricing; frame this as a cost/value question across those capabilities.`;
     } else if (currentTransition === "product_to_pricing" && productTrail.length === 1) {
-      storyHint = `The visitor moved from ${productList} into pricing; frame this as a ${productList} cost/value question.`;
-    } else if (fields.trigger === "product_to_documentation" && productTrail.length) {
-      storyHint = `The visitor moved from ${productList} into documentation; frame this as technical validation of that product interest.`;
+      journeyNarrativeHint = `The visitor moved from ${productList} into pricing; frame this as a ${productList} cost/value question.`;
+    } else if (currentTransition === "product_to_documentation" && productTrail.length) {
+      journeyNarrativeHint = `The visitor moved from ${productList} into documentation; frame this as technical validation of that product interest.`;
     } else if (currentTransition === "solution_to_pricing" && solutionTrail.length > 1) {
-      storyHint = `The visitor explored ${solutionList} before pricing; frame this as a commercial evaluation across those solution areas.`;
+      journeyNarrativeHint = `The visitor explored ${solutionList} before pricing; frame this as a commercial evaluation across those solution areas.`;
     } else if (currentTransition === "solution_to_pricing" && solutionTrail.length === 1) {
-      storyHint = `The visitor moved from ${solutionList} into pricing; frame this as a ${solutionList} value and cost question.`;
-    } else if (fields.trigger === "solution_to_customer_story" && solutionTrail.length) {
-      storyHint = `The visitor moved from ${solutionList} to customer proof; connect proof back to that solution interest.`;
+      journeyNarrativeHint = `The visitor moved from ${solutionList} into pricing; frame this as a ${solutionList} value and cost question.`;
+    } else if (currentTransition === "solution_to_customer_story" && solutionTrail.length) {
+      journeyNarrativeHint = `The visitor moved from ${solutionList} to customer proof; connect proof back to that solution interest.`;
     }
 
     return {
       currentTransition,
-      productTrail,
-      solutionTrail,
-      pageTrail: pages
-        .map((item) => ({
-          path: item.path,
-          title: item.title,
-          pageGroup: item.pageGroup,
-          topic: item.topic,
-          productFocusLabel: item.productFocusLabel,
-          solutionFocusLabel: item.solutionFocusLabel,
-        }))
-        .slice(-6),
-      storyHint,
+      origin: transition ? journeyPageContext(edge.sourcePage) : null,
+      destination: journeyPageContext(currentPage(packet)),
+      currentNavigationEdge: {
+        navigationType: edge.navigationType,
+        sourcePageId: edge.sourcePageId,
+        sourcePath: edge.sourcePath,
+        destinationPageId: edge.destinationPageId,
+        destinationPath: edge.destinationPath,
+        edgeId: edge.edgeId,
+        isImmediate: edge.isImmediate,
+      },
+      broaderJourney: {
+        productTrail,
+        solutionTrail,
+        pageTrail,
+      },
+      journeyNarrativeHint,
     };
   }
 
   function baseDecision(packet, fields) {
     const page = currentPage(packet);
     const events = recentEvents(packet);
+    const edge = currentNavigationEdge(packet);
+    const transition = String(fields.trigger || "").includes("_to_");
+    const dedupeKey = transition
+      ? `${edge.edgeId || "missing-edge"}:${fields.trigger}`
+      : `${canonicalPath(page.path || location.pathname)}:${fields.trigger}`;
+    const journeyContext = journeyContextFor(packet, fields);
     return {
       schema: SCHEMA,
       engage: true,
@@ -714,6 +837,13 @@
       pageId: page.pageId || null,
       pagePath: page.path || location.pathname,
       source: "browser_deterministic",
+      edgeId: transition ? edge.edgeId : null,
+      navigationType: edge.navigationType,
+      sourcePageId: transition ? edge.sourcePageId : null,
+      sourcePath: transition ? edge.sourcePath : null,
+      destinationPageId: transition ? edge.destinationPageId : page.pageId || null,
+      destinationPath: transition ? edge.destinationPath : page.path || location.pathname,
+      dedupeKey,
       reasonCodes: [],
       agentPromptPacket: {
         schema: GREETING_REQUEST_SCHEMA,
@@ -722,8 +852,9 @@
         priority: fields.priority,
         persona: packet?.profile?.persona || null,
         currentPage: page,
+        currentNavigationEdge: edge,
         contextualFocus: contextualFocusFor(packet),
-        journeySummary: journeySummaryFor(packet, fields),
+        journeyContext,
         journey: sessionPages(packet).map((item) => ({
           path: item.path,
           title: item.title,
@@ -735,6 +866,12 @@
           solutionFocusLabel: item.solutionFocusLabel,
           dwellMs: item.dwellMs,
           maxScrollDepth: item.maxScrollDepth,
+          navigationType: item.navigationType,
+          sourcePageId: item.sourcePageId,
+          sourcePath: item.sourcePath,
+          destinationPageId: item.destinationPageId,
+          destinationPath: item.destinationPath,
+          edgeId: item.edgeId,
         })),
         observedSignals: events.map((event) => ({
           name: event.name,
@@ -768,22 +905,17 @@
 
   function candidates(packet) {
     const page = currentPage(packet);
-    const pages = sessionPages(packet);
     const result = [];
-    const previousProduct = priorPage(
-      pages,
-      (item) => isProduct(item) && qualifies(item, config.productDwellMs, config.productScrollDepth)
-    );
-    const previousSolution = priorPage(
-      pages,
-      (item) => isSolution(item) && qualifies(item, config.solutionDwellMs, config.solutionScrollDepth)
-    );
-    const previousPricingSource = priorPage(
-      pages,
-      (item) =>
-        (isProduct(item) && qualifies(item, config.productDwellMs, config.productScrollDepth)) ||
-        (isSolution(item) && qualifies(item, config.solutionDwellMs, config.solutionScrollDepth))
-    );
+    const transitionSource = qualifyingTransitionSource(packet);
+    const previousProduct = transitionSource && isProduct(transitionSource) &&
+      qualifies(transitionSource, config.productDwellMs, config.productScrollDepth)
+      ? transitionSource
+      : null;
+    const previousSolution = transitionSource && isSolution(transitionSource) &&
+      qualifies(transitionSource, config.solutionDwellMs, config.solutionScrollDepth)
+      ? transitionSource
+      : null;
+    const previousPricingSource = previousProduct || previousSolution;
 
     if (isPricing(page) && previousPricingSource) {
       const fromProduct = isProduct(previousPricingSource);
@@ -851,7 +983,7 @@
         withReasons(
           baseDecision(packet, {
             moment: "implementation_research",
-            trigger: "developer_page_10s_50_scroll",
+            trigger: "developer_page_3s_30_scroll",
             priority: 76,
             messageGoal: "reduce_implementation_uncertainty",
           }),
@@ -868,7 +1000,7 @@
         withReasons(
           baseDecision(packet, {
             moment: "resource_research",
-            trigger: "resource_page_10s_50_scroll",
+            trigger: "resource_page_3s_30_scroll",
             priority: 75,
             messageGoal: "connect_resource_insight_to_next_step",
           }),
@@ -886,7 +1018,7 @@
         withReasons(
           baseDecision(packet, {
             moment: "product_research",
-            trigger: "product_page_10s_50_scroll",
+            trigger: "product_page_3s_30_scroll",
             priority: 66,
             messageGoal: "explain_product_fit",
           }),
@@ -904,7 +1036,7 @@
         withReasons(
           baseDecision(packet, {
             moment: "solution_research",
-            trigger: "solution_page_10s_50_scroll",
+            trigger: "solution_page_3s_30_scroll",
             priority: 65,
             messageGoal: "explain_solution_fit",
           }),
@@ -921,15 +1053,17 @@
     if (!packet) return "missing_context_packet";
     if (!decision) return "no_trigger_match";
     if (conversationIsActive()) return "conversation_already_active";
-    const canReplaceOpenGreeting =
+    const canReplaceUnansweredGreeting =
       isJourneyTransition(decision) && canSupersedeRecentOpportunity(state, decision);
-    if (chatIsOpen(recentEvents(packet)) && !canReplaceOpenGreeting) return "chat_already_open";
+    if (chatIsOpen(recentEvents(packet)) && !canReplaceUnansweredGreeting) {
+      return "chat_already_open";
+    }
     if (document.hidden) return "page_hidden";
     const widget = document.querySelector("algolia-chat");
     if (widget && widget.autoEngage === false) return "auto_engage_disabled";
     if (
       visibleOpportunities(state).length >= config.maxOpportunitiesPerSession &&
-      !canSupersedeRecentOpportunity(state, decision)
+      !canReplaceUnansweredGreeting
     ) {
       return "session_cap_reached";
     }
@@ -941,13 +1075,15 @@
     ) {
       return "cooldown_active";
     }
-    const duplicate = state.opportunities.some(
-      (item) =>
-        item.pageId === decision.pageId &&
-        item.moment === decision.moment &&
-        !["failed", "expired", "superseded"].includes(item.status)
-    );
-    if (duplicate) return "already_eligible_for_page_moment";
+    const duplicate = state.opportunities.some((item) => {
+      if (["failed", "expired", "superseded"].includes(item.status)) return false;
+      return opportunityMatchesDecision(item, decision);
+    });
+    if (duplicate) {
+      return isJourneyTransition(decision)
+        ? "already_eligible_for_edge_trigger"
+        : "already_eligible_for_path_trigger";
+    }
     return null;
   }
 
@@ -1048,10 +1184,7 @@
     }
 
     const retryable = state.opportunities.find(
-      (item) =>
-        item.pageId === decision.pageId &&
-        item.moment === decision.moment &&
-        item.status === "failed"
+      (item) => item.status === "failed" && opportunityMatchesDecision(item, decision)
     );
     const opportunityId = retryable?.id ||
       `opp_${Date.now().toString(16)}_${Math.random().toString(16).slice(2, 8)}`;
@@ -1077,6 +1210,13 @@
       priority: decision.priority,
       messageGoal: decision.messageGoal,
       reasonCodes: decision.reasonCodes,
+      edgeId: decision.edgeId,
+      navigationType: decision.navigationType,
+      sourcePageId: decision.sourcePageId,
+      sourcePath: decision.sourcePath,
+      destinationPageId: decision.destinationPageId,
+      destinationPath: decision.destinationPath,
+      dedupeKey: decision.dedupeKey,
       createdAt: Date.now(),
       requestPacket,
     };
@@ -1248,6 +1388,7 @@
   }
 
   async function requestGreeting(decision) {
+    const requestGeneration = runtimeGeneration;
     const { appId, apiKey, greetingsAgentId, sources } = credentials();
     trace("credentials_checked", {
       hasAppId: !!appId,
@@ -1299,8 +1440,10 @@
       ],
     };
 
+    const abortController = typeof AbortController === "function" ? new AbortController() : null;
+    greetingAbortController = abortController;
     try {
-      const response = await fetch(agentCompletionUrl(greetingsAgentId, appId), {
+      const requestOptions = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1308,7 +1451,10 @@
           "X-Algolia-API-Key": apiKey,
         },
         body: JSON.stringify(body),
-      });
+      };
+      if (abortController) requestOptions.signal = abortController.signal;
+      const response = await fetch(agentCompletionUrl(greetingsAgentId, appId), requestOptions);
+      if (requestGeneration !== runtimeGeneration || abortController?.signal.aborted) return false;
       trace("greeting_response_http", {
         opportunityId: decision.opportunityId,
         ok: !!response.ok,
@@ -1322,7 +1468,9 @@
         return false;
       }
 
-      const parsed = extractJsonObject(await response.text());
+      const responseText = await response.text();
+      if (requestGeneration !== runtimeGeneration || abortController?.signal.aborted) return false;
+      const parsed = extractJsonObject(responseText);
       trace("greeting_response_parsed", {
         opportunityId: decision.opportunityId,
         schema: parsed?.schema,
@@ -1366,6 +1514,13 @@
 
       return renderGreeting(normalized.response, decision);
     } catch (error) {
+      if (
+        requestGeneration !== runtimeGeneration ||
+        abortController?.signal.aborted ||
+        error?.name === "AbortError"
+      ) {
+        return false;
+      }
       updateOpportunity(decision.opportunityId, {
         status: "failed",
         failureReason: error instanceof Error ? error.message : String(error),
@@ -1375,7 +1530,21 @@
         error: error instanceof Error ? error.message : String(error),
       });
       return false;
+    } finally {
+      if (greetingAbortController === abortController) greetingAbortController = null;
     }
+  }
+
+  function resetRuntimeState(event) {
+    runtimeGeneration += 1;
+    activeConversationRestored = false;
+    greetingAbortController?.abort?.();
+    greetingAbortController = null;
+    trace("controller_runtime_reset", {
+      resetId: event?.detail?.resetId || null,
+      source: event?.detail?.source || "visitor_state_reset",
+      runtimeGeneration,
+    });
   }
 
   async function handleSignal(event) {
@@ -1470,6 +1639,7 @@
     const previous = root.ALGOLIA_PROACTIVE_CONFIG;
     if (previous && typeof previous === "object") configure(previous);
     document.addEventListener("algolia-engagement-signal", handleSignal);
+    document.addEventListener("algolia-visitor-state-reset", resetRuntimeState);
     document.addEventListener("algolia-chat-engagement-dismissed", dismissShownOpportunity);
     document.addEventListener("algolia-chat-open-change", (event) => {
       if (event?.detail?.open === false) dismissShownOpportunity(event);

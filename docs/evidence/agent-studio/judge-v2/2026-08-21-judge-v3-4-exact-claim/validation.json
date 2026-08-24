@@ -1,0 +1,10 @@
+{
+  "exactRoles": [
+    "skeptic",
+    "referee",
+    "advocate"
+  ],
+  "distinctIds": true,
+  "allPublished": true,
+  "pass": true
+}

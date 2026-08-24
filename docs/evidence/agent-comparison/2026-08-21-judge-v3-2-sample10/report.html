@@ -1,0 +1,454 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agent comparison</title><style>
+  :root{font-family:Inter,Arial,sans-serif;color:#23263b;background:#f7f7fb}body{margin:0;padding:24px}main{max-width:1440px;margin:auto}h1{font-size:24px;margin:0 0 6px}.meta{color:#62677f;margin:0 0 20px}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #d9dbea;table-layout:fixed}th,td{vertical-align:top;text-align:left;border:1px solid #d9dbea;padding:16px}thead th{background:#eef0fa;font-size:14px}tbody th{width:28%;font-size:14px;line-height:1.45}tbody th span{display:block;color:#70758d;font-size:12px;margin-bottom:5px}.score{font-size:24px;font-weight:700;color:#003dff}.status{text-transform:capitalize;color:#555b74;font-size:12px;margin:2px 0 12px}dl{display:grid;grid-template-columns:1fr auto;gap:5px 14px;margin:0;font-size:13px}dt,dd{margin:0}.judges{font-size:12px;color:#555b74;line-height:1.5}.error{color:#b42318;font-size:12px}.answer{white-space:pre-wrap;font-size:13px;line-height:1.5;margin-top:10px}summary{cursor:pointer;font-weight:600;font-size:13px}@media(max-width:760px){body{padding:10px}table,thead,tbody,tr,th,td{display:block}thead{display:none}tbody th{width:auto;background:#eef0fa}td{border-top:0}}
+  </style></head><body><main><h1>Flagship vs. production</h1><p class="meta">2026-08-21T04:54:53.823Z | Flagship 6.8/10 (10/10) | Production 5.9/10 (9/10)</p><table><thead><tr><th>Question</th><th>Flagship</th><th>Production</th></tr></thead><tbody><tr><th scope="row"><span>1</span>What counts as an API call - keystrokes, filters applied, or page loads - and does that change how I should configure rate limiting to control cost?</th><td><div class="score">9.9/10</div>
+    <div class="status">grounded</div>
+    <dl><dt>Grounding</dt><dd>10/10</dd><dt>Completeness</dt><dd>10/10</dd><dt>Depth</dt><dd>9.7/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 9.7/10 | referee 10/10 | advocate 10/10</p>
+    <details><summary>Answer</summary><div class="answer">API calls are like door swings at a very busy store: one customer entering is harmless, but autocomplete, filters, page loads, and eager bots can turn that door into a blur. The trick is not to stop the door from moving, but to make sure every swing is intentional.
+
+Short version: yes, every single request sent to an Algolia index counts as one billable search operation, regardless of whether the query is empty, a full string, or a set of filters.
+
+### What counts as a request
+In Algolia, a &quot;request&quot; is any time your frontend or backend asks the engine for data. This includes:
+*   **Keystrokes:** In a search-as-you-type implementation (like [InstantSearch](https://www.algolia.com/doc/guides/getting-started/quick-start/tutorials/account-metrics-with-the-dashboard/#usage-activity)), a new request is typically sent with every character the user types.
+*   **Filters &amp; Pagination:** Every time a user applies a facet filter or clicks to the next page of results (changing the `offset`), a new query is sent to retrieve the updated set of records.
+*   **Page Loads:** If your site displays default results when a user lands on a category page, that is an &quot;empty search&quot; request and it is billable.
+*   **Query Suggestions:** Requests to a [Query Suggestions index](https://support.algolia.com/hc/en-us/articles/10291951587473-Do-Query-Suggestions-increase-the-number-of-billable-requests) are billed as standard search requests.
+
+### How this affects cost and rate limiting
+Because the volume of requests is driven by your frontend implementation, you have several levers to control costs:
+
+1.  **Frontend Optimization:** You can reduce requests by triggering a search only after a minimum number of characters are entered. While this saves money, be careful not to make the search feel &quot;laggy&quot; to the user.
+2.  **Request Bundling:** Use `multipleQueries` to retrieve both search hits and query suggestions in a single billable operation rather than two separate calls.
+3.  **API Key Rate Limiting:** To protect against bot spikes that can cause massive overage charges, you can create a dedicated [Search API Key with rate limits](https://support.algolia.com/hc/en-us/articles/15434270755985-Why-is-it-important-to-create-a-rate-limited-API-Key) (e.g., limiting queries per hour per IP).
+    *   *Recommendation:* Start with a high limit to avoid blocking real users and gradually tighten it based on your [API Monitoring logs](https://support.algolia.com/hc/en-us/articles/26829082868113-What-does-the-Count-metric-mean-in-the-Top-rate-limited-IPs-section).
+
+If you are using a backend search implementation, remember that Algolia sees all traffic coming from your server&#39;s single IP, so standard API key restrictions won&#39;t work—you&#39;ll need to handle rate limiting at your own server or WAF level.
+
+Are you seeing unexpected spikes in your current usage, or are you architecting a new implementation from scratch?</div></details></td><td><div class="score">9.8/10</div>
+    <div class="status">grounded</div>
+    <dl><dt>Grounding</dt><dd>10/10</dd><dt>Completeness</dt><dd>10/10</dd><dt>Depth</dt><dd>9.3/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 9.7/10 | referee 10/10 | advocate 9.7/10</p>
+    <details><summary>Answer</summary><div class="answer">Let me search for more specific information about what constitutes an API call and billing.Based on the documentation, **each search query counts as one API call for billing purposes**—not individual keystrokes or page loads alone, but specific search requests sent to Algolia.
+
+Here&#39;s what triggers a query:
+
+- **Filter applications** – When a user applies or modifies filters (e.g., selecting a category or price range), a new query is sent with those filter parameters
+- **Pagination** – Moving to the next page of results sends a new query with an updated offset value
+- **Search-as-you-type** – Each keystroke typically triggers a query (this is why typing can be high-volume)
+- **Browse requests** – Category pages with pre-applied filters generate queries on page load
+
+**What does NOT count as separate calls:**
+- Multiple page navigations with the same filters and user token (these are aggregated into one &quot;search session&quot; in analytics)
+
+## Rate Limiting &amp; Cost Control
+
+Your rate-limiting strategy depends on your architecture:
+
+**Frontend implementations** (browser-based search):
+- Use Algolia&#39;s API key restrictions with `maxQueriesPerIPPerHour` limits
+- This is effective because each user has a distinct IP
+- Rate limits prevent abuse without impacting legitimate traffic
+
+**Backend implementations** (server-side search):
+- API key restrictions are **not effective** because all traffic comes from your server&#39;s single IP
+- You must implement rate limiting at your server level or via infrastructure tools (Cloudflare, AWS WAF, etc.)
+- Custom middleware can enforce per-user or per-session limits
+
+Are you building search on a frontend, backend, or hybrid architecture? That will determine the most cost-effective rate-limiting approach for your use case.</div></details></td></tr>
+<tr><th scope="row"><span>2</span>Is Algolia headless and API-first enough to bolt onto my existing ERP/PIM/CMS stack, and how much dev effort should I expect for a full implementation?</th><td><div class="score">9.7/10</div>
+    <div class="status">needs_review</div>
+    <dl><dt>Grounding</dt><dd>9.3/10</dd><dt>Completeness</dt><dd>10/10</dd><dt>Depth</dt><dd>9/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 9.7/10 | referee 9.7/10 | advocate 9.7/10</p>
+    <details><summary>Answer</summary><div class="answer">Trying to bolt a new search layer onto an existing ERP, PIM, or CMS stack is like adding a high-performance GPS to a vintage car; you don&#39;t need to rebuild the engine, you just need a clean way to feed the coordinates into the new system.
+
+Short answer: Yes. Algolia is designed specifically as a headless, API-first search and discovery layer. It doesn&#39;t care where your &quot;source of truth&quot; lives—whether it&#39;s a legacy ERP, a modern PIM, or a CMS—as long as you can push that data to Algolia via API.
+
+### How it works (The Mechanism)
+Algolia acts as a decoupled search index. Instead of querying your ERP or CMS in real-time (which is usually slow and prone to crashing under load), you sync your data into Algolia&#39;s indices. Your frontend then queries Algolia directly using [API clients](https://www.algolia.com/doc/libraries/csharp/v6/initialize) (available for almost every major language), ensuring millisecond response times regardless of how heavy your backend is.
+
+### Implementation Reality
+Depending on your stack, the effort varies:
+*   **The &quot;Quick Win&quot;:** For many, a fully functional search experience can be live in **1 to 10 days**.
+*   **The &quot;Deep Dive&quot;:** More complex architectures—where data needs heavy transformation or multi-system orchestration—can take a few weeks.
+*   **The Heavy Lifting:** Because Algolia handles the backend infrastructure, most of your development effort isn&#39;t spent on &quot;making it work,&quot; but on [planning your implementation](https://www.algolia.com/doc/guides/sending-events/guides/plan) and refining the User Experience.
+
+**Concrete Example:** If you use a system like Magnolia CMS, you can feed the Algolia index through pre-defined data triggers during publication events, ensuring your search results update as soon as your content does.
+
+### Recommendation
+Don&#39;t try to sync every single field from your PIM/ERP. The secret to a fast implementation is **selective indexing**: only push the attributes that users actually need to search, filter, or see in the results. This keeps your data clean and your dev effort low.
+
+Since you&#39;re looking at bolting this onto a multi-system stack, are you planning to use a middleware layer to orchestrate the data sync, or are you looking for a direct integration from each source?</div></details></td><td><div class="score">3/10</div>
+    <div class="status">unsupported</div>
+    <dl><dt>Grounding</dt><dd>3/10</dd><dt>Completeness</dt><dd>6/10</dd><dt>Depth</dt><dd>4/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 6.7/10 | referee 6.7/10</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll search for information about Algolia&#39;s architecture, integrations, and implementation patterns to give you a grounded answer.Let me search more specifically for SDK/integration details and implementation guidance.Let me search for data ingestion and connectors to understand how you&#39;d connect ERP/PIM/CMS systems.Based on the content I&#39;ve retrieved, here&#39;s what you need to know:
+
+## Yes—Algolia is fully headless and API-first.
+
+**Architecture fit:** Algolia is built as a pure **API-first platform** designed to integrate into existing tech stacks. You control:
+- Data ingestion (how data flows from your ERP/PIM/CMS to Algolia)
+- Search and ranking logic
+- Query flows and response handling
+- Frontend implementation
+
+This means you&#39;re not replacing your core systems—you&#39;re adding Algolia as a dedicated search and discovery layer that sits independently.
+
+## Implementation effort depends on your data pipeline.
+
+**Key variables:**
+
+1. **Data integration** (typically the largest effort):
+   - How frequently does your ERP/PIM/CMS emit product data?
+   - What format (JSON APIs, database exports, webhooks)?
+   - Do you need real-time sync or batch indexing?
+
+   You have multiple options:
+   - Direct API calls using Algolia&#39;s REST API or client libraries (JavaScript, Python, Go, Java, PHP, etc.)
+   - Batch indexing for periodic syncs from databases
+   - Webhook-based incremental updates
+
+2. **Frontend implementation** (typically 2-6 weeks for a standard search experience):
+   - Algolia provides SDKs and libraries for React, Vue, Angular, vanilla JS
+   - Ready-to-use UI components via InstantSearch
+   - Alternatively, you can build directly against the REST API
+
+3. **Configuration &amp; tuning** (2-4 weeks):
+   - Index structure and field mapping
+   - Ranking rules and relevance settings
+   - Faceting and filtering logic
+
+## Strategic next steps:
+
+Before committing to a timeline, I&#39;d recommend clarifying your current data flow. **What&#39;s your primary data source—ERP, PIM, or CMS—and how frequently does it update your product catalog?** This determines whether you need real-time sync or scheduled batches, which has the biggest impact on dev effort and complexity.</div></details></td></tr>
+<tr><th scope="row"><span>3</span>How does Neural Search handle synonyms and concepts, and would I still need a manual synonym dictionary?</th><td><div class="score">3/10</div>
+    <div class="status">unsupported</div>
+    <dl><dt>Grounding</dt><dd>4/10</dd><dt>Completeness</dt><dd>7/10</dd><dt>Depth</dt><dd>6/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 7.7/10 | referee 7.7/10 | advocate 7.7/10</p>
+    <details><summary>Answer</summary><div class="answer">Maintaining a manual synonym list is like trying to map every single slang word in a city&#39;s dialect by hand—you&#39;ll eventually miss something, and the effort is exhausting.
+
+The short version is: [NeuralSearch](https://www.algolia.com/doc/guides/getting-started/neuralsearch) drastically reduces your reliance on manual synonym dictionaries because it understands concepts, not just keywords.
+
+### How it works
+NeuralSearch shifts search from &quot;does this word appear in the text&quot; to &quot;does this result match the concept of the query.&quot; It achieves this by combining two distinct scores:
+*   **Keyword Score:** The traditional precision match.
+*   **Semantic Score:** A vector-based score that recognizes the intent and meaning behind a query.
+
+Because it uses an association-based AI model trained on your own click and conversion events, it can identify that &quot;winter coat&quot; and &quot;heavy parka&quot; are conceptually the same thing even if those exact words never appear in the same record.
+
+### Do you still need a manual dictionary?
+While NeuralSearch handles the &quot;heavy lifting&quot; of conceptual associations, a manual synonym dictionary is still useful for a few specific edge cases:
+*   **Strict Brand Rules:** If &quot;Summer Collection&quot; must *always* trigger &quot;Beachwear&quot; regardless of AI associations.
+*   **Hyper-Specific Industry Jargon:** When your business uses internal codes or niche terminology that doesn&#39;t appear in broader training data.
+*   **Immediate Control:** Manual synonyms provide an instant fix, whereas AI models evolve based on data patterns.
+
+**The Recommendation:** Activate [NeuralSearch](https://support.algolia.com/hc/en-us/articles/17700562878481-How-does-NeuralSearch-rank-results) first to automate your conceptual matching. Only return to your manual synonym list to refine &quot;power-user&quot; terms or critical business mappings that require 100% predictability.
+
+Are you currently spending more time managing your synonym lists or troubleshooting &quot;no results found&quot; queries?</div></details></td><td><div class="score">3/10</div>
+    <div class="status">unsupported</div>
+    <dl><dt>Grounding</dt><dd>3/10</dd><dt>Completeness</dt><dd>5.7/10</dd><dt>Depth</dt><dd>3.3/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 6.3/10 | referee 6.7/10 | advocate 6/10</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll search for information about how Neural Search handles synonyms and concepts.Let me search more specifically for Neural Search technical documentation and how it handles semantic understanding.Based on the search results, Neural Search is designed to understand customer intent and meaning—not just keywords. Here&#39;s what this means for your synonym strategy:
+
+**How Neural Search Handles Meaning:**
+Neural Search uses neural networks to understand semantic relationships and customer intent, which means it naturally grasps conceptually related terms without requiring you to explicitly define them. Unlike traditional keyword-based search, it can recognize that &quot;running shoes&quot; and &quot;athletic footwear&quot; refer to the same concept, even if you haven&#39;t manually created that connection.
+
+**Do You Still Need a Manual Synonym Dictionary?**
+The short answer: it depends on your use case and performance requirements.
+
+Neural Search reduces the *need* for manual synonym management by handling semantic understanding automatically. However, manual synonyms can still provide value in specific scenarios:
+
+- **Domain-specific terminology** where standard semantic understanding might miss industry jargon or proprietary concepts your customers use
+- **Business logic control** where you want to guarantee certain term relationships are honored (e.g., ensuring &quot;CEO&quot; always matches &quot;Chief Executive Officer&quot;)
+- **Edge cases** where you want explicit control over result behavior
+
+The key insight from Neural Search is that it **complements** rather than eliminates traditional synonym dictionaries. You get semantic understanding &quot;for free,&quot; and can layer on manual synonyms strategically where business logic demands it.
+
+Are you looking to migrate an existing synonym dictionary to Neural Search, or are you starting fresh with a new search implementation?</div></details></td></tr>
+<tr><th scope="row"><span>4</span>What&#39;s the best practice for out-of-stock items in results, and should that change whether I use one combined index or multiple?</th><td><div class="score">9.8/10</div>
+    <div class="status">grounded</div>
+    <dl><dt>Grounding</dt><dd>10/10</dd><dt>Completeness</dt><dd>10/10</dd><dt>Depth</dt><dd>9.3/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 9.7/10 | referee 10/10 | advocate 9.7/10</p>
+    <details><summary>Answer</summary><div class="answer">Imagine your search results as a high-end storefront. You wouldn&#39;t put a &quot;Sold Out&quot; sign on the biggest mannequin in the window—you&#39;d move it to the back of the store so the shoppers can see what they can actually buy first.
+
+The best practice for out-of-stock items is to **keep them indexed but push them to the bottom** of the results. This prevents &quot;dead ends&quot; where a user searches for a specific product and sees nothing, while ensuring that available inventory always takes center stage.
+
+### How to implement this in Algolia
+
+You have three primary paths depending on how aggressive you want to be:
+
+1.  **The &quot;Bury&quot; Approach (Recommended):** Use a boolean attribute like `in_stock: true/false`. You can then set this attribute as a high-priority ranking criterion (descending) or use [Optional Filters](https://support.algolia.com/hc/en-us/articles/4411322627985-How-to-rank-in-stock-products-above-products-that-are-not-in-stock) to boost in-stock items. This keeps out-of-stock items discoverable but ensures they don&#39;t steal the spotlight from buyable products.
+2.  **The &quot;Hard Filter&quot; Approach:** If you absolutely cannot show out-of-stock items, use a [conditionless rule](https://support.algolia.com/hc/en-us/articles/8638806220945-How-can-I-filter-out-of-stock-products-from-search-results) to apply a global filter (e.g., `filters: &quot;in_stock:true&quot;`) to every query.
+3.  **The &quot;Clean Slate&quot; Approach:** Simply don&#39;t index out-of-stock products. This saves on record usage but is the riskiest for UX, as it creates a &quot;no results found&quot; experience for products that might be back in stock soon.
+
+### One Index vs. Multiple Indices
+
+You should stick with **one combined index**.
+
+Splitting your products into &quot;In-Stock&quot; and &quot;Out-of-Stock&quot; indices is generally a mistake because Algolia does not provide an out-of-the-box way to merge results from multiple indices into a single, seamlessly ranked array. Doing so would require complex custom code on your frontend to stitch the results back together, which breaks the intuitive nature of the ranking engine.
+
+By using a single index with a well-configured [ranking strategy](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting), you maintain a single source of truth and can pivot your stock strategy (e.g., moving from &quot;hide&quot; to &quot;bury&quot;) in seconds without re-indexing your entire catalog.
+
+Are you currently managing your inventory via a commerce platform like Shopify or Magento, or is this a custom implementation?</div></details></td><td><div class="score">3/10</div>
+    <div class="status">unsupported</div>
+    <dl><dt>Grounding</dt><dd>4.3/10</dd><dt>Completeness</dt><dd>6.7/10</dd><dt>Depth</dt><dd>5.3/10</dd><dt>Relevance</dt><dd>9.7/10</dd></dl>
+    <p class="judges">skeptic 7.3/10 | referee 6.7/10 | advocate 7.7/10</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll retrieve information about handling out-of-stock items and index strategies for you.Based on the retrieval, here are the two main approaches for handling out-of-stock items:
+
+## Two Approaches
+
+**1. Index out-of-stock products + filter at query time**
+Add an `in_stock` boolean (or inventory count) attribute to your records, then apply a conditionless rule with `{&quot;filters&quot;:&quot;in_stock:true&quot;}` to exclude out-of-stock items from all queries. This keeps inventory data in your index while preventing those products from appearing in results.
+
+**2. Don&#39;t index out-of-stock products**
+Exclude out-of-stock products at the indexing stage before they reach your index. This reduces record usage but requires sync logic on your end to manage inventory state continuously.
+
+## Single vs. Multiple Index Strategy
+
+**The choice between one combined index or multiple indices doesn&#39;t fundamentally change these approaches.** However, it affects implementation:
+
+- **Single index**: Apply the conditionless rule or inventory filtering consistently across all queries. Simpler to maintain one filter logic.
+- **Multiple indices**: You could create separate indices for in-stock and out-of-stock products (e.g., one for product discovery, another for historical/admin views), each with its own rules and data. This adds complexity but gives you finer control—for example, if you search across both indices programmatically, you can weight or rank them differently.
+
+Most implementations use a single primary index with filtering, since Rules and filters are lightweight and responsive.
+
+Are you currently handling inventory syncs from a backend system, or is inventory state relatively static in your setup?</div></details></td></tr>
+<tr><th scope="row"><span>5</span>How do personalization, synonyms, and Rules-based merchandising interact when scoring a query?</th><td><div class="score">3/10</div>
+    <div class="status">unsupported</div>
+    <dl><dt>Grounding</dt><dd>6/10</dd><dt>Completeness</dt><dd>7.7/10</dd><dt>Depth</dt><dd>6.3/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 7.7/10 | referee 7.3/10 | advocate 9/10</p>
+    <details><summary>Answer</summary><div class="answer">Think of it as a high-end boutique where a personal shopper (Personalization) and a store manager (Rules) are both trying to guide you, but they have to follow the dictionary&#39;s definition of the products (Synonyms) first.
+
+The interaction follows a specific sequence: expansion, retrieval, and then re-ranking.
+
+**1. The Expansion Phase (Synonyms)**
+Before any scoring happens, [Synonyms](https://www.algolia.com/doc/guides/managing-results/optimize-search-results/adding-synonyms) act as the translation layer. If a user searches for &quot;trousers&quot; and you&#39;ve defined &quot;trousers&quot; and &quot;pants&quot; as synonyms, Algolia expands the query to include both. This ensures that the scoring engine considers all relevant records, regardless of which specific term was used.
+
+**2. The Scoring Phase (The Core Engine)**
+Once the query is expanded, Algolia applies its [ranking criteria](https://www.algolia.com/doc/guides/managing-results/relevance-overview/in-depth/ranking-criteria) (like typos, proximity, and attribute ranking) to create an initial set of results.
+
+**3. The Overlays (Rules &amp; Personalization)**
+This is where the &quot;tug-of-war&quot; between business logic and user behavior happens:
+
+*   **Rules-based Merchandising:** These are explicit instructions. If a rule is triggered for a specific query, it can &quot;pin&quot; certain records to the top or filter the results entirely. This is the store manager stepping in and saying, &quot;Regardless of the score, this specific item must be first.&quot;
+*   **Personalization:** [Personalization](https://www.algolia.com/doc/guides/personalization/classic-personalization/personalizing-results) acts as a final re-ranking layer. It looks at the results and shifts records based on the user&#39;s past 90 days of activity.
+
+**The Conflict Resolution**
+By default, Personalization and Dynamic Re-Ranking (a form of automated merchandising) don&#39;t always run concurrently. If a user has enough data for a profile, Personalization usually takes precedence. However, if you set `allowReRankingOnPersonalization` to `true`, the rules-based &quot;pinned&quot; hits stay at the top, and Personalization re-orders everything else below them.
+
+**Practical Recommendation**
+Start with synonyms to fix &quot;zero result&quot; frustrations, then use Rules for high-impact business events (like a seasonal sale), and finally layer in Personalization to increase conversion for returning users. If you notice a &quot;pinned&quot; rule is hiding a highly personalized result, evaluate if the business goal of the rule outweighs the individual user&#39;s preference.
+
+Are you currently trying to balance a global merchandising strategy with a highly tailored individual user experience?</div></details></td><td><div class="score">6/10</div>
+    <div class="status">needs_review</div>
+    <dl><dt>Grounding</dt><dd>5/10</dd><dt>Completeness</dt><dd>8.5/10</dd><dt>Depth</dt><dd>7.5/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 9/10 | advocate 8.3/10</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll search for information about how personalization, synonyms, and Rules work together in Algolia&#39;s ranking system.Let me search for more specific technical documentation on how these features interact during the ranking process.Based on the documentation, here&#39;s how these three features work together in Algolia&#39;s ranking pipeline:
+
+## Pipeline Order: Query → Matching → Ranking → Reordering
+
+**Synonyms** operate at the query expansion layer—they expand what records match a query before any ranking happens. If a user searches &quot;sneakers&quot; and you have a synonym pointing to &quot;shoes,&quot; synonyms ensure both terms match the same records. This happens early and sets the candidate set.
+
+**The Eight Ranking Criteria** then score those matched records using Algolia&#39;s standard ranking pipeline:
+1. Textual relevance (typos, attribute matching, position, word proximity)
+2. Custom ranking (your business metrics like sales volume, popularity, ratings)
+
+**Rules-based merchandising** applies after textual relevance and custom ranking are computed. Rules can:
+- Pin specific records to fixed positions
+- Hide records
+- Filter the result set
+- Boost or bury categories
+
+The key insight: **Rules enforce merchandising intent *after* the core ranking is settled.** If you pin a product for the query &quot;shoes,&quot; it stays pinned regardless of synonym expansion or custom ranking.
+
+**Personalization** adds a final reordering layer. By default, when both **Personalization** and **Dynamic Re-Ranking (DRR)** are enabled:
+- Personalization takes precedence if the user has a matching profile with affinities in the first page of results
+- DRR applies to new/unrecognized users
+
+If you set `allowReRankingOnPersonalization=true`, DRR and Personalization can work together: **DRR pins promoted hits first**, then **Personalization reorders the unpinned hits** (starting at position 101+).
+
+Use `getRankingInfo: true` in your query to inspect `_rankingInfo.personalization` in results—this shows if personalization shifted the initial position.
+
+Are you using this combination to manage competing business goals (e.g., trending inventory vs. user preference), or are you diagnosing unexpected ranking behavior?</div></details></td></tr>
+<tr><th scope="row"><span>6</span>What&#39;s the actual cost difference between Grow and Elevate, and are AI features like personalization included or a paid add-on?</th><td><div class="score">3/10</div>
+    <div class="status">unsupported</div>
+    <dl><dt>Grounding</dt><dd>4.3/10</dd><dt>Completeness</dt><dd>7/10</dd><dt>Depth</dt><dd>6/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 7.7/10 | referee 7.7/10 | advocate 7.7/10</p>
+    <details><summary>Answer</summary><div class="answer">Picking a plan is like choosing between a reliable off-the-shelf suit and one that is bespoke—one fits a wide range of needs immediately, while the other is tailored specifically to your measurements and movements.
+
+The core difference is that the **Grow** plan is a transparent, pay-as-you-go model designed for scaling, while **Elevate** is a customized plan tailored to unique business needs with volume discounts and optional services.
+
+### The Grow Plan Breakdown
+The [Grow plan](https://support.algolia.com/hc/en-us/articles/15745996583441-How-am-I-billed-on-the-Grow-plan) focuses on two primary usage metrics:
+*   **Search Requests:** The first 10,000 requests per month are free. After that, you are charged $0.50 per 1,000 requests (or $1.75 per 1,000 for Grow Plus).
+*   **Records:** The first 100,000 records are free. Beyond that, you are charged $0.40 per 1,000 records.
+
+### The Elevate Plan Breakdown
+Unlike Grow, [Elevate](https://algolia.com/pricing/elevate) does not have a public &quot;flat rate&quot; because it is designed as a customized agreement. It is generally the right path when your volume is high enough that standard pay-as-you-go rates become inefficient, or when you need specific enterprise-grade services.
+
+### AI Features and Personalization
+Regarding AI features like [personalization](https://algolia.com/blog/ai/how-to-master-personalization-with-ai), these are typically treated as advanced capabilities. While the basic search infrastructure is covered by your plan, high-end AI-driven tools are often structured as add-ons or included in higher-tier customized agreements to ensure the cost matches the business value they generate.
+
+**My Recommendation:**
+If you are just starting to scale or testing a new project, stick with **Grow** to keep your overhead low and predictable. However, if you are an enterprise-level business where a 1% increase in conversion from AI personalization equals thousands of dollars in revenue, the customized nature of **Elevate** is where you get the most strategic value.
+
+Are you currently evaluating this for a new implementation, or are you looking to migrate an existing high-traffic site to a more cost-effective tier?</div></details></td><td><div class="score">9/10</div>
+    <div class="status">grounded</div>
+    <dl><dt>Grounding</dt><dd>10/10</dd><dt>Completeness</dt><dd>8.7/10</dd><dt>Depth</dt><dd>8.3/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 8.7/10 | referee 9/10 | advocate 9.3/10</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll look up the current pricing details for you.I found information about Grow and Grow Plus, but I need more specific details on Elevate. Let me search for that.The results mention Build and Grow plans but don&#39;t show Elevate specifically. Let me check the main pricing page.Based on my search results, I don&#39;t see an &quot;Elevate&quot; plan in Algolia&#39;s current pricing structure. The current tiers are:
+
+- **Build** (entry-level)
+- **Grow** (usage-based, starting at $0.50 per 1,000 search requests after 10,000 free monthly requests)
+- **Grow Plus** (with AI capabilities)
+
+Regarding AI features like personalization: **Grow Plus** is explicitly described as bringing &quot;AI capabilities&quot; to your search, indicating these are included in that plan tier, not paid add-ons.
+
+It&#39;s possible you may be thinking of a different plan name, or Elevate could be a custom/enterprise offering. I&#39;d recommend checking your current plan documentation or contacting our sales team for the most accurate pricing comparison.
+
+Would you like me to help you understand the difference between Grow and Grow Plus specifically, or are you looking for an enterprise-level custom plan?</div></details></td></tr>
+<tr><th scope="row"><span>7</span>How does Algolia compare to Coveo or Constructor for a mid-market catalog?</th><td><div class="score">7.3/10</div>
+    <div class="status">disagreement</div>
+    <dl><dt>Grounding</dt><dd>8/10</dd><dt>Completeness</dt><dd>6.5/10</dd><dt>Depth</dt><dd>5.5/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">referee 7/10 | advocate 7.7/10</p>
+    <details><summary>Answer</summary><div class="answer">Choosing a search partner for a mid-market catalog is a bit like picking a kitchen: some people want a fully managed chef&#39;s service where they just describe the meal and it appears, while others want a professional-grade range where they can control every dial to get the sear exactly right.
+
+The short version is that Algolia focuses on providing high transparency and granular control, which allows mid-market teams to iterate faster and optimize their discovery experience manually or via AI, whereas competitors like Constructor often lean more heavily on &quot;black-box&quot; automation.
+
+### Algolia vs. Constructor
+Compared to Constructor, Algolia provides more control and transparency over your search and discovery experience. For a mid-market catalog—where you likely have a strong handle on your product categories but need to pivot quickly based on seasonal trends or promotions—this means you aren&#39;t waiting for an algorithm to &quot;learn&quot; a trend; you can drive the results yourself. You can find more details on this specific comparison [here](/competitors/compare-algolia-vs-constructor).
+
+### Algolia vs. Coveo
+While both are heavy hitters, the core difference usually comes down to the balance of implementation speed versus enterprise complexity. Algolia is designed for extreme retrieval speed and developer ease, making it a strong fit for mid-market companies that want to avoid the &quot;bloat&quot; of a legacy enterprise setup while still getting world-class [AI search capabilities](/products/ai). You can explore the visual breakdown of these differences in this [comparison guide](/resources/asset/choosing-the-best-search-solution-algolia-versus-coveo).
+
+### Practical Application
+For a mid-market catalog, the &quot;winning&quot; move is usually reducing the gap between a business idea (e.g., &quot;we need to push this specific brand this week&quot;) and the live user experience.
+
+Take the example of **Co-op**, which used [Dynamic Re-Ranking](https://www.algolia.com/blog/product/algolia-vs-open-source-search) to achieve positive results within weeks of launch, saving them from having to manually write endless rules while still ensuring a high-quality customer experience.
+
+**My recommendation:** If your team values the ability to tweak relevance in real-time and wants a deployment that doesn&#39;t take six months of professional services, Algolia is the sharper tool. If you prefer a hands-off approach and are comfortable with a &quot;black box&quot; managing your relevance, the other options might appeal more.
+
+Are you currently managing your merchandising rules manually, or are you looking for a solution that automates relevance based on conversion data?</div></details></td><td><div class="score">3/10</div>
+    <div class="status">unsupported</div>
+    <dl><dt>Grounding</dt><dd>5.3/10</dd><dt>Completeness</dt><dd>6.7/10</dd><dt>Depth</dt><dd>5/10</dd><dt>Relevance</dt><dd>9.7/10</dd></dl>
+    <p class="judges">skeptic 6.7/10 | referee 7.3/10 | advocate 7.3/10</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll search for information about how Algolia compares to other platforms and what we offer for mid-market catalogs.Perfect—we have direct comparison pages. Here&#39;s how Algolia stacks up:
+
+**vs. Coveo:**
+Customers report that Coveo&#39;s knowledge solutions have a steep learning curve and require significant complexity in deployment and ongoing management. Algolia gives you flexible AI tools that deliver lightning-fast search experiences right out of the box—less overhead, faster time to value.
+
+**vs. Constructor:**
+Algolia&#39;s API-first approach gives you more control and transparency over your search and discovery experience. This means you can iterate faster, customize more granularly, and achieve stronger results without being locked into a fixed platform paradigm. You also save time and effort on implementation compared to Constructor&#39;s more opinionated approach.
+
+**For a mid-market catalog specifically**, the key advantages are:
+- **Faster deployment** — get search live quickly without extensive consulting or customization overhead
+- **Operational flexibility** — adjust ranking, relevance, and behavior on your terms, not the platform&#39;s
+- **Cost efficiency** — pay for what you use; no bloated feature sets you don&#39;t need
+
+What size catalog are you working with, and what&#39;s your primary goal—improving discoverability, boosting conversion, or something else?</div></details></td></tr>
+<tr><th scope="row"><span>8</span>Can a non-technical marketing team run search day-to-day without a developer?</th><td><div class="score">9.7/10</div>
+    <div class="status">disagreement</div>
+    <dl><dt>Grounding</dt><dd>9.3/10</dd><dt>Completeness</dt><dd>10/10</dd><dt>Depth</dt><dd>9/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 9.7/10 | referee 9.7/10 | advocate 9.7/10</p>
+    <details><summary>Answer</summary><div class="answer">It is like having a professional storefront where the developer builds the shelves and installs the lighting, but the store manager is the one who decides which products go in the window and how to arrange the aisles for a big sale.
+
+Short version: yes. While developers handle the initial plumbing and integration, Algolia is designed so that non-technical teams can take the wheel for day-to-day operations through the dashboard.
+
+The magic happens in the [Algolia dashboard](https://www.algolia.com/doc/guides/getting-started/quick-start/tutorials/getting-started-with-the-dashboard), which acts as the control center for your search experience. Marketing teams can use the [Merchandising Studio](https://www.algolia.com/industries/ecommerce/digital-merchandising) to optimize product discovery and visibility without writing a single line of code.
+
+For example, if you have a seasonal promotion or a sudden trend, a marketer can create [merchandising rules](https://www.algolia.com/blog/ecommerce/how-to-design-your-merchandising-and-searchandising-stategies-for-success) to pin specific products to the top of search results, boost high-margin items, or redirect a common typo to a specific category page. In Shopify environments, this is further simplified via a [visual merchandising tool](https://www.algolia.com/doc/integration/shopify/going-further/merchandising-tool) that lets you manage your store&#39;s search visibility directly.
+
+If I were advising your team, I would suggest a &quot;build once, manage often&quot; approach: let the developers set up the index and the UI, then hand the keys to the marketing team to refine the [digital merchandising](https://www.algolia.com/industries/ecommerce/digital-merchandising) strategy based on real-time customer behavior. This translates technical capability into immediate business value—higher conversion and better buyer confidence—without the bottleneck of a Jira ticket for every single product tweak.
+
+Are you looking to optimize an existing search experience, or are you planning a new implementation from scratch?</div></details></td><td><div class="score">10/10</div>
+    <div class="status">grounded</div>
+    <dl><dt>Grounding</dt><dd>10/10</dd><dt>Completeness</dt><dd>10/10</dd><dt>Depth</dt><dd>10/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 10/10 | referee 10/10 | advocate 10/10</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll search for information about how marketing teams can manage Algolia&#39;s search capabilities without requiring developer involvement.Let me search more specifically for visual editor and rules management tools.Yes. Algolia gives non-technical marketing teams the tools to manage search independently through the **Visual Editor** and **Merchandising Studio**—both code-free, dashboard-based tools.
+
+**What marketing teams can do:**
+
+- **Pin, hide, and reorder results** visually with drag-and-drop—no coding required
+- **Filter and boost product categories** to surface the right items for specific queries
+- **Redirect search queries** to designated pages (e.g., &quot;Help&quot; → FAQ)
+- **Create search rules** that automatically apply to query patterns—for example, when users search &quot;cheap,&quot; show only items under $20
+- **Enable AI-powered Dynamic Re-Ranking** that learns from user behavior (clicks and conversions) to improve relevance over time
+
+**How it works:**
+
+The Visual Editor lets you see real search results as you make changes, with immediate feedback. You define the condition (a search term or category page), then interact directly with results—no JSON or API knowledge needed.
+
+**For platform-specific integrations** (Magento, Shopify), there are visual merchandising tools built into their dashboards as well.
+
+Are you looking to manage search for a specific platform like Magento or Shopify, or evaluating Algolia for a new implementation?</div></details></td></tr>
+<tr><th scope="row"><span>9</span>Is there a free trial, and can I access advanced AI features before committing to enterprise?</th><td><div class="score">3/10</div>
+    <div class="status">unsupported</div>
+    <dl><dt>Grounding</dt><dd>5.3/10</dd><dt>Completeness</dt><dd>8.7/10</dd><dt>Depth</dt><dd>7.7/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 8.3/10 | referee 9.7/10 | advocate 8.3/10</p>
+    <details><summary>Answer</summary><div class="answer">Testing the waters before diving into a deep-end contract is just common sense; you wouldn&#39;t buy a custom-tailored suit without checking the fabric first.
+
+Short version: yes, you can start for free. Algolia allows you to [start for free](/pricing) and evolve into pay-as-you-go or annual plans as your needs grow.
+
+While the free tier is designed to support small projects and community efforts, the path to &quot;advanced&quot; AI isn&#39;t a sudden jump to Enterprise. You can upgrade your plan at any time to access more sophisticated features. For example, [NeuralSearch](/products/features/neuralsearch) combines traditional keyword search with semantic understanding—meaning the engine recognizes the concept of a query, not just the literal words. You can find the technical steps to [get started with NeuralSearch](/doc/guides/ai-relevance/neuralsearch/get-started) in the documentation, regardless of whether you are on a trial or a paid plan.
+
+If you are looking for the high-touch support and customized quotas typical of an Enterprise agreement, those usually require an annual commitment. However, for the vast majority of users, the transition from free to paid is a self-service journey through the dashboard.
+
+My recommendation is to spin up a free account, index a sample of your data, and test the AI relevance settings. This lets you validate the &quot;magic&quot; of the results before you ever have to talk to a billing department.
+
+Are you looking to test this out with a specific dataset, or are you more concerned about the cost scaling as your traffic grows?</div></details></td><td><div class="score">Unavailable</div>
+    <div class="status">unavailable</div>
+    <dl><dt>Grounding</dt><dd>Unavailable</dd><dt>Completeness</dt><dd>Unavailable</dd><dt>Depth</dt><dd>Unavailable</dd><dt>Relevance</dt><dd>Unavailable</dd></dl>
+    <p class="judges">advocate Unavailable</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll search for information about Algolia&#39;s trial options and AI feature access.Yes, Algolia offers a **free plan** to start with. You can begin without any commitment and upgrade to paid plans—Build, Grow, or Grow Plus—as your needs scale.
+
+However, the search results don&#39;t provide specific details about which AI features are available on the free tier versus enterprise plans. Let me search for more targeted information about AI feature access.The results show we have Agent Studio documentation and resources, but they don&#39;t specify which plans include AI features. Let me get more specific pricing details.Based on my research, here&#39;s what I found:
+
+**Free Trial &amp; Plans:**
+You can start with a **free Build plan** that includes access to popular features with no commitment. You only pay when you grow—then move to the Grow or Grow Plus plan, which operate on a usage-based pricing model (you get free allowances each month, then pay for overage).
+
+**AI Features &amp; Access:**
+The search results confirm that AI features exist across our portfolio (including Agent Studio), but they don&#39;t specify which AI capabilities are available on each tier. This is an important distinction if you&#39;re specifically evaluating advanced AI features before a larger commitment.
+
+To get precise details about which AI features (like NeuralSearch or Agent Studio) are included or available for testing on Build vs. Grow plans, I&#39;d recommend speaking with our team who can review your specific use case and requirements.
+
+Would you like me to connect you with a specialist who can outline exactly which AI capabilities match your roadmap?</div></details></td></tr>
+<tr><th scope="row"><span>10</span>If I&#39;m on a competing platform today, what does migration actually look like?</th><td><div class="score">9.7/10</div>
+    <div class="status">disagreement</div>
+    <dl><dt>Grounding</dt><dd>9.3/10</dd><dt>Completeness</dt><dd>10/10</dd><dt>Depth</dt><dd>9/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 9.7/10 | referee 9.7/10 | advocate 9.7/10</p>
+    <details><summary>Answer</summary><div class="answer">Migrating a search platform is like moving into a new house: you don&#39;t just dump everything from the old place into random boxes and hope for the best; you use the move as an excuse to declutter and organize your belongings so the new layout actually works.
+
+The short version is that migration to Algolia is a structured three-step process of data import, relevance tuning, and UI implementation. Because Algolia doesn&#39;t search your data sources directly, you aren&#39;t &quot;switching&quot; a connection so much as you are establishing a new, high-performance index of your data.
+
+Here is how the mechanism actually works:
+
+1.  **Data Import**: You push your records into Algolia using [API clients](https://academy.algolia.com/training/41a9c4a6-b158-11ee-8b2d-06ff0cab3fa7), JSON files, or direct database integrations. If you use a platform like Shopify or Magento, this is often handled via scripts within those integrations.
+2.  **Relevance Configuration**: Once your data is in, you fine-tune how Algolia understands it. This is where you move beyond basic keyword matching to use tools like [Dynamic Re-Ranking](https://www.algolia.com/customers/co-op), which allows you to see positive results in a matter of weeks via A/B testing without manually writing endless rules.
+3.  **UI/UX Implementation**: You connect your frontend to the Algolia engine using front-end API clients. This allows you to build a modern search experience without having to manage the underlying infrastructure.
+
+For teams with complex environments, the [Algolia CLI](https://www.algolia.com/developers/algolia-cli) is a critical tool for migrating records and configurations across different applications, providing a way to snapshot and revert indices if you need to iterate on your setup.
+
+**My recommendation**: Don&#39;t try to replicate your current platform&#39;s logic exactly. The biggest mistake in migration is &quot;lifting and shifting&quot; old search behaviors that weren&#39;t working. Instead, start with a clean data import and let Algolia&#39;s AI-driven relevance do the heavy lifting first, then layer in your specific business rules.
+
+Are you migrating from a legacy on-premise system or a different cloud-based search provider?</div></details></td><td><div class="score">6/10</div>
+    <div class="status">needs_review</div>
+    <dl><dt>Grounding</dt><dd>5.5/10</dd><dt>Completeness</dt><dd>7.5/10</dd><dt>Depth</dt><dd>6/10</dd><dt>Relevance</dt><dd>10/10</dd></dl>
+    <p class="judges">skeptic 8/10 | advocate 7.7/10</p>
+    <details><summary>Answer</summary><div class="answer">I&#39;ll search for information about migrating to Algolia from other platforms.Let me search more specifically for migration guides and technical details.Great—I found concrete resources. Migration to Algolia involves a few clear phases:
+
+**Data Transfer:**
+- Algolia doesn&#39;t search your data sources directly—you upload the data you want searchable
+- You can import data via the **dashboard** (for testing), **API** (for programmatic bulk imports), or **connectors** if you&#39;re using platforms like Firestore, Contentful, Shopify, or other integrations
+- Export/import tools let you move indices, records, and configuration (settings, synonyms, rules) from your existing platform
+
+**Integration:**
+- You&#39;ll need to generate API keys for secure data uploads and searches
+- Replace your current search SDK/API calls with Algolia&#39;s client libraries (available for JavaScript, Python, PHP, Ruby, and more)
+- If you&#39;ve built custom search logic (ranking, filters, synonyms), you can migrate those configuration rules into Algolia&#39;s **Rules** engine
+
+**Timeline Impact:**
+- Migrations from legacy platforms (like Endeca) typically show that the real value isn&#39;t just the switch—it&#39;s the new capabilities (AI-powered ranking, instant search, relevance tuning) that drive faster time-to-value
+
+The technical lift depends on your current platform and data volume, but Algolia&#39;s approach is designed to be gradual: you can run both systems in parallel, validate results, then switch your frontend over.
+
+What&#39;s your current search platform, and roughly how much indexed data are you working with?</div></details></td></tr></tbody></table></main></body></html>

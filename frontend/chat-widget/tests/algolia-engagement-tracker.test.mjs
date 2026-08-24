@@ -23,11 +23,12 @@ class MemoryStorage {
   }
 }
 
-function createHarness({ pathname = '/pricing', search = '?utm_source=paid_search&email=nope@example.com', title = 'Pricing', pageMetadata = {}, initialLocal = {}, initialSession = {}, initialEvents = {}, resetOnLogo = false, initialNow = Date.now() } = {}) {
+function createHarness({ pathname = '/pricing', search = '?utm_source=paid_search&email=nope@example.com', title = 'Pricing', pageMetadata = {}, initialLocal = {}, initialSession = {}, initialEvents = {}, resetOnLogo = false, initialNow = Date.now(), browserNavigationType = 'navigate' } = {}) {
   const listeners = new Map();
   const documentListeners = new Map();
   const documentDispatches = [];
   const logs = [];
+  let entropyCounter = 0;
   let now = initialNow;
   const localStorage = new MemoryStorage(initialLocal);
   const sessionStorage = new MemoryStorage({
@@ -45,6 +46,12 @@ function createHarness({ pathname = '/pricing', search = '?utm_source=paid_searc
     dispatchEvent() {},
   };
 
+  const location = {
+    href: `https://www.algolia.com${pathname}${search}`,
+    origin: 'https://www.algolia.com',
+    pathname,
+    search,
+  };
   const context = {
     console: {
       ...console,
@@ -75,24 +82,31 @@ function createHarness({ pathname = '/pricing', search = '?utm_source=paid_searc
     },
     crypto: {
       getRandomValues(array) {
-        for (let i = 0; i < array.length; i += 1) array[i] = i + 1;
+        entropyCounter += 1;
+        for (let i = 0; i < array.length; i += 1) array[i] = i + entropyCounter;
         return array;
       },
     },
-    location: {
-      href: `https://www.algolia.com${pathname}${search}`,
-      origin: 'https://www.algolia.com',
-      pathname,
-      search,
-    },
+    location,
     history: {
-      pushState() {},
+      pushState(_state, _unused, nextUrl) {
+        if (!nextUrl) return;
+        const next = new URL(nextUrl, location.href);
+        location.href = next.href;
+        location.pathname = next.pathname;
+        location.search = next.search;
+      },
+    },
+    performance: {
+      getEntriesByType(type) {
+        return type === 'navigation' ? [{ type: browserNavigationType }] : [];
+      },
     },
     addEventListener(name, handler) {
       listeners.set(name, handler);
     },
-    dispatchWindowEvent(name) {
-      listeners.get(name)?.();
+    dispatchWindowEvent(name, event) {
+      listeners.get(name)?.(event);
     },
     document: {
       title,
@@ -164,18 +178,67 @@ test('captures page view with sanitized URL and safe UTM values', () => {
   assert.equal(pageView.props.email, undefined);
 });
 
-test('emits the 25 percent scroll milestone required by proactive journeys', () => {
+test('records the immediate source and destination edge for a normal navigation', () => {
+  const now = 1_786_750_100_000;
+  const { sessionStorage } = createHarness({
+    pathname: '/pricing',
+    search: '',
+    initialNow: now,
+    initialSession: {
+      algolia_session: JSON.stringify({
+        schema: 'AlgoliaEngagementSession.v1',
+        sessionId: 'sess_123',
+        startedAt: now - 10_000,
+        lastSeenAt: now - 1_000,
+        currentPageId: 'page_product',
+        pages: [{ pageId: 'page_product', path: '/products/ai-search', title: 'AI Search', dwellMs: 3000, maxScrollDepth: 30, pageGroup: 'product', topic: 'ai_search' }],
+        engagementHistory: [],
+      }),
+    },
+  });
+  const pages = parse(sessionStorage, 'algolia_session').pages;
+  const current = pages.at(-1);
+
+  assert.equal(current.navigationType, 'navigate');
+  assert.equal(current.sourcePageId, 'page_product');
+  assert.equal(current.sourcePath, '/products/ai-search');
+  assert.equal(current.destinationPageId, current.pageId);
+  assert.equal(current.destinationPath, '/pricing');
+  assert.match(current.edgeId, /^page_product->page_/);
+});
+
+test('classifies SPA push, SPA pop, and persisted history restoration distinctly', () => {
+  const { context, sessionStorage } = createHarness({ pathname: '/products/ai-search', search: '' });
+
+  context.history.pushState({}, '', '/pricing');
+  let current = parse(sessionStorage, 'algolia_session').pages.at(-1);
+  assert.equal(current.navigationType, 'spa_push');
+  assert.equal(current.sourcePath, '/products/ai-search');
+  assert.equal(current.destinationPath, '/pricing');
+  assert.equal(current.path, '/pricing');
+  assert.match(current.edgeId, /^page_.*->page_/);
+
+  context.dispatchWindowEvent('popstate');
+  current = parse(sessionStorage, 'algolia_session').pages.at(-1);
+  assert.equal(current.navigationType, 'spa_pop');
+
+  context.dispatchWindowEvent('pageshow', { persisted: true });
+  current = parse(sessionStorage, 'algolia_session').pages.at(-1);
+  assert.equal(current.navigationType, 'back_forward');
+});
+
+test('emits the 30 percent scroll milestone required by proactive journeys', () => {
   const { context, sessionStorage } = createHarness({ pathname: '/products/ai-search', search: '' });
 
   context.document.documentElement.scrollHeight = 2000;
   context.document.body.scrollHeight = 2000;
-  context.scrollY = 0;
+  context.scrollY = 100;
   context.dispatchWindowEvent('scroll');
 
   const scrollEvents = parse(sessionStorage, 'algolia_events').events
     .filter((event) => event.name === 'scroll_depth');
   assert.equal(scrollEvents.length, 1);
-  assert.equal(scrollEvents[0].props.depth, 25);
+  assert.equal(scrollEvents[0].props.depth, 30);
 });
 
 test('dwell accumulates visible time and excludes time while the page is hidden', () => {
@@ -185,18 +248,18 @@ test('dwell accumulates visible time and excludes time while the page is hidden'
     initialNow: 1_000_000,
   });
 
-  advanceTime(5_000);
+  advanceTime(3_000);
   context.document.hidden = true;
   context.document.dispatchDocumentEvent('visibilitychange');
   advanceTime(20_000);
   context.dispatchWindowEvent('beforeunload');
 
   let currentPage = parse(sessionStorage, 'algolia_session').pages[0];
-  assert.equal(currentPage.dwellMs, 5_000);
+  assert.equal(currentPage.dwellMs, 3_000);
 
   context.document.hidden = false;
   context.document.dispatchDocumentEvent('visibilitychange');
-  advanceTime(5_000);
+  advanceTime(7_000);
   context.dispatchWindowEvent('pagehide');
 
   currentPage = parse(sessionStorage, 'algolia_session').pages[0];
@@ -360,6 +423,24 @@ test('classifies solution focus on page views and events', () => {
   assert.equal(pageView.props.solutionFocusLabel, 'Commerce');
 });
 
+test('classifies use-case pages as solutions for commercial journeys', () => {
+  const { sessionStorage } = createHarness({
+    pathname: '/use-cases/enterprise',
+    search: '',
+    title: 'Enterprise Search',
+  });
+
+  const session = parse(sessionStorage, 'algolia_session');
+  const pageView = parse(sessionStorage, 'algolia_events').events.find((event) => event.name === 'page_view');
+
+  assert.equal(session.pages[0].pageGroup, 'solution');
+  assert.equal(session.pages[0].topic, 'industry_solution');
+  assert.equal(session.pages[0].solutionFocus, 'enterprise');
+  assert.equal(session.pages[0].solutionFocusLabel, 'Enterprise');
+  assert.equal(pageView.props.pageGroup, 'solution');
+  assert.equal(pageView.props.topic, 'industry_solution');
+});
+
 test('algoliaProactiveReset clears all Algolia session and chat state while preserving profile and unrelated storage', () => {
   const { localStorage, sessionStorage } = createHarness({
     pathname: '/products/features/personalization',
@@ -453,8 +534,8 @@ test('reset clears only Algolia visitor state and starts a fresh tracked session
   assert.equal(sessionStorage.getItem('acs_token'), null);
 });
 
-test('configured Assistant logo reset spins and clears visitor state', () => {
-  const { context, sessionStorage } = createHarness({
+test('configured Assistant logo reset spins and produces one reset receipt', () => {
+  const { context, sessionStorage, documentDispatches } = createHarness({
     resetOnLogo: true,
     initialSession: {
       algolia_proactive_state: JSON.stringify({ opportunities: [{ id: 'old_opp' }] }),
@@ -488,6 +569,56 @@ test('configured Assistant logo reset spins and clears visitor state', () => {
   assert.equal(animations.length, 1);
   assert.equal(animations[0].target, 'logo');
   assert.equal(animations[0].frames.at(-1).transform, 'rotate(360deg)');
+  assert.equal(context.__algoliaVisitorResetReceipt.schema, 'AlgoliaVisitorResetReceipt.v1');
+  assert.equal(context.__algoliaVisitorResetReceipt.source, 'assistant_logo');
+  assert.equal(context.__algoliaVisitorResetReceipt.pageCount, 1);
+  assert.equal(context.__algoliaVisitorResetReceipt.eventCount, 1);
+  assert.equal(context.__algoliaVisitorResetReceipt.conversationCleared, true);
+  assert.equal(context.__algoliaVisitorResetReceipt.handoffContextCleared, true);
+  assert.equal(
+    documentDispatches.filter((event) => event.type === 'algolia-visitor-state-reset').length,
+    1,
+  );
+});
+
+test('one logo click followed by the widget reset request creates only one fresh session', () => {
+  const now = 1_786_750_100_000;
+  const { context, sessionStorage, documentDispatches } = createHarness({
+    resetOnLogo: true,
+    initialNow: now,
+    initialSession: {
+      'algolia-chat:conversation': JSON.stringify({ conversationId: 'old_chat', turns: [{ id: 'turn_1' }] }),
+    },
+  });
+  const resetButton = {
+    getAttribute(name) {
+      return name === 'aria-label' ? 'Algolia - reset conversation' : null;
+    },
+    querySelector() {
+      return { animate() {} };
+    },
+  };
+
+  context.document.dispatchDocumentEvent('click', {
+    composedPath() {
+      return [resetButton];
+    },
+  });
+  const firstReceipt = context.__algoliaVisitorResetReceipt;
+  const firstSessionId = parse(sessionStorage, 'algolia_session').sessionId;
+
+  context.document.dispatchEvent(new context.CustomEvent('algolia-visitor-reset-requested', {
+    detail: { source: 'chat_widget' },
+    bubbles: true,
+    composed: true,
+  }));
+
+  assert.equal(context.__algoliaVisitorResetReceipt.resetId, firstReceipt.resetId);
+  assert.equal(parse(sessionStorage, 'algolia_session').sessionId, firstSessionId);
+  assert.equal(
+    documentDispatches.filter((event) => event.type === 'algolia-visitor-state-reset').length,
+    1,
+  );
 });
 
 test('bubbling composed visitor reset request invokes the full tracker reset', () => {

@@ -11,9 +11,11 @@
     "local:chat": "python3 tools/local_chat_parity_server.py",
     "scout:local-pages": "node tools/inspection/fetch_local_parity_pages_with_scout.mjs",
     "test:chat-widget": "node --test frontend/chat-widget/tests/*.test.mjs",
+    "test:compare-integration": "python3 -m pytest -q tools/deployment/tests/test_deploy_compare_integration_jahia.py",
+    "test:judge-refactor": "node --test agents/admin/deploy_judge_prompt_ab_candidates.test.mjs production_comparison/*.test.mjs && python3 -m pytest -q tools/deployment/tests/test_deploy_judge_v2_jahia.py",
     "test:local-chat-parity": "node tools/inspection/validate_local_chat_parity.mjs && node tools/inspection/validate_local_proactive_journeys.mjs",
     "test:team-uat": "node --test testing/team-uat/*.test.mjs",
-    "test": "npm run test:chat-widget && npm run test:local-chat-parity && npm run test:team-uat"
+    "test": "npm run test:chat-widget && npm run test:compare-integration && npm run test:judge-refactor && npm run test:local-chat-parity && npm run test:team-uat"
   },
   "repository": {
     "type": "git",

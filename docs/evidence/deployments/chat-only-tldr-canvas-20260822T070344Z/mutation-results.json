@@ -1,0 +1,55 @@
+{
+  "asset": {
+    "operation": "create",
+    "path": "/sites/www/files/algolia-chat-judge-v2-8478b3e11631.js",
+    "sha256": "8478b3e1163110b06a7562525d66e0f59d7f4285b46267ec63771fcb4796aa51"
+  },
+  "publishAsset": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-judge-v2-8478b3e11631.js"
+          }
+        }
+      }
+    }
+  },
+  "versionBlock": {
+    "data": {
+      "jcr": {
+        "block": {
+          "createVersion": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishDrift": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  }
+}

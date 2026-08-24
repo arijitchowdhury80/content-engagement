@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-08-22T07:06:24.155393+00:00",
+  "edit": {
+    "blockSha256": "377f69abbca1db609f7cde49c4477e4b96aef5b00844f45b7bb6c2f8559cee78",
+    "blockLength": 11329,
+    "newAsset": {
+      "path": "/sites/www/files/algolia-chat-judge-v2-8478b3e11631.js",
+      "sha256": "8478b3e1163110b06a7562525d66e0f59d7f4285b46267ec63771fcb4796aa51",
+      "length": 527716
+    }
+  },
+  "live": {
+    "blockSha256": "377f69abbca1db609f7cde49c4477e4b96aef5b00844f45b7bb6c2f8559cee78",
+    "blockLength": 11329,
+    "newAsset": {
+      "path": "/sites/www/files/algolia-chat-judge-v2-8478b3e11631.js",
+      "sha256": "8478b3e1163110b06a7562525d66e0f59d7f4285b46267ec63771fcb4796aa51",
+      "length": 527716
+    }
+  }
+}

@@ -1,0 +1,2481 @@
+{
+  "schema": "ChatArchitectureCleanupLedger.v1",
+  "runId": "2026-08-20-001",
+  "source": "immutable snapshot status-before records",
+  "safety": "No staging or deletion is authorized from this ledger alone; recheck live status and hashes immediately before any operation.",
+  "summary": {
+    "total": 307,
+    "byBaseline": {
+      "algolia-com": 232,
+      "shared-integration": 75
+    },
+    "byCategory": {
+      "durable_source_or_test": 92,
+      "durable_documentation_candidate": 18,
+      "runtime_evidence_review": 82,
+      "disposable_local_state": 3,
+      "private_generated_evidence": 10,
+      "generated_runtime_evidence": 95,
+      "durable_build_or_adapter": 5,
+      "archive_or_wip_release": 2
+    }
+  },
+  "entries": [
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "agents/prompts/instructions_algolia_orchestrator.md",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "agents/prompts/instructions_algolia_proactive_greeting.md",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "agents/prompts/system_algolia_orchestrator.md",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "docs/design/agent-studio/implementation-plans/2026-08-12-algolia-query-metering-2.2.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "docs/design/search-experience/discovery-engagement/ALGOLIA-PROACTIVE-CONTROLLER.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "docs/design/search-experience/discovery-engagement/ALGOLIA-PROACTIVE-GREETING-AGENT.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "docs/evidence/visitor-intelligence/jahia-deploy-20260814/live-browser-validation.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/algolia-chat.js",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/algolia-confidence-badge.js",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/tests/algolia-chat-followup-source-tiles.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/tests/algolia-chat-grounding-admission.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/tests/judge-chief-prompt.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/tests/local-parity-full-chain.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/tests/proactive-journey-contract-consistency.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/tests/proactive-journey-prompt-examples.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/tests/specialist-additive-presentation.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "frontend/chat-widget/tests/specialist-routing-contract.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "testing/team-uat/content-engagement-demo-uat-test-cases.md",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "testing/team-uat/content-engagement-team-uat.html",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "testing/team-uat/index.html",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "testing/team-uat/team-uat.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "tools/deployment/deploy_jahia_engagement_tracker.py",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "tools/deployment/tests/test_deploy_jahia_engagement_tracker.py",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "tools/inspection/capture_hosted_journey.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "tools/inspection/validate_local_proactive_journeys.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "tracked_.M",
+      "path": "tools/inspection/validate_local_transition_navigation.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": ".codex/",
+      "category": "disposable_local_state",
+      "plannedAction": "remove_in_isolated_cleanup",
+      "rationale": "OS/tool/generated local state"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "AGENTS.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "current-scroll-deck-branding.png",
+      "category": "disposable_local_state",
+      "plannedAction": "remove_in_isolated_cleanup",
+      "rationale": "OS/tool/generated local state"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/design/design.md",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Secret scanner finding; quarantined rather than committed"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260817T220636Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260817T221233Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260818T013000Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260818T013042Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260818T014222Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260818T014223Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260818T015405Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260818T015406Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/agent-studio/chat-stack-deploy-20260818T015741Z/",
+      "category": "private_generated_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Agent Studio snapshots/readbacks require secret and privacy handling"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/2026-08-18-runtime-t/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/2026-08-18-runtime-u/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/2026-08-18-runtime-v/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/2026-08-18-runtime-w/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/2026-08-18-runtime-x/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/2026-08-19-runtime-z-transition-grounding/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/2026-08-20-agent-studio-judge-only-a/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/2026-08-20-semantic-grounding-authority-a/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/deployments/team-uat/FAILURE-REPORT.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-17-current-jahia-transition-baseline.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-17-headed-local-full-chain/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-17-headed-local/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-17-runtime-i-live-journeys/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-17-runtime-i-specialist-diagnostic/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-fixture-authoritative/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-fixture-final-2/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-fixture-final-contract/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-fixture-final-published/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-fixture-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-fixture-retry/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-fixture/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-link-authoritative-final-verify/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-link-authoritative-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-ai-search-docs-link-authoritative/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-b1-grounding-filtered-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-b1-grounding-remediation/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-grounding-canonical-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-headed-local-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-final-authoritative/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-k-deploy/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-k-hosted-repeat/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-k-hosted/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-m-hosted/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-m-local/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-n-hosted/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-o-hosted/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-p-hosted/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-q-hosted-pre-followup-fix/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-r-discovery-stability/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-s-specialist-guarantee/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-t-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-u-debug/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-v-authoritative/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-v-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-w-authoritative/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-x-authoritative/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-y-authoritative-rerun/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-y-authoritative/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-y-specialist-accept/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-y-specialist-decline-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-y-specialist-decline-retry/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-runtime-y-specialist-decline/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-18-service-error-stress/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-controller-a-postdeploy/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-headed-local-authoritative/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-answer.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-continuity.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-first-turn-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-greeting.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-reset-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-source-qualified.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-start.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-trace.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/01-traffic-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-answer.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-continuity.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-destination.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-first-turn-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-greeting.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-reset-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-source-qualified.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-start.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-trace.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/02-traffic-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-answer.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-continuity.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-first-turn-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-greeting.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-reset-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-source-qualified.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-start.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-trace.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/03-traffic-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-answer.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-attempt-1-navigation-failure.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-continuity.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-destination.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-first-turn-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-greeting.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-reset-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-source-qualified.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-start.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-trace.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/04-traffic-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-answer.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-continuity.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-destination.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-first-turn-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-greeting.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-reset-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-source-qualified.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-start.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-trace.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/05-traffic-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-answer.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-continuity.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-destination.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-first-turn-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-greeting.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-reset-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-source-qualified.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-start.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-trace.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/06-traffic-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-answer.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-continuity.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-first-turn-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-greeting.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-reset-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-source-qualified.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-start.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-trace.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/07-traffic-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-answer.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-continuity.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-first-turn-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-greeting.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-reset-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-source-qualified.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-start.png",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-trace.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-authoritative-final/08-traffic-verification.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-final-deploy/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-headed-final/S1/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-s1-fix/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-jahia-scoped-dry-runs/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-runtime-z-transition-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-runtime-z-visible-transitions-rerun/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/2026-08-19-runtime-z-visible-transitions/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260817T214237Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260817T222935Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T000958Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T001124Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T001130Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T001834Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T001958Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T002325Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T002452Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T002459Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T013050Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T013056Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T013132Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T020326Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T020734Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T021144Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T022255Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T022301Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T023250Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T023253Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T023640Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T030805Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T141625Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260818T141859Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260820T011444Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/chat-stack-deploy-20260820T011459Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/controller-only-deploy-20260819-final-pass/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/controller-only-deploy-20260819-final/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/controller-only-deploy-20260819-readback-2/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/controller-only-deploy-20260819-readback/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/jahia-internal-docs-20260818T002146Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/jahia-internal-docs-20260818T144155Z/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/jahia-internal-docs-current-state-20260817/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/journey-runtime-deploy-20260820-navigation-edge-a-retry/after-readback.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/journey-runtime-deploy-20260820-navigation-edge-a-retry/before-snapshot.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/journey-runtime-deploy-20260820-navigation-edge-a-retry/deployment-plan.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/journey-runtime-deploy-20260820-navigation-edge-a-retry/mutation-results.json",
+      "category": "runtime_evidence_review",
+      "plannedAction": "commit_only_if_compact_sanitized_authoritative",
+      "rationale": "Evidence requires sanitization and authority check"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/evidence/visitor-intelligence/journey-runtime-deploy-20260820-navigation-edge-a/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Raw headed runs, screenshots, payloads, and deployment output"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/operations/2026-08-20-content-engagement-ceo-demo-story.html",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/operations/2026-08-20-demo-story-runtime-reconciliation.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/operations/LIGHT-2026-08-20-agent-studio-only-judge.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/operations/LIGHT-2026-08-20-semantic-grounding-authority.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/operations/assets/",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/superpowers/",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/workspace/chat-ui-tightening/2026-08-17-processing-language-set.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/workspace/content-engagement-ceo-demo-story/",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/workspace/judge-refactor/",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/workspace/proactive-journey-foundations/LIGHT-2026-08-16-journey-prompt-examples.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/workspace/proactive-journey-foundations/LIGHT-2026-08-16-technical-business-journeys.md",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "docs/workspace/team-manual-uat/",
+      "category": "durable_documentation_candidate",
+      "plannedAction": "preserve_if_current_and_sanitized",
+      "rationale": "Documentation or compact design/evidence record"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "frontend/chat-widget/tests/algolia-chat-header-tooltips.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "testing/2026-08-15-proactive-concierge-e2e-test-system.md",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "testing/README.md",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "algolia-com",
+      "change": "untracked",
+      "path": "testing/proactive-journeys/",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "algolia-chat/eslint.config.js",
+      "category": "durable_build_or_adapter",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Build, package, or consumer configuration"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "algolia-chat/package-lock.json",
+      "category": "durable_build_or_adapter",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Build, package, or consumer configuration"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "algolia-chat/package.json",
+      "category": "durable_build_or_adapter",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Build, package, or consumer configuration"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "algolia-chat/src/chat-embed.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "algolia-chat/src/tracker-embed.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "algolia-chat/tsconfig.app.json",
+      "category": "durable_build_or_adapter",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Build, package, or consumer configuration"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/__tests__/MessageMarkdown.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/__tests__/agentStudio.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/__tests__/detGround.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/__tests__/neutrality.guard.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/__tests__/twoConsumer.fixture.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/ChatWidget.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/AppHeader.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/ChatMessage.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/ChatPanel.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/DiscoveryCard.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/EmptyState.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/MessageMarkdown.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/PoweredBy.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/ProactiveGreeting.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/SampleQuestions.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/SourcePills.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/components/ThinkingIndicator.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/turnRunner.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/types.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chat/useChat.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/chatRenderer.tsx",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/config/defaults.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/config/instance.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/config/runtime.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/config/strings.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/connectChatPerson.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/index.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/judge/chiefJudge.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/judge/detGround.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/judge/useJudge.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/person/localStorageSource.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/person/personAgent.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/person/visitorDataSource.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/shared/agentStudio.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "tracked_.M",
+      "path": "chat-central/src/styles/index.css",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": ".development-loop/",
+      "category": "disposable_local_state",
+      "plannedAction": "remove_in_isolated_cleanup",
+      "rationale": "OS/tool/generated local state"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "algolia-chat-jahia-wip-2026-08-12-r3-clean.zip",
+      "category": "archive_or_wip_release",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Preserve externally; release artifact is not canonical source"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "algolia-chat/src/chat/discoveryOverride.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "algolia-chat/src/chat/discoveryOverride.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "algolia-chat/src/jahia-embed.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "algolia-chat/vite.jahia.config.ts",
+      "category": "durable_build_or_adapter",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Build, package, or consumer configuration"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/chiefJudge.prompt.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/conversationPersistence.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/discoveryConfig.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/discoveryLedger.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/personAgent.contract.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/personContracts.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/runtimeProgress.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/turnContext.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/turnRunner.discovery.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/turnRunner.specialist.integration.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/useChat.debug.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/visibleAnswer.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/__tests__/widgetUiContracts.test.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/chat/components/copyQuestion.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/chat/conversationPersistence.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/chat/discoveryLedger.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/chat/visibleAnswer.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/config/orchestratorTransport.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/person/contracts.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "chat-central/src/person/turnContext.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "docs/",
+      "category": "generated_runtime_evidence",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Legacy discovery tree contains raw evals, screenshots, payloads, and readbacks"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "releases/",
+      "category": "archive_or_wip_release",
+      "plannedAction": "external_archive_do_not_commit",
+      "rationale": "Preserve externally; release artifact is not canonical source"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "scripts/spike-native-turn-context.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "tests/fresh-widget-ui-contract.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "tests/jahia-fragment-contract.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "tests/jahia-single-bundle-contract.test.mjs",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "tests/person-intelligence.spec.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    },
+    {
+      "baselineId": "shared-integration",
+      "change": "untracked",
+      "path": "tests/tracker-person-contract.spec.ts",
+      "category": "durable_source_or_test",
+      "plannedAction": "preserve_in_scoped_local_commit",
+      "rationale": "Readable source, contract, fixture, or test"
+    }
+  ]
+}

@@ -26,21 +26,21 @@
 
   const PACKET_SCHEMA = "AlgoliaContextPacket.v1";
   const CANONICAL_JOURNEY_TRIGGERS = Object.freeze([
-    "product_page_10s_50_scroll",
+    "product_page_3s_30_scroll",
     "product_to_documentation",
-    "solution_page_10s_50_scroll",
+    "solution_page_3s_30_scroll",
     "solution_to_customer_story",
     "product_to_pricing",
     "solution_to_pricing",
-    "developer_page_10s_50_scroll",
-    "resource_page_10s_50_scroll",
+    "developer_page_3s_30_scroll",
+    "resource_page_3s_30_scroll",
   ]);
   const MAX_RECENT_EVENTS = 15;
   const MAX_TURN_CONTEXT_KEYS = 32;
   const MAX_TURN_CONTEXT_BYTES = 4096;
   const MAX_TURN_CONTEXT_VALUE_BYTES = 1024;
-  const JOURNEY_DWELL_MS = 5000;
-  const JOURNEY_SCROLL_DEPTH = 25;
+  const JOURNEY_DWELL_MS = 3000;
+  const JOURNEY_SCROLL_DEPTH = 30;
   const AGENT_STUDIO_COMPLETIONS_RE = /\/agent-studio\/1\/agents\/[^/]+\/completions/;
   const SENSITIVE_PROP_RE =
     /email|phone|password|passwd|token|secret|api[_-]?key|credential|name|company|value/i;
@@ -60,6 +60,11 @@
 
   function configure(nextConfig) {
     config = { ...config, ...(nextConfig || {}) };
+    debugLog("configured", {
+      ...config,
+      journeyDwellMs: JOURNEY_DWELL_MS,
+      journeyScrollDepth: JOURNEY_SCROLL_DEPTH,
+    });
   }
 
   function readJson(storage, key, fallback) {
@@ -157,7 +162,7 @@
         ...productFocusFromText(text),
       };
     }
-    if (text.includes("/industries") || text.includes("/solutions")) {
+    if (text.includes("/industries") || text.includes("/solutions") || text.includes("/use-cases")) {
       return {
         pageGroup: "solution",
         topic: topicFromText(text, "industry_solution"),
@@ -254,6 +259,58 @@
         topic: classifyPath().topic,
       }
     );
+  }
+
+  function navigationEdge(session, currentPage) {
+    const pages = Array.isArray(session?.pages) ? session.pages : [];
+    const currentIndex = pages.findIndex((page) => page?.pageId === currentPage?.pageId);
+    const immediateSource = currentIndex > 0 ? pages[currentIndex - 1] : null;
+    const hasExplicitSource = !!currentPage?.sourcePageId;
+    const sourcePageId = currentPage?.sourcePageId || immediateSource?.pageId || null;
+    const sourcePath = currentPage?.sourcePath || immediateSource?.path || null;
+    const destinationPageId = currentPage?.destinationPageId || currentPage?.pageId || null;
+    const destinationPath = currentPage?.destinationPath || currentPage?.path || currentPath();
+    const navigationType = currentPage?.navigationType || (immediateSource ? "navigate" : "initial");
+    const edgeId = currentPage?.edgeId ||
+      (sourcePageId && destinationPageId ? `${sourcePageId}->${destinationPageId}` : null);
+    const isImmediate = !!immediateSource &&
+      sourcePageId === immediateSource.pageId &&
+      destinationPageId === currentPage?.pageId &&
+      (!hasExplicitSource || sourcePath === immediateSource.path);
+
+    return {
+      navigationType,
+      sourcePageId,
+      sourcePath,
+      destinationPageId,
+      destinationPath,
+      edgeId,
+      isImmediate,
+    };
+  }
+
+  function packetPage(page) {
+    const classified = pageWithClassification(page);
+    return {
+      pageId: clampText(classified.pageId, 80),
+      path: clampText(classified.path, 160),
+      title: clampText(classified.title, 160),
+      pageGroup: clampText(classified.pageGroup, 80),
+      topic: clampText(classified.topic, 80),
+      productFocus: clampText(classified.productFocus, 80),
+      productFocusLabel: clampText(classified.productFocusLabel, 80),
+      solutionFocus: clampText(classified.solutionFocus, 80),
+      solutionFocusLabel: clampText(classified.solutionFocusLabel, 80),
+      dwellMs: Number.isFinite(classified.dwellMs) ? classified.dwellMs : 0,
+      maxScrollDepth: Number.isFinite(classified.maxScrollDepth) ? classified.maxScrollDepth : 0,
+      enteredAt: classified.enteredAt,
+      navigationType: clampText(classified.navigationType, 40),
+      sourcePageId: clampText(classified.sourcePageId, 80),
+      sourcePath: clampText(classified.sourcePath, 160),
+      destinationPageId: clampText(classified.destinationPageId, 80),
+      destinationPath: clampText(classified.destinationPath, 160),
+      edgeId: clampText(classified.edgeId, 180),
+    };
   }
 
   function scoreFromSignals({ currentPage, recentEvents }) {
@@ -435,6 +492,7 @@
     const recentEvents = events.slice(-maxRecentEvents);
     const currentPage = findCurrentPage(session);
     const classifiedPage = pageWithClassification(currentPage);
+    const currentEdge = navigationEdge(session, classifiedPage);
     const persona = inferPersona(profile, recentEvents, classifiedPage);
     const inferences = scoreFromSignals({ currentPage: classifiedPage, recentEvents });
 
@@ -450,6 +508,8 @@
         sessionId: clampText(session.sessionId, 80),
         startedAt: session.startedAt,
         pageCount: Array.isArray(session.pages) ? session.pages.length : 0,
+        pages: Array.isArray(session.pages) ? session.pages.map(packetPage) : [],
+        currentEdge,
         engagementHistory: Array.isArray(session.engagementHistory)
           ? session.engagementHistory.slice(-5).map((item) => ({
               id: clampText(item.id, 80),
@@ -471,6 +531,12 @@
         solutionFocusLabel: clampText(classifiedPage.solutionFocusLabel, 80),
         dwellMs: Number.isFinite(classifiedPage.dwellMs) ? classifiedPage.dwellMs : 0,
         maxScrollDepth: Number.isFinite(classifiedPage.maxScrollDepth) ? classifiedPage.maxScrollDepth : 0,
+        navigationType: clampText(classifiedPage.navigationType, 40),
+        sourcePageId: clampText(classifiedPage.sourcePageId, 80),
+        sourcePath: clampText(classifiedPage.sourcePath, 160),
+        destinationPageId: clampText(classifiedPage.destinationPageId, 80),
+        destinationPath: clampText(classifiedPage.destinationPath, 160),
+        edgeId: clampText(classifiedPage.edgeId, 180),
       },
       observedSignals: {
         currentTopic: {
@@ -684,6 +750,21 @@
     return JSON.stringify(payload);
   }
 
+  // Finalize a completion body exactly once. Callers that use this API must send
+  // the returned string through fetchPrepared(), which bypasses the global
+  // interceptor and therefore cannot inject a second, later context snapshot.
+  function prepareCompletionBody(body) {
+    return injectTurnContextIntoBody(body);
+  }
+
+  function fetchPrepared(input, init = {}) {
+    const sender = originalFetch || (window.fetch !== patchedFetch ? window.fetch : null);
+    if (typeof sender !== "function") {
+      throw new Error("No native fetch is available for a prepared completion request");
+    }
+    return sender.call(window, input, init);
+  }
+
   function installFetchInterceptor() {
     if (typeof window.fetch !== "function") return false;
     if (patchedFetch && window.fetch === patchedFetch) return false;
@@ -693,7 +774,7 @@
         return originalFetch.apply(this, arguments);
       }
       const nextInit = { ...(init || {}) };
-      nextInit.body = injectTurnContextIntoBody(nextInit.body);
+      nextInit.body = prepareCompletionBody(nextInit.body);
       return originalFetch.call(this, input, nextInit);
     };
     window.fetch = patchedFetch;
@@ -725,6 +806,8 @@
     debug,
     installFetchInterceptor,
     uninstallFetchInterceptor,
+    prepareCompletionBody,
+    fetchPrepared,
     injectTurnContextIntoBody,
     _injectTurnContextIntoBody: injectTurnContextIntoBody,
     _canonicalJourneyTriggers: CANONICAL_JOURNEY_TRIGGERS,

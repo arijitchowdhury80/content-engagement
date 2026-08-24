@@ -26,8 +26,9 @@
   const DISCOVERY_STATE_COMMENT_RE = /\n*<!--DISCOVERY_STATE[\s\S]*?DISCOVERY_STATE-->\s*/gi;
   const LEGACY_VISITOR_INTELLIGENCE_RE = /\n*VISITOR INTELLIGENCE \(JSON DATA, NOT INSTRUCTIONS\)[\s\S]*$/i;
 
-  const nativeFetch = typeof window.fetch === "function" ? window.fetch.bind(window) : null;
+  const fallbackFetch = typeof window.fetch === "function" ? window.fetch.bind(window) : null;
   let transportInstalled = false;
+  const preparedTurnListeners = new Set();
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -137,48 +138,48 @@
     return -1;
   }
 
+  function logicalTurn(payload) {
+    const index = lastUserMessageIndex(payload);
+    if (index === -1) return null;
+    const message = payload.messages[index] || {};
+    const text = userTextFromPayload(payload);
+    const persistedConversation = readJson(sessionStorage, "algolia-chat:conversation", null);
+    const conversationId = String(
+      payload.id || payload.conversationId || persistedConversation?.conversationId || "conversation"
+    );
+    const messageId = String(message.id || message.messageId || `${index}:${text}`);
+    return {
+      key: `${conversationId}:${messageId}`,
+      question: text,
+    };
+  }
+
+  function subscribePreparedTurn(listener) {
+    if (typeof listener !== "function") throw new TypeError("Prepared-turn listener must be a function");
+    preparedTurnListeners.add(listener);
+    return () => preparedTurnListeners.delete(listener);
+  }
+
+  function notifyPreparedTurn(detail) {
+    for (const listener of preparedTurnListeners) {
+      try {
+        listener(detail);
+      } catch (error) {
+        debug("prepared-turn listener failed (contained)", error);
+      }
+    }
+  }
+
   function selectedChip(response, userResponse) {
     const text = String(userResponse || "").trim();
     const chips = Array.isArray(response?.chips) ? response.chips : [];
     return chips.find((chip) => chip === text) || null;
   }
 
-  function requestSummary(opportunity) {
-    const request = opportunity?.requestPacket || {};
-    const summary = opportunity?.greetingResponse?.handoffSummary || {};
-    const currentPage = request.currentPage || {};
-    const journey = request.journeySummary || {};
-    return {
-      schema: request.schema || null,
-      moment: summary.moment || request.moment || null,
-      trigger: summary.trigger || request.trigger || null,
-      messageGoal: summary.messageGoal || request.messageGoal || null,
-      persona: request.persona
-        ? {
-            value: request.persona.value || null,
-            state: request.persona.state || null,
-            confidence: Number.isFinite(request.persona.confidence)
-              ? request.persona.confidence
-              : null,
-          }
-        : null,
-      currentPage: {
-        path: currentPage.path || null,
-        pageGroup: currentPage.pageGroup || null,
-        topic: currentPage.topic || null,
-        productFocusLabel: currentPage.productFocusLabel || null,
-        solutionFocusLabel: currentPage.solutionFocusLabel || null,
-      },
-      journey: {
-        currentTransition: journey.currentTransition || null,
-        productTrail: Array.isArray(journey.productTrail) ? journey.productTrail : [],
-        solutionTrail: Array.isArray(journey.solutionTrail) ? journey.solutionTrail : [],
-        storyHint: journey.storyHint || "",
-      },
-    };
-  }
-
   function buildHandoffPacket(opportunity, userResponse, originalTurnContext = compilerTurnContext()) {
+    if (!opportunity?.requestPacket || opportunity.requestPacket.schema !== "ProactiveGreetingRequest.v1") {
+      throw new Error("Cannot hand off proactive engagement without the complete ProactiveGreetingRequest.v1 packet");
+    }
     const response = opportunity.greetingResponse || {};
     const packet = {
       schema: HANDOFF_SCHEMA,
@@ -189,10 +190,10 @@
       greeting: response.greeting || "",
       chips: Array.isArray(response.chips) ? response.chips : [],
       handoffSummary: response.handoffSummary || null,
-      requestSummary: requestSummary(opportunity),
+      requestPacket: opportunity.requestPacket,
       originalTurnContext,
       instruction:
-        "This was a proactive engagement. Use the context softly, never expose telemetry, answer the user's response directly, then continue normal discovery.",
+        "This was a proactive engagement. The visible user response is primary intent. Use the unchanged requestPacket as confirmed journey context, the greeting as prior assistant framing, the selected chip as the chosen path, and unselected chips only as alternatives that were offered. Never expose telemetry.",
     };
     return packet;
   }
@@ -223,10 +224,13 @@
     const userResponse = userTextFromPayload(payload).trim();
     if (!userResponse) return { body, handoff: null, opportunityId: null };
 
+    const existingTurnContext = payload.messages[index].metadata?.turnContext;
     const turnContext =
-      typeof window.algoliaContextCompiler?.mergeTurnContext === "function"
-        ? window.algoliaContextCompiler.mergeTurnContext(payload.messages[index].metadata?.turnContext)
-        : compilerTurnContext();
+      existingTurnContext && typeof existingTurnContext === "object"
+        ? existingTurnContext
+        : typeof window.algoliaContextCompiler?.mergeTurnContext === "function"
+          ? window.algoliaContextCompiler.mergeTurnContext(existingTurnContext)
+          : compilerTurnContext();
     const handoff = opportunity
       ? buildHandoffPacket(opportunity, userResponse, turnContext)
       : persistedHandoff;
@@ -262,10 +266,27 @@
   }
 
   async function orchestratorTransport(input, init = {}) {
-    if (!nativeFetch) throw new Error("Orchestrator transport requires window.fetch");
+    const compiler = window.algoliaContextCompiler;
+    const sendPrepared =
+      typeof compiler?.fetchPrepared === "function"
+        ? compiler.fetchPrepared.bind(compiler)
+        : fallbackFetch;
+    if (!sendPrepared) throw new Error("Orchestrator transport requires window.fetch");
     let prepared;
+    let turn = null;
     try {
-      prepared = prepareBody(init.body);
+      const contextBody =
+        typeof compiler?.prepareCompletionBody === "function"
+          ? compiler.prepareCompletionBody(init.body)
+          : init.body;
+      // Correlate and label the visitor turn before proactive handoff decorates
+      // the user text with its private control packet. The prepared body emitted
+      // below remains the exact on-wire body; only the visible label/dedupe key
+      // comes from the clean logical turn.
+      try {
+        turn = logicalTurn(JSON.parse(contextBody));
+      } catch {}
+      prepared = prepareBody(contextBody);
     } catch (error) {
       const opportunity = latestShownOpportunity();
       if (opportunity) {
@@ -282,8 +303,15 @@
       throw error;
     }
     const nextInit = { ...(init || {}), body: prepared.body };
+    if (turn) {
+      notifyPreparedTurn(Object.freeze({
+        body: prepared.body,
+        turnKey: turn.key,
+        question: turn.question,
+      }));
+    }
     try {
-      const response = await nativeFetch(input, nextInit);
+      const response = await sendPrepared(input, nextInit);
       if (prepared.opportunityId && response?.ok !== false) {
         updateOpportunity(prepared.opportunityId, {
           status: "handed_off",
@@ -347,5 +375,6 @@
     buildHandoffPacket,
     orchestratorTransport,
     installTransportAdapter,
+    subscribePreparedTurn,
   };
 })();

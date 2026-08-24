@@ -1,0 +1,139 @@
+{
+  "asset_core": {
+    "path": "/sites/www/files/algolia-judge-core-judge-v2-e41ad840af5f.js",
+    "operation": "reuse",
+    "sha256": "e41ad840af5fdbb03c52dd143b70ff9be6d3d289bb2e08420801734cf26476d9"
+  },
+  "asset_badge": {
+    "path": "/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js",
+    "operation": "reuse",
+    "sha256": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37"
+  },
+  "asset_chat": {
+    "path": "/sites/www/files/algolia-chat-judge-v2-94159b5f0d5b.js",
+    "operation": "reuse",
+    "sha256": "94159b5f0d5b06dd86f86b11aa8805b748df24a32f5f3795e28236c17b01ab64"
+  },
+  "setBlockHtml": {
+    "data": {
+      "jcr": {
+        "block": {
+          "html": {
+            "setValue": true
+          },
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publish_core_content": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-judge-core-judge-v2-e41ad840af5f.js/jcr:content"
+          }
+        }
+      }
+    }
+  },
+  "publish_core": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-judge-core-judge-v2-e41ad840af5f.js"
+          }
+        }
+      }
+    }
+  },
+  "publish_badge_content": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js/jcr:content"
+          }
+        }
+      }
+    }
+  },
+  "publish_badge": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-confidence-badge-judge-v2-f296211cff9c.js"
+          }
+        }
+      }
+    }
+  },
+  "publish_chat_content": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-judge-v2-94159b5f0d5b.js/jcr:content"
+          }
+        }
+      }
+    }
+  },
+  "publish_chat": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/files/algolia-chat-judge-v2-94159b5f0d5b.js"
+          }
+        }
+      }
+    }
+  },
+  "versionBlock": {
+    "data": {
+      "jcr": {
+        "block": {
+          "createVersion": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  },
+  "publishDriftSubtree": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift"
+          }
+        }
+      }
+    }
+  },
+  "publishBlock": {
+    "data": {
+      "jcr": {
+        "target": {
+          "publish": true,
+          "node": {
+            "path": "/sites/www/home/drift/custom-code-block"
+          }
+        }
+      }
+    }
+  }
+}

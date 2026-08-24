@@ -1,0 +1,832 @@
+{
+  "schema": "SharedIntegrationDonorManifest.v1",
+  "runId": "2026-08-20-001",
+  "baseline": {
+    "head": "f5a399589ab2dfc21210fbfa525a25cedb464cd4",
+    "mergeBase": "c9d252edff64f52f33e242477267614efdc2188d",
+    "snapshotManifestSha256": "74fb8fe1b8372ae8dc45fa8b1ea09c8f06485d6e134609b1ecb810bb39d2b619"
+  },
+  "preservationBranch": "codex/chat-architecture-reconciliation-2026-08-20-001",
+  "preservationCommits": {
+    "runtime": "69631c6",
+    "presentation": "cc4e8e3",
+    "adapter": "f19d9e5",
+    "tests": "ce77d2e",
+    "documentation": "not_committed_raw_or_generated_evidence_quarantined"
+  },
+  "nonLossRule": "No row may be omitted or donor source removed until its disposition and replacement evidence are recorded.",
+  "counts": {
+    "total": 84,
+    "base_file_dirtied": 21,
+    "committed_then_dirtied": 20,
+    "committed_integration_only": 13,
+    "untracked_addition": 30
+  },
+  "rows": [
+    {
+      "path": "algolia-chat/eslint.config.js",
+      "snapshotSha256": "72f5a97500c448f469d57dd2da3c4082cee2e564563d9900371fe8f5ed2037a7",
+      "headSha256": "60ba2f3b7b29e15301f44779036df452809983a66fb7bc39cc4a69d8f207524e",
+      "mergeBaseSha256": "60ba2f3b7b29e15301f44779036df452809983a66fb7bc39cc4a69d8f207524e",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/package-lock.json",
+      "snapshotSha256": "7d68d6c8c518672427bdaf5fd638f87fba91efeac94801d80979cd735e93400f",
+      "headSha256": "db07a9f3b0287649867c9993859b5f65d86893783d6934f5c17f6b93acbc3a5c",
+      "mergeBaseSha256": "db07a9f3b0287649867c9993859b5f65d86893783d6934f5c17f6b93acbc3a5c",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/package.json",
+      "snapshotSha256": "62d40a35036f59180806364f52301a58560f1e9290e3392c05e790e7727e6166",
+      "headSha256": "8941f34905497f96b61fee655ed4536d96ec385cf8de195d02c07a3041a87cdc",
+      "mergeBaseSha256": "8941f34905497f96b61fee655ed4536d96ec385cf8de195d02c07a3041a87cdc",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/src/chat-embed.tsx",
+      "snapshotSha256": "46cff633aa3f488a5b6d320f0544406baf0b19987f947782ea0c0ad55243ffd6",
+      "headSha256": "55200ad113a2296f54ca19bdd3adb808ac5afa6ae83e11c7141f444342337610",
+      "mergeBaseSha256": "ba8b2d36510e556c2a1569f4323e5b2bb74a6f02defce7d3a194111360feebbb",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/src/chat/AgentElement.ts",
+      "snapshotSha256": "0dd51dde0ccf2ba551e24417acf33f081d39937433020281fbfac5058cdcec21",
+      "headSha256": "0dd51dde0ccf2ba551e24417acf33f081d39937433020281fbfac5058cdcec21",
+      "mergeBaseSha256": "cf19d40854b04fac074c661aebe5b4b55a2dcdc88977f42a5a0f3950837ac67f",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/src/chat/discoveryOverride.test.ts",
+      "snapshotSha256": "89d91862d05db64a31a1159f1f5025c3114f4ca238f59034e1617aa1ab298689",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/src/chat/discoveryOverride.ts",
+      "snapshotSha256": "cc49d64a53c478f2717ee68721ce792f26abc0f68a822d43a0aec4d121f95f60",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/src/jahia-embed.ts",
+      "snapshotSha256": "8049e9a54cc6b2dff052d43646eba7b348e18da98484e2b6c3a154cb08188f21",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "single-file Jahia import topology proof of concept"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/src/judge/badge/ConfidenceBadgeElement.ts",
+      "snapshotSha256": "260299937b18a588635fb441b3af9346e454315c1557d2d836d66c85d3a886e7",
+      "headSha256": "260299937b18a588635fb441b3af9346e454315c1557d2d836d66c85d3a886e7",
+      "mergeBaseSha256": "39c98320f5491616787f2da8bfb9afa9c3cafac010c1d16cee5c09dbfcd2de1a",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/src/tracker-embed.ts",
+      "snapshotSha256": "89041c33b4176fc5babab7d12456b4b1ef548af5a4620366819b25fed8bb8089",
+      "headSha256": "6913b291000870543313c9db2d44c69b907a63b0e1910a108b5944a3ffdbe7a3",
+      "mergeBaseSha256": "6913b291000870543313c9db2d44c69b907a63b0e1910a108b5944a3ffdbe7a3",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [
+        "legacy acs storage exchange; fail-open default must be replaced"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/tsconfig.app.json",
+      "snapshotSha256": "a66385beab44f8c3a16ba289e82c3c2ab3efb261f706bbf73a22116cbaa1b214",
+      "headSha256": "5c6277058ad595453bc707d838501d33cbf954a20f214538f2e62339896d2e3d",
+      "mergeBaseSha256": "5c6277058ad595453bc707d838501d33cbf954a20f214538f2e62339896d2e3d",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "algolia-chat/vite.jahia.config.ts",
+      "snapshotSha256": "96c1aef0bca7863e985395fc983f829b3d67a9afaf7f7dacbc08685b410fc85c",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/MessageMarkdown.test.ts",
+      "snapshotSha256": "6361681efc48debfbe8da08893eef6da39af57728ae654e9bc1d913da310a3c6",
+      "headSha256": "3ec9e7771a26df6313caafd45d643a173fe5123b6db44e6b56650d03013a450b",
+      "mergeBaseSha256": null,
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/agentStudio.test.ts",
+      "snapshotSha256": "6297b661cebde0ffa33a0bac8090679ae06430fb69fad600a88cd5fb377f95e8",
+      "headSha256": "8acd229a1c05e6eec9e8462dd1396ece123474805fe8883b2ac54cf9fd8c0895",
+      "mergeBaseSha256": "0e86fa47144da9090da05bd7a7c20528109e11433799a042dab1fa5b07eba670",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/chiefJudge.prompt.test.ts",
+      "snapshotSha256": "c81b44064ee49ae37016e746df03df43b8dc7b2c2c964aad5657444a15e1831a",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/conversationPersistence.test.ts",
+      "snapshotSha256": "2d43a484938781a2fdb8eb77dc105cfc8c76b181516f323114e8e7de84056be7",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/detGround.test.ts",
+      "snapshotSha256": "3c2a88305d0e08c70e416041527a67caf23718471bc880386a0dab05b10dd57f",
+      "headSha256": "011604f5ca76b5664a24e9c1964c5fcd78b1069249976b6722d27f3eec1b7090",
+      "mergeBaseSha256": null,
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/discoveryConfig.test.ts",
+      "snapshotSha256": "ead31e2f150d0658c63f037e773ecfffb33249fa9a734f9fae891fb87f8ad68a",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/discoveryLedger.test.ts",
+      "snapshotSha256": "11c60cffba45f3a2b0bc99fd03be799871a48955740423e2d2859a6badb4784c",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/neutrality.guard.test.ts",
+      "snapshotSha256": "e48a567902d5dd9692a96de8534a5f1e3705781f863ddfd5056c76f716b87a4f",
+      "headSha256": "fcb7e5d73800a00e687392fc62b422ebb9462ff914ed30af38a965833684bea8",
+      "mergeBaseSha256": "fcb7e5d73800a00e687392fc62b422ebb9462ff914ed30af38a965833684bea8",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/personAgent.contract.test.ts",
+      "snapshotSha256": "d9b836435b041877bcaf03d3d205207be443ad90e84c9f40459d0ff4644fc25f",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/personContracts.test.ts",
+      "snapshotSha256": "a44667f09dc4445071bf9efa095c9833b93ff76a16c2b7bced2b242935d84b20",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/recordFields.test.ts",
+      "snapshotSha256": "2fc138c6019124e70b53bedea2360e83d602d59974cd9d60c2646d10370f7713",
+      "headSha256": "2fc138c6019124e70b53bedea2360e83d602d59974cd9d60c2646d10370f7713",
+      "mergeBaseSha256": "0ad2747d1aa5f1cc27b923531b5502bb9ee8d8a5467430a4ea52b4bf65af65bf",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/runtimeProgress.test.ts",
+      "snapshotSha256": "171ef852169235bcb96d20e91b703c2d982079d7f2b58a68b61bc704a406da8f",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "ProcessingProgress.v1 characterization",
+        "six stages"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/turnContext.test.ts",
+      "snapshotSha256": "1e8504815cc24a1a81e6eea4f1ef3e3e9b0f19f6bfc55776b804b597dda0f8c2",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/turnRunner.discovery.test.ts",
+      "snapshotSha256": "5dcb9c0d6aec01dd1affb9cd7eb73be20e04722daab8aaf6d735bea3b13312fd",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/turnRunner.specialist.integration.test.ts",
+      "snapshotSha256": "72d1e86c0778698e35e65c335f383388c6716e50f0cfe4cb8c837bf58614b56d",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "human-gated specialist flow",
+        "invalid-key and late-error behavior"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/twoConsumer.fixture.test.ts",
+      "snapshotSha256": "d759f839e236b1618e5a45d136e53b4aa9a5cda6397f326a17dd6aae92f28586",
+      "headSha256": "9bc2cbfecd5b2307fe0e6be5dcab7c9d73cf6daf1c7465aa773fff9e88b47876",
+      "mergeBaseSha256": "9bc2cbfecd5b2307fe0e6be5dcab7c9d73cf6daf1c7465aa773fff9e88b47876",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/useChat.debug.test.ts",
+      "snapshotSha256": "71f8e150f79def138ff773acd44cec733073e9bae0dbacb715f92f9389b4fc29",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/visibleAnswer.test.ts",
+      "snapshotSha256": "338841d1e77630a989f5d209810e2fc5f1a0973233300df73e7f8d4b8b37be75",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/__tests__/widgetUiContracts.test.ts",
+      "snapshotSha256": "5f6ddc387d9edfe4e7b58a5446df43b7928431d5b82b2e895e39a6a1d592041c",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "stable message IDs",
+        "copy-before-submit behavior"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/ChatWidget.tsx",
+      "snapshotSha256": "4da3ed8c4f0633e4a22eea2a1d67930e931de78786af1c5f0792b2e5d0365497",
+      "headSha256": "89812c86273f907c2c5e43f1f8e3c5785db5a3793ce09d118f75fa4dcb372731",
+      "mergeBaseSha256": "2e964f7599647fd51aa2b7ae8597311d9d4df82251b837b080916e1b748531ac",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/AppHeader.tsx",
+      "snapshotSha256": "ad27696b1a9d7ced940fb05bfb4e9906a64765bc38650dd4c1d0c49c55db2351",
+      "headSha256": "a181a32073061bffcf6d9681a4748296d26c1ee9a15d7f30390db7d78b751f4c",
+      "mergeBaseSha256": "a181a32073061bffcf6d9681a4748296d26c1ee9a15d7f30390db7d78b751f4c",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/ChatMessage.tsx",
+      "snapshotSha256": "43a4f6b54d1adc87e16410ef59bfab26d389872372f2d7a53bf1595485fdf8c0",
+      "headSha256": "7c796257d5f851cb7afcc11f4065a1e6afd88646d5bc5763d72195d97f93551a",
+      "mergeBaseSha256": "01b88ae84d9e24093512a626aef9fac8c70a66e8746980c8366cde8e55e2a799",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/ChatPanel.tsx",
+      "snapshotSha256": "ece03fcad735a90e6aaf7b08383cac9c1269d937e0deab1c48d2898d3b9be5e8",
+      "headSha256": "3db15dec04daf6bd35c73d48e5a1fed23dbd310ccf2d4a7d4d092eb629614f80",
+      "mergeBaseSha256": "3db15dec04daf6bd35c73d48e5a1fed23dbd310ccf2d4a7d4d092eb629614f80",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/DeepDivePrompt.tsx",
+      "snapshotSha256": "46543e1f17be2708c74af14f3f77b8154396cff68f80b29be268bb7eba969c36",
+      "headSha256": "46543e1f17be2708c74af14f3f77b8154396cff68f80b29be268bb7eba969c36",
+      "mergeBaseSha256": "674b2abe02e61d1ef8a149be7c8944e7ccf00dc13576a337be480da2fc3a0e9c",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/DiscoveryCard.tsx",
+      "snapshotSha256": "60f5e567a32545e264686d4b3eefa41aacf8b10eb405da25be460988e67bb920",
+      "headSha256": "ad129b2f8a38cfd9d6dae5748317e281bfec4818e50863fa147e8fca56df9dea",
+      "mergeBaseSha256": "9c23d33f7c0d638ddb16e32b240978ead5dce3a134eeeb2b8f4ed51582ce3a8b",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/EmptyState.tsx",
+      "snapshotSha256": "8182741c7abce3d5219b633a75dbf51b39fac5c0959c87f75320b14184f974d8",
+      "headSha256": "759446aee5024f4bcbafea42c0b14154fc3e29b4d20f28632b8751fe4d83c7ae",
+      "mergeBaseSha256": "759446aee5024f4bcbafea42c0b14154fc3e29b4d20f28632b8751fe4d83c7ae",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/MessageMarkdown.tsx",
+      "snapshotSha256": "7553278dd5ade8dd0410e8edb16bf1cc8c6dba2d61768905e3699d77a1c29332",
+      "headSha256": "56a948f1fa1296d8f5864fd6defd3f0ea8d2fd2c6f6542422bc99be9ec5f1c60",
+      "mergeBaseSha256": "1fbe93bedc3bb4e3d2bfca88161fbd50d00b79c3e24bde12f167e0c6813d7326",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/PoweredBy.tsx",
+      "snapshotSha256": "2189985f524bd30ed95f0f7659721d00ea2a623b1787e55435a02694a5560f12",
+      "headSha256": "6b3ec2ea452dbf35b4042c06c09a7f3a194dcaa13cfaae026a569c9ff2c73d6d",
+      "mergeBaseSha256": "6b3ec2ea452dbf35b4042c06c09a7f3a194dcaa13cfaae026a569c9ff2c73d6d",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/ProactiveGreeting.tsx",
+      "snapshotSha256": "516d609c295f091e31950c3ff1165f574512d48048815a46d6c8febd8bb39170",
+      "headSha256": "8d1c4abe9c093bffb4b30cee1dbbc77dc1bf438c88b63d0e05910a09de4a3c63",
+      "mergeBaseSha256": "8d1c4abe9c093bffb4b30cee1dbbc77dc1bf438c88b63d0e05910a09de4a3c63",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/SampleQuestions.tsx",
+      "snapshotSha256": "2bfa5cfe2a08c14ee0a3ab02ab6df2175cf512008eb5d1215dcf343e529511b7",
+      "headSha256": "13bedbf6008d6a361abd8edb18ed8007a7b9b0002879183204de616b21dda93b",
+      "mergeBaseSha256": "5c20f5a11a3dd5f400dfeb24fc944385844d30f678680c605e732417de61d440",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/SourcePills.tsx",
+      "snapshotSha256": "2da7469ee014a45d804775e4260b8aaa60d948760875251a5ab69ff7767eaf3f",
+      "headSha256": "9880792d33ee50894253df83ce0aa18bfde3d1df5ae98cdb51dbe1ab30ba53ac",
+      "mergeBaseSha256": "927969a84d4f202419118520617997591ebea0cb278ec334fef68fa03927824c",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/ThinkingIndicator.tsx",
+      "snapshotSha256": "d42a5d800d66c2457922f5e5d0627f1d90d7a5a4168fe4d1cb0711076fd05f21",
+      "headSha256": "5f738bd0c36174eb512931d123e6621b423f82194f11f1b79d74980813aacdc2",
+      "mergeBaseSha256": "5f738bd0c36174eb512931d123e6621b423f82194f11f1b79d74980813aacdc2",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/components/copyQuestion.ts",
+      "snapshotSha256": "ea0c7580b9a1a2a59ce76cc855661569938afc0efe19e0769db2e4ae2988c9ab",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/conversationPersistence.ts",
+      "snapshotSha256": "8b251a421b1281542657d0a012b303101007963bb6f6b5cdc73255d22704089d",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "conversation schema",
+        "stable IDs",
+        "interrupted-turn normalization",
+        "restore/reset"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/discoveryLedger.ts",
+      "snapshotSha256": "8018486a51f90528e66f1783f67d33308bff536316bc4cd8f20b0962390c05b5",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "pure ledger transitions",
+        "suppression",
+        "marker validation"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/lib/sources.ts",
+      "snapshotSha256": "da89d89651ccb8fa56630e5e639715827a7c9ffe6c6a58acb3f844bcd85e8f4d",
+      "headSha256": "da89d89651ccb8fa56630e5e639715827a7c9ffe6c6a58acb3f844bcd85e8f4d",
+      "mergeBaseSha256": "b32932c68525e0b851001d94b7afe3bdd2a575fc6bf7f59297abe21a9d2d1093",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/turnRunner.ts",
+      "snapshotSha256": "8dd66e46d66aeefaf41c1f6fe4b467966ec4fdfcc1a62ef928e6ab062e6f9ea9",
+      "headSha256": "b596a7c8d1f26140dba4fc1934386f04139bce438ccac5ba9411aac4011a6904",
+      "mergeBaseSha256": "4ddfba709302a802925b2579882b8c1bef0bd89d65581cc61ae74895c40c5788",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [
+        "specialist accept/decline gate",
+        "one-dispatch termination",
+        "policy extraction donor"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/types.ts",
+      "snapshotSha256": "deec6907ebffab83736dbf3d304bbd3f0f0bf3fe54af38d926c8617ecabe7786",
+      "headSha256": "72f0b95d683a3e2e51604438bb60c59beab9c326024d207fe5c9a0f35e9a71f1",
+      "mergeBaseSha256": "9dc8d5be9074113957922eb4988ad7173173fc78f89823dabf6616d3f0e67ed3",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/useChat.ts",
+      "snapshotSha256": "afed6f4447c5d234ed42075f9cd5e41eaf16cd431e52abf3941ceb11858aabc6",
+      "headSha256": "e1b0cf7425b0d6c3ad9f9c20a7f84a87799c30c7ea57e8dac5b3e9e4095dea08",
+      "mergeBaseSha256": "e3ccd923055c22d1efe50a6ae63f416820bae43a51cb9ab161a1bb78fce502ac",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [
+        "diagnostic transitions",
+        "processing progress; abort regression must not port"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chat/visibleAnswer.ts",
+      "snapshotSha256": "2b964fd571937aa6dac37a99b8bc3509ac74da5bb278ce423de750022644aa99",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "visible-answer cleanup",
+        "fenced-code preservation"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/chatRenderer.tsx",
+      "snapshotSha256": "42257d1c41fcf60717d9356a2913d9f44e9fac8e26ce9ca6e1a1b671330b986b",
+      "headSha256": "003dcb9853c38b962d7af854eb6e33fa68b1a26c80d87bdc782c0c4a0f8def98",
+      "mergeBaseSha256": "003dcb9853c38b962d7af854eb6e33fa68b1a26c80d87bdc782c0c4a0f8def98",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/config/defaults.ts",
+      "snapshotSha256": "9b6f1b7a6ee00d27920f51fce02f8a3c7921f5161419114938c490ef73b144c9",
+      "headSha256": "12a1b5956aacd31c8cc3a6aa163ed595f8d0ea23232563422201789ccbdfad48",
+      "mergeBaseSha256": "69ca5aa3e7de8e994b5c98cda3c4ee4390a27882ea50a4cad63901874ce0a0ce",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/config/instance.ts",
+      "snapshotSha256": "005e85b029e073967273381d7dd708ba93393ecccec8cb6c4e73aa8d04d70cf3",
+      "headSha256": "5c6514869641313c78f38badf41b0ad3d030106444df331a3e1b0bae20c4495f",
+      "mergeBaseSha256": "64c949ea7ef92f8dc6d9e0c7c04fad9ff939402084860d73d6f8352b579890f9",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/config/orchestratorTransport.ts",
+      "snapshotSha256": "4cf3410f6016b585d6efda24a21246dec36a85438ea2004f5e7c0c1292392152",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "explicit transport concept; redesign as instance port"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/config/runtime.ts",
+      "snapshotSha256": "7012abb0ef33e9038ef058184421c488a6ab4f015433cf8fc717a050e5b93db5",
+      "headSha256": "dd7c6a995e60016116bd732dfca46d39d3b17df9b85d5f2b3ef5de1db25885a3",
+      "mergeBaseSha256": "3a626fbbf0d07a6d9dc60ce5a754d7afdefd1cd3e5704fc9c63b9e1ba1c9c670",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/config/strings.ts",
+      "snapshotSha256": "cadf934f7412f16d94f23293e6ceed6126acbe52ccb44c076cf0fe7dd49a13f6",
+      "headSha256": "1d87b3fbe8978b15bb8953ce75ed8e1abde0024308ec6a80e6397e9c3af0a895",
+      "mergeBaseSha256": "78259ec62d34f573cf812661f4825e4e1122aa01a011d1926e038748c51940a6",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/connectChatPerson.ts",
+      "snapshotSha256": "2abda4937888e61669980aa475c06d93032a0029bc24469d84d39a3d3ec01354",
+      "headSha256": "03f2ee536e94574c08466ca0c1456a6a3d3d1c9323e73fb354f7a94748db1bb4",
+      "mergeBaseSha256": "03f2ee536e94574c08466ca0c1456a6a3d3d1c9323e73fb354f7a94748db1bb4",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/index.ts",
+      "snapshotSha256": "2523369671abb74d2cd68b2264f81499f479a9bb8fc9aa6201fff170c0bf134b",
+      "headSha256": "aa486b597e95d354c2e9f5d0bb59c8701651dfa971147b7e0fa81f2f2e03d039",
+      "mergeBaseSha256": "aa486b597e95d354c2e9f5d0bb59c8701651dfa971147b7e0fa81f2f2e03d039",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/judge/chiefJudge.ts",
+      "snapshotSha256": "11241546b58dee81b25e8496cec464be1f057bb6b35be9ebc1547804ff2c82fd",
+      "headSha256": "b92423504cb4f02e678e695ef5fe38e5d1e18ccc16f3a9540fb7e5ffa64428bb",
+      "mergeBaseSha256": "b92423504cb4f02e678e695ef5fe38e5d1e18ccc16f3a9540fb7e5ffa64428bb",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/judge/components/JudgeDrawer.tsx",
+      "snapshotSha256": "4d04d0e099df4b0663e3ba10399c616d12e002315613f3bcee2d7391b96c15a4",
+      "headSha256": "4d04d0e099df4b0663e3ba10399c616d12e002315613f3bcee2d7391b96c15a4",
+      "mergeBaseSha256": "a718e368fca57212b7a9ee731d67c064ae318b45f7bda09aaf16f604f6d944d2",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/judge/detGround.ts",
+      "snapshotSha256": "1b59974a2ab191f96774a5da330fad11d24b9a49085929e9de7619b2bac8e438",
+      "headSha256": "0db825c4051194c8e985a4c1bc0244f379a4d8e90c322c4c39b27fbf869155c3",
+      "mergeBaseSha256": null,
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/judge/types.ts",
+      "snapshotSha256": "69465b6014d69e45e96a66798097a31fc5bbea643820af17697fa25802055c98",
+      "headSha256": "69465b6014d69e45e96a66798097a31fc5bbea643820af17697fa25802055c98",
+      "mergeBaseSha256": "b36ee1e0ca15415f115f5a6801fa7819a5257ce0d607a1772e659fdeb72542ee",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/judge/useJudge.ts",
+      "snapshotSha256": "751273185059974f4d22775ce21099c9fa808f0969754363066bb2adbe564fa5",
+      "headSha256": "c76d2310bf4601e914cdb16b3e95bb979e0219094c082da88ac578830823dd6b",
+      "mergeBaseSha256": "34c350df0e8ccb19e979759b792e024b577f60602696e07d3a20f583bb8e4ecf",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/person/contracts.ts",
+      "snapshotSha256": "894d9734b7eaab94e6c3868cf9597b5bb38138109216ed39540549e85d717d00",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "VisitorSignalPacketV1",
+        "VisitorIntelligencePacketV1",
+        "packet validation",
+        "normalization",
+        "fingerprinting"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/person/localStorageSource.ts",
+      "snapshotSha256": "249107585a58789da43c9f511199c762fa20e248ae9c2fc1f5ce9f7a73e3fa05",
+      "headSha256": "cee9985327c69627fb0b978f7369659b932da21778c4b8d8d19366eb96d190b0",
+      "mergeBaseSha256": "cee9985327c69627fb0b978f7369659b932da21778c4b8d8d19366eb96d190b0",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/person/personAgent.ts",
+      "snapshotSha256": "0d46cccc293fb217739fb67512246e91ffea93f3023301c76355e5b5e1b5a076",
+      "headSha256": "f6ca402754fe00a34ca90e1541f2ca7c8ef35d3a0a35b8b093d5215b2884c802",
+      "mergeBaseSha256": "f6ca402754fe00a34ca90e1541f2ca7c8ef35d3a0a35b8b093d5215b2884c802",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/person/turnContext.ts",
+      "snapshotSha256": "186b49ad41decb73b348f4b47d9b58e23af8c69dbe0dfedbb22e22b2b24659cb",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "boundedTurnContext",
+        "4KB envelope",
+        "PII exclusion",
+        "freshness"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/person/visitorDataSource.ts",
+      "snapshotSha256": "58fe17c8f10f19a83ce8d588c8fb6f14c91493713a311e267cbe6950bfc926ff",
+      "headSha256": "ce2a85691a1511d4fd1852144e9eef5ec8d109575782054b7ea11c8a8c3631e4",
+      "mergeBaseSha256": "ce2a85691a1511d4fd1852144e9eef5ec8d109575782054b7ea11c8a8c3631e4",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/shared/agentStudio.ts",
+      "snapshotSha256": "6f5097af2131a5fce15f1492fd65be1535283099cb563a889b937c6f63f1e238",
+      "headSha256": "e3bffff2d5065448a3a5caf1c29d3b09d624ee990d80c2f9029946031fe876f9",
+      "mergeBaseSha256": "6096b8d661158e5f0244bb75680faf3de7dd5db9dfbe890389ccbc12109c312a",
+      "provenanceLayer": "committed_then_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/shared/recordFields.ts",
+      "snapshotSha256": "3b570a531eed5b6a3d5fa188907b3219a5fe7df0bef5eb77aa6f0ef5e8ad7887",
+      "headSha256": "3b570a531eed5b6a3d5fa188907b3219a5fe7df0bef5eb77aa6f0ef5e8ad7887",
+      "mergeBaseSha256": "2d0552b2967a4ca6c3bc6d5f15986a6ea26f5e94579db31bab96825d8c203c7d",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/styles/index.css",
+      "snapshotSha256": "290e4a12ae3f2cdf053e186f75d91d07beefb0eb85c49524b2e00f8aaee89786",
+      "headSha256": "ba3a88d6c94a9d41c734bf4f43123f8700307f38188d1feb9875f11f5635be16",
+      "mergeBaseSha256": "ba3a88d6c94a9d41c734bf4f43123f8700307f38188d1feb9875f11f5635be16",
+      "provenanceLayer": "base_file_dirtied",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/styles/tokens.css",
+      "snapshotSha256": "04f357ad8240d2d57d2fd4b4f0af8ba42fb97a3f157bd59aba0f979d212c3f37",
+      "headSha256": "04f357ad8240d2d57d2fd4b4f0af8ba42fb97a3f157bd59aba0f979d212c3f37",
+      "mergeBaseSha256": "b40567a44068ad2bd9b8653fa7c093fce9f3f855efdcecad106c0956e249e121",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/theme/tokenMap.ts",
+      "snapshotSha256": "aaf6775f4733d1fd53030f1ee92ed16b4336c1a49096d897b55843f492838394",
+      "headSha256": "aaf6775f4733d1fd53030f1ee92ed16b4336c1a49096d897b55843f492838394",
+      "mergeBaseSha256": "172d0ebc74ea7d40c2800737e262a0dc946f74b35e3ba88529dca10eecc467aa",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/src/theme/types.ts",
+      "snapshotSha256": "cfaebb35f35f4b53529c2e7b5d6803f89bf3f57a8f8163df357579297b6a880f",
+      "headSha256": "cfaebb35f35f4b53529c2e7b5d6803f89bf3f57a8f8163df357579297b6a880f",
+      "mergeBaseSha256": "d5c53d26d12cdcacacc25a6ad36539c53eb9efbc18d11c9d71a874c4a27ab7d2",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "chat-central/tailwind.config.ts",
+      "snapshotSha256": "1bfa1e90847d91e597011e3a78eece4f51f52479c222ad9306c76c77cbea36c3",
+      "headSha256": "1bfa1e90847d91e597011e3a78eece4f51f52479c222ad9306c76c77cbea36c3",
+      "mergeBaseSha256": "05026a3705c1ae43ab37e8c0c0d1b94f074a528f2ae4f68e8b1d85c02de244eb",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "scripts/spike-native-turn-context.mjs",
+      "snapshotSha256": "d16370cbce5c8f3a22a9b722fee4d13234ac1c6fef384d3bd8a8a94b95ce52dc",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "tests/fresh-widget-ui-contract.test.mjs",
+      "snapshotSha256": "e82503fa08adfd32c18f6f813e1b4698294a1723e0364d0837e1dbb13f42fd84",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "tests/jahia-fragment-contract.test.mjs",
+      "snapshotSha256": "538e7b706221a831af99e6c74979f941ac1f78d170d1efd325da0576a6145f0c",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "tests/jahia-single-bundle-contract.test.mjs",
+      "snapshotSha256": "b1c28d7f9e83a35a99aa67dd1d5040347dda27f8c6d2b67193bd2ab105c897dc",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "single-file topology characterization"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "tests/person-intelligence.spec.ts",
+      "snapshotSha256": "1d901ca05fc984a6aad09f84273f40623865dc0a4cc749ed7802493c2580869d",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "tests/tracker-person-contract.spec.ts",
+      "snapshotSha256": "be61043e2af1169b26550873a3d3dd071f5cf7d57d7f93110bfd272a95ac9c0c",
+      "headSha256": null,
+      "mergeBaseSha256": null,
+      "provenanceLayer": "untracked_addition",
+      "symbolHighlights": [
+        "consent revocation failing characterization"
+      ],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    },
+    {
+      "path": "website/public/brand/algolia-theme.js",
+      "snapshotSha256": "7c1c7b6aba4e9850cf401d156199bda903897e9049b8f45415ee9f9099ad0d48",
+      "headSha256": "7c1c7b6aba4e9850cf401d156199bda903897e9049b8f45415ee9f9099ad0d48",
+      "mergeBaseSha256": "28f498ffa2595a891c8b0dda4f1f572342c5edb4a172306c0a7f3304cf99beb4",
+      "provenanceLayer": "committed_integration_only",
+      "symbolHighlights": [],
+      "disposition": "must_receive_port_rewrite_replace_characterization_or_retire_with_reason_before_donor_deletion"
+    }
+  ]
+}

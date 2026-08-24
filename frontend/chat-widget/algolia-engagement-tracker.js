@@ -51,6 +51,7 @@
     "acs_user_token",
   ];
   const RESET_QUERY_PARAM = "algoliaProactiveReset";
+  const RESET_DEDUPE_MS = 1000;
 
   const PROFILE_SCHEMA = "AlgoliaEngagementProfile.v1";
   const SESSION_SCHEMA = "AlgoliaEngagementSession.v1";
@@ -61,8 +62,8 @@
   const MAX_PAGES = 40;
   const MAX_ENGAGEMENTS = 20;
   const MAX_TEXT = 120;
-  const DWELL_MILESTONES_MS = [5000, 10000, 15000];
-  const SCROLL_MILESTONES = [25, 50, 75, 100];
+  const DWELL_MILESTONES_MS = [3000, 10000, 15000];
+  const SCROLL_MILESTONES = [30, 50, 75, 100];
   const SAFE_UTM_KEYS = [
     "utm_source",
     "utm_medium",
@@ -89,6 +90,8 @@
   let searchWatchInstalled = false;
   let chatWatchInstalled = false;
   let explicitUserToken = null;
+  let lastResetAt = 0;
+  let lastResetReceipt = null;
 
   function debug(...args) {
     if (DEBUG) console.log(LABEL, ...args);
@@ -105,7 +108,11 @@
 
   function configure(nextConfig) {
     config = { ...config, ...(nextConfig || {}) };
-    debug("configured", config);
+    debug("configured", {
+      ...config,
+      dwellMilestonesMs: [...DWELL_MILESTONES_MS],
+      scrollMilestones: [...SCROLL_MILESTONES],
+    });
   }
 
   function isAllowed() {
@@ -347,7 +354,7 @@
         ...productFocusFromText(text),
       };
     }
-    if (path.includes("/industries") || path.includes("/solutions")) {
+    if (path.includes("/industries") || path.includes("/solutions") || path.includes("/use-cases")) {
       return {
         pageGroup: "solution",
         topic: topicFromText(text, "industry_solution"),
@@ -570,8 +577,23 @@
     }
   }
 
-  function trackPageView() {
+  function browserNavigationType() {
+    try {
+      const type = performance.getEntriesByType?.("navigation")?.[0]?.type;
+      if (type === "reload" || type === "back_forward") return type;
+    } catch {
+      // Navigation timing is optional; a normal navigation is the safe fallback.
+    }
+    return "navigate";
+  }
+
+  function trackPageView(navigationTypeOverride) {
     if (!isAllowed()) return;
+    session = readSession() || session;
+    const sourcePageId = session?.currentPageId || null;
+    const sourcePage = sourcePageId
+      ? session?.pages?.find((page) => page.pageId === sourcePageId) || null
+      : null;
     flushPageDwell();
     clearDwellMilestoneTimers();
 
@@ -581,6 +603,13 @@
     currentPageVisibleDwellMs = 0;
     reachedDwellMilestones = new Set();
     currentScrollMilestone = 0;
+
+    const navigationType = sourcePage
+      ? navigationTypeOverride || browserNavigationType()
+      : "initial";
+    const sourcePath = sourcePage?.path || null;
+    const destinationPath = location.pathname;
+    const edgeId = sourcePageId ? `${sourcePageId}->${currentPageId}` : null;
 
     const classification = pageClassification();
     const page = upsertCurrentPage({
@@ -598,6 +627,12 @@
       productFocusLabel: classification.productFocusLabel,
       solutionFocus: classification.solutionFocus,
       solutionFocusLabel: classification.solutionFocusLabel,
+      navigationType,
+      sourcePageId,
+      sourcePath,
+      destinationPageId: currentPageId,
+      destinationPath,
+      edgeId,
     });
 
     track("page_view", {
@@ -610,6 +645,12 @@
       productFocusLabel: page.productFocusLabel,
       solutionFocus: page.solutionFocus,
       solutionFocusLabel: page.solutionFocusLabel,
+      navigationType: page.navigationType,
+      sourcePageId: page.sourcePageId,
+      sourcePath: page.sourcePath,
+      destinationPageId: page.destinationPageId,
+      destinationPath: page.destinationPath,
+      edgeId: page.edgeId,
       utm: currentUtm(),
     });
 
@@ -754,14 +795,7 @@
         [{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }],
         { duration: 650, easing: "cubic-bezier(.2,.8,.2,1)" }
       );
-      reset();
-      try {
-        document.dispatchEvent(new CustomEvent("algolia-visitor-state-reset", {
-          detail: { source: "assistant_logo", at: Date.now() },
-        }));
-      } catch {
-        // Reset remains valid when custom events are unavailable.
-      }
+      reset({ source: "assistant_logo" });
       return;
     }
 
@@ -930,7 +964,16 @@
     };
   }
 
-  function reset() {
+  function reset(options = {}) {
+    const source = options?.source || "api";
+    const resetAt = Date.now();
+    if (lastResetReceipt && resetAt - lastResetAt < RESET_DEDUPE_MS) {
+      debug("duplicate reset ignored", { source, resetId: lastResetReceipt.resetId });
+      return lastResetReceipt;
+    }
+
+    const previous = snapshot();
+    lastResetAt = resetAt;
     writeJson(localStorage, PROFILE_KEY, null);
     try {
       clearAlgoliaSessionState();
@@ -941,11 +984,45 @@
     } catch {
       // ignore
     }
+    clearDwellMilestoneTimers();
     session = null;
     currentPageId = null;
+    currentPageStartedAt = resetAt;
+    currentPageVisibleStartedAt = null;
+    currentPageVisibleDwellMs = 0;
+    reachedDwellMilestones = new Set();
+    currentScrollMilestone = 0;
+    explicitUserToken = null;
     initializeState();
     trackPageView();
-    debug("visitor state reset");
+    const fresh = snapshot();
+    const receipt = {
+      schema: "AlgoliaVisitorResetReceipt.v1",
+      resetId: id("reset"),
+      source,
+      at: resetAt,
+      origin: location.origin,
+      path: location.pathname,
+      previousVisitorId: previous.profile?.visitorId || null,
+      previousSessionId: previous.session?.sessionId || null,
+      visitorId: fresh.profile?.visitorId || null,
+      sessionId: fresh.session?.sessionId || null,
+      pageCount: fresh.session?.pages?.length || 0,
+      eventCount: fresh.events?.length || 0,
+      conversationCleared: !sessionStorage.getItem(CONVERSATION_KEY),
+      handoffContextCleared: !sessionStorage.getItem(HANDOFF_CONTEXT_KEY),
+    };
+    lastResetReceipt = receipt;
+    window.__algoliaVisitorResetReceipt = receipt;
+    try {
+      document.dispatchEvent(new CustomEvent("algolia-visitor-state-reset", {
+        detail: receipt,
+      }));
+    } catch {
+      // The reset is complete even when custom events are unavailable.
+    }
+    debug("visitor state reset", receipt);
+    return receipt;
   }
 
   function registerWithChatWidget() {
@@ -985,14 +1062,17 @@
     if (originalPushState) {
       history.pushState = function (...args) {
         const result = originalPushState(...args);
-        setTimeout(trackPageView, 0);
+        setTimeout(() => trackPageView("spa_push"), 0);
         return result;
       };
     }
-    window.addEventListener("popstate", () => setTimeout(trackPageView, 0));
+    window.addEventListener("popstate", () => setTimeout(() => trackPageView("spa_pop"), 0));
     window.addEventListener("beforeunload", flushPageDwell);
     window.addEventListener("pagehide", pausePageDwell);
-    window.addEventListener("pageshow", resumePageDwell);
+    window.addEventListener("pageshow", (event) => {
+      if (event?.persisted) trackPageView("back_forward");
+      else resumePageDwell();
+    });
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) pausePageDwell();
       else resumePageDwell();
@@ -1024,8 +1104,8 @@
   function installChatWatcher() {
     if (chatWatchInstalled) return;
     chatWatchInstalled = true;
-    document.addEventListener("algolia-visitor-reset-requested", () => {
-      reset();
+    document.addEventListener("algolia-visitor-reset-requested", (event) => {
+      reset({ source: event?.detail?.source || "chat_widget" });
     });
     document.addEventListener("algolia-chat-open-change", (event) => {
       track("chat_open", { open: !!event.detail?.open });

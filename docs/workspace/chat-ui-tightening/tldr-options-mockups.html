@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TL;DR Answer Treatment Options</title>
+  <style>
+    :root {
+      --blue: #003dff;
+      --navy: #23263b;
+      --body: #36395a;
+      --muted: #7778af;
+      --line: #d6d6e7;
+      --wash: #f5f7ff;
+      --paper: #fbfcff;
+      --shadow: rgba(35, 38, 59, 0.14);
+      font-family: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #eef1ff;
+      color: var(--body);
+      padding: 24px;
+    }
+
+    .board {
+      width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .concept {
+      background: linear-gradient(180deg, #ffffff, #f8f9ff);
+      border: 1px solid #dde1f3;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 42px -30px rgba(35, 38, 59, 0.45);
+    }
+
+    .caption {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 13px 18px 11px;
+      border-bottom: 1px solid #e2e5f4;
+      background: #fff;
+    }
+
+    .caption h2 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.2;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .caption span {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .chat {
+      min-height: 292px;
+      padding: 22px 34px 28px;
+      background: #f7f8ff;
+    }
+
+    .question-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .question {
+      width: min(560px, 82%);
+      border-radius: 18px 18px 6px 18px;
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 12px 24px -18px rgba(0, 61, 255, 0.95);
+      padding: 13px 18px;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 400;
+    }
+
+    .avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #dfe4ff;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .avatar::before {
+      content: "";
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      top: 4px;
+      left: 6px;
+      background: #7778af;
+    }
+
+    .avatar::after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 5px;
+      border-radius: 8px 8px 4px 4px;
+      left: 4px;
+      bottom: 3px;
+      background: #7778af;
+    }
+
+    .answer {
+      width: min(660px, 100%);
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--navy);
+    }
+
+    .answer p {
+      margin: 0;
+    }
+
+    .answer .analogy {
+      font-style: italic;
+      color: #202650;
+    }
+
+    .answer .short {
+      margin-top: 8px;
+      color: var(--navy);
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+    }
+
+    .quiet .label {
+      color: #686fac;
+    }
+
+    .soft .answer {
+      padding: 16px 18px 17px;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(0, 61, 255, 0.08), transparent 38%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 255, 0.72));
+      border: 1px solid rgba(214, 219, 245, 0.84);
+      box-shadow: inset 0 1px rgba(255, 255, 255, 0.9);
+    }
+
+    .hairline .label-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .hairline .label {
+      margin: 0;
+      color: #5e66a5;
+    }
+
+    .hairline .rule {
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0, 61, 255, 0.32), rgba(214, 214, 231, 0.16));
+    }
+
+    .split .answer {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 13px;
+    }
+
+    .split .tldr-card {
+      padding: 14px 16px 15px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffffff, #eef4ff);
+      border: 1px solid rgba(202, 210, 244, 0.9);
+      box-shadow: 0 10px 22px -18px var(--shadow), inset 0 1px rgba(255, 255, 255, 0.9);
+    }
+
+    .split .details {
+      padding-left: 16px;
+      border-left: 2px solid rgba(0, 61, 255, 0.22);
+      color: #4b527e;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+  <main class="board" aria-label="Four TL;DR answer treatment concepts">
+    <section class="concept quiet">
+      <div class="caption">
+        <h2>Option 1: Quiet TL;DR Label</h2>
+        <span>Lowest risk, closest to current flat answer</span>
+      </div>
+      <div class="chat">
+        <div class="question-row">
+          <div class="question">What counts as an API call, keystrokes, filters applied, or page loads, and does that change how I should configure rate limiting to control cost?</div>
+          <div class="avatar" aria-hidden="true"></div>
+        </div>
+        <article class="answer">
+          <div class="label">TL;DR</div>
+          <p class="analogy">API calls are like little door swings at a very busy store: one customer entering is harmless, but autocomplete, filters, page loads, bots, and eager widgets can turn that door into a blur.</p>
+          <p class="short">Short version: yes, almost every interaction that requests data from an Algolia index counts as a billable search request.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="concept soft">
+      <div class="caption">
+        <h2>Option 2: Soft TL;DR Band</h2>
+        <span>More signal, still not a full answer card</span>
+      </div>
+      <div class="chat">
+        <div class="question-row">
+          <div class="question">What counts as an API call, keystrokes, filters applied, or page loads, and does that change how I should configure rate limiting to control cost?</div>
+          <div class="avatar" aria-hidden="true"></div>
+        </div>
+        <article class="answer">
+          <div class="label">TL;DR</div>
+          <p class="analogy">API calls are like little door swings at a very busy store: one customer entering is harmless, but autocomplete, filters, page loads, bots, and eager widgets can turn that door into a blur.</p>
+          <p class="short">Short version: yes, almost every interaction that requests data from an Algolia index counts as a billable search request.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="concept hairline">
+      <div class="caption">
+        <h2>Option 3: TL;DR With Hairline</h2>
+        <span>Editorial sectioning without a box</span>
+      </div>
+      <div class="chat">
+        <div class="question-row">
+          <div class="question">What counts as an API call, keystrokes, filters applied, or page loads, and does that change how I should configure rate limiting to control cost?</div>
+          <div class="avatar" aria-hidden="true"></div>
+        </div>
+        <article class="answer">
+          <div class="label-row">
+            <div class="label">TL;DR</div>
+            <div class="rule" aria-hidden="true"></div>
+          </div>
+          <p class="analogy">API calls are like little door swings at a very busy store: one customer entering is harmless, but autocomplete, filters, page loads, bots, and eager widgets can turn that door into a blur.</p>
+          <p class="short">Short version: yes, almost every interaction that requests data from an Algolia index counts as a billable search request.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="concept split">
+      <div class="caption">
+        <h2>Option 4: Abstract And Details Split</h2>
+        <span>Best when answers become longer</span>
+      </div>
+      <div class="chat">
+        <div class="question-row">
+          <div class="question">What counts as an API call, keystrokes, filters applied, or page loads, and does that change how I should configure rate limiting to control cost?</div>
+          <div class="avatar" aria-hidden="true"></div>
+        </div>
+        <article class="answer">
+          <div class="tldr-card">
+            <div class="label">TL;DR</div>
+            <p class="analogy">Most user-facing interactions that ask Algolia for data can count as billable search requests. Rate limiting should control repeated requests, not block legitimate search behavior.</p>
+          </div>
+          <div class="details">
+            <p>Example: autocomplete can send a request on each keystroke, filters can trigger new searches, and page loads can initialize queries. The cost strategy should focus on debouncing, bot protection, caching, and keys scoped to the right usage.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

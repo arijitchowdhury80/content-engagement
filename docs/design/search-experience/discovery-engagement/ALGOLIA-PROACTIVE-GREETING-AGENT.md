@@ -21,14 +21,14 @@ flowchart LR
 
 | Category | Trigger | Meaning |
 |---|---|---|
-| Technical | `product_page_10s_50_scroll` | The visitor has meaningfully studied one product. |
+| Technical | `product_page_3s_30_scroll` | The visitor has meaningfully studied one product. |
 | Technical | `product_to_documentation` | Product interest has moved into implementation evidence. |
-| Business | `solution_page_10s_50_scroll` | The visitor has meaningfully studied one industry or use-case solution. |
+| Business | `solution_page_3s_30_scroll` | The visitor has meaningfully studied one industry or use-case solution. |
 | Business | `solution_to_customer_story` | Business interest has moved into proof. |
 | Commercial | `product_to_pricing` | Product interest has moved into commercial evaluation. |
 | Commercial | `solution_to_pricing` | Solution interest has moved into commercial evaluation. |
-| Specialist | `developer_page_10s_50_scroll` | The visitor is studying developer or implementation material deeply. |
-| Specialist | `resource_page_10s_50_scroll` | The visitor is studying a substantive research asset deeply. |
+| Specialist | `developer_page_3s_30_scroll` | The visitor is studying developer or implementation material deeply. |
+| Specialist | `resource_page_3s_30_scroll` | The visitor is studying a substantive research asset deeply. |
 
 Transition triggers replace an earlier unanswered page-level greeting. The prior opportunity is recorded as `superseded`; the widget shows only the greeting that matches the visitor's current moment. An active conversation is never replaced.
 

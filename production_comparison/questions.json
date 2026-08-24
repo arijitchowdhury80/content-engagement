@@ -1,0 +1,12 @@
+[
+  "What counts as an API call - keystrokes, filters applied, or page loads - and does that change how I should configure rate limiting to control cost?",
+  "Is Algolia headless and API-first enough to bolt onto my existing ERP/PIM/CMS stack, and how much dev effort should I expect for a full implementation?",
+  "How does Neural Search handle synonyms and concepts, and would I still need a manual synonym dictionary?",
+  "What's the best practice for out-of-stock items in results, and should that change whether I use one combined index or multiple?",
+  "How do personalization, synonyms, and Rules-based merchandising interact when scoring a query?",
+  "What's the actual cost difference between Grow and Elevate, and are AI features like personalization included or a paid add-on?",
+  "How does Algolia compare to Coveo or Constructor for a mid-market catalog?",
+  "Can a non-technical marketing team run search day-to-day without a developer?",
+  "Is there a free trial, and can I access advanced AI features before committing to enterprise?",
+  "If I'm on a competing platform today, what does migration actually look like?"
+]

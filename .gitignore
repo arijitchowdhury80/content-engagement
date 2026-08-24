@@ -1,5 +1,6 @@
 # credentials — symlink to commons/rendered/*.env, never commit
 .env.local
+.env.compare.local
 .env
 *.env
 
@@ -66,3 +67,5 @@ frontend/chat-widget/token-telemetry-fe-key.js
 
 # Maven build output — first Maven module in this repo (backend/jahia-modules/)
 target/
+production_comparison/runs/
+.local/deployment-state/

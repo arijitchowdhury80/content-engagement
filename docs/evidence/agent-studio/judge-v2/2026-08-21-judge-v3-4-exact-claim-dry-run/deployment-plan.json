@@ -1,0 +1,61 @@
+{
+  "runId": "2026-08-21-judge-v3-4-exact-claim-dry-run",
+  "agentRelease": "v3.4",
+  "apply": false,
+  "appId": "0EXRPAXB56",
+  "immutableCreateOnly": true,
+  "providerOverride": "a1ca01bf-bc28-4844-89d1-331b79c3e1ab",
+  "modelOverride": "gemini-2.5-flash",
+  "thinkingBudget": 0,
+  "roles": {
+    "skeptic": {
+      "source": {
+        "id": "a4c3846b-e538-4c9c-8e39-1bb15a21f2c2",
+        "name": "www Confidence – Skeptic Judge",
+        "status": "published",
+        "model": "medium",
+        "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+        "toolCount": 0,
+        "instructionsHash": "84d1b881f9ed6f60818d573ed67ca463c010250c052f5195207931a8ff86fb74",
+        "configHash": "c65fc769b0fe89fedb21c9674b40a76b94e1b29ab54417664a7d733f82adec60"
+      },
+      "targetName": "www Chat - Confidence Skeptic v3.4",
+      "instructionsPath": "agents/prompts/judge/instructions_judge_skeptic.md",
+      "payloadHash": "e15fcbdb6c91254452ac65c9a76b9176d3b33659bdea9c1bc5b03745a181053e",
+      "existingTarget": null
+    },
+    "referee": {
+      "source": {
+        "id": "c43d7374-801a-4d0f-aa09-ca12830565c3",
+        "name": "www Confidence – Referee Judge",
+        "status": "published",
+        "model": "medium",
+        "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+        "toolCount": 0,
+        "instructionsHash": "9320dbf4f56a2894a2c7fd86b7513a7f7d2507f8df62fe2c6972cb6171aa2e9e",
+        "configHash": "c65fc769b0fe89fedb21c9674b40a76b94e1b29ab54417664a7d733f82adec60"
+      },
+      "targetName": "www Chat - Confidence Referee v3.4",
+      "instructionsPath": "agents/prompts/judge/instructions_judge_referee.md",
+      "payloadHash": "988d89186b440bb8331955cb19f80dd80056135a85a84dc9b54da7cea4f8e199",
+      "existingTarget": null
+    },
+    "advocate": {
+      "source": {
+        "id": "f14b8ddf-2285-422c-89e5-180d7fa0b3bf",
+        "name": "www Confidence – Advocate Judge",
+        "status": "published",
+        "model": "medium",
+        "providerId": "0c6a0843-caf0-4246-b2a1-7cc08d06a7db",
+        "toolCount": 0,
+        "instructionsHash": "e96bc4d619c1df5d1f7b85bf98eea7ec7c41d21c1e32009aa6c15b2a54952518",
+        "configHash": "c65fc769b0fe89fedb21c9674b40a76b94e1b29ab54417664a7d733f82adec60"
+      },
+      "targetName": "www Chat - Confidence Advocate v3.4",
+      "instructionsPath": "agents/prompts/judge/instructions_judge_advocate.md",
+      "payloadHash": "65c4880d7a23075c1cf243977225cc305ea0b461db72604d1452d8cf90444157",
+      "existingTarget": null
+    }
+  },
+  "privateSnapshotHash": "afd9c5db8153a7835fdfae21302a2b7a49d5368defa7f1b6cc70f407c768a329"
+}
