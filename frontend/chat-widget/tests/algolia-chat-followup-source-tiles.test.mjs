@@ -433,8 +433,8 @@ ${discoveryMarker}`;
   }
 });
 
-test('analogy-only canvas still splits into TLDR tile and Details', async () => {
-  const text = `Comparing one grocery success story to another is like comparing two high-performing kitchens—the menu might be different, but the secret is always in how they manage the chaos of the pantry to get the right dish to the table instantly.
+test('analogy canvas and unlabeled direct read stay together in TLDR', async () => {
+  const text = `Comparing one grocery success story to another is a bit like comparing two high-performing kitchens—the menu might be different, but the secret is always in how they manage the chaos of the pantry to get the right dish to the table instantly.
 
 If you liked the H-E-B México approach, you want to look at how other grocery teams handle the digital aisle.
 
@@ -460,6 +460,7 @@ ${discoveryMarker}`;
         labels,
         tldrText: tldr?.textContent.replace(/\s+/g, ' ').trim(),
         analogyText: analogy?.textContent.replace(/\s+/g, ' ').trim(),
+        shortText: short?.textContent.replace(/\s+/g, ' ').trim(),
         hasShortBlock: Boolean(short),
         detailsText: details?.textContent.replace(/\s+/g, ' ').trim(),
         tldrCount: root.querySelectorAll('.acs-answer-tldr').length,
@@ -473,9 +474,10 @@ ${discoveryMarker}`;
     assert.ok(result.labels.includes('Details'));
     assert.match(result.analogyText, /high-performing kitchens/);
     assert.match(result.tldrText, /high-performing kitchens/);
-    assert.equal(result.hasShortBlock, false);
+    assert.equal(result.hasShortBlock, true);
+    assert.match(result.shortText, /If you liked the H-E-B/);
+    assert.match(result.tldrText, /If you liked the H-E-B/);
     assert.doesNotMatch(result.tldrText, /Albertsons/);
-    assert.match(result.detailsText, /Details\s*If you liked the H-E-B/);
     assert.match(result.detailsText, /Albertsons/);
     assert.match(result.detailsText, /My recommendation/);
   } finally {
