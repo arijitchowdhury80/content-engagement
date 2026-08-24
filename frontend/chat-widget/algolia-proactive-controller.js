@@ -52,18 +52,18 @@
     maxOpportunitiesPerSession: 3,
     cooldownMs: 120000,
     opportunityTtlMs: 600000,
-    productDwellMs: 5000,
-    productScrollDepth: 25,
-    solutionDwellMs: 5000,
-    solutionScrollDepth: 25,
-    documentationJourneyDwellMs: 5000,
-    documentationJourneyScrollDepth: 25,
-    proofJourneyDwellMs: 5000,
-    proofJourneyScrollDepth: 25,
-    implementationDwellMs: 5000,
-    implementationScrollDepth: 25,
-    resourceDwellMs: 5000,
-    resourceScrollDepth: 25,
+    productDwellMs: 3000,
+    productScrollDepth: 30,
+    solutionDwellMs: 3000,
+    solutionScrollDepth: 30,
+    documentationJourneyDwellMs: 3000,
+    documentationJourneyScrollDepth: 30,
+    proofJourneyDwellMs: 3000,
+    proofJourneyScrollDepth: 30,
+    implementationDwellMs: 3000,
+    implementationScrollDepth: 30,
+    resourceDwellMs: 3000,
+    resourceScrollDepth: 30,
     compatibilityMode: COMPLETIONS_COMPATIBILITY_MODE,
     cache: false,
     memory: false,
@@ -157,6 +157,14 @@
       productScrollDepth: config.productScrollDepth,
       solutionDwellMs: config.solutionDwellMs,
       solutionScrollDepth: config.solutionScrollDepth,
+      documentationJourneyDwellMs: config.documentationJourneyDwellMs,
+      documentationJourneyScrollDepth: config.documentationJourneyScrollDepth,
+      proofJourneyDwellMs: config.proofJourneyDwellMs,
+      proofJourneyScrollDepth: config.proofJourneyScrollDepth,
+      implementationDwellMs: config.implementationDwellMs,
+      implementationScrollDepth: config.implementationScrollDepth,
+      resourceDwellMs: config.resourceDwellMs,
+      resourceScrollDepth: config.resourceScrollDepth,
       hasAppId: !!config.appId,
       hasApiKey: !!(config.apiKey || config.searchKey),
       hasGreetingsAgentId: !!(config.greetingsAgentId || config.greetingAgentId),
@@ -740,44 +748,76 @@
     return `${values.slice(0, -1).join(", ")}, and ${values.at(-1)}`;
   }
 
-  function journeySummaryFor(packet, fields) {
+  function journeyPageContext(page) {
+    if (!page) return null;
+    const label = String(
+      page.productFocusLabel ||
+      page.solutionFocusLabel ||
+      page.title ||
+      cleanFocusLabel(page.path)
+    ).trim();
+    return {
+      pageId: page.pageId || null,
+      path: page.path || null,
+      title: page.title || null,
+      pageGroup: page.pageGroup || null,
+      topic: page.topic || null,
+      productFocus: page.productFocus || null,
+      productFocusLabel: page.productFocusLabel || null,
+      solutionFocus: page.solutionFocus || null,
+      solutionFocusLabel: page.solutionFocusLabel || null,
+      label: label || null,
+    };
+  }
+
+  function journeyContextFor(packet, fields) {
     const pages = sessionPages(packet);
     const productTrail = uniqueProductTrail(pages);
     const solutionTrail = uniqueSolutionTrail(pages);
     const currentTransition = fields.trigger || null;
-    let storyHint = "";
+    const edge = currentNavigationEdge(packet);
+    const transition = String(currentTransition).includes("_to_");
+    const pageTrail = pages
+      .map((item) => journeyPageContext(item))
+      .filter(Boolean)
+      .slice(-6);
+    let journeyNarrativeHint = "";
     const productList = humanList(productTrail);
     const solutionList = humanList(solutionTrail);
 
     if (currentTransition === "product_to_pricing" && productTrail.length > 1) {
-      storyHint = `The visitor explored ${productList} before pricing; frame this as a cost/value question across those capabilities.`;
+      journeyNarrativeHint = `The visitor explored ${productList} before pricing; frame this as a cost/value question across those capabilities.`;
     } else if (currentTransition === "product_to_pricing" && productTrail.length === 1) {
-      storyHint = `The visitor moved from ${productList} into pricing; frame this as a ${productList} cost/value question.`;
-    } else if (fields.trigger === "product_to_documentation" && productTrail.length) {
-      storyHint = `The visitor moved from ${productList} into documentation; frame this as technical validation of that product interest.`;
+      journeyNarrativeHint = `The visitor moved from ${productList} into pricing; frame this as a ${productList} cost/value question.`;
+    } else if (currentTransition === "product_to_documentation" && productTrail.length) {
+      journeyNarrativeHint = `The visitor moved from ${productList} into documentation; frame this as technical validation of that product interest.`;
     } else if (currentTransition === "solution_to_pricing" && solutionTrail.length > 1) {
-      storyHint = `The visitor explored ${solutionList} before pricing; frame this as a commercial evaluation across those solution areas.`;
+      journeyNarrativeHint = `The visitor explored ${solutionList} before pricing; frame this as a commercial evaluation across those solution areas.`;
     } else if (currentTransition === "solution_to_pricing" && solutionTrail.length === 1) {
-      storyHint = `The visitor moved from ${solutionList} into pricing; frame this as a ${solutionList} value and cost question.`;
-    } else if (fields.trigger === "solution_to_customer_story" && solutionTrail.length) {
-      storyHint = `The visitor moved from ${solutionList} to customer proof; connect proof back to that solution interest.`;
+      journeyNarrativeHint = `The visitor moved from ${solutionList} into pricing; frame this as a ${solutionList} value and cost question.`;
+    } else if (currentTransition === "solution_to_customer_story" && solutionTrail.length) {
+      journeyNarrativeHint = `The visitor moved from ${solutionList} to customer proof; connect proof back to that solution interest.`;
     }
 
     return {
       currentTransition,
-      productTrail,
-      solutionTrail,
-      pageTrail: pages
-        .map((item) => ({
-          path: item.path,
-          title: item.title,
-          pageGroup: item.pageGroup,
-          topic: item.topic,
-          productFocusLabel: item.productFocusLabel,
-          solutionFocusLabel: item.solutionFocusLabel,
-        }))
-        .slice(-6),
-      storyHint,
+      origin: transition ? journeyPageContext(edge.sourcePage) : null,
+      destination: journeyPageContext(currentPage(packet)),
+      currentNavigationEdge: {
+        navigationType: edge.navigationType,
+        sourcePageId: edge.sourcePageId,
+        sourcePath: edge.sourcePath,
+        destinationPageId: edge.destinationPageId,
+        destinationPath: edge.destinationPath,
+        edgeId: edge.edgeId,
+        isImmediate: edge.isImmediate,
+      },
+      broaderJourney: {
+        productTrail,
+        solutionTrail,
+        pageTrail,
+      },
+      journeyNarrativeHint,
     };
   }
 
@@ -789,6 +829,7 @@
     const dedupeKey = transition
       ? `${edge.edgeId || "missing-edge"}:${fields.trigger}`
       : `${canonicalPath(page.path || location.pathname)}:${fields.trigger}`;
+    const journeyContext = journeyContextFor(packet, fields);
     return {
       schema: SCHEMA,
       engage: true,
@@ -813,7 +854,7 @@
         currentPage: page,
         currentNavigationEdge: edge,
         contextualFocus: contextualFocusFor(packet),
-        journeySummary: journeySummaryFor(packet, fields),
+        journeyContext,
         journey: sessionPages(packet).map((item) => ({
           path: item.path,
           title: item.title,
@@ -942,7 +983,7 @@
         withReasons(
           baseDecision(packet, {
             moment: "implementation_research",
-            trigger: "developer_page_5s_25_scroll",
+            trigger: "developer_page_3s_30_scroll",
             priority: 76,
             messageGoal: "reduce_implementation_uncertainty",
           }),
@@ -959,7 +1000,7 @@
         withReasons(
           baseDecision(packet, {
             moment: "resource_research",
-            trigger: "resource_page_5s_25_scroll",
+            trigger: "resource_page_3s_30_scroll",
             priority: 75,
             messageGoal: "connect_resource_insight_to_next_step",
           }),
@@ -977,7 +1018,7 @@
         withReasons(
           baseDecision(packet, {
             moment: "product_research",
-            trigger: "product_page_5s_25_scroll",
+            trigger: "product_page_3s_30_scroll",
             priority: 66,
             messageGoal: "explain_product_fit",
           }),
@@ -995,7 +1036,7 @@
         withReasons(
           baseDecision(packet, {
             moment: "solution_research",
-            trigger: "solution_page_5s_25_scroll",
+            trigger: "solution_page_3s_30_scroll",
             priority: 65,
             messageGoal: "explain_solution_fit",
           }),

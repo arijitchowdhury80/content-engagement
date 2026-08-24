@@ -176,42 +176,10 @@
     return chips.find((chip) => chip === text) || null;
   }
 
-  function requestSummary(opportunity) {
-    const request = opportunity?.requestPacket || {};
-    const summary = opportunity?.greetingResponse?.handoffSummary || {};
-    const currentPage = request.currentPage || {};
-    const journey = request.journeySummary || {};
-    return {
-      schema: request.schema || null,
-      moment: summary.moment || request.moment || null,
-      trigger: summary.trigger || request.trigger || null,
-      messageGoal: summary.messageGoal || request.messageGoal || null,
-      persona: request.persona
-        ? {
-            value: request.persona.value || null,
-            state: request.persona.state || null,
-            confidence: Number.isFinite(request.persona.confidence)
-              ? request.persona.confidence
-              : null,
-          }
-        : null,
-      currentPage: {
-        path: currentPage.path || null,
-        pageGroup: currentPage.pageGroup || null,
-        topic: currentPage.topic || null,
-        productFocusLabel: currentPage.productFocusLabel || null,
-        solutionFocusLabel: currentPage.solutionFocusLabel || null,
-      },
-      journey: {
-        currentTransition: journey.currentTransition || null,
-        productTrail: Array.isArray(journey.productTrail) ? journey.productTrail : [],
-        solutionTrail: Array.isArray(journey.solutionTrail) ? journey.solutionTrail : [],
-        storyHint: journey.storyHint || "",
-      },
-    };
-  }
-
   function buildHandoffPacket(opportunity, userResponse, originalTurnContext = compilerTurnContext()) {
+    if (!opportunity?.requestPacket || opportunity.requestPacket.schema !== "ProactiveGreetingRequest.v1") {
+      throw new Error("Cannot hand off proactive engagement without the complete ProactiveGreetingRequest.v1 packet");
+    }
     const response = opportunity.greetingResponse || {};
     const packet = {
       schema: HANDOFF_SCHEMA,
@@ -222,10 +190,10 @@
       greeting: response.greeting || "",
       chips: Array.isArray(response.chips) ? response.chips : [],
       handoffSummary: response.handoffSummary || null,
-      requestSummary: requestSummary(opportunity),
+      requestPacket: opportunity.requestPacket,
       originalTurnContext,
       instruction:
-        "This was a proactive engagement. Use the context softly, never expose telemetry, answer the user's response directly, then continue normal discovery.",
+        "This was a proactive engagement. The visible user response is primary intent. Use the unchanged requestPacket as confirmed journey context, the greeting as prior assistant framing, the selected chip as the chosen path, and unselected chips only as alternatives that were offered. Never expose telemetry.",
     };
     return packet;
   }

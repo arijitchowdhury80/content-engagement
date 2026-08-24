@@ -26,21 +26,21 @@
 
   const PACKET_SCHEMA = "AlgoliaContextPacket.v1";
   const CANONICAL_JOURNEY_TRIGGERS = Object.freeze([
-    "product_page_5s_25_scroll",
+    "product_page_3s_30_scroll",
     "product_to_documentation",
-    "solution_page_5s_25_scroll",
+    "solution_page_3s_30_scroll",
     "solution_to_customer_story",
     "product_to_pricing",
     "solution_to_pricing",
-    "developer_page_5s_25_scroll",
-    "resource_page_5s_25_scroll",
+    "developer_page_3s_30_scroll",
+    "resource_page_3s_30_scroll",
   ]);
   const MAX_RECENT_EVENTS = 15;
   const MAX_TURN_CONTEXT_KEYS = 32;
   const MAX_TURN_CONTEXT_BYTES = 4096;
   const MAX_TURN_CONTEXT_VALUE_BYTES = 1024;
-  const JOURNEY_DWELL_MS = 5000;
-  const JOURNEY_SCROLL_DEPTH = 25;
+  const JOURNEY_DWELL_MS = 3000;
+  const JOURNEY_SCROLL_DEPTH = 30;
   const AGENT_STUDIO_COMPLETIONS_RE = /\/agent-studio\/1\/agents\/[^/]+\/completions/;
   const SENSITIVE_PROP_RE =
     /email|phone|password|passwd|token|secret|api[_-]?key|credential|name|company|value/i;
@@ -60,6 +60,11 @@
 
   function configure(nextConfig) {
     config = { ...config, ...(nextConfig || {}) };
+    debugLog("configured", {
+      ...config,
+      journeyDwellMs: JOURNEY_DWELL_MS,
+      journeyScrollDepth: JOURNEY_SCROLL_DEPTH,
+    });
   }
 
   function readJson(storage, key, fallback) {

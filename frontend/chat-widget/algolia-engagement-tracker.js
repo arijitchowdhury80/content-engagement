@@ -62,8 +62,8 @@
   const MAX_PAGES = 40;
   const MAX_ENGAGEMENTS = 20;
   const MAX_TEXT = 120;
-  const DWELL_MILESTONES_MS = [5000, 10000, 15000];
-  const SCROLL_MILESTONES = [25, 50, 75, 100];
+  const DWELL_MILESTONES_MS = [3000, 10000, 15000];
+  const SCROLL_MILESTONES = [30, 50, 75, 100];
   const SAFE_UTM_KEYS = [
     "utm_source",
     "utm_medium",
@@ -108,7 +108,11 @@
 
   function configure(nextConfig) {
     config = { ...config, ...(nextConfig || {}) };
-    debug("configured", config);
+    debug("configured", {
+      ...config,
+      dwellMilestonesMs: [...DWELL_MILESTONES_MS],
+      scrollMilestones: [...SCROLL_MILESTONES],
+    });
   }
 
   function isAllowed() {
