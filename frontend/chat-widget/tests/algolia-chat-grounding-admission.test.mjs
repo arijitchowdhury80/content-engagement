@@ -62,7 +62,7 @@ function fixture() {
           .find((passage) => passage.fieldPath.endsWith('/description'))?.evidencePassageId;
         const sentenceAssessments = judgeInput.answerManifest.map((unit) => {
           const isUnsupported = gateTripped && unit.text.includes('99.99%');
-          if (!unit.text.trim()) return { sentenceId: unit.sentenceId, classification: 'not_factual', claims: [] };
+          if (!unit.text.trim()) return { sentenceId: unit.sentenceId, classification: 'non_factual', claims: [] };
           return {
             sentenceId: unit.sentenceId,
             classification: 'factual',

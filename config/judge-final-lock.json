@@ -1,7 +1,7 @@
 {
   "status": "locked",
   "lockedAt": "2026-08-23",
-  "lastApprovedChange": "Adopt the validated v3 shared system prompt and role-only judge instructions",
+  "lastApprovedChange": "Adopt the validated v3.3 semantic partition and deterministic reconciliation contract",
   "changePolicy": "No judge prompt, model, agent, scoring, grounding, aggregation, transport, lifecycle, or presentation change without Arijit's explicit approval.",
   "provider": {
     "id": "e14c1f5e-7c24-4451-a342-940e427f769b",
@@ -9,22 +9,22 @@
     "model": "gpt-5.4-mini"
   },
   "agents": {
-    "skeptic": "2fd41081-a5a1-4532-8049-1fa2f1338037",
-    "referee": "f4e7ed7d-96b2-4900-8d21-40a5cfe950d0",
-    "advocate": "36a85e07-8415-4d34-8428-53574dc608f2"
+    "skeptic": "d6783522-e8fb-4622-b139-205d9c238c0d",
+    "referee": "320a52d9-4217-406b-8902-15688fdb4d1f",
+    "advocate": "50843dd4-eab8-473b-ab44-7dda69d7557d"
   },
   "protectedFileSha256": {
-    "agents/prompts/judge/_shared_judge_rubric_v2.md": "26c0e31df26328f253620416f2a1ed6c911a1cef3b3490bb67afeee5eaa1372d",
-    "agents/prompts/judge/candidate/system_prompt_judge_v3.md": "26c0e31df26328f253620416f2a1ed6c911a1cef3b3490bb67afeee5eaa1372d",
+    "agents/prompts/judge/_shared_judge_rubric_v2.md": "1480c6e0f96f058dc0a978566dd73dd825001cac9a39eb44c9c8f83748e78132",
+    "agents/prompts/judge/candidate/system_prompt_judge_v3.md": "1480c6e0f96f058dc0a978566dd73dd825001cac9a39eb44c9c8f83748e78132",
     "agents/prompts/judge/candidate/instructions_skeptic.md": "e5f8b07a46212c348493f4294083fabe1dfa39ffd207c32e841d6d2a86be5d7d",
     "agents/prompts/judge/candidate/instructions_referee.md": "e53eb4e47c627c8c8ebed9b6431f0059912426d14de029c71531a7281ced19f1",
     "agents/prompts/judge/candidate/instructions_advocate.md": "38dca091aa91be155d86f8d1394bdc4c17c3893c920c9524487429e2bf2c271a",
-    "frontend/chat-widget/algolia-judge-core.js": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
+    "frontend/chat-widget/algolia-judge-core.js": "201e3c4972c2c7d65b143884e76273418491be04a26cf43ea2ab29f55ae3d390",
     "frontend/chat-widget/algolia-confidence-badge.js": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37"
   },
   "liveAssetSha256": {
-    "core": "8cb19d39aecef361dbc409ccf641373e41655d38d9b3b49398d916ccac2ccfbc",
+    "core": "201e3c4972c2c7d65b143884e76273418491be04a26cf43ea2ab29f55ae3d390",
     "badge": "f296211cff9cbf3b7a61d118045f8fbb35a892f6c0b4150937871cc6db39db37",
-    "chat": "9ff1a9f1410271cd027f27fd2af60dfc1310465cc8d0a274c2bb214906c9a0f6"
+    "chat": "b342b57b9dcabe2365efd7d42789a90077a177e7895318202e637e3fea960ff2"
   }
 }

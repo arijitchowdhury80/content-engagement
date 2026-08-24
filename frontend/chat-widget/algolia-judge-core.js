@@ -5,11 +5,12 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  const CONTRACT_VERSION = "algolia-judge-v3";
+  const CONTRACT_VERSION = "algolia-judge-v3.3";
   const ROLES = Object.freeze(["skeptic", "referee", "advocate"]);
   const DIMENSIONS = Object.freeze(["grounding", "completeness", "depth", "relevance"]);
   const VERDICTS = new Set(["supported", "unverifiable", "contradicted"]);
   const MATERIALITIES = new Set(["minor", "material", "critical"]);
+  const CLASSIFICATIONS = new Set(["factual", "mixed", "non_factual"]);
   const DEFAULT_MAX_INPUT_TOKENS = 96_000;
   const DEFAULT_OUTPUT_RESERVE_TOKENS = 8_000;
 
@@ -75,7 +76,16 @@
     let lineMatch;
     while ((lineMatch = linePattern.exec(text)) !== null) {
       const line = lineMatch[0];
-      const segments = segmenter ? [...segmenter.segment(line)] : fallbackSentenceSpans(line);
+      const rawSegments = segmenter ? [...segmenter.segment(line)] : fallbackSentenceSpans(line);
+      const segments = [];
+      for (const segment of rawSegments) {
+        const prior = segments[segments.length - 1];
+        if (prior && /(?:\bvs\.|\be\.g\.|\bi\.e\.|\betc\.|\bMr\.|\bMrs\.|\bMs\.|\bDr\.|\bProf\.|\bInc\.|\bLtd\.|\bNo\.)\s*$/i.test(prior.segment)) {
+          prior.segment += segment.segment;
+        } else {
+          segments.push({ index: segment.index, segment: segment.segment });
+        }
+      }
       for (const segment of segments) {
         spans.push({ start: lineMatch.index + segment.index, end: lineMatch.index + segment.index + segment.segment.length });
       }
@@ -358,7 +368,22 @@
       seen.add(sentenceId);
       if (!Array.isArray(assessment?.claims)) errors.push(`${prefix}.claims must be an array`);
       const claims = Array.isArray(assessment?.claims) ? assessment.claims : [];
-      const classification = claims.length > 0 ? "factual" : "not_factual";
+      const classification = assessment?.classification;
+      const nonFactualTexts = Array.isArray(assessment?.nonFactualSpans)
+        ? assessment.nonFactualSpans
+        : ((classification === "non_factual" || (classification === "mixed" && claims.length === 0)) ? [unit.text] : []);
+      const nonFactualSpans = [];
+      let nonFactualSearchStart = 0;
+      for (const [spanIndex, spanText] of (Array.isArray(nonFactualTexts) ? nonFactualTexts : []).entries()) {
+        const span = resolveClaimSpan(unit, spanText, nonFactualSearchStart, errors, `${prefix}.nonFactualSpans[${spanIndex}]`);
+        if (span) {
+          nonFactualSearchStart = span.localEnd;
+          nonFactualSpans.push({ text: span.claim, start: span.start, end: span.end });
+        }
+      }
+      if (!CLASSIFICATIONS.has(classification)) {
+        errors.push(`${prefix}.classification must be factual, mixed, or non_factual`);
+      }
       const validatedClaims = [];
       let claimSearchStart = 0;
       for (const [claimIndex, claim] of claims.entries()) {
@@ -372,6 +397,9 @@
         if (typeof reason !== "string" || !reason.trim()) errors.push(`${claimPrefix} reason is required`);
         const claimSpan = resolveClaimSpan(unit, claim?.claimText, claimSearchStart, errors, claimPrefix);
         if (claimSpan) claimSearchStart = claimSpan.localEnd;
+        if (claimSpan && nonFactualSpans.some((span) => claimSpan.start < span.end && span.start < claimSpan.end)) {
+          continue;
+        }
         const evidenceRefs = validateEvidenceRefs(evidencePassageIds, verdict, passages, errors, claimPrefix);
         const validated = {
           sentenceId,
@@ -389,7 +417,11 @@
         validatedClaims.push(validated);
         if (verdict === "unverifiable" || verdict === "contradicted") unresolved.push(validated);
       }
-      assessments.push({ sentenceId, classification, claims: validatedClaims });
+      const effectiveClassification = validatedClaims.length > 0
+        ? (nonFactualSpans.length > 0 ? "mixed" : "factual")
+        : (nonFactualSpans.length > 0 ? "non_factual" : null);
+      if (!effectiveClassification) errors.push(`${prefix} must declare at least one factual claim or non-factual span`);
+      assessments.push({ sentenceId, classification: effectiveClassification, nonFactualSpans, claims: validatedClaims });
     }
     for (const sentenceId of expectedUnits.keys()) {
       if (!seen.has(sentenceId)) errors.push(`missing sentence assessment: ${sentenceId}`);

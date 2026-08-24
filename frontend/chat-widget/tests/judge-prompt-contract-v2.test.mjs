@@ -31,9 +31,21 @@ test('shared rubric defines identical four dimensions and strict output shape', 
     assert.match(shared, new RegExp(`\\n${dimension}\\n`));
   }
   assert.match(shared, /"sentenceAssessments"/);
+  assert.match(shared, /"classification": "factual \| mixed \| non_factual"/);
+  assert.match(shared, /"nonFactualSpans"/);
   assert.match(shared, /"evidencePassageIds"/);
   assert.match(shared, /"claimText"/);
   assert.match(shared, /"centralToAnswer"/);
   assert.doesNotMatch(shared, /"claimQuote"/);
   assert.doesNotMatch(shared, /"excerpt"/);
+});
+
+test('shared rubric prevents rhetoric from becoming an unverifiable factual claim', () => {
+  assert.match(shared, /A `non_factual` entry MUST return `claims: \[\]`/);
+  assert.match(shared, /A `factual` entry MUST return at least one claim/);
+  assert.match(shared, /A `mixed` entry MUST return at least one claim/);
+  assert.match(shared, /Never use `unverifiable` merely because a heading, analogy, metaphor, question, transition, or rhetorical phrase/i);
+  assert.match(shared, /Missing evidence can change a factual claim's verdict, but it can never turn rhetoric into a factual claim/i);
+  assert.match(shared, /A dependent clause that continues or explains an analogy remains non-factual/i);
+  assert.match(shared, /Do not convert figurative language into an implied outcome claim/i);
 });

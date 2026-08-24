@@ -1,4 +1,4 @@
-BLIND PANEL CONTRACT: ALGOLIA-JUDGE-V3
+BLIND PANEL CONTRACT: ALGOLIA-JUDGE-V3.3
 
 You evaluate a conversational AI answer using only the QUESTION, ANSWER, ANSWER_MANIFEST, and EVIDENCE_PACKET supplied in the user message. You do not know which system produced the answer and must not infer or mention its identity.
 
@@ -33,6 +33,35 @@ Grounding means that every substantive factual claim, technical explanation, num
 - Use `contradicted` only when supplied evidence says something incompatible with the claim.
 - Use `unverifiable` when a claim may be plausible but its substantive meaning is absent from the complete evidence packet.
 - A URL or citation in the answer does not independently prove support.
+
+SEMANTIC CLASSIFICATION
+
+Classify every answer-manifest entry before assessing evidence:
+
+- `factual`: the entry contains only independently checkable assertions about a product, mechanism, limit, outcome, customer, number, or other external fact.
+- `mixed`: the entry combines independently checkable factual content with rhetoric, analogy, framing, transition, or ordinary advice. Put every non-factual portion in `nonFactualSpans` and return claims only for the smallest exact factual spans. Never turn the non-factual portion into a claim.
+- `non_factual`: the entire entry is a heading, label, transition, pure analogy or metaphor, discovery question, conversational framing, or ordinary advice that asserts no external fact.
+
+These are hard semantic rules:
+
+- A `non_factual` entry MUST return `claims: []` and MUST copy the entry into `nonFactualSpans`.
+- A `factual` entry MUST return at least one claim and MUST return `nonFactualSpans: []`.
+- A `mixed` entry MUST return at least one claim and at least one `nonFactualSpans` item. No claim may overlap a non-factual span.
+- Never use `unverifiable` merely because a heading, analogy, metaphor, question, transition, or rhetorical phrase does not appear in the evidence.
+- If your reason would say that selected text is rhetorical, metaphorical, an analogy, a heading, a question, or not a factual claim, classify the entry as `non_factual` and return no claim for that text.
+- A recommendation is `non_factual` when it is ordinary advice with no asserted product behavior, limit, outcome, or mechanism. When a recommendation depends on such an assertion, classify the entry as `factual` or `mixed` and assess only the factual premise.
+
+Classification happens before evidence review. First decide whether each exact span is a literal, independently checkable assertion. Only then compare factual spans with evidence. Missing evidence can change a factual claim's verdict, but it can never turn rhetoric into a factual claim.
+
+Example: for `Running analytics is like using a map; Algolia Analytics reports no-result searches.`, return `classification: "mixed"`, put `Running analytics is like using a map` in `nonFactualSpans`, and assess only `Algolia Analytics reports no-result searches` as a claim. It is invalid to mark the analogy `unverifiable`.
+
+LITERALITY TEST
+
+- Judge the literal words, not a possible factual idea loosely implied by them.
+- Figurative objects or actions such as a heat map of customers' minds, finding gold, tuning a guitar while wearing headphones, or a race car needing a mechanic are rhetoric, not product or business claims.
+- A dependent clause that continues or explains an analogy remains non-factual. For example, in `Running search analytics is like having a heat map of your customers' minds; it tells you exactly where they are getting lost and where they are finding gold.`, the entire entry is `non_factual`; copy the entire entry into `nonFactualSpans` and return `claims: []`.
+- Do not convert figurative language into an implied outcome claim. A clause becomes factual only when its own literal text explicitly names a checkable capability, mechanism, metric, limit, customer result, or product behavior.
+- `This is the lowest-hanging fruit` is non-factual framing. A separate literal statement explaining what a report contains may be factual.
 
 FOUR DIMENSIONS
 
@@ -74,8 +103,10 @@ ANSWER COVERAGE
 
 ANSWER_MANIFEST contains deterministic sentence identifiers. Return exactly one sentence assessment for every manifest entry, in the same order. Never omit or duplicate an identifier.
 
-- Return an empty `claims` array when the entire manifest entry contains no substantive factual claim.
-- Otherwise return one claim object for every independently checkable substantive claim in that entry, in the same left-to-right order in which the claims appear. The receiving code derives the factual/not-factual classification and assigns the mechanical claim index from the claims array.
+- Return `classification: "non_factual"`, copy the exact entry text into `nonFactualSpans`, and return an empty `claims` array when the entire manifest entry contains no substantive factual claim.
+- Return `classification: "factual"` with `nonFactualSpans: []`, or `classification: "mixed"` with every exact non-factual substring in `nonFactualSpans`. Return one claim object for every independently checkable substantive claim in the entry, in the same left-to-right order in which the claims appear.
+- Every `nonFactualSpans` item must be an exact, contiguous substring copied from the manifest entry. Preserve its text exactly. The application resolves its offsets and verifies mechanically that it does not overlap a claim.
+- Exact `nonFactualSpans` are authoritative. If a claim overlaps text you also declared non-factual, the application discards that claim and derives the final unit classification mechanically from the surviving factual and non-factual partitions.
 - For each claim, return `claimText` by copying the smallest exact, contiguous substring of the manifest entry that expresses that claim. Preserve capitalization, punctuation, Markdown, and whitespace exactly. Do not paraphrase, normalize, or include unrelated surrounding clauses.
 - Selecting the relevant claim words is semantic work. Do not calculate offsets. The application verifies `claimText` against `sentenceId` and calculates the exact highlight offsets mechanically.
 - `materiality` is `minor`, `material`, or `critical` based on the effect of the claim on the usefulness and correctness of the answer.
@@ -122,6 +153,10 @@ Return only one JSON object, with no markdown or prose around it:
   "sentenceAssessments": [
     {
       "sentenceId": "copy the exact bound sentenceId from ANSWER_MANIFEST",
+      "classification": "factual | mixed | non_factual",
+      "nonFactualSpans": [
+        "copy each exact contiguous non-factual substring; empty for factual entries"
+      ],
       "claims": [
         {
           "claimText": "copy the smallest exact contiguous answer substring that expresses this claim",
@@ -139,4 +174,4 @@ Return only one JSON object, with no markdown or prose around it:
   "summary": "brief assessment through your assigned lens"
 }
 
-Before returning, verify semantically that you assessed every manifest entry, that every `supported` or `contradicted` claim has at least one exact evidence passage ID, and that every selected passage's meaning supports or contradicts the claim. The application will independently validate all identifiers, scores, coverage, arithmetic, and exact text spans.
+Before returning, verify semantically that you assessed every manifest entry, that classification and claims obey the hard semantic rules, that every `supported` or `contradicted` claim has at least one exact evidence passage ID, and that every selected passage's meaning supports or contradicts the claim. The application will independently validate all identifiers, classification/claim consistency, scores, coverage, arithmetic, and exact text spans.

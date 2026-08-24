@@ -276,7 +276,7 @@ test('a supported claim without evidence IDs is retried and never converted into
     const report = {
       dimensionScores: { grounding: 10, completeness: 10, depth: 9, relevance: 10 },
       dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Relevant.' },
-      sentenceAssessments: [{ sentenceId: 'S1', claims: [{
+      sentenceAssessments: [{ sentenceId: 'S1', classification: 'factual', claims: [{
         claimText: 'Supported answer.', verdict: 'supported', materiality: 'material', centralToAnswer: true,
         evidencePassageIds: requests.length === 1 ? [] : ['P1'], reason: 'The evidence supports the answer.',
       }] }],

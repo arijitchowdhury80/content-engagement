@@ -14,10 +14,11 @@ async function evaluation() {
 
 function reportFor(evaluationPacket, overrides = {}) {
   const assessments = evaluationPacket.answerManifest.map((unit) => unit.text === 'Architecture Fit'
-    ? { sentenceId: unit.sentenceId, classification: 'not_factual', claims: [] }
+    ? { sentenceId: unit.sentenceId, classification: 'non_factual', nonFactualSpans: [unit.text], claims: [] }
     : {
         sentenceId: unit.sentenceId,
         classification: 'factual',
+        nonFactualSpans: [],
         claims: [{
           claimText: unit.text,
           verdict: 'supported',
@@ -70,7 +71,7 @@ test('treats headings as assessable non-factual units and validates semantic evi
   const packet = await evaluation();
   const validated = core.validateJudgeReport('referee', reportFor(packet), packet);
   assert.equal(validated.ok, true, validated.errors.join('; '));
-  assert.equal(validated.value.sentenceAssessments[0].classification, 'not_factual');
+  assert.equal(validated.value.sentenceAssessments[0].classification, 'non_factual');
   assert.equal(validated.value.unresolved.length, 0);
 });
 
@@ -94,15 +95,73 @@ test('rejects malformed claims instead of treating them as a non-factual sentenc
   assert.match(validated.errors.join('; '), /claims must be an array/);
 });
 
-test('derives sentence classification mechanically from claims and ignores model label variants', async () => {
+test('requires the judge semantic classification instead of inferring it from claims', async () => {
   const packet = await evaluation();
   const report = reportFor(packet);
   report.sentenceAssessments[0].classification = 'heading';
-  report.sentenceAssessments[1].classification = 'substantive fact';
+  const validated = core.validateJudgeReport('advocate', report, packet);
+  assert.equal(validated.ok, false);
+  assert.match(validated.errors.join('; '), /classification must be factual, mixed, or non_factual/);
+});
+
+test('reconciles sentence labels mechanically from the judge semantic partitions', async () => {
+  const packet = await evaluation();
+  const nonFactualWithClaim = reportFor(packet);
+  nonFactualWithClaim.sentenceAssessments[1].classification = 'non_factual';
+  nonFactualWithClaim.sentenceAssessments[1].nonFactualSpans = [packet.answerManifest[1].text];
+  const first = core.validateJudgeReport('skeptic', nonFactualWithClaim, packet);
+  assert.equal(first.ok, true, first.errors.join('; '));
+  assert.equal(first.value.sentenceAssessments[1].classification, 'non_factual');
+  assert.equal(first.value.sentenceAssessments[1].claims.length, 0);
+
+  const factualWithoutClaim = reportFor(packet);
+  factualWithoutClaim.sentenceAssessments[1].claims = [];
+  const second = core.validateJudgeReport('referee', factualWithoutClaim, packet);
+  assert.equal(second.ok, false);
+  assert.match(second.errors.join('; '), /must declare at least one factual claim or non-factual span/);
+});
+
+test('preserves an explicit non-factual decision when the model omits its copied span array', async () => {
+  const packet = await evaluation();
+  const report = reportFor(packet);
+  delete report.sentenceAssessments[0].nonFactualSpans;
   const validated = core.validateJudgeReport('advocate', report, packet);
   assert.equal(validated.ok, true, validated.errors.join('; '));
-  assert.equal(validated.value.sentenceAssessments[0].classification, 'not_factual');
-  assert.equal(validated.value.sentenceAssessments[1].classification, 'factual');
+  assert.equal(validated.value.sentenceAssessments[0].classification, 'non_factual');
+  assert.deepEqual(validated.value.sentenceAssessments[0].nonFactualSpans, [{
+    text: 'Architecture Fit', start: 0, end: 'Architecture Fit'.length,
+  }]);
+});
+
+test('accepts a mixed unit only when factual claims and non-factual spans are disjoint', async () => {
+  const packet = await core.createEvaluationPackage({
+    question: 'What does Analytics report?',
+    answer: 'Analytics is like a map; it reports no-result searches.',
+    hits: [{ text: 'Analytics reports searches that return no results.' }],
+  });
+  const unit = packet.answerManifest[0];
+  const passageId = packet.evidencePacket.passageIndex.find((item) => item.fieldPath === '/output/hits/0/text').evidencePassageId;
+  const report = {
+    dimensionScores: { grounding: 10, completeness: 9, depth: 8, relevance: 10 },
+    dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Direct.' },
+    sentenceAssessments: [{
+      sentenceId: unit.sentenceId,
+      classification: 'mixed',
+      nonFactualSpans: ['Analytics is like a map'],
+      claims: [{
+        claimText: 'it reports no-result searches', verdict: 'supported', materiality: 'material', centralToAnswer: true,
+        evidencePassageIds: [passageId], reason: 'The passage supports the literal product statement.',
+      }],
+    }],
+    summary: 'The analogy is excluded from grounding.',
+  };
+  assert.equal(core.validateJudgeReport('referee', report, packet).ok, true);
+
+  report.sentenceAssessments[0].claims[0].claimText = 'Analytics is like a map';
+  const reconciled = core.validateJudgeReport('referee', report, packet);
+  assert.equal(reconciled.ok, true, reconciled.errors.join('; '));
+  assert.equal(reconciled.value.sentenceAssessments[0].classification, 'non_factual');
+  assert.equal(reconciled.value.sentenceAssessments[0].claims.length, 0);
 });
 
 test('answer manifest preserves decimal claims and Markdown URLs exactly', () => {
@@ -113,6 +172,15 @@ test('answer manifest preserves decimal claims and Markdown URLs exactly', () =>
     'See [the study](https://www.algolia.com/customers/example/).',
   ]);
   for (const unit of manifest.units) assert.equal(text.slice(unit.start, unit.end), unit.text);
+});
+
+test('answer manifest does not split a sentence after non-terminal abbreviations', () => {
+  const text = 'Compare iOS vs. Android behavior. For example, e.g. mobile traffic can differ.';
+  const manifest = core.buildAnswerManifest(text);
+  assert.deepEqual(manifest.units.map((unit) => unit.text), [
+    'Compare iOS vs. Android behavior.',
+    'For example, e.g. mobile traffic can differ.',
+  ]);
 });
 
 test('resolves exact answer and evidence text mechanically from validated IDs', async () => {
@@ -304,7 +372,7 @@ test('uses the exact span for consensus even when judges enumerate claims differ
     core.validateJudgeReport('advocate', {
       dimensionScores: { grounding: 10, completeness: 9, depth: 8, relevance: 10 },
       dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Direct.' },
-      sentenceAssessments: [{ sentenceId, classification: 'not_factual', claims: [] }],
+      sentenceAssessments: [{ sentenceId, classification: 'non_factual', nonFactualSpans: [packet.answerManifest[0].text], claims: [] }],
       summary: 'No concern.',
     }, packet),
   ]);
@@ -324,7 +392,7 @@ test('does not manufacture consensus from spans that share only a conjunction', 
   const makeReport = (role, claimText) => core.validateJudgeReport(role, {
     dimensionScores: { grounding: 6, completeness: 9, depth: 8, relevance: 10 },
     dimensionRationales: { grounding: 'One concern.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Direct.' },
-    sentenceAssessments: [{ sentenceId, claims: [{
+    sentenceAssessments: [{ sentenceId, classification: 'factual', claims: [{
       claimText, verdict: 'unverifiable', materiality: 'material', centralToAnswer: false,
       evidencePassageIds: [], reason: 'Not verified.',
     }] }],
@@ -336,7 +404,7 @@ test('does not manufacture consensus from spans that share only a conjunction', 
     core.validateJudgeReport('advocate', {
       dimensionScores: { grounding: 10, completeness: 9, depth: 8, relevance: 10 },
       dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Direct.' },
-      sentenceAssessments: [{ sentenceId, claims: [] }],
+      sentenceAssessments: [{ sentenceId, classification: 'non_factual', nonFactualSpans: [packet.answerManifest[0].text], claims: [] }],
       summary: 'No concern.',
     }, packet),
   ]);
@@ -370,7 +438,7 @@ test('rejects paraphrased claimText and resolves repeated exact claims left to r
   const base = {
     dimensionScores: { grounding: 10, completeness: 10, depth: 8, relevance: 10 },
     dimensionRationales: { grounding: 'Supported.', completeness: 'Complete.', depth: 'Detailed.', relevance: 'Direct.' },
-    sentenceAssessments: [{ sentenceId, claims: [0, 1].map(() => ({
+    sentenceAssessments: [{ sentenceId, classification: 'factual', claims: [0, 1].map(() => ({
       claimText: 'API access is available', verdict: 'supported', materiality: 'minor', centralToAnswer: false,
       evidencePassageIds: [passageId], reason: 'Supported.',
     })) }],
