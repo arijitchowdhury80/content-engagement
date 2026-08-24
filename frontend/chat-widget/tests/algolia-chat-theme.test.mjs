@@ -57,6 +57,10 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.doesNotMatch(css, /Fully grounded/);
   assert.doesNotMatch(css, /Grounded answers cite sources/);
   assert.match(css, /\[part="panel"\]/);
+  assert.match(css, /\[part="panel"\]\[style\*="--algolia-panel-w"\][^{]+{[^}]*resize: both/);
+  assert.match(css, /\[part="panel"\]\[style\*="--algolia-panel-w"\][^{]+{[^}]*max-width: calc\(100vw - 32px\)/);
+  assert.match(css, /\[part="panel"\]\[style\*="--algolia-panel-w"\]::after[^{]+{[^}]*border-right: 2px solid/);
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\[part="panel"\]\[style\*="--algolia-panel-w"\][^{]+{[^}]*resize: none/);
   assert.match(css, /\[part="header"\][^{]+{[^}]*gap: 12px/);
   assert.match(css, /\[part="header"\][^{]+{[^}]*padding: 8px 14px 7px !important/);
   assert.match(css, /\[part="header"\][^{]+{[^}]*isolation: isolate/);
