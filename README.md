@@ -28,6 +28,7 @@ Start here for the folder map and current runtime boundaries.
 | `config/` | Public configuration notes only. Secrets stay in ignored local env files. |
 | `docs/customer-documentation/` | Narrative documentation chapters written for the project/customer record. |
 | `docs/design/` | Durable architecture, design, and implementation contracts. |
+| `docs/diagrams/` | Canonical architecture diagrams and their content contracts. |
 | `docs/evidence/` | Compact validation evidence and reports that should remain reviewable in Git. |
 | `docs/operations/` | Active operational packets and mutation evidence. Generated run payloads are ignored. |
 
@@ -38,6 +39,7 @@ Start here for the folder map and current runtime boundaries.
 - `skills/algolia-data-enrichment/` is the project-local skill. Do not use a global `.claude/skills/algolia-data-enrichment` copy for this project.
 - Proactive engagement runtime source files live directly in `frontend/chat-widget/`: `algolia-engagement-tracker.js`, `algolia-context-compiler.js`, `algolia-proactive-controller.js`, and `handoff-to-orchestrator.js`.
 - Generated batches, caches, snapshots, and work queues are intentionally ignored and should not be committed.
+- Start with `docs/design/content-engagement-architecture.md` for the end-to-end concierge and judge architecture.
 
 ## Common Commands
 
