@@ -14,6 +14,19 @@ Start here for the folder map and current runtime boundaries.
 - Production Ask Algolia is read-only comparison evidence. Do not mutate it from this repo.
 - Jahia development box: `https://tmp-content-eng-algolia.cloud.jahia.com/`
 
+## Architecture
+
+The full implementation walkthrough is in
+[`docs/design/content-engagement-architecture.md`](docs/design/content-engagement-architecture.md).
+
+### Personalized Concierge Engagement
+
+[![How Personalized Concierge Engagement Works](docs/diagrams/how-personalized-concierge-engagement-works.png)](docs/design/content-engagement-architecture.md#personalized-concierge)
+
+### Asynchronous Judge Panel
+
+[![How Three Judgments Become One Accountable Score](docs/diagrams/How%20Judges%20Work.png)](docs/design/content-engagement-architecture.md#asynchronous-judge-panel)
+
 ## Folder Map
 
 | Path | What lives there |
