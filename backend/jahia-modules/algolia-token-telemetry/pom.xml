@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.jahia.modules</groupId>
+    <artifactId>jahia-modules</artifactId>
+    <!-- Set to match the target server's Jahia DX version. Confirm in the Jahia
+         admin UI ("About") before building; a mismatch will fail to resolve
+         against the Jahia public Nexus repo below. -->
+    <version>8.2.2.3</version>
+  </parent>
+
+  <groupId>com.algolia.contentengagement</groupId>
+  <artifactId>algolia-token-telemetry</artifactId>
+  <version>1.1.0</version>
+  <packaging>bundle</packaging>
+
+  <name>Algolia Token Telemetry Proxy</name>
+  <description>
+    Server-side proxy for the Agent Studio conversation-detail endpoint, so the
+    admin/logs-scoped Algolia API key never has to live in browser-loaded JS.
+  </description>
+
+  <repositories>
+    <repository>
+      <id>jahia-public</id>
+      <name>Jahia Public Repository</name>
+      <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- Compile-time only (source retention): bnd reads these annotations to
+         generate the OSGi Declarative Services XML at build time; nothing
+         from this artifact ends up imported by the bundle at runtime. -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
+      <version>1.3.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.10.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <!-- Matches Jahia's own OSGi-modules-samples/action-samples pom.xml:
+                 explicit opt-in for bnd to process @Component/@Activate into
+                 OSGI-INF Declarative Services XML at build time. -->
+            <_dsannotations>*</_dsannotations>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>

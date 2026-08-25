@@ -269,6 +269,8 @@ test('question one locks the choice even when Compare was left OFF', async () =>
 
   // the first bubble must freeze the choice in whichever state it was left
   assert.equal(h.toggle().getAttribute('aria-disabled'), 'true', 'toggle is disabled after turn one');
+  assert.match(h.toggle().textContent, /new (chat|conversation)/i, 'locked-off state explains recovery');
+  assert.match(h.toggle().getAttribute('aria-label') || '', /new (chat|conversation)/i);
   assert.equal(h.api().state().locked, true);
 
   h.clickToggle();                                     // must be inert while locked
@@ -470,11 +472,16 @@ test('Jahia transform adds the Compare script and its config exactly once', () =
   assert.match(once, /window\.ACS_COMPARE=/);
   assert.equal((twice.match(/algolia-chat-compare-[a-f0-9]{12}\.js/g) || []).length, 1, 'idempotent');
   assert.equal((twice.match(/window\.ACS_COMPARE=/g) || []).length, 1, 'idempotent');
+  assert.equal((twice.match(/token-telemetry-[a-f0-9]{12}\.js/g) || []).length, 1, 'one telemetry observer');
 });
 
 test('Compare config is emitted before the Compare module', () => {
   const html = transformBlock(BLOCK_FIXTURE);
   assert.ok(html.indexOf('window.ACS_COMPARE=') < html.search(/algolia-chat-compare-[a-f0-9]{12}\.js/));
+  assert.ok(
+    html.search(/algolia-chat-compare-[a-f0-9]{12}\.js/) < html.search(/token-telemetry-[a-f0-9]{12}\.js/),
+    'telemetry observes the transport after Compare is configured',
+  );
 });
 
 test('narrow deployment script plans immutable integration assets, validates and can roll back', () => {
@@ -495,10 +502,12 @@ test('the chat stack manifest requires the Compare marker live', () => {
   assert.ok(manifest.jahia.requiredLiveMarkers.includes('algolia-chat-compare-'));
   assert.ok(manifest.jahia.requiredLiveMarkers.includes('algolia-context-compiler'));
   assert.ok(manifest.jahia.requiredLiveMarkers.includes('handoff-to-orchestrator'));
+  assert.ok(manifest.jahia.requiredLiveMarkers.includes('token-telemetry-'));
   assert.equal(manifest.jahia.requiredLiveMarkers.includes('algolia-context-compiler.js'), false);
   assert.equal(manifest.jahia.requiredLiveMarkers.includes('handoff-to-orchestrator.js'), false);
   assert.equal(manifest.jahia.compareWithProduction.productionAgent.searchKeyEnv, 'PROD_ASKAI_SEARCH_KEY');
   assert.equal(manifest.jahia.compareWithProduction.deploymentTool, 'tools/deployment/deploy_compare_integration_jahia.py');
+  assert.equal(manifest.jahia.tokenTelemetry.script, 'frontend/chat-widget/token-telemetry.js');
 });
 
 test('the general deployer remains free of Compare cutover behavior', () => {

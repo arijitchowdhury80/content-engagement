@@ -33,6 +33,7 @@ function createHarness({ proactiveState, compilerPacket, turnContext, primaryAge
   });
   const localStorage = new MemoryStorage(initialLocal);
   const documentEvents = [];
+  const documentListeners = {};
   const context = {
     console: {
       ...console,
@@ -43,6 +44,9 @@ function createHarness({ proactiveState, compilerPacket, turnContext, primaryAge
     URL,
     URLSearchParams,
     TextEncoder,
+    TextDecoder,
+    ReadableStream,
+    Response,
     localStorage,
     sessionStorage,
     location: {
@@ -58,6 +62,9 @@ function createHarness({ proactiveState, compilerPacket, turnContext, primaryAge
       }
     },
     document: {
+      addEventListener(type, listener) {
+        (documentListeners[type] ||= []).push(listener);
+      },
       querySelector(selector) {
         if (selector === 'algolia-agent[role="primary"]') {
           return {
@@ -113,6 +120,11 @@ function createHarness({ proactiveState, compilerPacket, turnContext, primaryAge
     getRegisteredTransport: () => registeredTransport,
     sessionStorage,
     documentEvents,
+    resetVisitorState() {
+      for (const listener of documentListeners['algolia-visitor-state-reset'] || []) {
+        listener({ detail: { source: 'test' } });
+      }
+    },
     logs,
   };
 }
@@ -278,6 +290,117 @@ test('publishes the exact terminal body once context and handoff preparation are
   const sent = JSON.parse(preparedTurns[0].body);
   assert.equal(sent.messages[0].metadata.turnContext.prepared_once, 'yes');
   assert.match(sent.messages[0].parts[0].text, /PROACTIVE_HANDOFF_CONTEXT/);
+});
+
+test('fallback turn identity changes after a visitor reset', async () => {
+  const h = createHarness();
+  const preparedTurns = [];
+  h.context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+  const request = {
+    method: 'POST',
+    body: JSON.stringify({
+      messages: [{ role: 'user', parts: [{ type: 'text', text: 'repeat me' }] }],
+    }),
+  };
+
+  await h.context.invokeTransport('https://primary.example/completions', request);
+  h.resetVisitorState();
+  await h.context.invokeTransport('https://primary.example/completions', request);
+
+  assert.equal(preparedTurns.length, 2);
+  assert.notEqual(preparedTurns[0].turnKey, preparedTurns[1].turnKey);
+});
+
+/*
+ * Completed-turn lifecycle scenarios:
+ * - A successful, fully consumed SSE response publishes one conversation id.
+ * - A missing conversation header publishes nothing.
+ * - Guardrail and cancelled streams publish nothing.
+ * - A listener failure cannot alter the response consumed by the chat widget.
+ * - Multiple successful model calls in one logical turn are all published.
+ */
+test('publishes a completed turn once the successful primary stream is consumed', async () => {
+  const { context } = createHarness();
+  const completedTurns = [];
+  context.algoliaHandoffToOrchestrator.subscribeCompletedTurn((detail) => completedTurns.push(detail));
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response(
+    'data: {"type":"text-delta","delta":"Hello"}\n\n',
+    { status: 200, headers: { 'X-Conversation-Id': 'alg_cnv_success_1' } },
+  );
+
+  const response = await context.invokeTransport('https://primary.example/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] }],
+    }),
+  });
+
+  assert.equal(completedTurns.length, 0, 'completion waits for the widget to consume the stream');
+  assert.match(await response.text(), /text-delta/);
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(completedTurns)),
+    [{ turnKey: 'conversation-1:user-1', conversationId: 'alg_cnv_success_1' }],
+  );
+});
+
+test('completed-turn observers cannot break responses or hide multiple billable model calls', async () => {
+  const { context } = createHarness();
+  const completedTurns = [];
+  context.algoliaHandoffToOrchestrator.subscribeCompletedTurn(() => {
+    throw new Error('observer failed');
+  });
+  context.algoliaHandoffToOrchestrator.subscribeCompletedTurn((detail) => completedTurns.push(detail));
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response('primary answer', {
+    status: 200,
+    headers: { 'X-Conversation-Id': 'alg_cnv_retry_1' },
+  });
+  const request = {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] }],
+    }),
+  };
+
+  const first = await context.invokeTransport('https://primary.example/completions', request);
+  const second = await context.invokeTransport('https://primary.example/completions', request);
+
+  assert.equal(await first.text(), 'primary answer');
+  assert.equal(await second.text(), 'primary answer');
+  assert.equal(completedTurns.length, 2, 'each successful primary model call is observable');
+  assert.equal(completedTurns[0].turnKey, completedTurns[1].turnKey, 'both calls retain logical-turn correlation');
+});
+
+test('does not publish completed turns for missing headers, guardrails, or cancelled streams', async () => {
+  const { context } = createHarness();
+  const completedTurns = [];
+  context.algoliaHandoffToOrchestrator.subscribeCompletedTurn((detail) => completedTurns.push(detail));
+  const request = {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] }],
+    }),
+  };
+
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response('no header', { status: 200 });
+  assert.equal(await (await context.invokeTransport('https://primary.example/completions', request)).text(), 'no header');
+
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response(
+    'data: {"type":"data-guardrail-violation"}\n\n',
+    { status: 200, headers: { 'X-Conversation-Id': 'alg_cnv_guardrail_1' } },
+  );
+  await (await context.invokeTransport('https://primary.example/completions', request)).text();
+
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response('cancel me', {
+    status: 200,
+    headers: { 'X-Conversation-Id': 'alg_cnv_cancel_1' },
+  });
+  const cancelled = await context.invokeTransport('https://primary.example/completions', request);
+  await cancelled.body.cancel();
+
+  assert.equal(completedTurns.length, 0);
 });
 
 test('a proactive primary retry keeps one clean logical turn identity', async () => {
