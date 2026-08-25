@@ -142,6 +142,14 @@
   const PILL_STYLE_ID = "algolia-usage-pill-style";
   const PILL_CSS = `.${PILL_CLASS}{display:inline-flex;align-items:center;width:fit-content;margin-right:6px;border-radius:var(--algolia-radius-full,9999px);border:1px solid var(--algolia-border,#e0e0e0);background:var(--algolia-surface-2,#f0f0f0);color:var(--algolia-text-muted,#5f6368);padding:4px 12px;font-size:var(--algolia-fs-xs,12px);font-weight:var(--algolia-fw-medium,500);font-family:var(--algolia-font-sans,system-ui,sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}`;
 
+  function updatePill(pill, text, title) {
+    // The header fallback lives inside the chat MutationObserver. Rewriting
+    // identical text would retrigger the observer forever, so DOM writes must
+    // be idempotent.
+    if (pill.textContent !== text) pill.textContent = text;
+    if (pill.title !== title) pill.title = title;
+  }
+
   function renderPill(root, container, anchor = null, extraClass = "") {
     if (!root || !container) return;
     let pill = container.querySelector(`.${PILL_CLASS}`);
@@ -162,19 +170,24 @@
       anchor ? container.insertBefore(pill, anchor) : container.appendChild(pill);
     }
     if (usageState.status === "loading") {
-      pill.textContent = "Calculating tokens…";
-      pill.title = "Token usage is being calculated";
+      updatePill(pill, "Calculating tokens…", "Token usage is being calculated");
       return;
     }
     if (usageState.status === "unavailable" && !usageState.usage) {
-      pill.textContent = "Tokens unavailable";
-      pill.title = "Token usage could not be loaded; the answer is unaffected";
+      updatePill(
+        pill,
+        "Tokens unavailable",
+        "Token usage could not be loaded; the answer is unaffected",
+      );
       return;
     }
     const totals = usageState.usage;
     if (!totals) return;
-    pill.textContent = `${totals.totalTokens} tokens`;
-    pill.title = `Input ${totals.inputTokens} / Output ${totals.outputTokens} tokens`;
+    updatePill(
+      pill,
+      `${totals.totalTokens} tokens`,
+      `Input ${totals.inputTokens} / Output ${totals.outputTokens} tokens`,
+    );
   }
 
   function renderPillInto(badge) {
