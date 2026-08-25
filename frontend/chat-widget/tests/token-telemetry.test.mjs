@@ -15,15 +15,75 @@ const telemetryPath = new URL('../token-telemetry.js', import.meta.url);
  * - Proxy failures remain isolated from the primary answer path.
  * - The existing visitor reset clears cumulative state.
  */
-function createHarness({ responses = [], compilerSender = false } = {}) {
+function createHarness({ responses = [], compilerSender = false, confidenceBadgeCount = 0 } = {}) {
   const fetchCalls = [];
   const windowListeners = {};
   const documentListeners = {};
   const timers = [];
   let completedListener = null;
+  let headerPill = null;
+  let pillStyle = null;
+  let mutationCallback = null;
+  const iconCluster = { id: 'icon-cluster' };
+  let headerInsertedBeforeCluster = false;
+  const chatHeader = {
+    get lastElementChild() { return iconCluster; },
+    querySelector(selector) {
+      return selector === '.algolia-usage-pill' ? headerPill : null;
+    },
+    appendChild(element) {
+      element.parentNode = this;
+      headerPill = element;
+    },
+    insertBefore(element, anchor) {
+      headerInsertedBeforeCluster = anchor === iconCluster;
+      this.appendChild(element);
+    },
+    removeChild(element) {
+      if (headerPill === element) headerPill = null;
+    },
+  };
+  const badges = [];
+  function addBadge() {
+    let pill = null;
+    let style = null;
+    const verdict = { className: 'badge' };
+    const root = {
+      querySelector(selector) {
+        if (selector === '.algolia-usage-pill') return pill;
+        if (selector === '.badge') return verdict;
+        if (selector === '#algolia-usage-pill-style') return style;
+        return null;
+      },
+      appendChild(element) {
+        element.parentNode = this;
+        pill = element;
+      },
+      insertBefore(element) {
+        this.appendChild(element);
+      },
+      prepend(element) { style = element; },
+      removeChild(element) {
+        if (pill === element) pill = null;
+      },
+      pill() { return pill; },
+    };
+    badges.push({ shadowRoot: root });
+    mutationCallback?.([]);
+  }
+  for (let index = 0; index < confidenceBadgeCount; index += 1) addBadge();
   const chatShadow = {
     addEventListener() {},
-    querySelectorAll() { return []; },
+    querySelectorAll(selector) { return selector === 'algolia-confidence-badge' ? badges : []; },
+    querySelector(selector) {
+      if (selector === "header, [role='banner'], [part='header']") return chatHeader;
+      if (selector === '#algolia-usage-pill-style') return pillStyle;
+      if (selector === '.algolia-usage-pill--header') return headerPill;
+      return null;
+    },
+    prepend(element) {
+      pillStyle = element;
+    },
   };
   const context = {
     console,
@@ -35,7 +95,10 @@ function createHarness({ responses = [], compilerSender = false } = {}) {
         this.detail = options.detail;
       }
     },
-    MutationObserver: class MutationObserver { observe() {} },
+    MutationObserver: class MutationObserver {
+      constructor(callback) { mutationCallback = callback; }
+      observe() {}
+    },
     document: {
       addEventListener(type, listener) {
         (documentListeners[type] ||= []).push(listener);
@@ -44,7 +107,14 @@ function createHarness({ responses = [], compilerSender = false } = {}) {
         return selector === 'algolia-chat' ? { shadowRoot: chatShadow } : null;
       },
       createElement() {
-        return { className: '', textContent: '', title: '', setAttribute() {} };
+        return {
+          className: '',
+          textContent: '',
+          title: '',
+          parentNode: null,
+          setAttribute() {},
+          remove() { this.parentNode?.removeChild(this); },
+        };
       },
     },
     fetch: async (url, init = {}) => {
@@ -95,6 +165,10 @@ function createHarness({ responses = [], compilerSender = false } = {}) {
     fetchCalls,
     nativeFetch,
     timers,
+    headerPill() { return headerPill; },
+    headerInsertedBeforeCluster() { return headerInsertedBeforeCluster; },
+    badgePill(index) { return badges[index]?.shadowRoot.pill() || null; },
+    addBadge,
     emitCompleted(detail) { completedListener(detail); },
     reset() {
       (documentListeners['algolia-visitor-state-reset'] || []).forEach((listener) => listener({ detail: {} }));
@@ -149,8 +223,33 @@ test('accumulates token totals across successful primary turns and resets', asyn
     JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.usage)),
     { inputTokens: 30, outputTokens: 12, totalTokens: 42, turns: 2 },
   );
+  assert.equal(h.headerPill().textContent, '42 tokens');
+  assert.equal(h.headerPill().title, 'Input 30 / Output 12 tokens');
+  assert.equal(h.headerInsertedBeforeCluster(), true);
   h.reset();
   assert.equal(h.context.__algoliaChatUsage.usage, null);
+  assert.equal(h.headerPill(), null);
+});
+
+test('moves telemetry from the header to the latest confidence badge and clears every stale pill', async () => {
+  const h = createHarness();
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_1' });
+  await h.settle();
+  assert.equal(h.headerPill().textContent, '15 tokens');
+
+  h.addBadge();
+  assert.equal(h.headerPill(), null);
+  assert.equal(h.badgePill(0).textContent, '15 tokens');
+
+  h.addBadge();
+  assert.equal(h.badgePill(0), null);
+  assert.equal(h.badgePill(1).textContent, '15 tokens');
+
+  h.reset();
+  assert.equal(h.headerPill(), null);
+  assert.equal(h.badgePill(0), null);
+  assert.equal(h.badgePill(1), null);
 });
 
 test('retries totals that have not persisted and contains proxy failures', async () => {
