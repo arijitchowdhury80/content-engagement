@@ -125,7 +125,8 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
     },
     fetch: async (url, init = {}) => {
       fetchCalls.push({ url: String(url), init });
-      const response = responses.shift() || { ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } };
+      const queued = responses.shift();
+      const response = await (queued || { ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } });
       return {
         ok: response.ok,
         status: response.status || (response.ok ? 200 : 503),
@@ -240,6 +241,63 @@ test('accumulates token totals across successful primary turns and resets', asyn
   h.reset();
   assert.equal(h.context.__algoliaChatUsage.usage, null);
   assert.equal(h.headerPill(), null);
+});
+
+test('refreshes one stable Agent Studio conversation after every distinct turn without double-counting', async () => {
+  const h = createHarness({
+    responses: [
+      { ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } },
+      { ok: true, data: { inputTokens: 30, outputTokens: 12, totalTokens: 42 } },
+    ],
+  });
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_stable' });
+  await h.settle();
+  h.emitCompleted({ turnKey: 'conversation:user-2', conversationId: 'alg_cnv_stable' });
+  await h.settle();
+
+  assert.equal(h.fetchCalls.length, 2);
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.usage)),
+    { inputTokens: 30, outputTokens: 12, totalTokens: 42, turns: 2 },
+  );
+  assert.equal(h.headerPill().textContent, '42 tokens');
+});
+
+test('an older overlapping lookup cannot regress a newer cumulative total or status', async () => {
+  let resolveFirst;
+  const first = new Promise((resolve) => { resolveFirst = resolve; });
+  const h = createHarness({
+    responses: [
+      first,
+      { ok: true, data: { inputTokens: 30, outputTokens: 12, totalTokens: 42 } },
+    ],
+  });
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_stable' });
+  h.emitCompleted({ turnKey: 'conversation:user-2', conversationId: 'alg_cnv_stable' });
+  await h.settle();
+  assert.equal(h.context.__algoliaChatUsage.usage.totalTokens, 42);
+  assert.equal(h.context.__algoliaChatUsage.status, 'ready');
+
+  resolveFirst({ ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } });
+  await h.settle();
+  assert.equal(h.context.__algoliaChatUsage.usage.totalTokens, 42);
+  assert.equal(h.context.__algoliaChatUsage.status, 'ready');
+});
+
+test('a retry queued before reset does not call the backend after reset', async () => {
+  const h = createHarness({
+    responses: [{ ok: true, data: { inputTokens: 0, outputTokens: 0, totalTokens: 0 } }],
+  });
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_stale' });
+  await h.settle();
+  assert.equal(h.timers.length, 1);
+  h.reset();
+  h.timers.shift()();
+  await h.settle();
+  assert.equal(h.fetchCalls.length, 1);
 });
 
 test('moves telemetry from the header to the latest confidence badge and clears every stale pill', async () => {
