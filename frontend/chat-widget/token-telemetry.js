@@ -138,13 +138,13 @@
   }
 
   const PILL_CLASS = "algolia-usage-pill";
+  const HEADER_PILL_CLASS = "algolia-usage-pill--header";
   const PILL_STYLE_ID = "algolia-usage-pill-style";
   const PILL_CSS = `.${PILL_CLASS}{display:inline-flex;align-items:center;width:fit-content;margin-right:6px;border-radius:var(--algolia-radius-full,9999px);border:1px solid var(--algolia-border,#e0e0e0);background:var(--algolia-surface-2,#f0f0f0);color:var(--algolia-text-muted,#5f6368);padding:4px 12px;font-size:var(--algolia-fs-xs,12px);font-weight:var(--algolia-fw-medium,500);font-family:var(--algolia-font-sans,system-ui,sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}`;
 
-  function renderPillInto(badge) {
-    const root = badge?.shadowRoot;
-    if (!root) return;
-    let pill = root.querySelector(`.${PILL_CLASS}`);
+  function renderPill(root, container, anchor = null, extraClass = "") {
+    if (!root || !container) return;
+    let pill = container.querySelector(`.${PILL_CLASS}`);
     if (usageState.status === "idle" && !usageState.usage) {
       pill?.remove();
       return;
@@ -157,10 +157,9 @@
     }
     if (!pill) {
       pill = document.createElement("span");
-      pill.className = PILL_CLASS;
+      pill.className = `${PILL_CLASS}${extraClass ? ` ${extraClass}` : ""}`;
       pill.setAttribute("aria-live", "polite");
-      const verdict = root.querySelector(".badge");
-      verdict ? root.insertBefore(pill, verdict) : root.appendChild(pill);
+      anchor ? container.insertBefore(pill, anchor) : container.appendChild(pill);
     }
     if (usageState.status === "loading") {
       pill.textContent = "Calculating tokens…";
@@ -178,9 +177,36 @@
     pill.title = `Input ${totals.inputTokens} / Output ${totals.outputTokens} tokens`;
   }
 
+  function renderPillInto(badge) {
+    const root = badge?.shadowRoot;
+    if (!root) return;
+    renderPill(root, root, root.querySelector(".badge"));
+  }
+
+  function renderHeaderPill(shadowRoot) {
+    const header = shadowRoot.querySelector("header, [role='banner'], [part='header']");
+    renderPill(shadowRoot, header, header?.lastElementChild || null, HEADER_PILL_CLASS);
+  }
+
   function renderLatestPill(shadowRoot) {
-    const badges = shadowRoot.querySelectorAll("algolia-confidence-badge");
-    renderPillInto(badges[badges.length - 1]);
+    const badges = [...shadowRoot.querySelectorAll("algolia-confidence-badge")];
+    const latestBadge = badges[badges.length - 1];
+    if (usageState.status === "idle" && !usageState.usage) {
+      shadowRoot.querySelector(`.${HEADER_PILL_CLASS}`)?.remove();
+      for (const badge of badges) badge.shadowRoot?.querySelector(`.${PILL_CLASS}`)?.remove();
+      return;
+    }
+    if (latestBadge) {
+      shadowRoot.querySelector(`.${HEADER_PILL_CLASS}`)?.remove();
+      for (const badge of badges.slice(0, -1)) {
+        badge.shadowRoot?.querySelector(`.${PILL_CLASS}`)?.remove();
+      }
+      renderPillInto(latestBadge);
+      return;
+    }
+    // Confidence judging can be disabled on the live widget. Token telemetry is
+    // independent, so keep it visible in the conversation header in that mode.
+    renderHeaderPill(shadowRoot);
   }
 
   function whenChatShadowReady(callback) {
