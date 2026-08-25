@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plan, apply, validate, and roll back the narrow Compare integration on Jahia."""
+"""Plan, apply, validate, and roll back the chat observer integration on Jahia."""
 
 from __future__ import annotations
 
@@ -11,6 +11,9 @@ import re
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -26,16 +29,24 @@ PRIVATE_ROOT = ROOT / ".local/deployment-state/compare-integration-jahia"
 COMPARE_ENV = ROOT / ".env.compare.local"
 PROD_APP_ID = "1QDAWL72TQ"
 PROD_AGENT_ID = "ebff018c-66e1-44df-b33a-2a58a0188840"
+TOKEN_TELEMETRY_URL = (
+    "https://tmp-content-eng-algolia.cloud.jahia.com/"
+    "sites/algolia-assets/home.algoliaTokenTelemetry.do"
+)
+TOKEN_TELEMETRY_ORIGIN = "https://tmp-content-eng-algolia.cloud.jahia.com"
+TOKEN_TELEMETRY_SMOKE_ID_ENV = "TOKEN_TELEMETRY_SMOKE_CONVERSATION_ID"
 COMPARE_ENV_KEYS = frozenset({"PROD_ASKAI_SEARCH_KEY"})
 SOURCES = {
     "context": ROOT / "frontend/chat-widget/algolia-context-compiler.js",
     "handoff": ROOT / "frontend/chat-widget/handoff-to-orchestrator.js",
     "compare": ROOT / "frontend/chat-widget/algolia-chat-compare.js",
+    "telemetry": ROOT / "frontend/chat-widget/token-telemetry.js",
 }
 STEMS = {
     "context": "algolia-context-compiler",
     "handoff": "handoff-to-orchestrator",
     "compare": "algolia-chat-compare",
+    "telemetry": "token-telemetry",
 }
 
 
@@ -82,6 +93,46 @@ def config_fingerprint(config: dict[str, str]) -> str:
     return sha256("\0".join([PROD_APP_ID, PROD_AGENT_ID, config["PROD_ASKAI_SEARCH_KEY"]]))
 
 
+def validate_token_telemetry_backend(conversation_id: str) -> dict[str, bool]:
+    """Prove the live action, runtime secret, and upstream lookup before JS cutover."""
+    if not re.fullmatch(r"[A-Za-z0-9_-]{1,160}", conversation_id or ""):
+        raise RuntimeError(f"Invalid {TOKEN_TELEMETRY_SMOKE_ID_ENV}")
+    request = urllib.request.Request(
+        TOKEN_TELEMETRY_URL,
+        data=urllib.parse.urlencode({"conversationId": conversation_id}).encode("ascii"),
+        headers={
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Origin": TOKEN_TELEMETRY_ORIGIN,
+            "User-Agent": "algolia-token-telemetry-deployment-gate/1",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20, context=jahia.ssl_context()) as response:
+            content_type = response.headers.get_content_type()
+            raw_body = response.read(65_537)
+            if len(raw_body) > 65_536:
+                raise ValueError("Telemetry response exceeded deployment-gate limit")
+            body = json.loads(raw_body.decode("utf-8"))
+            status = response.status
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ValueError) as error:
+        raise RuntimeError("Live token telemetry backend preflight failed") from error
+    if not isinstance(body, dict):
+        raise RuntimeError("Live token telemetry backend returned an invalid contract")
+    totals = [body.get(key) for key in ("inputTokens", "outputTokens", "totalTokens")]
+    checks = {
+        "httpOk": status == 200,
+        "jsonResponse": content_type == "application/json",
+        "tokenTotalsOnly": set(body) == {"inputTokens", "outputTokens", "totalTokens"},
+        "nonNegativeIntegerTotals": all(isinstance(value, int) and value >= 0 for value in totals),
+    }
+    checks["pass"] = all(checks.values())
+    if not checks["pass"]:
+        raise RuntimeError("Live token telemetry backend returned an invalid contract")
+    return checks
+
+
 def immutable_assets() -> dict[str, dict[str, str]]:
     assets = {}
     for key, source in SOURCES.items():
@@ -89,7 +140,7 @@ def immutable_assets() -> dict[str, dict[str, str]]:
         digest = sha256(content)
         filename = (
             f"{STEMS[key]}-{digest[:12]}.js"
-            if key == "compare"
+            if key in {"compare", "telemetry"}
             else f"{STEMS[key]}-compare-{digest[:12]}.js"
         )
         assets[key] = {
@@ -112,7 +163,11 @@ def replace_one(pattern: str, replacement: str, value: str, label: str) -> str:
 
 def script_pattern(key: str) -> str:
     stem = STEMS[key]
-    version = r"(?:-[a-f0-9]{12})?" if key == "compare" else r"(?:-compare-[a-f0-9]{12})?"
+    version = (
+        r"(?:-[a-f0-9]{12})?"
+        if key in {"compare", "telemetry"}
+        else r"(?:-compare-[a-f0-9]{12})?"
+    )
     return (
         rf'<script src="{re.escape(PUBLIC)}/{re.escape(stem)}'
         rf'{version}\.js(?:\?[^"\n]*)?"></script>'
@@ -167,7 +222,13 @@ def update_block_html(current: str, assets: dict, config: dict[str, str]) -> str
         + "\n"
         + f'<script src="{assets["compare"]["url"]}"></script>'
     )
-    return next_html.replace(handoff_tag, handoff_tag + "\n" + compare_block, 1)
+    telemetry_pattern = script_pattern("telemetry")
+    telemetry_count = len(re.findall(telemetry_pattern, next_html, flags=re.I))
+    if telemetry_count > 1:
+        raise RuntimeError(f"Expected zero or one telemetry script; found {telemetry_count}")
+    next_html = re.sub(rf"\n?{telemetry_pattern}", "", next_html, count=1, flags=re.I)
+    observer_block = compare_block + "\n" + f'<script src="{assets["telemetry"]["url"]}"></script>'
+    return next_html.replace(handoff_tag, handoff_tag + "\n" + observer_block, 1)
 
 
 def compact_node(path: str, workspace: str) -> dict | None:
@@ -323,7 +384,11 @@ def validate_live(assets: dict, expected_html: str) -> dict:
         "liveBlockMatches": live == expected_html,
         "loadOrder": all(
             0 <= live.find(assets[left]["url"]) < live.find(assets[right]["url"])
-            for left, right in [("context", "handoff"), ("handoff", "compare")]
+            for left, right in [
+                ("context", "handoff"),
+                ("handoff", "compare"),
+                ("compare", "telemetry"),
+            ]
         ),
     }
     for workspace in ["EDIT", "LIVE"]:
@@ -364,7 +429,11 @@ def create_plan(evidence_dir: Path) -> Path:
     public_plan = {
         "schema": "CompareIntegrationDeploymentPlan.v1",
         "sourceCommit": commit,
-        "scope": "three immutable Compare integration assets plus one exact custom block",
+        "scope": "four immutable chat integration assets plus one exact custom block",
+        "activationPrerequisite": (
+            "The token telemetry Jahia module must already be installed, configured, and pass "
+            "a live read-only conversation lookup before any browser asset is mutated"
+        ),
         "assets": {
             key: {field: value for field, value in asset.items() if field != "content"}
             for key, asset in assets.items()
@@ -392,6 +461,8 @@ def apply_plan(plan_path: Path, evidence_dir: Path) -> int:
     config = load_compare_env()
     if config_fingerprint(config) != plan["configFingerprint"]:
         raise RuntimeError("Compare configuration changed after plan approval")
+    smoke_conversation_id = os.environ.get(TOKEN_TELEMETRY_SMOKE_ID_ENV, "")
+    backend_checks = validate_token_telemetry_backend(smoke_conversation_id)
     assets = immutable_assets()
     for key, asset in assets.items():
         planned = plan["assets"][key]
@@ -436,6 +507,7 @@ def apply_plan(plan_path: Path, evidence_dir: Path) -> int:
         })
         raise
     jahia.write_json(evidence_dir / "mutation-results.json", mutations)
+    jahia.write_json(evidence_dir / "backend-preflight.json", backend_checks)
     jahia.write_json(evidence_dir / "deployment-validation.json", checks)
     print(json.dumps(checks, indent=2))
     return 0

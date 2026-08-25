@@ -1,4 +1,5 @@
 import importlib.util
+from email.message import Message
 import json
 import os
 from pathlib import Path
@@ -33,11 +34,11 @@ def block_fixture() -> str:
 
 def test_assets_are_content_addressed_and_independent():
     assets = module.immutable_assets()
-    assert set(assets) == {"context", "handoff", "compare"}
+    assert set(assets) == {"context", "handoff", "compare", "telemetry"}
     for key, asset in assets.items():
         expected = (
             f"{module.STEMS[key]}-{asset['sha256'][:12]}.js"
-            if key == "compare"
+            if key in {"compare", "telemetry"}
             else f"{module.STEMS[key]}-compare-{asset['sha256'][:12]}.js"
         )
         assert asset["filename"] == expected
@@ -52,11 +53,13 @@ def test_block_transform_is_narrow_ordered_and_idempotent():
     assert 'data-protected="unchanged"' in once
     assert once.index(assets["context"]["url"]) < once.index(assets["handoff"]["url"])
     assert once.index(assets["handoff"]["url"]) < once.index(assets["compare"]["url"])
+    assert once.index(assets["compare"]["url"]) < once.index(assets["telemetry"]["url"])
     assert once.index("window.ACS_COMPARE=") < once.index(assets["compare"]["url"])
     assert once.count("window.ACS_COMPARE=") == 1
     assert once.count("sentinel-secret-key") == 1
     assert module.PROD_APP_ID in once
     assert module.PROD_AGENT_ID in once
+    assert once.count(assets["telemetry"]["url"]) == 1
 
 
 def test_block_transform_can_add_missing_handoff_at_the_existing_controller_boundary():
@@ -188,3 +191,36 @@ def test_deployer_has_no_broad_publish_or_stable_asset_overwrite():
     assert "PROD_ASKAI_APP_ID" not in module.COMPARE_ENV_KEYS
     assert "PROD_ASKAI_AGENT_ID" not in module.COMPARE_ENV_KEYS
     assert "sentinel-secret-key" not in source
+
+
+def test_backend_preflight_requires_live_token_only_contract(monkeypatch):
+    class Response:
+        status = 200
+        headers = Message()
+
+        def __init__(self):
+            self.headers["Content-Type"] = "application/json"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return False
+
+        def read(self, _limit):
+            return b'{"inputTokens":10,"outputTokens":5,"totalTokens":15}'
+
+    monkeypatch.setattr(module.urllib.request, "urlopen", lambda *_args, **_kwargs: Response())
+    checks = module.validate_token_telemetry_backend("alg_cnv_smoke_1")
+    assert checks["pass"] is True
+
+
+def test_backend_preflight_rejects_bad_id_and_frontend_apply_is_gated_first():
+    with pytest.raises(RuntimeError, match=module.TOKEN_TELEMETRY_SMOKE_ID_ENV):
+        module.validate_token_telemetry_backend("bad/path")
+
+    source = (ROOT / "tools/deployment/deploy_compare_integration_jahia.py").read_text(encoding="utf-8")
+    preflight = source.index("backend_checks = validate_token_telemetry_backend")
+    asset_creation = source.index('mutations[f"asset_{key}"] = create_immutable(asset)')
+    cutover = source.index('mutations["setBlockHtml"]')
+    assert preflight < asset_creation < cutover

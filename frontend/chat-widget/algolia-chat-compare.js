@@ -259,13 +259,24 @@
   }
 
   function paintToggle(t) {
-    t.textContent = compareOn ? "Comparing with production" : "Compare with production";
+    t.textContent = locked && !compareOn
+      ? "Compare off · Start a new chat"
+      : compareOn
+        ? "Comparing with production"
+        : "Compare with production";
     t.setAttribute("aria-pressed", compareOn ? "true" : "false");
     if (locked) {
       t.setAttribute("aria-disabled", "true");
+      t.setAttribute(
+        "aria-label",
+        compareOn
+          ? "Comparing with production. Start a new conversation to change Compare."
+          : "Compare is off. Start a new conversation to enable Compare."
+      );
       t.title = "Compare is fixed for this conversation. Start a new chat to change it.";
     } else {
       t.removeAttribute("aria-disabled");
+      t.setAttribute("aria-label", "Compare with production");
       t.title = "Send the same finalized request, including current session and page context, to the live algolia.com Ask AI";
     }
   }

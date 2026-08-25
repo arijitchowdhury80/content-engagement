@@ -17,7 +17,8 @@
       "algolia-proactive-controller.js",
       "handoff-to-orchestrator",
       "algolia-chat-engage.js",
-      "algolia-chat-compare-"
+      "algolia-chat-compare-",
+      "token-telemetry-"
     ],
     "compareWithProduction": {
       "script": "frontend/chat-widget/algolia-chat-compare.js",
@@ -25,7 +26,8 @@
       "immutableAssets": [
         "algolia-context-compiler-compare-<sha12>.js",
         "handoff-to-orchestrator-compare-<sha12>.js",
-        "algolia-chat-compare-<sha12>.js"
+        "algolia-chat-compare-<sha12>.js",
+        "token-telemetry-<sha12>.js"
       ],
       "productionAgent": {
         "appId": "1QDAWL72TQ",
@@ -34,6 +36,13 @@
         "searchKeyEnv": "PROD_ASKAI_SEARCH_KEY",
         "note": "Controlled same-input benchmark. Both agents receive the identical finalized body, including current session and page context. Before deployment, record verification that the browser key is read-only, correctly scoped, monitored, and revocable; no proxy is deployed on Jahia."
       }
+    },
+    "tokenTelemetry": {
+      "script": "frontend/chat-widget/token-telemetry.js",
+      "backendModule": "backend/jahia-modules/algolia-token-telemetry",
+      "browserDeploymentTool": "tools/deployment/deploy_compare_integration_jahia.py",
+      "actionPath": "/sites/algolia-assets/home.algoliaTokenTelemetry.do",
+      "note": "Install and configure the backend module first using Jahia's supported Provisioning or module-management API. Browser cutover is then gated by a live read-only token lookup. Primary token usage observes completed calls from the sole orchestrator transport; the browser sends only conversationId, and the Jahia module fixes the app and agent and returns token totals only."
     }
   },
   "agentStudio": {

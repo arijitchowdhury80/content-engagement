@@ -29,6 +29,8 @@
   const fallbackFetch = typeof window.fetch === "function" ? window.fetch.bind(window) : null;
   let transportInstalled = false;
   const preparedTurnListeners = new Set();
+  const completedTurnListeners = new Set();
+  let conversationGeneration = 0;
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -149,7 +151,7 @@
     );
     const messageId = String(message.id || message.messageId || `${index}:${text}`);
     return {
-      key: `${conversationId}:${messageId}`,
+      key: `${conversationGeneration ? `${conversationGeneration}:` : ""}${conversationId}:${messageId}`,
       question: text,
     };
   }
@@ -168,6 +170,65 @@
         debug("prepared-turn listener failed (contained)", error);
       }
     }
+  }
+
+  function subscribeCompletedTurn(listener) {
+    if (typeof listener !== "function") throw new TypeError("Completed-turn listener must be a function");
+    completedTurnListeners.add(listener);
+    return () => completedTurnListeners.delete(listener);
+  }
+
+  function notifyCompletedTurn(detail) {
+    for (const listener of completedTurnListeners) {
+      try {
+        listener(detail);
+      } catch (error) {
+        debug("completed-turn listener failed (contained)", error);
+      }
+    }
+  }
+
+  function observePrimaryCompletion(response, turn) {
+    const conversationId = response?.headers?.get?.("X-Conversation-Id");
+    if (!turn || response?.ok === false || !conversationId || !response?.body?.getReader) return response;
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let diagnosticTail = "";
+    let guardrailViolation = false;
+    const observedBody = new ReadableStream({
+      async pull(controller) {
+        try {
+          const chunk = await reader.read();
+          if (chunk.done) {
+            if (!guardrailViolation) {
+              notifyCompletedTurn(Object.freeze({ turnKey: turn.key, conversationId }));
+            }
+            controller.close();
+            return;
+          }
+          diagnosticTail += decoder.decode(chunk.value, { stream: true });
+          if (/"type"\s*:\s*"data-guardrail-violation"/.test(diagnosticTail)) {
+            guardrailViolation = true;
+          }
+          diagnosticTail = diagnosticTail.slice(-4096);
+          controller.enqueue(chunk.value);
+        } catch (error) {
+          controller.error(error);
+        }
+      },
+      async cancel(reason) {
+        try {
+          await reader.cancel(reason);
+        } catch (error) {
+          debug("primary stream cancellation failed (contained)", error);
+        }
+      },
+    });
+    return new Response(observedBody, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+    });
   }
 
   function selectedChip(response, userResponse) {
@@ -335,7 +396,7 @@
           handoffFailure: `http_${response?.status || "error"}`,
         });
       }
-      return response;
+      return observePrimaryCompletion(response, turn);
     } catch (error) {
       if (prepared.opportunityId) {
         updateOpportunity(prepared.opportunityId, {
@@ -369,6 +430,10 @@
     installWhenReady();
   }
 
+  document.addEventListener?.("algolia-visitor-state-reset", () => {
+    conversationGeneration += 1;
+  });
+
   window.algoliaHandoffToOrchestrator = {
     configure,
     decorateBody,
@@ -376,5 +441,6 @@
     orchestratorTransport,
     installTransportAdapter,
     subscribePreparedTurn,
+    subscribeCompletedTurn,
   };
 })();
