@@ -107,11 +107,17 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
         return selector === 'algolia-chat' ? { shadowRoot: chatShadow } : null;
       },
       createElement() {
+        let textContent = '';
         return {
           className: '',
-          textContent: '',
           title: '',
           parentNode: null,
+          textWrites: 0,
+          get textContent() { return textContent; },
+          set textContent(value) {
+            textContent = value;
+            this.textWrites += 1;
+          },
           setAttribute() {},
           remove() { this.parentNode?.removeChild(this); },
         };
@@ -169,6 +175,7 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
     headerInsertedBeforeCluster() { return headerInsertedBeforeCluster; },
     badgePill(index) { return badges[index]?.shadowRoot.pill() || null; },
     addBadge,
+    reconcile() { mutationCallback?.([]); },
     emitCompleted(detail) { completedListener(detail); },
     reset() {
       (documentListeners['algolia-visitor-state-reset'] || []).forEach((listener) => listener({ detail: {} }));
@@ -226,6 +233,10 @@ test('accumulates token totals across successful primary turns and resets', asyn
   assert.equal(h.headerPill().textContent, '42 tokens');
   assert.equal(h.headerPill().title, 'Input 30 / Output 12 tokens');
   assert.equal(h.headerInsertedBeforeCluster(), true);
+  const writesBeforeReconcile = h.headerPill().textWrites;
+  h.reconcile();
+  h.reconcile();
+  assert.equal(h.headerPill().textWrites, writesBeforeReconcile, 'stable renders must not rewrite pill text');
   h.reset();
   assert.equal(h.context.__algoliaChatUsage.usage, null);
   assert.equal(h.headerPill(), null);
