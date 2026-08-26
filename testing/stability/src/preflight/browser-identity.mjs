@@ -33,6 +33,6 @@ export function validateBrowserIdentity(identity) {
   if (identity.appId !== TARGET.appId) errors.push(`unexpected app ${identity.appId}`);
   if (identity.indexName !== TARGET.indexName) errors.push(`unexpected index ${identity.indexName}`);
   if (identity.confidenceCount !== 1) errors.push(`expected one algolia-chat-confidence element; found ${identity.confidenceCount}`);
-  if (identity.confidenceMode !== 'off') errors.push(`inline confidence mode must be off; found ${identity.confidenceMode}`);
+  if (identity.confidenceMode !== 'algolia') errors.push(`single-panel browser confidence mode must be algolia; found ${identity.confidenceMode}`);
   return { pass: errors.length === 0, errors, identity };
 }
