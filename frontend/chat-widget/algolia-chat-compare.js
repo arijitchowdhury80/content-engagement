@@ -1,9 +1,9 @@
 /**
  * algolia-chat-compare.js — Compare-with-production companion.
  *
- * Adds a "Compare with production" toggle to the chat header. When enabled BEFORE
- * the first question, every question the visitor asks is also sent to the live
- * algolia.com Ask AI agent and rendered beside the concierge's own answer.
+ * Adds one "Compare with Prod" toggle beside the latest answer's Sources
+ * and Judge controls. It appears only when there is an answer to compare. The
+ * latest finalized request is replayed byte-for-byte to live algolia.com Ask AI.
  *
  * Ownership boundaries (deliberate):
  *   - This module owns ONLY the production side. The concierge/left side keeps
@@ -56,6 +56,13 @@
   const sroot = () => host()?.shadowRoot || null;
   const q = (sel) => sroot()?.querySelector(sel) || null;
 
+  function setJudgeMode(mode) {
+    const confidence = host()?.querySelector("algolia-chat-confidence");
+    if (!confidence || confidence.getAttribute("mode") === mode) return;
+    confidence.setAttribute("mode", mode);
+    log("judge mode:", mode);
+  }
+
   // "Expanded" = the panel fills most of the viewport. The widget has three size
   // modes (docked / normal / maximized) and the expand control goes docked→normal,
   // a large CENTERED card — so a strict "maximized" check would miss it.
@@ -73,12 +80,15 @@
 
   // ------------------------------------------------------------ turn state ---
   let compareOn = false;
-  let locked = false;          // fixed for the conversation once a question is asked
   const seenTurnKeys = new Set();
+  const mirroredTurnKeys = new Set();
+  let latestPreparedTurn = null;
   let generation = 0;          // bumped on reset; older generations are discarded
   const activeControllers = new Map();
+  const completedTurnKeys = new Set();
   let mirroredTurns = 0;
   let unsubscribePreparedTurns = null;
+  let unsubscribeCompletedTurns = null;
 
   function resetConversation(reason) {
     generation += 1;
@@ -87,14 +97,15 @@
     }
     activeControllers.clear();
     mirroredTurns = 0;
-    locked = false;
     compareOn = false;
+    latestPreparedTurn = null;
+    mirroredTurnKeys.clear();
+    completedTurnKeys.clear();
+    setJudgeMode("algolia");
     clearLog();
-    // Repaint immediately. Without this the toggle keeps aria-disabled until some
-    // unrelated later mutation happens to drive reconcile(), so a reset can look
-    // like it did not restore the choice.
-    const t = sroot()?.querySelector(`#${TOGGLE_ID}`);
-    if (t) paintToggle(t);
+    // A reset removes the answer-scoped control immediately; a later completed
+    // answer will cause reconcile() to create the next one.
+    reconcile();
     log("reset:", reason, "gen", generation);
   }
 
@@ -175,15 +186,36 @@
     // never be mistaken for the first turn of the new conversation.
     seenTurnKeys.add(turnKey);
     if (seenTurnKeys.size > 500) seenTurnKeys.delete(seenTurnKeys.values().next().value);
-    if (!locked) {
-      locked = true;
-      const toggle = sroot()?.querySelector(`#${TOGGLE_ID}`);
-      if (toggle) paintToggle(toggle);
-    }
+    latestPreparedTurn = {
+      body,
+      turnKey,
+      messageId: String(detail?.messageId || ""),
+      question: String(detail?.question || ""),
+    };
+    // A question that starts while Compare is already active would otherwise
+    // launch primary + production + three judges together. Keep normal turns
+    // judged, but suppress that extra fan-out for this new dual request.
+    setJudgeMode(compareOn ? "off" : "algolia");
+    const toggle = sroot()?.querySelector(`#${TOGGLE_ID}`);
+    if (toggle) paintToggle(toggle);
     if (!compareOn || !ENDPOINT_OK) return;
     const gen = generation;
-    runPreparedTurn({ body, turnKey, question: String(detail?.question || "") }, gen)
+    mirrorPreparedTurn(latestPreparedTurn, gen)
       .catch((error) => log("production turn failed (contained)", error));
+  }
+
+  function acceptCompletedTurn(detail) {
+    const turnKey = String(detail?.turnKey || "");
+    if (!turnKey) return;
+    completedTurnKeys.add(turnKey);
+    if (completedTurnKeys.size > 500) completedTurnKeys.delete(completedTurnKeys.values().next().value);
+    reconcile();
+  }
+
+  function mirrorPreparedTurn(detail, gen) {
+    if (!detail || mirroredTurnKeys.has(detail.turnKey)) return Promise.resolve();
+    mirroredTurnKeys.add(detail.turnKey);
+    return runPreparedTurn(detail, gen);
   }
 
   async function runPreparedTurn(detail, gen) {
@@ -220,7 +252,18 @@
     return false;
   }
 
-  // --------------------------------------------------------- header toggle ---
+  function subscribeToCompletedTurns(attempt = 0) {
+    if (unsubscribeCompletedTurns) return true;
+    const subscribe = window.algoliaHandoffToOrchestrator?.subscribeCompletedTurn;
+    if (typeof subscribe === "function") {
+      unsubscribeCompletedTurns = subscribe(acceptCompletedTurn);
+      return true;
+    }
+    if (attempt < 100) setTimeout(() => subscribeToCompletedTurns(attempt + 1), 50);
+    return false;
+  }
+
+  // -------------------------------------------------------- answer toggle ---
   const TOGGLE_ID = "acs-compare-toggle";
   const TOGGLE_CSS = `
 #${TOGGLE_ID}{
@@ -259,50 +302,42 @@
   }
 
   function paintToggle(t) {
-    t.textContent = locked && !compareOn
-      ? "Compare off · Start a new chat"
-      : compareOn
-        ? "Comparing with production"
-        : "Compare with production";
+    t.textContent = "Compare with Prod";
     t.setAttribute("aria-pressed", compareOn ? "true" : "false");
-    if (locked) {
-      t.setAttribute("aria-disabled", "true");
-      t.setAttribute(
-        "aria-label",
-        compareOn
-          ? "Comparing with production. Start a new conversation to change Compare."
-          : "Compare is off. Start a new conversation to enable Compare."
-      );
-      t.title = "Compare is fixed for this conversation. Start a new chat to change it.";
-    } else {
-      t.removeAttribute("aria-disabled");
-      t.setAttribute("aria-label", "Compare with production");
-      t.title = "Send the same finalized request, including current session and page context, to the live algolia.com Ask AI";
-    }
+    t.removeAttribute("aria-disabled");
+    t.setAttribute(
+      "aria-label",
+      compareOn
+        ? "Stop comparing answer with production"
+        : "Compare answer with production"
+    );
+    t.title = latestPreparedTurn && !compareOn
+      ? "Send the latest answer's exact finalized request to live algolia.com Ask AI"
+      : "Send the same finalized request, including current session and page context, to the live algolia.com Ask AI";
   }
 
   function ensureToggle() {
     if (!ENDPOINT_OK) return;                             // unconfigured → no UI
-    const header = q('[part="header"]');
     const expanded = isExpanded();
     let toggle = sroot()?.querySelector(`#${TOGGLE_ID}`) || null;
-    if (expanded && header && !toggle) {
+    const turnComplete = latestPreparedTurn && completedTurnKeys.has(latestPreparedTurn.turnKey);
+    const answerFooter = turnComplete
+      ? window.algoliaHandoffToOrchestrator?.ensureAnswerFooter?.(latestPreparedTurn) || null
+      : null;
+    if (expanded && answerFooter && !toggle) {
       ensureToggleStyle();
       toggle = document.createElement("button");
       toggle.id = TOGGLE_ID;
       toggle.type = "button";
       paintToggle(toggle);
-      // Mount as a DIRECT header child. The widget ships
-      // `[part="header"] > div button { width/height: 28px !important }` for its
-      // icon cluster; a text button placed inside that div gets squashed and no
-      // inline style can beat !important.
-      const cluster = header.lastElementChild;
-      if (cluster) header.insertBefore(toggle, cluster);
-      else header.appendChild(toggle);
+      answerFooter.appendChild(toggle);
       log("toggle mounted");
-    } else if (!expanded && toggle) {
+    } else if ((!expanded || !answerFooter) && toggle) {
       toggle.remove();
     } else if (toggle) {
+      if (toggle.parentElement !== answerFooter) {
+        answerFooter.appendChild(toggle);
+      }
       paintToggle(toggle);
     }
   }
@@ -335,8 +370,12 @@
     root.addEventListener("click", (e) => {
       const path = e.composedPath ? e.composedPath() : [];
       if (!path.some((n) => n && n.id === TOGGLE_ID)) return;
-      if (locked) return;                                 // fixed for this conversation
       compareOn = !compareOn;
+      if (!compareOn) setJudgeMode("algolia");
+      if (compareOn && latestPreparedTurn) {
+        mirrorPreparedTurn(latestPreparedTurn, generation)
+          .catch((error) => log("production replay failed (contained)", error));
+      }
       reconcile();
     });
 
@@ -350,6 +389,10 @@
     document.addEventListener("algolia-visitor-state-reset", () => resetConversation("event"));
 
     subscribeToPreparedTurns();
+    subscribeToCompletedTurns();
+    // The Jahia block stays statically fail-safe at mode="off". Compare owns
+    // the browser-time policy and enables judges for the default single panel.
+    setJudgeMode("algolia");
     reconcile();
     log("attached");
     return true;
@@ -577,9 +620,17 @@
   if (CFG.exposeForTests) {
     window.__acsCompare = {
       safeHref, md,
-      state: () => ({ compareOn, locked, generation, mirroredTurns, activeTurns: activeControllers.size }),
+      state: () => ({
+        compareOn,
+        hasPreparedTurn: !!latestPreparedTurn,
+        generation,
+        mirroredTurns,
+        activeTurns: activeControllers.size,
+        completedTurns: completedTurnKeys.size,
+      }),
       reset: resetConversation,
       acceptPreparedTurn,
+      acceptCompletedTurn,
     };
   }
 })();

@@ -22,6 +22,7 @@
   const latestRevisionByConversation = new Map();
   let generation = 0;
   let unsubscribeCompletedTurns = null;
+  let latestCompletedTurn = null;
 
   function actionUrl() {
     return `${window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ || ""}${ACTION_PATH}`;
@@ -48,8 +49,23 @@
       outputTokens += totals.outputTokens;
       totalTokens += totals.totalTokens;
     }
-    usageState.usage = { inputTokens, outputTokens, totalTokens, turns: seenTurnKeys.size };
-    publishUsageState("ready");
+    usageState.cumulativeUsage = { inputTokens, outputTokens, totalTokens, turns: seenTurnKeys.size };
+  }
+
+  function currentTurnUsage(previous, current) {
+    if (!previous) return current;
+    const inputTokens = current.inputTokens - previous.inputTokens;
+    const outputTokens = current.outputTokens - previous.outputTokens;
+    const totalTokens = current.totalTokens - previous.totalTokens;
+    if (inputTokens < 0 || outputTokens < 0 || totalTokens < 0) return current;
+    return { inputTokens, outputTokens, totalTokens };
+  }
+
+  function totalsMatch(left, right) {
+    return !!left &&
+      left.inputTokens === right.inputTokens &&
+      left.outputTokens === right.outputTokens &&
+      left.totalTokens === right.totalTokens;
   }
 
   function resetUsage() {
@@ -58,7 +74,9 @@
     seenTurnKeys.clear();
     latestRevisionByConversation.clear();
     usageState.usage = null;
+    usageState.cumulativeUsage = null;
     usageState.conversationId = null;
+    latestCompletedTurn = null;
     publishUsageState("idle");
   }
 
@@ -119,12 +137,21 @@
         scheduleRetry(conversationId, turnKey, revision, attempt, expectedGeneration);
         return;
       }
+      const previous = turnTotals.get(conversationId) || null;
+      // The conversation endpoint is eventually consistent. On later turns an
+      // unchanged snapshot is stale, even though its totals are non-zero.
+      if (totalsMatch(previous, totals)) {
+        scheduleRetry(conversationId, turnKey, revision, attempt, expectedGeneration);
+        return;
+      }
       // Agent Studio returns cumulative totals for one stable conversation ID.
       // Replace that conversation's snapshot after every distinct completed
       // turn; summing snapshots would double-count prior turns.
       turnTotals.set(conversationId, totals);
       usageState.conversationId = conversationId;
+      usageState.usage = currentTurnUsage(previous, totals);
       recomputeCumulative();
+      publishUsageState("ready");
     } catch (error) {
       console.warn("[token-usage] lookup failed", error);
       if (isCurrentLookup(conversationId, revision, expectedGeneration)) {
@@ -138,8 +165,14 @@
     const turnKey = String(detail?.turnKey || "");
     if (!conversationId || !turnKey || seenTurnKeys.has(turnKey)) return;
     seenTurnKeys.add(turnKey);
+    latestCompletedTurn = {
+      turnKey,
+      messageId: String(detail?.messageId || ""),
+      question: String(detail?.question || ""),
+    };
     const revision = (latestRevisionByConversation.get(conversationId) || 0) + 1;
     latestRevisionByConversation.set(conversationId, revision);
+    usageState.usage = null;
     publishUsageState("loading");
     fetchUsage(conversationId, turnKey, revision, 0, generation);
   }
@@ -156,15 +189,42 @@
   }
 
   const PILL_CLASS = "algolia-usage-pill";
-  const HEADER_PILL_CLASS = "algolia-usage-pill--header";
   const PILL_STYLE_ID = "algolia-usage-pill-style";
-  const PILL_CSS = `.${PILL_CLASS}{display:inline-flex;align-items:center;width:fit-content;margin-right:6px;border-radius:var(--algolia-radius-full,9999px);border:1px solid var(--algolia-border,#e0e0e0);background:var(--algolia-surface-2,#f0f0f0);color:var(--algolia-text-muted,#5f6368);padding:4px 12px;font-size:var(--algolia-fs-xs,12px);font-weight:var(--algolia-fw-medium,500);font-family:var(--algolia-font-sans,system-ui,sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}`;
+  const PILL_CSS = `.${PILL_CLASS}{display:inline-flex;align-items:center;width:fit-content;margin-right:6px;border-radius:var(--algolia-radius-full,9999px);border:1px solid var(--algolia-border,#e0e0e0);background:var(--algolia-surface-2,#f0f0f0);color:var(--algolia-text-muted,#5f6368);padding:4px 12px;font-size:var(--algolia-fs-xs,12px);font-weight:var(--algolia-fw-medium,500);font-family:var(--algolia-font-sans,system-ui,sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}.${PILL_CLASS}__in{color:#5f6fb8;font-weight:700}.${PILL_CLASS}__divider{color:var(--algolia-text-muted,#7a7f9a);opacity:.65;padding:0 4px}.${PILL_CLASS}__out{color:#6b7895;font-weight:700}`;
+
+  function formatTokenNumber(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n.toLocaleString("en-US") : String(value ?? "");
+  }
 
   function updatePill(pill, text, title) {
-    // The header fallback lives inside the chat MutationObserver. Rewriting
-    // identical text would retrigger the observer forever, so DOM writes must
-    // be idempotent.
+    // Rewriting identical text would retrigger the chat MutationObserver
+    // forever, so DOM writes must be idempotent.
+    pill.dataset.usageText = "";
     if (pill.textContent !== text) pill.textContent = text;
+    if (pill.title !== title) pill.title = title;
+  }
+
+  function pillPart(className, text) {
+    const span = document.createElement("span");
+    span.className = className;
+    span.textContent = text;
+    return span;
+  }
+
+  function updateUsagePill(pill, totals) {
+    const inputTokens = formatTokenNumber(totals.inputTokens);
+    const outputTokens = formatTokenNumber(totals.outputTokens);
+    const text = `In ${inputTokens} / ${outputTokens} Out`;
+    const title = `Current response: ${inputTokens} input tokens and ${outputTokens} output tokens`;
+    if (pill.dataset.usageText !== text) {
+      pill.replaceChildren(
+        pillPart(`${PILL_CLASS}__in`, `In ${inputTokens}`),
+        pillPart(`${PILL_CLASS}__divider`, " / "),
+        pillPart(`${PILL_CLASS}__out`, `${outputTokens} Out`),
+      );
+      pill.dataset.usageText = text;
+    }
     if (pill.title !== title) pill.title = title;
   }
 
@@ -201,43 +261,22 @@
     }
     const totals = usageState.usage;
     if (!totals) return;
-    updatePill(
-      pill,
-      `${totals.totalTokens} tokens`,
-      `Input ${totals.inputTokens} / Output ${totals.outputTokens} tokens`,
-    );
-  }
-
-  function renderPillInto(badge) {
-    const root = badge?.shadowRoot;
-    if (!root) return;
-    renderPill(root, root, root.querySelector(".badge"));
-  }
-
-  function renderHeaderPill(shadowRoot) {
-    const header = shadowRoot.querySelector("header, [role='banner'], [part='header']");
-    renderPill(shadowRoot, header, header?.lastElementChild || null, HEADER_PILL_CLASS);
+    updateUsagePill(pill, totals);
   }
 
   function renderLatestPill(shadowRoot) {
-    const badges = [...shadowRoot.querySelectorAll("algolia-confidence-badge")];
-    const latestBadge = badges[badges.length - 1];
+    const stalePills = [...shadowRoot.querySelectorAll(`.${PILL_CLASS}`)];
+    const footer = latestCompletedTurn
+      ? window.algoliaHandoffToOrchestrator?.ensureAnswerFooter?.(latestCompletedTurn) || null
+      : null;
     if (usageState.status === "idle" && !usageState.usage) {
-      shadowRoot.querySelector(`.${HEADER_PILL_CLASS}`)?.remove();
-      for (const badge of badges) badge.shadowRoot?.querySelector(`.${PILL_CLASS}`)?.remove();
+      for (const pill of stalePills) pill.remove();
       return;
     }
-    if (latestBadge) {
-      shadowRoot.querySelector(`.${HEADER_PILL_CLASS}`)?.remove();
-      for (const badge of badges.slice(0, -1)) {
-        badge.shadowRoot?.querySelector(`.${PILL_CLASS}`)?.remove();
-      }
-      renderPillInto(latestBadge);
-      return;
+    for (const pill of stalePills) {
+      if (pill.parentElement !== footer) pill.remove();
     }
-    // Confidence judging can be disabled on the live widget. Token telemetry is
-    // independent, so keep it visible in the conversation header in that mode.
-    renderHeaderPill(shadowRoot);
+    if (footer) renderPill(shadowRoot, footer);
   }
 
   function whenChatShadowReady(callback) {

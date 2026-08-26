@@ -148,6 +148,7 @@
     const messageId = String(message.id || message.messageId || `${index}:${text}`);
     return {
       key: `${conversationGeneration ? `${conversationGeneration}:` : ""}${conversationId}:${messageId}`,
+      messageId,
       question: text,
     };
   }
@@ -184,6 +185,47 @@
     }
   }
 
+  function ensureAnswerFooter(detail) {
+    const messageId = String(detail?.messageId || "");
+    const question = String(detail?.question || "").replace(/\s+/g, " ").trim();
+    const root = document.querySelector("algolia-chat")?.shadowRoot;
+    if (!messageId || !question || !root) return null;
+
+    const existing = [...root.querySelectorAll("[data-algolia-answer-footer]")]
+      .find((node) => node.dataset.algoliaAnswerFooter === messageId);
+    if (existing) return existing;
+
+    const bubbles = [...root.querySelectorAll('[part="message-user-bubble"]')].reverse();
+    const bubble = bubbles.find((node) =>
+      node.textContent.replace(/\s+/g, " ").trim() === question &&
+      (!node.parentElement?.parentElement?.dataset.algoliaUserMessageId ||
+        node.parentElement.parentElement.dataset.algoliaUserMessageId === messageId)
+    );
+    const turn = bubble?.parentElement?.parentElement;
+    const answerLane = [...(turn?.children || [])]
+      .find((node) => node.getAttribute?.("aria-live") === "polite");
+    const answerCard = answerLane?.querySelector('div[aria-busy]');
+    if (!turn || !answerCard) return null;
+
+    turn.dataset.algoliaUserMessageId = messageId;
+    let footer = [...answerCard.children].find((node) => {
+      const classes = new Set(String(node.className || "").split(/\s+/));
+      return classes.has("flex") && classes.has("items-end") &&
+        classes.has("justify-between") && classes.has("gap-4");
+    }) || null;
+    if (!footer) {
+      footer = document.createElement("div");
+      footer.className = "flex items-end justify-between gap-4";
+      const sourceSlot = document.createElement("div");
+      sourceSlot.className = "min-w-0 flex-1";
+      footer.appendChild(sourceSlot);
+      answerCard.appendChild(footer);
+    }
+    footer.dataset.algoliaAnswerFooter = messageId;
+    footer.dataset.algoliaAnswerAgent = "primary";
+    return footer;
+  }
+
   function observePrimaryCompletion(response, turn) {
     const conversationId = response?.headers?.get?.("X-Conversation-Id");
     if (!turn || response?.ok === false || !conversationId || !response?.body?.getReader) return response;
@@ -197,7 +239,12 @@
           const chunk = await reader.read();
           if (chunk.done) {
             if (!guardrailViolation) {
-              notifyCompletedTurn(Object.freeze({ turnKey: turn.key, conversationId }));
+              notifyCompletedTurn(Object.freeze({
+                turnKey: turn.key,
+                messageId: turn.messageId,
+                question: turn.question,
+                conversationId,
+              }));
             }
             controller.close();
             return;
@@ -364,6 +411,7 @@
       notifyPreparedTurn(Object.freeze({
         body: prepared.body,
         turnKey: turn.key,
+        messageId: turn.messageId,
         question: turn.question,
       }));
     }
@@ -438,5 +486,6 @@
     installTransportAdapter,
     subscribePreparedTurn,
     subscribeCompletedTurn,
+    ensureAnswerFooter,
   };
 })();

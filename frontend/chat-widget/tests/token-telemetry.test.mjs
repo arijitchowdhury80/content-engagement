@@ -15,7 +15,7 @@ const telemetryPath = new URL('../token-telemetry.js', import.meta.url);
  * - Proxy failures remain isolated from the primary answer path.
  * - The existing visitor reset clears cumulative state.
  */
-function createHarness({ responses = [], compilerSender = false, confidenceBadgeCount = 0 } = {}) {
+function createHarness({ responses = [], compilerSender = false, confidenceBadgeCount = 0, answerFooter = true } = {}) {
   const fetchCalls = [];
   const windowListeners = {};
   const documentListeners = {};
@@ -26,6 +26,22 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
   let mutationCallback = null;
   const iconCluster = { id: 'icon-cluster' };
   let headerInsertedBeforeCluster = false;
+  let footerPill = null;
+  const answerFooterElement = {
+    querySelector(selector) {
+      return selector === '.algolia-usage-pill' ? footerPill : null;
+    },
+    appendChild(element) {
+      element.parentNode = this;
+      element.parentElement = this;
+      footerPill = element;
+    },
+    removeChild(element) {
+      if (footerPill === element) footerPill = null;
+    },
+  };
+  const sourceWrap = { parentElement: answerFooterElement };
+  const groundedSources = { parentElement: sourceWrap };
   const chatHeader = {
     get lastElementChild() { return iconCluster; },
     querySelector(selector) {
@@ -74,7 +90,12 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
   for (let index = 0; index < confidenceBadgeCount; index += 1) addBadge();
   const chatShadow = {
     addEventListener() {},
-    querySelectorAll(selector) { return selector === 'algolia-confidence-badge' ? badges : []; },
+    querySelectorAll(selector) {
+      if (selector === 'algolia-confidence-badge') return badges;
+      if (selector === '[aria-label="Grounded sources"]') return answerFooter ? [groundedSources] : [];
+      if (selector === '.algolia-usage-pill') return footerPill ? [footerPill] : [];
+      return [];
+    },
     querySelector(selector) {
       if (selector === "header, [role='banner'], [part='header']") return chatHeader;
       if (selector === '#algolia-usage-pill-style') return pillStyle;
@@ -112,11 +133,33 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
           className: '',
           title: '',
           parentNode: null,
+          parentElement: null,
+          children: [],
+          dataset: {},
           textWrites: 0,
-          get textContent() { return textContent; },
+          get textContent() {
+            return this.children.length
+              ? this.children.map((child) => child.textContent).join('')
+              : textContent;
+          },
           set textContent(value) {
-            textContent = value;
+            textContent = String(value);
+            this.children = [];
             this.textWrites += 1;
+          },
+          appendChild(element) {
+            element.parentNode = this;
+            element.parentElement = this;
+            this.children.push(element);
+            return element;
+          },
+          append(...elements) {
+            elements.forEach((element) => this.appendChild(element));
+          },
+          replaceChildren(...elements) {
+            textContent = '';
+            this.children = [];
+            elements.forEach((element) => this.appendChild(element));
           },
           setAttribute() {},
           remove() { this.parentNode?.removeChild(this); },
@@ -148,6 +191,9 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
         completedListener = listener;
         return () => { completedListener = null; };
       },
+      ensureAnswerFooter() {
+        return answerFooter ? answerFooterElement : null;
+      },
     },
   };
   context.window = context;
@@ -173,6 +219,7 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
     nativeFetch,
     timers,
     headerPill() { return headerPill; },
+    footerPill() { return footerPill; },
     headerInsertedBeforeCluster() { return headerInsertedBeforeCluster; },
     badgePill(index) { return badges[index]?.shadowRoot.pill() || null; },
     addBadge,
@@ -214,7 +261,7 @@ test('looks up one completed conversation without browser-selected app or agent 
   assert.equal(String(h.fetchCalls[0].init.body).includes('agentId='), false);
 });
 
-test('accumulates token totals across successful primary turns and resets', async () => {
+test('shows the latest response input/output in the answer footer and keeps cumulative diagnostics', async () => {
   const h = createHarness({
     responses: [
       { ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } },
@@ -229,21 +276,43 @@ test('accumulates token totals across successful primary turns and resets', asyn
 
   assert.deepEqual(
     JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.usage)),
+    { inputTokens: 20, outputTokens: 7, totalTokens: 27 },
+  );
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.cumulativeUsage)),
     { inputTokens: 30, outputTokens: 12, totalTokens: 42, turns: 2 },
   );
-  assert.equal(h.headerPill().textContent, '42 tokens');
-  assert.equal(h.headerPill().title, 'Input 30 / Output 12 tokens');
-  assert.equal(h.headerInsertedBeforeCluster(), true);
-  const writesBeforeReconcile = h.headerPill().textWrites;
+  assert.equal(h.headerPill(), null, 'telemetry never enters the header');
+  assert.equal(h.footerPill().textContent, 'In 20 / 7 Out');
+  assert.equal(h.footerPill().title, 'Current response: 20 input tokens and 7 output tokens');
+  const writesBeforeReconcile = h.footerPill().textWrites;
   h.reconcile();
   h.reconcile();
-  assert.equal(h.headerPill().textWrites, writesBeforeReconcile, 'stable renders must not rewrite pill text');
+  assert.equal(h.footerPill().textWrites, writesBeforeReconcile, 'stable renders must not rewrite pill text');
   h.reset();
   assert.equal(h.context.__algoliaChatUsage.usage, null);
-  assert.equal(h.headerPill(), null);
+  assert.equal(h.footerPill(), null);
 });
 
-test('refreshes one stable Agent Studio conversation after every distinct turn without double-counting', async () => {
+test('formats input/output counts with commas and subtle split classes', async () => {
+  const h = createHarness({
+    responses: [
+      { ok: true, data: { inputTokens: 44141, outputTokens: 819, totalTokens: 44960 } },
+    ],
+  });
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_large' });
+  await h.settle();
+
+  assert.equal(h.footerPill().textContent, 'In 44,141 / 819 Out');
+  assert.equal(h.footerPill().title, 'Current response: 44,141 input tokens and 819 output tokens');
+  assert.deepEqual(
+    h.footerPill().children.map((child) => child.className),
+    ['algolia-usage-pill__in', 'algolia-usage-pill__divider', 'algolia-usage-pill__out'],
+  );
+});
+
+test('derives the current response by subtracting the prior stable-conversation snapshot', async () => {
   const h = createHarness({
     responses: [
       { ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } },
@@ -259,9 +328,30 @@ test('refreshes one stable Agent Studio conversation after every distinct turn w
   assert.equal(h.fetchCalls.length, 2);
   assert.deepEqual(
     JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.usage)),
-    { inputTokens: 30, outputTokens: 12, totalTokens: 42, turns: 2 },
+    { inputTokens: 20, outputTokens: 7, totalTokens: 27 },
   );
-  assert.equal(h.headerPill().textContent, '42 tokens');
+  assert.equal(h.footerPill().textContent, 'In 20 / 7 Out');
+});
+
+test('retries a non-zero but unchanged conversation snapshot before showing the latest response', async () => {
+  const h = createHarness({
+    responses: [
+      { ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } },
+      { ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } },
+      { ok: true, data: { inputTokens: 30, outputTokens: 12, totalTokens: 42 } },
+    ],
+  });
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_stable' });
+  await h.settle();
+  h.emitCompleted({ turnKey: 'conversation:user-2', conversationId: 'alg_cnv_stable' });
+  await h.settle();
+
+  assert.equal(h.context.__algoliaChatUsage.usage, null, 'stale totals are not mislabeled as the new response');
+  assert.equal(h.timers.length, 1);
+  h.timers.shift()();
+  await h.settle();
+  assert.equal(h.footerPill().textContent, 'In 20 / 7 Out');
 });
 
 test('an older overlapping lookup cannot regress a newer cumulative total or status', async () => {
@@ -300,23 +390,27 @@ test('a retry queued before reset does not call the backend after reset', async 
   assert.equal(h.fetchCalls.length, 1);
 });
 
-test('moves telemetry from the header to the latest confidence badge and clears every stale pill', async () => {
+test('telemetry stays in the answer footer whether or not confidence badges exist', async () => {
   const h = createHarness();
 
   h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_1' });
   await h.settle();
-  assert.equal(h.headerPill().textContent, '15 tokens');
+  assert.equal(h.headerPill(), null);
+  assert.equal(h.footerPill().textContent, 'In 10 / 5 Out');
 
   h.addBadge();
   assert.equal(h.headerPill(), null);
-  assert.equal(h.badgePill(0).textContent, '15 tokens');
+  assert.equal(h.footerPill().textContent, 'In 10 / 5 Out');
+  assert.equal(h.badgePill(0), null);
 
   h.addBadge();
   assert.equal(h.badgePill(0), null);
-  assert.equal(h.badgePill(1).textContent, '15 tokens');
+  assert.equal(h.badgePill(1), null);
+  assert.equal(h.footerPill().textContent, 'In 10 / 5 Out');
 
   h.reset();
   assert.equal(h.headerPill(), null);
+  assert.equal(h.footerPill(), null);
   assert.equal(h.badgePill(0), null);
   assert.equal(h.badgePill(1), null);
 });
@@ -341,5 +435,6 @@ test('retries totals that have not persisted and contains proxy failures', async
     h.emitCompleted({ turnKey: 'conversation:user-2', conversationId: 'alg_cnv_2' });
   });
   await h.settle();
-  assert.equal(h.context.__algoliaChatUsage.usage.totalTokens, 12, 'failed lookup cannot erase prior totals');
+  assert.equal(h.context.__algoliaChatUsage.usage, null, 'failed latest lookup cannot show stale turn data');
+  assert.equal(h.context.__algoliaChatUsage.cumulativeUsage.totalTokens, 12, 'diagnostic cumulative totals remain intact');
 });

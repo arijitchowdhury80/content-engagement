@@ -27,10 +27,16 @@ class El {
   setAttribute(k, v) { this.attrs[k] = String(v); }
   getAttribute(k) { return k in this.attrs ? this.attrs[k] : null; }
   removeAttribute(k) { delete this.attrs[k]; }
-  appendChild(c) { c.parentElement = this; this.children.push(c); return c; }
+  appendChild(c) {
+    if (c.parentElement) c.parentElement.children = c.parentElement.children.filter((child) => child !== c);
+    c.parentElement = this;
+    this.children.push(c);
+    return c;
+  }
   append(...cs) { cs.forEach((c) => this.appendChild(c)); }
   replaceChildren(...cs) { this.children = []; cs.forEach((c) => this.appendChild(c)); }
   insertBefore(node, ref) {
+    if (node.parentElement) node.parentElement.children = node.parentElement.children.filter((child) => child !== node);
     node.parentElement = this;
     const i = this.children.indexOf(ref);
     if (i < 0) this.children.push(node); else this.children.splice(i, 0, node);
@@ -50,8 +56,8 @@ class El {
   set innerHTML(v) { this._html = String(v); }
   get innerHTML() { return this._html; }
   matches(sel) {
-    const part = /^\[part="([^"]+)"\]$/.exec(sel);
-    if (part) return this.getAttribute('part') === part[1];
+    const attr = /^\[([^=\]]+)="([^"]+)"\]$/.exec(sel);
+    if (attr) return this.getAttribute(attr[1]) === attr[2];
     if (sel.startsWith('#')) return this.attrs.id === sel.slice(1) || this.id === sel.slice(1);
     if (sel.startsWith('.')) return String(this.attrs.class || '').split(/\s+/).includes(sel.slice(1));
     return this.tagName === sel.toUpperCase();
@@ -80,7 +86,9 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   const fetchCalls = [];
   const preparedBodies = [];
   const primaryMessages = [];
+  const footersByMessageId = new Map();
   let preparedListener = null;
+  let completedListener = null;
   let turnSequence = 0;
   let fetchImpl = async () => ({ ok: true, status: 200, body: sse([{ type: 'text-delta', delta: 'ok' }]) });
 
@@ -103,6 +111,9 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
 
   const chatHost = new El('algolia-chat');
   chatHost.shadowRoot = shadowRoot;
+  const confidence = new El('algolia-chat-confidence');
+  confidence.setAttribute('mode', 'off');
+  chatHost.appendChild(confidence);
 
   const documentListeners = {};
   const context = {
@@ -133,6 +144,13 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
         preparedListener = listener;
         return () => { if (preparedListener === listener) preparedListener = null; };
       },
+      subscribeCompletedTurn(listener) {
+        completedListener = listener;
+        return () => { if (completedListener === listener) completedListener = null; };
+      },
+      ensureAnswerFooter(detail) {
+        return footersByMessageId.get(String(detail?.messageId || '')) || null;
+      },
     },
   };
   context.window = context;
@@ -144,7 +162,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   vm.runInContext(fs.readFileSync(comparePath, 'utf8'), context);
 
   const flush = () => { while (frames.length) frames.shift()(); };
-  const addBubble = (text) => {
+  const addBubble = (text, { sources: hasSources = true } = {}) => {
     const b = new El('div');
     b.setAttribute('part', 'message-user-bubble');
     b.textContent = text;
@@ -155,13 +173,44 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
     primaryMessages.push(user);
     const body = JSON.stringify({ id: 'primary-conversation', messages: [...primaryMessages], trigger: 'user' });
     preparedBodies.push(body);
-    preparedListener?.({ body, turnKey: `primary-conversation:${user.id}`, question: text });
+    preparedListener?.({
+      body,
+      turnKey: `primary-conversation:${user.id}`,
+      messageId: user.id,
+      question: text,
+    });
     primaryMessages.push({
       id: `primary-assistant-${turnSequence}`,
       role: 'assistant',
       parts: [{ type: 'text', text: `primary answer ${turnSequence}` }],
     });
+    const footer = new El('div');
+    footer.setAttribute('class', 'flex items-end justify-between gap-4');
+    const sourceWrap = new El('div');
+    sourceWrap.setAttribute('class', 'min-w-0 flex-1');
+    if (hasSources) {
+      const sources = new El('div');
+      sources.setAttribute('aria-label', 'Grounded sources');
+      sourceWrap.appendChild(sources);
+    }
+    footer.appendChild(sourceWrap);
+    scroller.appendChild(footer);
+    footer.dataset.algoliaAnswerFooter = user.id;
+    footersByMessageId.set(user.id, footer);
+    observers.forEach((cb) => cb([{ type: 'childList' }]));
+    b.turnKey = `primary-conversation:${user.id}`;
+    b.footer = footer;
     return b;
+  };
+  const completeTurn = (turnKey = `primary-conversation:user-${turnSequence}`) => {
+    const messageId = turnKey.split(':').at(-1);
+    completedListener?.({
+      turnKey,
+      messageId,
+      question: primaryMessages.find((message) => message.id === messageId)?.parts?.[0]?.text || '',
+      conversationId: 'primary-conversation',
+    });
+    observers.forEach((cb) => cb([{ type: 'childList' }]));
   };
   const toggle = () => shadowRoot.querySelector('#acs-compare-toggle');
   const clickToggle = () => {
@@ -177,7 +226,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
 
   flush(); // initial reconcile mounts the toggle
   return {
-    context, flush, addBubble, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
+    context, flush, addBubble, completeTurn, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
     fetchCalls, preparedBodies,
     setFetch: (fn) => { fetchImpl = fn; },
     api: () => context.window.__acsCompare,
@@ -193,39 +242,62 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
 
 /* -------------------------------------------------------------------- tests */
 
-test('toggle mounts in the header, expanded, and starts off', () => {
+test('toggle is absent from the header and appears only beside answer evidence controls', async () => {
   const h = createHarness();
+  assert.equal(h.toggle(), null, 'there is nothing to compare before an answer exists');
+  assert.equal(h.context.document.querySelector('algolia-chat').querySelector('algolia-chat-confidence').getAttribute('mode'), 'algolia');
+
+  h.addBubble('answer with grounded evidence');
+  await h.settle();
+  assert.equal(h.toggle(), null, 'toggle stays hidden while the answer is still streaming');
+  h.completeTurn();
+  await h.settle();
   const t = h.toggle();
-  assert.ok(t, 'toggle should mount when the panel is expanded');
+  assert.ok(t, 'toggle appears after an answer exists');
   assert.equal(t.getAttribute('aria-pressed'), 'false');
-  assert.equal(t.parentElement.getAttribute('part'), 'header', 'must be a direct header child');
+  assert.equal(t.parentElement.getAttribute('class'), 'flex items-end justify-between gap-4');
+});
+
+test('judge mode stays on for a completed answer, but a later Compare turn suppresses judge fan-out', async () => {
+  const h = createHarness();
+  const confidence = h.context.document.querySelector('algolia-chat').querySelector('algolia-chat-confidence');
+  h.addBubble('normal answer');
+  await h.settle();
+  h.completeTurn();
+  await h.settle();
+  assert.equal(confidence.getAttribute('mode'), 'algolia');
+
+  h.clickToggle();
+  await h.settle();
+  assert.equal(confidence.getAttribute('mode'), 'algolia', 'post-answer Compare preserves that answer\'s judge');
+
+  h.addBubble('future turn while Compare is already on');
+  await h.settle();
+  assert.equal(confidence.getAttribute('mode'), 'off', 'future dual request avoids three extra judge calls');
+  h.completeTurn();
+  await h.settle();
+
+  h.clickToggle();
+  await h.settle();
+  assert.equal(confidence.getAttribute('mode'), 'algolia', 'turning Compare off restores judges');
 });
 
 test('normal centered panel remains eligible on a wide viewport', () => {
   const h = createHarness({ chatWidth: 1080, viewportWidth: 2266 });
+  h.addBubble('answer');
+  h.completeTurn();
+  h.flush();
   assert.ok(h.toggle(), '1080px normal panel must not be mistaken for the docked panel');
   h.setExpanded(false);
   h.flush();
   assert.equal(h.toggle(), null, 'the narrower docked panel must still hide Compare');
 });
 
-test('production empty state mirrors the normal chat welcome hierarchy', () => {
+test('production panel cannot open before an answer exists', () => {
   const h = createHarness();
-  h.clickToggle();
-  h.flush();
-  const empty = h.shadowRoot.querySelector('#acs-compare-empty');
-
-  assert.ok(empty, 'production empty state should be present');
-  assert.match(empty.style.cssText, /align-items:center/);
-  assert.match(empty.style.cssText, /text-align:center/);
-  assert.equal(empty.children.length, 3);
-  assert.equal(empty.children[0].textContent, 'Production · live Ask AI');
-  assert.equal(empty.children[1].textContent, 'Ask about');
-  assert.match(empty.children[1].style.cssText, /font:800 36px/);
-  assert.equal(
-    empty.children[2].textContent,
-    'The same request and current context go to live algolia.com.'
-  );
+  assert.equal(h.toggle(), null);
+  assert.equal(h.shadowRoot.querySelector('#acs-compare-empty'), null);
+  assert.equal(h.api().state().compareOn, false);
 });
 
 test('compare off: asking a question never calls production', async () => {
@@ -235,35 +307,60 @@ test('compare off: asking a question never calls production', async () => {
   assert.equal(h.fetchCalls.length, 0);
 });
 
-test('a conversation already in progress never replays, and cannot enable Compare', async () => {
+test('an existing answer can be compared later using its exact prepared request', async () => {
   const h = createHarness();
   h.addBubble('asked before compare was on');
   await h.settle();
+  h.completeTurn();
+  await h.settle();
 
-  // The first question locks the choice, so Compare can no longer be switched on.
-  assert.equal(h.api().state().locked, true);
+  assert.equal(h.api().state().hasPreparedTurn, true);
+  assert.equal(h.toggle().textContent, 'Compare with Prod');
   h.clickToggle();
   await h.settle();
-  assert.equal(h.api().state().compareOn, false, 'cannot enable mid-conversation');
-  assert.equal(h.fetchCalls.length, 0, 'existing history is never replayed');
+  assert.equal(h.api().state().compareOn, true, 'can enable after the answer exists');
+  assert.equal(h.fetchCalls.length, 1, 'the latest existing turn is replayed once');
+  assert.equal(h.fetchCalls[0][1].body, h.preparedBodies[0], 'replay remains byte-identical');
 
-  // After a reset the earlier bubble must still not be resent.
+  // After reset, the prior conversation is forgotten and cannot be replayed.
   (h.documentListeners['algolia-visitor-state-reset'] || []).forEach((fn) => fn({ detail: {} }));
   await h.settle();
-  h.clickToggle();                                     // now selectable again
+  assert.equal(h.api().state().hasPreparedTurn, false);
+  assert.equal(h.toggle(), null, 'reset removes the answer-scoped control');
+  assert.equal(h.api().state().compareOn, false);
+  assert.equal(h.fetchCalls.length, 1, 'the reset conversation does not replay old work');
+});
+
+test('sourceful turn followed by a no-source turn moves Compare to the exact newest footer', async () => {
+  const h = createHarness();
+  const first = h.addBubble('sourceful first');
+  h.completeTurn(first.turnKey);
   await h.settle();
-  assert.equal(h.api().state().compareOn, true);
-  assert.equal(h.fetchCalls.length, 0, 'bubbles seen before the reset are not replayed');
+  assert.equal(h.toggle().parentElement, first.footer);
+
+  const second = h.addBubble('no sources second', { sources: false });
+  h.completeTurn(second.turnKey);
+  await h.settle();
+  assert.equal(h.toggle().parentElement, second.footer);
+  assert.equal(second.footer.querySelector('[aria-label="Grounded sources"]'), null);
+
+  h.clickToggle();
+  await h.settle();
+  assert.equal(h.fetchCalls.length, 1);
+  assert.equal(h.fetchCalls[0][1].body, h.preparedBodies[1]);
 });
 
 test('two turns run in order and turn two carries turn one in history', async () => {
   const h = createHarness();
-  h.clickToggle();
   h.setFetch(async (_url, init) => ({
     ok: true, status: 200,
     body: sse([{ type: 'text-delta', delta: `answer for ${JSON.parse(init.body).messages.at(-1).parts[0].text}` }]),
   }));
   h.addBubble('first question');
+  await h.settle();
+  h.completeTurn();
+  await h.settle();
+  h.clickToggle();
   await h.settle();
   h.addBubble('second question');
   await h.settle();
@@ -279,51 +376,59 @@ test('two turns run in order and turn two carries turn one in history', async ()
   assert.equal(first.id, second.id, 'conversation id is stable across turns');
 });
 
-test('question one locks the choice even when Compare was left OFF', async () => {
+test('question one keeps Compare available when it was left OFF', async () => {
   const h = createHarness();
-  assert.equal(h.toggle().getAttribute('aria-pressed'), 'false', 'starts off');
+  assert.equal(h.toggle(), null, 'header stays free of Compare');
 
   h.addBubble('question one, asked with Compare off');
   await h.settle();
-
-  // the first bubble must freeze the choice in whichever state it was left
-  assert.equal(h.toggle().getAttribute('aria-disabled'), 'true', 'toggle is disabled after turn one');
-  assert.match(h.toggle().textContent, /new (chat|conversation)/i, 'locked-off state explains recovery');
-  assert.match(h.toggle().getAttribute('aria-label') || '', /new (chat|conversation)/i);
-  assert.equal(h.api().state().locked, true);
-
-  h.clickToggle();                                     // must be inert while locked
+  h.completeTurn();
   await h.settle();
-  assert.equal(h.api().state().compareOn, false, 'cannot be enabled mid-conversation');
-  assert.equal(h.toggle().getAttribute('aria-pressed'), 'false');
-  assert.equal(h.fetchCalls.length, 0, 'no production request is ever made');
 
-  // a reset must make it selectable again
+  assert.notEqual(h.toggle().getAttribute('aria-disabled'), 'true');
+  assert.equal(h.toggle().textContent, 'Compare with Prod');
+  assert.match(h.toggle().getAttribute('aria-label') || '', /answer with production/i);
+  assert.equal(h.api().state().hasPreparedTurn, true);
+
+  h.clickToggle();
+  await h.settle();
+  assert.equal(h.api().state().compareOn, true, 'can be enabled mid-conversation');
+  assert.equal(h.toggle().getAttribute('aria-pressed'), 'true');
+  assert.equal(h.fetchCalls.length, 1, 'the retained request is sent to production');
+
+  // A reset clears the retained replay packet.
   (h.documentListeners['algolia-visitor-state-reset'] || []).forEach((fn) => fn({ detail: {} }));
   await h.settle();
-  assert.equal(h.api().state().locked, false, 'reset unlocks the choice');
-  assert.notEqual(h.toggle().getAttribute('aria-disabled'), 'true', 'toggle is selectable again');
-
-  h.clickToggle();                                     // now it may be enabled
-  await h.settle();
-  assert.equal(h.api().state().compareOn, true);
+  assert.equal(h.api().state().hasPreparedTurn, false);
+  assert.equal(h.toggle(), null, 'a new conversation has no answer action yet');
+  assert.equal(h.api().state().compareOn, false);
 });
 
-test('compare is fixed for the conversation once a question is asked', async () => {
+test('compare can be turned off and on again without duplicating a mirrored turn', async () => {
   const h = createHarness();
-  h.clickToggle();
-  h.addBubble('locks the choice');
+  h.addBubble('one comparison');
   await h.settle();
-  assert.equal(h.toggle().getAttribute('aria-disabled'), 'true');
-  h.clickToggle();                                   // ignored while locked
+  h.completeTurn();
+  await h.settle();
+  h.clickToggle();
+  await h.settle();
+  assert.equal(h.fetchCalls.length, 1);
+  h.clickToggle();
+  await h.settle();
+  assert.equal(h.toggle().getAttribute('aria-pressed'), 'false');
+  h.clickToggle();
   await h.settle();
   assert.equal(h.toggle().getAttribute('aria-pressed'), 'true');
+  assert.equal(h.fetchCalls.length, 1, 'the same prepared turn is never replayed twice');
 });
 
 test('visitor reset clears mirrored state, turns Compare off, and unlocks the toggle', async () => {
   const h = createHarness();
-  h.clickToggle();
   h.addBubble('q1');
+  await h.settle();
+  h.completeTurn();
+  await h.settle();
+  h.clickToggle();
   await h.settle();
   const before = h.api().state();
   assert.ok(before.mirroredTurns > 0);
@@ -333,19 +438,22 @@ test('visitor reset clears mirrored state, turns Compare off, and unlocks the to
 
   const after = h.api().state();
   assert.equal(after.mirroredTurns, 0, 'mirrored turn state cleared');
-  assert.equal(after.locked, false, 'choice is selectable again');
+  assert.equal(after.hasPreparedTurn, false, 'the prior replay packet is cleared');
   assert.equal(after.compareOn, false, 'a new conversation defaults Compare to off');
   assert.ok(after.generation > before.generation, 'generation advanced');
 });
 
 test('a late response from a previous conversation is discarded', async () => {
   const h = createHarness();
-  h.clickToggle();
   let release;
   h.setFetch(() => new Promise((resolve) => {
     release = () => resolve({ ok: true, status: 200, body: sse([{ type: 'text-delta', delta: 'stale answer' }]) });
   }));
   h.addBubble('q1');
+  await h.settle();
+  h.completeTurn();
+  await h.settle();
+  h.clickToggle();
   await h.settle();
 
   (h.documentListeners['algolia-visitor-state-reset'] || []).forEach((fn) => fn({ detail: {} }));
@@ -358,9 +466,10 @@ test('a late response from a previous conversation is discarded', async () => {
 
 test('a production failure is contained and never throws', async () => {
   const h = createHarness();
-  h.clickToggle();
   h.setFetch(async () => ({ ok: false, status: 503, text: async () => 'upstream down', body: null }));
   h.addBubble('q1');
+  h.completeTurn();
+  h.clickToggle();
   await assert.doesNotReject(h.settle());
   assert.equal(h.api().state().mirroredTurns, 0, 'failed turn is not counted as completed');
 });
@@ -368,6 +477,8 @@ test('a production failure is contained and never throws', async () => {
 test('window.fetch is never patched (proactive handoff owns the transport)', () => {
   const h = createHarness();
   const before = h.context.fetch;
+  h.addBubble('answer');
+  h.completeTurn();
   h.clickToggle();
   h.flush();
   assert.equal(h.context.fetch, before, 'compare must not replace window.fetch');
@@ -394,8 +505,14 @@ test('markdown escapes html and drops unsafe link protocols', () => {
 
 test('narrow widths stack instead of splitting 50/50', () => {
   const wide = createHarness({ chatWidth: 1000 });
+  wide.addBubble('wide answer');
+  wide.completeTurn();
+  wide.flush();
   wide.clickToggle(); wide.flush();
   const narrow = createHarness({ chatWidth: 500, viewportWidth: 600 });
+  narrow.addBubble('narrow answer');
+  narrow.completeTurn();
+  narrow.flush();
   narrow.clickToggle(); narrow.flush();
   const wideStyle = wide.shadowRoot.querySelector('#acs-compare-style');
   const narrowStyle = narrow.shadowRoot.querySelector('#acs-compare-style');
@@ -410,13 +527,16 @@ test('compare is inert when no production endpoint is configured', () => {
 
 test('Compare survives collapse and expand, and turn two keeps turn one', async () => {
   const h = createHarness();
-  h.clickToggle();                                    // enabled BEFORE the first question
   h.setFetch(async (_url, init) => ({
     ok: true, status: 200,
     body: sse([{ type: 'text-delta', delta: `answer:${JSON.parse(init.body).messages.at(-1).parts[0].text}` }]),
   }));
 
   h.addBubble('question one');
+  await h.settle();
+  h.completeTurn();
+  await h.settle();
+  h.clickToggle();
   await h.settle();
   assert.equal(h.fetchCalls.length, 1, 'turn one reaches production');
 
@@ -440,8 +560,11 @@ test('Compare survives collapse and expand, and turn two keeps turn one', async 
 
 test('production receives the exact prepared primary body bytes and retries are deduplicated', async () => {
   const h = createHarness();
-  h.clickToggle();
   h.addBubble('same packet please');
+  await h.settle();
+  h.completeTurn();
+  await h.settle();
+  h.clickToggle();
   await h.settle();
 
   assert.equal(h.fetchCalls.length, 1);

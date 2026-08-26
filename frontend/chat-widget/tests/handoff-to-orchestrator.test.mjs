@@ -286,6 +286,7 @@ test('publishes the exact terminal body once context and handoff preparation are
   assert.equal(preparedTurns.length, 1);
   assert.equal(preparedTurns[0].body, fetchCalls[0].init.body, 'listener and primary must receive identical bytes');
   assert.equal(preparedTurns[0].turnKey, 'conversation-1:user-1');
+  assert.equal(preparedTurns[0].messageId, 'user-1');
   assert.equal(preparedTurns[0].question, 'What drives cost?', 'visible label excludes private handoff metadata');
   const sent = JSON.parse(preparedTurns[0].body);
   assert.equal(sent.messages[0].metadata.turnContext.prepared_once, 'yes');
@@ -340,7 +341,12 @@ test('publishes a completed turn once the successful primary stream is consumed'
   assert.match(await response.text(), /text-delta/);
   assert.deepEqual(
     JSON.parse(JSON.stringify(completedTurns)),
-    [{ turnKey: 'conversation-1:user-1', conversationId: 'alg_cnv_success_1' }],
+    [{
+      turnKey: 'conversation-1:user-1',
+      messageId: 'user-1',
+      question: 'Hello',
+      conversationId: 'alg_cnv_success_1',
+    }],
   );
 });
 

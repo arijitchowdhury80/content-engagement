@@ -6,6 +6,8 @@ import { chromium } from 'playwright';
 const chatPath = new URL('../algolia-chat.js', import.meta.url);
 const themePath = new URL('../algolia-chat-theme-algolia.js', import.meta.url);
 const comparePath = new URL('../algolia-chat-compare.js', import.meta.url);
+const handoffPath = new URL('../handoff-to-orchestrator.js', import.meta.url);
+const telemetryPath = new URL('../token-telemetry.js', import.meta.url);
 
 let browser;
 
@@ -64,6 +66,13 @@ const contractedAnalogyFrames = [
   },
 ];
 
+const flatNoSourceFrames = [
+  {
+    type: 'text-delta',
+    delta: 'A direct answer without retrieved sources or a TLDR canvas.',
+  },
+];
+
 async function createComparePage({ responseFrames = compareAnswerFrames } = {}) {
   const page = await browser.newPage({ viewport: { width: 1158, height: 890 } });
   await page.route('**/*', async (route) => {
@@ -85,14 +94,17 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
   await page.goto('http://localhost/');
   await page.evaluate((frames) => {
     window.__completionRequests = [];
+    window.__productionRequests = [];
+    window.__completionFrameQueue = Array.isArray(frames[0]) ? frames : null;
     window.fetch = async (input, init = {}) => {
       const url = String(input instanceof Request ? input.url : input);
       if (url.includes('/agent-studio/1/agents/') && url.includes('/completions')) {
         window.__completionRequests.push(JSON.parse(String(init.body ?? '{}')));
+        const activeFrames = window.__completionFrameQueue?.shift() || frames;
         const encoder = new TextEncoder();
         const stream = new ReadableStream({
           start(controller) {
-            for (const frame of frames) {
+            for (const frame of activeFrames) {
               controller.enqueue(encoder.encode(`data: ${JSON.stringify(frame)}\n\n`));
             }
             controller.close();
@@ -105,6 +117,7 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
       }
 
       if (url.includes('/__compare/production')) {
+        window.__productionRequests.push(JSON.parse(String(init.body ?? '{}')));
         const encoder = new TextEncoder();
         const stream = new ReadableStream({
           start(controller) {
@@ -129,7 +142,53 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
   });
   await page.addScriptTag({ content: fs.readFileSync(themePath, 'utf8') });
   await page.addScriptTag({ content: fs.readFileSync(chatPath, 'utf8') });
-  await page.addScriptTag({ content: 'window.ACS_COMPARE={prod:{proxyPath:"/__compare/production"}};' });
+  await page.addScriptTag({ content: `
+    window.ACS_COMPARE={prod:{proxyPath:"/__compare/production"}};
+    window.__preparedByKey=new Map();
+    window.algoliaHandoffToOrchestrator={
+      subscribePreparedTurn(listener){ window.__comparePreparedListener=listener; return ()=>{}; },
+      subscribeCompletedTurn(listener){ window.__compareCompletedListener=listener; return ()=>{}; },
+      ensureAnswerFooter(detail){
+        const root=document.querySelector('algolia-chat')?.shadowRoot;
+        if(!root) return null;
+        const existing=[...root.querySelectorAll('[data-algolia-answer-footer]')]
+          .find((node)=>node.dataset.algoliaAnswerFooter===detail.messageId);
+        if(existing) return existing;
+        const bubble=[...root.querySelectorAll('[part="message-user-bubble"]')].reverse()
+          .find((node)=>node.textContent.trim()===detail.question);
+        const turn=bubble?.parentElement?.parentElement;
+        const lane=[...(turn?.children||[])].find((node)=>node.getAttribute('aria-live')==='polite');
+        const card=lane?.querySelector('div[aria-busy]');
+        if(!card) return null;
+        const source=card.querySelector('[aria-label="Grounded sources"]');
+        let footer=source?.parentElement?.parentElement||null;
+        if(!footer){
+          footer=document.createElement('div');
+          footer.className='flex items-end justify-between gap-4';
+          const slot=document.createElement('div');
+          slot.className='min-w-0 flex-1';
+          footer.append(slot);
+          card.append(footer);
+        }
+        footer.dataset.algoliaAnswerFooter=detail.messageId;
+        return footer;
+      }
+    };
+    window.__emitComparePrepared=(question,key)=>{
+      const detail={
+        question,
+        turnKey:key,
+        messageId:key,
+        body:JSON.stringify({id:"test-conversation",messages:[{role:"user",parts:[{type:"text",text:question}]}]})
+      };
+      window.__preparedByKey.set(key,detail);
+      window.__comparePreparedListener?.(detail);
+    };
+    window.__emitCompareCompleted=(key)=>window.__compareCompletedListener?.({
+      ...window.__preparedByKey.get(key),
+      conversationId:"test-conversation"
+    });
+  ` });
   await page.addScriptTag({ content: fs.readFileSync(comparePath, 'utf8') });
 
   await page.evaluate(async () => {
@@ -186,6 +245,11 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
 test('compare mode does not collapse the sample questions menu into skinny columns', async () => {
   const page = await createComparePage();
   try {
+    await page.evaluate(() => {
+      window.__emitComparePrepared('Seed answer for Compare.', 'seed:1');
+      document.querySelector('algolia-chat').ask('Seed answer for Compare.');
+      window.__emitCompareCompleted('seed:1');
+    });
     await page.waitForFunction(() =>
       document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
     );
@@ -229,15 +293,168 @@ test('compare mode does not collapse the sample questions menu into skinny colum
   }
 });
 
+test('a first no-source flat answer receives its own Compare footer', async () => {
+  const page = await createComparePage({ responseFrames: flatNoSourceFrames });
+  try {
+    await page.evaluate(() => {
+      window.__emitComparePrepared('Flat answer?', 'flat:1');
+      document.querySelector('algolia-chat').ask('Flat answer?');
+    });
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot?.textContent
+        ?.includes('A direct answer without retrieved sources')
+    );
+    await page.evaluate(() => window.__emitCompareCompleted('flat:1'));
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
+    );
+
+    const placement = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const toggle = root.querySelector('#acs-compare-toggle');
+      return {
+        inHeader: Boolean(toggle.closest('[part="header"]')),
+        footerId: toggle.parentElement.dataset.algoliaAnswerFooter,
+        footerClass: toggle.parentElement.className,
+      };
+    });
+    assert.equal(placement.inHeader, false);
+    assert.equal(placement.footerId, 'flat:1');
+    assert.equal(placement.footerClass, 'flex items-end justify-between gap-4');
+  } finally {
+    await page.close();
+  }
+});
+
+test('real handoff resolver keeps Compare, telemetry, and Judge in one no-source footer', async () => {
+  const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
+  try {
+    await page.route('**/*', (route) => route.fulfill({
+      status: 200,
+      contentType: 'text/html',
+      body: '<!doctype html><html><body></body></html>',
+    }));
+    await page.goto('http://localhost/');
+    await page.evaluate(() => {
+      const host = document.createElement('algolia-chat');
+      const root = host.attachShadow({ mode: 'open' });
+      root.innerHTML = `
+        <div part="panel" style="width:1000px;height:800px">
+          <div part="chat-content">
+            <header part="header"><div></div><div></div></header>
+            <div class="turn flex flex-col gap-3.5">
+              <div><div part="message-user-bubble">No-source exact turn?</div></div>
+              <div aria-live="polite">
+                <div aria-busy="false" class="flex flex-col gap-3 rounded-algolia-xl bg-algolia-surface p-6 shadow-algolia-2">
+                  <p>A completed answer without retrieved sources.</p>
+                  <div class="flex items-end justify-between gap-4">
+                    <div class="min-w-0 flex-1"></div>
+                    <algolia-confidence-badge></algolia-confidence-badge>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <form part="composer"></form>
+          </div>
+        </div>`;
+      const confidence = document.createElement('algolia-chat-confidence');
+      confidence.setAttribute('mode', 'algolia');
+      host.append(confidence);
+      document.body.append(host);
+
+      window.ALGOLIA_HANDOFF_CONFIG = { primaryAgentId: 'orchestrator-test' };
+      window.ACS_COMPARE = { prod: { proxyPath: '/__compare/production' } };
+      window.ACS_TOKEN_TELEMETRY = {};
+      window.algoliaChat = {
+        setOrchestratorTransport(transport) { window.__testTransport = transport; },
+      };
+      window.algoliaContextCompiler = {
+        prepareCompletionBody(body) { return body; },
+        fetchPrepared(input) {
+          const url = String(input);
+          if (url.includes('algoliaTokenTelemetry')) {
+            return Promise.resolve({
+              ok: true,
+              status: 200,
+              json: async () => ({ inputTokens: 120, outputTokens: 30, totalTokens: 150 }),
+            });
+          }
+          return Promise.resolve(new Response('data: {"type":"text-delta","delta":"done"}\n\n', {
+            status: 200,
+            headers: { 'X-Conversation-Id': 'alg_cnv_footer_test' },
+          }));
+        },
+      };
+    });
+    await page.addScriptTag({ content: fs.readFileSync(handoffPath, 'utf8') });
+    await page.addScriptTag({ content: fs.readFileSync(comparePath, 'utf8') });
+    await page.addScriptTag({ content: fs.readFileSync(telemetryPath, 'utf8') });
+    await page.evaluate(async () => {
+      const response = await window.__testTransport(
+        'https://test.algolia.net/agent-studio/1/agents/orchestrator-test/completions',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            id: 'conversation-footer-test',
+            messages: [{
+              id: 'user-footer-test',
+              role: 'user',
+              parts: [{ type: 'text', text: 'No-source exact turn?' }],
+            }],
+          }),
+        },
+      );
+      await response.text();
+    });
+    await page.waitForFunction(() => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      return root?.querySelector('#acs-compare-toggle') && root?.querySelector('.algolia-usage-pill');
+    });
+
+    const proof = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const footers = [...root.querySelectorAll('.flex.items-end.justify-between.gap-4')];
+      const footer = footers[0];
+      return {
+        footerCount: footers.length,
+        footerId: footer.dataset.algoliaAnswerFooter,
+        hasJudge: Boolean(footer.querySelector('algolia-confidence-badge')),
+        hasCompare: Boolean(footer.querySelector('#acs-compare-toggle')),
+        telemetry: footer.querySelector('.algolia-usage-pill')?.textContent,
+      };
+    });
+    assert.deepEqual(proof, {
+      footerCount: 1,
+      footerId: 'user-footer-test',
+      hasJudge: true,
+      hasCompare: true,
+      telemetry: 'In 120 / 30 Out',
+    });
+  } finally {
+    await page.close();
+  }
+});
+
 test('compare mode preserves TLDR treatment on the primary answer', async () => {
   const page = await createComparePage();
   try {
+    await page.evaluate(() => {
+      window.__emitComparePrepared('Seed answer for Compare.', 'seed:2');
+      document.querySelector('algolia-chat').ask('Seed answer for Compare.');
+      window.__emitCompareCompleted('seed:2');
+    });
     await page.waitForFunction(() =>
       document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
     );
     await page.evaluate(() => {
       const root = document.querySelector('algolia-chat').shadowRoot;
       root.querySelector('#acs-compare-toggle')?.click();
+    });
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot
+        ?.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed') === 'true'
+    );
+    await page.evaluate(() => {
       document.querySelector('algolia-chat').ask('Can a non-technical marketing team run search day-to-day without a developer?');
     });
     await page.waitForFunction(() => {
@@ -283,19 +500,29 @@ test("concierge keeps the TLDR canvas for an 'It's like' analogy with Compare of
   for (const compareOn of [false, true]) {
     const page = await createComparePage({ responseFrames: contractedAnalogyFrames });
     try {
-      await page.waitForFunction(() =>
-        document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
-      );
       await page.evaluate((enableCompare) => {
         const widget = document.querySelector('algolia-chat');
-        const root = widget.shadowRoot;
-        if (enableCompare) root.querySelector('#acs-compare-toggle')?.click();
+        window.__emitComparePrepared('How does Neural Search handle synonyms and concepts?', 'analogy:1');
         widget.ask('How does Neural Search handle synonyms and concepts?');
       }, compareOn);
       await page.waitForFunction(() => {
         const root = document.querySelector('algolia-chat')?.shadowRoot;
         return root?.textContent?.includes('The mechanism creates a neural score');
       }, null, { timeout: 8_000 });
+      await page.evaluate(() => window.__emitCompareCompleted('analogy:1'));
+      await page.waitForFunction(() =>
+        document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
+      );
+      if (compareOn) {
+        await page.evaluate(() =>
+          document.querySelector('algolia-chat').shadowRoot
+            .querySelector('#acs-compare-toggle').click()
+        );
+        await page.waitForFunction(() =>
+          document.querySelector('algolia-chat')?.shadowRoot
+            ?.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed') === 'true'
+        );
+      }
 
       const state = await page.evaluate(() => {
         const root = document.querySelector('algolia-chat').shadowRoot;

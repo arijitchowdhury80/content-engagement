@@ -72,14 +72,26 @@ test('real widget sends the exact finalized body once and isolates the Productio
       );
       control?.click();
     });
+    await page.evaluate(() => {
+      const confidence = document.createElement('algolia-chat-confidence');
+      confidence.setAttribute('mode', 'off');
+      document.querySelector('algolia-chat').append(confidence);
+      document.dispatchEvent(new CustomEvent('algolia-visitor-state-reset'));
+    });
     await page.waitForFunction(() =>
-      document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
-    , null, { timeout: 10_000 });
+      document.querySelector('algolia-chat-confidence')?.getAttribute('mode') === 'algolia'
+    );
+    await page.evaluate(() => document.querySelector('algolia-chat').ask('Use the exact same packet.'));
+    await page.waitForFunction(() => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      return window.__localOrchestratorRequestBodies?.length === 1 &&
+        root?.textContent?.includes('Here is the practical implementation path') &&
+        root?.querySelector('#acs-compare-toggle')?.textContent === 'Compare with Prod';
+    }, null, { timeout: 10_000 });
+
     await page.evaluate(() =>
       document.querySelector('algolia-chat').shadowRoot.querySelector('#acs-compare-toggle').click()
     );
-
-    await page.evaluate(() => document.querySelector('algolia-chat').ask('Use the exact same packet.'));
     await page.waitForFunction(() => {
       const root = document.querySelector('algolia-chat')?.shadowRoot;
       return window.__localOrchestratorRequestBodies?.length === 1 &&
@@ -92,23 +104,27 @@ test('real widget sends the exact finalized body once and isolates the Productio
 
     const proof = await page.evaluate(() => {
       const root = document.querySelector('algolia-chat').shadowRoot;
+      const toggle = root.querySelector('#acs-compare-toggle');
       return {
-        togglePressed: root.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed'),
-        toggleDisabled: root.querySelector('#acs-compare-toggle')?.getAttribute('aria-disabled'),
+        togglePressed: toggle?.getAttribute('aria-pressed'),
+        toggleDisabled: toggle?.getAttribute('aria-disabled'),
+        toggleParentClass: toggle?.parentElement?.className,
+        confidenceMode: document.querySelector('algolia-chat-confidence')?.getAttribute('mode'),
         productionText: root.querySelector('#acs-compare-panel')?.textContent,
         primaryText: root.textContent,
       };
     });
     assert.equal(proof.togglePressed, 'true');
-    assert.equal(proof.toggleDisabled, 'true');
+    assert.equal(proof.toggleDisabled, null);
+    assert.equal(proof.toggleParentClass, 'flex items-end justify-between gap-4');
+    assert.equal(proof.confidenceMode, 'algolia', 'post-answer Compare preserves the completed answer judge');
     assert.match(proof.productionText, /Production comparison answer/);
     assert.match(proof.primaryText, /Here is the practical implementation path/);
 
     await page.evaluate(() => document.dispatchEvent(new CustomEvent('algolia-visitor-state-reset')));
     await page.waitForFunction(() => {
       const toggle = document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle');
-      return toggle?.getAttribute('aria-pressed') === 'false' &&
-        toggle?.getAttribute('aria-disabled') !== 'true';
+      return toggle === null;
     }, null, { timeout: 10_000 });
   } finally {
     await context.close();
