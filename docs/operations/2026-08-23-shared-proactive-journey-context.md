@@ -58,8 +58,9 @@ The shared-packet release was approved and deployed on 2026-08-23.
 ## Deployment
 
 - Agent Studio Greetings and Orchestrator prompts were applied, read back, and
-  validated under
-  `docs/evidence/agent-studio/chat-stack-deploy-20260823T194717Z/`.
+  validated. The sanitized release record is
+  `docs/evidence/deployments/2026-08-25-current-jahia-development-release.md`;
+  private raw evidence is retained in the owner-only cleanup archive.
 - Jahia release `20260823-shared-packet-a` published the scoped proactive
   controller and a content-hashed immutable handoff asset. The chat renderer,
   tracker, compiler, engage runtime, theme, and unrelated subtrees were not
@@ -68,14 +69,14 @@ The shared-packet release was approved and deployed on 2026-08-23.
   properties to reach LIVE. The recovery remained scoped to
   `/sites/www/home/drift/custom-code-block`; it did not publish the parent
   drift or files subtrees.
-- Jahia apply/readback evidence is under
-  `docs/evidence/visitor-intelligence/chat-stack-deploy-20260823T-current/`.
+- The sanitized Jahia apply/readback result is recorded in
+  `docs/evidence/deployments/2026-08-25-current-jahia-development-release.md`.
 
 ## Hosted Validation
 
-- The hosted B2 Solution to Customer Proof journey passed end to end. Evidence
-  is under
-  `docs/evidence/visitor-intelligence/2026-08-23-shared-packet-b2-live/`.
+- The hosted B2 Solution to Customer Proof journey passed end to end. The
+  compact result remains here; private screenshots and traces are retained in
+  the owner-only cleanup archive.
 - Reset, source greeting, destination transition greeting, handoff, one
   Orchestrator request, one discovery question, source rendering, and
   conversation continuity all passed.
