@@ -1,4 +1,6 @@
-# Wave 2: Build, Release, Jahia, Test, Accessibility, and Performance Audit
+# Historical Wave 2: Build, Release, Jahia, Test, Accessibility, and Performance Audit
+
+> Frozen August 20 comparison. Current Algolia automation and narrow immutable rollback improvements supersede several counts and findings. See [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 ## Verdict
 

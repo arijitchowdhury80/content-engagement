@@ -1,8 +1,10 @@
 # ADR-001: Modular Chat Architecture and Separation
 
-Status: proposed for Gate G approval
+Status: historical draft; superseded for approval on 2026-08-25
 Date: 2026-08-20
 Decision authority: user
+
+This ADR records the August synthesis hypothesis. It does not approve an architecture and must not be used to begin implementation. The current program plan is [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md); a replacement ADR will be written only after current Algolia convergence, refreshed comparison, user walkthrough, and adversarial review.
 
 ## Decision
 
@@ -10,7 +12,7 @@ Adopt a selective synthesis. Use pristine Sajid upstream commit `e06c6b5ff20c857
 
 The central repository owns shared runtime and reusable presentation mechanisms. `algolia-com` owns Algolia business policy, browser/site integration, composition, Jahia operations, and site-specific presentation.
 
-This ADR approves an architecture to implement. It does not claim Gate I readiness or authorize a push, publication, Jahia deployment, Agent Studio/index mutation, Spectrum production change, or legacy retirement.
+This ADR proposed an architecture to investigate. It did not approve implementation and does not authorize a push, publication, Jahia deployment, Agent Studio/index mutation, Spectrum production change, or legacy retirement.
 
 ## Why this decision
 
@@ -219,6 +221,6 @@ No deployment occurs in this sequence.
 - Compatibility shims temporarily add complexity. They are enumerated, single-purpose, instrumented, and retired through Gate I2.
 - Accessibility fixes intentionally change some Algolia colors and may update approved visual baselines.
 
-## Approval wording
+## Historical proposed approval wording — superseded
 
-Approve the synthesis for Stage 2 implementation, with pristine Sajid upstream as the source-history base and Algolia/integration as evidence-backed donors. Do not treat the synthesis as implemented or release-ready.
+The August package proposed approving the synthesis for Stage 2 implementation, with pristine Sajid upstream as the source-history base and Algolia/integration as evidence-backed donors. This proposal is superseded; current approval may occur only through Gates 1–6 of `MASTER-PLAN-2026-08-25.md`.

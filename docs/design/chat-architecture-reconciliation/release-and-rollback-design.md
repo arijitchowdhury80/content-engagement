@@ -1,6 +1,8 @@
 # Release and Rollback Design
 
-Status: proposed for Gate G approval
+Status: historical option; one-manifest and two-manifest designs must be compared before approval
+
+The current plan is [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md). Current Compare/judge deployment slices have stronger immutable artifact and rollback controls than this August evidence recorded, but no whole-widget release/rollback design has been approved.
 
 ## Two-manifest composition
 

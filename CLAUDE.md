@@ -6,7 +6,7 @@ Read `README.md` for the repository map and `SESSION.md` for current workstream 
 
 - App: `0EXRPAXB56`
 - Dev agent: `www Chat - Orchestrator`
-- Index: `Algolia_Prod_Copy_Enhanced`
+- Index: `Algolia_Prod_Copy_Vanilla`
 - Production Ask Algolia is read-only comparison evidence.
 - Jahia dev surface: `/sites/www/home/drift/custom-code-block`
 

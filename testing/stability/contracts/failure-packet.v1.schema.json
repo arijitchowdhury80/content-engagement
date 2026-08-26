@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "FailurePacket.v1",
+  "type": "object",
+  "required": ["schema", "failureId", "timestamp", "runValidity", "targetVerdict", "faultOrigin", "abortTrigger", "retrySafety", "correlationCompleteness", "observabilityBoundary", "classification", "identity", "workload", "expected", "observed", "timeline", "evidence", "reproduction"],
+  "properties": {
+    "schema": { "const": "FailurePacket.v1" },
+    "failureId": { "type": "string", "minLength": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "runValidity": { "enum": ["VALID", "RUN_INVALID", "UNKNOWN"] },
+    "targetVerdict": { "enum": ["PASS", "FAIL", "NOT_SCORED"] },
+    "faultOrigin": { "enum": ["NATURAL", "INJECTED"] },
+    "abortTrigger": { "type": ["string", "null"] },
+    "retrySafety": { "enum": ["SAFE", "UNSAFE", "UNKNOWN"] },
+    "correlationCompleteness": { "type": "number", "minimum": 0, "maximum": 1 },
+    "observabilityBoundary": { "enum": ["AUTHORITATIVE", "CLIENT_OBSERVABLE", "INSUFFICIENT"] },
+    "classification": { "type": "object" },
+    "identity": { "type": "object" },
+    "workload": { "type": "object" },
+    "expected": { "type": "object" },
+    "observed": { "type": "object" },
+    "timeline": { "type": "array" },
+    "evidence": { "type": "object" },
+    "reproduction": { "type": "object" }
+  }
+}

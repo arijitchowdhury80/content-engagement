@@ -129,7 +129,12 @@ def build_search_tool_payload(tools: list[dict], patch: dict) -> dict:
     return {"tools": patch_search_tool(tools, patch)}
 
 
-def deploy_search_tool(manifest: dict, apply: bool, run_id: str) -> dict:
+def deploy_search_tool(
+    manifest: dict,
+    apply: bool,
+    run_id: str,
+    evidence_dir_override: Path | None = None,
+) -> dict:
     env = load_env()
     env_spec = manifest["environment"]
     app_id = env.get(env_spec["algoliaAppIdEnv"])
@@ -142,7 +147,9 @@ def deploy_search_tool(manifest: dict, apply: bool, run_id: str) -> dict:
     spec = manifest["agentStudio"]["orchestrator"]
     patch = spec["searchToolPatch"]
     url = BASE_AGENT_URL_TEMPLATE.format(app=app_id, agent_id=spec["agentId"])
-    evidence_dir = ROOT / spec["evidenceRoot"] / f"chat-stack-deploy-{run_id}" / "orchestrator-search"
+    evidence_dir = evidence_dir_override or (
+        ROOT / spec["evidenceRoot"] / f"chat-stack-deploy-{run_id}" / "orchestrator-search"
+    )
     before = request_json("GET", url, app_id, admin_key)
     payload = build_search_tool_payload(before.get("tools") or [], patch)
     packet = {
@@ -158,14 +165,28 @@ def deploy_search_tool(manifest: dict, apply: bool, run_id: str) -> dict:
         "rollback": {"tools": before.get("tools") or []},
         "apply": apply,
     }
-    write_json(evidence_dir / "before-snapshot.json", before)
-    write_json(evidence_dir / "mutation-packet.json", packet)
+    before_path = evidence_dir / "before-snapshot.json"
+    packet_path = evidence_dir / "mutation-packet.json"
+    if apply and evidence_dir_override:
+        if not before_path.exists() or not packet_path.exists():
+            raise RuntimeError("Reviewed private dry-run evidence is required before apply")
+        reviewed_before = load_json(before_path)
+        reviewed_packet = load_json(packet_path)
+        stable_fields = ["tools", "instructions", "systemPrompt", "config", "providerId", "model"]
+        if any(before.get(field) != reviewed_before.get(field) for field in stable_fields):
+            raise RuntimeError("Agent Studio target drifted after dry-run; refusing search-tool mutation")
+        if reviewed_packet.get("searchToolPatch") != patch:
+            raise RuntimeError("Search-tool patch drifted after dry-run; refusing mutation")
+    else:
+        write_json(before_path, before)
+        write_json(packet_path, packet)
 
+    evidence_label = str(evidence_dir) if evidence_dir_override else str(evidence_dir.relative_to(ROOT))
     result = {
         "target": "orchestrator-search",
         "apply": apply,
-        "evidenceDir": str(evidence_dir.relative_to(ROOT)),
-        "packet": str((evidence_dir / "mutation-packet.json").relative_to(ROOT)),
+        "evidenceDir": evidence_label,
+        "packet": str(packet_path) if evidence_dir_override else str(packet_path.relative_to(ROOT)),
     }
     if not apply:
         result["pass"] = True
@@ -187,7 +208,8 @@ def deploy_search_tool(manifest: dict, apply: bool, run_id: str) -> dict:
     validation = {"pass": all(checks.values()), "checks": checks}
     write_json(evidence_dir / "validation.json", validation)
     result["pass"] = validation["pass"]
-    result["validation"] = str((evidence_dir / "validation.json").relative_to(ROOT))
+    validation_path = evidence_dir / "validation.json"
+    result["validation"] = str(validation_path) if evidence_dir_override else str(validation_path.relative_to(ROOT))
     return result
 
 
@@ -348,7 +370,19 @@ def main() -> int:
         default="all",
     )
     parser.add_argument("--apply", action="store_true", help="Apply mutations. Omit for dry-run.")
+    parser.add_argument(
+        "--evidence-dir",
+        help="Private /private/tmp evidence directory for a reviewed orchestrator-search dry-run/apply pair.",
+    )
     args = parser.parse_args()
+
+    evidence_dir_override = None
+    if args.evidence_dir:
+        if args.target != "orchestrator-search":
+            parser.error("--evidence-dir is supported only with --target orchestrator-search")
+        evidence_dir_override = Path(args.evidence_dir).resolve()
+        if not str(evidence_dir_override).startswith("/private/tmp/"):
+            parser.error("--evidence-dir must be an absolute path under /private/tmp")
 
     manifest = load_json(MANIFEST)
     run_id = now_slug()
@@ -360,7 +394,14 @@ def main() -> int:
     if args.target in {"all", "agent-studio", "orchestrator"}:
         results.append(deploy_agent(manifest, "orchestrator", args.apply, run_id))
     if args.target == "orchestrator-search":
-        results.append(deploy_search_tool(manifest, args.apply, run_id))
+        results.append(
+            deploy_search_tool(
+                manifest,
+                args.apply,
+                run_id,
+                evidence_dir_override=evidence_dir_override,
+            )
+        )
     if args.target in {"all", "agent-studio", "developer-specialist"}:
         results.append(deploy_agent(manifest, "developerSpecialist", args.apply, run_id))
 

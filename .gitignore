@@ -11,6 +11,7 @@
 node_modules/
 .playwright-mcp/
 testing/team-uat/.artifacts/
+testing/stability/.runtime/
 docs/evidence/visitor-intelligence/**/*-network.json
 
 # raw crawl / enrichment data payloads — regenerable, too large for git, not "docs"
@@ -49,6 +50,9 @@ skills/*/.pytest_cache/
 # customer evidence, or safe public GitHub content.
 .planning/
 .development-loop/
+.codex/
+.local/
+.tmp/
 .tmp-jahia-upload/
 .pytest_cache/
 SESSION.md
@@ -68,4 +72,13 @@ frontend/chat-widget/token-telemetry-fe-key.js
 # Maven build output for the token-telemetry Jahia module.
 backend/jahia-modules/algolia-token-telemetry/target/
 production_comparison/runs/
-.local/deployment-state/
+
+# Raw runtime/deployment captures are private, large, and reproducible. Keep compact,
+# sanitized Markdown release reports at the evidence-directory root instead.
+docs/evidence/agent-studio/chat-stack-deploy-*/
+docs/evidence/agent-studio/judge-v2/*/
+docs/evidence/deployments/*/
+docs/evidence/visitor-intelligence/*/
+
+# Local visual-analysis residue; the canonical design image lives under docs/design/.
+/current-scroll-deck-branding.png

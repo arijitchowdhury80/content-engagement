@@ -1,6 +1,8 @@
-# Stage 2 Implementation Specification
+# Historical Stage 2 Implementation Specification
 
-Status: blocked on Gate G approval
+Status: superseded on 2026-08-25; do not execute
+
+The current plan is [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md). This file is retained to preserve the August 20 decision history. Its baseline, 84-row denominator, stale UAT finding, exact package split, and migration order require the revised Gate 1–6 work before implementation.
 
 ## Worktrees
 

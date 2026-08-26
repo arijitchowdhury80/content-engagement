@@ -1,4 +1,6 @@
-# Wave 1: Sajid Upstream Audit
+# Historical Wave 1: Sajid Upstream Audit
+
+> The source baseline remains unchanged, but three factual corrections and the current browser rerun belong to Gate 2 of [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 Baseline: `sajid-upstream` at `e06c6b5ff20c8576bec01fdf000981cd8873cc06`
 Snapshot manifest: `469f6bf0753f8d542e041dca06bfd39b6ce2b5ff012bc8298b46055f287b14de`

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ObservationEvent.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "eventId", "at", "monotonicMs", "runId", "stageId", "hostId", "browserContextId", "personaId", "conversationId", "turnId", "attemptId", "source", "type", "classification", "safePayload", "payloadHash"],
+  "properties": {
+    "schema": { "const": "ObservationEvent.v1" },
+    "eventId": { "type": "string" },
+    "at": { "type": "string", "format": "date-time" },
+    "monotonicMs": { "type": "number", "minimum": 0 },
+    "runId": { "type": "string" },
+    "stageId": { "type": "string" },
+    "hostId": { "type": "string" },
+    "browserContextId": { "type": ["string", "null"] },
+    "personaId": { "type": ["string", "null"] },
+    "conversationId": { "type": ["string", "null"] },
+    "turnId": { "type": ["string", "null"] },
+    "attemptId": { "type": ["string", "null"] },
+    "source": { "enum": ["browser", "network", "sse", "dom", "storage", "worker", "supervisor", "operator"] },
+    "type": { "type": "string", "minLength": 1 },
+    "classification": { "type": "string", "minLength": 1 },
+    "safePayload": { "type": "object" },
+    "payloadHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

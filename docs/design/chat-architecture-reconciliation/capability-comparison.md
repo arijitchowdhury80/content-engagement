@@ -1,4 +1,6 @@
-# Capability Comparison
+# Historical Capability Comparison
+
+> Current Algolia capabilities and test evidence have materially changed. Retain this as August 20 evidence; regenerate the current matrix at Gate 2 of [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 Status: evidence synthesis pending neutral adjudication
 Scope: 559/559 frozen architecture files dispositioned

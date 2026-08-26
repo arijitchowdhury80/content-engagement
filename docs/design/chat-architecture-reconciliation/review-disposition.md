@@ -1,4 +1,6 @@
-# Gate 0 Plan Review Disposition
+# Historical Gate 0 Plan Review Disposition
+
+> This disposition validates the August 20 review method, not the current baselines or revised plan. A new adversarial review occurs at Gate 5 of [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 Date: 2026-08-20
 

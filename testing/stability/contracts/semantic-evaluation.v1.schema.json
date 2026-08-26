@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SemanticEvaluation.v1",
+  "type": "object",
+  "required": ["schema", "evaluationId", "provider", "model", "configHash", "rubricHash", "mechanicalResult", "scores", "weightedScore", "groundingGate", "discoveryGate", "routeGate", "findings", "disagreements", "repeatedRounds", "calibrationVersion", "semanticStatus"],
+  "properties": {
+    "schema": { "const": "SemanticEvaluation.v1" },
+    "evaluationId": { "type": "string" },
+    "provider": { "type": ["string", "null"] },
+    "model": { "type": ["string", "null"] },
+    "configHash": { "type": ["string", "null"] },
+    "rubricHash": { "type": "string" },
+    "mechanicalResult": { "enum": ["PASS", "FAIL"] },
+    "scores": { "type": "object" },
+    "weightedScore": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+    "groundingGate": { "type": ["boolean", "null"] },
+    "discoveryGate": { "type": ["boolean", "null"] },
+    "routeGate": { "type": ["boolean", "null"] },
+    "findings": { "type": "array" },
+    "disagreements": { "type": "array" },
+    "repeatedRounds": { "type": "integer", "minimum": 0 },
+    "calibrationVersion": { "type": ["string", "null"] },
+    "semanticStatus": { "enum": ["PASS", "FAIL", "UNAVAILABLE", "UNCALIBRATED"] }
+  }
+}

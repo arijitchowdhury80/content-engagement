@@ -66,7 +66,18 @@
         "toolName": "algolia_search_index",
         "indexName": "Algolia_Prod_Copy_Vanilla",
         "searchParameters": {
-          "filters": "environment:\"prod20260722\" AND language_code:\"en\" AND NOT is404:true"
+          "filters": "environment:\"prod20260722\" AND language_code:\"en\" AND NOT is404:true",
+          "hitsPerPage": 5,
+          "attributesToRetrieve": [
+            "objectID",
+            "title",
+            "url",
+            "source",
+            "category"
+          ],
+          "attributesToSnippet": [
+            "description:80"
+          ]
         }
       },
       "evidenceRoot": "docs/evidence/agent-studio",

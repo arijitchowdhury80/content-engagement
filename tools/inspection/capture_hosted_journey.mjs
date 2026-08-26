@@ -866,8 +866,8 @@ async function acceptSpecialistOfferIfPresent(page, timeout = 45_000, action = '
   if (!['accept', 'decline'].includes(action)) {
     throw new Error(`Unsupported specialist action: ${action}`);
   }
-  const namedAccept = page.getByRole('button', { name: /go deeper|bring.*specialist/i });
-  const namedDecline = page.getByRole('button', { name: /no thanks|not now|skip/i });
+  const namedAccept = page.getByRole('button', { name: /^yes,\s*go deeper$/i });
+  const namedDecline = page.getByRole('button', { name: /^no thanks$/i });
   const consentGroupAccept = page
     .getByRole('group', { name: /deep-dive offer/i })
     .getByRole('button')
