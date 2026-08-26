@@ -53,6 +53,37 @@ const compareAnswerFrames = [
   },
 ];
 
+const markerlessFollowUpFrames = [
+  {
+    type: 'tool-output-available',
+    toolCallId: 'search-1',
+    output: {
+      hits: [
+        {
+          objectID: 'inventory-strategy',
+          title: 'Handling out-of-stock items',
+          url: 'https://www.algolia.com/doc/guides/managing-results/rules/',
+          source: 'Documentation',
+          description: 'Use inventory attributes and rules to control product visibility.',
+        },
+      ],
+    },
+  },
+  {
+    type: 'text-delta',
+    delta: [
+      "Handling out-of-stock items is like managing a restaurant menu: you do not want to hide your best dish forever, but you also do not want to sell what the kitchen cannot make today.",
+      '',
+      'The best practice is to keep out-of-stock items indexed and push them down or filter them at query time, depending on the customer experience you want.',
+      '',
+      '## Consultant recommendation',
+      'Use one combined index with an inventory attribute unless your catalog truly needs separate ranking strategies.',
+      '',
+      'What does your current data pipeline look like for updating stock levels?',
+    ].join('\n\n'),
+  },
+];
+
 const contractedAnalogyFrames = [
   {
     type: 'text-delta',
@@ -505,6 +536,104 @@ test('compare mode preserves TLDR treatment on the primary answer', async () => 
     assert.notEqual(state.shortStyle, 'italic');
     assert.doesNotMatch(state.tldrText, /The magic happens/);
     assert.match(state.detailsText, /The magic happens/);
+  } finally {
+    await page.close();
+  }
+});
+
+test('compare mode preserves the primary discovery follow-up as a separate tile', async () => {
+  const page = await createComparePage();
+  const question = 'Are you trying to hand day-to-day search controls to marketing, merchandising, or support?';
+  try {
+    await page.evaluate(() => {
+      window.__emitComparePrepared('Seed answer for Compare.', 'seed:followup');
+      document.querySelector('algolia-chat').ask('Seed answer for Compare.');
+      window.__emitCompareCompleted('seed:followup');
+    });
+    await page.waitForFunction(() => window.__markComparePostAnswerReady?.('seed:followup'));
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
+    );
+    await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      root.querySelector('#acs-compare-toggle')?.click();
+    });
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot
+        ?.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed') === 'true'
+    );
+
+    const state = await page.evaluate((expectedQuestion) => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const followWrap = root.querySelector('.acs-followup-wrap');
+      const followCard = root.querySelector('.acs-followup-card');
+      const answerClone = root.querySelector('.acs-answer-details, .prose, [aria-busy="false"]')?.cloneNode(true);
+      answerClone?.querySelector('.acs-followup-wrap')?.remove();
+      return {
+        compareOn: root.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed'),
+        followupCount: root.querySelectorAll('.acs-followup-wrap').length,
+        followCardText: followCard?.textContent.replace(/\s+/g, ' ').trim(),
+        answerStillContainsQuestion: Boolean(answerClone?.textContent.includes(expectedQuestion)),
+        productionContainsQuestion: Boolean(root.querySelector('#acs-compare-panel')?.textContent.includes(expectedQuestion)),
+      };
+    }, question);
+
+    assert.equal(state.compareOn, 'true');
+    assert.equal(state.followupCount, 1);
+    assert.match(state.followCardText, /marketing, merchandising, or support/);
+    assert.equal(state.answerStillContainsQuestion, false);
+    assert.equal(state.productionContainsQuestion, false);
+  } finally {
+    await page.close();
+  }
+});
+
+test('compare mode extracts a markerless trailing discovery question into a separate tile', async () => {
+  const page = await createComparePage({ responseFrames: markerlessFollowUpFrames });
+  const question = 'What does your current data pipeline look like for updating stock levels?';
+  try {
+    await page.evaluate(() => {
+      window.__emitComparePrepared('How should I handle out-of-stock items?', 'seed:inline-followup');
+      document.querySelector('algolia-chat').ask('How should I handle out-of-stock items?');
+    });
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot?.textContent
+        ?.includes('Consultant recommendation')
+    );
+    await page.evaluate(() => window.__emitCompareCompleted('seed:inline-followup'));
+    await page.waitForFunction(() => window.__markComparePostAnswerReady?.('seed:inline-followup'));
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
+    );
+    await page.evaluate(() => {
+      document.querySelector('algolia-chat').shadowRoot
+        .querySelector('#acs-compare-toggle')?.click();
+    });
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot
+        ?.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed') === 'true'
+    );
+
+    const state = await page.evaluate((expectedQuestion) => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const followWrap = root.querySelector('.acs-followup-wrap');
+      const followCard = root.querySelector('.acs-followup-card');
+      const answerClone = root.querySelector('.acs-answer-details, .prose, [aria-busy="false"]')?.cloneNode(true);
+      answerClone?.querySelector('.acs-followup-wrap')?.remove();
+      return {
+        compareOn: root.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed'),
+        followupCount: root.querySelectorAll('.acs-followup-wrap').length,
+        followCardText: followCard?.textContent.replace(/\s+/g, ' ').trim(),
+        answerStillContainsQuestion: Boolean(answerClone?.textContent.includes(expectedQuestion)),
+        detailsText: root.querySelector('.acs-answer-details')?.textContent.replace(/\s+/g, ' ').trim(),
+      };
+    }, question);
+
+    assert.equal(state.compareOn, 'true');
+    assert.equal(state.followupCount, 1);
+    assert.equal(state.followCardText, question);
+    assert.equal(state.answerStillContainsQuestion, false);
+    assert.doesNotMatch(state.detailsText, /current data pipeline/);
   } finally {
     await page.close();
   }

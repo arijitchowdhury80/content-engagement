@@ -567,7 +567,7 @@ Use rate limits where traffic concentrates, then debounce normal typing.`;
   }
 });
 
-test('the client does not extract a trailing question into a follow-up tile', async () => {
+test('the client extracts a trailing discovery question into the follow-up tile', async () => {
   const inlineQuestion =
     'Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?';
   const text = `API calls are like little door swings at a busy store: one customer entering is harmless, but eager widgets can turn that door into a blur.
@@ -594,8 +594,8 @@ ${inlineQuestion}`;
     }, inlineQuestion);
 
     assert.equal(result.questionInTldr, false);
-    assert.equal(result.questionInDetails, true);
-    assert.equal(result.questionInFollowUp, false);
+    assert.equal(result.questionInDetails, false);
+    assert.equal(result.questionInFollowUp, true);
   } finally {
     await page.close();
   }

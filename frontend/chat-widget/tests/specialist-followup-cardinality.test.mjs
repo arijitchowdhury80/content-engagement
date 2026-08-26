@@ -11,8 +11,9 @@ test('every successful answer exposes exactly one discovery question', async () 
   assert.match(bundle, /const s=yg\(e\.content,n,"specialist"\),u=__arrieOneDiscoveryQuestion\(t,e\.suggestions\[0\]\)/);
   assert.match(
     bundle,
-    /const s=a\.active\?__arrieOneDiscoveryQuestion\(n\.query,a\.followUp,i\.suggestions\[0\]\):i\.suggestions/,
+    /const s=a\.active\?__arrieOneDiscoveryQuestion\(n\.query,a\.followUp,i\.suggestions\[0\]\):\[a\.followUp,\.\.\.i\.suggestions\]\.map\([^)]*=>[^)]*\.trim\(\)\)\.filter\(Boolean\)\.slice\(0,1\)/,
   );
+  assert.match(bundle, /rR\(e,n,s,\{followUp:d\.followUp,active:i!==null\}\)/);
   assert.doesNotMatch(bundle, /followUps:e\.suggestions,error:void 0/);
 });
 
