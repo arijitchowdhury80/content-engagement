@@ -417,7 +417,7 @@ Start with frontend debounce, then protect shared backends with server-side thro
   }
 });
 
-test('TLDR treatment is limited to the first primary answer in a conversation', async () => {
+test('TLDR treatment applies to each layerable primary answer in a conversation', async () => {
   const layeredAnswer = `Implementation planning is like setting a table before the guests arrive: the plates matter, but the sequence matters more.
 
 Short version: start with the smallest working search path, then harden the data and events around it.
@@ -456,11 +456,11 @@ Use one integration path first, validate relevance, then expand the controls.`;
     });
 
     assert.equal(result.turnCount, 2);
-    assert.equal(result.tldrTiles, 1);
-    assert.equal(result.answerLayers, 1);
-    assert.equal(result.detailsLabels, 1);
+    assert.equal(result.tldrTiles, 2);
+    assert.equal(result.answerLayers, 2);
+    assert.equal(result.detailsLabels, 2);
     assert.deepEqual(result.detailsBodyHeadings, []);
-    assert.equal(result.tldrLabels, 1);
+    assert.equal(result.tldrLabels, 2);
     assert.equal(result.assistantLabels, 0);
   } finally {
     await page.close();

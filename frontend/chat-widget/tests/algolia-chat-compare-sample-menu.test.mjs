@@ -541,6 +541,77 @@ test('compare mode preserves TLDR treatment on the primary answer', async () => 
   }
 });
 
+test('compare mode preserves TLDR treatment on a later primary answer', async () => {
+  const page = await createComparePage({
+    responseFrames: [
+      flatNoSourceFrames,
+      compareAnswerFrames,
+    ],
+  });
+  try {
+    await page.evaluate(() => {
+      window.__emitComparePrepared('Flat warmup?', 'seed:tldr-later-1');
+      document.querySelector('algolia-chat').ask('Flat warmup?');
+    });
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot?.textContent
+        ?.includes('A direct answer without retrieved sources')
+    );
+    await page.evaluate(() => window.__emitCompareCompleted('seed:tldr-later-1'));
+    await page.waitForFunction(() => window.__markComparePostAnswerReady?.('seed:tldr-later-1'));
+    await page.waitForFunction(() => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      return root?.querySelector('textarea')?.disabled === false;
+    });
+
+    await page.evaluate(() => {
+      window.__emitComparePrepared('Can a non-technical marketing team run search day-to-day without a developer?', 'seed:tldr-later-2');
+    });
+    const composer = page.locator('algolia-chat').locator('textarea');
+    await composer.fill('Can a non-technical marketing team run search day-to-day without a developer?');
+    await composer.press('Enter');
+    await page.waitForFunction(() => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      return root?.textContent?.includes('The magic happens in the Dashboard');
+    }, null, { timeout: 8_000 });
+    await page.evaluate(() => window.__emitCompareCompleted('seed:tldr-later-2'));
+    await page.waitForFunction(() => window.__markComparePostAnswerReady?.('seed:tldr-later-2'));
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
+    );
+    await page.evaluate(() => {
+      document.querySelector('algolia-chat').shadowRoot
+        .querySelector('#acs-compare-toggle')?.click();
+    });
+    await page.waitForFunction(() =>
+      document.querySelector('algolia-chat')?.shadowRoot
+        ?.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed') === 'true'
+    );
+
+    const state = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const tldrTiles = [...root.querySelectorAll('.acs-answer-tldr')];
+      const latestTldr = tldrTiles.at(-1);
+      const latestDetails = [...root.querySelectorAll('.acs-answer-details')].at(-1);
+      return {
+        compareOn: root.querySelector('#acs-compare-toggle')?.getAttribute('aria-pressed'),
+        tldrCount: tldrTiles.length,
+        latestTldrText: latestTldr?.textContent.replace(/\s+/g, ' ').trim(),
+        latestDetailsText: latestDetails?.textContent.replace(/\s+/g, ' ').trim(),
+      };
+    });
+
+    assert.equal(state.compareOn, 'true');
+    assert.equal(state.tldrCount, 1);
+    assert.match(state.latestTldrText, /store window display/);
+    assert.match(state.latestTldrText, /The short answer is yes/);
+    assert.doesNotMatch(state.latestTldrText, /The magic happens/);
+    assert.match(state.latestDetailsText, /The magic happens/);
+  } finally {
+    await page.close();
+  }
+});
+
 test('compare mode preserves the primary discovery follow-up as a separate tile', async () => {
   const page = await createComparePage();
   const question = 'Are you trying to hand day-to-day search controls to marketing, merchandising, or support?';
