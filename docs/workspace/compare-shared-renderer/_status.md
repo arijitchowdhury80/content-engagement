@@ -3,6 +3,8 @@
 - [x] Root cause verified in current committed files.
 - [x] Target rendering boundary selected.
 - [x] Existing production transport retained.
+- [x] Post-answer Compare retains and replays the latest finalized request byte-for-byte.
+- [x] Post-answer Compare unit, full-chain browser, and deployment tests pass.
 - [ ] Current compiled Algolia presentation reconciled into readable source.
 - [ ] Native comparison turn API implemented.
 - [ ] Duplicate companion renderers removed.
@@ -10,4 +12,3 @@
 - [ ] User approves exact deployment plan.
 - [ ] Jahia snapshot, dry-run, apply, readback, and browser validation complete.
 - [ ] Aadhar notification sent after user approves the exact text.
-

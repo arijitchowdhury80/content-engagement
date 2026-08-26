@@ -235,25 +235,27 @@ test('compare off: asking a question never calls production', async () => {
   assert.equal(h.fetchCalls.length, 0);
 });
 
-test('a conversation already in progress never replays, and cannot enable Compare', async () => {
+test('an existing answer can be compared later using its exact prepared request', async () => {
   const h = createHarness();
   h.addBubble('asked before compare was on');
   await h.settle();
 
-  // The first question locks the choice, so Compare can no longer be switched on.
-  assert.equal(h.api().state().locked, true);
+  assert.equal(h.api().state().hasPreparedTurn, true);
+  assert.match(h.toggle().textContent, /Compare latest with production/);
   h.clickToggle();
   await h.settle();
-  assert.equal(h.api().state().compareOn, false, 'cannot enable mid-conversation');
-  assert.equal(h.fetchCalls.length, 0, 'existing history is never replayed');
+  assert.equal(h.api().state().compareOn, true, 'can enable after the answer exists');
+  assert.equal(h.fetchCalls.length, 1, 'the latest existing turn is replayed once');
+  assert.equal(h.fetchCalls[0][1].body, h.preparedBodies[0], 'replay remains byte-identical');
 
-  // After a reset the earlier bubble must still not be resent.
+  // After reset, the prior conversation is forgotten and cannot be replayed.
   (h.documentListeners['algolia-visitor-state-reset'] || []).forEach((fn) => fn({ detail: {} }));
   await h.settle();
-  h.clickToggle();                                     // now selectable again
+  assert.equal(h.api().state().hasPreparedTurn, false);
+  h.clickToggle();
   await h.settle();
   assert.equal(h.api().state().compareOn, true);
-  assert.equal(h.fetchCalls.length, 0, 'bubbles seen before the reset are not replayed');
+  assert.equal(h.fetchCalls.length, 1, 'the reset conversation does not replay old work');
 });
 
 test('two turns run in order and turn two carries turn one in history', async () => {
@@ -279,29 +281,28 @@ test('two turns run in order and turn two carries turn one in history', async ()
   assert.equal(first.id, second.id, 'conversation id is stable across turns');
 });
 
-test('question one locks the choice even when Compare was left OFF', async () => {
+test('question one keeps Compare available when it was left OFF', async () => {
   const h = createHarness();
   assert.equal(h.toggle().getAttribute('aria-pressed'), 'false', 'starts off');
 
   h.addBubble('question one, asked with Compare off');
   await h.settle();
 
-  // the first bubble must freeze the choice in whichever state it was left
-  assert.equal(h.toggle().getAttribute('aria-disabled'), 'true', 'toggle is disabled after turn one');
-  assert.match(h.toggle().textContent, /new (chat|conversation)/i, 'locked-off state explains recovery');
-  assert.match(h.toggle().getAttribute('aria-label') || '', /new (chat|conversation)/i);
-  assert.equal(h.api().state().locked, true);
+  assert.notEqual(h.toggle().getAttribute('aria-disabled'), 'true');
+  assert.match(h.toggle().textContent, /Compare latest with production/);
+  assert.match(h.toggle().getAttribute('aria-label') || '', /latest answer/i);
+  assert.equal(h.api().state().hasPreparedTurn, true);
 
-  h.clickToggle();                                     // must be inert while locked
+  h.clickToggle();
   await h.settle();
-  assert.equal(h.api().state().compareOn, false, 'cannot be enabled mid-conversation');
-  assert.equal(h.toggle().getAttribute('aria-pressed'), 'false');
-  assert.equal(h.fetchCalls.length, 0, 'no production request is ever made');
+  assert.equal(h.api().state().compareOn, true, 'can be enabled mid-conversation');
+  assert.equal(h.toggle().getAttribute('aria-pressed'), 'true');
+  assert.equal(h.fetchCalls.length, 1, 'the retained request is sent to production');
 
-  // a reset must make it selectable again
+  // A reset clears the retained replay packet.
   (h.documentListeners['algolia-visitor-state-reset'] || []).forEach((fn) => fn({ detail: {} }));
   await h.settle();
-  assert.equal(h.api().state().locked, false, 'reset unlocks the choice');
+  assert.equal(h.api().state().hasPreparedTurn, false);
   assert.notEqual(h.toggle().getAttribute('aria-disabled'), 'true', 'toggle is selectable again');
 
   h.clickToggle();                                     // now it may be enabled
@@ -309,15 +310,19 @@ test('question one locks the choice even when Compare was left OFF', async () =>
   assert.equal(h.api().state().compareOn, true);
 });
 
-test('compare is fixed for the conversation once a question is asked', async () => {
+test('compare can be turned off and on again without duplicating a mirrored turn', async () => {
   const h = createHarness();
   h.clickToggle();
-  h.addBubble('locks the choice');
+  h.addBubble('one comparison');
   await h.settle();
-  assert.equal(h.toggle().getAttribute('aria-disabled'), 'true');
-  h.clickToggle();                                   // ignored while locked
+  assert.equal(h.fetchCalls.length, 1);
+  h.clickToggle();
+  await h.settle();
+  assert.equal(h.toggle().getAttribute('aria-pressed'), 'false');
+  h.clickToggle();
   await h.settle();
   assert.equal(h.toggle().getAttribute('aria-pressed'), 'true');
+  assert.equal(h.fetchCalls.length, 1, 'the same prepared turn is never replayed twice');
 });
 
 test('visitor reset clears mirrored state, turns Compare off, and unlocks the toggle', async () => {
@@ -333,7 +338,7 @@ test('visitor reset clears mirrored state, turns Compare off, and unlocks the to
 
   const after = h.api().state();
   assert.equal(after.mirroredTurns, 0, 'mirrored turn state cleared');
-  assert.equal(after.locked, false, 'choice is selectable again');
+  assert.equal(after.hasPreparedTurn, false, 'the prior replay packet is cleared');
   assert.equal(after.compareOn, false, 'a new conversation defaults Compare to off');
   assert.ok(after.generation > before.generation, 'generation advanced');
 });

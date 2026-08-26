@@ -75,11 +75,17 @@ test('real widget sends the exact finalized body once and isolates the Productio
     await page.waitForFunction(() =>
       document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
     , null, { timeout: 10_000 });
+    await page.evaluate(() => document.querySelector('algolia-chat').ask('Use the exact same packet.'));
+    await page.waitForFunction(() => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      return window.__localOrchestratorRequestBodies?.length === 1 &&
+        root?.textContent?.includes('Here is the practical implementation path') &&
+        root?.querySelector('#acs-compare-toggle')?.textContent?.includes('Compare latest with production');
+    }, null, { timeout: 10_000 });
+
     await page.evaluate(() =>
       document.querySelector('algolia-chat').shadowRoot.querySelector('#acs-compare-toggle').click()
     );
-
-    await page.evaluate(() => document.querySelector('algolia-chat').ask('Use the exact same packet.'));
     await page.waitForFunction(() => {
       const root = document.querySelector('algolia-chat')?.shadowRoot;
       return window.__localOrchestratorRequestBodies?.length === 1 &&
@@ -100,7 +106,7 @@ test('real widget sends the exact finalized body once and isolates the Productio
       };
     });
     assert.equal(proof.togglePressed, 'true');
-    assert.equal(proof.toggleDisabled, 'true');
+    assert.equal(proof.toggleDisabled, null);
     assert.match(proof.productionText, /Production comparison answer/);
     assert.match(proof.primaryText, /Here is the practical implementation path/);
 

@@ -1,9 +1,9 @@
 /**
  * algolia-chat-compare.js — Compare-with-production companion.
  *
- * Adds a "Compare with production" toggle to the chat header. When enabled BEFORE
- * the first question, every question the visitor asks is also sent to the live
- * algolia.com Ask AI agent and rendered beside the concierge's own answer.
+ * Adds a "Compare with production" toggle to the chat header. It can be enabled
+ * before a question or after an existing answer. In the latter case, the latest
+ * finalized request is replayed byte-for-byte to live algolia.com Ask AI.
  *
  * Ownership boundaries (deliberate):
  *   - This module owns ONLY the production side. The concierge/left side keeps
@@ -73,8 +73,9 @@
 
   // ------------------------------------------------------------ turn state ---
   let compareOn = false;
-  let locked = false;          // fixed for the conversation once a question is asked
   const seenTurnKeys = new Set();
+  const mirroredTurnKeys = new Set();
+  let latestPreparedTurn = null;
   let generation = 0;          // bumped on reset; older generations are discarded
   const activeControllers = new Map();
   let mirroredTurns = 0;
@@ -87,8 +88,9 @@
     }
     activeControllers.clear();
     mirroredTurns = 0;
-    locked = false;
     compareOn = false;
+    latestPreparedTurn = null;
+    mirroredTurnKeys.clear();
     clearLog();
     // Repaint immediately. Without this the toggle keeps aria-disabled until some
     // unrelated later mutation happens to drive reconcile(), so a reset can look
@@ -175,15 +177,19 @@
     // never be mistaken for the first turn of the new conversation.
     seenTurnKeys.add(turnKey);
     if (seenTurnKeys.size > 500) seenTurnKeys.delete(seenTurnKeys.values().next().value);
-    if (!locked) {
-      locked = true;
-      const toggle = sroot()?.querySelector(`#${TOGGLE_ID}`);
-      if (toggle) paintToggle(toggle);
-    }
+    latestPreparedTurn = { body, turnKey, question: String(detail?.question || "") };
+    const toggle = sroot()?.querySelector(`#${TOGGLE_ID}`);
+    if (toggle) paintToggle(toggle);
     if (!compareOn || !ENDPOINT_OK) return;
     const gen = generation;
-    runPreparedTurn({ body, turnKey, question: String(detail?.question || "") }, gen)
+    mirrorPreparedTurn(latestPreparedTurn, gen)
       .catch((error) => log("production turn failed (contained)", error));
+  }
+
+  function mirrorPreparedTurn(detail, gen) {
+    if (!detail || mirroredTurnKeys.has(detail.turnKey)) return Promise.resolve();
+    mirroredTurnKeys.add(detail.turnKey);
+    return runPreparedTurn(detail, gen);
   }
 
   async function runPreparedTurn(detail, gen) {
@@ -259,26 +265,24 @@
   }
 
   function paintToggle(t) {
-    t.textContent = locked && !compareOn
-      ? "Compare off · Start a new chat"
-      : compareOn
-        ? "Comparing with production"
+    t.textContent = compareOn
+      ? "Comparing with production"
+      : latestPreparedTurn
+        ? "Compare latest with production"
         : "Compare with production";
     t.setAttribute("aria-pressed", compareOn ? "true" : "false");
-    if (locked) {
-      t.setAttribute("aria-disabled", "true");
-      t.setAttribute(
-        "aria-label",
-        compareOn
-          ? "Comparing with production. Start a new conversation to change Compare."
-          : "Compare is off. Start a new conversation to enable Compare."
-      );
-      t.title = "Compare is fixed for this conversation. Start a new chat to change it.";
-    } else {
-      t.removeAttribute("aria-disabled");
-      t.setAttribute("aria-label", "Compare with production");
-      t.title = "Send the same finalized request, including current session and page context, to the live algolia.com Ask AI";
-    }
+    t.removeAttribute("aria-disabled");
+    t.setAttribute(
+      "aria-label",
+      compareOn
+        ? "Comparing with production"
+        : latestPreparedTurn
+          ? "Compare the latest answer with production"
+          : "Compare with production"
+    );
+    t.title = latestPreparedTurn && !compareOn
+      ? "Send the latest answer's exact finalized request to live algolia.com Ask AI"
+      : "Send the same finalized request, including current session and page context, to the live algolia.com Ask AI";
   }
 
   function ensureToggle() {
@@ -335,8 +339,11 @@
     root.addEventListener("click", (e) => {
       const path = e.composedPath ? e.composedPath() : [];
       if (!path.some((n) => n && n.id === TOGGLE_ID)) return;
-      if (locked) return;                                 // fixed for this conversation
       compareOn = !compareOn;
+      if (compareOn && latestPreparedTurn) {
+        mirrorPreparedTurn(latestPreparedTurn, generation)
+          .catch((error) => log("production replay failed (contained)", error));
+      }
       reconcile();
     });
 
@@ -577,7 +584,13 @@
   if (CFG.exposeForTests) {
     window.__acsCompare = {
       safeHref, md,
-      state: () => ({ compareOn, locked, generation, mirroredTurns, activeTurns: activeControllers.size }),
+      state: () => ({
+        compareOn,
+        hasPreparedTurn: !!latestPreparedTurn,
+        generation,
+        mirroredTurns,
+        activeTurns: activeControllers.size,
+      }),
       reset: resetConversation,
       acceptPreparedTurn,
     };
