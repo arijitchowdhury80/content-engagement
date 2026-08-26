@@ -100,7 +100,7 @@ test('Greetings Agent owns one greeting turn and never owns engagement handoff',
   assert.doesNotMatch(prompt, /call the client-side tool/i);
 });
 
-test('v011 orchestrator prompt contains one adaptive handoff example per flow', () => {
+test('v012 orchestrator prompt contains one adaptive handoff example per flow', () => {
   const prompt = readPrompt('instructions_algolia_orchestrator.md');
 
   for (const [label, , trigger] of flows) {

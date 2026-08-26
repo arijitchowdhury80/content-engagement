@@ -2,17 +2,27 @@ function matchesPattern(text, pattern) {
   return new RegExp(pattern, 'i').test(text);
 }
 
+function responseMatch(response, question) {
+  const patterns = response.questionPatterns.filter((pattern) => matchesPattern(question, pattern));
+  return {
+    response,
+    patterns,
+    score: patterns.reduce((total, pattern) => total + pattern.replace(/[^a-z0-9]/gi, '').length, 0),
+  };
+}
+
 export function createPersonaDriver(campaign) {
   const askedSlots = new Set();
-  const confirmed = {};
+  const confirmed = { ...(campaign.initialConfirmed ?? {}) };
   const history = [];
 
   return {
     answer(question) {
-      const matchedResponses = campaign.responses.filter((response) =>
-        response.questionPatterns.some((pattern) => matchesPattern(question, pattern)));
-      const matches = matchedResponses.map((response) => response.slot);
-      const selected = matchedResponses.find((response) => !askedSlots.has(response.slot)) ?? matchedResponses[0] ?? null;
+      const scored = campaign.responses.map((response) => responseMatch(response, question)).filter((match) => match.score > 0);
+      const strongestScore = Math.max(0, ...scored.map((match) => match.score));
+      const strongest = scored.filter((match) => match.score === strongestScore).map((match) => match.response);
+      const matches = strongest.map((response) => response.slot);
+      const selected = strongest.find((response) => !askedSlots.has(response.slot)) ?? strongest[0] ?? null;
       if (!selected) {
         const result = { question, slot: null, matches, answer: campaign.fallbackAnswer, repeated: false, unclassified: true, reveals: {} };
         history.push(result);

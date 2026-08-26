@@ -20,6 +20,42 @@ export function isCompletion(url) {
   return /\/agent-studio\/1\/agents\/[^/]+\/completions(?:[/?]|$)/.test(url);
 }
 
+export function completionAgentId(url) {
+  return url.match(/\/agent-studio\/1\/agents\/([^/]+)\/completions(?:[/?]|$)/)?.[1] ?? null;
+}
+
+export function classifyCompletionFanout(requests, {
+  primaryAgentId = TARGET.primaryAgentId,
+  judgeAgentIds = [],
+  specialistAgentIds = [],
+} = {}) {
+  const judges = new Set(judgeAgentIds);
+  const specialists = new Set(specialistAgentIds);
+  const counts = { primary: 0, judge: 0, specialist: 0, unknown: 0 };
+  for (const request of requests) {
+    const agentId = completionAgentId(request.url ?? '');
+    if (agentId === primaryAgentId) counts.primary += 1;
+    else if (judges.has(agentId)) counts.judge += 1;
+    else if (specialists.has(agentId)) counts.specialist += 1;
+    else counts.unknown += 1;
+  }
+  return counts;
+}
+
+export async function runtimeCompletionRoles(page) {
+  return page.evaluate(() => {
+    const judgeAgentIds = [];
+    const specialistAgentIds = [];
+    for (const agent of document.querySelectorAll('algolia-agent[agent-id]')) {
+      const id = agent.getAttribute('agent-id')?.trim();
+      if (!id) continue;
+      if (agent.closest('algolia-chat-confidence')) judgeAgentIds.push(id);
+      else if (agent.getAttribute('role') === 'specialist') specialistAgentIds.push(id);
+    }
+    return { judgeAgentIds: [...new Set(judgeAgentIds)], specialistAgentIds: [...new Set(specialistAgentIds)] };
+  });
+}
+
 function prohibitedRequest(request) {
   try {
     const url = new URL(request.url());
@@ -187,6 +223,7 @@ export async function runPhase0Smoke({ rawRoot, repetitions = 20, headless = tru
       try {
         await page.goto(`${TARGET.origin}/?stability_phase0=${runId}-${repetition}`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
         await page.waitForFunction(() => customElements.get('algolia-chat') && document.querySelector('algolia-chat'), null, { timeout: 30_000 });
+        const completionRoles = await runtimeCompletionRoles(page);
         const runtime = await page.evaluate(() => {
           const owner = document.querySelector('algolia-chat')?.closest('algolia-instant-search') ?? document.querySelector('algolia-chat');
           return { appId: owner?.getAttribute('app-id'), indexName: owner?.getAttribute('index-name') };
@@ -204,10 +241,11 @@ export async function runPhase0Smoke({ rawRoot, repetitions = 20, headless = tru
         const firstResult = await waitForTurn(page, 0);
         const first = firstResult.turn;
         let traffic = completionTraffic(primaryRequests.slice(start));
-        let backgroundCompletionAttempts = completionRequests.length - completionStart - traffic.physicalCompletionRequests;
+        let fanout = classifyCompletionFanout(completionRequests.slice(completionStart), completionRoles);
+        let backgroundCompletionAttempts = fanout.specialist + fanout.unknown;
         const firstObservation = turnObservation({ turn: first, query: firstQuestion, traffic, backgroundCompletionAttempts, pageCrashed });
         const firstVerdict = evaluateMechanicalTurn(firstObservation);
-        journey.turns.push({ turn: 1, query: firstQuestion, consentActions: firstResult.consentActions, traffic, observation: firstObservation, verdict: firstVerdict });
+        journey.turns.push({ turn: 1, query: firstQuestion, consentActions: firstResult.consentActions, traffic, fanout, observation: firstObservation, verdict: firstVerdict });
         if (!firstVerdict.pass) throw new Error(`turn-1:${firstVerdict.failures.join(',')}`);
 
         const discoveryQuestion = await page.evaluate(() => {
@@ -231,7 +269,8 @@ export async function runPhase0Smoke({ rawRoot, repetitions = 20, headless = tru
         const secondResult = await waitForTurn(page, 1);
         const second = secondResult.turn;
         traffic = completionTraffic(primaryRequests.slice(start));
-        backgroundCompletionAttempts = completionRequests.length - completionStart - traffic.physicalCompletionRequests;
+        fanout = classifyCompletionFanout(completionRequests.slice(completionStart), completionRoles);
+        backgroundCompletionAttempts = fanout.specialist + fanout.unknown;
         const secondObservation = turnObservation({ turn: second, query: discoveryAnswer, traffic, backgroundCompletionAttempts, pageCrashed });
         const secondVerdict = evaluateMechanicalTurn(secondObservation);
         journey.turns.push({
@@ -240,6 +279,7 @@ export async function runPhase0Smoke({ rawRoot, repetitions = 20, headless = tru
           query: discoveryAnswer,
           consentActions: secondResult.consentActions,
           traffic,
+          fanout,
           observation: secondObservation,
           verdict: secondVerdict,
         });

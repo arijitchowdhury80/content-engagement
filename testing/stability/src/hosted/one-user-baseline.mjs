@@ -14,12 +14,14 @@ import { inspectRuntimeIdentity } from '../preflight/runtime-identity.mjs';
 import { createOperatorAgentFetcher } from '../preflight/operator-agent-client.mjs';
 import {
   completionTraffic,
+  classifyCompletionFanout,
   hashRequestBody,
   isCompletion,
   isPrimaryCompletion,
   persistedState,
   prohibitedRequest,
   turnObservation,
+  runtimeCompletionRoles,
   waitForTurn,
 } from './phase0-smoke.mjs';
 
@@ -135,6 +137,7 @@ export async function runOneUserBaseline({ rawRoot, campaignId = 'U5-C1', campai
   try {
     await page.goto(`${TARGET.origin}/?stability_baseline=${runId}`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
     await page.waitForFunction(() => customElements.get('algolia-chat') && document.querySelector('algolia-chat'), null, { timeout: 30_000 });
+    const completionRoles = await runtimeCompletionRoles(page);
     for (const [index, item] of script.entries()) {
       const primaryStart = primaryRequests.length;
       const completionStart = completionRequests.length;
@@ -144,7 +147,8 @@ export async function runOneUserBaseline({ rawRoot, campaignId = 'U5-C1', campai
       const specialistAction = specialistRequested ? 'accept' : 'decline';
       const result = await waitForTurn(page, index, { specialistAction });
       const traffic = completionTraffic(primaryRequests.slice(primaryStart));
-      const backgroundCompletionAttempts = completionRequests.length - completionStart - traffic.physicalCompletionRequests;
+      const fanout = classifyCompletionFanout(completionRequests.slice(completionStart), completionRoles);
+      const backgroundCompletionAttempts = fanout.specialist + fanout.unknown;
       const backgroundCompletionCeiling = result.consentActions.includes('accept') ? 1 : 0;
       const observation = turnObservation({
         turn: result.turn,
@@ -161,7 +165,7 @@ export async function runOneUserBaseline({ rawRoot, campaignId = 'U5-C1', campai
       const specialistRoutePass = specialistRouteSatisfied({
         requested: specialistRequested,
         consentActions: result.consentActions,
-        backgroundCompletionAttempts,
+        backgroundCompletionAttempts: fanout.specialist,
         turn: result.turn,
       });
       const verdict = evaluateMechanicalTurn(observation);
@@ -180,6 +184,7 @@ export async function runOneUserBaseline({ rawRoot, campaignId = 'U5-C1', campai
         latencyMs: Date.now() - turnStarted,
         consentActions: result.consentActions,
         traffic,
+        fanout,
         continuityPass,
         specialistRoutePass,
         observation,

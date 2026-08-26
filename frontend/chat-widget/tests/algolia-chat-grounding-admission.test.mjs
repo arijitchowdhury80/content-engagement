@@ -23,6 +23,7 @@ function fixture() {
     window.__judgeRequests = [];
     window.__judgeValidations = [];
     window.__verdictEvents = [];
+    const followUp = 'Are you shaping a quick proof of concept, or planning the architecture for a production implementation?';
     document.addEventListener('algolia-verdict', (event) => window.__verdictEvents.push(event.detail));
     const candidates = {
       pass: 'This guidance matches the retrieved material.',
@@ -135,9 +136,6 @@ function fixture() {
         if (scenario === 'retryIdentity' && window.__agentRequests.length === 1) {
           return stream([{ type: 'error', message: 'first attempt failed' }]);
         }
-        if (scenario === 'discoveryTurn' && window.__agentRequests.length === 2 && JSON.stringify(request).includes('[DISCOVERY CONTROL')) {
-          return stream([{ type: 'data-guardrail-violation', data: { category: 'prompt_injection_or_secrets' } }]);
-        }
         const answer = candidates[scenario];
         return stream([
           { type: 'start', messageId: 'alg_msg_primary_response_' + window.__agentRequests.length },
@@ -154,13 +152,14 @@ function fixture() {
             url: 'https://www.algolia.com/customers/example/', source: 'Customer Stories',
             description: 'A customer implementation story without quantified conversion guarantees.'
           }] } },
-          { type: 'text-delta', delta: answer }
+          { type: 'text-delta', delta: answer },
+          { type: 'data-suggestions', data: { suggestions: [followUp] } }
         ]);
       }
       return new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } });
     };
   </script><script src="/chat/algolia-confidence-badge.js"></script><script src="/chat/algolia-judge-core.js"></script><script src="/chat/algolia-chat.js"></script></head><body>
-    <algolia-chat app-id="0EXRPAXB56" search-api-key="local" index-name="local" discovery-enabled="true">
+    <algolia-chat app-id="0EXRPAXB56" search-api-key="local" index-name="local">
       <algolia-agent role="primary" agent-id="local_primary_agent" label="aRRIe"></algolia-agent>
       <algolia-chat-confidence mode="algolia">
         <algolia-agent role="skeptic" agent-id="local_skeptic"></algolia-agent>
@@ -211,7 +210,7 @@ function startServer() {
   }));
 }
 
-async function openScenario(scenario, { waitForJudge = true, requireDiscovery = true } = {}) {
+async function openScenario(scenario, { waitForJudge = true, requireFollowUp = true } = {}) {
   const { server, baseUrl } = await startServer();
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -224,13 +223,13 @@ async function openScenario(scenario, { waitForJudge = true, requireDiscovery = 
     await page.goto(`${baseUrl}/admission-fixture?scenario=${scenario}&algoliaChatDebug=1`, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => customElements.get('algolia-chat'), null, { timeout: 10_000 });
     await page.evaluate(() => document.querySelector('algolia-chat').ask('Verify the requested implementation specifics.'));
-    await page.waitForFunction((discoveryRequired) => {
+    await page.waitForFunction((followUpRequired) => {
       const root = document.querySelector('algolia-chat')?.shadowRoot;
       const stored = sessionStorage.getItem('algolia-chat:conversation');
       if (!stored) return false;
-      return (!discoveryRequired || root?.querySelectorAll('.acs-followup-card').length === 1) &&
+      return (!followUpRequired || root?.querySelectorAll('.acs-followup-card').length === 1) &&
         JSON.parse(stored).turns[0]?.segments[0]?.status === 'success';
-    }, requireDiscovery, { timeout: 10_000 });
+    }, requireFollowUp, { timeout: 10_000 });
     if (waitForJudge) {
       await page.waitForFunction(() => {
         const badge = document.querySelector('algolia-chat')?.shadowRoot?.querySelector('algolia-confidence-badge');
@@ -271,7 +270,7 @@ async function runtimeState(page) {
       judgeRequests: window.__judgeRequests,
       judgeValidations: window.__judgeValidations,
       badgeVerdict: badge?.verdict || null,
-      discoveryCount: root.querySelectorAll('.acs-followup-card').length,
+      followUpCount: root.querySelectorAll('.acs-followup-card').length,
     };
   });
 }
@@ -306,7 +305,7 @@ test('streams and persists the original answer while confidence runs separately'
     assert.equal(result.judgeRequestCount, 3);
     assert.equal(typeof result.badgeVerdict.gateTripped, 'boolean');
     assert.equal(result.segment.admissionVerdict, undefined);
-    assert.equal(result.discoveryCount, 1);
+    assert.equal(result.followUpCount, 1);
     assert.equal(result.agentRequests[0].id, result.persisted.conversationId);
     assert.ok(result.agentRequests[0].id.startsWith('alg_cnv_'));
     assert.ok(result.agentRequests[0].messages.every((message) => typeof message.id === 'string' && message.id.startsWith('alg_msg_')));
@@ -469,7 +468,7 @@ test('a pending judge panel exposes all three live role states instead of a fake
 });
 
 test('a partial answer followed by a terminal error stays visible and is never judged', async () => {
-  const run = await openScenario('partialTerminalError', { waitForJudge: false, requireDiscovery: false });
+  const run = await openScenario('partialTerminalError', { waitForJudge: false, requireFollowUp: false });
   try {
     await run.page.waitForTimeout(100);
     const result = await runtimeState(run.page);
@@ -552,7 +551,7 @@ test('a judge gate never hides, replaces, or regenerates the streamed answer', a
     const first = await runtimeState(run.page);
     assert.match(first.text, /99\.99% annual conversion growth/);
     assert.equal(first.streamingTexts.some((text) => text.includes('99.99% annual conversion growth')), true);
-    assert.equal(first.discoveryCount, 1);
+    assert.equal(first.followUpCount, 1);
     assert.deepEqual(first.segment.rawHits.map((hit) => hit.source), ['Documentation', 'Customer Stories']);
     assert.equal(first.segment.sources.length, 2);
     assert.match(first.segment.text, /99\.99% annual conversion growth/);
@@ -669,7 +668,7 @@ test('judge unavailability cannot blank or replace a completed answer', async ()
     assert.ok(result.badgeVerdict.error);
     assert.equal(result.agentRequestCount, 1);
     assert.equal(result.judgeRequestCount, 3, 'Each of the three role agents makes one bounded attempt');
-    assert.equal(result.discoveryCount, 1);
+    assert.equal(result.followUpCount, 1);
   } finally {
     await closeScenario(run);
   }
@@ -703,7 +702,7 @@ test('two unavailable roles never expose a one-judge score', async () => {
   }
 });
 
-test('a clicked discovery question remains visitor text and completes its second turn', async () => {
+test('a clicked server-provided follow-up remains visitor text and completes its second turn', async () => {
   const run = await openScenario('discoveryTurn');
   try {
     await run.page.evaluate(() => {

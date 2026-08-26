@@ -22,8 +22,6 @@
   const STATE_KEY = "algolia_proactive_state";
   const HANDOFF_CONTEXT_KEY = "algolia-chat:handoff-context";
   const HANDOFF_SCHEMA = "ProactiveHandoffContext.v1";
-  const DISCOVERY_CONTROL_RE = /\n*\[DISCOVERY CONTROL[^\]]*\][\s\S]*?\[END DISCOVERY CONTROL\]\s*/gi;
-  const DISCOVERY_STATE_COMMENT_RE = /\n*<!--DISCOVERY_STATE[\s\S]*?DISCOVERY_STATE-->\s*/gi;
   const LEGACY_VISITOR_INTELLIGENCE_RE = /\n*VISITOR INTELLIGENCE \(JSON DATA, NOT INSTRUCTIONS\)[\s\S]*$/i;
 
   const fallbackFetch = typeof window.fetch === "function" ? window.fetch.bind(window) : null;
@@ -126,8 +124,6 @@
 
   function cleanVisitorText(text) {
     return String(text || "")
-      .replace(DISCOVERY_CONTROL_RE, "")
-      .replace(DISCOVERY_STATE_COMMENT_RE, "")
       .replace(LEGACY_VISITOR_INTELLIGENCE_RE, "")
       .trim();
   }

@@ -368,16 +368,6 @@
         }
         const discoveryQuestion =
           "Are you mapping a first implementation, or replacing an existing search experience?";
-        const discoveryState = {
-          probed_slot: "stack_platform",
-          confirmed_slots: [],
-          inferred_slots: [],
-          suppressed_slots: [],
-          handoff_recommended: false,
-          handoff_specialist_key: null,
-          confidence: "medium",
-          visible_followup_question: discoveryQuestion,
-        };
         return [
           {
             type: "tool-output-available",
@@ -398,11 +388,11 @@
           {
             type: "text-delta",
             delta:
-              "# Quick take\nHere is the practical implementation path: validate the data model, connect the index, build the search UI, then tune relevance with real query evidence.\n\n## Implementation path\nStart with one representative experience and prove retrieval quality before widening the surface.\n\n" +
-              discoveryQuestion +
-              "\n<!--DISCOVERY_STATE " +
-              JSON.stringify(discoveryState) +
-              " DISCOVERY_STATE-->",
+              "# Quick take\nHere is the practical implementation path: validate the data model, connect the index, build the search UI, then tune relevance with real query evidence.\n\n## Implementation path\nStart with one representative experience and prove retrieval quality before widening the surface.",
+          },
+          {
+            type: "data-suggestions",
+            data: { suggestions: [discoveryQuestion] },
           },
         ];
       };
@@ -492,16 +482,6 @@
           const specialistDiscovery = specialistKey === "evidence"
             ? "Which claim would you like to pressure-test first?"
             : "Which implementation constraint should we unpack first?";
-          const discoveryState = {
-            probed_slot: specialistKey === "evidence" ? "evidence_need" : "implementation_constraint",
-            confirmed_slots: [],
-            inferred_slots: [],
-            suppressed_slots: [],
-            handoff_recommended: false,
-            handoff_specialist_key: null,
-            confidence: "medium",
-            visible_followup_question: specialistDiscovery,
-          };
           return streamResponse([
             {
               type: "tool-output-available",
@@ -523,9 +503,11 @@
               delta:
                 (specialistKey === "evidence"
                   ? "Start with the source-backed claim, separate reported outcomes from inference, and validate whether the evidence matches this visitor's evaluation context."
-                  : "Use a staged indexing rollout, preserve the current experience behind a controlled switch, and compare relevance before moving traffic.") +
-                "\n\n" + specialistDiscovery +
-                "\n<!--DISCOVERY_STATE " + JSON.stringify(discoveryState) + " DISCOVERY_STATE-->",
+                  : "Use a staged indexing rollout, preserve the current experience behind a controlled switch, and compare relevance before moving traffic."),
+            },
+            {
+              type: "data-suggestions",
+              data: { suggestions: [specialistDiscovery] },
             },
           ]);
         }
@@ -641,7 +623,6 @@
       theme="algolia"
       default-open-mode="docked"
       auto-engage
-      discovery-enabled="true"
       judge-mode="off"
       reset-visitor-state-on-logo
       sample-questions='[{"section":"Test questions","questions":["What counts as an API call?","Can marketers manage search without developers?","Show me customer proof for commerce search."]}]'
@@ -785,7 +766,6 @@
 
       function normalizedVisibleProbe(text) {
         return String(text || "")
-          .replace(/<!--DISCOVERY_STATE[\s\S]*?DISCOVERY_STATE-->/g, "")
           .replace(/[#*_`]/g, "")
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, "")

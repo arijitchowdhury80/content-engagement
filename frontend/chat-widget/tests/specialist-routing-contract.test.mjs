@@ -64,40 +64,39 @@ test('Developer Specialist treats Vanilla snippets as bounded evidence with no m
   assert.doesNotMatch(developerInstructions, /Algolia_Prod_Copy_Enhanced/);
 });
 
-test('both orchestrator prompts name every legal specialist key', () => {
+test('detailed instructions own every legal specialist key without duplicating the routing table', () => {
   for (const key of Object.keys(expected)) {
-    assert.match(systemPrompt, new RegExp(`\\b${key}\\b`));
     assert.match(instructions, new RegExp(`\\b${key}\\b`));
   }
+  assert.match(systemPrompt, /detailed instructions define.*specialist keys/is);
+  assert.doesNotMatch(systemPrompt, /specialist_key:/);
 });
 
 test('an explicit visitor request for a configured specialist is mandatory routing', () => {
-  for (const prompt of [systemPrompt, instructions]) {
-    assert.match(prompt, /explicitly asks to bring in a configured specialist/i);
-    assert.match(prompt, /must call `ask_specialist`/i);
-    assert.match(prompt, /unless the request is unsafe or off-topic/i);
-  }
+  assert.match(instructions, /explicitly asks to bring in a configured specialist/i);
+  assert.match(instructions, /must\s+call `ask_specialist`/i);
+  assert.match(instructions, /unless the request is unsafe\s+or off-topic/i);
+  assert.match(systemPrompt, /specialist depth as an additive continuation/i);
 });
 
 test('multi-part developer-depth architecture questions deterministically route to tech', () => {
-  for (const prompt of [systemPrompt, instructions]) {
-    assert.match(prompt, /developer_page_3s_30_scroll/);
-    assert.match(prompt, /multi-part implementation\s+or architecture question/i);
-    assert.match(prompt, /at least two/i);
-    assert.match(prompt, /must call\s+`ask_specialist` with `specialist_key: "tech"`/i);
-    assert.match(prompt, /do not route solely because.*developer page or.*developer persona/is);
-  }
+  assert.match(instructions, /developer_page_3s_30_scroll/);
+  assert.match(instructions, /multi-part implementation\s+or architecture question/i);
+  assert.match(instructions, /at least two/i);
+  assert.match(instructions, /must call\s+`ask_specialist` with `specialist_key: "tech"`/i);
+  assert.match(instructions, /do not route solely because.*developer page or.*developer persona/is);
+  assert.doesNotMatch(systemPrompt, /developer_page_3s_30_scroll/);
 });
 
 test('thin snippet evidence cannot be expanded into invented business or technical detail', () => {
-  for (const prompt of [systemPrompt, instructions]) {
-    assert.match(prompt, /abstract(?:s)? or snippets?/i);
-    assert.match(prompt, /named frameworks?/i);
-    assert.match(prompt, /effort estimates?/i);
-    assert.match(prompt, /architecture patterns?/i);
-    assert.match(prompt, /product behavior/i);
-    assert.match(prompt, /state the evidence limit/i);
-  }
+  assert.match(instructions, /abstract(?:s)? or snippets?/i);
+  assert.match(instructions, /named frameworks?/i);
+  assert.match(instructions, /effort estimates?/i);
+  assert.match(instructions, /architecture patterns?/i);
+  assert.match(instructions, /product behavior/i);
+  assert.match(instructions, /state the evidence limit/i);
+  assert.match(systemPrompt, /retrieved Algolia-owned evidence as the only authority/i);
+  assert.match(systemPrompt, /If evidence cannot support a material dimension, state the gap/i);
 });
 
 test('orchestrator must search before streaming substantive factual answers', () => {

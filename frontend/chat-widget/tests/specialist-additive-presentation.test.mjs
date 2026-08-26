@@ -52,16 +52,18 @@ function specialistFixture() {
         }] } },
         { type: 'text-delta', delta: specialistMode === 'rejected'
           ? 'The specialist guarantees 99.99% conversion growth.'
-          : 'The specialist adds a distinct, sourced comparison.\\n\\nWhich business claim should we pressure-test next?' }
+          : 'The specialist adds a distinct, sourced comparison.' },
+        { type: 'data-suggestions', data: { suggestions: ['Which business claim should we pressure-test next?'] } }
       ]) : stream([
-        { type: 'text-delta', delta: 'I could not find matching customer evidence for that exact claim.' }
+        { type: 'text-delta', delta: 'I could not find matching customer evidence for that exact claim.' },
+        { type: 'data-suggestions', data: { suggestions: ['Which business claim should we pressure-test next?'] } }
       ]);
     }
     return new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } });
   };
 </script>
 <script src="/chat/algolia-chat.js"></script></head><body>
-<algolia-chat app-id="0EXRPAXB56" search-api-key="local" index-name="local" discovery-enabled="true">
+<algolia-chat app-id="0EXRPAXB56" search-api-key="local" index-name="local">
   <algolia-agent role="primary" agent-id="local_orchestrator_agent" label="aRRIe">
     <algolia-agent role="specialist" key="evidence" agent-id="local_evidence_agent" label="Customer Evidence Specialist"></algolia-agent>
   </algolia-agent>
@@ -154,7 +156,7 @@ test('zero-source specialist refusal preserves the grounded primary answer', asy
         ),
         sourceSectionCount: sourceSections.length,
         limitationCount: root.querySelectorAll('.acs-specialist-limitation').length,
-        discoveryCount: root.querySelectorAll('.acs-followup-card').length,
+        followUpCount: root.querySelectorAll('.acs-followup-card').length,
         order: limitation?.compareDocumentPosition(root.querySelector('.acs-followup-wrap')) ?? 0,
         calls: window.__specialistPresentationCalls,
         shadowText: root.textContent.replace(/\s+/g, ' ').trim(),
@@ -166,7 +168,7 @@ test('zero-source specialist refusal preserves the grounded primary answer', asy
     assert.equal(result.sourceSectionCount, 1, 'the primary source set must remain authoritative');
     assert.equal(result.limitationVisible, true);
     assert.equal(result.limitationCount, 1);
-    assert.equal(result.discoveryCount, 1);
+    assert.equal(result.followUpCount, 1);
     assert.ok(result.order & 4, 'the discovery question must follow the limitation note');
     assert.deepEqual(result.calls, ['orchestrator', 'specialist']);
   } finally {
@@ -197,7 +199,7 @@ test('sourced specialist depth remains an additive answer segment', async () => 
         ),
         specialistSourceSectionVisible: sourceSections[1]?.textContent.includes('Customer Stories'),
         limitationCount: root.querySelectorAll('.acs-specialist-limitation').length,
-        discoveryCount: root.querySelectorAll('.acs-followup-card').length,
+        followUpCount: root.querySelectorAll('.acs-followup-card').length,
         sourceSectionCount: sourceSections.length,
         shadowText: root.textContent.replace(/\s+/g, ' ').trim(),
       };
@@ -208,7 +210,7 @@ test('sourced specialist depth remains an additive answer segment', async () => 
     assert.equal(result.specialistVisible, true);
     assert.equal(result.specialistSourceSectionVisible, true, JSON.stringify(result));
     assert.equal(result.limitationCount, 0);
-    assert.equal(result.discoveryCount, 1);
+    assert.equal(result.followUpCount, 1);
     assert.equal(result.sourceSectionCount, 2, 'primary and specialist sources should both render');
   } finally {
     await context.close();
@@ -231,7 +233,7 @@ test('confidence evaluation cannot demote sourced specialist output', async () =
         text: root.textContent.replace(/\s+/g, ' ').trim(),
         sourceSectionCount: root.querySelectorAll('.acs-source-section').length,
         limitationCount: root.querySelectorAll('.acs-specialist-limitation').length,
-        discoveryCount: root.querySelectorAll('.acs-followup-card').length,
+        followUpCount: root.querySelectorAll('.acs-followup-card').length,
         calls: window.__specialistPresentationCalls,
         persisted: sessionStorage.getItem('algolia-chat:conversation'),
       };
@@ -241,7 +243,7 @@ test('confidence evaluation cannot demote sourced specialist output', async () =
     assert.match(result.persisted, /99\.99% conversion growth/);
     assert.equal(result.sourceSectionCount, 2, 'primary and specialist sources must both render');
     assert.equal(result.limitationCount, 0);
-    assert.equal(result.discoveryCount, 1, JSON.stringify(result));
+    assert.equal(result.followUpCount, 1, JSON.stringify(result));
     assert.deepEqual(result.calls, ['orchestrator', 'specialist']);
   } finally {
     await context.close();

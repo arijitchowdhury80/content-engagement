@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { classifyTerminalError, completionTraffic, prohibitedRequest, turnObservation } from '../src/hosted/phase0-smoke.mjs';
+import { classifyCompletionFanout, classifyTerminalError, completionAgentId, completionTraffic, prohibitedRequest, turnObservation } from '../src/hosted/phase0-smoke.mjs';
 import { evaluateMechanicalTurn } from '../src/oracle/mechanical.mjs';
 
 function request(url, appId) {
@@ -29,6 +29,23 @@ test('completion traffic separates client-tool continuation steps from retries',
     permittedRetryAttempts: 0,
     unsafeRetry: false,
   });
+});
+
+test('completion fan-out classifies judges separately from specialists and unknown work', () => {
+  const completionUrl = (agentId) => `https://app.algolia.net/agent-studio/1/agents/${agentId}/completions?compatibilityMode=ai-sdk-5`;
+  assert.equal(completionAgentId(completionUrl('primary')), 'primary');
+  assert.equal(completionAgentId('https://example.com/not-a-completion'), null);
+  assert.deepEqual(classifyCompletionFanout([
+    { url: completionUrl('primary') },
+    { url: completionUrl('judge-a') },
+    { url: completionUrl('judge-b') },
+    { url: completionUrl('specialist-a') },
+    { url: completionUrl('unrecognized') },
+  ], {
+    primaryAgentId: 'primary',
+    judgeAgentIds: ['judge-a', 'judge-b'],
+    specialistAgentIds: ['specialist-a'],
+  }), { primary: 1, judge: 2, specialist: 1, unknown: 1 });
 });
 
 test('completion traffic exposes duplicate unsafe requests as retries', () => {

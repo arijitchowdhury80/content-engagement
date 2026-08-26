@@ -105,12 +105,9 @@ class SearchToolPatchTests(unittest.TestCase):
             patch["searchParameters"]["filters"],
             'environment:"prod20260722" AND language_code:"en" AND NOT is404:true',
         )
-        self.assertEqual(patch["searchParameters"]["hitsPerPage"], 5)
-        self.assertEqual(
-            patch["searchParameters"]["attributesToRetrieve"],
-            ["objectID", "title", "url", "source", "category"],
-        )
-        self.assertEqual(patch["searchParameters"]["attributesToSnippet"], ["description:80"])
+        self.assertIsNone(patch["searchParameters"]["hitsPerPage"])
+        self.assertIsNone(patch["searchParameters"]["attributesToRetrieve"])
+        self.assertIsNone(patch["searchParameters"]["attributesToSnippet"])
 
     def test_apply_sends_only_tools_and_proves_prompts_are_unchanged(self):
         before = {

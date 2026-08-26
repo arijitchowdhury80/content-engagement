@@ -41,8 +41,25 @@ const compareAnswerFrames = [
       'The short answer is yes. Algolia is designed so that once the initial plumbing is connected by your engineers, the steering wheel is handed over to the marketing and merchandising teams.',
       '',
       'The magic happens in the Dashboard, specifically through Rules. Instead of writing code to change a search result, a marketer can create a rule that changes ranking, redirects, or pins products.',
+    ].join('\n'),
+  },
+  {
+    type: 'data-suggestions',
+    data: {
+      suggestions: ['Are you trying to hand day-to-day search controls to marketing, merchandising, or support?'],
+    },
+  },
+];
+
+const contractedAnalogyFrames = [
+  {
+    type: 'text-delta',
+    delta: [
+      "It's like the difference between a dictionary and a conversation. A dictionary requires you to know exactly which word leads to another, but a conversation allows you to understand the idea even when someone uses a different term.",
       '',
-      '<!--DISCOVERY_STATE {"probed_slot":"business_outcome","confirmed_slots":[],"inferred_slots":[],"suppressed_slots":[],"handoff_recommended":false,"handoff_specialist_key":null,"confidence":"medium","visible_followup_question":"Are you trying to hand day-to-day search controls to marketing, merchandising, or support?"} DISCOVERY_STATE-->',
+      'NeuralSearch handles concepts automatically by combining traditional keyword matching with AI-powered vector search.',
+      '',
+      'The mechanism creates a neural score that merges keyword precision with semantic understanding.',
     ].join('\n'),
   },
 ];
@@ -259,5 +276,45 @@ test('compare mode preserves TLDR treatment on the primary answer', async () => 
     assert.match(state.detailsText, /The magic happens/);
   } finally {
     await page.close();
+  }
+});
+
+test("concierge keeps the TLDR canvas for an 'It's like' analogy with Compare off and on", async () => {
+  for (const compareOn of [false, true]) {
+    const page = await createComparePage({ responseFrames: contractedAnalogyFrames });
+    try {
+      await page.waitForFunction(() =>
+        document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
+      );
+      await page.evaluate((enableCompare) => {
+        const widget = document.querySelector('algolia-chat');
+        const root = widget.shadowRoot;
+        if (enableCompare) root.querySelector('#acs-compare-toggle')?.click();
+        widget.ask('How does Neural Search handle synonyms and concepts?');
+      }, compareOn);
+      await page.waitForFunction(() => {
+        const root = document.querySelector('algolia-chat')?.shadowRoot;
+        return root?.textContent?.includes('The mechanism creates a neural score');
+      }, null, { timeout: 8_000 });
+
+      const state = await page.evaluate(() => {
+        const root = document.querySelector('algolia-chat').shadowRoot;
+        return {
+          labels: [...root.querySelectorAll('.acs-answer-section-label')]
+            .map((node) => node.textContent.trim()),
+          tldr: root.querySelector('.acs-answer-tldr')?.textContent.replace(/\s+/g, ' ').trim(),
+          short: root.querySelector('.acs-answer-short')?.textContent.replace(/\s+/g, ' ').trim(),
+          details: root.querySelector('.acs-answer-details')?.textContent.replace(/\s+/g, ' ').trim(),
+        };
+      });
+
+      assert.ok(state.labels.includes('TL;DR'), `TL;DR label missing with Compare ${compareOn ? 'on' : 'off'}`);
+      assert.match(state.tldr, /It's like the difference between a dictionary and a conversation/);
+      assert.match(state.short, /NeuralSearch handles concepts automatically/);
+      assert.match(state.details, /The mechanism creates a neural score/);
+      assert.doesNotMatch(state.tldr, /The mechanism creates a neural score/);
+    } finally {
+      await page.close();
+    }
   }
 });

@@ -52,7 +52,7 @@ The 2026-08-12 deployment contains:
 - `Algolia_Prod_Copy_Vanilla` retrieval configuration;
 - Algolia visual theme and branded logo;
 - `algolia-engagement-tracker`, `algolia-context-compiler`, `algolia-proactive-controller`, and `handoff-to-orchestrator` runtime scripts;
-- `discovery-enabled="true"`, proactive debug controls, confidence judges, specialist declarations, and form-tool wiring;
+- proactive debug controls, confidence judges, specialist declarations, and form-tool wiring; discovery behavior is owned exclusively by the Agent Studio Orchestrator;
 - JavaScript assets uploaded and published under the Jahia development site's `/files/live/sites/www/files/` path.
 
 It was browser-verified to open and produce a sourced answer to `What is Algolia?`.

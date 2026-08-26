@@ -11,12 +11,15 @@
       "intent": "evaluate_technical_fit",
       "initialQuestion": "What should a credible React InstantSearch proof of concept include?",
       "discoveryResponseTurns": 4,
+      "initialConfirmed": {
+        "evaluation_intent": "Evaluate a credible React InstantSearch proof of concept"
+      },
       "requiredSlots": [
-        "evaluation_goal",
+        "evaluation_intent",
+        "problem_use_case",
         "architecture",
         "scale",
-        "success_criteria",
-        "delivery_constraints"
+        "success_criteria"
       ],
       "forbiddenQuestionPatterns": [
         "book.*meeting",
@@ -27,18 +30,28 @@
       ],
       "responses": [
         {
-          "slot": "evaluation_goal",
+          "slot": "problem_use_case",
           "questionPatterns": [
             "decision",
             "goal",
             "outcome",
+            "friction",
+            "problem",
+            "use case",
+            "challenge",
+            "breaking point",
+            "limitation",
+            "headache",
+            "move away",
+            "maintenance overhead",
+            "developer velocity",
             "trying to prove",
             "why.*proof of concept",
             "replace.*search"
           ],
           "answer": "We need to decide whether Algolia can replace our existing Elasticsearch implementation without turning the evaluation into a full replatform.",
           "reveals": {
-            "evaluation_goal": "Evaluate replacing Elasticsearch without a full replatform",
+            "problem_use_case": "Replace Elasticsearch without a full replatform",
             "current_platform": "Elasticsearch"
           }
         },
@@ -51,7 +64,12 @@
             "server.side rendering",
             "ssr",
             "multi.index",
-            "architecture"
+            "architecture",
+            "data model",
+            "flat",
+            "nested",
+            "relational",
+            "schema"
           ],
           "answer": "Our storefront is Next.js with server-rendered category pages and client-side React InstantSearch interactions. Product data comes from a PIM, inventory comes from an ERP, and Elasticsearch is the current search engine.",
           "reveals": {
@@ -81,7 +99,9 @@
         {
           "slot": "scale",
           "questionPatterns": [
-            "catalog",
+            "catalog.*size",
+            "size.*catalog",
+            "approximate size",
             "how many",
             "number of products",
             "records",
@@ -113,7 +133,6 @@
         {
           "slot": "delivery_constraints",
           "questionPatterns": [
-            "team",
             "engineer",
             "timeline",
             "timeframe",
@@ -131,15 +150,14 @@
       "repeatAnswerPrefix": "We already covered that. ",
       "finalDecisionPrompt": "Based on the facts I have given you, define the smallest credible proof of concept, identify the first implementation decision, and bring in the Developer Specialist if deeper guidance would materially improve the plan.",
       "expectedFactMentions": [
+        "replace",
         "Next.js",
         "React InstantSearch",
         "PIM",
         "ERP",
         "Elasticsearch",
         "five million",
-        "three locales",
-        "two engineers",
-        "four weeks"
+        "three locales"
       ],
       "expectedRoute": "technical_specialist_with_accumulated_context"
     }

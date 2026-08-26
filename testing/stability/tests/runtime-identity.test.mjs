@@ -65,8 +65,8 @@ test('display-name typography drift warns but IDs and retrieval identity decide 
 });
 
 test('browser identity validates app, index, and widget cardinality independently', () => {
-  assert.equal(validateBrowserIdentity({ count: 1, appId: '0EXRPAXB56', indexName: 'Algolia_Prod_Copy_Vanilla', confidenceCount: 1, confidenceMode: 'off' }).pass, true);
-  const invalid = validateBrowserIdentity({ count: 2, appId: 'wrong', indexName: 'Algolia_Prod_Copy_Enhanced', confidenceCount: 2, confidenceMode: 'algolia' });
+  assert.equal(validateBrowserIdentity({ count: 1, appId: '0EXRPAXB56', indexName: 'Algolia_Prod_Copy_Vanilla', confidenceCount: 1, confidenceMode: 'algolia' }).pass, true);
+  const invalid = validateBrowserIdentity({ count: 2, appId: 'wrong', indexName: 'Algolia_Prod_Copy_Enhanced', confidenceCount: 2, confidenceMode: 'off' });
   assert.equal(invalid.pass, false);
   assert.equal(invalid.errors.length, 5);
 });

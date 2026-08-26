@@ -16,9 +16,11 @@ import { createOperatorAgentFetcher } from '../preflight/operator-agent-client.m
 import { specialistRouteSatisfied } from './one-user-baseline.mjs';
 import {
   completionTraffic,
+  classifyCompletionFanout,
   isCompletion,
   isPrimaryCompletion,
   persistedState,
+  runtimeCompletionRoles,
   turnObservation,
   waitForTurn,
 } from './phase0-smoke.mjs';
@@ -32,10 +34,33 @@ export function selectAdaptiveCampaign(dataset, campaignId) {
 }
 
 export function visibleDiscoveryQuestions(turn) {
-  return (turn?.segments ?? [])
+  const serverSuggestions = (turn?.segments ?? [])
     .flatMap((segment) => Array.isArray(segment.followUps) ? segment.followUps : [])
     .map((question) => String(question).trim())
     .filter(Boolean);
+  if (serverSuggestions.length > 0) return serverSuggestions;
+
+  const answerText = (turn?.segments ?? [])
+    .map((segment) => String(segment.text ?? '').trim())
+    .filter(Boolean)
+    .join('\n\n');
+  const questionParagraph = answerText
+    .split(/\n\s*\n/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .reverse()
+    .find((part) => part.endsWith('?')) ?? '';
+  if (!questionParagraph) return [];
+  const questionStart = Math.max(0, ...[
+    ['. ', 2],
+    ['! ', 2],
+    ['\n', 1],
+  ].map(([boundary, width]) => {
+    const index = questionParagraph.lastIndexOf(boundary);
+    return index < 0 ? 0 : index + width;
+  }));
+  const question = questionParagraph.slice(questionStart).replace(/^[-*#>\s]+/, '').trim();
+  return question ? [question] : [];
 }
 
 function prohibitedRequest(request) {
@@ -121,6 +146,7 @@ export async function runAdaptiveDiscovery({ rawRoot, campaignId = 'U2-AD1', hea
   try {
     await page.goto(`${TARGET.origin}/?adaptive_discovery=${runId}`, { waitUntil: 'domcontentloaded', timeout: 30_000 });
     await page.waitForFunction(() => customElements.get('algolia-chat') && document.querySelector('algolia-chat'), null, { timeout: 30_000 });
+    const completionRoles = await runtimeCompletionRoles(page);
     for (let index = 0; index < totalTurns; index += 1) {
       const isFinal = index === totalTurns - 1;
       const primaryStart = primaryRequests.length;
@@ -131,7 +157,8 @@ export async function runAdaptiveDiscovery({ rawRoot, campaignId = 'U2-AD1', hea
       const specialistRequested = /bring in (?:the )?.*specialist/i.test(userText);
       const result = await waitForTurn(page, index, { specialistAction: isFinal ? 'accept' : 'decline' });
       const traffic = completionTraffic(primaryRequests.slice(primaryStart));
-      const backgroundCompletionAttempts = completionRequests.length - completionStart - traffic.physicalCompletionRequests;
+      const fanout = classifyCompletionFanout(completionRequests.slice(completionStart), completionRoles);
+      const backgroundCompletionAttempts = fanout.specialist + fanout.unknown;
       const observation = turnObservation({
         turn: result.turn,
         query: userText,
@@ -157,6 +184,7 @@ export async function runAdaptiveDiscovery({ rawRoot, campaignId = 'U2-AD1', hea
         latencyMs: Date.now() - startedAt,
         consentActions: result.consentActions,
         traffic,
+        fanout,
         mechanical,
       };
       record.answerShape = evaluateSubstantiveAnswerShape(record.answerText);
@@ -183,7 +211,7 @@ export async function runAdaptiveDiscovery({ rawRoot, campaignId = 'U2-AD1', hea
         record.profile = evaluateProfileCompleteness(campaign, driver.snapshot().confirmed);
         record.continuity = evaluateFinalContinuity({ campaign, answerText: record.answerText, confirmed: driver.snapshot().confirmed });
         record.specialistRoute = {
-          pass: specialistRouteSatisfied({ requested: specialistRequested, consentActions: result.consentActions, backgroundCompletionAttempts, turn: result.turn }),
+          pass: specialistRouteSatisfied({ requested: specialistRequested, consentActions: result.consentActions, backgroundCompletionAttempts: fanout.specialist, turn: result.turn }),
           requested: specialistRequested,
         };
       }

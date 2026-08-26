@@ -9,7 +9,6 @@ const chatPath = process.env.ALGOLIA_CHAT_BUNDLE_UNDER_TEST
   : new URL('../algolia-chat.js', import.meta.url);
 const followUp =
   'Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?';
-const discoveryMarker = `<!--DISCOVERY_STATE {"probed_slot":"business_outcome","confirmed_slots":[],"inferred_slots":[],"suppressed_slots":[],"handoff_recommended":false,"handoff_specialist_key":null,"confidence":"medium","visible_followup_question":"${followUp}"} DISCOVERY_STATE-->`;
 const answer = `# Quick take
 One request is manageable; unbounded request volume is where cost gets noisy.
 
@@ -17,10 +16,7 @@ One request is manageable; unbounded request volume is where cost gets noisy.
 Use the controls that match the traffic source:
 
 - Debounce ordinary typing.
-- Rate-limit abusive clients.
-
-${followUp}
-${discoveryMarker}`;
+- Rate-limit abusive clients.`;
 
 let browser;
 
@@ -56,8 +52,43 @@ test('final answer preserves previously retrieved sources when completion omits 
   );
 });
 
-function completionFrames(content = answer) {
-  return [
+test('subsequent turns send the complete prior assistant answer', async () => {
+  const longAnswer = [
+    '# Complete answer',
+    '',
+    'This deliberately long answer verifies that conversation continuity keeps every material detail.',
+    ...Array.from(
+      { length: 16 },
+      (_, index) => `Detail ${index + 1}: preserve this exact sentence for the next conversational turn.`,
+    ),
+    '',
+    '[Grounding source](https://www.algolia.com/doc/)',
+  ].join('\n');
+  const page = await createWidgetPage({ frames: completionFrames(longAnswer, []) });
+  try {
+    await waitForAnswerText(page, 'Detail 16');
+    await page.waitForFunction(() => {
+      const state = JSON.parse(sessionStorage.getItem('algolia-chat:conversation') ?? 'null');
+      const widget = document.querySelector('algolia-chat');
+      return state?.turns?.[0]?.segments?.[0]?.status === 'success' &&
+        widget?.shadowRoot?.querySelector('textarea')?.disabled === false;
+    });
+    const composer = page.locator('algolia-chat textarea');
+    await composer.fill('How does that affect the next step?');
+    await composer.press('Enter');
+    await page.waitForFunction(() => window.__completionRequests.length === 2);
+
+    const request = await page.evaluate(() => window.__completionRequests[1]);
+    const priorAssistant = request.messages.find((message) => message.role === 'assistant');
+    assert.ok(priorAssistant, JSON.stringify(request));
+    assert.equal(priorAssistant.parts[0].text, longAnswer);
+  } finally {
+    await page.close();
+  }
+});
+
+function completionFrames(content = answer, suggestions = [followUp]) {
+  const frames = [
     {
       type: 'tool-output-available',
       toolCallId: 'search-1',
@@ -79,9 +110,17 @@ function completionFrames(content = answer) {
     },
     { type: 'text-delta', delta: content },
   ];
+  if (suggestions.length > 0) {
+    frames.push({ type: 'data-suggestions', data: { suggestions } });
+  }
+  return frames;
 }
 
-async function createWidgetPage({ frames = completionFrames(), streamError = null } = {}) {
+async function createWidgetPage({
+  frames = completionFrames(),
+  streamError = null,
+  legacyDiscoveryAttribute = false,
+} = {}) {
   const page = await browser.newPage();
   const browserErrors = [];
   page.on('pageerror', (error) => browserErrors.push(error.message));
@@ -173,7 +212,7 @@ async function createWidgetPage({ frames = completionFrames(), streamError = nul
   );
 
   await page.addScriptTag({ content: fs.readFileSync(chatPath, 'utf8') });
-  await page.evaluate(async () => {
+  await page.evaluate(async ({ setLegacyDiscoveryAttribute }) => {
     await Promise.all([
       customElements.whenDefined('algolia-instant-search'),
       customElements.whenDefined('algolia-chat'),
@@ -184,7 +223,7 @@ async function createWidgetPage({ frames = completionFrames(), streamError = nul
     search.setAttribute('api-key', 'test-search-key');
     search.setAttribute('index-name', 'test-index');
     const widget = document.createElement('algolia-chat');
-    widget.setAttribute('discovery-enabled', 'true');
+    if (setLegacyDiscoveryAttribute) widget.setAttribute('discovery-enabled', 'true');
     const agent = document.createElement('algolia-agent');
     agent.setAttribute('role', 'primary');
     agent.setAttribute('agent-id', 'test-agent');
@@ -194,7 +233,7 @@ async function createWidgetPage({ frames = completionFrames(), streamError = nul
     document.body.append(search);
     await new Promise((resolve) => setTimeout(resolve, 100));
     widget.ask('How should I configure rate limiting?');
-  });
+  }, { setLegacyDiscoveryAttribute: legacyDiscoveryAttribute });
 
   return page;
 }
@@ -278,10 +317,7 @@ Use the controls that match the traffic source:
 - Rate-limit abusive clients.
 
 ## Recommendation
-Start with frontend debounce, then protect shared backends with server-side throttling.
-
-${modelInlineFollowUp}
-${discoveryMarker}`;
+Start with frontend debounce, then protect shared backends with server-side throttling.`;
   const page = await createWidgetPage({ frames: completionFrames(layeredAnswer) });
   try {
     await waitForAnswerText(page, 'Short version: yes');
@@ -387,9 +423,7 @@ test('TLDR treatment is limited to the first primary answer in a conversation', 
 Short version: start with the smallest working search path, then harden the data and events around it.
 
 ## Details
-Use one integration path first, validate relevance, then expand the controls.
-
-${discoveryMarker}`;
+Use one integration path first, validate relevance, then expand the controls.`;
   const page = await createWidgetPage({ frames: completionFrames(layeredAnswer) });
   try {
     await waitForAnswerText(page, 'Short version: start with the smallest working search path');
@@ -441,9 +475,7 @@ If you liked the H-E-B México approach, you want to look at how other grocery t
 - Albertsons: They are using Algolia for agentic shopping experiences.
 - Industry-Wide Trends: Grocery teams are using AI to handle repeat purchase flows.
 
-My recommendation: look for similar frictions, not just similar stories.
-
-${discoveryMarker}`;
+My recommendation: look for similar frictions, not just similar stories.`;
   const page = await createWidgetPage({ frames: completionFrames(text) });
   try {
     await waitForAnswerText(page, 'high-performing kitchens');
@@ -486,9 +518,7 @@ ${discoveryMarker}`;
 });
 
 test('one-paragraph answer does not force a broken TLDR split', async () => {
-  const text = `A single direct answer should stay flat when there is no separate short-version block.
-
-${discoveryMarker}`;
+  const text = 'A single direct answer should stay flat when there is no separate short-version block.';
   const page = await createWidgetPage({ frames: completionFrames(text) });
   try {
     await waitForAnswerText(page, 'single direct answer');
@@ -516,9 +546,7 @@ ${discoveryMarker}`;
 
 test('heading-first answer stays flat instead of forcing the heading into TLDR', async () => {
   const text = `## Practical answer
-Use rate limits where traffic concentrates, then debounce normal typing.
-
-${discoveryMarker}`;
+Use rate limits where traffic concentrates, then debounce normal typing.`;
   const page = await createWidgetPage({ frames: completionFrames(text) });
   try {
     await waitForAnswerText(page, 'Practical answer');
@@ -539,7 +567,7 @@ ${discoveryMarker}`;
   }
 });
 
-test('markerless trailing discovery question is rendered only in the follow-up tile', async () => {
+test('the client does not extract a trailing question into a follow-up tile', async () => {
   const inlineQuestion =
     'Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?';
   const text = `API calls are like little door swings at a busy store: one customer entering is harmless, but eager widgets can turn that door into a blur.
@@ -550,7 +578,7 @@ Short version: yes, almost every interaction that requests data from an Algolia 
 Use debounce for normal typing and rate limits for abusive clients.
 
 ${inlineQuestion}`;
-  const page = await createWidgetPage({ frames: completionFrames(text) });
+  const page = await createWidgetPage({ frames: completionFrames(text, []) });
   try {
     await waitForAnswerText(page, 'Short version: yes');
     const result = await page.evaluate((question) => {
@@ -559,15 +587,15 @@ ${inlineQuestion}`;
       const details = root.querySelector('.acs-answer-details');
       const followWrap = root.querySelector('.acs-followup-wrap');
       return {
-        questionInTldr: tldr?.textContent.includes(question),
-        questionInDetails: details?.textContent.includes(question),
-        questionInFollowUp: followWrap?.textContent.includes(question),
+        questionInTldr: Boolean(tldr?.textContent.includes(question)),
+        questionInDetails: Boolean(details?.textContent.includes(question)),
+        questionInFollowUp: Boolean(followWrap?.textContent.includes(question)),
       };
     }, inlineQuestion);
 
     assert.equal(result.questionInTldr, false);
-    assert.equal(result.questionInDetails, false);
-    assert.equal(result.questionInFollowUp, true);
+    assert.equal(result.questionInDetails, true);
+    assert.equal(result.questionInFollowUp, false);
   } finally {
     await page.close();
   }
@@ -687,18 +715,32 @@ test('source group and source links use the shipped white-to-blue glass treatmen
   }
 });
 
-test('completion request keeps discovery state out of the visitor message', async () => {
-  const page = await createWidgetPage();
+test('client discovery remains disabled even when a legacy host attribute is present', async () => {
+  const page = await createWidgetPage({ legacyDiscoveryAttribute: true });
   try {
-    await waitForAnswer(page);
+    await page.waitForFunction(() => {
+      const raw = sessionStorage.getItem('algolia-chat:conversation');
+      const conversation = raw ? JSON.parse(raw) : null;
+      return window.__completionRequests.length === 1 &&
+        conversation?.turns?.[0]?.segments?.[0]?.status === 'success';
+    }, null, { timeout: 8_000 });
     const request = await page.evaluate(() => window.__completionRequests[0]);
     const userPart = request.messages[0].parts.find((part) => part.type === 'text');
-    const turnContext = request.messages[0].metadata.turnContext;
+    const turnContext = request.messages[0].metadata?.turnContext ?? {};
 
     assert.equal(userPart.text, 'How should I configure rate limiting?');
-    assert.equal(turnContext['discovery.turn'], '1');
-    assert.match(turnContext['discovery.unknown'], /intent/);
+    for (const key of [
+      'discovery.turn',
+      'discovery.confirmed',
+      'discovery.inferred',
+      'discovery.unknown',
+      'discovery.suppressed',
+      'discovery.last_probe',
+    ]) {
+      assert.equal(turnContext[key], undefined, `client ledger key must be absent: ${key}`);
+    }
     assert.doesNotMatch(JSON.stringify(request), /DISCOVERY CONTROL/);
+    assert.doesNotMatch(JSON.stringify(request), /DISCOVERY_STATE/);
     assert.doesNotMatch(JSON.stringify(request), /never quote this block/);
   } finally {
     await page.close();

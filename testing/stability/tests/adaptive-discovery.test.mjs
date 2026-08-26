@@ -37,6 +37,17 @@ test('persona driver exposes repeated and unclassified discovery', () => {
   assert.equal(unknown.unclassified, true);
 });
 
+test('persona driver prefers the strongest slot signal over incidental context words', () => {
+  const campaign = loadAdaptiveDiscoveryDataset(DATASET).campaigns[0];
+  const driver = createPersonaDriver(campaign);
+  const problem = driver.answer('To tailor the architecture guidance, what primary use case or business problem should the PoC solve?');
+  assert.equal(problem.slot, 'problem_use_case');
+  assert.deepEqual(problem.matches, ['problem_use_case']);
+  const scale = driver.answer('To make the scale realistic, roughly how many products are managed across the PIM and ERP?');
+  assert.equal(scale.slot, 'scale');
+  assert.deepEqual(scale.matches, ['scale']);
+});
+
 test('discovery oracle fails repeated, forbidden, multi-slot, and unclassified questions', () => {
   const campaign = loadAdaptiveDiscoveryDataset(DATASET).campaigns[0];
   assert.equal(evaluateDiscoveryQuestion({ campaign, question: 'What is your catalog scale?', matches: ['scale'], repeated: false }).pass, true);
@@ -71,5 +82,14 @@ test('adaptive runner selects one campaign and extracts the visible follow-up', 
   const dataset = loadAdaptiveDiscoveryDataset(DATASET);
   assert.equal(selectAdaptiveCampaign(dataset, 'U2-AD1').id, 'U2-AD1');
   assert.deepEqual(visibleDiscoveryQuestions({ segments: [{ followUps: ['First?'] }, { followUps: [] }] }), ['First?']);
+  assert.deepEqual(visibleDiscoveryQuestions({
+    segments: [{ text: 'Here is the direct answer.\n\nWhat business problem are you trying to solve?' }],
+  }), ['What business problem are you trying to solve?']);
+  assert.deepEqual(visibleDiscoveryQuestions({
+    segments: [{ text: 'Here is the direct answer.\n\nWhat business problem are you trying to solve?\n\nSupporting evidence: [Guide](https://example.com)' }],
+  }), ['What business problem are you trying to solve?']);
+  assert.deepEqual(visibleDiscoveryQuestions({
+    segments: [{ text: 'Here is the direct answer with no follow-up.' }],
+  }), []);
   assert.throws(() => selectAdaptiveCampaign(dataset, 'missing'), /Unknown adaptive campaign/);
 });
