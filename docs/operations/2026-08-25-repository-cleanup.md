@@ -7,8 +7,8 @@ material, and compact evidence were retained. Generated, private, temporary, dup
 runtime evidence was moved to a recoverable owner-only archive.
 
 - Branch: `codex/repository-cleanup-2026-08-25`.
-- Files quarantined: 2,276.
-- Bytes quarantined: 1,620,769,605 (about 1.62 GB).
+- Files quarantined: 2,367.
+- Bytes quarantined: 1,622,516,116 (about 1.62 GB).
 - Hash verification failures: 0.
 - Permanently deleted files: 0.
 - Pushes, deployments, Agent Studio changes, index changes, and production changes: 0.
@@ -21,7 +21,7 @@ runtime evidence was moved to a recoverable owner-only archive.
 | Generated test evidence | 118 | 174,085,612 | Quarantined |
 | Private network captures | 120 | 42,496,111 | Quarantined |
 | Private local state | 262 | 29,888,970 | Quarantined |
-| Generated/cache residue | 157 | 9,725,074 | Quarantined |
+| Generated/cache residue | 248 | 11,471,585 | Quarantined |
 | Disposable/duplicate residue | 6 | 1,415,976 | Quarantined |
 
 This includes old Agent Studio and Jahia run packets, raw browser JSON, screenshots, deployment
@@ -35,8 +35,10 @@ restoration destination is stored at:
 /Users/arijitchowdhury/.codex/archives/algolia-com-cleanup/2026-08-25-001/metadata/
   classification.tsv
   ignored-classification.tsv
+  post-verification-classification.tsv
   moved.tsv
   ignored-moved.tsv
+  post-verification-moved.tsv
 ```
 
 The archive is owner-only and contains a repository bundle, pre-cleanup Git patches, the original
