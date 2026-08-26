@@ -227,7 +227,7 @@
     if (!totals) return;
     updatePill(
       pill,
-      `In ${totals.inputTokens} · Out ${totals.outputTokens}`,
+      `In ${totals.inputTokens} / ${totals.outputTokens} Out`,
       `Current response: ${totals.inputTokens} input tokens and ${totals.outputTokens} output tokens`,
     );
   }

@@ -275,7 +275,7 @@ test('an existing answer can be compared later using its exact prepared request'
   await h.settle();
 
   assert.equal(h.api().state().hasPreparedTurn, true);
-  assert.match(h.toggle().textContent, /Compare latest with production/);
+  assert.equal(h.toggle().textContent, 'Compare with Prod');
   h.clickToggle();
   await h.settle();
   assert.equal(h.api().state().compareOn, true, 'can enable after the answer exists');
@@ -323,8 +323,8 @@ test('question one keeps Compare available when it was left OFF', async () => {
   await h.settle();
 
   assert.notEqual(h.toggle().getAttribute('aria-disabled'), 'true');
-  assert.match(h.toggle().textContent, /Compare latest with production/);
-  assert.match(h.toggle().getAttribute('aria-label') || '', /latest answer/i);
+  assert.equal(h.toggle().textContent, 'Compare with Prod');
+  assert.match(h.toggle().getAttribute('aria-label') || '', /answer with production/i);
   assert.equal(h.api().state().hasPreparedTurn, true);
 
   h.clickToggle();

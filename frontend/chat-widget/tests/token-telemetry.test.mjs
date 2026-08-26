@@ -259,7 +259,7 @@ test('shows the latest response input/output in the answer footer and keeps cumu
     { inputTokens: 30, outputTokens: 12, totalTokens: 42, turns: 2 },
   );
   assert.equal(h.headerPill(), null, 'telemetry never enters the header');
-  assert.equal(h.footerPill().textContent, 'In 20 · Out 7');
+  assert.equal(h.footerPill().textContent, 'In 20 / 7 Out');
   assert.equal(h.footerPill().title, 'Current response: 20 input tokens and 7 output tokens');
   const writesBeforeReconcile = h.footerPill().textWrites;
   h.reconcile();
@@ -288,7 +288,7 @@ test('derives the current response by subtracting the prior stable-conversation 
     JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.usage)),
     { inputTokens: 20, outputTokens: 7, totalTokens: 27 },
   );
-  assert.equal(h.footerPill().textContent, 'In 20 · Out 7');
+  assert.equal(h.footerPill().textContent, 'In 20 / 7 Out');
 });
 
 test('retries a non-zero but unchanged conversation snapshot before showing the latest response', async () => {
@@ -309,7 +309,7 @@ test('retries a non-zero but unchanged conversation snapshot before showing the 
   assert.equal(h.timers.length, 1);
   h.timers.shift()();
   await h.settle();
-  assert.equal(h.footerPill().textContent, 'In 20 · Out 7');
+  assert.equal(h.footerPill().textContent, 'In 20 / 7 Out');
 });
 
 test('an older overlapping lookup cannot regress a newer cumulative total or status', async () => {
@@ -354,17 +354,17 @@ test('telemetry stays in the answer footer whether or not confidence badges exis
   h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_1' });
   await h.settle();
   assert.equal(h.headerPill(), null);
-  assert.equal(h.footerPill().textContent, 'In 10 · Out 5');
+  assert.equal(h.footerPill().textContent, 'In 10 / 5 Out');
 
   h.addBadge();
   assert.equal(h.headerPill(), null);
-  assert.equal(h.footerPill().textContent, 'In 10 · Out 5');
+  assert.equal(h.footerPill().textContent, 'In 10 / 5 Out');
   assert.equal(h.badgePill(0), null);
 
   h.addBadge();
   assert.equal(h.badgePill(0), null);
   assert.equal(h.badgePill(1), null);
-  assert.equal(h.footerPill().textContent, 'In 10 · Out 5');
+  assert.equal(h.footerPill().textContent, 'In 10 / 5 Out');
 
   h.reset();
   assert.equal(h.headerPill(), null);

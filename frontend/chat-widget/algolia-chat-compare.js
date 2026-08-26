@@ -1,7 +1,7 @@
 /**
  * algolia-chat-compare.js — Compare-with-production companion.
  *
- * Adds one "Compare with production" toggle beside the latest answer's Sources
+ * Adds one "Compare with Prod" toggle beside the latest answer's Sources
  * and Judge controls. It appears only when there is an answer to compare. The
  * latest finalized request is replayed byte-for-byte to live algolia.com Ask AI.
  *
@@ -276,20 +276,14 @@
   }
 
   function paintToggle(t) {
-    t.textContent = compareOn
-      ? "Comparing with production"
-      : latestPreparedTurn
-        ? "Compare latest with production"
-        : "Compare with production";
+    t.textContent = "Compare with Prod";
     t.setAttribute("aria-pressed", compareOn ? "true" : "false");
     t.removeAttribute("aria-disabled");
     t.setAttribute(
       "aria-label",
       compareOn
-        ? "Comparing with production"
-        : latestPreparedTurn
-          ? "Compare the latest answer with production"
-          : "Compare with production"
+        ? "Stop comparing answer with production"
+        : "Compare answer with production"
     );
     t.title = latestPreparedTurn && !compareOn
       ? "Send the latest answer's exact finalized request to live algolia.com Ask AI"

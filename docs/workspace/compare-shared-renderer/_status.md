@@ -18,3 +18,10 @@
 - [x] Jahia snapshot, dry-run, apply, exact readback, and live Compare/telemetry browser validation complete.
 - [ ] Live Judge service acceptance: the pill now renders and the three-role run starts, but the 2026-08-26 check ended unavailable because fewer than two judges returned valid reports after an initial primary 429.
 - [ ] Aadhar notification sent after user approves the exact text.
+
+## 2026-08-26 microcopy light path
+
+- Classification: light path; visible copy only, with no API, schema, dependency, credential, or data-flow change.
+- Approved labels: `Compare with Prod` and `In {input} / {output} Out`.
+- Primary risk: stale tests or a clipped pill. Covered by unit and full-chain browser tests using the existing responsive pill styles.
+- Rollback: restore the prior immutable Compare and telemetry asset references through the generated deployment plan.
