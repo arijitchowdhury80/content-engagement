@@ -1,4 +1,6 @@
-# Wave 2: Presentation and Design-System Audit
+# Historical Wave 2: Presentation and Design-System Audit
+
+> Frozen August 20 comparison. Current scores and Algolia presentation inventory must be regenerated at Gate 2 of [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 The comparison uses all three immutable snapshots. Focused disposable tests passed: Sajid theme/registry/build/neutrality 42/42, integration equivalents 41/41, and Algolia theme 1/1. The passing integration neutrality test is itself evidence of a guard blind spot: it does not scan CSS.
 

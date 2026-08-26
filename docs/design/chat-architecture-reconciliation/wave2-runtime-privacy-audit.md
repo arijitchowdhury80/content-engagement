@@ -1,4 +1,6 @@
-# Wave 2: Runtime, Business Policy, and Privacy Audit
+# Historical Wave 2: Runtime, Business Policy, and Privacy Audit
+
+> Frozen August 20 comparison. Current transport improvements, remaining consent/global-state defects, and revised purpose-specific privacy rules are governed by [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 ## Verdict
 

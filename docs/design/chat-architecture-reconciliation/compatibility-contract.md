@@ -1,6 +1,8 @@
 # Public Compatibility Contract — Stage 2 Input
 
-Status: proposed for Gate G approval
+Status: historical draft; inventory refresh required before approval
+
+The current plan is [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md). This draft omits current Compare, token-telemetry, judge-core, resize, grounding, load-order, and deployment surfaces and does not represent an approved compatibility contract.
 
 This contract freezes behavior to characterize and deliberately disposition. It is not a promise that every legacy surface survives indefinitely.
 
@@ -34,7 +36,7 @@ This contract freezes behavior to characterize and deliberately disposition. It 
 
 ## Presentation and embedding
 
-- Preserve approved Algolia visual intent and Spectrum component topology through versioned semantic parts/states, themes, recipes, and slots—not private classes or child-order selectors.
+- Preserve characterized Algolia visual intent and Spectrum component topology through versioned semantic parts/states, themes, recipes, and slots—not private classes or child-order selectors. Visual intent becomes approved only through the user walkthrough.
 - Existing load order is characterized; the replacement manifest defines deterministic order, double-load behavior, and compatibility versions.
 - Accessibility corrections may intentionally change colors or geometry and require an approved visual-baseline update.
 

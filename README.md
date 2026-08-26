@@ -19,6 +19,9 @@ Start here for the folder map and current runtime boundaries.
 The full implementation walkthrough is in
 [`docs/design/content-engagement-architecture.md`](docs/design/content-engagement-architecture.md).
 
+The current source-reconciliation and design-separation program is in
+[`docs/design/chat-architecture-reconciliation/MASTER-PLAN-2026-08-25.md`](docs/design/chat-architecture-reconciliation/MASTER-PLAN-2026-08-25.md).
+
 ### Personalized Concierge Engagement
 
 [![How Personalized Concierge Engagement Works](docs/diagrams/how-personalized-concierge-engagement-works.png)](docs/design/content-engagement-architecture.md#personalized-concierge)

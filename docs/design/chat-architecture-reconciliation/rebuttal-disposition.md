@@ -1,4 +1,6 @@
-# Rebuttal Disposition
+# Historical Rebuttal Disposition
+
+> This file records the 2026-08-20 review only. Its Gate E/G readiness statements are superseded. See [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 The independent Algolia, integration, and skeptical runtime/privacy rebuttals did not overturn synthesis D. They identified material Gate E omissions, now incorporated into ADR-001.
 
@@ -47,4 +49,4 @@ The earlier conditional Gate E omissions are resolved by:
 - four scoped integration preservation commits;
 - the cleanup ledger and restricted external quarantine.
 
-Gate E is ready to pass once the final package is committed and validated. Gate G remains a user decision. Gate I/K/L are not reached.
+Historical status: the August review considered Gate E ready. That readiness is superseded; current work is at revised Gate 1, and the revised Gates 6/9/11/12 have not been reached.

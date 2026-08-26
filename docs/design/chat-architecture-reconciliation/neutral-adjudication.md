@@ -1,4 +1,6 @@
-# Neutral Architecture Adjudication
+# Historical Neutral Architecture Adjudication
+
+> Superseded for current scoring on 2026-08-25. The August findings remain evidence for their frozen snapshots, but the numerical scorecard and Gate G recommendation are not current. See [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 ## Decision
 
@@ -108,5 +110,5 @@ B and D tie numerically. B is nevertheless ineligible unchanged because non-comp
 ## Gate recommendation
 
 - Gate E: conditional pass after the amendments above are incorporated into the target package.
-- Gate G: recommend approving D, explicitly as an architecture to implement, not as an implemented or release-ready system.
+- Historical Gate G disposition: the August review recommended D. That recommendation is superseded and is not current approval or implementation authority.
 - Gates I, K, and L: not reached.

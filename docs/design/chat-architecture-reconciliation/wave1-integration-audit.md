@@ -1,4 +1,6 @@
-# Wave 1: Shared Integration Audit
+# Historical Wave 1: Shared Integration Audit
+
+> Frozen August 20 evidence. The current four-file integration delta and updated static-check results must be incorporated at Gate 2 of [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 Baseline: `shared-integration` at `f5a399589ab2dfc21210fbfa525a25cedb464cd4`
 Snapshot manifest: `74fb8fe1b8372ae8dc45fa8b1ea09c8f06485d6e134609b1ecb810bb39d2b619`

@@ -1,4 +1,6 @@
-# Wave 1: Algolia Implementation Audit
+# Historical Wave 1: Algolia Implementation Audit
+
+> Frozen August 20 evidence. Current `origin/main`, local-overlay, test, Compare, telemetry, judge, presentation, and Jahia findings are handled by [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md).
 
 > Historical audit. Trigger identifiers recorded below describe the artifacts inspected during this wave. The active canonical singleton identifiers were superseded on 2026-08-23 by `product_page_3s_30_scroll`, `solution_page_3s_30_scroll`, `developer_page_3s_30_scroll`, and `resource_page_3s_30_scroll`.
 

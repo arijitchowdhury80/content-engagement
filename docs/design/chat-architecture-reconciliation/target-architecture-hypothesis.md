@@ -1,6 +1,8 @@
 # Target Architecture Hypothesis for Adjudication
 
-Status: proposed at Gate E; not yet approved for Stage 2
+Status: historical hypothesis; physical topology reopened on 2026-08-25
+
+The current plan is [`MASTER-PLAN-2026-08-25.md`](MASTER-PLAN-2026-08-25.md). The exact package graph below is not approved; current work starts with four coarse ownership zones and derives physical packages from verified dependency seams and the user walkthrough.
 
 ## Canonical source proposal
 
