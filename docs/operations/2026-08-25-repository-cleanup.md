@@ -7,15 +7,15 @@ material, and compact evidence were retained. Generated, private, temporary, dup
 runtime evidence was moved to a recoverable owner-only archive.
 
 - Branch: `codex/repository-cleanup-2026-08-25`.
-- Files quarantined: 2,367.
-- Bytes quarantined: 1,622,516,116 (about 1.62 GB).
+- Cleanup moves: 2,367 across 2,346 unique repository-relative paths.
+- Current quarantine payload: 1,622,047,582 bytes (about 1.62 GB).
 - Hash verification failures: 0.
-- Permanently deleted files: 0.
+- Material permanently deleted files: 0.
 - Pushes, deployments, Agent Studio changes, index changes, and production changes: 0.
 
 ## Cleanup list
 
-| Classification | Files | Bytes | Disposition |
+| Classification | Cleanup entries | Bytes processed | Disposition |
 |---|---:|---:|---|
 | Raw generated evidence | 1,613 | 1,363,157,862 | Quarantined |
 | Generated test evidence | 118 | 174,085,612 | Quarantined |
@@ -27,6 +27,11 @@ runtime evidence was moved to a recoverable owner-only archive.
 This includes old Agent Studio and Jahia run packets, raw browser JSON, screenshots, deployment
 readbacks, production-comparison runs, UAT artifacts, Playwright logs, Jahia upload probes,
 `.local`, `.tmp`, `.planning`, Python/pytest caches, and OS metadata.
+
+Final verification regenerated 21 already-classified Python/pytest cache paths. Their newer
+path-preserving quarantine copies superseded the earlier cache copies, so the manifests contain
+2,367 verified moves while the final archive contains 2,346 unique paths. These were reproducible
+cache files, not source, configuration, or release evidence.
 
 The complete per-file list, original path, size, SHA-256, classification, disposition, reason, and
 restoration destination is stored at:
