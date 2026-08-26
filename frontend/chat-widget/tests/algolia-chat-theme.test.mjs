@@ -154,4 +154,12 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.doesNotMatch(css, /border-right-color: transparent/);
   assert.doesNotMatch(css, /Powered by Algolia/);
   assert.doesNotMatch(css, /10rem/);
+  assert.doesNotMatch(css, /\[role="dialog"\]\.absolute/);
+  assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*--algolia-sample-dialog-w: min\(calc\(100vw - 6rem\), calc\(var\(--algolia-panel-w\) - 4rem\), 52rem\)/);
+  assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*width: var\(--algolia-sample-dialog-w\) !important/);
+  assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*max-height: calc\(var\(--algolia-panel-h\) - var\(--algolia-header-h\) - 8rem\)/);
+  assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid[^{]+{[^}]*width: calc\(var\(--algolia-sample-dialog-w\) - 2\.625rem\) !important/);
+  assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid[^{]+{[^}]*min-width: calc\(var\(--algolia-sample-dialog-w\) - 2\.625rem\)/);
+  assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid[^{]+{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\) !important/);
+  assert.match(css, /@media \(max-width: 640px\)[\s\S]*\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid[^{]+{[^}]*grid-template-columns: 1fr !important/);
 });

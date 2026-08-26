@@ -229,7 +229,10 @@
       // so a tall popup gets clipped at the panel top. Cap the popup height and
       // make it scrollable so it always fits within the visible panel area.
       // Subtract: header + compact composer + sample trigger row.
-      '[role="dialog"].absolute { max-height: calc(var(--algolia-panel-h) - var(--algolia-header-h) - 8rem); overflow-y: auto; }',
+      '[role="dialog"][aria-label="Sample questions"].absolute { --algolia-sample-dialog-w: min(calc(100vw - 6rem), calc(var(--algolia-panel-w) - 4rem), 52rem); width: var(--algolia-sample-dialog-w) !important; max-height: calc(var(--algolia-panel-h) - var(--algolia-header-h) - 8rem); overflow-y: auto; }',
+      '[role="dialog"][aria-label="Sample questions"].absolute > .grid { display: grid !important; width: calc(var(--algolia-sample-dialog-w) - 2.625rem) !important; min-width: calc(var(--algolia-sample-dialog-w) - 2.625rem); box-sizing: border-box; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }',
+      '[role="dialog"][aria-label="Sample questions"].absolute button { width: 100%; }',
+      '@media (max-width: 640px) { [role="dialog"][aria-label="Sample questions"].absolute { --algolia-sample-dialog-w: calc(100vw - 3rem); } [role="dialog"][aria-label="Sample questions"].absolute > .grid { grid-template-columns: 1fr !important; } }',
     ].join('\n'),
   };
 
