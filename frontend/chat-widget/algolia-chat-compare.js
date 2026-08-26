@@ -379,24 +379,40 @@
       font: "15px/1.55 system-ui, sans-serif", color: "#021046",
       display: "none", boxSizing: "border-box",
     });
+    const empty = document.createElement("div");
+    empty.id = "acs-compare-empty";
+    empty.style.cssText = [
+      "min-height:180px",
+      "display:flex",
+      "flex-direction:column",
+      "align-items:center",
+      "justify-content:flex-start",
+      "text-align:center",
+      "padding:8px 24px 0",
+      "box-sizing:border-box",
+    ].join(";");
+
     const head = document.createElement("div");
-    head.style.cssText = "display:flex;align-items:center;gap:7px;margin-bottom:2px";
+    head.style.cssText = "display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:12px";
     const dot = document.createElement("span");
     dot.style.cssText = "width:7px;height:7px;border-radius:50%;background:#8a4fff;display:inline-block";
     const title = document.createElement("span");
-    title.style.cssText = "font:700 11px system-ui;letter-spacing:.06em;text-transform:uppercase;color:#8a4fff";
+    title.style.cssText = "font:700 12px/1 system-ui,-apple-system,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a4fff";
     title.textContent = "Production · live Ask AI";
     head.append(dot, title);
+
+    const prompt = document.createElement("div");
+    prompt.style.cssText = "font:800 36px/1.05 system-ui,-apple-system,sans-serif;letter-spacing:0;color:#23263b;margin:0 0 14px";
+    prompt.textContent = "Ask about";
+
     const sub = document.createElement("div");
-    sub.style.cssText = "font-size:12px;color:#8b93a6;margin-bottom:16px";
-    sub.textContent = "algolia.com";
+    sub.style.cssText = "max-width:360px;font:600 13px/1.45 system-ui,-apple-system,sans-serif;color:#8b93b8";
+    sub.textContent = "The same request and current context go to live algolia.com.";
+
     const logEl = document.createElement("div");
     logEl.id = "acs-compare-log";
-    const empty = document.createElement("div");
-    empty.id = "acs-compare-empty";
-    empty.style.color = "#8b93a6";
-    empty.textContent = "Ask a question below — the same request and current context go to both.";
-    panel.append(head, sub, logEl, empty);
+    empty.append(head, prompt, sub);
+    panel.append(logEl, empty);
     return panel;
   }
 

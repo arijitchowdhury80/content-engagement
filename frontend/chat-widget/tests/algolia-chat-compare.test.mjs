@@ -209,6 +209,25 @@ test('normal centered panel remains eligible on a wide viewport', () => {
   assert.equal(h.toggle(), null, 'the narrower docked panel must still hide Compare');
 });
 
+test('production empty state mirrors the normal chat welcome hierarchy', () => {
+  const h = createHarness();
+  h.clickToggle();
+  h.flush();
+  const empty = h.shadowRoot.querySelector('#acs-compare-empty');
+
+  assert.ok(empty, 'production empty state should be present');
+  assert.match(empty.style.cssText, /align-items:center/);
+  assert.match(empty.style.cssText, /text-align:center/);
+  assert.equal(empty.children.length, 3);
+  assert.equal(empty.children[0].textContent, 'Production · live Ask AI');
+  assert.equal(empty.children[1].textContent, 'Ask about');
+  assert.match(empty.children[1].style.cssText, /font:800 36px/);
+  assert.equal(
+    empty.children[2].textContent,
+    'The same request and current context go to live algolia.com.'
+  );
+});
+
 test('compare off: asking a question never calls production', async () => {
   const h = createHarness();
   h.addBubble('What is NeuralSearch?');
