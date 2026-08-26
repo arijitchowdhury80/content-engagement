@@ -188,6 +188,17 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
       ...window.__preparedByKey.get(key),
       conversationId:"test-conversation"
     });
+    window.__markComparePostAnswerReady=(key)=>{
+      const detail=window.__preparedByKey.get(key);
+      const footer=window.algoliaHandoffToOrchestrator.ensureAnswerFooter(detail);
+      if(!footer) return false;
+      if(!footer.querySelector('algolia-confidence-badge')){
+        const badge=document.createElement('algolia-confidence-badge');
+        badge.textContent='Confidence 9.0 /10';
+        footer.appendChild(badge);
+      }
+      return true;
+    };
   ` });
   await page.addScriptTag({ content: fs.readFileSync(comparePath, 'utf8') });
 
@@ -250,6 +261,7 @@ test('compare mode does not collapse the sample questions menu into skinny colum
       document.querySelector('algolia-chat').ask('Seed answer for Compare.');
       window.__emitCompareCompleted('seed:1');
     });
+    await page.waitForFunction(() => window.__markComparePostAnswerReady?.('seed:1'));
     await page.waitForFunction(() =>
       document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
     );
@@ -305,6 +317,7 @@ test('a first no-source flat answer receives its own Compare footer', async () =
         ?.includes('A direct answer without retrieved sources')
     );
     await page.evaluate(() => window.__emitCompareCompleted('flat:1'));
+    await page.waitForFunction(() => window.__markComparePostAnswerReady?.('flat:1'));
     await page.waitForFunction(() =>
       document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
     );
@@ -443,6 +456,7 @@ test('compare mode preserves TLDR treatment on the primary answer', async () => 
       document.querySelector('algolia-chat').ask('Seed answer for Compare.');
       window.__emitCompareCompleted('seed:2');
     });
+    await page.waitForFunction(() => window.__markComparePostAnswerReady?.('seed:2'));
     await page.waitForFunction(() =>
       document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
     );
@@ -510,6 +524,7 @@ test("concierge keeps the TLDR canvas for an 'It's like' analogy with Compare of
         return root?.textContent?.includes('The mechanism creates a neural score');
       }, null, { timeout: 8_000 });
       await page.evaluate(() => window.__emitCompareCompleted('analogy:1'));
+      await page.waitForFunction(() => window.__markComparePostAnswerReady?.('analogy:1'));
       await page.waitForFunction(() =>
         document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
       );

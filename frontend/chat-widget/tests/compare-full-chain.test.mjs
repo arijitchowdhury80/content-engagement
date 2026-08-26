@@ -86,7 +86,20 @@ test('real widget sends the exact finalized body once and isolates the Productio
       const root = document.querySelector('algolia-chat')?.shadowRoot;
       return window.__localOrchestratorRequestBodies?.length === 1 &&
         root?.textContent?.includes('Here is the practical implementation path') &&
-        root?.querySelector('#acs-compare-toggle')?.textContent === 'Compare with Prod';
+        root?.querySelector('[data-algolia-answer-footer]');
+    }, null, { timeout: 10_000 });
+    await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      const footer = [...(root?.querySelectorAll('[data-algolia-answer-footer]') || [])].at(-1);
+      if (footer && !footer.querySelector('algolia-confidence-badge')) {
+        const badge = document.createElement('algolia-confidence-badge');
+        badge.textContent = 'Confidence 9.0 /10';
+        footer.appendChild(badge);
+      }
+    });
+    await page.waitForFunction(() => {
+      const root = document.querySelector('algolia-chat')?.shadowRoot;
+      return root?.querySelector('#acs-compare-toggle')?.textContent === 'Compare with Prod';
     }, null, { timeout: 10_000 });
 
     await page.evaluate(() =>

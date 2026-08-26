@@ -4,6 +4,7 @@
  * The orchestrator transport remains the only owner of the completion stream.
  * This module subscribes to its completed-turn lifecycle and performs one
  * independent, token-only Jahia lookup for each successful primary turn.
+ * Release marker: formatted answer-footer token pill.
  */
 (() => {
   "use strict";

@@ -202,7 +202,19 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
     b.footer = footer;
     return b;
   };
-  const completeTurn = (turnKey = `primary-conversation:user-${turnSequence}`) => {
+  const addPostAnswerControl = (messageId = `user-${turnSequence}`) => {
+    const footer = footersByMessageId.get(String(messageId));
+    if (!footer) return null;
+    let badge = footer.querySelector('algolia-confidence-badge');
+    if (!badge) {
+      badge = new El('algolia-confidence-badge');
+      footer.appendChild(badge);
+    }
+    badge.textContent = 'Confidence 9.0 /10';
+    observers.forEach((cb) => cb([{ type: 'childList' }]));
+    return badge;
+  };
+  const completeTurn = (turnKey = `primary-conversation:user-${turnSequence}`, { postAnswerReady = true } = {}) => {
     const messageId = turnKey.split(':').at(-1);
     completedListener?.({
       turnKey,
@@ -210,6 +222,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
       question: primaryMessages.find((message) => message.id === messageId)?.parts?.[0]?.text || '',
       conversationId: 'primary-conversation',
     });
+    if (postAnswerReady) addPostAnswerControl(messageId);
     observers.forEach((cb) => cb([{ type: 'childList' }]));
   };
   const toggle = () => shadowRoot.querySelector('#acs-compare-toggle');
@@ -226,7 +239,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
 
   flush(); // initial reconcile mounts the toggle
   return {
-    context, flush, addBubble, completeTurn, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
+    context, flush, addBubble, addPostAnswerControl, completeTurn, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
     fetchCalls, preparedBodies,
     setFetch: (fn) => { fetchImpl = fn; },
     api: () => context.window.__acsCompare,
@@ -250,7 +263,10 @@ test('toggle is absent from the header and appears only beside answer evidence c
   h.addBubble('answer with grounded evidence');
   await h.settle();
   assert.equal(h.toggle(), null, 'toggle stays hidden while the answer is still streaming');
-  h.completeTurn();
+  h.completeTurn(undefined, { postAnswerReady: false });
+  await h.settle();
+  assert.equal(h.toggle(), null, 'sources alone do not make the answer footer ready for Compare');
+  h.addPostAnswerControl();
   await h.settle();
   const t = h.toggle();
   assert.ok(t, 'toggle appears after an answer exists');

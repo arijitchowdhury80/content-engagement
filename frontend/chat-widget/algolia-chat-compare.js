@@ -316,14 +316,22 @@
       : "Send the same finalized request, including current session and page context, to the live algolia.com Ask AI";
   }
 
+  function footerIsPostAnswerReady(footer) {
+    if (!footer) return false;
+    if (footer.querySelector(".algolia-usage-pill")) return true;
+    if (footer.querySelector("algolia-confidence-badge")) return true;
+    return false;
+  }
+
   function ensureToggle() {
     if (!ENDPOINT_OK) return;                             // unconfigured → no UI
     const expanded = isExpanded();
     let toggle = sroot()?.querySelector(`#${TOGGLE_ID}`) || null;
     const turnComplete = latestPreparedTurn && completedTurnKeys.has(latestPreparedTurn.turnKey);
-    const answerFooter = turnComplete
+    const candidateFooter = turnComplete
       ? window.algoliaHandoffToOrchestrator?.ensureAnswerFooter?.(latestPreparedTurn) || null
       : null;
+    const answerFooter = footerIsPostAnswerReady(candidateFooter) ? candidateFooter : null;
     if (expanded && answerFooter && !toggle) {
       ensureToggleStyle();
       toggle = document.createElement("button");
