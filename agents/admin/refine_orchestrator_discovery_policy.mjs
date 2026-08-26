@@ -95,6 +95,7 @@ export function validateAnswerQualityPrompts(instructions, systemPrompt) {
     'material dimensions implied by the visitor\'s literal question',
     'Do not repeat an equivalent query',
     'do not search merely to reach a fixed count',
+    'KPI, metric, measurement, optimization, analytics, revenue, conversion, or performance questions are substantive',
     'complete standalone grounded response',
     'Specialist routing never excuses an incomplete orchestrator answer.',
     'Migration: current-state inventory; data and schema mapping;',

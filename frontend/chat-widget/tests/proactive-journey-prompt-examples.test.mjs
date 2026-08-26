@@ -149,6 +149,7 @@ test('discovery-only chips collect one missing fact without a fabricated answer'
   assert.match(prompt, /Help me define my use case/);
   assert.match(prompt, /ask exactly one focused question/);
   assert.match(prompt, /Do not manufacture a substantive answer/);
-  assert.match(prompt, /Retrieval is unnecessary when the turn only collects visitor context/);
+  assert.match(prompt, /Retrieval is unnecessary only when the turn purely collects visitor context/);
+  assert.match(prompt, /KPI, metric, measurement, optimization, analytics, revenue, conversion, or\s+performance questions are substantive/);
   assert.match(prompt, /If you introduce any Algolia product, customer, metric, implementation, or\s+commercial claim, search first/);
 });

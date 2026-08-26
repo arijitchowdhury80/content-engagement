@@ -547,6 +547,56 @@ My recommendation: look for similar frictions, not just similar stories.`;
   }
 });
 
+test('short conversational preface before analogy does not block TLDR rendering', async () => {
+  const text = `I can certainly help you map those out. Since we don't have your specific business goals yet, we'll keep this high-level—but as we refine your use case, these metrics will shift from "general ideas" to "hard targets."
+
+Measuring search is a bit like checking the health of a retail store: you don't just count how many people walked in the door; you look at how many found what they wanted, how quickly they found it, and if they actually bought it.
+
+Depending on what you're trying to solve, I'd recommend focusing on these three categories:
+
+1. Conversion & Revenue (The Bottom Line)
+These tell you if your search is actually driving business value.
+
+- Search Conversion Rate: The percentage of users who search and then complete a purchase.
+- Average Order Value from Search: Whether users who use search spend more per order than those who just browse.
+
+My Recommendation
+Start with the Zero-Result Rate and the Search Conversion Rate.`;
+  const page = await createWidgetPage({ frames: completionFrames(text) });
+  try {
+    await waitForAnswerText(page, 'Measuring search is a bit like checking the health');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const tldr = root.querySelector('.acs-answer-tldr');
+      const analogy = root.querySelector('.acs-answer-analogy');
+      const short = root.querySelector('.acs-answer-short');
+      const details = root.querySelector('.acs-answer-details');
+      return {
+        labels: [...root.querySelectorAll('.acs-answer-section-label')]
+          .map((node) => node.textContent.trim()),
+        tldrText: tldr?.textContent.replace(/\s+/g, ' ').trim(),
+        analogyText: analogy?.textContent.replace(/\s+/g, ' ').trim(),
+        analogyFontStyle: analogy ? getComputedStyle(analogy).fontStyle : null,
+        hasShort: Boolean(short),
+        detailsText: details?.textContent.replace(/\s+/g, ' ').trim(),
+      };
+    });
+
+    assert.ok(result.labels.includes('TL;DR'));
+    assert.ok(result.labels.includes('Details'));
+    assert.match(result.analogyText, /retail store/);
+    assert.equal(result.analogyFontStyle, 'italic');
+    assert.equal(result.hasShort, false);
+    assert.match(result.tldrText, /retail store/);
+    assert.doesNotMatch(result.tldrText, /specific business goals/);
+    assert.doesNotMatch(result.tldrText, /Conversion & Revenue/);
+    assert.match(result.detailsText, /Conversion & Revenue/);
+    assert.match(result.detailsText, /Search Conversion Rate/);
+  } finally {
+    await page.close();
+  }
+});
+
 test('one-paragraph answer does not force a broken TLDR split', async () => {
   const text = 'A single direct answer should stay flat when there is no separate short-version block.';
   const page = await createWidgetPage({ frames: completionFrames(text) });

@@ -54,6 +54,35 @@ test('local orchestrator prompts satisfy coverage and complete-answer contracts'
   });
 });
 
+test('KPI measurement is not allowed as a no-retrieval discovery-only answer path', () => {
+  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/instructions_algolia_orchestrator.md'), 'utf8');
+  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/system_algolia_orchestrator.md'), 'utf8');
+
+  assert.doesNotMatch(
+    instructions,
+    /Which KPIs should I measure\?` when the visitor\s+has not supplied a use case or business outcome yet/,
+  );
+  assert.deepEqual(validateAnswerQualityPrompts(instructions, systemPrompt), {
+    pass: true,
+    missing: [],
+    conflicts: [],
+    duplicateHeadings: [],
+  });
+  assert.throws(
+    () => validateAnswerQualityPrompts(
+      instructions.replace(
+        'KPI, metric, measurement, optimization, analytics, revenue, conversion, or\n' +
+          '   performance questions are substantive once you provide even a short\n' +
+          '   framework or recommendation. Search first and cite the retrieved evidence\n' +
+          '   normally.',
+        'KPI chips can collect context without retrieval.',
+      ),
+      systemPrompt,
+    ),
+    /Answer-quality prompt contract failed/,
+  );
+});
+
 test('coverage contract rejects incomplete baseline and fixed evidence-type adequacy', () => {
   assert.throws(
     () => validateAnswerQualityPrompts(
