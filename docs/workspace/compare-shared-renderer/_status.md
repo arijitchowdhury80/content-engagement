@@ -14,6 +14,7 @@
 - [ ] Native comparison turn API implemented.
 - [ ] Duplicate companion renderers removed.
 - [x] Relevant unit, integration, full-chain browser, responsive, and accessibility-contract tests pass.
-- [ ] User approves exact deployment plan.
-- [ ] Jahia snapshot, dry-run, apply, readback, and browser validation complete.
+- [x] User approved deployment and the answer-footer control placement.
+- [x] Jahia snapshot, dry-run, apply, exact readback, and live Compare/telemetry browser validation complete.
+- [ ] Live Judge service acceptance: the pill now renders and the three-role run starts, but the 2026-08-26 check ended unavailable because fewer than two judges returned valid reports after an initial primary 429.
 - [ ] Aadhar notification sent after user approves the exact text.
