@@ -419,7 +419,10 @@
         });
         return new Response(stream, {
           status: 200,
-          headers: { "content-type": "text/event-stream" },
+          headers: {
+            "content-type": "text/event-stream",
+            "X-Conversation-Id": "local-parity-conversation",
+          },
         });
       };
 

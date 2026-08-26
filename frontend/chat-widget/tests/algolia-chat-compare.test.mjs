@@ -87,6 +87,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   const preparedBodies = [];
   const primaryMessages = [];
   let preparedListener = null;
+  let completedListener = null;
   let turnSequence = 0;
   let fetchImpl = async () => ({ ok: true, status: 200, body: sse([{ type: 'text-delta', delta: 'ok' }]) });
 
@@ -142,6 +143,10 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
         preparedListener = listener;
         return () => { if (preparedListener === listener) preparedListener = null; };
       },
+      subscribeCompletedTurn(listener) {
+        completedListener = listener;
+        return () => { if (completedListener === listener) completedListener = null; };
+      },
     },
   };
   context.window = context;
@@ -180,7 +185,12 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
     footer.appendChild(sourceWrap);
     scroller.appendChild(footer);
     observers.forEach((cb) => cb([{ type: 'childList' }]));
+    b.turnKey = `primary-conversation:${user.id}`;
     return b;
+  };
+  const completeTurn = (turnKey = `primary-conversation:user-${turnSequence}`) => {
+    completedListener?.({ turnKey, conversationId: 'primary-conversation' });
+    observers.forEach((cb) => cb([{ type: 'childList' }]));
   };
   const toggle = () => shadowRoot.querySelector('#acs-compare-toggle');
   const clickToggle = () => {
@@ -196,7 +206,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
 
   flush(); // initial reconcile mounts the toggle
   return {
-    context, flush, addBubble, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
+    context, flush, addBubble, completeTurn, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
     fetchCalls, preparedBodies,
     setFetch: (fn) => { fetchImpl = fn; },
     api: () => context.window.__acsCompare,
@@ -219,6 +229,9 @@ test('toggle is absent from the header and appears only beside answer evidence c
 
   h.addBubble('answer with grounded evidence');
   await h.settle();
+  assert.equal(h.toggle(), null, 'toggle stays hidden while the answer is still streaming');
+  h.completeTurn();
+  await h.settle();
   const t = h.toggle();
   assert.ok(t, 'toggle appears after an answer exists');
   assert.equal(t.getAttribute('aria-pressed'), 'false');
@@ -230,6 +243,8 @@ test('judge mode stays on for a completed answer, but a later Compare turn suppr
   const confidence = h.context.document.querySelector('algolia-chat').querySelector('algolia-chat-confidence');
   h.addBubble('normal answer');
   await h.settle();
+  h.completeTurn();
+  await h.settle();
   assert.equal(confidence.getAttribute('mode'), 'algolia');
 
   h.clickToggle();
@@ -239,6 +254,8 @@ test('judge mode stays on for a completed answer, but a later Compare turn suppr
   h.addBubble('future turn while Compare is already on');
   await h.settle();
   assert.equal(confidence.getAttribute('mode'), 'off', 'future dual request avoids three extra judge calls');
+  h.completeTurn();
+  await h.settle();
 
   h.clickToggle();
   await h.settle();
@@ -248,6 +265,7 @@ test('judge mode stays on for a completed answer, but a later Compare turn suppr
 test('normal centered panel remains eligible on a wide viewport', () => {
   const h = createHarness({ chatWidth: 1080, viewportWidth: 2266 });
   h.addBubble('answer');
+  h.completeTurn();
   h.flush();
   assert.ok(h.toggle(), '1080px normal panel must not be mistaken for the docked panel');
   h.setExpanded(false);
@@ -273,9 +291,11 @@ test('an existing answer can be compared later using its exact prepared request'
   const h = createHarness();
   h.addBubble('asked before compare was on');
   await h.settle();
+  h.completeTurn();
+  await h.settle();
 
   assert.equal(h.api().state().hasPreparedTurn, true);
-  assert.equal(h.toggle().textContent, 'Compare with Prod');
+  assert.equal(h.toggle().textContent, 'Compare with production');
   h.clickToggle();
   await h.settle();
   assert.equal(h.api().state().compareOn, true, 'can enable after the answer exists');
@@ -299,6 +319,8 @@ test('two turns run in order and turn two carries turn one in history', async ()
   }));
   h.addBubble('first question');
   await h.settle();
+  h.completeTurn();
+  await h.settle();
   h.clickToggle();
   await h.settle();
   h.addBubble('second question');
@@ -321,9 +343,11 @@ test('question one keeps Compare available when it was left OFF', async () => {
 
   h.addBubble('question one, asked with Compare off');
   await h.settle();
+  h.completeTurn();
+  await h.settle();
 
   assert.notEqual(h.toggle().getAttribute('aria-disabled'), 'true');
-  assert.equal(h.toggle().textContent, 'Compare with Prod');
+  assert.equal(h.toggle().textContent, 'Compare with production');
   assert.match(h.toggle().getAttribute('aria-label') || '', /answer with production/i);
   assert.equal(h.api().state().hasPreparedTurn, true);
 
@@ -345,6 +369,8 @@ test('compare can be turned off and on again without duplicating a mirrored turn
   const h = createHarness();
   h.addBubble('one comparison');
   await h.settle();
+  h.completeTurn();
+  await h.settle();
   h.clickToggle();
   await h.settle();
   assert.equal(h.fetchCalls.length, 1);
@@ -360,6 +386,8 @@ test('compare can be turned off and on again without duplicating a mirrored turn
 test('visitor reset clears mirrored state, turns Compare off, and unlocks the toggle', async () => {
   const h = createHarness();
   h.addBubble('q1');
+  await h.settle();
+  h.completeTurn();
   await h.settle();
   h.clickToggle();
   await h.settle();
@@ -384,6 +412,8 @@ test('a late response from a previous conversation is discarded', async () => {
   }));
   h.addBubble('q1');
   await h.settle();
+  h.completeTurn();
+  await h.settle();
   h.clickToggle();
   await h.settle();
 
@@ -399,6 +429,7 @@ test('a production failure is contained and never throws', async () => {
   const h = createHarness();
   h.setFetch(async () => ({ ok: false, status: 503, text: async () => 'upstream down', body: null }));
   h.addBubble('q1');
+  h.completeTurn();
   h.clickToggle();
   await assert.doesNotReject(h.settle());
   assert.equal(h.api().state().mirroredTurns, 0, 'failed turn is not counted as completed');
@@ -408,6 +439,7 @@ test('window.fetch is never patched (proactive handoff owns the transport)', () 
   const h = createHarness();
   const before = h.context.fetch;
   h.addBubble('answer');
+  h.completeTurn();
   h.clickToggle();
   h.flush();
   assert.equal(h.context.fetch, before, 'compare must not replace window.fetch');
@@ -435,10 +467,12 @@ test('markdown escapes html and drops unsafe link protocols', () => {
 test('narrow widths stack instead of splitting 50/50', () => {
   const wide = createHarness({ chatWidth: 1000 });
   wide.addBubble('wide answer');
+  wide.completeTurn();
   wide.flush();
   wide.clickToggle(); wide.flush();
   const narrow = createHarness({ chatWidth: 500, viewportWidth: 600 });
   narrow.addBubble('narrow answer');
+  narrow.completeTurn();
   narrow.flush();
   narrow.clickToggle(); narrow.flush();
   const wideStyle = wide.shadowRoot.querySelector('#acs-compare-style');
@@ -460,6 +494,8 @@ test('Compare survives collapse and expand, and turn two keeps turn one', async 
   }));
 
   h.addBubble('question one');
+  await h.settle();
+  h.completeTurn();
   await h.settle();
   h.clickToggle();
   await h.settle();
@@ -486,6 +522,8 @@ test('Compare survives collapse and expand, and turn two keeps turn one', async 
 test('production receives the exact prepared primary body bytes and retries are deduplicated', async () => {
   const h = createHarness();
   h.addBubble('same packet please');
+  await h.settle();
+  h.completeTurn();
   await h.settle();
   h.clickToggle();
   await h.settle();

@@ -86,7 +86,7 @@ test('real widget sends the exact finalized body once and isolates the Productio
       const root = document.querySelector('algolia-chat')?.shadowRoot;
       return window.__localOrchestratorRequestBodies?.length === 1 &&
         root?.textContent?.includes('Here is the practical implementation path') &&
-        root?.querySelector('#acs-compare-toggle')?.textContent === 'Compare with Prod';
+        root?.querySelector('#acs-compare-toggle')?.textContent === 'Compare with production';
     }, null, { timeout: 10_000 });
 
     await page.evaluate(() =>

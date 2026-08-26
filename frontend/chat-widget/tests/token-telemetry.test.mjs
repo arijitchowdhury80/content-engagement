@@ -134,11 +134,32 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
           title: '',
           parentNode: null,
           parentElement: null,
+          children: [],
+          dataset: {},
           textWrites: 0,
-          get textContent() { return textContent; },
+          get textContent() {
+            return this.children.length
+              ? this.children.map((child) => child.textContent).join('')
+              : textContent;
+          },
           set textContent(value) {
-            textContent = value;
+            textContent = String(value);
+            this.children = [];
             this.textWrites += 1;
+          },
+          appendChild(element) {
+            element.parentNode = this;
+            element.parentElement = this;
+            this.children.push(element);
+            return element;
+          },
+          append(...elements) {
+            elements.forEach((element) => this.appendChild(element));
+          },
+          replaceChildren(...elements) {
+            textContent = '';
+            this.children = [];
+            elements.forEach((element) => this.appendChild(element));
           },
           setAttribute() {},
           remove() { this.parentNode?.removeChild(this); },
@@ -268,6 +289,24 @@ test('shows the latest response input/output in the answer footer and keeps cumu
   h.reset();
   assert.equal(h.context.__algoliaChatUsage.usage, null);
   assert.equal(h.footerPill(), null);
+});
+
+test('formats input/output counts with commas and subtle split classes', async () => {
+  const h = createHarness({
+    responses: [
+      { ok: true, data: { inputTokens: 44141, outputTokens: 819, totalTokens: 44960 } },
+    ],
+  });
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_large' });
+  await h.settle();
+
+  assert.equal(h.footerPill().textContent, 'In 44,141 / 819 Out');
+  assert.equal(h.footerPill().title, 'Current response: 44,141 input tokens and 819 output tokens');
+  assert.deepEqual(
+    h.footerPill().children.map((child) => child.className),
+    ['algolia-usage-pill__in', 'algolia-usage-pill__divider', 'algolia-usage-pill__out'],
+  );
 });
 
 test('derives the current response by subtracting the prior stable-conversation snapshot', async () => {

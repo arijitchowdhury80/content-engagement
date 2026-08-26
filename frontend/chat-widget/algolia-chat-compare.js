@@ -86,8 +86,10 @@
   let latestPreparedTurn = null;
   let generation = 0;          // bumped on reset; older generations are discarded
   const activeControllers = new Map();
+  const completedTurnKeys = new Set();
   let mirroredTurns = 0;
   let unsubscribePreparedTurns = null;
+  let unsubscribeCompletedTurns = null;
 
   function resetConversation(reason) {
     generation += 1;
@@ -99,6 +101,7 @@
     compareOn = false;
     latestPreparedTurn = null;
     mirroredTurnKeys.clear();
+    completedTurnKeys.clear();
     setJudgeMode("algolia");
     clearLog();
     // A reset removes the answer-scoped control immediately; a later completed
@@ -197,6 +200,14 @@
       .catch((error) => log("production turn failed (contained)", error));
   }
 
+  function acceptCompletedTurn(detail) {
+    const turnKey = String(detail?.turnKey || "");
+    if (!turnKey) return;
+    completedTurnKeys.add(turnKey);
+    if (completedTurnKeys.size > 500) completedTurnKeys.delete(completedTurnKeys.values().next().value);
+    reconcile();
+  }
+
   function mirrorPreparedTurn(detail, gen) {
     if (!detail || mirroredTurnKeys.has(detail.turnKey)) return Promise.resolve();
     mirroredTurnKeys.add(detail.turnKey);
@@ -234,6 +245,17 @@
       return true;
     }
     if (attempt < 100) setTimeout(() => subscribeToPreparedTurns(attempt + 1), 50);
+    return false;
+  }
+
+  function subscribeToCompletedTurns(attempt = 0) {
+    if (unsubscribeCompletedTurns) return true;
+    const subscribe = window.algoliaHandoffToOrchestrator?.subscribeCompletedTurn;
+    if (typeof subscribe === "function") {
+      unsubscribeCompletedTurns = subscribe(acceptCompletedTurn);
+      return true;
+    }
+    if (attempt < 100) setTimeout(() => subscribeToCompletedTurns(attempt + 1), 50);
     return false;
   }
 
@@ -276,7 +298,7 @@
   }
 
   function paintToggle(t) {
-    t.textContent = "Compare with Prod";
+    t.textContent = compareOn ? "Comparing with production" : "Compare with production";
     t.setAttribute("aria-pressed", compareOn ? "true" : "false");
     t.removeAttribute("aria-disabled");
     t.setAttribute(
@@ -296,7 +318,8 @@
     let toggle = sroot()?.querySelector(`#${TOGGLE_ID}`) || null;
     const sourceSections = qa('[aria-label="Grounded sources"]');
     const latestSource = sourceSections[sourceSections.length - 1] || null;
-    const answerFooter = latestPreparedTurn
+    const turnComplete = latestPreparedTurn && completedTurnKeys.has(latestPreparedTurn.turnKey);
+    const answerFooter = turnComplete
       ? latestSource?.parentElement?.parentElement || null
       : null;
     if (expanded && answerFooter && !toggle) {
@@ -364,6 +387,7 @@
     document.addEventListener("algolia-visitor-state-reset", () => resetConversation("event"));
 
     subscribeToPreparedTurns();
+    subscribeToCompletedTurns();
     // The Jahia block stays statically fail-safe at mode="off". Compare owns
     // the browser-time policy and enables judges for the default single panel.
     setJudgeMode("algolia");
@@ -600,9 +624,11 @@
         generation,
         mirroredTurns,
         activeTurns: activeControllers.size,
+        completedTurns: completedTurnKeys.size,
       }),
       reset: resetConversation,
       acceptPreparedTurn,
+      acceptCompletedTurn,
     };
   }
 })();

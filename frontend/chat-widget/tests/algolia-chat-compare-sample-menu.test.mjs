@@ -115,12 +115,17 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
   await page.addScriptTag({ content: `
     window.ACS_COMPARE={prod:{proxyPath:"/__compare/production"}};
     window.algoliaHandoffToOrchestrator={
-      subscribePreparedTurn(listener){ window.__comparePreparedListener=listener; return ()=>{}; }
+      subscribePreparedTurn(listener){ window.__comparePreparedListener=listener; return ()=>{}; },
+      subscribeCompletedTurn(listener){ window.__compareCompletedListener=listener; return ()=>{}; }
     };
     window.__emitComparePrepared=(question,key)=>window.__comparePreparedListener?.({
       question,
       turnKey:key,
       body:JSON.stringify({id:"test-conversation",messages:[{role:"user",parts:[{type:"text",text:question}]}]})
+    });
+    window.__emitCompareCompleted=(key)=>window.__compareCompletedListener?.({
+      turnKey:key,
+      conversationId:"test-conversation"
     });
   ` });
   await page.addScriptTag({ content: fs.readFileSync(comparePath, 'utf8') });
@@ -182,6 +187,7 @@ test('compare mode does not collapse the sample questions menu into skinny colum
     await page.evaluate(() => {
       window.__emitComparePrepared('Seed answer for Compare.', 'seed:1');
       document.querySelector('algolia-chat').ask('Seed answer for Compare.');
+      window.__emitCompareCompleted('seed:1');
     });
     await page.waitForFunction(() =>
       document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')
@@ -232,6 +238,7 @@ test('compare mode preserves TLDR treatment on the primary answer', async () => 
     await page.evaluate(() => {
       window.__emitComparePrepared('Seed answer for Compare.', 'seed:2');
       document.querySelector('algolia-chat').ask('Seed answer for Compare.');
+      window.__emitCompareCompleted('seed:2');
     });
     await page.waitForFunction(() =>
       document.querySelector('algolia-chat')?.shadowRoot?.querySelector('#acs-compare-toggle')

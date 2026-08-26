@@ -183,12 +183,41 @@
 
   const PILL_CLASS = "algolia-usage-pill";
   const PILL_STYLE_ID = "algolia-usage-pill-style";
-  const PILL_CSS = `.${PILL_CLASS}{display:inline-flex;align-items:center;width:fit-content;margin-right:6px;border-radius:var(--algolia-radius-full,9999px);border:1px solid var(--algolia-border,#e0e0e0);background:var(--algolia-surface-2,#f0f0f0);color:var(--algolia-text-muted,#5f6368);padding:4px 12px;font-size:var(--algolia-fs-xs,12px);font-weight:var(--algolia-fw-medium,500);font-family:var(--algolia-font-sans,system-ui,sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}`;
+  const PILL_CSS = `.${PILL_CLASS}{display:inline-flex;align-items:center;width:fit-content;margin-right:6px;border-radius:var(--algolia-radius-full,9999px);border:1px solid var(--algolia-border,#e0e0e0);background:var(--algolia-surface-2,#f0f0f0);color:var(--algolia-text-muted,#5f6368);padding:4px 12px;font-size:var(--algolia-fs-xs,12px);font-weight:var(--algolia-fw-medium,500);font-family:var(--algolia-font-sans,system-ui,sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}.${PILL_CLASS}__in{color:#5f6fb8;font-weight:700}.${PILL_CLASS}__divider{color:var(--algolia-text-muted,#7a7f9a);opacity:.65;padding:0 4px}.${PILL_CLASS}__out{color:#6b7895;font-weight:700}`;
+
+  function formatTokenNumber(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n.toLocaleString("en-US") : String(value ?? "");
+  }
 
   function updatePill(pill, text, title) {
     // Rewriting identical text would retrigger the chat MutationObserver
     // forever, so DOM writes must be idempotent.
+    pill.dataset.usageText = "";
     if (pill.textContent !== text) pill.textContent = text;
+    if (pill.title !== title) pill.title = title;
+  }
+
+  function pillPart(className, text) {
+    const span = document.createElement("span");
+    span.className = className;
+    span.textContent = text;
+    return span;
+  }
+
+  function updateUsagePill(pill, totals) {
+    const inputTokens = formatTokenNumber(totals.inputTokens);
+    const outputTokens = formatTokenNumber(totals.outputTokens);
+    const text = `In ${inputTokens} / ${outputTokens} Out`;
+    const title = `Current response: ${inputTokens} input tokens and ${outputTokens} output tokens`;
+    if (pill.dataset.usageText !== text) {
+      pill.replaceChildren(
+        pillPart(`${PILL_CLASS}__in`, `In ${inputTokens}`),
+        pillPart(`${PILL_CLASS}__divider`, " / "),
+        pillPart(`${PILL_CLASS}__out`, `${outputTokens} Out`),
+      );
+      pill.dataset.usageText = text;
+    }
     if (pill.title !== title) pill.title = title;
   }
 
@@ -225,11 +254,7 @@
     }
     const totals = usageState.usage;
     if (!totals) return;
-    updatePill(
-      pill,
-      `In ${totals.inputTokens} / ${totals.outputTokens} Out`,
-      `Current response: ${totals.inputTokens} input tokens and ${totals.outputTokens} output tokens`,
-    );
+    updateUsagePill(pill, totals);
   }
 
   function latestAnswerFooter(shadowRoot) {
