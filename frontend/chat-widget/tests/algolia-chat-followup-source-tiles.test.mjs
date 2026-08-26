@@ -52,6 +52,36 @@ test('final answer preserves previously retrieved sources when completion omits 
   );
 });
 
+test('assistant answer rendering uses one normalized presentation contract', () => {
+  const bundle = fs.readFileSync(chatPath, 'utf8');
+
+  assert.match(
+    bundle,
+    /function __arrieNormalizeAnswerPresentation\(\{segment:[A-Za-z_$][\w$]*,allowLayer:[A-Za-z_$][\w$]*,offerPending:/,
+    'the assistant renderer must normalize answer text, TLDR layer, footer state, and follow-up state once'
+  );
+  assert.match(
+    bundle,
+    /function __arrieLayeredAnswer\(\{text:[A-Za-z_$][\w$]*,layer:[A-Za-z_$][\w$]*,unsupportedTerms:/,
+    'the layered answer renderer must accept the already-normalized TLDR layer instead of recomputing it'
+  );
+  assert.doesNotMatch(
+    bundle,
+    /C&&!![A-Za-z_$][\w$]*\.text&&!!__arrieAnswerLayer\([A-Za-z_$][\w$]*\.text\)/,
+    'the message renderer must not independently recompute TLDR eligibility for its label'
+  );
+  assert.doesNotMatch(
+    bundle,
+    /useAnswerLayer:C===0/,
+    'TLDR rendering must not be gated to only the first conversation turn'
+  );
+  assert.match(
+    bundle,
+    /__arrieLayeredAnswer,\{text:[A-Za-z_$][\w$]*\.text,layer:[A-Za-z_$][\w$]*,unsupportedTerms:/,
+    'the answer body must render from the same normalized layer used by the label'
+  );
+});
+
 test('subsequent turns send the complete prior assistant answer', async () => {
   const longAnswer = [
     '# Complete answer',
