@@ -15,6 +15,10 @@ function fixture() {
   return `<!doctype html><html><head><meta charset="utf-8"><script>
     const params = new URLSearchParams(location.search);
     const scenario = params.get('scenario');
+    if (scenario === 'stalledStream') {
+      const nativeSetTimeout = window.setTimeout.bind(window);
+      window.setTimeout = (callback, delay, ...args) => nativeSetTimeout(callback, delay === 60000 ? 50 : delay, ...args);
+    }
     window.__agentRequests = [];
     window.__judgeRequests = [];
     window.__judgeValidations = [];
@@ -32,7 +36,9 @@ function fixture() {
       partialTerminalError: 'This partial answer remains visible.',
       retryIdentity: 'The retried answer is now complete.',
       discoveryTurn: 'This is the grounded answer for the current discovery turn.',
-      twoTurnRace: 'InstantSearch is available for React implementations.'
+      twoTurnRace: 'InstantSearch is available for React implementations.',
+      retry429: 'The rate-limited request recovered safely.',
+      retry500: 'The server-error request recovered safely.'
     };
     const stream = (frames) => {
       const encoder = new TextEncoder();
@@ -93,6 +99,33 @@ function fixture() {
       if (url.includes('/agent-studio/1/agents/local_primary_agent/')) {
         const request = JSON.parse(init.body);
         window.__agentRequests.push(request);
+        if (scenario === 'retry429' && window.__agentRequests.length === 1) {
+          return new Response('rate limited', { status: 429, headers: { 'retry-after': '0' } });
+        }
+        if (scenario === 'retry429Long') {
+          return new Response('rate limited', { status: 429, headers: { 'retry-after': '60' } });
+        }
+        if (scenario === 'retry500' && window.__agentRequests.length === 1) {
+          return new Response('temporary server failure', { status: 500 });
+        }
+        if (scenario === 'networkFailure') throw new TypeError('Failed to fetch');
+        if (scenario === 'guardrailInput') {
+          return stream([{
+            type: 'data-guardrail-violation',
+            data: {
+              category: 'prompt_injection_or_secrets',
+              guardrailType: 'input',
+              fallbackResponse: 'I cannot share hidden instructions or credentials.'
+            }
+          }]);
+        }
+        if (scenario === 'empty200') return stream([]);
+        if (scenario === 'stalledStream') {
+          return new Response(new ReadableStream({ start() {}, cancel() { return new Promise(() => {}); } }), {
+            status: 200,
+            headers: { 'content-type': 'text/event-stream' }
+          });
+        }
         if (scenario === 'partialTerminalError') {
           return stream([
             { type: 'text-delta', delta: candidates.partialTerminalError },
@@ -107,6 +140,7 @@ function fixture() {
         }
         const answer = candidates[scenario];
         return stream([
+          { type: 'start', messageId: 'alg_msg_primary_response_' + window.__agentRequests.length },
           { type: 'tool-output-available', toolCallId: 'docs', output: { hits: [{
             objectID: 'docs-hit', title: scenario === 'metadataGrounded'
               ? 'Forrester Total Economic Impact study'
@@ -207,6 +241,7 @@ async function openScenario(scenario, { waitForJudge = true, requireDiscovery = 
     const state = await page.evaluate(() => ({
       judgeRequests: window.__judgeRequests,
       judgeValidations: window.__judgeValidations,
+      agentRequests: window.__agentRequests,
       debug: window.__algoliaChatJudgeDebugLog,
       text: document.querySelector('algolia-chat')?.shadowRoot?.textContent,
     }));
@@ -231,6 +266,7 @@ async function runtimeState(page) {
       segment: persisted.turns[0].segments[0],
       streamingTexts,
       agentRequestCount: window.__agentRequests.length,
+      agentRequests: window.__agentRequests,
       judgeRequestCount: window.__judgeRequests.length,
       judgeRequests: window.__judgeRequests,
       judgeValidations: window.__judgeValidations,
@@ -238,6 +274,20 @@ async function runtimeState(page) {
       discoveryCount: root.querySelectorAll('.acs-followup-card').length,
     };
   });
+}
+
+async function openFailedScenario(scenario) {
+  const { server, baseUrl } = await startServer();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto(`${baseUrl}/admission-fixture?scenario=${scenario}&algoliaChatDebug=1`, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => customElements.get('algolia-chat'), null, { timeout: 10_000 });
+  await page.evaluate(() => document.querySelector('algolia-chat').ask('Verify failure handling.'));
+  await page.waitForFunction(() => {
+    const raw = sessionStorage.getItem('algolia-chat:conversation');
+    return raw && JSON.parse(raw).turns[0]?.segments[0]?.status === 'error';
+  }, null, { timeout: 10_000 });
+  return { context, page, server };
 }
 
 async function closeScenario({ context, server }) {
@@ -257,6 +307,98 @@ test('streams and persists the original answer while confidence runs separately'
     assert.equal(typeof result.badgeVerdict.gateTripped, 'boolean');
     assert.equal(result.segment.admissionVerdict, undefined);
     assert.equal(result.discoveryCount, 1);
+    assert.equal(result.agentRequests[0].id, result.persisted.conversationId);
+    assert.ok(result.agentRequests[0].id.startsWith('alg_cnv_'));
+    assert.ok(result.agentRequests[0].messages.every((message) => typeof message.id === 'string' && message.id.startsWith('alg_msg_')));
+    assert.equal(result.agentRequests[0].messages.at(-1).id, result.persisted.turns[0].userMessageId);
+    assert.equal(result.segment.messageId, 'alg_msg_primary_response_1');
+  } finally {
+    await closeScenario(run);
+  }
+});
+
+test('one explicit pre-stream 429 is retried once with the same logical identities', async () => {
+  const run = await openScenario('retry429');
+  try {
+    const result = await runtimeState(run.page);
+    assert.equal(result.agentRequestCount, 2);
+    assert.equal(result.agentRequests[0].id, result.agentRequests[1].id);
+    assert.deepEqual(
+      result.agentRequests[0].messages.map((message) => message.id),
+      result.agentRequests[1].messages.map((message) => message.id),
+    );
+    assert.match(result.segment.text, /recovered safely/);
+  } finally {
+    await closeScenario(run);
+  }
+});
+
+test('one explicit pre-stream 500 is retried once and then succeeds', async () => {
+  const run = await openScenario('retry500');
+  try {
+    const result = await runtimeState(run.page);
+    assert.equal(result.agentRequestCount, 2);
+    assert.equal(result.agentRequests[0].id, result.agentRequests[1].id);
+    assert.match(result.segment.text, /recovered safely/);
+  } finally {
+    await closeScenario(run);
+  }
+});
+
+test('a Retry-After beyond the turn deadline is honored without an early retry', async () => {
+  const run = await openFailedScenario('retry429Long');
+  try {
+    const result = await runtimeState(run.page);
+    assert.equal(result.agentRequestCount, 1);
+    assert.match(result.text, /rate-limited right now/i);
+  } finally {
+    await closeScenario(run);
+  }
+});
+
+test('an uncertain network failure is not retried and shows a classified message', async () => {
+  const run = await openFailedScenario('networkFailure');
+  try {
+    const result = await runtimeState(run.page);
+    assert.equal(result.agentRequestCount, 1);
+    assert.match(result.text, /could not reach the assistant service/i);
+    assert.match(result.text, /no automatic duplicate was sent/i);
+  } finally {
+    await closeScenario(run);
+  }
+});
+
+test('an empty 200 is not retried and shows an empty-response message', async () => {
+  const run = await openFailedScenario('empty200');
+  try {
+    const result = await runtimeState(run.page);
+    assert.equal(result.agentRequestCount, 1);
+    assert.match(result.text, /empty response/i);
+  } finally {
+    await closeScenario(run);
+  }
+});
+
+test('a guardrail violation is classified specifically and is not mislabeled as an empty response', async () => {
+  const run = await openFailedScenario('guardrailInput');
+  try {
+    const result = await runtimeState(run.page);
+    assert.equal(result.agentRequestCount, 1);
+    assert.match(result.text, /safety filter classified this as a request for hidden instructions or credentials/i);
+    assert.doesNotMatch(result.text, /empty response/i);
+    assert.match(result.segment.error, /guardrail violation: prompt_injection_or_secrets/i);
+  } finally {
+    await closeScenario(run);
+  }
+});
+
+test('a stalled HTTP 200 SSE stream reaches the bounded timeout without a retry', async () => {
+  const run = await openFailedScenario('stalledStream');
+  try {
+    const result = await runtimeState(run.page);
+    assert.equal(result.agentRequestCount, 1);
+    assert.equal(result.segment.status, 'error');
+    assert.match(result.text, /timed out after 60 seconds/i);
   } finally {
     await closeScenario(run);
   }
@@ -526,7 +668,7 @@ test('judge unavailability cannot blank or replace a completed answer', async ()
     assert.equal(result.segment.admissionRewriteAttempted, undefined);
     assert.ok(result.badgeVerdict.error);
     assert.equal(result.agentRequestCount, 1);
-    assert.equal(result.judgeRequestCount, 6, 'Each of the three role agents retries once');
+    assert.equal(result.judgeRequestCount, 3, 'Each of the three role agents makes one bounded attempt');
     assert.equal(result.discoveryCount, 1);
   } finally {
     await closeScenario(run);
@@ -537,7 +679,7 @@ test('one unavailable role produces an explicit provisional two-judge score', as
   const run = await openScenario('oneJudgeUnavailable');
   try {
     const result = await runtimeState(run.page);
-    assert.equal(result.judgeRequestCount, 4);
+    assert.equal(result.judgeRequestCount, 3);
     assert.equal(result.badgeVerdict.status, 'provisional');
     assert.equal(result.badgeVerdict.provisional, true);
     assert.equal(result.badgeVerdict.validJudgeCount, 2);
@@ -552,7 +694,7 @@ test('two unavailable roles never expose a one-judge score', async () => {
   const run = await openScenario('twoJudgesUnavailable');
   try {
     const result = await runtimeState(run.page);
-    assert.equal(result.judgeRequestCount, 5);
+    assert.equal(result.judgeRequestCount, 3);
     assert.ok(result.badgeVerdict.error);
     assert.equal(result.badgeVerdict.composite, 0);
     assert.equal(result.badgeVerdict.perJudge.length, 0);

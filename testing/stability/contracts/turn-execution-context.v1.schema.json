@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TurnExecutionContext.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "turnId", "deadlineAt", "generation", "primaryRetryBudget", "sideEffectState", "physicalAttemptLedger", "abortState"],
+  "properties": {
+    "schema": { "const": "TurnExecutionContext.v1" },
+    "turnId": { "type": "string" },
+    "deadlineAt": { "type": "string", "format": "date-time" },
+    "generation": { "type": "integer", "minimum": 0 },
+    "primaryRetryBudget": { "type": "object", "required": ["maximum", "used"] },
+    "sideEffectState": { "enum": ["NONE", "POSSIBLE", "OBSERVED"] },
+    "physicalAttemptLedger": { "type": "array" },
+    "abortState": { "enum": ["ACTIVE", "ABORTED", "EXPIRED"] }
+  }
+}

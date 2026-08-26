@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SupervisorState.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "state", "epoch", "abortLatched", "leasesIssued", "leasesActive"],
+  "properties": {
+    "schema": { "const": "SupervisorState.v1" },
+    "state": { "enum": ["PREFLIGHT", "READY", "RUNNING", "ABORTING", "DRAINING", "RECOVERY", "COMPLETE"] },
+    "epoch": { "type": "integer", "minimum": 0 },
+    "abortLatched": { "type": "boolean" },
+    "leasesIssued": { "type": "integer", "minimum": 0 },
+    "leasesActive": { "type": "integer", "minimum": 0 }
+  }
+}

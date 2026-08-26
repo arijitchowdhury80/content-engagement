@@ -1,0 +1,559 @@
+{
+  "schema": "ReactiveConversationDataset.v1",
+  "version": "2026-08-24",
+  "status": "frozen-v1",
+  "targetFlow": "reactive",
+  "description": "Deterministic browser-driven conversation corpus for reactive stability Round 1. Questions are synthetic and contain no customer data.",
+  "globalOracles": [
+    "answer_the_current_question_before_discovery",
+    "one_nonempty_terminal_answer_per_logical_turn",
+    "no_cross_user_context",
+    "no_unexplained_duplicate_upstream_work",
+    "preserve_confirmed_facts_until_clear_or_reset_contract_removes_them",
+    "do_not_treat_inferred_facts_as_confirmed",
+    "do_not_repeat_a_discovery_question_for_an_already_confirmed_fact",
+    "topic_pivot_overrides_stale_conversation_context",
+    "support_and_documentation_intent_must_not_be_forced_into_sales_qualification",
+    "prior_successful_content_remains_visible_after_later_failure"
+  ],
+  "primaryPersonas": [
+    {
+      "id": "U1",
+      "role": "Support-seeking search engineer",
+      "identity": "Existing user troubleshooting a staging problem",
+      "companyContext": "Mid-sized ecommerce site",
+      "goal": "Restore working search and identify the correct support or documentation path",
+      "initialFacts": [],
+      "discoveryAllowed": ["symptom", "affected_surface", "recent_change", "environment", "urgency"],
+      "discoveryForbidden": ["catalog_size_before_triage", "meeting_cta_before_help", "commercial_qualification_before_resolution"]
+    },
+    {
+      "id": "U2",
+      "role": "Senior ecommerce developer",
+      "identity": "Technical evaluator planning a proof of concept",
+      "companyContext": "Next.js storefront with a PIM and ERP",
+      "goal": "Understand architecture, effort, and implementation risk",
+      "initialFacts": [],
+      "discoveryAllowed": ["stack", "data_flow", "catalog_scale", "traffic", "poc_boundary", "timeline"],
+      "discoveryForbidden": ["ask_role_after_confirmed", "invent_integration_support", "invent_timeline"]
+    },
+    {
+      "id": "U3",
+      "role": "Digital merchandiser",
+      "identity": "Non-technical operator evaluating day-to-day control",
+      "companyContext": "Grocery ecommerce business",
+      "goal": "Improve relevance, product discovery, and merchandising efficiency",
+      "initialFacts": [],
+      "discoveryAllowed": ["business_problem", "merchandising_workflow", "kpi", "catalog_behavior", "team_ownership"],
+      "discoveryForbidden": ["deep_api_interview_without_need", "invent_kpi", "force_developer_language"]
+    },
+    {
+      "id": "U4",
+      "role": "VP of Digital Commerce",
+      "identity": "Executive buyer evaluating business and commercial fit",
+      "companyContext": "Multi-brand retailer",
+      "goal": "Evaluate ROI, proof, cost drivers, risk, and next commercial action",
+      "initialFacts": [],
+      "discoveryAllowed": ["business_outcome", "scale", "decision_stage", "evidence_need", "commercial_next_step"],
+      "discoveryForbidden": ["invent_price", "invent_customer_metric", "claim_competitor_fact_without_evidence"]
+    },
+    {
+      "id": "U5",
+      "role": "Junior developer learning Algolia",
+      "identity": "New visitor exploring concepts and learning paths",
+      "companyContext": "Small SaaS documentation site",
+      "goal": "Understand fundamentals and find the right documentation or Academy path",
+      "initialFacts": [],
+      "discoveryAllowed": ["learning_goal", "experience_level", "implementation_language", "preferred_learning_path"],
+      "discoveryForbidden": ["sales_qualification", "assume_advanced_knowledge", "ask_catalog_scale_before_learning_goal"]
+    }
+  ],
+  "campaigns": [
+    {
+      "id": "U1-C1",
+      "personaId": "U1",
+      "mode": "clean_support_conversation",
+      "startState": "fresh_browser_fresh_visitor_open_chat_manually",
+      "expectedIntent": "resolve_support_problem",
+      "expectedRoute": "answer_from_support_or_documentation_evidence_then_offer_correct_support_path_if_unresolved",
+      "factsToRemember": ["zero_results", "changed_searchable_attributes", "change_happened_yesterday", "staging_release_blocked"],
+      "turnActions": ["open_chat", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer"],
+      "questions": [
+        "Our search results suddenly return zero hits for queries that worked yesterday. Where should I start troubleshooting?",
+        "It began after we changed our searchable attributes. Could that change explain the zero-result behavior?",
+        "When you say to inspect the configuration, which settings are you referring to?",
+        "Let me ask the core question again: which searchable-attribute changes are most likely to make previously working queries return nothing?",
+        "Separately, can typo-tolerance configuration also contribute to a zero-results problem?",
+        "This is blocking our staging release. What evidence should I collect, and should I continue with documentation or open a support request?"
+      ]
+    },
+    {
+      "id": "U1-C2",
+      "personaId": "U1",
+      "mode": "accumulation_rate_limit_and_correction",
+      "startState": "continue_transcript_from_U1-C1",
+      "expectedIntent": "resolve_support_problem",
+      "expectedRoute": "support_or_documentation_not_sales",
+      "factsToRemember": ["javascript_client", "autocomplete_is_primary_request_source", "one_primary_index_not_two", "traffic_spikes_during_promotions"],
+      "turnActions": ["submit_after_previous_terminal", "submit_long_compound_question", "correct_prior_fact", "paraphrase_prior_question", "topic_pivot", "request_route"],
+      "questions": [
+        "We also see intermittent 429 responses from our JavaScript search client during busy periods. How should we distinguish expected rate limiting from a bad frontend request pattern?",
+        "The browser logs suggest autocomplete produces most requests, while filters and page loads add more. How can I verify which user actions are generating search requests before I change anything?",
+        "I said we had two primary indices earlier, but that was wrong. We have one primary index and one replica. Please use that corrected setup going forward.",
+        "Given that correction, can you restate how I should investigate the 429s without assuming that two primary indices are involved?",
+        "The issue is much worse during promotions. Does that change the diagnostic order you would recommend?",
+        "If the 429s continue after we reduce unnecessary browser requests, what exact information should I take to Algolia support?"
+      ]
+    },
+    {
+      "id": "U1-C3",
+      "personaId": "U1",
+      "mode": "navigation_chaos_support",
+      "startState": "clear_conversation_keep_visitor_then_navigate_to_developers",
+      "expectedIntent": "support_and_documentation",
+      "expectedRoute": "current_page_context_may_help_but_must_not_override_question",
+      "factsToRemember": ["staging_indexing_job", "records_missing_after_partial_update", "javascript_client"],
+      "turnActions": ["navigate_/developers_then_open_chat", "navigate_/products/ai-search_after_answer", "history_back_before_submit", "history_forward_before_submit", "refresh_after_previous_answer", "history_back_during_stream"],
+      "questions": [
+        "A staging indexing job completed, but some updated records are missing from search. What should I verify first?",
+        "Now that I am on the AI Search product page, does the page change your troubleshooting advice for the missing records?",
+        "I went back to the developer page. Which part of the indexing flow were you asking me to verify?",
+        "I moved forward again. If partial updates are involved, what evidence would distinguish an indexing problem from a search-configuration problem?",
+        "After refreshing the page, can you continue from the same troubleshooting context without making me repeat the symptom?",
+        "While this answer is loading I am going back again. What is the safest next diagnostic step for the missing-record problem?"
+      ]
+    },
+    {
+      "id": "U1-C4",
+      "personaId": "U1",
+      "mode": "reset_and_submission_races_support",
+      "startState": "full_visitor_reset_then_fresh_chat",
+      "expectedIntent": "support",
+      "expectedRoute": "isolate_new_problem_from_old_transcript",
+      "factsToRemember": ["new_problem_is_timeout", "node_backend", "production_not_staging"],
+      "turnActions": ["full_reset_then_open_chat", "double_enter_attempt", "close_and_reopen_chat", "open_second_tab_same_context", "clear_after_first_text_delta", "fresh_submit_after_clear"],
+      "questions": [
+        "New issue: our server-side search request sometimes times out from a Node backend. Please treat this as unrelated to the earlier staging problem.",
+        "What should I measure around the timeout before changing retry behavior?",
+        "I closed and reopened chat. Do you still know that this timeout comes from a Node backend?",
+        "I opened a second tab. In this tab, what problem are we currently troubleshooting?",
+        "I am clearing this conversation while the answer is streaming.",
+        "Fresh question after clearing: what is Algolia?"
+      ]
+    },
+    {
+      "id": "U2-C1",
+      "personaId": "U2",
+      "mode": "clean_developer_evaluation",
+      "startState": "fresh_browser_fresh_visitor_open_chat_manually",
+      "expectedIntent": "evaluate_technical_fit",
+      "expectedRoute": "general_answer_then_technical_specialist_when_depth_materially_improves_result",
+      "factsToRemember": ["nextjs", "react_instantsearch", "pim", "erp", "poc"],
+      "turnActions": ["open_chat", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer"],
+      "questions": [
+        "What should a credible React InstantSearch proof of concept include?",
+        "Our storefront is Next.js, product data comes from a PIM, and orders live in an ERP. How should that shape the proof of concept?",
+        "For that architecture, which responsibilities belong in the frontend and which belong in the indexing pipeline?",
+        "Let me rephrase: what is the smallest proof of concept that still tests frontend relevance, indexing, and event collection honestly?",
+        "Unrelated question: what counts as an API call when users type, filter, and change pages?",
+        "Bring in the Developer Specialist if deeper implementation guidance would materially improve this plan."
+      ]
+    },
+    {
+      "id": "U2-C2",
+      "personaId": "U2",
+      "mode": "accumulation_migration_architecture",
+      "startState": "continue_transcript_from_U2-C1",
+      "expectedIntent": "evaluate_implementation_and_migration",
+      "expectedRoute": "compound_retrieval_and_technical_depth",
+      "factsToRemember": ["five_million_records", "three_locales", "existing_elasticsearch", "six_engineers_then_corrected_to_two"],
+      "turnActions": ["submit_scale_context", "submit_compound_question", "submit_reference_question", "correct_prior_fact", "paraphrase_with_corrected_fact", "request_recommendation"],
+      "questions": [
+        "Add this context: we have roughly five million product records, three locales, and an existing Elasticsearch implementation.",
+        "How should we migrate records, relevance logic, analytics events, and frontend behavior without turning the proof of concept into a full replatform?",
+        "Of those workstreams, which one creates the largest risk for the architecture you just described?",
+        "Correction: I said six engineers were available, but only two can work on this evaluation. Please discard the six-engineer assumption.",
+        "With two engineers rather than six, how should the proof-of-concept boundary change?",
+        "What decision would you recommend we make first before writing implementation code?"
+      ]
+    },
+    {
+      "id": "U2-C3",
+      "personaId": "U2",
+      "mode": "navigation_chaos_developer",
+      "startState": "clear_conversation_keep_visitor_then_navigate_to_developers",
+      "expectedIntent": "technical_documentation",
+      "expectedRoute": "documentation_and_developer_evidence",
+      "factsToRemember": ["nextjs", "react_instantsearch", "server_side_rendering", "pim_feed"],
+      "turnActions": ["navigate_/developers_then_open_chat", "navigate_/products/features/ui-component-libraries", "history_back", "history_forward", "refresh_after_answer", "navigate_/products/ai-search_during_stream"],
+      "questions": [
+        "Which Algolia resources should I read before implementing search UI in Next.js?",
+        "I am now looking at the UI component libraries page. Which option is most relevant to the stack I already gave you?",
+        "Back on the developer page, what did you mean by keeping indexing concerns out of the frontend?",
+        "Forward again: how does server-side rendering change that boundary?",
+        "After refresh, continue with the same Next.js and PIM context: where should events be emitted?",
+        "I am navigating to AI Search while this loads. What should remain unchanged in the architecture despite that page transition?"
+      ]
+    },
+    {
+      "id": "U2-C4",
+      "personaId": "U2",
+      "mode": "reset_and_submission_races_developer",
+      "startState": "full_visitor_reset_then_fresh_chat",
+      "expectedIntent": "technical_evaluation",
+      "expectedRoute": "new_context_only_after_full_reset",
+      "factsToRemember": ["python_backend", "vue_frontend", "documentation_search", "not_ecommerce"],
+      "turnActions": ["full_reset_then_open_chat", "double_click_submit_attempt", "close_and_reopen", "second_tab_same_context", "refresh_after_first_delta", "clear_then_fresh_submit"],
+      "questions": [
+        "Fresh scenario: I have a Python backend and Vue frontend for documentation search, not ecommerce. How should I begin?",
+        "Which data-model decision should I validate first?",
+        "I reopened chat. Are you still using Python, Vue, and documentation search as the active context?",
+        "In a second tab, should the same implementation context be available without duplicating the conversation?",
+        "I am refreshing while this answer is streaming. Continue with the documentation-search architecture when the page returns.",
+        "After clearing, answer only this new question: where can I learn the basics of Algolia indexing?"
+      ]
+    },
+    {
+      "id": "U3-C1",
+      "personaId": "U3",
+      "mode": "clean_merchandising_evaluation",
+      "startState": "fresh_browser_fresh_visitor_open_chat_manually",
+      "expectedIntent": "evaluate_business_and_operational_fit",
+      "expectedRoute": "business_answer_with_relevant_discovery",
+      "factsToRemember": ["grocery", "nontechnical_merchandising_team", "out_of_stock_problem", "conversion_and_zero_results"],
+      "turnActions": ["open_chat", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer"],
+      "questions": [
+        "How can a non-technical grocery merchandising team operate search day to day after implementation?",
+        "Our biggest problem is that out-of-stock products dominate results. What control should the merchandising team expect to have?",
+        "When you say rules and ranking, how would those work together for that problem?",
+        "Let me ask it differently: how can merchandisers keep unavailable products from hurting discovery without constantly asking developers for help?",
+        "We also care about zero-result searches and conversion. Which should we investigate first?",
+        "What would be a sensible next step for validating this with our merchandising team?"
+      ]
+    },
+    {
+      "id": "U3-C2",
+      "personaId": "U3",
+      "mode": "accumulation_personalization_rules",
+      "startState": "continue_transcript_from_U3-C1",
+      "expectedIntent": "evaluate_merchandising_strategy",
+      "expectedRoute": "answer_capability_interaction_without_inventing_behavior",
+      "factsToRemember": ["weekly_campaigns", "three_merchandisers", "personalization_not_live", "rules_already_used"],
+      "turnActions": ["submit_workflow_context", "submit_compound_question", "reference_prior_answer", "correct_inference", "repeat_with_correction", "request_decision"],
+      "questions": [
+        "We run weekly campaigns with three merchandisers, and we already use merchandising rules.",
+        "How should rules, synonyms, personalization, and recommendations interact without making the team lose control of why products appear?",
+        "Which part of that setup should remain deterministic for the team you described?",
+        "Correction: personalization is not live today; we are only considering it. Do not treat it as part of our current stack.",
+        "Given that personalization is only being evaluated, what should we test before adding it to our existing rules workflow?",
+        "Would you recommend validating relevance quality or team operating effort first, and why?"
+      ]
+    },
+    {
+      "id": "U3-C3",
+      "personaId": "U3",
+      "mode": "navigation_chaos_merchandiser",
+      "startState": "clear_conversation_keep_visitor_then_navigate_to_grocery",
+      "expectedIntent": "business_discovery",
+      "expectedRoute": "page_context_personalizes_without_exposing_tracking",
+      "factsToRemember": ["grocery", "fresh_and_substitute_products", "conversion_goal", "small_team"],
+      "turnActions": ["navigate_/industries/grocery_then_open_chat", "navigate_/products/ai-recommendations", "history_back", "history_forward", "refresh_after_answer", "navigate_/pricing_during_stream"],
+      "questions": [
+        "Which grocery discovery problems usually create the most commercial friction?",
+        "Now I am looking at AI Recommendations. How would recommendations help without distracting from the search problems we were discussing?",
+        "Back on Grocery, which issue should a small merchandising team validate first?",
+        "Forward again: how would that priority affect the recommendation strategy?",
+        "After refreshing, continue with the same grocery context and tell me what outcome we should measure.",
+        "I am moving to pricing while this loads. Which business input should I quantify before discussing cost?"
+      ]
+    },
+    {
+      "id": "U3-C4",
+      "personaId": "U3",
+      "mode": "reset_and_submission_races_merchandiser",
+      "startState": "full_visitor_reset_then_fresh_chat",
+      "expectedIntent": "business_evaluation",
+      "expectedRoute": "new_business_context_only",
+      "factsToRemember": ["fashion_marketplace", "seller_quality_problem", "four_merchandisers"],
+      "turnActions": ["full_reset_then_open_chat", "double_enter_attempt", "close_and_reopen", "second_tab_same_context", "clear_after_first_delta", "fresh_submit_after_clear"],
+      "questions": [
+        "Fresh scenario: I run merchandising for a fashion marketplace, and inconsistent seller data is hurting relevance.",
+        "Where should four merchandisers focus before we consider personalization?",
+        "I reopened chat. Which marketplace problem are we discussing?",
+        "In another tab, what business context do you currently know about me?",
+        "I am clearing the conversation while this answer streams.",
+        "New conversation: what does Algolia offer for documentation search?"
+      ]
+    },
+    {
+      "id": "U4-C1",
+      "personaId": "U4",
+      "mode": "clean_executive_evaluation",
+      "startState": "fresh_browser_fresh_visitor_open_chat_manually",
+      "expectedIntent": "evaluate_business_fit",
+      "expectedRoute": "evidence_backed_business_answer_then_relevant_qualification",
+      "factsToRemember": ["multi_brand_retailer", "conversion", "operating_effort", "executive_evaluation"],
+      "turnActions": ["open_chat", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer"],
+      "questions": [
+        "What is the business value of Algolia for a multi-brand retailer?",
+        "We care about conversion and reducing merchandising effort. What evidence should I look for?",
+        "How would those outcomes translate into an evaluation plan rather than a feature checklist?",
+        "Let me repeat the decision question: how do I know whether better discovery will create enough value to justify an evaluation?",
+        "What are the biggest cost drivers I should understand before speaking with sales?",
+        "What information should I prepare if I want a useful commercial conversation rather than a generic demo?"
+      ]
+    },
+    {
+      "id": "U4-C2",
+      "personaId": "U4",
+      "mode": "accumulation_pricing_comparison",
+      "startState": "continue_transcript_from_U4-C1",
+      "expectedIntent": "commercial_evaluation",
+      "expectedRoute": "grounded_limit_then_sales_or_evidence_path",
+      "factsToRemember": ["twelve_brands", "eight_markets", "existing_competing_platform", "evaluation_this_quarter"],
+      "turnActions": ["submit_scale_context", "submit_comparison", "ask_pricing", "reference_prior_limit", "correct_timeline", "request_next_step"],
+      "questions": [
+        "We operate twelve brands in eight markets and currently use another search platform.",
+        "How does Algolia compare with Coveo or Constructor for that environment?",
+        "What is the actual cost difference between Grow and Elevate, and which AI capabilities are included?",
+        "Given the evidence limits you mentioned, what can you responsibly help me evaluate before I talk to sales?",
+        "Correction: this decision is planned for this quarter, not next year. Please use the nearer timeline.",
+        "What is the most useful next action for an executive evaluation at this stage?"
+      ]
+    },
+    {
+      "id": "U4-C3",
+      "personaId": "U4",
+      "mode": "navigation_chaos_executive",
+      "startState": "clear_conversation_keep_visitor_then_navigate_to_customer_story",
+      "expectedIntent": "proof_and_commercial_evaluation",
+      "expectedRoute": "evidence_then_pricing_or_sales",
+      "factsToRemember": ["multi_brand", "needs_customer_proof", "implementation_risk", "this_quarter"],
+      "turnActions": ["navigate_customer_story_then_open_chat", "navigate_/pricing", "history_back", "history_forward", "refresh_after_answer", "navigate_/products/ai-search_during_stream"],
+      "questions": [
+        "What should I look for in an Algolia customer story to decide whether it is relevant to my business?",
+        "Now that I am on pricing, which facts from a customer story should influence the commercial discussion?",
+        "Back on the customer evidence, how do I distinguish a comparable outcome from an impressive but irrelevant metric?",
+        "Forward to pricing again: which implementation unknown is most likely to change cost?",
+        "After refresh, continue with the same multi-brand evaluation context and summarize the next decision.",
+        "I am moving to AI Search while this loads. Which proof point should I validate there?"
+      ]
+    },
+    {
+      "id": "U4-C4",
+      "personaId": "U4",
+      "mode": "reset_and_submission_races_executive",
+      "startState": "full_visitor_reset_then_fresh_chat",
+      "expectedIntent": "commercial_or_product_evaluation",
+      "expectedRoute": "do_not_reuse_old_company_scale_after_reset",
+      "factsToRemember": ["b2b_distributor", "self_service_goal", "early_research"],
+      "turnActions": ["full_reset_then_open_chat", "double_click_submit_attempt", "close_and_reopen", "second_tab_same_context", "refresh_after_first_delta", "clear_then_fresh_submit"],
+      "questions": [
+        "Fresh scenario: I lead digital for a B2B distributor and we are only in early research. Our goal is better customer self-service.",
+        "Which Algolia capability should I investigate first?",
+        "I reopened chat. What stage and business outcome did I tell you?",
+        "In a second tab, should you know the same confirmed context without inventing our catalog size?",
+        "I am refreshing during this answer. Preserve only the confirmed B2B and self-service context.",
+        "After clearing, answer this independently: where can I find Algolia support resources?"
+      ]
+    },
+    {
+      "id": "U5-C1",
+      "personaId": "U5",
+      "mode": "clean_learning_conversation",
+      "startState": "fresh_browser_fresh_visitor_open_chat_manually",
+      "expectedIntent": "learn",
+      "expectedRoute": "explain_then_documentation_or_academy",
+      "factsToRemember": ["junior_developer", "documentation_site", "new_to_algolia", "javascript"],
+      "turnActions": ["open_chat", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer", "wait_for_terminal_answer"],
+      "questions": [
+        "I am new to Algolia. What is it, in plain language?",
+        "I am a junior JavaScript developer building search for a documentation site. What should I learn first?",
+        "When you say indexing, what exactly is being indexed?",
+        "Can you explain indexing again with a concrete documentation-site example?",
+        "How is relevance different from simply matching the words in a query?",
+        "Should I continue with documentation, an Academy course, or a small project?"
+      ]
+    },
+    {
+      "id": "U5-C2",
+      "personaId": "U5",
+      "mode": "accumulation_learning_depth",
+      "startState": "continue_transcript_from_U5-C1",
+      "expectedIntent": "learn_technical_concepts",
+      "expectedRoute": "documentation_or_academy_with_level_appropriate_depth",
+      "factsToRemember": ["javascript", "documentation_site", "understands_basic_indexing", "wants_neural_search_next"],
+      "turnActions": ["submit_learning_goal", "submit_compound_concept_question", "reference_previous_example", "ask_paraphrase", "topic_pivot", "request_learning_plan"],
+      "questions": [
+        "I understand the basic indexing example now. I want to learn how query processing and ranking fit together.",
+        "How do typo tolerance, synonyms, rules, and neural search each influence what the user sees?",
+        "In the documentation-site example, which of those would handle an abbreviation that means the same thing as a longer phrase?",
+        "Can you explain that distinction again without assuming I know search terminology?",
+        "Different topic: how do I add a search UI to a JavaScript application?",
+        "Give me a sensible learning sequence from beginner concepts to a working prototype."
+      ]
+    },
+    {
+      "id": "U5-C3",
+      "personaId": "U5",
+      "mode": "navigation_chaos_learning",
+      "startState": "clear_conversation_keep_visitor_then_navigate_to_developers",
+      "expectedIntent": "learn_and_find_documentation",
+      "expectedRoute": "page_aware_learning_without_telemetry_disclosure",
+      "factsToRemember": ["junior_javascript_developer", "documentation_search", "needs_beginner_path"],
+      "turnActions": ["navigate_/developers_then_open_chat", "navigate_documentation_route", "history_back", "history_forward", "refresh_after_answer", "navigate_/products/ai-search_during_stream"],
+      "questions": [
+        "I am on the developer page. Where should a JavaScript beginner start?",
+        "Now I am looking at documentation. Which page should I use to build my first small search experience?",
+        "I went back. What prerequisite did you say I should understand before the UI code?",
+        "Forward again: how does the documentation connect that concept to an implementation?",
+        "After refreshing, continue at the same beginner level and tell me the next exercise.",
+        "I am navigating to AI Search while this loads. Explain how the product idea relates to the code I am learning."
+      ]
+    },
+    {
+      "id": "U5-C4",
+      "personaId": "U5",
+      "mode": "reset_and_submission_races_learning",
+      "startState": "full_visitor_reset_then_fresh_chat",
+      "expectedIntent": "learn",
+      "expectedRoute": "new_learning_context_only",
+      "factsToRemember": ["python_beginner", "internal_knowledge_base", "not_javascript"],
+      "turnActions": ["full_reset_then_open_chat", "double_enter_attempt", "close_and_reopen", "second_tab_same_context", "clear_after_first_delta", "fresh_submit_after_clear"],
+      "questions": [
+        "Fresh scenario: I am a Python beginner building search for an internal knowledge base, not a JavaScript documentation site.",
+        "What should I learn before I write any integration code?",
+        "I reopened chat. Which language and use case are active now?",
+        "In another tab, can you continue the Python learning path without restoring the old JavaScript scenario?",
+        "I am clearing while this answer streams.",
+        "New conversation: what is the difference between support documentation and Algolia Academy?"
+      ]
+    }
+  ],
+  "breakpointProbePersonas": [
+    {
+      "id": "U6",
+      "role": "Site reliability engineer",
+      "turns": [
+        "How should I monitor Algolia request latency, failures, and rate-limit behavior in a production search experience?",
+        "Which browser and server signals would help distinguish our own request amplification from an upstream service problem?",
+        "When you say request amplification, does that include autocomplete, filters, retries, and multiple indices?",
+        "Restate the diagnostic plan assuming we cannot access internal Algolia service metrics.",
+        "How should we test recovery after a burst without creating duplicate user actions?",
+        "What evidence should trigger escalation to support?"
+      ]
+    },
+    {
+      "id": "U7",
+      "role": "Solutions architect",
+      "turns": [
+        "How should I evaluate Algolia for a multi-region, multi-locale commerce architecture?",
+        "Our product data comes from a PIM and inventory changes frequently. Which data-flow questions matter first?",
+        "How does that affect the indexing architecture you described?",
+        "Repeat the recommendation for a team that needs regional autonomy but shared relevance standards.",
+        "What implementation risk would you validate before choosing a frontend library?",
+        "When is a technical specialist useful for this evaluation?"
+      ]
+    },
+    {
+      "id": "U8",
+      "role": "Agency integration lead",
+      "turns": [
+        "We implement search for several clients with different commerce platforms. How should we avoid building a one-off Algolia architecture for each client?",
+        "Which parts of indexing, relevance, analytics, and UI can be standardized safely?",
+        "For that shared model, where should client-specific rules live?",
+        "Ask the same question another way: what should be reusable and what should remain client-owned?",
+        "How would the answer change for a client migrating from a competing search platform?",
+        "What should an agency prove in the first client proof of concept?"
+      ]
+    },
+    {
+      "id": "U9",
+      "role": "Security and procurement reviewer",
+      "turns": [
+        "Where can I find authoritative Algolia security, privacy, and trust information for vendor review?",
+        "Which claims can you verify from the available Algolia sources, and which require a formal sales or security process?",
+        "What should I prepare before requesting that review?"
+      ]
+    },
+    {
+      "id": "U10",
+      "role": "Product manager",
+      "turns": [
+        "How should a product manager define success for a search and discovery evaluation?",
+        "Our current problem is users finding products but not choosing them. Which metric or experiment should come first?",
+        "How would that change the proof-of-concept scope?"
+      ]
+    },
+    {
+      "id": "U11",
+      "role": "Data and analytics lead",
+      "turns": [
+        "What events and analytics should we plan before testing personalization?",
+        "How do we avoid treating incomplete event data as reliable user preference?",
+        "What validation would prove the event pipeline is ready?"
+      ]
+    },
+    {
+      "id": "U12",
+      "role": "B2B ecommerce owner",
+      "turns": [
+        "How can Algolia help buyers search a complex B2B catalog with account-specific needs?",
+        "Our buyers use part numbers as well as natural language. What should we evaluate first?",
+        "Which implementation unknown should I bring to a specialist?"
+      ]
+    },
+    {
+      "id": "U13",
+      "role": "Marketplace operator",
+      "turns": ["How should a marketplace handle inconsistent seller data without destroying search relevance?"]
+    },
+    {
+      "id": "U14",
+      "role": "Media publisher",
+      "turns": ["How should a media site evaluate Algolia for fast, relevant content discovery across years of articles?"]
+    },
+    {
+      "id": "U15",
+      "role": "Documentation platform owner",
+      "turns": ["What should I test when evaluating Algolia for documentation search across several product versions?"]
+    },
+    {
+      "id": "U16",
+      "role": "International retail lead",
+      "turns": ["How should I think about search relevance across multiple languages, locales, and country-specific catalogs?"]
+    },
+    {
+      "id": "U17",
+      "role": "Migration program lead",
+      "turns": ["What should a safe migration evaluation cover before we move from another search platform to Algolia?"]
+    },
+    {
+      "id": "U18",
+      "role": "Growth marketing leader",
+      "turns": ["Can a marketing team improve search conversion with Algolia without depending on developers for every change?"]
+    },
+    {
+      "id": "U19",
+      "role": "Anonymous impatient visitor",
+      "turns": ["price?"]
+    },
+    {
+      "id": "U20",
+      "role": "Ambiguous visitor changing intent",
+      "turns": ["It broke again. I was evaluating Algolia, but right now I just need help finding the correct support path."]
+    }
+  ],
+  "mutationVariants": [
+    "exact_base_question",
+    "semantic_paraphrase",
+    "repeat_exactly_after_two_turns",
+    "leading_and_trailing_whitespace",
+    "line_breaks_and_pasted_bullets",
+    "unicode_punctuation",
+    "long_compound_form",
+    "pronoun_reference",
+    "correction_of_prior_fact",
+    "abrupt_topic_pivot"
+  ]
+}

@@ -41,15 +41,27 @@ test('specialist limitation renders secondarily before the sole discovery questi
   assert.match(bundle, /m=k\?\.followUps\?\?e\.segments\[0\]\?\.followUps\?\?\[\]/);
 });
 
-test('Agent Studio completion steps retry one transient or empty response', async () => {
+test('Agent Studio completion steps share one explicit pre-stream retry budget', async () => {
   const bundle = await readFile(bundleUrl, 'utf8');
 
   assert.match(bundle, /async function __arrieCompletionStep\(/);
-  assert.match(bundle, /const E=await __arrieCompletionStep\(e,n,/);
+  assert.match(bundle, /safeToRetry=e\.status===408\|\|e\.status===429\|\|e\.status>=500/);
+  assert.match(bundle, /const[^;]+remaining:1/);
+  assert.doesNotMatch(bundle, /function __arrieEmptyCompletion\(/);
   assert.match(
     bundle,
-    /g\.content\.trim\(\)&&x\.some\(R=>\{if\(R\.type!=="tool-ask_specialist"\)/,
+    /\.content\.trim\(\)&&[^.]+\.some\([^=]+=>\{if\([^.]+\.type!=="tool-ask_specialist"\)/,
   );
+});
+
+test('confidence judges make one attempt each and never amplify rate-limit or validation failures', async () => {
+  const bundle = await readFile(bundleUrl, 'utf8');
+
+  assert.match(bundle, /async function __arrieRunRoleJudge\(/);
+  assert.match(bundle, /phase:"judging",role:i,attempt:1/);
+  assert.doesNotMatch(bundle, /for\(let w=1;w<=2/);
+  assert.doesNotMatch(bundle, /Judge failed validation twice/);
+  assert.doesNotMatch(bundle, /phase:"retrying",role:/);
 });
 
 test('qualified specialist journeys use the existing human-gated specialist handler deterministically', async () => {
@@ -58,12 +70,18 @@ test('qualified specialist journeys use the existing human-gated specialist hand
   assert.match(bundle, /function __arrieDeterministicSpecialistOffer\(/);
   assert.match(bundle, /function __arrieRunDeterministicSpecialistOffer\(/);
   assert.match(bundle, /qualified_journey/);
+  assert.match(bundle, /developer\|technical\|implementation\) specialist/);
+  assert.match(bundle, /customer \)\?evidence specialist/);
+  assert.match(bundle, /product specialist/);
+  assert.match(bundle, /sales specialist\|sales concierge/);
+  assert.match(bundle, /if\([a-z]&&[A-Z]\)return\{specialistKey:[A-Z],question:[a-z]\}/);
   assert.match(bundle, /specialist_key:[a-z]\.specialistKey,question:[a-z]\.question/);
   assert.match(
     bundle,
     /await __arrieRunDeterministicSpecialistOffer\([^)]*lastVisibleAnswer\)/,
   );
   assert.match(bundle, /if\(!\([a-z]\.content\|\|[a-z]\)\.trim\(\)\|\|/);
+
 });
 
 test('specialist consent and discovery are sequential rather than competing actions', async () => {

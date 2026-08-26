@@ -82,14 +82,14 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.match(bundle, /static get observedAttributes\(\)\{return\["mode","agents"\]\}/);
   });
 
-  test(`${bundleName} accepts exact fenced judge JSON without imposing elapsed-time scoring deadlines`, () => {
+  test(`${bundleName} accepts exact fenced judge JSON with a bounded panel deadline`, () => {
     const bundle = readBundle(bundleName);
 
     assert.match(bundle, /\^```\(\?:json\)\?/);
     assert.doesNotMatch(bundle, /Judge attempt timed out after/);
-    assert.doesNotMatch(bundle, /Judge panel deadline exceeded after/);
+    assert.match(bundle, /Judge panel deadline exceeded after 30000ms/);
     assert.match(bundle, /phase:"judging"/);
-    assert.match(bundle, /phase:"retrying"/);
+    assert.doesNotMatch(bundle, /phase:"retrying"/);
     assert.match(bundle, /phase:"complete"/);
     assert.match(bundle, /phase:"failed"/);
   });

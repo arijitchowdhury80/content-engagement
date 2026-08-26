@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "TestTurn.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "personaId", "campaignId", "turnId", "exactUserText", "intent", "factsAlreadyConfirmed", "factsToRemember", "explicitCorrections", "expectedRoute", "acceptableAnswerBehaviors", "prohibitedClaims", "expectedDiscoveryBehavior", "beforeAction", "turnAction", "afterAction", "timeoutPolicy"],
+  "properties": {
+    "schema": { "const": "TestTurn.v1" },
+    "personaId": { "type": "string", "minLength": 1 },
+    "campaignId": { "type": "string", "minLength": 1 },
+    "turnId": { "type": "string", "minLength": 1 },
+    "exactUserText": { "type": "string", "minLength": 1 },
+    "intent": { "type": "string", "minLength": 1 },
+    "factsAlreadyConfirmed": { "type": "array", "items": { "type": "string" } },
+    "factsToRemember": { "type": "array", "items": { "type": "string" } },
+    "explicitCorrections": { "type": "array", "items": { "type": "string" } },
+    "expectedRoute": { "type": "string", "minLength": 1 },
+    "acceptableAnswerBehaviors": { "type": "array", "items": { "type": "string" } },
+    "prohibitedClaims": { "type": "array", "items": { "type": "string" } },
+    "expectedDiscoveryBehavior": { "type": "object" },
+    "beforeAction": { "type": ["string", "null"] },
+    "turnAction": { "type": "string", "minLength": 1 },
+    "afterAction": { "type": ["string", "null"] },
+    "timeoutPolicy": { "type": "object" }
+  }
+}

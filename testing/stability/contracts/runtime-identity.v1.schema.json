@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "RuntimeIdentity.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "origin", "jahia", "browser", "agentStudio", "assets", "checkedAt"],
+  "properties": {
+    "schema": { "const": "RuntimeIdentity.v1" },
+    "origin": { "const": "https://tmp-content-eng-algolia.cloud.jahia.com" },
+    "jahia": { "type": "object" },
+    "browser": { "type": "object" },
+    "agentStudio": { "type": "object" },
+    "assets": { "type": "object" },
+    "checkedAt": { "type": "string", "format": "date-time" }
+  }
+}

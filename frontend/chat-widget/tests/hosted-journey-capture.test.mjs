@@ -27,7 +27,9 @@ test('hosted specialist capture checks native consent before deterministic debug
   assert.ok(helperStart >= 0 && helperEnd > helperStart, 'specialist consent helper must exist');
   assert.doesNotMatch(helper, /waitForFunction\([\s\S]*__algoliaChatSpecialistDebug/);
   assert.match(helper, /deep-dive offer/i);
-  assert.match(helper, /go deeper|bring.*specialist/i);
+  assert.match(helper, /\^yes,\\s\*go deeper\$/i);
+  assert.match(helper, /\^no thanks\$/i);
+  assert.doesNotMatch(helper, /bring\.\*specialist/i);
 });
 
 test('discovery cardinality accepts exactly one visible nonempty question', () => {

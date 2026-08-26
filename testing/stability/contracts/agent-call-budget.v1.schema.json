@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "AgentCallBudget.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "roles", "stagePhysicalCeiling"],
+  "properties": {
+    "schema": { "const": "AgentCallBudget.v1" },
+    "roles": { "type": "object" },
+    "stagePhysicalCeiling": { "type": "integer", "minimum": 1 }
+  }
+}

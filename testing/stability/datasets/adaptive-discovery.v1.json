@@ -1,0 +1,147 @@
+{
+  "schema": "AdaptiveDiscoveryDataset.v1",
+  "version": "2026-08-25",
+  "status": "frozen-v1",
+  "targetFlow": "reactive_adaptive_discovery",
+  "campaigns": [
+    {
+      "id": "U2-AD1",
+      "personaId": "U2",
+      "role": "Senior ecommerce developer",
+      "intent": "evaluate_technical_fit",
+      "initialQuestion": "What should a credible React InstantSearch proof of concept include?",
+      "discoveryResponseTurns": 4,
+      "requiredSlots": [
+        "evaluation_goal",
+        "architecture",
+        "scale",
+        "success_criteria",
+        "delivery_constraints"
+      ],
+      "forbiddenQuestionPatterns": [
+        "book.*meeting",
+        "talk.*sales",
+        "budget",
+        "phone number",
+        "email address"
+      ],
+      "responses": [
+        {
+          "slot": "evaluation_goal",
+          "questionPatterns": [
+            "decision",
+            "goal",
+            "outcome",
+            "trying to prove",
+            "why.*proof of concept",
+            "replace.*search"
+          ],
+          "answer": "We need to decide whether Algolia can replace our existing Elasticsearch implementation without turning the evaluation into a full replatform.",
+          "reveals": {
+            "evaluation_goal": "Evaluate replacing Elasticsearch without a full replatform",
+            "current_platform": "Elasticsearch"
+          }
+        },
+        {
+          "slot": "architecture",
+          "questionPatterns": [
+            "front.?end",
+            "framework",
+            "tech stack",
+            "server.side rendering",
+            "ssr",
+            "multi.index",
+            "architecture"
+          ],
+          "answer": "Our storefront is Next.js with server-rendered category pages and client-side React InstantSearch interactions. Product data comes from a PIM, inventory comes from an ERP, and Elasticsearch is the current search engine.",
+          "reveals": {
+            "architecture": "Next.js SSR plus client-side React InstantSearch",
+            "product_source": "PIM",
+            "inventory_source": "ERP",
+            "current_platform": "Elasticsearch"
+          }
+        },
+        {
+          "slot": "data_flow",
+          "questionPatterns": [
+            "middleware",
+            "direct integration",
+            "push.*data",
+            "data flow",
+            "sync",
+            "pim",
+            "erp",
+            "inventory"
+          ],
+          "answer": "We expect a middleware indexing service to combine PIM product data with ERP availability before sending partial updates to Algolia.",
+          "reveals": {
+            "data_flow": "Middleware combines PIM data with ERP availability and sends partial updates"
+          }
+        },
+        {
+          "slot": "scale",
+          "questionPatterns": [
+            "catalog",
+            "how many",
+            "number of products",
+            "records",
+            "locales",
+            "traffic",
+            "scale"
+          ],
+          "answer": "The production catalog has about five million product records across three locales, although the proof of concept should use a representative subset.",
+          "reveals": {
+            "scale": "Five million product records across three locales"
+          }
+        },
+        {
+          "slot": "success_criteria",
+          "questionPatterns": [
+            "success",
+            "criteria",
+            "metric",
+            "measure",
+            "must prove",
+            "validate",
+            "business outcome"
+          ],
+          "answer": "Success means better relevance on our top fifty queries, inventory freshness within five minutes, and verified click and conversion events from the Next.js storefront.",
+          "reveals": {
+            "success_criteria": "Top-50 query relevance, inventory freshness under five minutes, and verified click/conversion events"
+          }
+        },
+        {
+          "slot": "delivery_constraints",
+          "questionPatterns": [
+            "team",
+            "engineer",
+            "timeline",
+            "timeframe",
+            "deadline",
+            "how long",
+            "resources"
+          ],
+          "answer": "Two engineers can work on the evaluation for four weeks.",
+          "reveals": {
+            "delivery_constraints": "Two engineers for four weeks"
+          }
+        }
+      ],
+      "fallbackAnswer": "Could you narrow that to the single missing fact that would most change your recommendation?",
+      "repeatAnswerPrefix": "We already covered that. ",
+      "finalDecisionPrompt": "Based on the facts I have given you, define the smallest credible proof of concept, identify the first implementation decision, and bring in the Developer Specialist if deeper guidance would materially improve the plan.",
+      "expectedFactMentions": [
+        "Next.js",
+        "React InstantSearch",
+        "PIM",
+        "ERP",
+        "Elasticsearch",
+        "five million",
+        "three locales",
+        "two engineers",
+        "four weeks"
+      ],
+      "expectedRoute": "technical_specialist_with_accumulated_context"
+    }
+  ]
+}

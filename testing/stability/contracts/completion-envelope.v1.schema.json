@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "CompletionEnvelope.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "conversationId", "messages", "callRole", "parentTurnId", "logicalStep", "physicalAttempt"],
+  "properties": {
+    "schema": { "const": "CompletionEnvelope.v1" },
+    "conversationId": { "type": "string", "minLength": 16 },
+    "messages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "role", "parts"],
+        "properties": {
+          "id": { "type": "string", "minLength": 16 },
+          "role": { "enum": ["user", "assistant", "system", "tool"] },
+          "parts": { "type": "array" }
+        }
+      }
+    },
+    "callRole": { "enum": ["primary", "specialist", "judge", "greeting", "profile", "offline-evaluator"] },
+    "parentTurnId": { "type": "string", "minLength": 1 },
+    "logicalStep": { "type": "integer", "minimum": 1 },
+    "physicalAttempt": { "type": "integer", "minimum": 1 }
+  }
+}

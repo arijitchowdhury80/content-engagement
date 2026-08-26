@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "RunManifest.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "runId", "createdAt", "faultOrigin", "target", "runtime", "inputs", "execution", "thresholds", "trafficBudget", "evaluator", "host", "permissions", "hashes"],
+  "properties": {
+    "schema": { "const": "RunManifest.v1" },
+    "runId": { "type": "string", "pattern": "^stab-[a-z0-9-]{20,}$" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "faultOrigin": { "enum": ["NATURAL", "INJECTED"] },
+    "target": { "type": "object" },
+    "runtime": { "type": "object" },
+    "inputs": { "type": "object" },
+    "execution": { "type": "object" },
+    "thresholds": { "type": "object" },
+    "trafficBudget": { "type": "object" },
+    "evaluator": { "type": "object" },
+    "host": { "type": "object" },
+    "permissions": { "type": "object" },
+    "hashes": { "type": "object" }
+  }
+}

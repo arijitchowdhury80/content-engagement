@@ -89,6 +89,8 @@ def update_block_html(current: str, assets: dict, agent_ids: dict[str, str]) -> 
     if len(matches) != 1:
         raise RuntimeError(f"Expected exactly one algolia-chat-confidence element; found {len(matches)}")
     attrs = re.sub(r'\sagent-id="[^"]*"', "", matches[0])
+    attrs = re.sub(r'\smode="[^"]*"', "", attrs)
+    attrs += ' mode="off"'
     next_html = re.sub(confidence_pattern, f'<algolia-chat-confidence{attrs}>', next_html, count=1)
     for role, agent_id in agent_ids.items():
         pattern = rf'(<algolia-agent\b(?=[^>]*\brole="{role}")[^>]*\bagent-id=")[^"]*(")'
@@ -182,6 +184,8 @@ def validate(after: dict, assets: dict, expected_html: str, agent_ids: dict, pub
         "editBlockMatches": after["edit"]["blockHtml"] == expected_html,
         "liveBlockMatches": live_html == expected_html,
         "chiefAttributeAbsent": re.search(r'<algolia-chat-confidence\b[^>]*\bagent-id=', live_html) is None,
+        "inlineConfidenceModeOff": len(re.findall(r'<algolia-chat-confidence\b[^>]*\bmode="off"[^>]*>', live_html)) == 1,
+        "inlineConfidenceModeAlgoliaAbsent": re.search(r'<algolia-chat-confidence\b[^>]*\bmode="algolia"', live_html) is None,
         "coreLoadsBeforeChat": 0 <= live_html.find(assets["core"]["url"]) < live_html.find(assets["chat"]["url"]),
         "threeRoleIdsPresent": all(live_html.count(agent_id) == 1 for agent_id in agent_ids.values()),
     }

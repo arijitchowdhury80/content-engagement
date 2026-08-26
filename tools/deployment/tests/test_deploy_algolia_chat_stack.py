@@ -105,6 +105,12 @@ class SearchToolPatchTests(unittest.TestCase):
             patch["searchParameters"]["filters"],
             'environment:"prod20260722" AND language_code:"en" AND NOT is404:true',
         )
+        self.assertEqual(patch["searchParameters"]["hitsPerPage"], 5)
+        self.assertEqual(
+            patch["searchParameters"]["attributesToRetrieve"],
+            ["objectID", "title", "url", "source", "category"],
+        )
+        self.assertEqual(patch["searchParameters"]["attributesToSnippet"], ["description:80"])
 
     def test_apply_sends_only_tools_and_proves_prompts_are_unchanged(self):
         before = {
@@ -144,6 +150,42 @@ class SearchToolPatchTests(unittest.TestCase):
         self.assertEqual(method, "PATCH")
         self.assertEqual(set(payload), {"tools"})
         self.assertEqual(payload["tools"], expected_tools)
+
+    def test_reviewed_private_apply_refuses_target_drift(self):
+        before = {
+            "tools": self.tools,
+            "instructions": "instructions",
+            "systemPrompt": "system",
+            "config": {"guardrail": {"enabled": True}},
+            "providerId": "provider",
+            "model": "model",
+        }
+        manifest = {
+            "environment": {"algoliaAppIdEnv": "APP", "algoliaAdminApiKeyEnv": "KEY"},
+            "agentStudio": {
+                "orchestrator": {
+                    "agentId": "agent",
+                    "name": "orchestrator",
+                    "evidenceRoot": "evidence",
+                    "searchToolPatch": self.patch,
+                }
+            },
+        }
+        with tempfile.TemporaryDirectory(dir="/private/tmp") as directory:
+            evidence_dir = Path(directory)
+            (evidence_dir / "before-snapshot.json").write_text(json.dumps(before))
+            (evidence_dir / "mutation-packet.json").write_text(json.dumps({"searchToolPatch": self.patch}))
+            drifted = {**before, "config": {"guardrail": {"enabled": False}}}
+            with patch.object(MODULE, "load_env", return_value={"APP": "app", "KEY": "key"}), patch.object(
+                MODULE, "request_json", return_value=drifted
+            ):
+                with self.assertRaisesRegex(RuntimeError, "drifted after dry-run"):
+                    MODULE.deploy_search_tool(
+                        manifest,
+                        apply=True,
+                        run_id="run",
+                        evidence_dir_override=evidence_dir,
+                    )
 
 
 if __name__ == "__main__":
