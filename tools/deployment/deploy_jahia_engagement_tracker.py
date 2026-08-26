@@ -676,15 +676,21 @@ def update_proactive_runtime_block_html(current: str, handoff_url: str | None = 
 
 def update_chat_block_html(current: str) -> str:
     """Change only the chat asset cache key and its release marker."""
+    next_html = re.sub(
+        r'\n?<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/'
+        r'sites/www/files/algolia-chat-stability-[a-f0-9]{12}\.js(?:\?[^"\n]*)?"></script>',
+        "",
+        current,
+    )
     chat_pattern = re.compile(
         r'(<script src="https://tmp-content-eng-algolia\.cloud\.jahia\.com/files/live/'
         r'sites/www/files/algolia-chat\.js)(?:\?[^"\n]*)?(\"></script>)'
     )
-    if len(chat_pattern.findall(current)) != 1:
+    if len(chat_pattern.findall(next_html)) != 1:
         raise RuntimeError(
             "Chat-only deployment requires exactly one algolia-chat.js script tag"
         )
-    next_html = chat_pattern.sub(rf'\1?chat={CHAT_ONLY_VERSION}\2', current, count=1)
+    next_html = chat_pattern.sub(rf'\1?chat={CHAT_ONLY_VERSION}\2', next_html, count=1)
 
     embed_pattern = re.compile(r'<div\b[^>]*\bclass="[^"]*\balgolia-chat-embed\b[^"]*"[^>]*>')
     embed_matches = embed_pattern.findall(next_html)
@@ -1365,12 +1371,21 @@ def run_chat_only(apply: bool) -> int:
         "publishChatContent": publish(CHAT_CONTENT, subtree=False),
         "publishChat": publish(CHAT, subtree=False),
         "versionBlock": version_block(),
-        "publishBlock": publish(BLOCK_PATH, subtree=False),
+        "publishDriftSubtree": publish("/sites/www/home/drift", subtree=True),
+        "publishBlock": publish(BLOCK_PATH, subtree=True),
     }
     write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
 
     after = chat_snapshot()
     checks = validate_chat_only(after, chat_content, next_html)
+    if not checks["pass"] and checks["editBlockMatchesExpected"]:
+        mutations["republishDriftSubtreeAfterStaleLiveReadback"] = publish(
+            "/sites/www/home/drift", subtree=True
+        )
+        mutations["republishBlockAfterStaleLiveReadback"] = publish(BLOCK_PATH, subtree=True)
+        write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
+        after = chat_snapshot()
+        checks = validate_chat_only(after, chat_content, next_html)
     for _ in range(8):
         if checks["pass"]:
             break

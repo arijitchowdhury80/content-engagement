@@ -47,6 +47,22 @@ function transformProactiveRuntime(html) {
   });
 }
 
+function transformChatOnly(html) {
+  const program = [
+    'import importlib.util, pathlib, sys',
+    'path = pathlib.Path(sys.argv[1])',
+    "spec = importlib.util.spec_from_file_location('deploy', path)",
+    'module = importlib.util.module_from_spec(spec)',
+    'spec.loader.exec_module(module)',
+    'print(module.update_chat_block_html(sys.stdin.read()), end="")',
+  ].join('; ');
+
+  return execFileSync('python3', ['-c', program, deploymentScript.pathname], {
+    input: html,
+    encoding: 'utf8',
+  });
+}
+
 test('Jahia transform enables Assistant logo visitor reset exactly once', () => {
   const html = [
     '<div data-release="test">',
@@ -85,6 +101,32 @@ test('narrow Jahia deployment publishes the tracker content subtree', () => {
 
   assert.match(source, /"publishNewTracker": publish\(NEW_TRACKER, subtree=True\)/);
   assert.match(source, /"liveTrackerMatchesSource"/);
+});
+
+test('chat-only deployment publishes the Drift subtree so LIVE block cache markers move', () => {
+  const source = readFileSync(deploymentScript, 'utf8');
+  const chatOnly = source.slice(
+    source.indexOf('def run_chat_only('),
+    source.indexOf('def validate_judge_runtime_only('),
+  );
+
+  assert.match(chatOnly, /"publishDriftSubtree": publish\("\/sites\/www\/home\/drift", subtree=True\)/);
+  assert.match(chatOnly, /"publishBlock": publish\(BLOCK_PATH, subtree=True\)/);
+  assert.match(chatOnly, /republishDriftSubtreeAfterStaleLiveReadback/);
+  assert.match(chatOnly, /republishBlockAfterStaleLiveReadback/);
+});
+
+test('chat-only deployment removes obsolete immutable stability bundle before cache-busting canonical chat', () => {
+  const transformed = transformChatOnly([
+    '<div class="algolia-chat-embed" data-chat-release="old">',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-stability-faba95a8a5a9.js"></script>',
+    '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?chat=old"></script>',
+    '</div>',
+  ].join('\n'));
+
+  assert.doesNotMatch(transformed, /algolia-chat-stability-[a-f0-9]{12}\.js/);
+  assert.equal((transformed.match(/algolia-chat\.js/g) || []).length, 1);
+  assert.match(transformed, /algolia-chat\.js\?chat=20260825-stability-a/);
 });
 
 test('proactive-runtime-only deployment changes only controller and handoff references', () => {
