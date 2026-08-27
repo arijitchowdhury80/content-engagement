@@ -222,6 +222,30 @@ async function dragResizeHandle(page, dir, deltaX, deltaY) {
   return { before, after: await panelResizeState(page) };
 }
 
+async function clickHeaderControl(page, labelPattern) {
+  const center = await page.evaluate((source) => {
+    const pattern = new RegExp(source, 'i');
+    const root = document.querySelector('algolia-chat').shadowRoot;
+    const buttons = [...root.querySelectorAll('[part="header"] button')];
+    const button = buttons.find((candidate) => {
+      const label = [
+        candidate.getAttribute('aria-label'),
+        candidate.getAttribute('title'),
+        candidate.textContent,
+      ].filter(Boolean).join(' ');
+      return pattern.test(label);
+    });
+    if (!button) return null;
+    const rect = button.getBoundingClientRect();
+    return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+  }, labelPattern.source);
+  assert.ok(center, `expected header control matching ${labelPattern} to exist`);
+  await page.mouse.move(center.x, center.y);
+  await page.mouse.down();
+  await page.mouse.up();
+  await page.waitForTimeout(200);
+}
+
 test('closed launcher bubble can be dragged without opening the chat', async () => {
   const page = await createClosedWidgetPage({ width: 1280, height: 900 });
   try {
@@ -390,6 +414,34 @@ test('docked desktop modal becomes fluid when dragged or resized', async () => {
     assert.ok(
       dragged.after.rect.height > dragged.before.rect.height,
       `expected docked resize to increase height: ${JSON.stringify(dragged)}`
+    );
+  } finally {
+    await page.close();
+  }
+});
+
+test('docked expand control remains clickable after panel drag support is installed', async () => {
+  const page = await createOpenWidgetPage({ width: 1280, height: 900 }, { openMode: 'docked' });
+  try {
+    const before = await panelResizeState(page);
+
+    await clickHeaderControl(page, /expand to full view|maximize|expand/);
+
+    await page.waitForFunction((previousWidth) => {
+      const panel = document.querySelector('algolia-chat')?.shadowRoot?.querySelector('[part="panel"]');
+      if (!panel) return false;
+      const rect = panel.getBoundingClientRect();
+      return rect.width > previousWidth + 120;
+    }, before.rect.width);
+
+    const after = await panelResizeState(page);
+    assert.ok(
+      after.rect.width > before.rect.width + 120,
+      `expected expand control to widen docked panel: ${JSON.stringify({ before, after })}`
+    );
+    assert.ok(
+      after.rect.height >= before.rect.height,
+      `expected expand control not to shrink panel height: ${JSON.stringify({ before, after })}`
     );
   } finally {
     await page.close();
