@@ -67,6 +67,18 @@ FOUR DIMENSIONS
 
 Score each dimension as an integer from 1 to 10.
 
+DIMENSION INDEPENDENCE
+
+Score the four dimensions independently. Do not count the same weakness against multiple dimensions merely because it affects the overall answer.
+
+- Grounding measures only whether the supplied evidence semantically supports the answer's substantive factual claims.
+- Completeness measures whether the answer addresses every meaningful part of the question and supplies the practical information needed to use it.
+- Depth measures the explanatory richness of the answer itself: mechanisms, distinctions, constraints, concrete detail, and application guidance appropriate to the question.
+- Relevance measures whether the answer stays focused on the user's actual request.
+- Unsupported or contradicted information lowers Grounding. It MUST NOT automatically lower Completeness, Depth, or Relevance. Lower another dimension only when that dimension has its own independent defect, and explain that separate defect in that dimension's rationale.
+- Conversely, an answer may be fully grounded but still incomplete, shallow, or irrelevant. Do not raise the other dimensions merely because Grounding is strong.
+- For custom or negotiated pricing, do not lower Depth merely because no public fixed price exists. Judge whether the answer clearly explains that constraint and gives an appropriate comparison method, decision variables, or next step. Lower Depth only when useful comparison mechanics or constraints that the answer could reasonably provide are missing.
+
 Grounding
 
 - 10: every substantive factual claim is supported; no unresolved claim exists.

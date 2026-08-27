@@ -40,6 +40,15 @@ test('shared rubric defines identical four dimensions and strict output shape', 
   assert.doesNotMatch(shared, /"excerpt"/);
 });
 
+test('shared rubric scores dimensions independently and handles negotiated pricing fairly', () => {
+  assert.match(shared, /DIMENSION INDEPENDENCE/);
+  assert.match(shared, /Unsupported or contradicted information lowers Grounding/);
+  assert.match(shared, /MUST NOT automatically lower Completeness, Depth, or Relevance/);
+  assert.match(shared, /Lower another dimension only when that dimension has its own independent defect/);
+  assert.match(shared, /do not lower Depth merely because no public fixed price exists/i);
+  assert.match(shared, /comparison method, decision variables, or next step/);
+});
+
 test('shared rubric prevents rhetoric from becoming an unverifiable factual claim', () => {
   assert.match(shared, /A `non_factual` entry MUST return `claims: \[\]`/);
   assert.match(shared, /A `factual` entry MUST return at least one claim/);
