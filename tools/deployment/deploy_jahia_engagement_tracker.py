@@ -55,7 +55,7 @@ THEME_SRC = ROOT / "frontend/chat-widget/algolia-chat-theme-algolia.js"
 EVIDENCE_DIR = ROOT / "docs/evidence/visitor-intelligence/jahia-deploy-20260815/proactive-debug-trace"
 RUNTIME_VERSION = "20260819-runtime-z"
 CHAT_VERSION = RUNTIME_VERSION
-CHAT_ONLY_VERSION = "20260825-stability-a"
+CHAT_ONLY_VERSION = "20260827-discovery-card-b"
 JUDGE_RUNTIME_VERSION = "20260820-semantic-grounding-authority-a"
 JOURNEY_RUNTIME_VERSION = "20260823-threshold-3s-30"
 TRACKER_VERSION = RUNTIME_VERSION
@@ -1330,6 +1330,20 @@ def chat_only_plan(before: dict, chat_content: str, next_html: str) -> dict:
             {"operation": "createVersion", "path": BLOCK_PATH},
             {"operation": "publish", "path": BLOCK_PATH, "subtree": False},
         ],
+        "boundedRecovery": [
+            {
+                "operation": "publish",
+                "path": CHAT,
+                "subtree": True,
+                "condition": "EDIT chat and block exactly match the reviewed plan while LIVE is stale",
+            },
+            {
+                "operation": "publish",
+                "path": BLOCK_PATH,
+                "subtree": True,
+                "condition": "EDIT chat and block exactly match the reviewed plan while LIVE is stale",
+            },
+        ],
         "excluded": {
             "runtimeFiles": [
                 NEW_TRACKER,
@@ -1371,17 +1385,18 @@ def run_chat_only(apply: bool) -> int:
         "publishChatContent": publish(CHAT_CONTENT, subtree=False),
         "publishChat": publish(CHAT, subtree=False),
         "versionBlock": version_block(),
-        "publishDriftSubtree": publish("/sites/www/home/drift", subtree=True),
-        "publishBlock": publish(BLOCK_PATH, subtree=True),
+        "publishBlock": publish(BLOCK_PATH, subtree=False),
     }
     write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
 
     after = chat_snapshot()
     checks = validate_chat_only(after, chat_content, next_html)
-    if not checks["pass"] and checks["editBlockMatchesExpected"]:
-        mutations["republishDriftSubtreeAfterStaleLiveReadback"] = publish(
-            "/sites/www/home/drift", subtree=True
-        )
+    if (
+        not checks["pass"]
+        and checks["editChatMatchesSource"]
+        and checks["editBlockMatchesExpected"]
+    ):
+        mutations["republishChatAfterStaleLiveReadback"] = publish(CHAT, subtree=True)
         mutations["republishBlockAfterStaleLiveReadback"] = publish(BLOCK_PATH, subtree=True)
         write_json(EVIDENCE_DIR / "mutation-results.json", mutations)
         after = chat_snapshot()

@@ -647,7 +647,7 @@ Use rate limits where traffic concentrates, then debounce normal typing.`;
   }
 });
 
-test('the client extracts a trailing discovery question into the follow-up tile', async () => {
+test('the client mechanically projects the server-authored trailing question into one follow-up tile', async () => {
   const inlineQuestion =
     'Are you protecting against bot traffic, or trying to keep normal browsing costs predictable?';
   const text = `API calls are like little door swings at a busy store: one customer entering is harmless, but eager widgets can turn that door into a blur.
@@ -670,12 +670,39 @@ ${inlineQuestion}`;
         questionInTldr: Boolean(tldr?.textContent.includes(question)),
         questionInDetails: Boolean(details?.textContent.includes(question)),
         questionInFollowUp: Boolean(followWrap?.textContent.includes(question)),
+        followUpCount: root.querySelectorAll('.acs-followup-card').length,
       };
     }, inlineQuestion);
 
     assert.equal(result.questionInTldr, false);
     assert.equal(result.questionInDetails, false);
     assert.equal(result.questionInFollowUp, true);
+    assert.equal(result.followUpCount, 1);
+  } finally {
+    await page.close();
+  }
+});
+
+test('the client does not invent a discovery card when the server returns no trailing question', async () => {
+  const text = `API calls are like little door swings at a busy store.
+
+Short version: debounce ordinary typing and rate-limit abusive clients.
+
+## The mechanism
+Monitor request volume and tune both controls using observed traffic.`;
+  const page = await createWidgetPage({ frames: completionFrames(text, []) });
+  try {
+    await waitForAnswerText(page, 'Short version: debounce');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      return {
+        answerText: root.textContent ?? '',
+        followUpCount: root.querySelectorAll('.acs-followup-card').length,
+      };
+    });
+
+    assert.match(result.answerText, /Monitor request volume/);
+    assert.equal(result.followUpCount, 0);
   } finally {
     await page.close();
   }
@@ -844,11 +871,13 @@ test('partial streamed answer remains visible when the response terminates', asy
       return {
         partialVisible: root.textContent.includes(text),
         requestCount: window.__completionRequests.length,
+        followUpCount: root.querySelectorAll('.acs-followup-card').length,
       };
     }, partial);
 
     assert.equal(result.partialVisible, true);
     assert.ok(result.requestCount >= 1, 'the public completion boundary should have been exercised');
+    assert.equal(result.followUpCount, 0, 'the browser must not invent discovery after a partial stream');
   } finally {
     await page.close();
   }

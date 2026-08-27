@@ -299,7 +299,6 @@ class ControllerOnlyDeploymentTests(unittest.TestCase):
             [item["subtree"] for item in plan["mutationAllowlist"] if item["operation"] == "publish"],
             [False, False, False],
         )
-
     def test_apply_updates_and_publishes_only_controller_and_block(self):
         controller_content = MODULE.PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")
         original = block_html()
@@ -334,6 +333,45 @@ class ControllerOnlyDeploymentTests(unittest.TestCase):
             ],
         )
         version.assert_called_once_with()
+
+    def test_stale_live_republishes_only_exact_chat_and_block_subtrees(self):
+        chat_content = MODULE.CHAT_SRC.read_text(encoding="utf-8")
+        original = block_html()
+        expected_html = MODULE.update_chat_block_html(original)
+        before = chat_state(original, "old chat")
+        stale = chat_state(original, "old chat")
+        stale["edit"] = {
+            "blockHtml": expected_html,
+            "chatNode": file_node(chat_content),
+        }
+        after = chat_state(expected_html, chat_content)
+
+        with tempfile.TemporaryDirectory() as directory, patch.object(
+            MODULE, "EVIDENCE_DIR", Path(directory)
+        ), patch.object(
+            MODULE, "chat_snapshot", side_effect=[before, stale, after]
+        ), patch.object(
+            MODULE, "upsert_file", return_value={"updated": True}
+        ), patch.object(
+            MODULE, "set_block_html", return_value={"updated": True}
+        ), patch.object(
+            MODULE, "publish", return_value={"published": True}
+        ) as publish, patch.object(
+            MODULE, "version_block", return_value={"versioned": True}
+        ):
+            result = MODULE.run_chat_only(apply=True)
+
+        self.assertEqual(result, 0)
+        self.assertEqual(
+            publish.call_args_list,
+            [
+                call(MODULE.CHAT_CONTENT, subtree=False),
+                call(MODULE.CHAT, subtree=False),
+                call(MODULE.BLOCK_PATH, subtree=False),
+                call(MODULE.CHAT, subtree=True),
+                call(MODULE.BLOCK_PATH, subtree=True),
+            ],
+        )
 
     def test_dry_run_writes_evidence_without_mutating(self):
         original = block_html()
@@ -447,6 +485,10 @@ class ChatOnlyDeploymentTests(unittest.TestCase):
         self.assertEqual(
             [item["subtree"] for item in plan["mutationAllowlist"] if item["operation"] == "publish"],
             [False, False, False],
+        )
+        self.assertEqual(
+            [(item["path"], item["subtree"]) for item in plan["boundedRecovery"]],
+            [(MODULE.CHAT, True), (MODULE.BLOCK_PATH, True)],
         )
 
     def test_apply_updates_and_publishes_only_chat_and_block(self):

@@ -103,20 +103,25 @@ test('narrow Jahia deployment publishes the tracker content subtree', () => {
   assert.match(source, /"liveTrackerMatchesSource"/);
 });
 
-test('chat-only deployment publishes the Drift subtree so LIVE block cache markers move', () => {
+test('chat-only deployment uses exact-target bounded recovery when LIVE is stale', () => {
   const source = readFileSync(deploymentScript, 'utf8');
   const chatOnly = source.slice(
     source.indexOf('def run_chat_only('),
     source.indexOf('def validate_judge_runtime_only('),
   );
 
-  assert.match(chatOnly, /"publishDriftSubtree": publish\("\/sites\/www\/home\/drift", subtree=True\)/);
-  assert.match(chatOnly, /"publishBlock": publish\(BLOCK_PATH, subtree=True\)/);
-  assert.match(chatOnly, /republishDriftSubtreeAfterStaleLiveReadback/);
+  assert.match(chatOnly, /"publishChat": publish\(CHAT, subtree=False\)/);
+  assert.match(chatOnly, /"publishBlock": publish\(BLOCK_PATH, subtree=False\)/);
+  assert.match(chatOnly, /republishChatAfterStaleLiveReadback/);
   assert.match(chatOnly, /republishBlockAfterStaleLiveReadback/);
+  assert.doesNotMatch(chatOnly, /publish\("\/sites\/www\/home\/drift", subtree=True\)/);
 });
 
 test('chat-only deployment removes obsolete immutable stability bundle before cache-busting canonical chat', () => {
+  const source = readFileSync(deploymentScript, 'utf8');
+  const versionMatch = source.match(/^CHAT_ONLY_VERSION = "([^"]+)"/m);
+  assert.ok(versionMatch, 'deployment script should declare a chat-only version');
+  const version = versionMatch[1];
   const transformed = transformChatOnly([
     '<div class="algolia-chat-embed" data-chat-release="old">',
     '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-stability-faba95a8a5a9.js"></script>',
@@ -126,7 +131,7 @@ test('chat-only deployment removes obsolete immutable stability bundle before ca
 
   assert.doesNotMatch(transformed, /algolia-chat-stability-[a-f0-9]{12}\.js/);
   assert.equal((transformed.match(/algolia-chat\.js/g) || []).length, 1);
-  assert.match(transformed, /algolia-chat\.js\?chat=20260825-stability-a/);
+  assert.match(transformed, new RegExp(`algolia-chat\\.js\\?chat=${version}`));
 });
 
 test('proactive-runtime-only deployment changes only controller and handoff references', () => {
