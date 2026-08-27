@@ -24,9 +24,9 @@ def test_block_cutover_uses_stable_assets_and_removes_chief():
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js?old=1"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?old=1"></script>'''
     assets = {
-        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js?v=111111111111"},
-        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js?v=222222222222"},
-        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js?v=333333333333"},
+        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js"},
+        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js"},
+        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js"},
     }
     ids = {
         "skeptic": "11111111-1111-4111-8111-111111111111",
@@ -51,9 +51,9 @@ def test_block_cutover_removes_mode_without_removing_judges():
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js"></script>'''
     assets = {
-        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js?v=111111111111"},
-        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js?v=222222222222"},
-        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js?v=333333333333"},
+        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js"},
+        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js"},
+        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js"},
     }
     ids = {
         "skeptic": "11111111-1111-4111-8111-111111111111",
@@ -86,9 +86,9 @@ def test_block_cutover_rejects_duplicate_script_targets():
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js"></script>'''
     assets = {
-        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js?v=111111111111"},
-        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js?v=222222222222"},
-        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js?v=333333333333"},
+        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js"},
+        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js"},
+        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js"},
     }
     ids = {
         "skeptic": "11111111-1111-4111-8111-111111111111",
@@ -157,12 +157,13 @@ def test_stable_asset_filenames_do_not_include_content_hashes():
     assert assets["badge"]["filename"] == "algolia-confidence-badge-judge-v2.js"
     assert assets["chat"]["filename"] == "algolia-chat-judge-v2.js"
     assert assets["chat"]["sha256"][:12] not in assets["chat"]["filename"]
-    assert f'?v={assets["chat"]["sha256"][:12]}' in assets["chat"]["url"]
+    assert assets["chat"]["url"].endswith("/algolia-chat-judge-v2.js")
+    assert "?" not in assets["chat"]["url"]
 
 
 def test_live_companion_overrides_preserve_exact_badge_and_chat_bytes(monkeypatch):
     badge_url = f"{module.PUBLIC}/algolia-confidence-badge-judge-v2-aaaaaaaaaaaa.js"
-    chat_url = f"{module.PUBLIC}/algolia-chat-judge-v2.js?v=bbbbbbbbbbbb"
+    chat_url = f"{module.PUBLIC}/algolia-chat-judge-v2.js"
     monkeypatch.setattr(module.jahia, "block_html", lambda workspace: (
         f'<script src="{badge_url}"></script>\n<script src="{chat_url}"></script>'
     ))

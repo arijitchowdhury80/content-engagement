@@ -55,7 +55,7 @@ def stable_assets(content_overrides: dict[str, dict[str, str]] | None = None) ->
             "sha256": digest,
             "filename": filename,
             "path": f"{FILES}/{filename}",
-            "url": f"{PUBLIC}/{filename}?v={digest[:12]}",
+            "url": f"{PUBLIC}/{filename}",
         }
     return assets
 
