@@ -168,11 +168,24 @@
       // The launcher button's background is the accent colour and the icon is
       // rendered as a plain <img>. Invert it to white so it reads on Xenon blue.
       '[part="launcher"] img { filter: brightness(0) invert(1); }',
+      '[part="launcher"] { cursor: grab; touch-action: none; }',
+      '[part="launcher"]:active { cursor: grabbing; }',
       '[part="panel"] { border-radius: 20px; border: 1px solid color-mix(in srgb, var(--algolia-border) 88%, #ffffff); box-shadow: 0 24px 80px -52px rgba(35,38,59,0.72), 0 0 0 1px rgba(35,38,59,0.04); }',
-      '[part="panel"]:not([style*="bottom:"]):not([style*="width: 100vw"]) { position: fixed; left: max(16px, calc((100vw - var(--algolia-panel-w)) / 2)); top: max(16px, calc((100vh - var(--algolia-panel-h)) / 2)); resize: both; min-width: min(720px, calc(100vw - 32px)); min-height: min(560px, calc(100vh - 32px)); max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); }',
-      '[part="panel"]:not([style*="bottom:"]):not([style*="width: 100vw"])::after { content: ""; position: absolute; right: 8px; bottom: 8px; width: 14px; height: 14px; border-right: 2px solid color-mix(in srgb, var(--algolia-text-muted) 45%, transparent); border-bottom: 2px solid color-mix(in srgb, var(--algolia-text-muted) 45%, transparent); border-radius: 0 0 5px 0; pointer-events: none; opacity: 0.72; }',
+      '[part="panel"]:not([style*="bottom:"]):not([style*="width: 100vw"]) { position: fixed; left: max(16px, calc((100vw - var(--algolia-panel-w)) / 2)); top: max(16px, calc((100vh - var(--algolia-panel-h)) / 2)); resize: none; min-width: min(720px, calc(100vw - 32px)); min-height: min(560px, calc(100vh - 32px)); max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); }',
+      '[part="panel"]:not([style*="width: 100vw"]) [part="header"] { cursor: move; }',
+      '[part="panel"]:not([style*="width: 100vw"]) [part="header"] button, [part="panel"]:not([style*="width: 100vw"]) [part="header"] a { cursor: pointer; }',
+      '.acs-resize-handles { position: absolute; inset: 0; z-index: 5; pointer-events: none; }',
+      '.acs-resize-handle { position: absolute; display: block; pointer-events: auto; touch-action: none; background: transparent; }',
+      '.acs-resize-handle--n { top: 0; left: 18px; right: 18px; height: 10px; cursor: ns-resize; }',
+      '.acs-resize-handle--s { bottom: 0; left: 18px; right: 18px; height: 10px; cursor: ns-resize; }',
+      '.acs-resize-handle--e { top: 18px; right: 0; bottom: 18px; width: 10px; cursor: ew-resize; }',
+      '.acs-resize-handle--w { top: 18px; left: 0; bottom: 18px; width: 10px; cursor: ew-resize; }',
+      '.acs-resize-handle--ne { top: 0; right: 0; width: 18px; height: 18px; cursor: nesw-resize; }',
+      '.acs-resize-handle--sw { bottom: 0; left: 0; width: 18px; height: 18px; cursor: nesw-resize; }',
+      '.acs-resize-handle--nw { top: 0; left: 0; width: 18px; height: 18px; cursor: nwse-resize; }',
+      '.acs-resize-handle--se { right: 0; bottom: 0; width: 18px; height: 18px; cursor: nwse-resize; }',
       '[part="panel"][style*="bottom:"], [part="panel"][style*="width: 100vw"] { resize: none; }',
-      '[part="panel"][style*="bottom:"]::after, [part="panel"][style*="width: 100vw"]::after { display: none; content: none; }',
+      '[part="panel"][style*="width: 100vw"] .acs-resize-handles { display: none; content: none; }',
       '[part="header"] { position: relative; min-height: var(--algolia-header-h); gap: 12px; padding: 8px 14px 7px !important; align-items: center !important; overflow: hidden; isolation: isolate; background: rgba(255,255,255,0.98); }',
       ':host([data-algolia-working]) [part="header"]::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--algolia-header-progress, 0%); background: linear-gradient(90deg, rgba(0,61,255,0.04), rgba(0,61,255,0.16), rgba(0,61,255,0.08)); pointer-events: none; transition: width 900ms linear; z-index: 0; }',
       ':host([data-algolia-progress-resetting]) [part="header"]::before { transition-duration: 1ms !important; }',
@@ -223,7 +236,7 @@
       '.acs-progress { display: none !important; }',
       // On mobile viewports the normal-mode panel would be too narrow.
       // Override to near-full-width below 640px.
-      '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="panel"]:not([style*="bottom:"]):not([style*="width: 100vw"]), [part="panel"] { resize: none !important; min-width: 0; min-height: 0; max-width: 95vw; max-height: 90vh; } [part="panel"]:not([style*="bottom:"]):not([style*="width: 100vw"])::after, [part="panel"]::after { display: none; } [part="header"] { gap: 10px; padding-left: 14px !important; padding-right: 10px !important; } [part="header"] h1 { font-size: 15px; line-height: 1.1; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="composer"] { margin: 8px 14px 12px !important; } [part="composer-input"] { font-size: var(--algolia-fs-sm); } }',
+      '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="panel"]:not([style*="bottom:"]):not([style*="width: 100vw"]), [part="panel"] { resize: none !important; min-width: 0; min-height: 0; max-width: 95vw; max-height: 90vh; } .acs-resize-handles { display: none !important; } [part="header"] { gap: 10px; padding-left: 14px !important; padding-right: 10px !important; } [part="header"] h1 { font-size: 15px; line-height: 1.1; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="composer"] { margin: 8px 14px 12px !important; } [part="composer-input"] { font-size: var(--algolia-fs-sm); } }',
       // The sample-questions popup uses `position:absolute; bottom:100%` and
       // expands upward. The panel has `overflow:hidden` for its rounded corners,
       // so a tall popup gets clipped at the panel top. Cap the popup height and
