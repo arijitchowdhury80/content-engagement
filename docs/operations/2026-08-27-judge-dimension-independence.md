@@ -43,6 +43,8 @@ The 2026-08-27 apply validation passed:
 
 No Jahia deployment was performed or required. The widget runtime, score aggregation, role lenses, evaluation packet, confidence presentation, and load order remain unchanged.
 
+After Arijit's explicit follow-up approval, the stale internal contract label `ALGOLIA-JUDGE-V3.3` was corrected to `ALGOLIA-JUDGE-V3.8` in the same shared system prompt and the same three existing V3.8 agents. This label-only correction created no agents and changed no rubric behavior.
+
 ## Rollback
 
 The private before-snapshot contains the exact prior system prompt for each locked ID. Rollback, if required, is an explicit in-place PATCH of only `systemPrompt`, followed by the same protected-field and inventory readback checks.

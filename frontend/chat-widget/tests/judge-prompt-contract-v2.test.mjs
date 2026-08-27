@@ -27,6 +27,8 @@ for (const role of roles) {
 }
 
 test('shared rubric defines identical four dimensions and strict output shape', () => {
+  assert.match(shared, /^BLIND PANEL CONTRACT: ALGOLIA-JUDGE-V3\.8$/m);
+  assert.doesNotMatch(shared, /ALGOLIA-JUDGE-V3\.3/);
   for (const dimension of ['Grounding', 'Completeness', 'Depth', 'Relevance']) {
     assert.match(shared, new RegExp(`\\n${dimension}\\n`));
   }

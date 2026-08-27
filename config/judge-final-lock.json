@@ -1,7 +1,7 @@
 {
   "status": "locked",
   "lockedAt": "2026-08-27",
-  "lastApprovedChange": "Make the four judge dimensions independent and handle custom pricing depth without requiring a nonexistent public price",
+  "lastApprovedChange": "Correct the shared V3.8 judge contract label after the approved dimension-independence update",
   "lastApprovedChangeEvidence": "docs/operations/2026-08-27-judge-dimension-independence.md",
   "changePolicy": "No judge prompt, model, agent, scoring, grounding, aggregation, transport, lifecycle, or presentation change without Arijit's explicit approval.",
   "provider": {
@@ -15,8 +15,8 @@
     "advocate": "50843dd4-eab8-473b-ab44-7dda69d7557d"
   },
   "protectedFileSha256": {
-    "agents/prompts/judge/_shared_judge_rubric_v2.md": "895bec1cc8f769f28599989cf728cd048bed9eb4cdf9c962c3ec9e3fb16b22d4",
-    "agents/prompts/judge/candidate/system_prompt_judge_v3.md": "895bec1cc8f769f28599989cf728cd048bed9eb4cdf9c962c3ec9e3fb16b22d4",
+    "agents/prompts/judge/_shared_judge_rubric_v2.md": "e3dfea635edfd0a7a075bac523486b57aacca336eadc08228648626b015b103c",
+    "agents/prompts/judge/candidate/system_prompt_judge_v3.md": "e3dfea635edfd0a7a075bac523486b57aacca336eadc08228648626b015b103c",
     "agents/prompts/judge/candidate/instructions_skeptic.md": "e5f8b07a46212c348493f4294083fabe1dfa39ffd207c32e841d6d2a86be5d7d",
     "agents/prompts/judge/candidate/instructions_referee.md": "e53eb4e47c627c8c8ebed9b6431f0059912426d14de029c71531a7281ced19f1",
     "agents/prompts/judge/candidate/instructions_advocate.md": "38dca091aa91be155d86f8d1394bdc4c17c3893c920c9524487429e2bf2c271a",
@@ -24,13 +24,13 @@
     "frontend/chat-widget/algolia-confidence-badge.js": "4cc3a70b85053a9d4db881ba066d309f8265f01c4522c588771c6bfc90858722",
     "frontend/chat-widget/patches/apply-locked-judge-lifecycle.mjs": "ad67eaf29629832410af4f74c4d33a0e1437768bd6c1624690e258d60ce3a814",
     "frontend/chat-widget/patches/apply-compare-judge-isolation.mjs": "4b62032e85f2c8e24690affc20036bc83552365c1803128026bfa3e366e8ecb4",
-    "frontend/chat-widget/tests/judge-prompt-contract-v2.test.mjs": "f6b597ca14d8c4362494831c328b9e255d5f056fc910e116e2be6468275113c8",
+    "frontend/chat-widget/tests/judge-prompt-contract-v2.test.mjs": "4dee2d9424c406ada396dc32f284d391cd054e255f5e1849dfb67219ba9519ce",
     "agents/admin/update_judge_shared_system_prompt.mjs": "96ca80d61714244ceaa8cd818600665595f2fe3ae822481cf6f3175d8bb510b4",
     "agents/admin/update_judge_shared_system_prompt.test.mjs": "06b9ccf7088bf1300724c39505dfc2e6b53d612187fbb41db7db02e7931f05a5",
-    "docs/operations/2026-08-27-judge-dimension-independence.md": "a7e3f8760b73a713940294b7f63438d5e1b7a256e32c752f56b22a3363b6a5d3",
+    "docs/operations/2026-08-27-judge-dimension-independence.md": "4e3a98269af02bc4445f316a35906a45cfde049a5f50456fd80c2ea1f2fe7bb4",
     "tools/deployment/judge_release_guard.py": "832043cc98b82ebbb31589a92bac2aff4edd872db4a91c3e5ce45a03a5e7e105"
   },
-  "liveSystemPromptSha256": "8f9eed3c12e5151c7ff4f27f92883a611d1910ac2be103d994c4e65923ef9e3c",
+  "liveSystemPromptSha256": "715e208340ac2675a0e9116a6e5ca2bc45633634e1adeb5fc4f10b4fb0dbd5c5",
   "liveAssetSha256": {
     "core": "9a7fdd2700ccb57f9bd9397ffab7c17712ecdcb421c25dafee5be0546a0c9006",
     "badge": "4cc3a70b85053a9d4db881ba066d309f8265f01c4522c588771c6bfc90858722",
