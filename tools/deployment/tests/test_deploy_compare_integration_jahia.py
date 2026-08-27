@@ -32,16 +32,14 @@ def block_fixture() -> str:
 </div>"""
 
 
-def test_assets_are_content_addressed_and_independent():
+def test_assets_use_stable_filenames_and_hash_validated_content():
     assets = module.immutable_assets()
     assert set(assets) == {"context", "handoff", "compare", "telemetry"}
     for key, asset in assets.items():
-        expected = (
-            f"{module.STEMS[key]}-{asset['sha256'][:12]}.js"
-            if key in {"compare", "telemetry"}
-            else f"{module.STEMS[key]}-compare-{asset['sha256'][:12]}.js"
-        )
+        expected = f"{module.STEMS[key]}.js"
         assert asset["filename"] == expected
+        assert asset["path"].endswith(f"/{expected}")
+        assert asset["url"].endswith(f"/{expected}")
         assert module.sha256(asset["content"]) == asset["sha256"]
 
 
@@ -117,7 +115,7 @@ def test_final_dependency_cas_rejects_drift_before_cutover(monkeypatch):
         module.assert_displaced_dependencies_unchanged(plan, "changed during asset creation")
 
     source = (ROOT / "tools/deployment/deploy_compare_integration_jahia.py").read_text(encoding="utf-8")
-    asset_creation = source.index('mutations[f"asset_{key}"] = create_immutable(asset)')
+    asset_creation = source.index('mutations[f"asset_{key}"] = upsert_stable_asset(asset)')
     final_cas = source.index("assert_displaced_dependencies_unchanged", asset_creation)
     cutover = source.index('mutations["setBlockHtml"]', final_cas)
     assert asset_creation < final_cas < cutover
@@ -182,7 +180,9 @@ def test_deployer_has_no_broad_publish_or_stable_asset_overwrite():
     assert 'publish("/sites/www/files"' not in source
     assert 'publish("/sites/www/home/drift"' not in source
     assert "publish(BLOCK, subtree=True)" in source
-    assert 'f"{STEMS[key]}-compare-{digest[:12]}.js"' in source
+    assert 'filename = f"{STEMS[key]}.js"' in source
+    assert "upsert_stable_asset" in source
+    assert "create_immutable" not in source
     assert "--apply-plan" in source
     assert "Jahia block drifted after plan approval; no mutation made" in source
     assert "Referenced context or handoff asset drifted after plan approval; no mutation made" in source
@@ -221,6 +221,6 @@ def test_backend_preflight_rejects_bad_id_and_frontend_apply_is_gated_first():
 
     source = (ROOT / "tools/deployment/deploy_compare_integration_jahia.py").read_text(encoding="utf-8")
     preflight = source.index("backend_checks = validate_token_telemetry_backend")
-    asset_creation = source.index('mutations[f"asset_{key}"] = create_immutable(asset)')
+    asset_creation = source.index('mutations[f"asset_{key}"] = upsert_stable_asset(asset)')
     cutover = source.index('mutations["setBlockHtml"]')
     assert preflight < asset_creation < cutover

@@ -141,11 +141,7 @@ def immutable_assets() -> dict[str, dict[str, str]]:
         if key == "compare":
             judge_release_guard.validate_compare_runtime(content)
         digest = sha256(content)
-        filename = (
-            f"{STEMS[key]}-{digest[:12]}.js"
-            if key in {"compare", "telemetry"}
-            else f"{STEMS[key]}-compare-{digest[:12]}.js"
-        )
+        filename = f"{STEMS[key]}.js"
         assets[key] = {
             "source": str(source.relative_to(ROOT)),
             "content": content,
@@ -313,20 +309,23 @@ def write_private(path: Path, payload: dict) -> None:
     os.chmod(path, 0o600)
 
 
-def create_immutable(asset: dict) -> dict:
+def upsert_stable_asset(asset: dict) -> dict:
     existing = jahia.node(asset["path"], "EDIT")
     if existing is not None:
-        if (jahia.file_content(existing) or "") != asset["content"]:
-            raise RuntimeError(f"Immutable asset collision at {asset['path']}")
-        return {"operation": "reuse", "path": asset["path"], "sha256": asset["sha256"]}
-    jahia.upsert_file(asset["path"], asset["content"])
+        if (jahia.file_content(existing) or "") == asset["content"]:
+            return {"operation": "reuse", "path": asset["path"], "sha256": asset["sha256"]}
+        jahia.upsert_file(asset["path"], asset["content"])
+        operation = "update"
+    else:
+        jahia.upsert_file(asset["path"], asset["content"])
+        operation = "create"
     for attempt in range(8):
         observed = jahia.node(asset["path"], "EDIT")
         if observed is not None and (jahia.file_content(observed) or "") == asset["content"]:
-            return {"operation": "create", "path": asset["path"], "sha256": asset["sha256"]}
+            return {"operation": operation, "path": asset["path"], "sha256": asset["sha256"]}
         if attempt < 7:
             time.sleep(0.5)
-    raise RuntimeError(f"Immutable asset readback failed: {asset['path']}")
+    raise RuntimeError(f"Stable asset readback failed: {asset['path']}")
 
 
 def restore_block_with_cas(before: str, allowed_hashes: set[str], attempts: int = 5) -> dict:
@@ -482,7 +481,7 @@ def apply_plan(plan_path: Path, evidence_dir: Path) -> int:
     mutations = {}
     try:
         for key, asset in assets.items():
-            mutations[f"asset_{key}"] = create_immutable(asset)
+            mutations[f"asset_{key}"] = upsert_stable_asset(asset)
         assert_displaced_dependencies_unchanged(plan, jahia.block_html("EDIT"))
         if sha256(jahia.block_html("EDIT")) != plan["beforeBlockSha256"]:
             raise RuntimeError("Jahia block changed immediately before cutover")
