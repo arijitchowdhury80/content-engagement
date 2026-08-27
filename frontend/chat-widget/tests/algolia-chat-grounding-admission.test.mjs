@@ -161,7 +161,7 @@ function fixture() {
   </script><script src="/chat/algolia-confidence-badge.js"></script><script src="/chat/algolia-judge-core.js"></script><script src="/chat/algolia-chat.js"></script></head><body>
     <algolia-chat app-id="0EXRPAXB56" search-api-key="local" index-name="local">
       <algolia-agent role="primary" agent-id="local_primary_agent" label="aRRIe"></algolia-agent>
-      <algolia-chat-confidence mode="algolia">
+      <algolia-chat-confidence>
         <algolia-agent role="skeptic" agent-id="local_skeptic"></algolia-agent>
         <algolia-agent role="referee" agent-id="local_referee"></algolia-agent>
         <algolia-agent role="advocate" agent-id="local_advocate"></algolia-agent>
@@ -667,7 +667,7 @@ test('judge unavailability cannot blank or replace a completed answer', async ()
     assert.equal(result.segment.admissionRewriteAttempted, undefined);
     assert.ok(result.badgeVerdict.error);
     assert.equal(result.agentRequestCount, 1);
-    assert.equal(result.judgeRequestCount, 3, 'Each of the three role agents makes one bounded attempt');
+    assert.equal(result.judgeRequestCount, 6, 'Each unavailable role retries once against the same packet');
     assert.equal(result.followUpCount, 1);
   } finally {
     await closeScenario(run);
@@ -678,7 +678,7 @@ test('one unavailable role produces an explicit provisional two-judge score', as
   const run = await openScenario('oneJudgeUnavailable');
   try {
     const result = await runtimeState(run.page);
-    assert.equal(result.judgeRequestCount, 3);
+    assert.equal(result.judgeRequestCount, 4, 'Only the unavailable skeptic retries');
     assert.equal(result.badgeVerdict.status, 'provisional');
     assert.equal(result.badgeVerdict.provisional, true);
     assert.equal(result.badgeVerdict.validJudgeCount, 2);
@@ -693,7 +693,7 @@ test('two unavailable roles never expose a one-judge score', async () => {
   const run = await openScenario('twoJudgesUnavailable');
   try {
     const result = await runtimeState(run.page);
-    assert.equal(result.judgeRequestCount, 3);
+    assert.equal(result.judgeRequestCount, 5, 'Only the two unavailable roles retry');
     assert.ok(result.badgeVerdict.error);
     assert.equal(result.badgeVerdict.composite, 0);
     assert.equal(result.badgeVerdict.perJudge.length, 0);

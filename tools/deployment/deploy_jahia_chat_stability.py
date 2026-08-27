@@ -14,6 +14,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 import deploy_jahia_engagement_tracker as jahia
+import judge_release_guard
 from deploy_jahia_index_contract import read_private, safe_evidence_dir, write_private
 
 
@@ -113,6 +114,7 @@ def validate(snapshot: dict, expected_html: str, asset: dict, *, include_public:
 
 def dry_run(evidence_dir: Path) -> dict:
     content = CHAT_SOURCE.read_text(encoding="utf-8")
+    judge_release_guard.validate_chat_runtime(content)
     asset = chat_asset(content)
     before = capture(asset["path"])
     if before["edit"]["blockHtml"] != before["live"]["blockHtml"]:
@@ -180,6 +182,7 @@ def apply(evidence_dir: Path) -> dict:
     before = read_private(evidence_dir / "before-snapshot.json")
     plan = read_private(evidence_dir / "deployment-plan.json")
     content = CHAT_SOURCE.read_text(encoding="utf-8")
+    judge_release_guard.validate_chat_runtime(content)
     asset = chat_asset(content)
     if {key: value for key, value in asset.items() if key != "content"} != plan["asset"]:
         raise RuntimeError("Local chat asset drifted after reviewed dry-run")
@@ -246,6 +249,7 @@ def recover_publication(evidence_dir: Path) -> dict:
     before = read_private(evidence_dir / "before-snapshot.json")
     plan = read_private(evidence_dir / "deployment-plan.json")
     content = CHAT_SOURCE.read_text(encoding="utf-8")
+    judge_release_guard.validate_chat_runtime(content)
     asset = chat_asset(content)
     if {key: value for key, value in asset.items() if key != "content"} != plan["asset"]:
         raise RuntimeError("Local chat asset drifted from the interrupted reviewed cutover")

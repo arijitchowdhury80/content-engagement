@@ -66,7 +66,7 @@ for (const bundleName of ['algolia-chat.js']) {
   test(`${bundleName} supports only Agent Studio judge transport`, () => {
     const bundle = readBundle(bundleName);
 
-    assert.match(bundle, /return e==="off"\?"off":"algolia"/);
+    assert.match(bundle, /function wA\(e\)\{return"algolia"\}/);
     assert.match(bundle, /function VE\(e\)\{if\(e\)return\{mode:e\.mode,agents:e\.agents\}\}/);
     assert.doesNotMatch(bundle, /localhost:8788/);
     assert.doesNotMatch(bundle, /\/api\/judge/);
@@ -79,17 +79,18 @@ for (const bundleName of ['algolia-chat.js']) {
     assert.doesNotMatch(bundle, /chief judge/i);
     assert.doesNotMatch(bundle, /judge-agent-id/);
     assert.doesNotMatch(bundle, /VITE_JUDGE_AGENT_ID/);
-    assert.match(bundle, /static get observedAttributes\(\)\{return\["mode","agents"\]\}/);
+    assert.match(bundle, /static get observedAttributes\(\)\{return\["agents"\]\}get judgeMode\(\)\{return"algolia"\}/);
+    assert.doesNotMatch(bundle, /getAttribute\("mode"\)==="off"/);
   });
 
-  test(`${bundleName} accepts exact fenced judge JSON with a bounded panel deadline`, () => {
+  test(`${bundleName} accepts exact fenced judge JSON with role-specific retry and no shared panel deadline`, () => {
     const bundle = readBundle(bundleName);
 
     assert.match(bundle, /\^```\(\?:json\)\?/);
     assert.doesNotMatch(bundle, /Judge attempt timed out after/);
-    assert.match(bundle, /Judge panel deadline exceeded after 30000ms/);
+    assert.doesNotMatch(bundle, /Judge panel deadline exceeded/);
     assert.match(bundle, /phase:"judging"/);
-    assert.doesNotMatch(bundle, /phase:"retrying"/);
+    assert.match(bundle, /phase:"retrying"/);
     assert.match(bundle, /phase:"complete"/);
     assert.match(bundle, /phase:"failed"/);
   });

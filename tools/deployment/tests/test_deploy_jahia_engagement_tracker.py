@@ -741,7 +741,11 @@ class TransientJcrRetryTests(unittest.TestCase):
             ],
         ) as graphql, patch.object(MODULE.time, "sleep") as sleep:
             with self.assertRaisesRegex(RuntimeError, "InvalidItemStateException"):
-                MODULE.set_block_html("restored")
+                MODULE.set_block_html('''<algolia-chat-confidence>
+<algolia-agent role="skeptic"></algolia-agent>
+<algolia-agent role="referee"></algolia-agent>
+<algolia-agent role="advocate"></algolia-agent>
+</algolia-chat-confidence>''')
 
         self.assertEqual(graphql.call_count, 1)
         sleep.assert_not_called()

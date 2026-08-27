@@ -33,8 +33,12 @@ export function validateBrowserIdentity(identity) {
   if (identity.appId !== TARGET.appId) errors.push(`unexpected app ${identity.appId}`);
   if (identity.indexName !== TARGET.indexName) errors.push(`unexpected index ${identity.indexName}`);
   if (identity.confidenceCount !== 1) errors.push(`expected one algolia-chat-confidence element; found ${identity.confidenceCount}`);
-  if (identity.confidenceMode !== 'algolia') {
-    errors.push(`settled single-panel confidence mode must be algolia; found ${identity.confidenceMode}`);
+  if (identity.confidenceMode != null) {
+    errors.push(`confidence mode must be absent; found ${identity.confidenceMode}`);
+  }
+  const judgeRoles = new Set((identity.agentIds ?? []).map((agent) => agent.role));
+  for (const role of ['skeptic', 'referee', 'advocate']) {
+    if (!judgeRoles.has(role)) errors.push(`missing ${role} judge agent`);
   }
   return { pass: errors.length === 0, errors, identity };
 }

@@ -112,7 +112,6 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   const chatHost = new El('algolia-chat');
   chatHost.shadowRoot = shadowRoot;
   const confidence = new El('algolia-chat-confidence');
-  confidence.setAttribute('mode', 'off');
   chatHost.appendChild(confidence);
 
   const documentListeners = {};
@@ -258,7 +257,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
 test('toggle is absent from the header and appears only beside answer evidence controls', async () => {
   const h = createHarness();
   assert.equal(h.toggle(), null, 'there is nothing to compare before an answer exists');
-  assert.equal(h.context.document.querySelector('algolia-chat').querySelector('algolia-chat-confidence').getAttribute('mode'), 'algolia');
+  assert.equal(h.context.document.querySelector('algolia-chat').querySelector('algolia-chat-confidence').getAttribute('mode'), null);
 
   h.addBubble('answer with grounded evidence');
   await h.settle();
@@ -274,28 +273,28 @@ test('toggle is absent from the header and appears only beside answer evidence c
   assert.equal(t.parentElement.getAttribute('class'), 'flex items-end justify-between gap-4');
 });
 
-test('judge mode stays on for a completed answer, but a later Compare turn suppresses judge fan-out', async () => {
+test('Compare never owns or mutates judge configuration', async () => {
   const h = createHarness();
   const confidence = h.context.document.querySelector('algolia-chat').querySelector('algolia-chat-confidence');
   h.addBubble('normal answer');
   await h.settle();
   h.completeTurn();
   await h.settle();
-  assert.equal(confidence.getAttribute('mode'), 'algolia');
+  assert.equal(confidence.getAttribute('mode'), null);
 
   h.clickToggle();
   await h.settle();
-  assert.equal(confidence.getAttribute('mode'), 'algolia', 'post-answer Compare preserves that answer\'s judge');
+  assert.equal(confidence.getAttribute('mode'), null, 'post-answer Compare cannot configure judging');
 
   h.addBubble('future turn while Compare is already on');
   await h.settle();
-  assert.equal(confidence.getAttribute('mode'), 'off', 'future dual request avoids three extra judge calls');
+  assert.equal(confidence.getAttribute('mode'), null, 'future Compare turns cannot suppress judging');
   h.completeTurn();
   await h.settle();
 
   h.clickToggle();
   await h.settle();
-  assert.equal(confidence.getAttribute('mode'), 'algolia', 'turning Compare off restores judges');
+  assert.equal(confidence.getAttribute('mode'), null, 'turning Compare off cannot reconfigure judging');
 });
 
 test('normal centered panel remains eligible on a wide viewport', () => {

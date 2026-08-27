@@ -1,7 +1,7 @@
 {
   "status": "locked",
-  "lockedAt": "2026-08-23",
-  "lastApprovedChange": "Separate the four-dimension composite from grounding review status",
+  "lockedAt": "2026-08-27",
+  "lastApprovedChange": "Make browser judging mandatory, isolate Compare, restore role-specific retry, and guard every Jahia release path",
   "changePolicy": "No judge prompt, model, agent, scoring, grounding, aggregation, transport, lifecycle, or presentation change without Arijit's explicit approval.",
   "provider": {
     "id": "e14c1f5e-7c24-4451-a342-940e427f769b",
@@ -20,7 +20,10 @@
     "agents/prompts/judge/candidate/instructions_referee.md": "e53eb4e47c627c8c8ebed9b6431f0059912426d14de029c71531a7281ced19f1",
     "agents/prompts/judge/candidate/instructions_advocate.md": "38dca091aa91be155d86f8d1394bdc4c17c3893c920c9524487429e2bf2c271a",
     "frontend/chat-widget/algolia-judge-core.js": "9a7fdd2700ccb57f9bd9397ffab7c17712ecdcb421c25dafee5be0546a0c9006",
-    "frontend/chat-widget/algolia-confidence-badge.js": "4cc3a70b85053a9d4db881ba066d309f8265f01c4522c588771c6bfc90858722"
+    "frontend/chat-widget/algolia-confidence-badge.js": "4cc3a70b85053a9d4db881ba066d309f8265f01c4522c588771c6bfc90858722",
+    "frontend/chat-widget/patches/apply-locked-judge-lifecycle.mjs": "ad67eaf29629832410af4f74c4d33a0e1437768bd6c1624690e258d60ce3a814",
+    "frontend/chat-widget/patches/apply-compare-judge-isolation.mjs": "4b62032e85f2c8e24690affc20036bc83552365c1803128026bfa3e366e8ecb4",
+    "tools/deployment/judge_release_guard.py": "832043cc98b82ebbb31589a92bac2aff4edd872db4a91c3e5ce45a03a5e7e105"
   },
   "liveAssetSha256": {
     "core": "9a7fdd2700ccb57f9bd9397ffab7c17712ecdcb421c25dafee5be0546a0c9006",

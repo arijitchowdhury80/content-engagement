@@ -18,6 +18,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import deploy_jahia_engagement_tracker as jahia
+import judge_release_guard
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -137,6 +138,8 @@ def immutable_assets() -> dict[str, dict[str, str]]:
     assets = {}
     for key, source in SOURCES.items():
         content = source.read_text(encoding="utf-8")
+        if key == "compare":
+            judge_release_guard.validate_compare_runtime(content)
         digest = sha256(content)
         filename = (
             f"{STEMS[key]}-{digest[:12]}.js"

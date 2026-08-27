@@ -38,11 +38,11 @@ def test_block_cutover_uses_immutable_assets_and_removes_chief():
     assert updated.index(assets["core"]["url"]) < updated.index(assets["chat"]["url"])
     assert "algolia-confidence-badge.js?old=1" not in updated
     assert 'data-judge-runtime-release="judge-v2"' in updated
-    assert updated.count('<algolia-chat-confidence mode="off">') == 1
-    assert 'mode="algolia"' not in updated
+    assert updated.count('<algolia-chat-confidence>') == 1
+    assert ' mode=' not in updated
 
 
-def test_block_cutover_forces_inline_confidence_off_without_removing_judges():
+def test_block_cutover_removes_mode_without_removing_judges():
     current = '''<div class="algolia-chat-embed"><algolia-chat-confidence data-x="preserved" mode="algolia">
 <algolia-agent role="skeptic" agent-id="old-s"></algolia-agent>
 <algolia-agent role="referee" agent-id="old-r"></algolia-agent>
@@ -58,7 +58,7 @@ def test_block_cutover_forces_inline_confidence_off_without_removing_judges():
 
     updated = module.update_block_html(current, assets, ids)
 
-    assert '<algolia-chat-confidence data-x="preserved" mode="off">' in updated
+    assert '<algolia-chat-confidence data-x="preserved">' in updated
     assert all(f'role="{role}" agent-id="{agent_id}"' in updated for role, agent_id in ids.items())
 
 
@@ -104,7 +104,7 @@ def test_chief_detection_is_attribute_order_independent():
     }
     checks = module.validate(after, assets, html_value, {})
     assert checks["chiefAttributeAbsent"] is False
-    assert checks["inlineConfidenceModeOff"] is False
+    assert checks["confidenceModeAttributeAbsent"] is False
     assert checks["pass"] is False
 
 
@@ -134,14 +134,15 @@ def test_live_companion_overrides_preserve_exact_badge_and_chat_bytes(monkeypatc
     monkeypatch.setattr(module.jahia, "block_html", lambda workspace: (
         f'<script src="{badge_url}"></script>\n<script src="{chat_url}"></script>'
     ))
-    payloads = {badge_url: b"badge live bytes", chat_url: b"chat live bytes"}
+    chat_bytes = (ROOT / "frontend/chat-widget/algolia-chat.js").read_bytes()
+    payloads = {badge_url: b"badge live bytes", chat_url: chat_bytes}
     monkeypatch.setattr(module, "fetch_bytes", lambda url: payloads[url])
 
     overrides = module.live_companion_overrides()
     assets = module.immutable_assets(overrides)
 
     assert assets["badge"]["content"] == "badge live bytes"
-    assert assets["chat"]["content"] == "chat live bytes"
+    assert assets["chat"]["content"] == chat_bytes.decode("utf-8")
     assert assets["badge"]["source"] == f"live:{badge_url}"
     assert assets["chat"]["source"] == f"live:{chat_url}"
 

@@ -55,14 +55,14 @@ test('Agent Studio completion steps share one explicit pre-stream retry budget',
   );
 });
 
-test('confidence judges make one attempt each and never amplify rate-limit or validation failures', async () => {
+test('confidence judges retry only the role whose response failed', async () => {
   const bundle = await readFile(bundleUrl, 'utf8');
 
   assert.match(bundle, /async function __arrieRunRoleJudge\(/);
-  assert.match(bundle, /phase:"judging",role:i,attempt:1/);
-  assert.doesNotMatch(bundle, /for\(let w=1;w<=2/);
-  assert.doesNotMatch(bundle, /Judge failed validation twice/);
-  assert.doesNotMatch(bundle, /phase:"retrying",role:/);
+  assert.match(bundle, /for\(let w=1;w<=2&&!s\.aborted;w\+\+\)/);
+  assert.match(bundle, /phase:"retrying",role:i,attempt:w/);
+  assert.match(bundle, /Judge failed validation twice/);
+  assert.match(bundle, /s\.ROLES\.map\(g=>__arrieRunRoleJudge/);
 });
 
 test('qualified specialist journeys use the existing human-gated specialist handler deterministically', async () => {

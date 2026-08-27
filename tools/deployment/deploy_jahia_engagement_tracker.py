@@ -21,6 +21,12 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+DEPLOYMENT_DIR = Path(__file__).resolve().parent
+if str(DEPLOYMENT_DIR) not in sys.path:
+    sys.path.insert(0, str(DEPLOYMENT_DIR))
+
+import judge_release_guard
+
 
 ROOT = Path(__file__).resolve().parents[2]
 ENV_LOCAL = ROOT / ".env.local"
@@ -863,6 +869,7 @@ def fetch_public_bytes(
 
 
 def set_block_html(html: str) -> dict:
+    judge_release_guard.validate_block_html(html)
     mutation = """
     mutation SetBlockHtml($html: String!) {
       jcr(workspace: EDIT) {
@@ -1372,6 +1379,7 @@ def run_chat_only(apply: bool) -> int:
     before = chat_snapshot()
     write_json(EVIDENCE_DIR / "before-snapshot.json", before)
     chat_content = CHAT_SRC.read_text(encoding="utf-8")
+    judge_release_guard.validate_chat_runtime(chat_content)
     next_html = update_chat_block_html(before["edit"]["blockHtml"])
     plan = chat_only_plan(before, chat_content, next_html)
     write_json(EVIDENCE_DIR / "deployment-plan.json", plan)
@@ -1531,6 +1539,7 @@ def run_judge_runtime_only(apply: bool) -> int:
     before = judge_runtime_snapshot()
     write_json(EVIDENCE_DIR / "before-snapshot.json", before)
     chat_content = CHAT_SRC.read_text(encoding="utf-8")
+    judge_release_guard.validate_chat_runtime(chat_content)
     badge_content = CONFIDENCE_BADGE_SRC.read_text(encoding="utf-8")
     next_html = update_judge_runtime_block_html(before["edit"]["blockHtml"])
     plan = judge_runtime_only_plan(before, chat_content, badge_content, next_html)
@@ -1827,6 +1836,7 @@ def main() -> int:
     current_html = before["edit"]["blockHtml"]
     next_html = update_block_html(current_html)
     chat_content = CHAT_SRC.read_text(encoding="utf-8")
+    judge_release_guard.validate_chat_runtime(chat_content)
     tracker_content = TRACKER_SRC.read_text(encoding="utf-8")
     context_compiler_content = CONTEXT_COMPILER_SRC.read_text(encoding="utf-8")
     proactive_controller_content = PROACTIVE_CONTROLLER_SRC.read_text(encoding="utf-8")

@@ -74,13 +74,9 @@ test('real widget sends the exact finalized body once and isolates the Productio
     });
     await page.evaluate(() => {
       const confidence = document.createElement('algolia-chat-confidence');
-      confidence.setAttribute('mode', 'off');
       document.querySelector('algolia-chat').append(confidence);
       document.dispatchEvent(new CustomEvent('algolia-visitor-state-reset'));
     });
-    await page.waitForFunction(() =>
-      document.querySelector('algolia-chat-confidence')?.getAttribute('mode') === 'algolia'
-    );
     await page.evaluate(() => document.querySelector('algolia-chat').ask('Use the exact same packet.'));
     await page.waitForFunction(() => {
       const root = document.querySelector('algolia-chat')?.shadowRoot;
@@ -130,7 +126,7 @@ test('real widget sends the exact finalized body once and isolates the Productio
     assert.equal(proof.togglePressed, 'true');
     assert.equal(proof.toggleDisabled, null);
     assert.equal(proof.toggleParentClass, 'flex items-end justify-between gap-4');
-    assert.equal(proof.confidenceMode, 'algolia', 'post-answer Compare preserves the completed answer judge');
+    assert.equal(proof.confidenceMode, null, 'Compare never configures the judge');
     assert.match(proof.productionText, /Production comparison answer/);
     assert.match(proof.primaryText, /Here is the practical implementation path/);
 

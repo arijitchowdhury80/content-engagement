@@ -56,13 +56,6 @@
   const sroot = () => host()?.shadowRoot || null;
   const q = (sel) => sroot()?.querySelector(sel) || null;
 
-  function setJudgeMode(mode) {
-    const confidence = host()?.querySelector("algolia-chat-confidence");
-    if (!confidence || confidence.getAttribute("mode") === mode) return;
-    confidence.setAttribute("mode", mode);
-    log("judge mode:", mode);
-  }
-
   // "Expanded" = the panel fills most of the viewport. The widget has three size
   // modes (docked / normal / maximized) and the expand control goes docked→normal,
   // a large CENTERED card — so a strict "maximized" check would miss it.
@@ -101,7 +94,6 @@
     latestPreparedTurn = null;
     mirroredTurnKeys.clear();
     completedTurnKeys.clear();
-    setJudgeMode("algolia");
     clearLog();
     // A reset removes the answer-scoped control immediately; a later completed
     // answer will cause reconcile() to create the next one.
@@ -192,10 +184,6 @@
       messageId: String(detail?.messageId || ""),
       question: String(detail?.question || ""),
     };
-    // A question that starts while Compare is already active would otherwise
-    // launch primary + production + three judges together. Keep normal turns
-    // judged, but suppress that extra fan-out for this new dual request.
-    setJudgeMode(compareOn ? "off" : "algolia");
     const toggle = sroot()?.querySelector(`#${TOGGLE_ID}`);
     if (toggle) paintToggle(toggle);
     if (!compareOn || !ENDPOINT_OK) return;
@@ -379,7 +367,6 @@
       const path = e.composedPath ? e.composedPath() : [];
       if (!path.some((n) => n && n.id === TOGGLE_ID)) return;
       compareOn = !compareOn;
-      if (!compareOn) setJudgeMode("algolia");
       if (compareOn && latestPreparedTurn) {
         mirrorPreparedTurn(latestPreparedTurn, generation)
           .catch((error) => log("production replay failed (contained)", error));
@@ -398,9 +385,6 @@
 
     subscribeToPreparedTurns();
     subscribeToCompletedTurns();
-    // The Jahia block stays statically fail-safe at mode="off". Compare owns
-    // the browser-time policy and enables judges for the default single panel.
-    setJudgeMode("algolia");
     reconcile();
     log("attached");
     return true;

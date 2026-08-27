@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import deploy_jahia_engagement_tracker as jahia
+import judge_release_guard
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -37,6 +38,10 @@ def immutable_assets(content_overrides: dict[str, dict[str, str]] | None = None)
     for key, source in SOURCES.items():
         override = content_overrides.get(key)
         content = override["content"] if override else source.read_text(encoding="utf-8")
+        if key == "chat":
+            judge_release_guard.validate_chat_runtime(content)
+        elif key == "compare":
+            judge_release_guard.validate_compare_runtime(content)
         digest = jahia.sha256(content)
         stem = {"core": "algolia-judge-core", "badge": "algolia-confidence-badge", "chat": "algolia-chat"}[key]
         filename = f"{stem}-judge-v2-{digest[:12]}.js"
@@ -89,8 +94,7 @@ def update_block_html(current: str, assets: dict, agent_ids: dict[str, str]) -> 
     if len(matches) != 1:
         raise RuntimeError(f"Expected exactly one algolia-chat-confidence element; found {len(matches)}")
     attrs = re.sub(r'\sagent-id="[^"]*"', "", matches[0])
-    attrs = re.sub(r'\smode="[^"]*"', "", attrs)
-    attrs += ' mode="off"'
+    attrs = re.sub(r'\smode="[^"]*"', "", attrs).rstrip()
     next_html = re.sub(confidence_pattern, f'<algolia-chat-confidence{attrs}>', next_html, count=1)
     for role, agent_id in agent_ids.items():
         pattern = rf'(<algolia-agent\b(?=[^>]*\brole="{role}")[^>]*\bagent-id=")[^"]*(")'
@@ -184,8 +188,7 @@ def validate(after: dict, assets: dict, expected_html: str, agent_ids: dict, pub
         "editBlockMatches": after["edit"]["blockHtml"] == expected_html,
         "liveBlockMatches": live_html == expected_html,
         "chiefAttributeAbsent": re.search(r'<algolia-chat-confidence\b[^>]*\bagent-id=', live_html) is None,
-        "inlineConfidenceModeOff": len(re.findall(r'<algolia-chat-confidence\b[^>]*\bmode="off"[^>]*>', live_html)) == 1,
-        "inlineConfidenceModeAlgoliaAbsent": re.search(r'<algolia-chat-confidence\b[^>]*\bmode="algolia"', live_html) is None,
+        "confidenceModeAttributeAbsent": re.search(r'<algolia-chat-confidence\b[^>]*\bmode=', live_html) is None,
         "coreLoadsBeforeChat": 0 <= live_html.find(assets["core"]["url"]) < live_html.find(assets["chat"]["url"]),
         "threeRoleIdsPresent": all(live_html.count(agent_id) == 1 for agent_id in agent_ids.values()),
     }

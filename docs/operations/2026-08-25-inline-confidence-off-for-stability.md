@@ -1,36 +1,38 @@
-# Compare-aware confidence policy for stability
+# Superseded: Compare-aware confidence policy
+
+> Superseded on 2026-08-27. This file records a rejected design and must not be
+> used as deployment guidance. Browser judging is mandatory, the confidence
+> element has no `mode` attribute, and Compare has no judge authority.
 
 ## Decision
 
-The saved Jahia block remains fail-safe with exactly one `<algolia-chat-confidence mode="off">` element. At browser runtime, the Compare companion changes that mode to `algolia` for ordinary single-panel answers.
+The saved Jahia block must contain exactly one `<algolia-chat-confidence>` element with no `mode` attribute.
 
-When Compare is enabled after an existing answer, that answer keeps its completed judge result. When a new dual-panel turn starts while Compare is already enabled, the companion changes confidence mode back to `off` for that turn so the browser does not launch the production request plus three judges beside the primary request.
+Compare must never read or mutate the confidence element. Normal Algolia answers are judged independently of Compare; production comparison answers are not sent through the Algolia judge panel.
 
-The three judge agents, judge core, confidence UI, and offline semantic evaluation remain available. This policy changes only when browser judging runs.
+The prior conditional-mode policy is removed.
 
 ## Reason
 
-The earlier live configuration launched three browser-side Agent Studio judge completions after every orchestrator answer. One normal visitor answer therefore generated four same-application completion requests: one orchestrator request and three judge requests. The burst exhausted the observed development application envelope and contributed to 429 responses and stalled follow-up turns.
-
-Compare adds a production completion. The browser must therefore distinguish an ordinary answer, an existing answer being compared after completion, and a new question sent while dual-panel Compare is already active.
+The earlier policy attributed 429 responses to judge fan-out without isolating the actual request source. It created multiple judge-control authorities and intermittent availability. That diagnosis and mitigation were rejected.
 
 ## Runtime contract
 
 - Development app: `0EXRPAXB56`.
 - Primary agent: `www Chat - Orchestrator`.
 - Retrieval index: `Algolia_Prod_Copy_Vanilla` only.
-- Saved Jahia confidence mode: `off`.
-- Browser confidence mode before an ordinary single-panel turn: `algolia`.
+- Saved Jahia confidence element: no `mode` attribute.
+- Browser judge lifecycle: mandatory and owned only by the chat judge runtime.
 - Ordinary single-panel fan-out: one primary completion followed by the three-role judge panel.
-- Dual-panel fan-out: one primary completion plus one production comparison; browser judges are suppressed for a new turn that begins while Compare is active.
+- Compare has no access to judge state, configuration, or presentation.
 - Offline semantic evaluation remains available independently of the browser judge panel.
 
-The static Jahia preflight fails closed if the saved block is not Vanilla or its fail-safe confidence mode is not off. The browser identity preflight requires `algolia` after the Compare companion initializes the normal single-panel runtime.
+Jahia and browser preflight fail if any confidence `mode` attribute exists or if any of the three role agents is absent.
 
 ## Deployment safety
 
-`tools/deployment/deploy_judge_v2_jahia.py` continues to force the saved value to `mode="off"`, so a missing or failed companion script remains fail-safe. The immutable Compare asset owns the browser-time switch. `tools/deployment/deploy_jahia_confidence_mode.py` still changes only the saved confidence value and requires snapshot, dry run, exact EDIT/LIVE/public readback, and rollback evidence.
+All Jahia block writers call `judge_release_guard.py`. Candidate chat runtimes must preserve mandatory judging, parallel three-role dispatch, role-specific retry, and no shared panel deadline. The standalone confidence-mode deployer was deleted.
 
 ## Rollback
 
-The private pre-change block is stored outside the repository in the approved evidence directory. Rollback restores the prior immutable Compare asset reference, returning browser judging to the saved `off` state without changing the underlying block contract.
+Rollback may restore only a release that passes the current judge release guard. A stale release containing a mode switch is not a permitted rollback target.

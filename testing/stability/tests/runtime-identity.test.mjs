@@ -13,28 +13,28 @@ const ORCHESTRATOR = {
 };
 
 test('Jahia identity requires exactly one active chat and one index attribute', () => {
-  const valid = '<main><algolia-chat-theme></algolia-chat-theme><algolia-instant-search app-id="0EXRPAXB56" index-name="Algolia_Prod_Copy_Vanilla"><algolia-chat-confidence mode="off"></algolia-chat-confidence><algolia-chat-visitor></algolia-chat-visitor><algolia-chat></algolia-chat></algolia-instant-search></main>';
+  const valid = '<main><algolia-chat-theme></algolia-chat-theme><algolia-instant-search app-id="0EXRPAXB56" index-name="Algolia_Prod_Copy_Vanilla"><algolia-chat-confidence></algolia-chat-confidence><algolia-chat-visitor></algolia-chat-visitor><algolia-chat></algolia-chat></algolia-instant-search></main>';
   assert.equal(extractChatIndex(valid), 'Algolia_Prod_Copy_Vanilla');
-  assert.equal(extractConfidenceMode(valid), 'off');
+  assert.equal(extractConfidenceMode(valid), null);
   assert.equal(inspectJahiaHtml(valid, 'fixture').vanillaOnly, true);
-  assert.equal(inspectJahiaHtml(valid, 'fixture').inlineConfidenceOff, true);
+  assert.equal(inspectJahiaHtml(valid, 'fixture').confidenceModeAttributeAbsent, true);
   assert.throws(() => extractChatIndex('<main><algolia-chat></algolia-chat></main>'), /found 0/);
   assert.throws(() => extractChatIndex(`${valid}${valid}`), /found 2/);
   assert.throws(() => extractChatIndex('<algolia-instant-search index-name="one"><algolia-chat index-name="two">'), /found 2/);
 });
 
 test('Jahia identity rejects stale Enhanced even when Vanilla appears elsewhere', () => {
-  const html = '<!-- Algolia_Prod_Copy_Vanilla --><algolia-instant-search index-name="Algolia_Prod_Copy_Enhanced"><algolia-chat-confidence mode="off"></algolia-chat-confidence><algolia-chat></algolia-chat></algolia-instant-search>';
+  const html = '<!-- Algolia_Prod_Copy_Vanilla --><algolia-instant-search index-name="Algolia_Prod_Copy_Enhanced"><algolia-chat-confidence></algolia-chat-confidence><algolia-chat></algolia-chat></algolia-instant-search>';
   const result = inspectJahiaHtml(html, 'fixture');
   assert.equal(result.indexName, 'Algolia_Prod_Copy_Enhanced');
   assert.equal(result.vanillaOnly, false);
 });
 
-test('Jahia identity rejects inline confidence judging', () => {
+test('Jahia identity rejects any confidence mode switch', () => {
   const html = '<algolia-instant-search index-name="Algolia_Prod_Copy_Vanilla"><algolia-chat-confidence mode="algolia"></algolia-chat-confidence><algolia-chat></algolia-chat></algolia-instant-search>';
   const result = inspectJahiaHtml(html, 'fixture');
   assert.equal(result.confidenceMode, 'algolia');
-  assert.equal(result.inlineConfidenceOff, false);
+  assert.equal(result.confidenceModeAttributeAbsent, false);
 });
 
 test('orchestrator identity requires exactly one named Vanilla search index', () => {
@@ -65,10 +65,11 @@ test('display-name typography drift warns but IDs and retrieval identity decide 
 });
 
 test('browser identity validates app, index, and widget cardinality independently', () => {
-  assert.equal(validateBrowserIdentity({ count: 1, appId: '0EXRPAXB56', indexName: 'Algolia_Prod_Copy_Vanilla', confidenceCount: 1, confidenceMode: 'algolia' }).pass, true);
+  const agents = ['skeptic', 'referee', 'advocate'].map((role) => ({ role, id: role }));
+  assert.equal(validateBrowserIdentity({ count: 1, appId: '0EXRPAXB56', indexName: 'Algolia_Prod_Copy_Vanilla', confidenceCount: 1, confidenceMode: null, agentIds: agents }).pass, true);
   const invalid = validateBrowserIdentity({ count: 2, appId: 'wrong', indexName: 'Algolia_Prod_Copy_Enhanced', confidenceCount: 2, confidenceMode: 'off' });
   assert.equal(invalid.pass, false);
-  assert.equal(invalid.errors.length, 5);
+  assert.equal(invalid.errors.length, 8);
 });
 
 test('operator Agent Studio client keeps credentials in the operator request only', async () => {

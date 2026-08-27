@@ -41,5 +41,5 @@ export async function inspectRuntimeIdentity({ fetchAgent, fetchImpl = fetch, br
     assets: await assetIdentity(browserRaw.loadedScripts, fetchImpl),
     checkedAt: new Date().toISOString(),
   };
-  return { ...identity, pass: jahia.vanillaOnly && jahia.inlineConfidenceOff && browser.pass && agentStudio.pass };
+  return { ...identity, pass: jahia.vanillaOnly && jahia.confidenceModeAttributeAbsent && browser.pass && agentStudio.pass };
 }

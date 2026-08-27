@@ -19,8 +19,8 @@ export function extractConfidenceMode(html) {
   const tags = [...html.matchAll(/<algolia-chat-confidence(?=[\s>])[^>]*>/gi)].map((match) => match[0]);
   if (tags.length !== 1) throw new Error(`Expected exactly one algolia-chat-confidence element; found ${tags.length}`);
   const modes = [...tags[0].matchAll(/\bmode\s*=\s*(["'])(.*?)\1/gi)];
-  if (modes.length !== 1) throw new Error(`Expected exactly one confidence mode attribute; found ${modes.length}`);
-  return modes[0][2].toLowerCase();
+  if (modes.length > 1) throw new Error(`Expected at most one confidence mode attribute; found ${modes.length}`);
+  return modes.length === 0 ? null : modes[0][2].toLowerCase();
 }
 
 export function inspectJahiaHtml(html, surface) {
@@ -33,7 +33,7 @@ export function inspectJahiaHtml(html, surface) {
     indexName,
     confidenceMode,
     vanillaOnly: indexName === TARGET.indexName && !html.includes('Algolia_Prod_Copy_Enhanced'),
-    inlineConfidenceOff: confidenceMode === 'off',
+    confidenceModeAttributeAbsent: confidenceMode === null,
   });
 }
 

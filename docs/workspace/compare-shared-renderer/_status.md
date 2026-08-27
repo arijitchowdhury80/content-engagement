@@ -5,11 +5,11 @@
 - [x] Existing production transport retained.
 - [x] Post-answer Compare retains and replays the latest finalized request byte-for-byte.
 - [x] Post-answer Compare unit, full-chain browser, and deployment tests pass.
-- [x] Judge disappearance root cause traced to the pre-existing global `mode="off"` stability cutover, not Compare.
+- [x] Judge disappearance traced to competing ownership: the saved off switch, Compare runtime overrides, and per-panel failure paths.
 - [x] Compare appears only in the latest answer evidence footer; the header stays free of answer actions.
 - [x] Current-response input/output telemetry appears in the same footer and cumulative totals are not presented as one response.
-- [x] Judges run when Compare is off and remain visible when an existing answer is compared.
-- [x] Future turns sent while Compare is already on suppress judge fan-out to protect the request budget.
+- [x] Compare has no access to judge mode or the confidence element.
+- [x] Normal Algolia answers remain judged independently of Compare.
 - [ ] Current compiled Algolia presentation reconciled into readable source.
 - [ ] Native comparison turn API implemented.
 - [ ] Duplicate companion renderers removed.
