@@ -14,7 +14,7 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
 
-def test_block_cutover_uses_immutable_assets_and_removes_chief():
+def test_block_cutover_uses_stable_assets_and_removes_chief():
     current = '''<div class="algolia-chat-embed" data-judge-runtime-release="old">
 <algolia-chat-confidence mode="algolia" agent-id="chief">
 <algolia-agent role="skeptic" agent-id="old-s"></algolia-agent>
@@ -24,8 +24,9 @@ def test_block_cutover_uses_immutable_assets_and_removes_chief():
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js?old=1"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js?old=1"></script>'''
     assets = {
-        key: {"url": f"{module.PUBLIC}/{key}-judge-v2-123456789abc.js"}
-        for key in ["core", "badge", "chat"]
+        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js?v=111111111111"},
+        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js?v=222222222222"},
+        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js?v=333333333333"},
     }
     ids = {
         "skeptic": "11111111-1111-4111-8111-111111111111",
@@ -49,7 +50,11 @@ def test_block_cutover_removes_mode_without_removing_judges():
 <algolia-agent role="advocate" agent-id="old-a"></algolia-agent></algolia-chat-confidence></div>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js"></script>'''
-    assets = {key: {"url": f"{module.PUBLIC}/{key}-judge-v2-123456789abc.js"} for key in ["core", "badge", "chat"]}
+    assets = {
+        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js?v=111111111111"},
+        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js?v=222222222222"},
+        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js?v=333333333333"},
+    }
     ids = {
         "skeptic": "11111111-1111-4111-8111-111111111111",
         "referee": "22222222-2222-4222-8222-222222222222",
@@ -80,7 +85,11 @@ def test_block_cutover_rejects_duplicate_script_targets():
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-confidence-badge.js"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat.js"></script>'''
-    assets = {key: {"url": f"{module.PUBLIC}/{key}-judge-v2-123456789abc.js"} for key in ["core", "badge", "chat"]}
+    assets = {
+        "core": {"url": f"{module.PUBLIC}/algolia-judge-core-judge-v2.js?v=111111111111"},
+        "badge": {"url": f"{module.PUBLIC}/algolia-confidence-badge-judge-v2.js?v=222222222222"},
+        "chat": {"url": f"{module.PUBLIC}/algolia-chat-judge-v2.js?v=333333333333"},
+    }
     ids = {
         "skeptic": "11111111-1111-4111-8111-111111111111",
         "referee": "22222222-2222-4222-8222-222222222222",
@@ -115,7 +124,7 @@ def test_private_state_is_permission_restricted(tmp_path):
     assert os.stat(path).st_mode & 0o777 == 0o600
 
 
-def test_new_immutable_asset_waits_for_exact_edit_readback(monkeypatch):
+def test_stable_asset_create_waits_for_exact_edit_readback(monkeypatch):
     asset = {"path": "/sites/www/files/new.js", "content": "const ready = true;", "sha256": "hash"}
     states = iter([None, None, {"path": asset["path"]}])
     monkeypatch.setattr(module, "safe_node", lambda _path, _workspace: next(states))
@@ -123,14 +132,37 @@ def test_new_immutable_asset_waits_for_exact_edit_readback(monkeypatch):
     monkeypatch.setattr(module.jahia, "file_content", lambda _node: asset["content"])
     monkeypatch.setattr(module.time, "sleep", lambda _seconds: None)
 
-    result = module.create_immutable(asset)
+    result = module.upsert_stable_asset(asset)
 
     assert result == {"path": asset["path"], "operation": "create", "sha256": "hash"}
 
 
+def test_stable_asset_update_waits_for_exact_edit_readback(monkeypatch):
+    asset = {"path": "/sites/www/files/existing.js", "content": "const ready = true;", "sha256": "hash"}
+    node = {"path": asset["path"]}
+    reads = iter(["old bytes", asset["content"]])
+    monkeypatch.setattr(module, "safe_node", lambda _path, _workspace: node)
+    monkeypatch.setattr(module.jahia, "upsert_file", lambda path, content: {"path": path, "content": content})
+    monkeypatch.setattr(module.jahia, "file_content", lambda _node: next(reads))
+    monkeypatch.setattr(module.time, "sleep", lambda _seconds: None)
+
+    result = module.upsert_stable_asset(asset)
+
+    assert result == {"path": asset["path"], "operation": "update", "sha256": "hash"}
+
+
+def test_stable_asset_filenames_do_not_include_content_hashes():
+    assets = module.stable_assets()
+    assert assets["core"]["filename"] == "algolia-judge-core-judge-v2.js"
+    assert assets["badge"]["filename"] == "algolia-confidence-badge-judge-v2.js"
+    assert assets["chat"]["filename"] == "algolia-chat-judge-v2.js"
+    assert assets["chat"]["sha256"][:12] not in assets["chat"]["filename"]
+    assert f'?v={assets["chat"]["sha256"][:12]}' in assets["chat"]["url"]
+
+
 def test_live_companion_overrides_preserve_exact_badge_and_chat_bytes(monkeypatch):
     badge_url = f"{module.PUBLIC}/algolia-confidence-badge-judge-v2-aaaaaaaaaaaa.js"
-    chat_url = f"{module.PUBLIC}/algolia-chat-judge-v2-bbbbbbbbbbbb.js"
+    chat_url = f"{module.PUBLIC}/algolia-chat-judge-v2.js?v=bbbbbbbbbbbb"
     monkeypatch.setattr(module.jahia, "block_html", lambda workspace: (
         f'<script src="{badge_url}"></script>\n<script src="{chat_url}"></script>'
     ))
@@ -139,7 +171,7 @@ def test_live_companion_overrides_preserve_exact_badge_and_chat_bytes(monkeypatc
     monkeypatch.setattr(module, "fetch_bytes", lambda url: payloads[url])
 
     overrides = module.live_companion_overrides()
-    assets = module.immutable_assets(overrides)
+    assets = module.stable_assets(overrides)
 
     assert assets["badge"]["content"] == "badge live bytes"
     assert assets["chat"]["content"] == chat_bytes.decode("utf-8")
@@ -161,7 +193,9 @@ def test_post_publish_validation_failure_has_automatic_block_rollback():
     assert 'failed-mutation-rollback.json' in source
     assert 'skipped": not block_mutated' not in source
     assert '"operation": "attempted"' in source
-    assert 'mutations[f"asset_{key}"] = create_immutable(asset)' in source
+    assert 'mutations[f"asset_{key}"] = upsert_stable_asset(asset)' in source
+    assert 'newHashedAssetsCreated": False' in source
+    assert 'stableAssetsBefore' in source
 
 
 def test_rollback_refuses_to_overwrite_a_concurrent_block_change(tmp_path, monkeypatch):
@@ -207,3 +241,51 @@ def test_rollback_republishes_and_polls_until_live_catches_up(tmp_path, monkeypa
     assert state["EDIT"] == before
     assert state["LIVE"] == before
     assert state["blockPublishes"] == 2
+
+
+def test_rollback_restores_prior_stable_asset_bytes(tmp_path, monkeypatch):
+    before = "before"
+    deployed = "deployed"
+    path = "/sites/www/files/algolia-chat-judge-v2.js"
+    manifest = tmp_path / "rollback.json"
+    manifest.write_text(json.dumps({
+        "beforeEditHtml": before,
+        "beforeEditSha256": module.jahia.sha256(before),
+        "expectedDeployedSha256": module.jahia.sha256(deployed),
+        "stableAssetsBefore": {
+            "chat": {
+                "path": path,
+                "existed": True,
+                "content": "old stable bytes",
+                "sha256": module.jahia.sha256("old stable bytes"),
+            }
+        },
+    }))
+    state = {"EDIT": deployed, "LIVE": deployed, "content": "new stable bytes", "blockPublishes": 0}
+    published = []
+
+    monkeypatch.setattr(module.jahia, "block_html", lambda workspace: state[workspace])
+    monkeypatch.setattr(module.jahia, "set_block_html", lambda value: state.__setitem__("EDIT", value))
+    monkeypatch.setattr(module.jahia, "version_block", lambda: None)
+    monkeypatch.setattr(module.jahia, "upsert_file", lambda _path, content: state.__setitem__("content", content))
+    monkeypatch.setattr(module, "safe_node", lambda _path, _workspace: {"path": _path})
+    monkeypatch.setattr(module.jahia, "file_content", lambda _node: state["content"])
+    monkeypatch.setattr(module.time, "sleep", lambda _seconds: None)
+
+    def publish(published_path, subtree=False):
+        published.append(published_path)
+        if published_path == module.BLOCK:
+            state["blockPublishes"] += 1
+            if state["blockPublishes"] >= 2:
+                state["LIVE"] = state["EDIT"]
+        return {"path": published_path, "subtree": subtree}
+
+    monkeypatch.setattr(module.jahia, "publish", publish)
+
+    result = module.restore(manifest)
+
+    assert result["pass"] is True
+    assert result["assetsRestored"] == [path]
+    assert state["content"] == "old stable bytes"
+    assert f"{path}/jcr:content" in published
+    assert path in published

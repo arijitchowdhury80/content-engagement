@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deploy immutable judge-v2 assets and atomically switch the Drift block."""
+"""Deploy stable judge-v2 assets and atomically switch the Drift block."""
 
 from __future__ import annotations
 
@@ -30,9 +30,14 @@ SOURCES = {
     "badge": ROOT / "frontend/chat-widget/algolia-confidence-badge.js",
     "chat": ROOT / "frontend/chat-widget/algolia-chat.js",
 }
+STABLE_FILENAMES = {
+    "core": "algolia-judge-core-judge-v2.js",
+    "badge": "algolia-confidence-badge-judge-v2.js",
+    "chat": "algolia-chat-judge-v2.js",
+}
 
 
-def immutable_assets(content_overrides: dict[str, dict[str, str]] | None = None) -> dict[str, dict[str, str]]:
+def stable_assets(content_overrides: dict[str, dict[str, str]] | None = None) -> dict[str, dict[str, str]]:
     content_overrides = content_overrides or {}
     assets = {}
     for key, source in SOURCES.items():
@@ -43,15 +48,14 @@ def immutable_assets(content_overrides: dict[str, dict[str, str]] | None = None)
         elif key == "compare":
             judge_release_guard.validate_compare_runtime(content)
         digest = jahia.sha256(content)
-        stem = {"core": "algolia-judge-core", "badge": "algolia-confidence-badge", "chat": "algolia-chat"}[key]
-        filename = f"{stem}-judge-v2-{digest[:12]}.js"
+        filename = STABLE_FILENAMES[key]
         assets[key] = {
             "source": override["source"] if override else str(source.relative_to(ROOT)),
             "content": content,
             "sha256": digest,
             "filename": filename,
             "path": f"{FILES}/{filename}",
-            "url": f"{PUBLIC}/{filename}",
+            "url": f"{PUBLIC}/{filename}?v={digest[:12]}",
         }
     return assets
 
@@ -76,16 +80,16 @@ def replace_one(pattern: str, replacement: str, value: str, label: str, flags: i
 def update_block_html(current: str, assets: dict, agent_ids: dict[str, str]) -> str:
     validate_agent_ids(agent_ids)
     next_html = re.sub(
-        rf'\n?<script src="{re.escape(PUBLIC)}/algolia-judge-core(?:-judge-v2-[a-f0-9]{{12}})?\.js(?:\?[^"\n]*)?"></script>',
+        rf'\n?<script src="{re.escape(PUBLIC)}/algolia-judge-core(?:-judge-v2(?:-[a-f0-9]{{12}})?)?\.js(?:\?[^"\n]*)?"></script>',
         "",
         current,
     )
     next_html = replace_one(
-        rf'<script src="{re.escape(PUBLIC)}/algolia-confidence-badge(?:-judge-v2-[a-f0-9]{{12}})?\.js(?:\?[^"\n]*)?"></script>',
+        rf'<script src="{re.escape(PUBLIC)}/algolia-confidence-badge(?:-judge-v2(?:-[a-f0-9]{{12}})?)?\.js(?:\?[^"\n]*)?"></script>',
         f'<script src="{assets["badge"]["url"]}"></script>', next_html, "confidence badge script",
     )
     next_html = replace_one(
-        rf'<script src="{re.escape(PUBLIC)}/algolia-chat(?:-judge-v2-[a-f0-9]{{12}})?\.js(?:\?[^"\n]*)?"></script>',
+        rf'<script src="{re.escape(PUBLIC)}/algolia-chat(?:-judge-v2(?:-[a-f0-9]{{12}})?)?\.js(?:\?[^"\n]*)?"></script>',
         f'<script src="{assets["core"]["url"]}"></script>\n<script src="{assets["chat"]["url"]}"></script>',
         next_html, "chat script",
     )
@@ -145,13 +149,29 @@ def write_private(path: Path, payload: dict) -> None:
     os.chmod(path, 0o600)
 
 
-def create_immutable(asset: dict) -> dict:
+def rollback_asset_snapshot(assets: dict) -> dict:
+    snapshot = {}
+    for key, asset in assets.items():
+        existing = safe_node(asset["path"], "EDIT")
+        content = jahia.file_content(existing) if existing else None
+        snapshot[key] = {
+            "path": asset["path"],
+            "existed": existing is not None,
+            "content": content,
+            "sha256": jahia.sha256(content or ""),
+        }
+    return snapshot
+
+
+def upsert_stable_asset(asset: dict) -> dict:
     existing = safe_node(asset["path"], "EDIT")
     if existing:
         actual = jahia.file_content(existing) or ""
-        if actual != asset["content"]:
-            raise RuntimeError(f"Immutable asset collision at {asset['path']}")
-        return {"path": asset["path"], "operation": "reuse", "sha256": asset["sha256"]}
+        if actual == asset["content"]:
+            return {"path": asset["path"], "operation": "reuse", "sha256": asset["sha256"]}
+        operation = "update"
+    else:
+        operation = "create"
     jahia.upsert_file(asset["path"], asset["content"])
     for attempt in range(8):
         created = safe_node(asset["path"], "EDIT")
@@ -160,8 +180,8 @@ def create_immutable(asset: dict) -> dict:
         if attempt < 7:
             time.sleep(0.5)
     else:
-        raise RuntimeError(f"Immutable asset was not readable with its exact content after creation: {asset['path']}")
-    return {"path": asset["path"], "operation": "create", "sha256": asset["sha256"]}
+        raise RuntimeError(f"Stable asset was not readable with its exact content after upsert: {asset['path']}")
+    return {"path": asset["path"], "operation": operation, "sha256": asset["sha256"]}
 
 
 def fetch_bytes(url: str) -> bytes:
@@ -173,7 +193,7 @@ def live_companion_overrides() -> dict[str, dict[str, str]]:
     overrides = {}
     for key, stem in {"badge": "algolia-confidence-badge", "chat": "algolia-chat"}.items():
         urls = re.findall(
-            rf'<script src="({re.escape(PUBLIC)}/{stem}(?:-judge-v2-[a-f0-9]{{12}})?\.js(?:\?[^"\n]*)?)"></script>',
+            rf'<script src="({re.escape(PUBLIC)}/{stem}(?:-judge-v2(?:-[a-f0-9]{{12}})?)?\.js(?:\?[^"\n]*)?)"></script>',
             live_html,
         )
         if len(urls) != 1:
@@ -210,7 +230,7 @@ def public_readback(assets: dict, agent_ids: dict) -> dict:
     page = fetch_bytes(RENDERED_PAGE).decode("utf-8", errors="replace")
     checks["renderedPageExactAssets"] = all(page.count(asset["url"]) == 1 for asset in assets.values())
     observed_judge_assets = re.findall(
-        rf'<script src="({re.escape(PUBLIC)}/(?:algolia-judge-core|algolia-confidence-badge|algolia-chat)(?:-judge-v2-[a-f0-9]{{12}})?\.js(?:\?[^"\n]*)?)"></script>',
+        rf'<script src="({re.escape(PUBLIC)}/(?:algolia-judge-core|algolia-confidence-badge|algolia-chat)(?:-judge-v2(?:-[a-f0-9]{{12}})?)?\.js(?:\?[^"\n]*)?)"></script>',
         page,
     )
     checks["renderedPageExactJudgeAssetSet"] = sorted(observed_judge_assets) == sorted(asset["url"] for asset in assets.values())
@@ -234,6 +254,26 @@ def restore(manifest_path: Path) -> dict:
         raise RuntimeError(f"Rollback refused because the block changed concurrently in: {', '.join(unexpected)}")
     if all(value == expected_hash for value in current_hashes.values()):
         return {"editRestored": True, "liveRestored": True, "sha256": expected_hash, "alreadyRestored": True, "pass": True}
+    assets_restored = []
+    for key, asset in (manifest.get("stableAssetsBefore") or {}).items():
+        if not asset.get("existed"):
+            continue
+        content = asset.get("content")
+        path = asset.get("path")
+        if not isinstance(content, str) or not isinstance(path, str):
+            raise RuntimeError(f"Invalid rollback asset snapshot for {key}")
+        jahia.upsert_file(path, content)
+        for attempt in range(8):
+            restored = safe_node(path, "EDIT")
+            if restored is not None and (jahia.file_content(restored) or "") == content:
+                break
+            if attempt < 7:
+                time.sleep(0.5)
+        else:
+            raise RuntimeError(f"Rollback asset was not readable with its exact content: {path}")
+        jahia.publish(f"{path}/jcr:content", subtree=False)
+        jahia.publish(path, subtree=False)
+        assets_restored.append(path)
     jahia.set_block_html(prior)
     jahia.version_block()
     jahia.publish("/sites/www/home/drift", subtree=True)
@@ -248,7 +288,7 @@ def restore(manifest_path: Path) -> dict:
         jahia.publish(BLOCK, subtree=True)
         edit = jahia.block_html("EDIT")
         live = jahia.block_html("LIVE")
-    result = {"editRestored": edit == prior, "liveRestored": live == prior, "sha256": expected_hash}
+    result = {"editRestored": edit == prior, "liveRestored": live == prior, "sha256": expected_hash, "assetsRestored": assets_restored}
     result["pass"] = result["editRestored"] and result["liveRestored"]
     if not result["pass"]:
         raise RuntimeError("Jahia rollback readback failed")
@@ -278,7 +318,7 @@ def main() -> int:
         parser.error("--skeptic, --referee, and --advocate are required unless --rollback is used")
     agent_ids = {"skeptic": args.skeptic, "referee": args.referee, "advocate": args.advocate}
     validate_agent_ids(agent_ids)
-    assets = immutable_assets(live_companion_overrides() if args.preserve_live_companions else None)
+    assets = stable_assets(live_companion_overrides() if args.preserve_live_companions else None)
     before = private_snapshot(assets)
     expected_html = update_block_html(before["edit"]["blockHtml"], assets, agent_ids)
     interrupted_cutover_recovery = False
@@ -301,17 +341,19 @@ def main() -> int:
         "beforeEditSha256": jahia.sha256(before["edit"]["blockHtml"]),
         "beforeLiveSha256": jahia.sha256(before["live"]["blockHtml"]),
         "expectedDeployedSha256": jahia.sha256(expected_html),
+        "stableAssetsBefore": rollback_asset_snapshot(assets),
     })
     plan = {
         "apply": args.apply,
-        "scope": "local judge core with preserved live companions plus one exact Drift block" if args.preserve_live_companions else "three immutable assets plus one exact Drift block",
+        "scope": "stable judge assets with preserved live companions plus one exact Drift block" if args.preserve_live_companions else "three stable judge assets plus one exact Drift block",
         "assets": {key: {field: value for field, value in asset.items() if field != "content"} for key, asset in assets.items()},
         "agentIds": agent_ids,
         "expectedBlockSha256": jahia.sha256(expected_html),
         "before": public_snapshot(before),
         "privateSnapshotSha256": jahia.sha256(private_snapshot_path.read_text(encoding="utf-8")),
         "rollbackCommand": f"python3 tools/deployment/deploy_judge_v2_jahia.py --rollback {rollback_path}",
-        "oldAssetsRemainUntouched": True,
+        "oldHashedAssetsRemainUntouched": True,
+        "newHashedAssetsCreated": False,
         "interruptedCutoverRecovery": interrupted_cutover_recovery,
     }
     jahia.write_json(evidence_dir / "deployment-plan.json", plan)
@@ -327,7 +369,7 @@ def main() -> int:
                 "operation": "attempted",
                 "sha256": asset["sha256"],
             }
-            mutations[f"asset_{key}"] = create_immutable(asset)
+            mutations[f"asset_{key}"] = upsert_stable_asset(asset)
         if jahia.sha256(jahia.block_html("EDIT")) != jahia.sha256(before["edit"]["blockHtml"]):
             raise RuntimeError("Drift block changed after snapshot; aborting concurrent overwrite")
         mutations["setBlockHtml"] = jahia.set_block_html(expected_html)
