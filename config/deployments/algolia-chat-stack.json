@@ -17,17 +17,17 @@
       "algolia-proactive-controller.js",
       "handoff-to-orchestrator",
       "algolia-chat-engage.js",
-      "algolia-chat-compare-",
-      "token-telemetry-"
+      "algolia-chat-compare.js",
+      "token-telemetry.js"
     ],
     "compareWithProduction": {
       "script": "frontend/chat-widget/algolia-chat-compare.js",
       "deploymentTool": "tools/deployment/deploy_compare_integration_jahia.py",
-      "immutableAssets": [
-        "algolia-context-compiler-compare-<sha12>.js",
-        "handoff-to-orchestrator-compare-<sha12>.js",
-        "algolia-chat-compare-<sha12>.js",
-        "token-telemetry-<sha12>.js"
+      "stableAssets": [
+        "algolia-context-compiler.js",
+        "handoff-to-orchestrator.js",
+        "algolia-chat-compare.js",
+        "token-telemetry.js"
       ],
       "productionAgent": {
         "appId": "1QDAWL72TQ",
