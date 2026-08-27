@@ -313,14 +313,13 @@
 
   function ensureToggle() {
     if (!ENDPOINT_OK) return;                             // unconfigured → no UI
-    const expanded = isExpanded();
     let toggle = sroot()?.querySelector(`#${TOGGLE_ID}`) || null;
     const turnComplete = latestPreparedTurn && completedTurnKeys.has(latestPreparedTurn.turnKey);
     const candidateFooter = turnComplete
       ? window.algoliaHandoffToOrchestrator?.ensureAnswerFooter?.(latestPreparedTurn) || null
       : null;
     const answerFooter = footerIsPostAnswerReady(candidateFooter) ? candidateFooter : null;
-    if (expanded && answerFooter && !toggle) {
+    if (answerFooter && !toggle) {
       ensureToggleStyle();
       toggle = document.createElement("button");
       toggle.id = TOGGLE_ID;
@@ -328,7 +327,7 @@
       paintToggle(toggle);
       answerFooter.appendChild(toggle);
       log("toggle mounted");
-    } else if ((!expanded || !answerFooter) && toggle) {
+    } else if (!answerFooter && toggle) {
       toggle.remove();
     } else if (toggle) {
       if (toggle.parentElement !== answerFooter) {

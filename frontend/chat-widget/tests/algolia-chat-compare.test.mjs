@@ -305,7 +305,7 @@ test('normal centered panel remains eligible on a wide viewport', () => {
   assert.ok(h.toggle(), '1080px normal panel must not be mistaken for the docked panel');
   h.setExpanded(false);
   h.flush();
-  assert.equal(h.toggle(), null, 'the narrower docked panel must still hide Compare');
+  assert.ok(h.toggle(), 'the completed-answer footer action must not disappear when the panel is docked');
 });
 
 test('production panel cannot open before an answer exists', () => {
