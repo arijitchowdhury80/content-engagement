@@ -60,6 +60,13 @@ function buildCompletedContribution(identity) {
   });
 }
 
+function buildLifecycleContribution(identity, lifecycle) {
+  return createAnswerContributor({
+    identity,
+    lifecycle,
+  });
+}
+
 export function createAnswerHarnessObserver({ onRecord } = {}) {
   const state = {
     records: new Map(),
@@ -102,8 +109,43 @@ export function createAnswerHarnessObserver({ onRecord } = {}) {
 
     if (event.eventName === "completed") {
       const record = state.records.get(key) || buildPreparedRecord(identity);
-      const next = applyAnswerContribution(record, buildCompletedContribution(identity));
+      const completed = applyAnswerContribution(record, buildCompletedContribution(identity));
+      const next = detail.contribution
+        ? applyAnswerContribution(completed, detail.contribution)
+        : completed;
       state.records.set(key, next);
+      return notify(onRecord, next, event.eventName);
+    }
+
+    if (event.eventName === "contribution") {
+      const record = state.records.get(key) || buildPreparedRecord(identity);
+      const contribution = detail.contribution;
+      if (!contribution) return rejectEvent(state, event, "missing_contribution");
+      const next = applyAnswerContribution(record, contribution);
+      state.records.set(key, next);
+      return notify(onRecord, next, event.eventName);
+    }
+
+    if (event.eventName === "streaming" || event.eventName === "judging" || event.eventName === "failed") {
+      const record = state.records.get(key) || buildPreparedRecord(identity);
+      const lifecycle = event.eventName === "streaming"
+        ? ANSWER_LIFECYCLE.STREAMING
+        : event.eventName === "judging"
+          ? ANSWER_LIFECYCLE.JUDGING
+          : ANSWER_LIFECYCLE.FAILED;
+      const next = applyAnswerContribution(record, buildLifecycleContribution(identity, lifecycle));
+      state.records.set(key, next);
+      return notify(onRecord, next, event.eventName);
+    }
+
+    if (event.eventName === "reset" || event.eventName === "disconnected") {
+      const record = state.records.get(key) || buildPreparedRecord(identity);
+      const lifecycle = event.eventName === "reset"
+        ? ANSWER_LIFECYCLE.RESET
+        : ANSWER_LIFECYCLE.DISCONNECTED;
+      const next = closeAnswerRecord(record, lifecycle);
+      state.records.set(key, next);
+      state.activeBySegment.delete(segmentKey);
       return notify(onRecord, next, event.eventName);
     }
 

@@ -184,7 +184,10 @@ test("contributors update data only for the matching exact answer attempt", () =
   );
 
   assert.equal(accepted.slots.sources.value[0].title, "Docs");
-  assert.equal(accepted.evidence.sources[0].title, "Docs");
+  assert.equal(accepted.evidence.passages[0].kind, "source");
+  assert.equal(accepted.evidence.passages[0].value.title, "Docs");
+  assert.equal(Object.hasOwn(accepted.evidence, "sources"), false);
+  assert.equal(Object.hasOwn(accepted.evidence, "judgeEvidence"), false);
   assert.equal(rejected, accepted);
 });
 

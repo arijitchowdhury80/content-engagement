@@ -4,6 +4,14 @@ import {
   ANSWER_LIFECYCLE,
   ANSWER_SLOT_STATUS,
 } from "../source/shared/core/answer-record.mjs";
+import {
+  createAnswerContentContribution,
+  createConfidenceContribution,
+  createOpaqueActionContribution,
+  createProgressContribution,
+  createSourcesContribution,
+  createTelemetryContribution,
+} from "../source/shared/widget/answer-contributors.mjs";
 import { createAnswerHarnessObserver } from "../source/shared/widget/answer-harness-observer.mjs";
 
 const identity = Object.freeze({
@@ -17,6 +25,13 @@ function event(eventName, answerIdentity = identity) {
   return Object.freeze({
     eventName,
     detail: Object.freeze({ answerIdentity }),
+  });
+}
+
+function contributionEvent(contribution, answerIdentity = identity) {
+  return Object.freeze({
+    eventName: "contribution",
+    detail: Object.freeze({ answerIdentity, contribution }),
   });
 }
 
@@ -77,4 +92,88 @@ test("mirror observer rejects malformed or unidentified events visibly for diagn
     { eventName: "prepared", reason: "missing_answer_identity" },
     { eventName: "bogus", reason: "stale_answer_attempt" },
   ]);
+});
+
+test("mirror observer merges typed slot contributions into one answer record", () => {
+  const observer = createAnswerHarnessObserver();
+
+  observer.accept(event("prepared"));
+  observer.accept(contributionEvent(createAnswerContentContribution({
+    identity,
+    text: [
+      "API calls are like door swings in a busy store.",
+      "",
+      "Short version: data-requesting interactions usually count.",
+      "",
+      "Debounce typing and protect shared traffic.",
+      "",
+      "Are bots or normal browsers driving the cost?",
+    ].join("\n"),
+  })));
+  observer.accept(contributionEvent(createSourcesContribution({
+    identity,
+    sources: [{ title: "Docs" }],
+  })));
+  observer.accept(contributionEvent(createTelemetryContribution({
+    identity,
+    telemetry: { inputTokens: 44141, outputTokens: 819 },
+  })));
+  observer.accept(contributionEvent(createOpaqueActionContribution({
+    identity,
+    action: { label: "Compare with Prod" },
+  })));
+  observer.accept(contributionEvent(createConfidenceContribution({
+    identity,
+    confidence: { score: 8.1 },
+    judgeEvidence: [{ judge: "factuality" }],
+  })));
+  const record = observer.accept(event("completed"));
+
+  assert.equal(record.lifecycle, ANSWER_LIFECYCLE.COMPLETE);
+  assert.equal(record.slots.tldrAnalogy.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(record.slots.tldrShort.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(record.slots.details.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(record.slots.followUp.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(record.slots.sources.value[0].title, "Docs");
+  assert.equal(record.slots.telemetry.value.inputTokens, 44141);
+  assert.equal(record.slots.compareAction.value.label, "Compare with Prod");
+  assert.equal(record.slots.confidence.value.score, 8.1);
+  assert.equal(record.evidence.passages[0].kind, "source");
+  assert.equal(record.evidence.passages[0].value.title, "Docs");
+  assert.equal(record.evidence.passages[1].kind, "judge");
+  assert.equal(record.evidence.passages[1].value.judge, "factuality");
+  assert.equal(Object.hasOwn(record.evidence, "sources"), false);
+  assert.equal(Object.hasOwn(record.evidence, "judgeEvidence"), false);
+  assert.equal(record.slots.progress.value.percent, 100);
+});
+
+test("mirror observer preserves monotonic progress across contribution events", () => {
+  const observer = createAnswerHarnessObserver();
+
+  observer.accept(event("prepared"));
+  observer.accept(contributionEvent(createProgressContribution({ identity, percent: 50, phase: "streaming" })));
+  const lower = observer.accept(contributionEvent(createProgressContribution({ identity, percent: 20, phase: "late-search" })));
+  const complete = observer.accept(contributionEvent(createProgressContribution({ identity, percent: 100, phase: "complete" })));
+
+  assert.equal(lower.slots.progress.value.percent, 50);
+  assert.equal(complete.slots.progress.value.percent, 100);
+});
+
+test("mirror observer rejects late contributions after reset", () => {
+  const observer = createAnswerHarnessObserver();
+
+  observer.accept(event("prepared"));
+  const reset = observer.accept(event("reset"));
+  const late = observer.accept(contributionEvent(createSourcesContribution({
+    identity,
+    sources: [{ title: "Late docs" }],
+  })));
+
+  assert.equal(reset.lifecycle, ANSWER_LIFECYCLE.RESET);
+  assert.equal(late, null);
+  assert.equal(observer.getRecord(identity).slots.sources.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.deepEqual(observer.rejections(), [{
+    eventName: "contribution",
+    reason: "stale_answer_attempt",
+  }]);
 });

@@ -4,10 +4,11 @@ import fs from "node:fs";
 
 const rendererPath = new URL("../source/shared/widget/answer-renderer.mjs", import.meta.url);
 const presentationPath = new URL("../source/shared/widget/answer-presentation.mjs", import.meta.url);
+const contributorsPath = new URL("../source/shared/widget/answer-contributors.mjs", import.meta.url);
 const contractPath = new URL("../source/shared/presentation-contract.mjs", import.meta.url);
 
 test("presentation contract and view-model code remain free of runtime transport concerns", () => {
-  const source = [presentationPath, contractPath]
+  const source = [presentationPath, contributorsPath, contractPath]
     .map((file) => fs.readFileSync(file, "utf8"))
     .join("\n");
 
@@ -20,6 +21,8 @@ test("shared renderer owns placement without owning Algolia presentation or tran
 
   assert.match(source, /replaceChildren/);
   assert.match(source, /createElement/);
+  assert.match(source, /ANSWER_FOOTER_SLOT_ORDER/);
+  assert.doesNotMatch(source, /const\s+FOOTER_REGIONS/);
   assert.doesNotMatch(source, /fetch|agent-studio|AlgoliaJudgeCore|ACS_COMPARE|sessionStorage|localStorage/);
   assert.doesNotMatch(source, /className|style\.|algolia-usage-pill|acs-compare-toggle|Confidence|Sources/);
 });

@@ -6,6 +6,7 @@
  */
 
 import {
+  ANSWER_FOOTER_SLOT_ORDER,
   assertPresentationPart,
   assertPresentationState,
 } from "../presentation-contract.mjs";
@@ -19,13 +20,13 @@ const BODY_REGIONS = Object.freeze([
   ["answer-details", (viewModel) => viewModel.details],
 ]);
 
-const FOOTER_REGIONS = Object.freeze([
-  ["answer-sources", (viewModel) => viewModel.footer?.sources],
-  ["answer-telemetry", (viewModel) => viewModel.footer?.telemetry],
-  ["answer-compare-action", (viewModel) => viewModel.footer?.compareAction],
-  ["answer-confidence", (viewModel) => viewModel.footer?.confidence],
-  ["answer-follow-up", (viewModel) => viewModel.footer?.followUp],
-]);
+const FOOTER_PART_BY_SLOT = Object.freeze({
+  sources: "answer-sources",
+  telemetry: "answer-telemetry",
+  compareAction: "answer-compare-action",
+  confidence: "answer-confidence",
+  followUp: "answer-follow-up",
+});
 
 function assertContainer(container) {
   if (!container?.ownerDocument?.createElement || typeof container.replaceChildren !== "function") {
@@ -87,8 +88,11 @@ export function createAnswerRenderer({ renderSlot = null } = {}) {
       footer.setAttribute("data-answer-footer", viewModel.identityKey);
       footer.setAttribute("data-post-stream", String(Boolean(viewModel.footer?.postStream)));
       footer.setAttribute("data-order", (viewModel.footer?.order || []).join(" "));
-      for (const [part, select] of FOOTER_REGIONS) {
-        footer.append(region(document, part, select(viewModel), renderSlot, viewModel));
+      const footerOrder = viewModel.footer?.order || ANSWER_FOOTER_SLOT_ORDER;
+      for (const slotKey of footerOrder) {
+        const part = FOOTER_PART_BY_SLOT[slotKey];
+        if (!part) continue;
+        footer.append(region(document, part, viewModel.footer?.[slotKey], renderSlot, viewModel));
       }
       root.append(footer);
 

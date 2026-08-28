@@ -33,6 +33,7 @@
   let config = {
     enabled: true,
     primaryAgentId: null,
+    widgetInstanceId: null,
   };
 
   function debug(...args) {
@@ -151,6 +152,14 @@
       key: `${conversationGeneration ? `${conversationGeneration}:` : ""}${conversationId}:${messageId}`,
       conversationId,
       messageId,
+      answerSegmentId: String(message.answerSegmentId || message.responseId || message.id || message.messageId || `${index}:${text}`),
+      widgetInstanceId: String(
+        payload.widgetInstanceId ||
+        payload.metadata?.widgetInstanceId ||
+        message.metadata?.widgetInstanceId ||
+        config.widgetInstanceId ||
+        "algolia-chat:default"
+      ),
       question: text,
     };
   }
@@ -158,9 +167,9 @@
   function answerIdentityForTurn(turn) {
     if (!turn) return null;
     return Object.freeze({
-      widgetInstanceId: "algolia-chat",
+      widgetInstanceId: turn.widgetInstanceId,
       conversationId: turn.conversationId,
-      answerSegmentId: turn.messageId,
+      answerSegmentId: turn.answerSegmentId,
       networkAttemptId: turn.networkAttemptId,
     });
   }

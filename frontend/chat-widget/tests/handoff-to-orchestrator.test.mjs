@@ -33,6 +33,7 @@ function createHarness({
   fetchError = null,
   mergeError = null,
   answerHarness = null,
+  handoffConfig = null,
 } = {}) {
   const fetchCalls = [];
   const registeredTools = {};
@@ -116,6 +117,7 @@ function createHarness({
       },
     },
   };
+  if (handoffConfig) context.ALGOLIA_HANDOFF_CONFIG = handoffConfig;
   if (answerHarness) context.algoliaAnswerHarness = answerHarness;
   context.window = context;
   vm.createContext(context);
@@ -323,6 +325,32 @@ test('fallback turn identity changes after a visitor reset', async () => {
   assert.notEqual(preparedTurns[0].turnKey, preparedTurns[1].turnKey);
 });
 
+test('answer identity uses the configured widget instance instead of a hardcoded global value', async () => {
+  const left = createHarness({ handoffConfig: { widgetInstanceId: 'widget-left' } });
+  const right = createHarness({ handoffConfig: { widgetInstanceId: 'widget-right' } });
+  const leftTurns = [];
+  const rightTurns = [];
+  left.context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => leftTurns.push(detail));
+  right.context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => rightTurns.push(detail));
+  const request = {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'same question' }] }],
+    }),
+  };
+
+  await left.context.invokeTransport('https://primary.example/completions', request);
+  await right.context.invokeTransport('https://primary.example/completions', request);
+
+  assert.equal(leftTurns[0].answerIdentity.widgetInstanceId, 'widget-left');
+  assert.equal(rightTurns[0].answerIdentity.widgetInstanceId, 'widget-right');
+  assert.notEqual(
+    leftTurns[0].answerIdentity.widgetInstanceId,
+    rightTurns[0].answerIdentity.widgetInstanceId
+  );
+});
+
 /*
  * Completed-turn lifecycle scenarios:
  * - A successful, fully consumed SSE response publishes one conversation id.
@@ -358,7 +386,7 @@ test('publishes a completed turn once the successful primary stream is consumed'
       question: 'Hello',
       conversationId: 'alg_cnv_success_1',
       answerIdentity: {
-        widgetInstanceId: 'algolia-chat',
+        widgetInstanceId: 'algolia-chat:default',
         conversationId: 'conversation-1',
         answerSegmentId: 'user-1',
         networkAttemptId: 'conversation-1:user-1:attempt-1',
@@ -405,7 +433,7 @@ test('mirrors prepared and completed turn lifecycle to the optional answer harne
   assert.equal(harnessEvents[0].detail.turnKey, 'conversation-1:message-1');
   assert.equal(harnessEvents[1].detail.conversationId, 'alg_cnv_success_1');
   assert.deepEqual(JSON.parse(JSON.stringify(harnessEvents[0].detail.answerIdentity)), {
-    widgetInstanceId: 'algolia-chat',
+    widgetInstanceId: 'algolia-chat:default',
     conversationId: 'conversation-1',
     answerSegmentId: 'message-1',
     networkAttemptId: 'conversation-1:message-1:attempt-1',

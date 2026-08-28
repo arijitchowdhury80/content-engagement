@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import {
+  ANSWER_FOOTER_SLOT_ORDER,
   ANSWER_SEMANTIC_PARTS,
   ANSWER_SEMANTIC_STATES,
   assertPresentationPart,
@@ -23,6 +24,16 @@ test("presentation contract names every required answer region", () => {
     "answer-follow-up",
     "answer-progress",
     "answer-error-retry",
+  ]);
+});
+
+test("presentation contract owns footer slot ordering", () => {
+  assert.deepEqual(ANSWER_FOOTER_SLOT_ORDER, [
+    "sources",
+    "telemetry",
+    "compareAction",
+    "confidence",
+    "followUp",
   ]);
 });
 

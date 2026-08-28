@@ -9,6 +9,7 @@ import {
   isClosedAnswerRecord,
   sameAnswerIdentity,
 } from "../core/answer-record.mjs";
+import { ANSWER_FOOTER_SLOT_ORDER } from "../presentation-contract.mjs";
 
 const HEADING_RE = /^\s{0,3}#{1,6}\s+/;
 const BULLET_RE = /^\s*[-*+]\s+/;
@@ -33,14 +34,6 @@ const POST_STREAM_LIFECYCLES = new Set([
   ANSWER_LIFECYCLE.COMPLETE,
   ANSWER_LIFECYCLE.FAILED,
 ]);
-const FOOTER_SLOT_ORDER = Object.freeze([
-  "sources",
-  "telemetry",
-  "compareAction",
-  "confidence",
-  "followUp",
-]);
-
 function deepFreeze(value) {
   if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
   Object.freeze(value);
@@ -127,6 +120,19 @@ function mergeSlot(existing, incoming) {
     ...next,
     value: { ...next.value, percent: currentPercent },
   });
+}
+
+function evidencePassages(evidence) {
+  if (!evidence || typeof evidence !== "object") return [];
+  if (Array.isArray(evidence.passages)) return evidence.passages;
+  const passages = [];
+  if (Array.isArray(evidence.sources)) {
+    for (const source of evidence.sources) passages.push({ kind: "source", value: source });
+  }
+  if (Array.isArray(evidence.judgeEvidence)) {
+    for (const item of evidence.judgeEvidence) passages.push({ kind: "judge", value: item });
+  }
+  return passages;
 }
 
 export function splitAnswerContent(answerText) {
@@ -221,14 +227,11 @@ export function applyAnswerContribution(record, contribution) {
 
   const nextEvidence = contribution.evidence
     ? {
-        ...record.evidence,
-        ...contribution.evidence,
-        sources: Array.isArray(contribution.evidence.sources)
-          ? contribution.evidence.sources
-          : record.evidence.sources,
-        judgeEvidence: Array.isArray(contribution.evidence.judgeEvidence)
-          ? contribution.evidence.judgeEvidence
-          : record.evidence.judgeEvidence,
+        id: record.evidence.id || contribution.evidence.id || record.identityKey,
+        passages: [
+          ...evidencePassages(record.evidence),
+          ...evidencePassages(contribution.evidence),
+        ],
       }
     : record.evidence;
 
@@ -285,7 +288,10 @@ export function createPresentationFromAnswerText({
   return createAnswerRecord({
     identity,
     lifecycle,
-    evidence: { id: identity && Object.values(identity).join(":"), sources },
+    evidence: {
+      id: identity && Object.values(identity).join(":"),
+      passages: sources.map((source) => ({ kind: "source", value: source })),
+    },
     slots,
   });
 }
@@ -335,7 +341,7 @@ export function createPostAnswerFooterState(record) {
     identityKey: record.identityKey,
     lifecycle: record.lifecycle,
     postStream,
-    order: FOOTER_SLOT_ORDER,
+    order: ANSWER_FOOTER_SLOT_ORDER,
     slots: {
       sources: slots.sources,
       telemetry: postStream

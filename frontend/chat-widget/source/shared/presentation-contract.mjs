@@ -36,6 +36,14 @@ export const ANSWER_SEMANTIC_STATES = Object.freeze([
   "disconnected",
 ]);
 
+export const ANSWER_FOOTER_SLOT_ORDER = Object.freeze([
+  "sources",
+  "telemetry",
+  "compareAction",
+  "confidence",
+  "followUp",
+]);
+
 const PARTS = new Set(ANSWER_SEMANTIC_PARTS);
 const STATES = new Set(ANSWER_SEMANTIC_STATES);
 

@@ -54,6 +54,7 @@ test("footer DOM ownership is limited to the known compatibility bridge during m
 test("shared answer harness remains DOM-free", () => {
   const files = [
     new URL("../source/shared/core/answer-record.mjs", import.meta.url),
+    new URL("../source/shared/widget/answer-contributors.mjs", import.meta.url),
     new URL("../source/shared/widget/answer-presentation.mjs", import.meta.url),
   ];
   const source = files.map((file) => fs.readFileSync(file, "utf8")).join("\n");

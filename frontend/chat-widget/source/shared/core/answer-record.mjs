@@ -1,3 +1,6 @@
+// answerSegmentId is the stable response correlation key for one visible
+// answer segment. During compatibility, handoff may derive it from the
+// originating user message ID until the chat runtime supplies a native answer ID.
 const REQUIRED_IDENTITY_KEYS = Object.freeze([
   "widgetInstanceId",
   "conversationId",
@@ -82,6 +85,31 @@ function cloneValue(value) {
   return Object.fromEntries(Object.entries(value).map(([key, nested]) => [key, cloneValue(nested)]));
 }
 
+function normalizeEvidencePassage(passage) {
+  if (!passage || typeof passage !== "object" || Array.isArray(passage)) {
+    return { kind: "unknown", value: cloneValue(passage) };
+  }
+  const kind = typeof passage.kind === "string" && passage.kind.trim()
+    ? passage.kind.trim()
+    : "unknown";
+  return {
+    ...cloneValue(passage),
+    kind,
+    value: cloneValue(passage.value ?? passage),
+  };
+}
+
+function legacyEvidencePassages(evidence) {
+  const passages = [];
+  if (Array.isArray(evidence.sources)) {
+    for (const source of evidence.sources) passages.push({ kind: "source", value: source });
+  }
+  if (Array.isArray(evidence.judgeEvidence)) {
+    for (const item of evidence.judgeEvidence) passages.push({ kind: "judge", value: item });
+  }
+  return passages;
+}
+
 export function createAnswerIdentity(identity) {
   assertPlainObject(identity, "answer identity");
   const normalized = {};
@@ -104,14 +132,12 @@ export function sameAnswerIdentity(left, right) {
 
 export function createAnswerEvidenceRecord(evidence = {}) {
   assertPlainObject(evidence, "answer evidence");
-  const sources = Array.isArray(evidence.sources) ? evidence.sources.map(cloneValue) : [];
-  const judgeEvidence = Array.isArray(evidence.judgeEvidence)
-    ? evidence.judgeEvidence.map(cloneValue)
-    : [];
+  const passages = Array.isArray(evidence.passages)
+    ? evidence.passages.map(normalizeEvidencePassage)
+    : legacyEvidencePassages(evidence).map(normalizeEvidencePassage);
   return deepFreeze({
     id: evidence.id || null,
-    sources,
-    judgeEvidence,
+    passages,
   });
 }
 
