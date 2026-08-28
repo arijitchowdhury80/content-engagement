@@ -357,6 +357,12 @@ test('publishes a completed turn once the successful primary stream is consumed'
       messageId: 'user-1',
       question: 'Hello',
       conversationId: 'alg_cnv_success_1',
+      answerIdentity: {
+        widgetInstanceId: 'algolia-chat',
+        conversationId: 'conversation-1',
+        answerSegmentId: 'user-1',
+        networkAttemptId: 'conversation-1:user-1:attempt-1',
+      },
     }],
   );
 });
@@ -398,6 +404,13 @@ test('mirrors prepared and completed turn lifecycle to the optional answer harne
   assert.equal(harnessEvents[0].detail.question, 'How should I think about pricing?');
   assert.equal(harnessEvents[0].detail.turnKey, 'conversation-1:message-1');
   assert.equal(harnessEvents[1].detail.conversationId, 'alg_cnv_success_1');
+  assert.deepEqual(JSON.parse(JSON.stringify(harnessEvents[0].detail.answerIdentity)), {
+    widgetInstanceId: 'algolia-chat',
+    conversationId: 'conversation-1',
+    answerSegmentId: 'message-1',
+    networkAttemptId: 'conversation-1:message-1:attempt-1',
+  });
+  assert.deepEqual(harnessEvents[1].detail.answerIdentity, harnessEvents[0].detail.answerIdentity);
 });
 
 test('answer harness observer errors are contained and never break transport', async () => {
@@ -453,6 +466,11 @@ test('completed-turn observers cannot break responses or hide multiple billable 
   assert.equal(await second.text(), 'primary answer');
   assert.equal(completedTurns.length, 2, 'each successful primary model call is observable');
   assert.equal(completedTurns[0].turnKey, completedTurns[1].turnKey, 'both calls retain logical-turn correlation');
+  assert.notEqual(
+    completedTurns[0].answerIdentity.networkAttemptId,
+    completedTurns[1].answerIdentity.networkAttemptId,
+    'each primary model call has a distinct answer attempt identity'
+  );
 });
 
 test('does not publish completed turns for missing headers, guardrails, or cancelled streams', async () => {
@@ -509,6 +527,11 @@ test('a proactive primary retry keeps one clean logical turn identity', async ()
 
   assert.equal(preparedTurns.length, 2, 'the transport publishes both primary attempts');
   assert.equal(preparedTurns[0].turnKey, preparedTurns[1].turnKey, 'Compare can dedupe both attempts');
+  assert.notEqual(
+    preparedTurns[0].answerIdentity.networkAttemptId,
+    preparedTurns[1].answerIdentity.networkAttemptId,
+    'the harness can reject stale retry updates even when Compare keeps one logical turn'
+  );
   assert.equal(preparedTurns[0].question, 'What drives cost?');
   assert.equal(preparedTurns[1].question, 'What drives cost?');
   assert.equal(preparedTurns[0].question.includes('PROACTIVE_HANDOFF_CONTEXT'), false);

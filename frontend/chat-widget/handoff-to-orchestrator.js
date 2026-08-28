@@ -29,6 +29,7 @@
   const preparedTurnListeners = new Set();
   const completedTurnListeners = new Set();
   let conversationGeneration = 0;
+  let networkAttemptSequence = 0;
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -148,9 +149,20 @@
     const messageId = String(message.id || message.messageId || `${index}:${text}`);
     return {
       key: `${conversationGeneration ? `${conversationGeneration}:` : ""}${conversationId}:${messageId}`,
+      conversationId,
       messageId,
       question: text,
     };
+  }
+
+  function answerIdentityForTurn(turn) {
+    if (!turn) return null;
+    return Object.freeze({
+      widgetInstanceId: "algolia-chat",
+      conversationId: turn.conversationId,
+      answerSegmentId: turn.messageId,
+      networkAttemptId: turn.networkAttemptId,
+    });
   }
 
   function subscribePreparedTurn(listener) {
@@ -260,6 +272,7 @@
                 messageId: turn.messageId,
                 question: turn.question,
                 conversationId,
+                answerIdentity: answerIdentityForTurn(turn),
               }));
             }
             controller.close();
@@ -405,6 +418,12 @@
       // comes from the clean logical turn.
       try {
         turn = logicalTurn(JSON.parse(contextBody));
+        if (turn) {
+          turn = {
+            ...turn,
+            networkAttemptId: `${turn.key}:attempt-${networkAttemptSequence += 1}`,
+          };
+        }
       } catch {}
       prepared = prepareBody(contextBody);
     } catch (error) {
@@ -429,6 +448,7 @@
         turnKey: turn.key,
         messageId: turn.messageId,
         question: turn.question,
+        answerIdentity: answerIdentityForTurn(turn),
       }));
     }
     try {
