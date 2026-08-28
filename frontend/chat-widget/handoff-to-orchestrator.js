@@ -28,8 +28,11 @@
   let transportInstalled = false;
   const preparedTurnListeners = new Set();
   const completedTurnListeners = new Set();
-  let conversationGeneration = 0;
+  let fallbackConversationGeneration = 0;
   let networkAttemptSequence = 0;
+  let scopedResetSuppressGlobalUntil = 0;
+  const widgetConversationGenerations = new Map();
+  const activeAttempts = new Map();
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -143,6 +146,46 @@
     return typeof value === "string" && value.trim() ? value.trim() : null;
   }
 
+  function generationForWidget(widgetInstanceId) {
+    if (widgetInstanceId && widgetInstanceId !== "algolia-chat:default") {
+      return widgetConversationGenerations.get(widgetInstanceId) || 0;
+    }
+    return fallbackConversationGeneration;
+  }
+
+  function attemptKey(turn) {
+    if (!turn) return null;
+    return `${turn.widgetInstanceId}\n${turn.conversationId}\n${turn.answerSegmentId}`;
+  }
+
+  function rememberActiveAttempt(turn) {
+    const key = attemptKey(turn);
+    if (key && turn.networkAttemptId) activeAttempts.set(key, turn.networkAttemptId);
+  }
+
+  function isActiveAttempt(turn) {
+    const key = attemptKey(turn);
+    return !key || !turn?.networkAttemptId || activeAttempts.get(key) === turn.networkAttemptId;
+  }
+
+  function clearWidgetAttempts(widgetInstanceId) {
+    if (!widgetInstanceId) return;
+    const prefix = `${widgetInstanceId}\n`;
+    for (const key of activeAttempts.keys()) {
+      if (key.startsWith(prefix)) activeAttempts.delete(key);
+    }
+  }
+
+  function widgetInstanceIdFromEvent(event) {
+    const detailId = event?.detail?.widgetInstanceId;
+    if (typeof detailId === "string" && detailId.trim()) return detailId.trim();
+    const targetId = event?.target?.__algoliaWidgetInstanceId;
+    if (typeof targetId === "string" && targetId.trim()) return targetId.trim();
+    const path = typeof event?.composedPath === "function" ? event.composedPath() : [];
+    const owner = path.find((node) => typeof node?.__algoliaWidgetInstanceId === "string");
+    return owner?.__algoliaWidgetInstanceId || null;
+  }
+
   function logicalTurn(payload, runtimeContext = null) {
     const index = lastUserMessageIndex(payload);
     if (index === -1) return null;
@@ -181,6 +224,7 @@
       config.widgetInstanceId ||
       "algolia-chat:default"
     );
+    const conversationGeneration = generationForWidget(widgetInstanceId);
     return {
       key: `${conversationGeneration ? `${conversationGeneration}:` : ""}${conversationId}:${messageId}`,
       conversationId,
@@ -224,7 +268,7 @@
     return () => completedTurnListeners.delete(listener);
   }
 
-  function notifyCompletedTurn(detail) {
+  function notifyCompletedTurn(detail, options = {}) {
     for (const listener of completedTurnListeners) {
       try {
         listener(detail);
@@ -232,7 +276,7 @@
         debug("completed-turn listener failed (contained)", error);
       }
     }
-    notifyAnswerHarness("completed", detail);
+    if (options.harness !== false) notifyAnswerHarness("completed", detail);
   }
 
   function notifyAnswerHarness(eventName, detail) {
@@ -314,7 +358,7 @@
                 question: turn.question,
                 conversationId,
                 answerIdentity: answerIdentityForTurn(turn),
-              }));
+              }), { harness: isActiveAttempt(turn) });
             }
             controller.close();
             return;
@@ -484,6 +528,7 @@
     }
     const nextInit = { ...(init || {}), body: prepared.body };
     if (turn) {
+      rememberActiveAttempt(turn);
       notifyPreparedTurn(Object.freeze({
         body: prepared.body,
         turnKey: turn.key,
@@ -551,8 +596,30 @@
     installWhenReady();
   }
 
-  document.addEventListener?.("algolia-visitor-state-reset", () => {
-    conversationGeneration += 1;
+  document.addEventListener?.("algolia-visitor-reset-requested", (event) => {
+    const widgetInstanceId = widgetInstanceIdFromEvent(event);
+    if (!widgetInstanceId) return;
+    widgetConversationGenerations.set(
+      widgetInstanceId,
+      (widgetConversationGenerations.get(widgetInstanceId) || 0) + 1
+    );
+    clearWidgetAttempts(widgetInstanceId);
+    scopedResetSuppressGlobalUntil = Date.now() + 2000;
+  });
+
+  document.addEventListener?.("algolia-visitor-state-reset", (event) => {
+    const widgetInstanceId = widgetInstanceIdFromEvent(event);
+    if (widgetInstanceId) {
+      widgetConversationGenerations.set(
+        widgetInstanceId,
+        (widgetConversationGenerations.get(widgetInstanceId) || 0) + 1
+      );
+      clearWidgetAttempts(widgetInstanceId);
+      return;
+    }
+    if (Date.now() <= scopedResetSuppressGlobalUntil) return;
+    fallbackConversationGeneration += 1;
+    activeAttempts.clear();
   });
 
   window.algoliaHandoffToOrchestrator = {
