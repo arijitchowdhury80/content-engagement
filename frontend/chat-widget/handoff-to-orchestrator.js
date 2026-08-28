@@ -30,9 +30,9 @@
   const completedTurnListeners = new Set();
   let fallbackConversationGeneration = 0;
   let networkAttemptSequence = 0;
-  let scopedResetSuppressGlobalUntil = 0;
   const widgetConversationGenerations = new Map();
   const activeAttempts = new Map();
+  const handledResetIds = new Set();
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -174,6 +174,15 @@
     for (const key of activeAttempts.keys()) {
       if (key.startsWith(prefix)) activeAttempts.delete(key);
     }
+  }
+
+  function applyScopedReset(widgetInstanceId) {
+    if (!widgetInstanceId) return;
+    widgetConversationGenerations.set(
+      widgetInstanceId,
+      (widgetConversationGenerations.get(widgetInstanceId) || 0) + 1
+    );
+    clearWidgetAttempts(widgetInstanceId);
   }
 
   function widgetInstanceIdFromEvent(event) {
@@ -597,27 +606,32 @@
   }
 
   document.addEventListener?.("algolia-visitor-reset-requested", (event) => {
+    const receipt = event?.__algoliaVisitorResetReceipt;
+    const resetId = typeof receipt?.resetId === "string" ? receipt.resetId : null;
+    if (resetId && handledResetIds.has(resetId)) return;
     const widgetInstanceId = widgetInstanceIdFromEvent(event);
     if (!widgetInstanceId) return;
-    widgetConversationGenerations.set(
-      widgetInstanceId,
-      (widgetConversationGenerations.get(widgetInstanceId) || 0) + 1
-    );
-    clearWidgetAttempts(widgetInstanceId);
-    scopedResetSuppressGlobalUntil = Date.now() + 2000;
+    applyScopedReset(widgetInstanceId);
+    try {
+      Object.defineProperty(event, "__algoliaHandoffScopedResetHandled", {
+        configurable: true,
+        value: true,
+      });
+    } catch {
+      event.__algoliaHandoffScopedResetHandled = true;
+    }
   });
 
   document.addEventListener?.("algolia-visitor-state-reset", (event) => {
+    if (event?.detail?.handoffScopedResetHandled === true) return;
     const widgetInstanceId = widgetInstanceIdFromEvent(event);
     if (widgetInstanceId) {
-      widgetConversationGenerations.set(
-        widgetInstanceId,
-        (widgetConversationGenerations.get(widgetInstanceId) || 0) + 1
-      );
-      clearWidgetAttempts(widgetInstanceId);
+      const resetId = typeof event?.detail?.resetId === "string" ? event.detail.resetId : null;
+      if (resetId && handledResetIds.has(resetId)) return;
+      applyScopedReset(widgetInstanceId);
+      if (resetId) handledResetIds.add(resetId);
       return;
     }
-    if (Date.now() <= scopedResetSuppressGlobalUntil) return;
     fallbackConversationGeneration += 1;
     activeAttempts.clear();
   });

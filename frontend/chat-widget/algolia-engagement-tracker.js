@@ -966,6 +966,10 @@
 
   function reset(options = {}) {
     const source = options?.source || "api";
+    const widgetInstanceId =
+      typeof options?.widgetInstanceId === "string" && options.widgetInstanceId.trim()
+        ? options.widgetInstanceId.trim()
+        : null;
     const resetAt = Date.now();
     if (lastResetReceipt && resetAt - lastResetAt < RESET_DEDUPE_MS) {
       debug("duplicate reset ignored", { source, resetId: lastResetReceipt.resetId });
@@ -1012,6 +1016,12 @@
       conversationCleared: !sessionStorage.getItem(CONVERSATION_KEY),
       handoffContextCleared: !sessionStorage.getItem(HANDOFF_CONTEXT_KEY),
     };
+    if (widgetInstanceId) {
+      receipt.widgetInstanceId = widgetInstanceId;
+    }
+    if (options?.handoffScopedResetHandled === true) {
+      receipt.handoffScopedResetHandled = true;
+    }
     lastResetReceipt = receipt;
     window.__algoliaVisitorResetReceipt = receipt;
     try {
@@ -1105,7 +1115,27 @@
     if (chatWatchInstalled) return;
     chatWatchInstalled = true;
     document.addEventListener("algolia-visitor-reset-requested", (event) => {
-      reset({ source: event?.detail?.source || "chat_widget" });
+      const detailId = event?.detail?.widgetInstanceId;
+      const targetId = event?.target?.__algoliaWidgetInstanceId;
+      const path = typeof event?.composedPath === "function" ? event.composedPath() : [];
+      const owner = path.find((node) => typeof node?.__algoliaWidgetInstanceId === "string");
+      const receipt = reset({
+        source: event?.detail?.source || "chat_widget",
+        widgetInstanceId: typeof detailId === "string" && detailId.trim()
+          ? detailId.trim()
+          : typeof targetId === "string" && targetId.trim()
+            ? targetId.trim()
+            : owner?.__algoliaWidgetInstanceId || null,
+        handoffScopedResetHandled: event?.__algoliaHandoffScopedResetHandled === true,
+      });
+      try {
+        Object.defineProperty(event, "__algoliaVisitorResetReceipt", {
+          configurable: true,
+          value: receipt,
+        });
+      } catch {
+        event.__algoliaVisitorResetReceipt = receipt;
+      }
     });
     document.addEventListener("algolia-chat-open-change", (event) => {
       track("chat_open", { open: !!event.detail?.open });

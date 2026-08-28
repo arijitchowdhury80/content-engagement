@@ -5,6 +5,7 @@ import { chromium } from "playwright";
 
 const chatPath = new URL("../algolia-chat.js", import.meta.url);
 const themePath = new URL("../algolia-chat-theme-algolia.js", import.meta.url);
+const trackerPath = new URL("../algolia-engagement-tracker.js", import.meta.url);
 const handoffPath = new URL("../handoff-to-orchestrator.js", import.meta.url);
 
 let browser;
@@ -37,6 +38,7 @@ async function createTwoWidgetPage() {
   await page.goto("http://localhost/");
   await page.addScriptTag({ content: fs.readFileSync(themePath, "utf8") });
   await page.addScriptTag({ content: fs.readFileSync(chatPath, "utf8") });
+  await page.addScriptTag({ content: fs.readFileSync(trackerPath, "utf8") });
   await page.evaluate(() => {
     window.__identityFetches = [];
     window.__identityHarnessEvents = [];
@@ -234,7 +236,67 @@ test("resetting one widget does not change a sibling widget generation or progre
     assert.equal(leftTurns[0].detail.turnKey.startsWith("1:"), true, "only the reset widget gets a new generation");
     assert.equal(rightTurns[0].detail.turnKey.startsWith("1:"), false);
     assert.equal(rightTurns[1].detail.turnKey.startsWith("1:"), false, "sibling generation remains unchanged");
+    assert.equal(
+      state.events.some((event) =>
+        event.eventName === "prepared" &&
+        event.detail.answerIdentity.widgetInstanceId === leftTurns[0].detail.answerIdentity.widgetInstanceId
+      ),
+      true,
+    );
     assert.equal(state.rightProgress, "77%", "resetting one widget must not mutate sibling progress");
+  } finally {
+    await page.close();
+  }
+});
+
+test("tracker-before-handoff widget reset keeps a sibling active attempt completable", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    const state = await page.evaluate(async () => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      right.style.setProperty("--algolia-header-progress", "77%");
+      const payload = {
+        id: "conversation-tracker-reset",
+        messages: [{ id: "user-tracker-reset", role: "user", parts: [{ type: "text", text: "tracker reset scope" }] }],
+      };
+      const rightAttempt = window.__invokeIdentityTransport(payload, {
+        widgetInstanceId: right.__algoliaWidgetInstanceId,
+        answerSegmentId: "right-active-segment",
+      });
+      await new Promise((resolve) => {
+        const poll = () => window.__identityStreams.length >= 1 ? resolve() : setTimeout(poll, 0);
+        poll();
+      });
+
+      left.dispatchEvent(new CustomEvent("algolia-visitor-reset-requested", {
+        bubbles: true,
+        composed: true,
+        detail: { source: "test" },
+      }));
+
+      window.__identityStreams[0].write('data: {"type":"text-delta","delta":"right"}\n\n');
+      window.__identityStreams[0].close();
+      await rightAttempt;
+
+      return {
+        events: window.__identityHarnessEvents,
+        receipt: window.__algoliaVisitorResetReceipt,
+        leftId: left.__algoliaWidgetInstanceId,
+        rightId: right.__algoliaWidgetInstanceId,
+        rightProgress: right.style.getPropertyValue("--algolia-header-progress"),
+      };
+    });
+    const completed = state.events.filter((event) => event.eventName === "completed");
+    const rightCompleted = completed.find((event) =>
+      event.detail.answerIdentity.widgetInstanceId === state.rightId &&
+      event.detail.answerIdentity.answerSegmentId === "right-active-segment"
+    );
+
+    assert.equal(state.receipt.widgetInstanceId, state.leftId, "tracker state-reset receipt carries the reset owner");
+    assert.ok(rightCompleted, "sibling active attempt must still complete after left widget reset");
+    assert.equal(state.rightProgress, "77%", "tracker-mediated reset must not mutate sibling progress");
   } finally {
     await page.close();
   }
