@@ -183,6 +183,7 @@
       turnKey,
       messageId: String(detail?.messageId || ""),
       question: String(detail?.question || ""),
+      answerIdentity: detail?.answerIdentity || null,
     };
     const toggle = sroot()?.querySelector(`#${TOGGLE_ID}`);
     if (toggle) paintToggle(toggle);
@@ -304,6 +305,39 @@
       : "Send the same finalized request, including current session and page context, to the live algolia.com Ask AI";
   }
 
+  function notifyAnswerHarnessCompareAction() {
+    const identity = latestPreparedTurn?.answerIdentity;
+    const accept = window.algoliaAnswerHarness?.accept;
+    if (!identity || typeof accept !== "function") return;
+    try {
+      accept(Object.freeze({
+        eventName: "contribution",
+        detail: Object.freeze({
+          answerIdentity: identity,
+          contribution: Object.freeze({
+            contractVersion: 1,
+            kind: "opaqueAction",
+            identity,
+            lifecycle: null,
+            slots: {
+              compareAction: {
+                status: "ready",
+                value: {
+                  label: "Compare with Prod",
+                  pressed: compareOn,
+                  available: true,
+                },
+              },
+            },
+            evidence: null,
+          }),
+        }),
+      }));
+    } catch {
+      // Mirror mode must never affect the live widget.
+    }
+  }
+
   function footerIsPostAnswerReady(footer) {
     if (!footer) return false;
     if (footer.querySelector(".algolia-usage-pill")) return true;
@@ -326,6 +360,7 @@
       toggle.type = "button";
       paintToggle(toggle);
       answerFooter.appendChild(toggle);
+      notifyAnswerHarnessCompareAction();
       log("toggle mounted");
     } else if (!answerFooter && toggle) {
       toggle.remove();
@@ -334,6 +369,7 @@
         answerFooter.appendChild(toggle);
       }
       paintToggle(toggle);
+      notifyAnswerHarnessCompareAction();
     }
   }
 

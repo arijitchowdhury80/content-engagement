@@ -86,6 +86,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   const fetchCalls = [];
   const preparedBodies = [];
   const primaryMessages = [];
+  const answerHarnessEvents = [];
   const footersByMessageId = new Map();
   let preparedListener = null;
   let completedListener = null;
@@ -135,6 +136,11 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
       addEventListener: (t, fn) => { (documentListeners[t] ||= []).push(fn); },
     },
     fetch: (...args) => { fetchCalls.push(args); return fetchImpl(...args); },
+    algoliaAnswerHarness: {
+      accept(event) {
+        answerHarnessEvents.push(JSON.parse(JSON.stringify(event)));
+      },
+    },
     algoliaContextCompiler: {
       fetchPrepared: (...args) => { fetchCalls.push(args); return fetchImpl(...args); },
     },
@@ -177,6 +183,12 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
       turnKey: `primary-conversation:${user.id}`,
       messageId: user.id,
       question: text,
+      answerIdentity: {
+        widgetInstanceId: 'widget-1',
+        conversationId: 'primary-conversation',
+        answerSegmentId: `primary-assistant-${turnSequence}`,
+        networkAttemptId: `attempt-${turnSequence}`,
+      },
     });
     primaryMessages.push({
       id: `primary-assistant-${turnSequence}`,
@@ -239,7 +251,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   flush(); // initial reconcile mounts the toggle
   return {
     context, flush, addBubble, addPostAnswerControl, completeTurn, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
-    fetchCalls, preparedBodies,
+    fetchCalls, preparedBodies, answerHarnessEvents,
     setFetch: (fn) => { fetchImpl = fn; },
     api: () => context.window.__acsCompare,
     settle: async () => {
@@ -271,6 +283,36 @@ test('toggle is absent from the header and appears only beside answer evidence c
   assert.ok(t, 'toggle appears after an answer exists');
   assert.equal(t.getAttribute('aria-pressed'), 'false');
   assert.equal(t.parentElement.getAttribute('class'), 'flex items-end justify-between gap-4');
+});
+
+test('Compare mirrors only an opaque post-answer action slot into the answer harness', async () => {
+  const h = createHarness();
+
+  h.addBubble('answer with grounded evidence');
+  await h.settle();
+  assert.equal(
+    h.answerHarnessEvents.some((event) => event.detail?.contribution?.kind === 'opaqueAction'),
+    false,
+    'Compare action is not contributed while the answer is still streaming',
+  );
+
+  h.completeTurn();
+  await h.settle();
+  const compareAction = h.answerHarnessEvents.find((event) =>
+    event.eventName === 'contribution' &&
+    event.detail?.contribution?.kind === 'opaqueAction'
+  );
+
+  assert.ok(compareAction);
+  assert.deepEqual(
+    compareAction.detail.contribution.slots.compareAction,
+    { status: 'ready', value: { label: 'Compare with Prod', pressed: false, available: true } },
+  );
+  assert.deepEqual(
+    Object.keys(compareAction.detail.contribution.slots),
+    ['compareAction'],
+    'Compare cannot contribute sources, judge, telemetry, or footer lifecycle',
+  );
 });
 
 test('Compare never owns or mutates judge configuration', async () => {

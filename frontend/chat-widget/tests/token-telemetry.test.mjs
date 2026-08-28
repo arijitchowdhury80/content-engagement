@@ -17,6 +17,7 @@ const telemetryPath = new URL('../token-telemetry.js', import.meta.url);
  */
 function createHarness({ responses = [], compilerSender = false, confidenceBadgeCount = 0, answerFooter = true } = {}) {
   const fetchCalls = [];
+  const answerHarnessEvents = [];
   const windowListeners = {};
   const documentListeners = {};
   const timers = [];
@@ -186,6 +187,11 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
       (windowListeners[event.type] || []).forEach((listener) => listener(event));
     },
     ACS_TOKEN_TELEMETRY: { exposeForTests: true },
+    algoliaAnswerHarness: {
+      accept(event) {
+        answerHarnessEvents.push(JSON.parse(JSON.stringify(event)));
+      },
+    },
     algoliaHandoffToOrchestrator: {
       subscribeCompletedTurn(listener) {
         completedListener = listener;
@@ -222,6 +228,7 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
     footerPill() { return footerPill; },
     headerInsertedBeforeCluster() { return headerInsertedBeforeCluster; },
     badgePill(index) { return badges[index]?.shadowRoot.pill() || null; },
+    answerHarnessEvents,
     addBadge,
     reconcile() { mutationCallback?.([]); },
     emitCompleted(detail) { completedListener(detail); },
@@ -309,6 +316,34 @@ test('formats input/output counts with commas and subtle split classes', async (
   assert.deepEqual(
     h.footerPill().children.map((child) => child.className),
     ['algolia-usage-pill__in', 'algolia-usage-pill__divider', 'algolia-usage-pill__out'],
+  );
+});
+
+test('mirrors telemetry as a typed answer contribution for the completed answer identity', async () => {
+  const h = createHarness({
+    responses: [
+      { ok: true, data: { inputTokens: 44141, outputTokens: 819, totalTokens: 44960 } },
+    ],
+  });
+  const answerIdentity = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'conversation-1',
+    answerSegmentId: 'assistant-1',
+    networkAttemptId: 'attempt-1',
+  };
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'alg_cnv_large', answerIdentity });
+  await h.settle();
+
+  const telemetry = h.answerHarnessEvents.find((event) =>
+    event.eventName === 'contribution' &&
+    event.detail?.contribution?.kind === 'telemetry'
+  );
+  assert.ok(telemetry);
+  assert.deepEqual(telemetry.detail.answerIdentity, answerIdentity);
+  assert.deepEqual(
+    telemetry.detail.contribution.slots.telemetry,
+    { status: 'ready', value: { inputTokens: 44141, outputTokens: 819, totalTokens: 44960 } },
   );
 });
 

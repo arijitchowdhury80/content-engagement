@@ -193,6 +193,50 @@ test("two unconfigured widgets in one document emit distinct instance and segmen
   }
 });
 
+test("widget answer rendering mirrors content and source slots into the answer harness", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.ask("mirror this answer");
+    });
+    await page.waitForFunction(() =>
+      window.__identityHarnessEvents.some((event) =>
+        event.eventName === "contribution" &&
+        event.detail?.contribution?.kind === "content" &&
+        event.detail.contribution.slots?.details?.status === "ready"
+      )
+    );
+    await page.waitForFunction(() =>
+      window.__identityHarnessEvents.some((event) =>
+        event.eventName === "contribution" &&
+        event.detail?.contribution?.kind === "sources" &&
+        event.detail.contribution.slots?.sources
+      )
+    );
+
+    const state = await page.evaluate(() => {
+      const content = window.__identityHarnessEvents.find((event) =>
+        event.eventName === "contribution" &&
+        event.detail?.contribution?.kind === "content"
+      );
+      const sources = window.__identityHarnessEvents.find((event) =>
+        event.eventName === "contribution" &&
+        event.detail?.contribution?.kind === "sources"
+      );
+      return { content, sources };
+    });
+
+    assert.equal(state.content.detail.contribution.slots.details.value, "Answer");
+    assert.equal(state.content.detail.contribution.slots.tldrAnalogy.status, "empty");
+    assert.equal(state.content.detail.contribution.slots.tldrShort.status, "empty");
+    assert.equal(state.content.detail.contribution.slots.followUp.status, "empty");
+    assert.equal(state.sources.detail.contribution.slots.sources.status, "unavailable");
+  } finally {
+    await page.close();
+  }
+});
+
 test("resetting one widget does not change a sibling widget generation or progress", async () => {
   const page = await createTwoWidgetPage();
   try {

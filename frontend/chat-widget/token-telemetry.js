@@ -41,6 +41,34 @@
     window.dispatchEvent(new CustomEvent("algolia-usage-updated", { detail: usageState }));
   }
 
+  function notifyAnswerHarnessTelemetry(status) {
+    const identity = latestCompletedTurn?.answerIdentity;
+    const accept = window.algoliaAnswerHarness?.accept;
+    if (!identity || typeof accept !== "function") return;
+    const ready = status === "ready" && usageState.usage;
+    const slot = ready
+      ? { status: "ready", value: usageState.usage }
+      : { status: "unavailable", value: null, message: "Telemetry unavailable." };
+    try {
+      accept(Object.freeze({
+        eventName: "contribution",
+        detail: Object.freeze({
+          answerIdentity: identity,
+          contribution: Object.freeze({
+            contractVersion: 1,
+            kind: "telemetry",
+            identity,
+            lifecycle: null,
+            slots: { telemetry: slot },
+            evidence: null,
+          }),
+        }),
+      }));
+    } catch {
+      // Mirror mode must never affect the visible widget.
+    }
+  }
+
   function recomputeCumulative() {
     let inputTokens = 0;
     let outputTokens = 0;
@@ -108,6 +136,7 @@
     if (!isCurrentLookup(conversationId, revision, expectedGeneration)) return;
     if (attempt + 1 >= MAX_ATTEMPTS) {
       publishUsageState("unavailable");
+      notifyAnswerHarnessTelemetry("unavailable");
       return;
     }
     setTimeout(
@@ -153,6 +182,7 @@
       usageState.usage = currentTurnUsage(previous, totals);
       recomputeCumulative();
       publishUsageState("ready");
+      notifyAnswerHarnessTelemetry("ready");
     } catch (error) {
       console.warn("[token-usage] lookup failed", error);
       if (isCurrentLookup(conversationId, revision, expectedGeneration)) {
@@ -170,6 +200,7 @@
       turnKey,
       messageId: String(detail?.messageId || ""),
       question: String(detail?.question || ""),
+      answerIdentity: detail?.answerIdentity || null,
     };
     const revision = (latestRevisionByConversation.get(conversationId) || 0) + 1;
     latestRevisionByConversation.set(conversationId, revision);

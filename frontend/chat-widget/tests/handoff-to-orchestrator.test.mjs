@@ -306,6 +306,35 @@ test('publishes the exact terminal body once context and handoff preparation are
   assert.match(sent.messages[0].parts[0].text, /PROACTIVE_HANDOFF_CONTEXT/);
 });
 
+test('default answer harness records prepared, streaming, and completed lifecycle in memory', async () => {
+  const { context } = createHarness();
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response(
+    'data: {"type":"text-delta","delta":"Hello"}\n\n',
+    { status: 200, headers: { 'X-Conversation-Id': 'alg_cnv_harness_1' } },
+  );
+
+  const response = await context.invokeTransport('https://primary.example/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] }],
+    }),
+  });
+  assert.match(await response.text(), /text-delta/);
+
+  const events = context.algoliaAnswerHarness.events();
+  assert.equal(events.map((event) => event.eventName).join(','), 'prepared,streaming,completed');
+  const identity = {
+    widgetInstanceId: 'algolia-chat:default',
+    conversationId: 'conversation-1',
+    answerSegmentId: 'user-1',
+    networkAttemptId: 'algolia-chat:default:conversation-1:user-1:attempt-1',
+  };
+  const record = context.algoliaAnswerHarness.getRecord(identity);
+  assert.equal(record.lifecycle, 'complete');
+  assert.equal(record.slots.progress.value.percent, 100);
+});
+
 test('fallback turn identity changes after a visitor reset', async () => {
   const h = createHarness();
   const preparedTurns = [];
@@ -473,7 +502,7 @@ test('publishes a completed turn once the successful primary stream is consumed'
   );
 });
 
-test('mirrors prepared and completed turn lifecycle to the optional answer harness', async () => {
+test('mirrors prepared, streaming, and completed turn lifecycle to the optional answer harness', async () => {
   const harnessEvents = [];
   const { context } = createHarness({
     answerHarness: {
@@ -504,12 +533,12 @@ test('mirrors prepared and completed turn lifecycle to the optional answer harne
 
   assert.deepEqual(
     harnessEvents.map((event) => event.eventName),
-    ['prepared', 'completed']
+    ['prepared', 'streaming', 'completed']
   );
   assert.equal(harnessEvents[0].detail.messageId, 'message-1');
   assert.equal(harnessEvents[0].detail.question, 'How should I think about pricing?');
   assert.equal(harnessEvents[0].detail.turnKey, 'conversation-1:message-1');
-  assert.equal(harnessEvents[1].detail.conversationId, 'alg_cnv_success_1');
+  assert.equal(harnessEvents[2].detail.conversationId, 'alg_cnv_success_1');
   assert.deepEqual(JSON.parse(JSON.stringify(harnessEvents[0].detail.answerIdentity)), {
     widgetInstanceId: 'algolia-chat:default',
     conversationId: 'conversation-1',
@@ -517,6 +546,7 @@ test('mirrors prepared and completed turn lifecycle to the optional answer harne
     networkAttemptId: 'algolia-chat:default:conversation-1:message-1:attempt-1',
   });
   assert.deepEqual(harnessEvents[1].detail.answerIdentity, harnessEvents[0].detail.answerIdentity);
+  assert.deepEqual(harnessEvents[2].detail.answerIdentity, harnessEvents[0].detail.answerIdentity);
 });
 
 test('answer harness observer errors are contained and never break transport', async () => {

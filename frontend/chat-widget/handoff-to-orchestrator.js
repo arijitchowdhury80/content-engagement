@@ -32,7 +32,9 @@
   let networkAttemptSequence = 0;
   const widgetConversationGenerations = new Map();
   const activeAttempts = new Map();
+  const answerIdentitiesBySegment = new Map();
   const handledResetIds = new Set();
+  let defaultAnswerHarness = null;
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -158,9 +160,16 @@
     return `${turn.widgetInstanceId}\n${turn.conversationId}\n${turn.answerSegmentId}`;
   }
 
+  function segmentIdentityKey(widgetInstanceId, answerSegmentId) {
+    if (!widgetInstanceId || !answerSegmentId) return null;
+    return `${widgetInstanceId}\n${answerSegmentId}`;
+  }
+
   function rememberActiveAttempt(turn) {
     const key = attemptKey(turn);
     if (key && turn.networkAttemptId) activeAttempts.set(key, turn.networkAttemptId);
+    const segmentKey = segmentIdentityKey(turn?.widgetInstanceId, turn?.answerSegmentId);
+    if (segmentKey) answerIdentitiesBySegment.set(segmentKey, answerIdentityForTurn(turn));
   }
 
   function isActiveAttempt(turn) {
@@ -173,6 +182,9 @@
     const prefix = `${widgetInstanceId}\n`;
     for (const key of activeAttempts.keys()) {
       if (key.startsWith(prefix)) activeAttempts.delete(key);
+    }
+    for (const key of answerIdentitiesBySegment.keys()) {
+      if (key.startsWith(prefix)) answerIdentitiesBySegment.delete(key);
     }
   }
 
@@ -254,6 +266,11 @@
     });
   }
 
+  function answerIdentityForSegment(widgetInstanceId, answerSegmentId) {
+    const key = segmentIdentityKey(widgetInstanceId, answerSegmentId);
+    return key ? answerIdentitiesBySegment.get(key) || null : null;
+  }
+
   function subscribePreparedTurn(listener) {
     if (typeof listener !== "function") throw new TypeError("Prepared-turn listener must be a function");
     preparedTurnListeners.add(listener);
@@ -288,8 +305,114 @@
     if (options.harness !== false) notifyAnswerHarness("completed", detail);
   }
 
+  function answerHarnessKey(identity) {
+    if (!identity) return "";
+    return [
+      identity.widgetInstanceId,
+      identity.conversationId,
+      identity.answerSegmentId,
+      identity.networkAttemptId,
+    ].map((part) => String(part || "")).join("::");
+  }
+
+  function mergeAnswerHarnessSlots(target, contribution) {
+    const slots = contribution?.slots;
+    if (!slots || typeof slots !== "object") return;
+    for (const [name, slot] of Object.entries(slots)) {
+      target.slots[name] = Object.freeze({ ...(target.slots[name] || {}), ...(slot || {}) });
+    }
+  }
+
+  function mergeAnswerHarnessEvidence(target, contribution) {
+    const passages = contribution?.evidence?.passages;
+    if (!Array.isArray(passages)) return;
+    const seen = new Set(target.evidence.passages.map((passage) => passage.id));
+    for (const passage of passages) {
+      if (!passage?.id || seen.has(passage.id)) continue;
+      seen.add(passage.id);
+      target.evidence.passages.push(Object.freeze({ ...passage }));
+    }
+  }
+
+  function createDefaultAnswerHarness() {
+    const records = new Map();
+    const events = [];
+    const rejections = [];
+    const readRecord = (identity) => records.get(answerHarnessKey(identity)) || null;
+    const ensureRecord = (identity) => {
+      const key = answerHarnessKey(identity);
+      if (!key) return null;
+      const existing = records.get(key);
+      if (existing) return existing;
+      const record = {
+        contractVersion: 1,
+        identity: Object.freeze({ ...identity }),
+        lifecycle: "searching",
+        slots: {
+          progress: Object.freeze({ status: "ready", value: { percent: 0 } }),
+        },
+        evidence: {
+          passages: [],
+        },
+      };
+      records.set(key, record);
+      return record;
+    };
+    const accept = (event) => {
+      const eventName = event?.eventName;
+      const detail = event?.detail || {};
+      const identity = detail.answerIdentity || detail.contribution?.identity;
+      const key = answerHarnessKey(identity);
+      if (!key) {
+        rejections.push({ eventName, reason: "missing_identity" });
+        return null;
+      }
+      let record = ensureRecord(identity);
+      if (!record) return null;
+      if (eventName === "streaming") record.lifecycle = "streaming";
+      if (eventName === "judging") record.lifecycle = "judging";
+      if (eventName === "failed") record.lifecycle = "failed";
+      if (eventName === "completed") {
+        record.lifecycle = "complete";
+        record.slots.progress = Object.freeze({ status: "ready", value: { percent: 100 } });
+      }
+      if (detail.contribution) {
+        mergeAnswerHarnessSlots(record, detail.contribution);
+        mergeAnswerHarnessEvidence(record, detail.contribution);
+        if (detail.contribution.lifecycle && eventName !== "completed") {
+          record.lifecycle = detail.contribution.lifecycle;
+        }
+      }
+      events.push({ eventName, key });
+      return Object.freeze({
+        ...record,
+        slots: Object.freeze({ ...record.slots }),
+        evidence: Object.freeze({ passages: Object.freeze(record.evidence.passages.slice()) }),
+      });
+    };
+    return Object.freeze({
+      contractVersion: 1,
+      accept,
+      getRecord: readRecord,
+      records: () => Object.freeze([...records.values()].map((record) => Object.freeze({
+        ...record,
+        slots: Object.freeze({ ...record.slots }),
+        evidence: Object.freeze({ passages: Object.freeze(record.evidence.passages.slice()) }),
+      }))),
+      events: () => Object.freeze(events.slice()),
+      rejections: () => Object.freeze(rejections.slice()),
+    });
+  }
+
+  function ensureAnswerHarnessObserver() {
+    if (window.algoliaAnswerHarness?.accept) return window.algoliaAnswerHarness;
+    if (!defaultAnswerHarness) defaultAnswerHarness = createDefaultAnswerHarness();
+    window.algoliaAnswerHarness = defaultAnswerHarness;
+    return defaultAnswerHarness;
+  }
+
   function notifyAnswerHarness(eventName, detail) {
-    const observer = window.algoliaAnswerHarness;
+    const observer = window.algoliaAnswerHarness || ensureAnswerHarnessObserver();
     const accept = observer?.accept;
     if (typeof accept !== "function") return;
     try {
@@ -308,7 +431,7 @@
     const widgetInstanceId = detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || null;
     const widgets = [...document.querySelectorAll("algolia-chat")];
     const host = widgetInstanceId
-      ? widgets.find((node) => node.__algoliaWidgetInstanceId === widgetInstanceId)
+      ? widgets.find((node) => node.__algoliaWidgetInstanceId === widgetInstanceId) || widgets[0]
       : widgets[0];
     const root = host?.shadowRoot;
     if (!messageId || !question || !root) return null;
@@ -355,6 +478,7 @@
     const decoder = new TextDecoder();
     let diagnosticTail = "";
     let guardrailViolation = false;
+    let streamingNotified = false;
     const observedBody = new ReadableStream({
       async pull(controller) {
         try {
@@ -371,6 +495,16 @@
             }
             controller.close();
             return;
+          }
+          if (!streamingNotified && isActiveAttempt(turn)) {
+            streamingNotified = true;
+            notifyAnswerHarness("streaming", Object.freeze({
+              turnKey: turn.key,
+              messageId: turn.messageId,
+              question: turn.question,
+              conversationId,
+              answerIdentity: answerIdentityForTurn(turn),
+            }));
           }
           diagnosticTail += decoder.decode(chunk.value, { stream: true });
           if (/"type"\s*:\s*"data-guardrail-violation"/.test(diagnosticTail)) {
@@ -644,6 +778,7 @@
     installTransportAdapter,
     subscribePreparedTurn,
     subscribeCompletedTurn,
+    answerIdentityForSegment,
     ensureAnswerFooter,
   };
 })();
