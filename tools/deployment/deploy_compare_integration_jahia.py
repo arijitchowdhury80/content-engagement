@@ -47,6 +47,9 @@ SOURCES = {
     "telemetry": ROOT / "frontend/chat-widget/token-telemetry.js",
 }
 RELEASE_ASSET_KEYS = ("handoff", "compare")
+LIVE_VALIDATION_DEADLINE_SECONDS = 120
+ROLLBACK_READBACK_DEADLINE_SECONDS = 120
+READBACK_POLL_INTERVAL_SECONDS = 2
 STEMS = {
     "context": "algolia-context-compiler",
     "handoff": "handoff-to-orchestrator",
@@ -391,13 +394,18 @@ def restore(plan_path: Path) -> dict:
     restore_block_with_cas(before, allowed_hashes)
     jahia.version_block()
     jahia.publish(BLOCK, subtree=True)
-    for _ in range(8):
+    started = time.monotonic()
+    while True:
         edit, live = jahia.block_html("EDIT"), jahia.block_html("LIVE")
         if edit == before and live == before:
             return {"pass": True, "sha256": before_hash}
-        time.sleep(2)
+        if time.monotonic() - started >= ROLLBACK_READBACK_DEADLINE_SECONDS:
+            break
+        time.sleep(READBACK_POLL_INTERVAL_SECONDS)
         jahia.publish(BLOCK, subtree=True)
-    raise RuntimeError("Rollback readback failed")
+    raise RuntimeError(
+        f"Rollback readback failed after {ROLLBACK_READBACK_DEADLINE_SECONDS} seconds"
+    )
 
 
 def fetch_bytes(url: str) -> bytes:
@@ -449,6 +457,20 @@ def validate_live(assets: dict, expected_html: str) -> dict:
         checks["renderedExactReferencesError"] = f"{type(error).__name__}: {error}"
     checks["pass"] = all(checks.values())
     return checks
+
+
+def wait_for_live_validation(assets: dict, expected_html: str) -> dict:
+    checks = None
+    started = time.monotonic()
+    while True:
+        checks = validate_live(assets, expected_html)
+        if checks["pass"]:
+            return checks
+        if time.monotonic() - started >= LIVE_VALIDATION_DEADLINE_SECONDS:
+            checks["deadlineExceeded"] = LIVE_VALIDATION_DEADLINE_SECONDS
+            checks["pass"] = False
+            return checks
+        time.sleep(READBACK_POLL_INTERVAL_SECONDS)
 
 
 def create_plan(evidence_dir: Path) -> Path:
@@ -544,12 +566,7 @@ def apply_plan(plan_path: Path, evidence_dir: Path) -> int:
             mutations[f"publish_{key}"] = jahia.publish(asset["path"], subtree=False)
         mutations["versionBlock"] = jahia.version_block()
         mutations["publishBlock"] = jahia.publish(BLOCK, subtree=True)
-        checks = None
-        for _ in range(8):
-            checks = validate_live(assets, expected)
-            if checks["pass"]:
-                break
-            time.sleep(2)
+        checks = wait_for_live_validation(assets, expected)
         if not checks or not checks["pass"]:
             raise RuntimeError("Compare deployment readback failed")
     except Exception as error:

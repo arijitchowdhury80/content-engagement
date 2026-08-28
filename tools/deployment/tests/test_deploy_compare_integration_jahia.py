@@ -184,6 +184,35 @@ def test_live_validation_treats_public_readback_failure_as_retryable(monkeypatch
     assert checks["renderedExactReferences"] is False
 
 
+def test_live_validation_wait_retries_until_transient_public_readback_succeeds(monkeypatch):
+    observations = iter([
+        {"pass": False, "public_handoff_hash": False},
+        {"pass": False, "public_handoff_hash": True, "renderedExactReferences": False},
+        {"pass": True, "public_handoff_hash": True, "renderedExactReferences": True},
+    ])
+    sleeps = []
+    monkeypatch.setattr(module, "validate_live", lambda _assets, _expected: next(observations))
+    monkeypatch.setattr(module.time, "monotonic", lambda: len(sleeps))
+    monkeypatch.setattr(module.time, "sleep", lambda seconds: sleeps.append(seconds))
+
+    checks = module.wait_for_live_validation({}, "expected")
+
+    assert checks["pass"] is True
+    assert sleeps == [module.READBACK_POLL_INTERVAL_SECONDS, module.READBACK_POLL_INTERVAL_SECONDS]
+
+
+def test_live_validation_wait_fails_closed_at_deadline(monkeypatch):
+    monkeypatch.setattr(module, "validate_live", lambda _assets, _expected: {"pass": False})
+    monotonic_values = iter([0, module.LIVE_VALIDATION_DEADLINE_SECONDS + 1])
+    monkeypatch.setattr(module.time, "monotonic", lambda: next(monotonic_values))
+    monkeypatch.setattr(module.time, "sleep", lambda _seconds: None)
+
+    checks = module.wait_for_live_validation({}, "expected")
+
+    assert checks["pass"] is False
+    assert checks["deadlineExceeded"] == module.LIVE_VALIDATION_DEADLINE_SECONDS
+
+
 def test_final_dependency_cas_rejects_drift_before_cutover(monkeypatch):
     planned = {
         "context": {"sha256": "a"},
@@ -260,6 +289,44 @@ def test_rollback_stale_retry_rechecks_cas_and_never_overwrites_concurrent_edit(
             {module.sha256(before), module.sha256(deployed)},
         )
     assert writes == [before], "a changed block must prevent the second mutation attempt"
+
+
+def test_rollback_confirmation_waits_for_transient_live_readback(tmp_path, monkeypatch):
+    before = "before"
+    deployed = "deployed"
+    plan = tmp_path / "plan.json"
+    plan.write_text(json.dumps({
+        "beforeBlockHtml": before,
+        "beforeBlockSha256": module.sha256(before),
+        "expectedBlockSha256": module.sha256(deployed),
+    }))
+    confirmation_reads = iter([
+        deployed, deployed,
+        before, deployed,
+        before, before,
+    ])
+    current_reads_remaining = 2
+
+    def block_html(_workspace):
+        nonlocal current_reads_remaining
+        if current_reads_remaining:
+            current_reads_remaining -= 1
+            return deployed
+        return next(confirmation_reads)
+
+    publishes = []
+    monkeypatch.setattr(module.jahia, "block_html", block_html)
+    monkeypatch.setattr(module.jahia, "set_block_html", lambda _html: {"pass": True})
+    monkeypatch.setattr(module.jahia, "version_block", lambda: {"pass": True})
+    monkeypatch.setattr(module.jahia, "publish", lambda *_args, **_kwargs: publishes.append(True) or {"pass": True})
+    monotonic_values = iter([0, 1, 2])
+    monkeypatch.setattr(module.time, "monotonic", lambda: next(monotonic_values))
+    monkeypatch.setattr(module.time, "sleep", lambda _seconds: None)
+
+    result = module.restore(plan)
+
+    assert result["pass"] is True
+    assert len(publishes) == 2
 
 
 def test_deployer_has_no_broad_publish_or_stable_asset_overwrite():
