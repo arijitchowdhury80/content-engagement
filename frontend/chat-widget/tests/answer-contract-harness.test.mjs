@@ -13,6 +13,7 @@ import {
   applyAnswerContribution,
   createAnswerContributor,
   createFailedAnswerPresentation,
+  createPostAnswerFooterState,
   createPresentationFromAnswerText,
   splitAnswerContent,
   toAnswerPresentation,
@@ -267,4 +268,74 @@ test("partial failures produce visible retry or failure slots", () => {
   assert.equal(retrying.slots.errorRetry.status, ANSWER_SLOT_STATUS.RETRYING);
   assert.equal(failed.slots.confidence.status, ANSWER_SLOT_STATUS.FAILED);
   assert.equal(failed.slots.errorRetry.error, "Judge did not return a verdict.");
+});
+
+test("footer state allows sources early but defers post-answer actions until stream completion", () => {
+  const streaming = createAnswerRecord({
+    identity,
+    lifecycle: ANSWER_LIFECYCLE.STREAMING,
+    slots: {
+      sources: { status: ANSWER_SLOT_STATUS.READY, value: [{ title: "Docs" }] },
+      telemetry: { status: ANSWER_SLOT_STATUS.READY, value: { inputTokens: 1234, outputTokens: 56 } },
+      compareAction: { status: ANSWER_SLOT_STATUS.READY, value: { enabled: true } },
+      confidence: { status: ANSWER_SLOT_STATUS.READY, value: { score: 8.2 } },
+      followUp: { status: ANSWER_SLOT_STATUS.READY, value: "Which system are you replacing?" },
+    },
+  });
+  const complete = createAnswerRecord({
+    identity,
+    lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+    slots: streaming.slots,
+  });
+
+  const streamingFooter = createPostAnswerFooterState(streaming);
+  const completeFooter = createPostAnswerFooterState(complete);
+
+  assert.equal(streamingFooter.slots.sources.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(streamingFooter.slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(streamingFooter.slots.compareAction.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(streamingFooter.slots.confidence.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(streamingFooter.slots.followUp.status, ANSWER_SLOT_STATUS.LOADING);
+
+  assert.equal(completeFooter.slots.sources.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(completeFooter.slots.telemetry.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(completeFooter.slots.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(completeFooter.slots.confidence.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(completeFooter.slots.followUp.status, ANSWER_SLOT_STATUS.READY);
+});
+
+test("answer presentation exposes one ordered footer contract", () => {
+  const record = createPresentationFromAnswerText({
+    identity,
+    text: [
+      "API calls are like little door swings at a very busy store.",
+      "",
+      "Short version: almost every data request counts.",
+      "",
+      "Debounce typing and cache stable requests.",
+      "",
+      "Are you protecting against bots or ordinary browsing traffic?",
+    ].join("\n"),
+    sources: [{ title: "Docs" }],
+    telemetry: { inputTokens: 42000, outputTokens: 900 },
+    compareAction: { label: "Compare with Prod" },
+    confidence: { score: 8.1 },
+    lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+  });
+  const presentation = toAnswerPresentation(record);
+
+  assert.deepEqual(presentation.footer.order, [
+    "sources",
+    "telemetry",
+    "compareAction",
+    "confidence",
+    "followUp",
+  ]);
+  assert.equal(presentation.footer.postStream, true);
+  assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(presentation.footer.followUp.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(presentation.details.value.includes("Are you protecting"), false);
 });

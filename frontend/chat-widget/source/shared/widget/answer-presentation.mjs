@@ -28,6 +28,18 @@ const SHORT_ANSWER_RE =
   /^(?:(?:the\s+)?short\s+(?:version|answer))(?:\s*:|\s+is\b)/i;
 const SOFT_LEAD_IN_RE =
   /^(?:i\s+can|i(?:'|’)ll|i\s+will|i\s+would|since\s+we|before\s+we|let(?:'|’)s|we\s+can|happy\s+to)\b/i;
+const POST_STREAM_LIFECYCLES = new Set([
+  ANSWER_LIFECYCLE.JUDGING,
+  ANSWER_LIFECYCLE.COMPLETE,
+  ANSWER_LIFECYCLE.FAILED,
+]);
+const FOOTER_SLOT_ORDER = Object.freeze([
+  "sources",
+  "telemetry",
+  "compareAction",
+  "confidence",
+  "followUp",
+]);
 
 function deepFreeze(value) {
   if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
@@ -305,9 +317,47 @@ export function createFailedAnswerPresentation({
   return record;
 }
 
+function deferredSlot(slot, message) {
+  if (!slot || slot.status !== ANSWER_SLOT_STATUS.READY) return slot;
+  return createAnswerSlot(slot.key, {
+    status: ANSWER_SLOT_STATUS.LOADING,
+    value: null,
+    message,
+  });
+}
+
+export function createPostAnswerFooterState(record) {
+  assertAnswerRecord(record);
+  const postStream = POST_STREAM_LIFECYCLES.has(record.lifecycle);
+  const slots = record.slots;
+  return deepFreeze({
+    identity: record.identity,
+    identityKey: record.identityKey,
+    lifecycle: record.lifecycle,
+    postStream,
+    order: FOOTER_SLOT_ORDER,
+    slots: {
+      sources: slots.sources,
+      telemetry: postStream
+        ? slots.telemetry
+        : deferredSlot(slots.telemetry, "Telemetry waits for answer completion."),
+      compareAction: postStream
+        ? slots.compareAction
+        : deferredSlot(slots.compareAction, "Compare waits for answer completion."),
+      confidence: postStream
+        ? slots.confidence
+        : deferredSlot(slots.confidence, "Confidence waits for answer completion."),
+      followUp: postStream
+        ? slots.followUp
+        : deferredSlot(slots.followUp, "Discovery follow-up waits for answer completion."),
+    },
+  });
+}
+
 export function toAnswerPresentation(record) {
   assertAnswerRecord(record);
   const slots = record.slots;
+  const footer = createPostAnswerFooterState(record);
   return deepFreeze({
     contractVersion: record.contractVersion,
     identity: record.identity,
@@ -319,11 +369,13 @@ export function toAnswerPresentation(record) {
     },
     details: slots.details,
     footer: {
-      sources: slots.sources,
-      followUp: slots.followUp,
-      confidence: slots.confidence,
-      telemetry: slots.telemetry,
-      compareAction: slots.compareAction,
+      sources: footer.slots.sources,
+      followUp: footer.slots.followUp,
+      confidence: footer.slots.confidence,
+      telemetry: footer.slots.telemetry,
+      compareAction: footer.slots.compareAction,
+      order: footer.order,
+      postStream: footer.postStream,
     },
     progress: slots.progress,
     errorRetry: slots.errorRetry,
