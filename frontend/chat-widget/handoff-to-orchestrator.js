@@ -148,11 +148,28 @@
       payload.id || payload.conversationId || persistedConversation?.conversationId || "conversation"
     );
     const messageId = String(message.id || message.messageId || `${index}:${text}`);
+    const answerSegmentId = String(
+      payload.answerSegmentId ||
+      payload.responseId ||
+      payload.metadata?.answerSegmentId ||
+      payload.metadata?.responseId ||
+      payload.metadata?.assistantSegmentId ||
+      payload.metadata?.assistantMessageId ||
+      message.answerSegmentId ||
+      message.responseId ||
+      message.metadata?.answerSegmentId ||
+      message.metadata?.responseId ||
+      message.metadata?.assistantSegmentId ||
+      message.metadata?.assistantMessageId ||
+      message.id ||
+      message.messageId ||
+      `${index}:${text}`
+    );
     return {
       key: `${conversationGeneration ? `${conversationGeneration}:` : ""}${conversationId}:${messageId}`,
       conversationId,
       messageId,
-      answerSegmentId: String(message.answerSegmentId || message.responseId || message.id || message.messageId || `${index}:${text}`),
+      answerSegmentId,
       widgetInstanceId: String(
         payload.widgetInstanceId ||
         payload.metadata?.widgetInstanceId ||

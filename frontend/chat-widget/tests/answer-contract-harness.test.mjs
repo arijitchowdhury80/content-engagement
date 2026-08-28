@@ -10,6 +10,7 @@ import {
   isAnswerRecordComplete,
 } from "../source/shared/core/answer-record.mjs";
 import {
+  createConfidenceContribution,
   createProgressContribution,
   createSourcesContribution,
 } from "../source/shared/widget/answer-contributors.mjs";
@@ -237,6 +238,138 @@ test("progress contributions cannot regress within the same answer attempt", () 
 
   assert.equal(staleLower.slots.progress.value.percent, 50);
   assert.equal(higher.slots.progress.value.percent, 100);
+});
+
+test("only lifecycle-owning contributors can change answer lifecycle", () => {
+  const record = createAnswerRecord({ identity });
+  const contentLifecycleAttempt = applyAnswerContribution(
+    record,
+    createAnswerContributor({
+      kind: ANSWER_CONTRIBUTOR_KIND.CONTENT,
+      identity,
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+      slots: {
+        details: { status: ANSWER_SLOT_STATUS.READY, value: "Answer text landed." },
+      },
+    })
+  );
+  const sourceLifecycleAttempt = applyAnswerContribution(
+    contentLifecycleAttempt,
+    createAnswerContributor({
+      kind: ANSWER_CONTRIBUTOR_KIND.SOURCES,
+      identity,
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+      slots: {
+        sources: { status: ANSWER_SLOT_STATUS.READY, value: [{ title: "Docs" }] },
+      },
+    })
+  );
+  const telemetryLifecycleAttempt = applyAnswerContribution(
+    sourceLifecycleAttempt,
+    createAnswerContributor({
+      kind: ANSWER_CONTRIBUTOR_KIND.TELEMETRY,
+      identity,
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+      slots: {
+        telemetry: { status: ANSWER_SLOT_STATUS.READY, value: { inputTokens: 1000, outputTokens: 250 } },
+      },
+    })
+  );
+  const confidenceLifecycleAttempt = applyAnswerContribution(
+    telemetryLifecycleAttempt,
+    createAnswerContributor({
+      kind: ANSWER_CONTRIBUTOR_KIND.CONFIDENCE,
+      identity,
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+      slots: {
+        confidence: { status: ANSWER_SLOT_STATUS.READY, value: { score: 8.2 } },
+      },
+    })
+  );
+  const actionLifecycleAttempt = applyAnswerContribution(
+    confidenceLifecycleAttempt,
+    createAnswerContributor({
+      kind: ANSWER_CONTRIBUTOR_KIND.OPAQUE_ACTION,
+      identity,
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+      slots: {
+        compareAction: { status: ANSWER_SLOT_STATUS.READY, value: { label: "Compare with Prod" } },
+      },
+    })
+  );
+  const progressLifecycle = applyAnswerContribution(
+    actionLifecycleAttempt,
+    createProgressContribution({
+      identity,
+      percent: 100,
+      lifecycle: ANSWER_LIFECYCLE.JUDGING,
+    })
+  );
+  const explicitLifecycle = applyAnswerContribution(
+    progressLifecycle,
+    createAnswerContributor({
+      kind: ANSWER_CONTRIBUTOR_KIND.LIFECYCLE,
+      identity,
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+    })
+  );
+
+  assert.equal(contentLifecycleAttempt.lifecycle, ANSWER_LIFECYCLE.SEARCHING);
+  assert.equal(sourceLifecycleAttempt.lifecycle, ANSWER_LIFECYCLE.SEARCHING);
+  assert.equal(telemetryLifecycleAttempt.lifecycle, ANSWER_LIFECYCLE.SEARCHING);
+  assert.equal(confidenceLifecycleAttempt.lifecycle, ANSWER_LIFECYCLE.SEARCHING);
+  assert.equal(actionLifecycleAttempt.lifecycle, ANSWER_LIFECYCLE.SEARCHING);
+  assert.equal(progressLifecycle.lifecycle, ANSWER_LIFECYCLE.JUDGING);
+  assert.equal(explicitLifecycle.lifecycle, ANSWER_LIFECYCLE.COMPLETE);
+});
+
+test("confidence evaluations must reference existing canonical source passages", () => {
+  const withSource = applyAnswerContribution(
+    createAnswerRecord({ identity }),
+    createSourcesContribution({
+      identity,
+      sources: [{ title: "Docs", url: "https://example.com/docs" }],
+    })
+  );
+  const withConfidence = applyAnswerContribution(
+    withSource,
+    createConfidenceContribution({
+      identity,
+      confidence: { score: 8.1 },
+      judgeEvidence: [
+        {
+          role: "factuality",
+          passageIds: ["source:retrieval:0:https-example-com-docs"],
+        },
+        {
+          role: "unsupported",
+          passageIds: ["source:retrieval:99:missing"],
+        },
+        {
+          role: "unanchored",
+          passageIds: [],
+        },
+      ],
+    })
+  );
+  const noSourceRecord = applyAnswerContribution(
+    createAnswerRecord({ identity: { ...identity, networkAttemptId: "attempt-no-sources" } }),
+    createConfidenceContribution({
+      identity: { ...identity, networkAttemptId: "attempt-no-sources" },
+      confidence: { score: 7.4 },
+      judgeEvidence: [{ role: "unmatched", passageIds: ["source:retrieval:0:docs"] }],
+    })
+  );
+
+  assert.equal(withConfidence.slots.confidence.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(withConfidence.evidence.evaluations.length, 1);
+  assert.equal(withConfidence.evidence.evaluations[0].role, "factuality");
+  assert.deepEqual(
+    withConfidence.evidence.evaluations[0].passageIds,
+    ["source:retrieval:0:https-example-com-docs"]
+  );
+  assert.equal(noSourceRecord.slots.confidence.status, ANSWER_SLOT_STATUS.READY);
+  assert.deepEqual(noSourceRecord.evidence.evaluations, []);
 });
 
 test("reducer enforces contributor slot and evidence capabilities", () => {

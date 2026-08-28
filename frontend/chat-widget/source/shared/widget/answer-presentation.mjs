@@ -33,6 +33,11 @@ const CONTRIBUTOR_SLOT_ALLOWLIST = Object.freeze({
   [ANSWER_CONTRIBUTOR_KIND.PROGRESS]: new Set(["progress"]),
   [ANSWER_CONTRIBUTOR_KIND.LIFECYCLE]: new Set(),
 });
+const CONTRIBUTOR_LIFECYCLE_ALLOWLIST = new Set([
+  ANSWER_CONTRIBUTOR_KIND.PROGRESS,
+  ANSWER_CONTRIBUTOR_KIND.ERROR_RETRY,
+  ANSWER_CONTRIBUTOR_KIND.LIFECYCLE,
+]);
 
 const HEADING_RE = /^\s{0,3}#{1,6}\s+/;
 const BULLET_RE = /^\s*[-*+]\s+/;
@@ -165,6 +170,12 @@ function evidenceEvaluations(evidence) {
   return [];
 }
 
+function existingEvidencePassageIds(record) {
+  return new Set((record?.evidence?.passages || [])
+    .map((passage) => typeof passage?.id === "string" ? passage.id.trim() : "")
+    .filter(Boolean));
+}
+
 function mergeById(left = [], right = []) {
   const merged = new Map();
   for (const item of [...left, ...right]) {
@@ -194,7 +205,22 @@ function slotAllowedForContribution(kind, key, slot) {
   return Boolean(CONTRIBUTOR_SLOT_ALLOWLIST[kind]?.has(key));
 }
 
-function evidenceAllowedForContribution(kind, evidence) {
+function confidenceEvidenceAllowedForRecord(evidence, record) {
+  const knownPassageIds = existingEvidencePassageIds(record);
+  const normalized = createAnswerEvidenceRecord({
+    evaluations: evidenceEvaluations(evidence),
+  });
+  return {
+    passages: [],
+    evaluations: normalized.evaluations.filter((evaluation) =>
+      Array.isArray(evaluation.passageIds) &&
+      evaluation.passageIds.length > 0 &&
+      evaluation.passageIds.every((id) => knownPassageIds.has(id))
+    ),
+  };
+}
+
+function evidenceAllowedForContribution(kind, evidence, record) {
   if (!evidence || typeof evidence !== "object") return null;
   if (kind === ANSWER_CONTRIBUTOR_KIND.SOURCES) {
     return {
@@ -203,12 +229,13 @@ function evidenceAllowedForContribution(kind, evidence) {
     };
   }
   if (kind === ANSWER_CONTRIBUTOR_KIND.CONFIDENCE) {
-    return {
-      passages: [],
-      evaluations: evidenceEvaluations(evidence),
-    };
+    return confidenceEvidenceAllowedForRecord(evidence, record);
   }
   return null;
+}
+
+function lifecycleAllowedForContribution(kind) {
+  return CONTRIBUTOR_LIFECYCLE_ALLOWLIST.has(kind);
 }
 
 export function splitAnswerContent(answerText) {
@@ -313,14 +340,16 @@ export function applyAnswerContribution(record, contribution) {
     nextSlots[key] = mergeSlot(record.slots[key], { ...slot, key });
   }
 
-  const allowedEvidence = evidenceAllowedForContribution(kind, contribution.evidence);
+  const allowedEvidence = evidenceAllowedForContribution(kind, contribution.evidence, record);
   const nextEvidence = allowedEvidence
     ? mergeEvidenceRecords(record.evidence, allowedEvidence, record.identityKey)
     : record.evidence;
 
   return createAnswerRecord({
     identity: record.identity,
-    lifecycle: contribution.lifecycle || record.lifecycle,
+    lifecycle: lifecycleAllowedForContribution(kind) && contribution.lifecycle
+      ? contribution.lifecycle
+      : record.lifecycle,
     evidence: nextEvidence,
     slots: nextSlots,
   });

@@ -125,7 +125,7 @@ test("mirror observer merges typed slot contributions into one answer record", (
   observer.accept(contributionEvent(createConfidenceContribution({
     identity,
     confidence: { score: 8.1 },
-    judgeEvidence: [{ judge: "factuality" }],
+    judgeEvidence: [{ judge: "factuality", passageIds: ["source:retrieval:0:docs"] }],
   })));
   const record = observer.accept(event("completed"));
 
