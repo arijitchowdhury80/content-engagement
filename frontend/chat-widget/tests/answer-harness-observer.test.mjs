@@ -204,3 +204,41 @@ test("mirror observer rejects late contributions after reset", () => {
     reason: "stale_answer_attempt",
   }]);
 });
+
+test("mirror observer rejects late contributions after disconnect", () => {
+  const observer = createAnswerHarnessObserver();
+
+  observer.accept(event("prepared"));
+  const disconnected = observer.accept(event("disconnected"));
+  const late = observer.accept(contributionEvent(createSourcesContribution({
+    identity,
+    sources: [{ title: "Late docs" }],
+  })));
+
+  assert.equal(disconnected.lifecycle, ANSWER_LIFECYCLE.DISCONNECTED);
+  assert.equal(late, null);
+  assert.equal(observer.getRecord(identity).slots.sources.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.deepEqual(observer.rejections(), [{
+    eventName: "contribution",
+    reason: "stale_answer_attempt",
+  }]);
+});
+
+test("mirror observer bounds diagnostic retention for long-lived sessions", () => {
+  const observer = createAnswerHarnessObserver();
+
+  for (let index = 0; index < 240; index += 1) {
+    const nextIdentity = {
+      widgetInstanceId: "widget-1",
+      conversationId: `conversation-${index}`,
+      answerSegmentId: `answer-${index}`,
+      networkAttemptId: `attempt-${index}`,
+    };
+    observer.accept(event("prepared", nextIdentity));
+    observer.accept(event("completed", nextIdentity));
+    observer.accept({ eventName: "bogus", detail: { answerIdentity: nextIdentity } });
+  }
+
+  assert.ok(observer.records().length <= 200, "closed historical records are bounded");
+  assert.ok(observer.rejections().length <= 200, "diagnostic rejections are bounded");
+});

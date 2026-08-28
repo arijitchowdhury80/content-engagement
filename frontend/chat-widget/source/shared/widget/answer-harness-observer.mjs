@@ -25,6 +25,7 @@ function rejectEvent(state, event, reason) {
     eventName: event?.eventName || null,
     reason,
   }));
+  while (state.rejections.length > state.maxRejections) state.rejections.shift();
   return null;
 }
 
@@ -73,9 +74,25 @@ function buildLifecycleContribution(identity, lifecycle) {
 export function createAnswerHarnessObserver({ onRecord } = {}) {
   const state = {
     records: new Map(),
+    recordOrder: [],
     activeBySegment: new Map(),
     rejections: [],
+    maxRecords: 200,
+    maxRejections: 200,
   };
+
+  function writeRecord(key, record) {
+    if (!state.records.has(key)) state.recordOrder.push(key);
+    state.records.set(key, record);
+    while (state.recordOrder.length > state.maxRecords) {
+      const oldest = state.recordOrder.shift();
+      state.records.delete(oldest);
+      for (const [segmentKey, recordKey] of state.activeBySegment.entries()) {
+        if (recordKey === oldest) state.activeBySegment.delete(segmentKey);
+      }
+    }
+    return record;
+  }
 
   function accept(event) {
     if (!event || typeof event !== "object") return rejectEvent(state, event, "invalid_event");
@@ -101,12 +118,12 @@ export function createAnswerHarnessObserver({ onRecord } = {}) {
       if (previousKey && previousKey !== key) {
         const previous = state.records.get(previousKey);
         if (previous) {
-          state.records.set(previousKey, closeAnswerRecord(previous, ANSWER_LIFECYCLE.SUPERSEDED));
+          writeRecord(previousKey, closeAnswerRecord(previous, ANSWER_LIFECYCLE.SUPERSEDED));
         }
       }
       const record = buildPreparedRecord(identity);
       state.activeBySegment.set(segmentKey, key);
-      state.records.set(key, record);
+      writeRecord(key, record);
       return notify(onRecord, record, event.eventName);
     }
 
@@ -120,7 +137,7 @@ export function createAnswerHarnessObserver({ onRecord } = {}) {
       const next = detail.contribution
         ? applyAnswerContribution(completed, detail.contribution)
         : completed;
-      state.records.set(key, next);
+      writeRecord(key, next);
       return notify(onRecord, next, event.eventName);
     }
 
@@ -129,7 +146,7 @@ export function createAnswerHarnessObserver({ onRecord } = {}) {
       const contribution = detail.contribution;
       if (!contribution) return rejectEvent(state, event, "missing_contribution");
       const next = applyAnswerContribution(record, contribution);
-      state.records.set(key, next);
+      writeRecord(key, next);
       return notify(onRecord, next, event.eventName);
     }
 
@@ -141,7 +158,7 @@ export function createAnswerHarnessObserver({ onRecord } = {}) {
           ? ANSWER_LIFECYCLE.JUDGING
           : ANSWER_LIFECYCLE.FAILED;
       const next = applyAnswerContribution(record, buildLifecycleContribution(identity, lifecycle));
-      state.records.set(key, next);
+      writeRecord(key, next);
       return notify(onRecord, next, event.eventName);
     }
 
@@ -151,7 +168,7 @@ export function createAnswerHarnessObserver({ onRecord } = {}) {
         ? ANSWER_LIFECYCLE.RESET
         : ANSWER_LIFECYCLE.DISCONNECTED;
       const next = closeAnswerRecord(record, lifecycle);
-      state.records.set(key, next);
+      writeRecord(key, next);
       state.activeBySegment.delete(segmentKey);
       return notify(onRecord, next, event.eventName);
     }

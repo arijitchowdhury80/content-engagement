@@ -35,6 +35,7 @@
   const answerIdentitiesBySegment = new Map();
   const handledResetIds = new Set();
   const MAX_HANDLED_RESET_IDS = 100;
+  const MAX_ROUTED_ATTEMPTS = 500;
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -170,6 +171,10 @@
     if (key && turn.networkAttemptId) activeAttempts.set(key, turn.networkAttemptId);
     const segmentKey = segmentIdentityKey(turn?.widgetInstanceId, turn?.answerSegmentId);
     if (segmentKey) answerIdentitiesBySegment.set(segmentKey, answerIdentityForTurn(turn));
+    while (activeAttempts.size > MAX_ROUTED_ATTEMPTS) activeAttempts.delete(activeAttempts.keys().next().value);
+    while (answerIdentitiesBySegment.size > MAX_ROUTED_ATTEMPTS) {
+      answerIdentitiesBySegment.delete(answerIdentitiesBySegment.keys().next().value);
+    }
   }
 
   function isActiveAttempt(turn) {
@@ -698,6 +703,11 @@
     fallbackConversationGeneration += 1;
     activeAttempts.clear();
     answerIdentitiesBySegment.clear();
+  });
+
+  document.addEventListener?.("algolia-chat-widget-disconnected", (event) => {
+    const widgetInstanceId = widgetInstanceIdFromEvent(event);
+    if (widgetInstanceId) clearWidgetAttempts(widgetInstanceId, "disconnected");
   });
 
   window.algoliaHandoffToOrchestrator = {

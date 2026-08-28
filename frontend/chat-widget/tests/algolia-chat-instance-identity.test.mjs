@@ -8,6 +8,7 @@ const themePath = new URL("../algolia-chat-theme-algolia.js", import.meta.url);
 const trackerPath = new URL("../algolia-engagement-tracker.js", import.meta.url);
 const handoffPath = new URL("../handoff-to-orchestrator.js", import.meta.url);
 const chatWidgetRoot = new URL("../", import.meta.url);
+const stackManifestPath = new URL("../../../config/deployments/algolia-chat-stack.json", import.meta.url);
 
 let browser;
 
@@ -17,6 +18,19 @@ before(async () => {
 
 after(async () => {
   await browser?.close();
+});
+
+test("answer harness mirror entry is declared for development parity before runtime modules", () => {
+  const manifest = JSON.parse(fs.readFileSync(stackManifestPath, "utf8"));
+  assert.equal(manifest.jahia.answerHarnessMirror.scope, "development-and-parity-only");
+  assert.equal(manifest.jahia.answerHarnessMirror.script, "frontend/chat-widget/answer-harness-runtime.mjs");
+  assert.deepEqual(manifest.jahia.answerHarnessMirror.loadOrder, [
+    "frontend/chat-widget/answer-harness-runtime.mjs",
+    "frontend/chat-widget/algolia-chat.js",
+    "frontend/chat-widget/handoff-to-orchestrator.js",
+    "frontend/chat-widget/algolia-chat-compare.js",
+    "frontend/chat-widget/token-telemetry.js",
+  ]);
 });
 
 async function createTwoWidgetPage() {
@@ -52,7 +66,9 @@ async function createTwoWidgetPage() {
     });
   });
   await page.goto("http://localhost/");
-  await page.addScriptTag({ type: "module", url: "/chat-widget/answer-harness-runtime.mjs" });
+  const manifest = JSON.parse(fs.readFileSync(stackManifestPath, "utf8"));
+  const mirrorScript = manifest.jahia.answerHarnessMirror.script.replace(/^frontend\/chat-widget\//, "");
+  await page.addScriptTag({ type: "module", url: `/chat-widget/${mirrorScript}` });
   await page.waitForFunction(() =>
     typeof window.algoliaAnswerHarness?.accept === "function" &&
     typeof window.algoliaAnswerContributors?.createAnswerContentContribution === "function"
@@ -488,6 +504,61 @@ test("disconnecting and reconnecting a widget keeps that element identity isolat
     assert.equal(state.before, state.after, "the same custom element keeps its owned widget id across reconnect");
     assert.equal(prepared.at(-1).detail.answerIdentity.widgetInstanceId, state.after);
     assert.equal(prepared.at(-1).detail.answerIdentity.answerSegmentId, "right-reconnected-segment");
+  } finally {
+    await page.close();
+  }
+});
+
+test("disconnecting a widget closes its in-flight attempt and rejects late completion", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    const state = await page.evaluate(async () => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      const searches = document.querySelectorAll("algolia-instant-search");
+      const rightSearch = searches[1];
+      const right = rightSearch.querySelector("algolia-chat");
+      const rightId = right.__algoliaWidgetInstanceId;
+      const pending = window.__invokeIdentityTransport({
+        id: "conversation-disconnect",
+        messages: [{ id: "user-disconnect", role: "user", parts: [{ type: "text", text: "disconnect scope" }] }],
+      }, {
+        widgetInstanceId: rightId,
+        answerSegmentId: "right-disconnected-segment",
+      });
+      await new Promise((resolve) => {
+        const poll = () => window.__identityStreams.length >= 1 ? resolve() : setTimeout(poll, 0);
+        poll();
+      });
+
+      right.remove();
+      window.__identityStreams[0].write('data: {"type":"text-delta","delta":"late"}\n\n');
+      window.__identityStreams[0].close();
+      await pending;
+
+      return {
+        rightId,
+        events: window.__identityHarnessEvents,
+        rejections: window.algoliaAnswerHarness.rejections(),
+      };
+    });
+    const disconnected = state.events.find((event) =>
+      event.eventName === "disconnected" &&
+      event.detail.answerIdentity.widgetInstanceId === state.rightId
+    );
+    const completed = state.events.find((event) =>
+      event.eventName === "completed" &&
+      event.detail.answerIdentity.widgetInstanceId === state.rightId &&
+      event.detail.answerIdentity.answerSegmentId === "right-disconnected-segment"
+    );
+
+    assert.ok(disconnected, "the actual custom-element disconnect closes the right widget attempt");
+    assert.equal(completed, undefined, "late completion after disconnect must not land in the harness");
+    assert.equal(
+      state.rejections.some((event) => event.reason === "stale_answer_attempt"),
+      false,
+      "the runtime should suppress the stale completion before it becomes a rejected harness event",
+    );
   } finally {
     await page.close();
   }

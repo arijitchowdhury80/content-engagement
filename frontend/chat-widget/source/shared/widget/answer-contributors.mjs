@@ -118,14 +118,23 @@ export function createTelemetryContribution({ identity, telemetry = null } = {})
   });
 }
 
-export function createConfidenceContribution({ identity, confidence = null, judgeEvidence = [] } = {}) {
+export function createConfidenceContribution({
+  identity,
+  confidence = null,
+  judgeEvidence = [],
+  lineageUnavailable = false,
+} = {}) {
   return createAnswerContributor({
     kind: ANSWER_CONTRIBUTOR_KIND.CONFIDENCE,
     identity,
     slots: {
-      confidence: hasObjectValue(confidence)
+      confidence: hasObjectValue(confidence) && !lineageUnavailable
         ? { status: ANSWER_SLOT_STATUS.READY, value: confidence }
-        : { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Confidence unavailable." },
+        : {
+          status: ANSWER_SLOT_STATUS.UNAVAILABLE,
+          value: null,
+          message: lineageUnavailable ? "Confidence evidence lineage unavailable." : "Confidence unavailable.",
+        },
     },
     evidence: { evaluations: asArray(judgeEvidence).map(evidenceEvaluation) },
   });

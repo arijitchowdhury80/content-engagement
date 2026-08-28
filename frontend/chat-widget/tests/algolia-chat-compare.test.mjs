@@ -89,6 +89,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   const primaryMessages = [];
   const answerHarnessEvents = [];
   const footersByMessageId = new Map();
+  const identitiesByTurnKey = new Map();
   let preparedListener = null;
   let completedListener = null;
   let turnSequence = 0;
@@ -182,17 +183,19 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
     primaryMessages.push(user);
     const body = JSON.stringify({ id: 'primary-conversation', messages: [...primaryMessages], trigger: 'user' });
     preparedBodies.push(body);
+    const answerIdentity = {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'primary-conversation',
+      answerSegmentId: `primary-assistant-${turnSequence}`,
+      networkAttemptId: `attempt-${turnSequence}`,
+    };
+    identitiesByTurnKey.set(`primary-conversation:${user.id}`, answerIdentity);
     preparedListener?.({
       body,
       turnKey: `primary-conversation:${user.id}`,
       messageId: user.id,
       question: text,
-      answerIdentity: {
-        widgetInstanceId: 'widget-1',
-        conversationId: 'primary-conversation',
-        answerSegmentId: `primary-assistant-${turnSequence}`,
-        networkAttemptId: `attempt-${turnSequence}`,
-      },
+      answerIdentity,
     });
     primaryMessages.push({
       id: `primary-assistant-${turnSequence}`,
@@ -236,6 +239,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
       messageId,
       question: primaryMessages.find((message) => message.id === messageId)?.parts?.[0]?.text || '',
       conversationId: 'primary-conversation',
+      answerIdentity: identitiesByTurnKey.get(turnKey) || null,
     });
     if (postAnswerReady) addPostAnswerControl(messageId);
     observers.forEach((cb) => cb([{ type: 'childList' }]));
@@ -638,6 +642,47 @@ test('production receives the exact prepared primary body bytes and retries are 
   });
   await h.settle();
   assert.equal(h.fetchCalls.length, 1, 'a primary retry/tool continuation cannot mirror twice');
+});
+
+test('Compare dedupe is scoped by answer identity, not bare turnKey', async () => {
+  const h = createHarness();
+  h.addBubble('prime comparison');
+  await h.settle();
+  h.completeTurn();
+  await h.settle();
+  h.clickToggle();
+  await h.settle();
+
+  const body = h.preparedBodies[0];
+  h.api().acceptPreparedTurn({
+    body,
+    turnKey: 'same-conversation:same-user-message',
+    messageId: 'left-message',
+    question: 'left',
+    answerIdentity: {
+      widgetInstanceId: 'widget-left',
+      conversationId: 'same-conversation',
+      answerSegmentId: 'same-segment',
+      networkAttemptId: 'attempt-left',
+    },
+  });
+  h.api().acceptPreparedTurn({
+    body,
+    turnKey: 'same-conversation:same-user-message',
+    messageId: 'right-message',
+    question: 'right',
+    answerIdentity: {
+      widgetInstanceId: 'widget-right',
+      conversationId: 'same-conversation',
+      answerSegmentId: 'same-segment',
+      networkAttemptId: 'attempt-right',
+    },
+  });
+  await h.settle();
+
+  assert.equal(h.fetchCalls.length, 3, 'distinct widgets with the same turnKey must both be eligible for Compare');
+  assert.equal(h.fetchCalls[1][1].body, body);
+  assert.equal(h.fetchCalls[2][1].body, body);
 });
 
 /* --------------------------------------------------- Jahia deployment wiring */

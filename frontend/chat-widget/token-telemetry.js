@@ -20,10 +20,29 @@
   const usageState = (window.__algoliaChatUsage = window.__algoliaChatUsage || {});
   const turnTotals = new Map();
   const seenTurnKeys = new Set();
-  const latestRevisionByConversation = new Map();
+  const latestRevisionByLookup = new Map();
   let generation = 0;
   let unsubscribeCompletedTurns = null;
   let latestCompletedTurn = null;
+
+  function answerIdentityKey(identity) {
+    if (!identity || typeof identity !== "object") return "";
+    const parts = [
+      identity.widgetInstanceId,
+      identity.conversationId,
+      identity.answerSegmentId,
+      identity.networkAttemptId,
+    ].map((value) => String(value || "").trim());
+    return parts.every(Boolean) ? parts.join("\n") : "";
+  }
+
+  function completedTurnIdentityKey(detail) {
+    const identityKey = answerIdentityKey(detail?.answerIdentity);
+    if (identityKey) return identityKey;
+    const widgetInstanceId = String(detail?.widgetInstanceId || "legacy").trim();
+    const turnKey = String(detail?.turnKey || "").trim();
+    return turnKey ? `${widgetInstanceId}\n${turnKey}` : "";
+  }
 
   function actionUrl() {
     return `${window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ || ""}${ACTION_PATH}`;
@@ -41,12 +60,12 @@
     window.dispatchEvent(new CustomEvent("algolia-usage-updated", { detail: usageState }));
   }
 
-  function notifyAnswerHarnessTelemetry(status) {
-    const identity = latestCompletedTurn?.answerIdentity;
+  function notifyAnswerHarnessTelemetry(status, completedTurn = latestCompletedTurn, telemetryOverride = null) {
+    const identity = completedTurn?.answerIdentity;
     const accept = window.algoliaAnswerHarness?.accept;
     const createTelemetryContribution = window.algoliaAnswerContributors?.createTelemetryContribution;
     if (!identity || typeof accept !== "function" || typeof createTelemetryContribution !== "function") return;
-    const telemetry = status === "ready" && usageState.usage ? usageState.usage : null;
+    const telemetry = status === "ready" ? (telemetryOverride || usageState.usage || null) : null;
     try {
       accept(Object.freeze({
         eventName: "contribution",
@@ -92,7 +111,7 @@
     generation += 1;
     turnTotals.clear();
     seenTurnKeys.clear();
-    latestRevisionByConversation.clear();
+    latestRevisionByLookup.clear();
     usageState.usage = null;
     usageState.cumulativeUsage = null;
     usageState.conversationId = null;
@@ -116,28 +135,28 @@
     };
   }
 
-  function isCurrentLookup(conversationId, revision, expectedGeneration) {
+  function isCurrentLookup(completedTurn, revision, expectedGeneration) {
     return (
       expectedGeneration === generation &&
-      latestRevisionByConversation.get(conversationId) === revision
+      latestRevisionByLookup.get(completedTurn?.identityKey) === revision
     );
   }
 
-  function scheduleRetry(conversationId, turnKey, revision, attempt, expectedGeneration) {
-    if (!isCurrentLookup(conversationId, revision, expectedGeneration)) return;
+  function scheduleRetry(completedTurn, conversationId, revision, attempt, expectedGeneration) {
+    if (!isCurrentLookup(completedTurn, revision, expectedGeneration)) return;
     if (attempt + 1 >= MAX_ATTEMPTS) {
-      publishUsageState("unavailable");
-      notifyAnswerHarnessTelemetry("unavailable");
+      if (latestCompletedTurn?.identityKey === completedTurn.identityKey) publishUsageState("unavailable");
+      notifyAnswerHarnessTelemetry("unavailable", completedTurn);
       return;
     }
     setTimeout(
-      () => fetchUsage(conversationId, turnKey, revision, attempt + 1, expectedGeneration),
+      () => fetchUsage(completedTurn, conversationId, revision, attempt + 1, expectedGeneration),
       RETRY_DELAY_MS,
     );
   }
 
-  async function fetchUsage(conversationId, turnKey, revision, attempt, expectedGeneration) {
-    if (!isCurrentLookup(conversationId, revision, expectedGeneration)) return;
+  async function fetchUsage(completedTurn, conversationId, revision, attempt, expectedGeneration) {
+    if (!isCurrentLookup(completedTurn, revision, expectedGeneration)) return;
     try {
       const response = await sendTelemetry(actionUrl(), {
         method: "POST",
@@ -147,37 +166,40 @@
         },
         body: new URLSearchParams({ conversationId }),
       });
-      if (!isCurrentLookup(conversationId, revision, expectedGeneration)) return;
+      if (!isCurrentLookup(completedTurn, revision, expectedGeneration)) return;
       if (!response.ok) {
-        scheduleRetry(conversationId, turnKey, revision, attempt, expectedGeneration);
+        scheduleRetry(completedTurn, conversationId, revision, attempt, expectedGeneration);
         return;
       }
       const totals = parseUsage(await response.json());
-      if (!isCurrentLookup(conversationId, revision, expectedGeneration)) return;
+      if (!isCurrentLookup(completedTurn, revision, expectedGeneration)) return;
       if (!totals || totals.totalTokens === 0) {
-        scheduleRetry(conversationId, turnKey, revision, attempt, expectedGeneration);
+        scheduleRetry(completedTurn, conversationId, revision, attempt, expectedGeneration);
         return;
       }
       const previous = turnTotals.get(conversationId) || null;
       // The conversation endpoint is eventually consistent. On later turns an
       // unchanged snapshot is stale, even though its totals are non-zero.
       if (totalsMatch(previous, totals)) {
-        scheduleRetry(conversationId, turnKey, revision, attempt, expectedGeneration);
+        scheduleRetry(completedTurn, conversationId, revision, attempt, expectedGeneration);
         return;
       }
       // Agent Studio returns cumulative totals for one stable conversation ID.
       // Replace that conversation's snapshot after every distinct completed
       // turn; summing snapshots would double-count prior turns.
       turnTotals.set(conversationId, totals);
-      usageState.conversationId = conversationId;
-      usageState.usage = currentTurnUsage(previous, totals);
+      const turnUsage = currentTurnUsage(previous, totals);
+      if (latestCompletedTurn?.identityKey === completedTurn.identityKey) {
+        usageState.conversationId = conversationId;
+        usageState.usage = turnUsage;
+      }
       recomputeCumulative();
-      publishUsageState("ready");
-      notifyAnswerHarnessTelemetry("ready");
+      if (latestCompletedTurn?.identityKey === completedTurn.identityKey) publishUsageState("ready");
+      notifyAnswerHarnessTelemetry("ready", completedTurn, turnUsage);
     } catch (error) {
       console.warn("[token-usage] lookup failed", error);
-      if (isCurrentLookup(conversationId, revision, expectedGeneration)) {
-        scheduleRetry(conversationId, turnKey, revision, attempt, expectedGeneration);
+      if (isCurrentLookup(completedTurn, revision, expectedGeneration)) {
+        scheduleRetry(completedTurn, conversationId, revision, attempt, expectedGeneration);
       }
     }
   }
@@ -185,19 +207,21 @@
   function acceptCompletedTurn(detail) {
     const conversationId = String(detail?.conversationId || "");
     const turnKey = String(detail?.turnKey || "");
-    if (!conversationId || !turnKey || seenTurnKeys.has(turnKey)) return;
-    seenTurnKeys.add(turnKey);
+    const identityKey = completedTurnIdentityKey(detail);
+    if (!conversationId || !turnKey || !identityKey || seenTurnKeys.has(identityKey)) return;
+    seenTurnKeys.add(identityKey);
     latestCompletedTurn = {
+      identityKey,
       turnKey,
       messageId: String(detail?.messageId || ""),
       question: String(detail?.question || ""),
       answerIdentity: detail?.answerIdentity || null,
     };
-    const revision = (latestRevisionByConversation.get(conversationId) || 0) + 1;
-    latestRevisionByConversation.set(conversationId, revision);
+    const revision = (latestRevisionByLookup.get(identityKey) || 0) + 1;
+    latestRevisionByLookup.set(identityKey, revision);
     usageState.usage = null;
     publishUsageState("loading");
-    fetchUsage(conversationId, turnKey, revision, 0, generation);
+    fetchUsage(latestCompletedTurn, conversationId, revision, 0, generation);
   }
 
   function subscribeToCompletedTurns(attempt = 0) {

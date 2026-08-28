@@ -351,6 +351,51 @@ test('mirrors telemetry as a typed answer contribution for the completed answer 
   );
 });
 
+test('overlapping telemetry lookups emit against their exact answer identities', async () => {
+  let resolveFirst;
+  const first = new Promise((resolve) => { resolveFirst = resolve; });
+  const h = createHarness({
+    responses: [
+      first,
+      { ok: true, data: { inputTokens: 30, outputTokens: 12, totalTokens: 42 } },
+    ],
+  });
+  const firstIdentity = {
+    widgetInstanceId: 'widget-left',
+    conversationId: 'same-conversation',
+    answerSegmentId: 'same-segment',
+    networkAttemptId: 'attempt-left',
+  };
+  const secondIdentity = {
+    widgetInstanceId: 'widget-right',
+    conversationId: 'same-conversation',
+    answerSegmentId: 'same-segment',
+    networkAttemptId: 'attempt-right',
+  };
+
+  h.emitCompleted({
+    turnKey: 'same-conversation:same-user-message',
+    conversationId: 'same-conversation',
+    answerIdentity: firstIdentity,
+  });
+  h.emitCompleted({
+    turnKey: 'same-conversation:same-user-message',
+    conversationId: 'same-conversation',
+    answerIdentity: secondIdentity,
+  });
+  await h.settle();
+  resolveFirst({ ok: true, data: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } });
+  await h.settle();
+
+  const telemetryEvents = h.answerHarnessEvents.filter((event) =>
+    event.eventName === 'contribution' &&
+    event.detail?.contribution?.kind === 'telemetry'
+  );
+  assert.equal(telemetryEvents.length, 2, 'same turnKey from different widgets must not suppress telemetry');
+  assert.deepEqual(telemetryEvents.map((event) => event.detail.answerIdentity), [secondIdentity, firstIdentity]);
+  assert.equal(h.context.__algoliaChatUsage.usage.totalTokens, 42, 'late older lookup cannot repaint latest visible telemetry');
+});
+
 test('derives the current response by subtracting the prior stable-conversation snapshot', async () => {
   const h = createHarness({
     responses: [

@@ -392,6 +392,22 @@ test("confidence evaluations must reference existing canonical source passages",
   assert.deepEqual(noSourceRecord.evidence.evaluations, []);
 });
 
+test("confidence mirror can explicitly mark missing evidence lineage unavailable", () => {
+  const record = applyAnswerContribution(
+    createAnswerRecord({ identity }),
+    createConfidenceContribution({
+      identity,
+      confidence: { score: 8.1 },
+      judgeEvidence: [],
+      lineageUnavailable: true,
+    })
+  );
+
+  assert.equal(record.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.match(record.slots.confidence.message, /lineage unavailable/i);
+  assert.deepEqual(record.evidence.evaluations, []);
+});
+
 test("reducer enforces contributor slot and evidence capabilities", () => {
   const record = createAnswerRecord({ identity });
   const rogue = applyAnswerContribution(

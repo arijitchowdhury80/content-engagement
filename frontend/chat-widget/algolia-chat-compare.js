@@ -83,6 +83,26 @@
   let unsubscribePreparedTurns = null;
   let unsubscribeCompletedTurns = null;
 
+  function answerIdentityKey(identity) {
+    if (!identity || typeof identity !== "object") return "";
+    const parts = [
+      identity.widgetInstanceId,
+      identity.conversationId,
+      identity.answerSegmentId,
+      identity.networkAttemptId,
+    ].map((value) => String(value || "").trim());
+    return parts.every(Boolean) ? parts.join("\n") : "";
+  }
+
+  function turnIdentityKey(detail) {
+    const identityKey = answerIdentityKey(detail?.answerIdentity);
+    if (identityKey) return identityKey;
+    const widgetInstanceId = String(detail?.widgetInstanceId || "legacy").trim();
+    const turnKey = String(detail?.turnKey || "").trim();
+    if (turnKey && latestPreparedTurn?.turnKey === turnKey) return latestPreparedTurn.identityKey;
+    return turnKey ? `${widgetInstanceId}\n${turnKey}` : "";
+  }
+
   function resetConversation(reason) {
     generation += 1;
     for (const controller of activeControllers.values()) {
@@ -172,13 +192,15 @@
   // ------------------------------------------------------- prepared turns ---
   function acceptPreparedTurn(detail) {
     const turnKey = String(detail?.turnKey || "");
+    const identityKey = turnIdentityKey(detail);
     const body = typeof detail?.body === "string" ? detail.body : "";
-    if (!turnKey || !body || seenTurnKeys.has(turnKey)) return;
+    if (!turnKey || !identityKey || !body || seenTurnKeys.has(identityKey)) return;
     // Keep the key across resets so a late retry from the old generation can
     // never be mistaken for the first turn of the new conversation.
-    seenTurnKeys.add(turnKey);
+    seenTurnKeys.add(identityKey);
     if (seenTurnKeys.size > 500) seenTurnKeys.delete(seenTurnKeys.values().next().value);
     latestPreparedTurn = {
+      identityKey,
       body,
       turnKey,
       messageId: String(detail?.messageId || ""),
@@ -195,15 +217,16 @@
 
   function acceptCompletedTurn(detail) {
     const turnKey = String(detail?.turnKey || "");
-    if (!turnKey) return;
-    completedTurnKeys.add(turnKey);
+    const identityKey = turnIdentityKey(detail);
+    if (!turnKey || !identityKey) return;
+    completedTurnKeys.add(identityKey);
     if (completedTurnKeys.size > 500) completedTurnKeys.delete(completedTurnKeys.values().next().value);
     reconcile();
   }
 
   function mirrorPreparedTurn(detail, gen) {
-    if (!detail || mirroredTurnKeys.has(detail.turnKey)) return Promise.resolve();
-    mirroredTurnKeys.add(detail.turnKey);
+    if (!detail || mirroredTurnKeys.has(detail.identityKey)) return Promise.resolve();
+    mirroredTurnKeys.add(detail.identityKey);
     return runPreparedTurn(detail, gen);
   }
 
@@ -212,7 +235,7 @@
     const turn = appendTurn(detail.question || "Question");
     renderTurn(turn, { status: "thinking" });
     const controller = new AbortController();
-    activeControllers.set(detail.turnKey, controller);
+    activeControllers.set(detail.identityKey, controller);
     try {
       const r = await askProd(detail.body, controller.signal, (t, s) => {
         if (gen !== generation) return;
@@ -226,7 +249,7 @@
       // Contained: production failed, the concierge column is unaffected.
       renderTurn(turn, { status: "error", text: e?.message || "Production request failed." });
     } finally {
-      if (activeControllers.get(detail.turnKey) === controller) activeControllers.delete(detail.turnKey);
+      if (activeControllers.get(detail.identityKey) === controller) activeControllers.delete(detail.identityKey);
     }
   }
 
@@ -340,7 +363,7 @@
   function ensureToggle() {
     if (!ENDPOINT_OK) return;                             // unconfigured → no UI
     let toggle = sroot()?.querySelector(`#${TOGGLE_ID}`) || null;
-    const turnComplete = latestPreparedTurn && completedTurnKeys.has(latestPreparedTurn.turnKey);
+    const turnComplete = latestPreparedTurn && completedTurnKeys.has(latestPreparedTurn.identityKey);
     const candidateFooter = turnComplete
       ? window.algoliaHandoffToOrchestrator?.ensureAnswerFooter?.(latestPreparedTurn) || null
       : null;
