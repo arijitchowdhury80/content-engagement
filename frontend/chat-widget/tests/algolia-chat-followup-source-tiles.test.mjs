@@ -792,6 +792,55 @@ test('answer markdown preserves section and list spacing', async () => {
   }
 });
 
+test('answer markdown renders links nested inside bold list labels', async () => {
+  const markdownAnswer = `API calls are like a busy store counter: the queue is manageable until every tiny interaction starts asking for service.
+
+Short version: no-code controls can steer common merchandising changes without turning every edit into an engineering ticket.
+
+## The No-Code Toolkit
+Marketing and merchandising teams can control the search experience directly through the Algolia Dashboard:
+
+- **[Visual Editor](https://support.algolia.com/hc/en-us/articles/4406981935761-What-can-I-do-with-the-Visual-Editor-in-the-dashboard)**: This is a code-free interface where you can see exactly what a user sees.
+- **[Rules](https://academy.algolia.com/training/0191df92-53dd-7cde-a467-d27ef407d9ef)**: You can set up custom behaviors based on specific queries.
+- **Merchandising Studio**: A dedicated workspace for digital merchandisers.`;
+  const page = await createWidgetPage({ frames: completionFrames(markdownAnswer) });
+  try {
+    await waitForAnswerText(page, 'The No-Code Toolkit');
+    const result = await page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const details = root.querySelector('.acs-answer-details');
+      return {
+        rawMarkdownVisible: details?.textContent.includes('[Visual Editor](') ||
+          details?.textContent.includes('[Rules]('),
+        links: [...details.querySelectorAll('li a')].map((anchor) => ({
+          text: anchor.textContent.trim(),
+          href: anchor.getAttribute('href'),
+          insideStrong: anchor.closest('strong') !== null,
+        })),
+        strongLabels: [...details.querySelectorAll('li strong')]
+          .map((node) => node.textContent.trim()),
+      };
+    });
+
+    assert.equal(result.rawMarkdownVisible, false);
+    assert.deepEqual(result.links, [
+      {
+        text: 'Visual Editor',
+        href: 'https://support.algolia.com/hc/en-us/articles/4406981935761-What-can-I-do-with-the-Visual-Editor-in-the-dashboard',
+        insideStrong: true,
+      },
+      {
+        text: 'Rules',
+        href: 'https://academy.algolia.com/training/0191df92-53dd-7cde-a467-d27ef407d9ef',
+        insideStrong: true,
+      },
+    ]);
+    assert.deepEqual(result.strongLabels, ['Visual Editor', 'Rules', 'Merchandising Studio']);
+  } finally {
+    await page.close();
+  }
+});
+
 test('source group and source links use the shipped white-to-blue glass treatment', async () => {
   const page = await createWidgetPage();
   try {
