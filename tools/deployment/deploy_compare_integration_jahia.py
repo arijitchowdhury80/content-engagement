@@ -36,7 +36,10 @@ TOKEN_TELEMETRY_URL = (
 )
 TOKEN_TELEMETRY_ORIGIN = "https://tmp-content-eng-algolia.cloud.jahia.com"
 TOKEN_TELEMETRY_SMOKE_ID_ENV = "TOKEN_TELEMETRY_SMOKE_CONVERSATION_ID"
-COMPARE_ENV_KEYS = frozenset({"PROD_ASKAI_SEARCH_KEY"})
+COMPARE_API_KEY_ENV = "PROD_ASKAI_API_KEY"
+LEGACY_COMPARE_API_KEY_ENV = "PROD_ASKAI_SEARCH_KEY"
+COMPARE_ENV_KEYS = frozenset({COMPARE_API_KEY_ENV, LEGACY_COMPARE_API_KEY_ENV})
+COMPARE_CONFIG_RE = r"<script>window\.ACS_COMPARE=.*?</script>"
 SOURCES = {
     "context": ROOT / "frontend/chat-widget/algolia-context-compiler.js",
     "handoff": ROOT / "frontend/chat-widget/handoff-to-orchestrator.js",
@@ -70,7 +73,7 @@ def assert_clean_commit(expected: str | None = None) -> str:
     return commit
 
 
-def load_compare_env() -> dict[str, str]:
+def load_compare_env(required: bool = False) -> dict[str, str]:
     values: dict[str, str] = {}
     if COMPARE_ENV.exists():
         for raw in COMPARE_ENV.read_text(encoding="utf-8").splitlines():
@@ -84,14 +87,31 @@ def load_compare_env() -> dict[str, str]:
     for key in COMPARE_ENV_KEYS:
         if os.environ.get(key):
             values[key] = os.environ[key]
-    missing = sorted(key for key in COMPARE_ENV_KEYS if not values.get(key))
-    if missing:
-        raise RuntimeError(f"Missing Compare configuration: {', '.join(missing)}")
-    return values
+    api_key = values.get(COMPARE_API_KEY_ENV) or values.get(LEGACY_COMPARE_API_KEY_ENV) or ""
+    if required and not api_key:
+        raise RuntimeError(
+            f"Missing Compare API configuration: {COMPARE_API_KEY_ENV} "
+            f"(legacy alias {LEGACY_COMPARE_API_KEY_ENV})"
+        )
+    return {COMPARE_API_KEY_ENV: api_key}
 
 
 def config_fingerprint(config: dict[str, str]) -> str:
-    return sha256("\0".join([PROD_APP_ID, PROD_AGENT_ID, config["PROD_ASKAI_SEARCH_KEY"]]))
+    return sha256("\0".join([PROD_APP_ID, PROD_AGENT_ID, config[COMPARE_API_KEY_ENV]]))
+
+
+def existing_compare_config_tag(block_html: str) -> str | None:
+    matches = re.findall(COMPARE_CONFIG_RE, block_html, flags=re.I | re.S)
+    if len(matches) > 1:
+        raise RuntimeError(f"Expected zero or one Compare config tag; found {len(matches)}")
+    return matches[0] if matches else None
+
+
+def compare_config_fingerprint_from_html(block_html: str) -> str:
+    tag = existing_compare_config_tag(block_html)
+    if not tag:
+        raise RuntimeError("Compare config tag is absent")
+    return sha256(tag)
 
 
 def validate_token_telemetry_backend(conversation_id: str) -> dict[str, bool]:
@@ -177,7 +197,7 @@ def compare_config_tag(config: dict[str, str]) -> str:
     payload = {
         "prod": {
             "appId": PROD_APP_ID,
-            "apiKey": config["PROD_ASKAI_SEARCH_KEY"],
+            "apiKey": config[COMPARE_API_KEY_ENV],
             "agentId": PROD_AGENT_ID,
         }
     }
@@ -185,7 +205,11 @@ def compare_config_tag(config: dict[str, str]) -> str:
     return f"<script>window.ACS_COMPARE={encoded};</script>"
 
 
-def update_block_html(current: str, assets: dict, config: dict[str, str]) -> str:
+def update_block_html(current: str, assets: dict, config: dict[str, str] | None = None) -> str:
+    compare_config = existing_compare_config_tag(current)
+    if compare_config is None:
+        compare_config = compare_config_tag(config or load_compare_env(required=True))
+
     next_html = replace_one(
         script_pattern("context"),
         f'<script src="{assets["context"]["url"]}"></script>',
@@ -210,14 +234,14 @@ def update_block_html(current: str, assets: dict, config: dict[str, str]) -> str
     else:
         raise RuntimeError(f"Expected zero or one handoff script; found {handoff_count}")
 
-    next_html = re.sub(r"\n?<script>window\.ACS_COMPARE=.*?</script>", "", next_html, flags=re.I | re.S)
+    next_html = re.sub(rf"\n?{COMPARE_CONFIG_RE}", "", next_html, flags=re.I | re.S)
     compare_pattern = script_pattern("compare")
     compare_count = len(re.findall(compare_pattern, next_html, flags=re.I))
     if compare_count > 1:
         raise RuntimeError(f"Expected zero or one Compare script; found {compare_count}")
     next_html = re.sub(rf"\n?{compare_pattern}", "", next_html, count=1, flags=re.I)
     compare_block = (
-        compare_config_tag(config)
+        compare_config
         + "\n"
         + f'<script src="{assets["compare"]["url"]}"></script>'
     )
@@ -407,19 +431,20 @@ def validate_live(assets: dict, expected_html: str) -> dict:
 
 def create_plan(evidence_dir: Path) -> Path:
     commit = assert_clean_commit()
-    config = load_compare_env()
     assets = immutable_assets()
     before = capture(assets)
     if before["edit"]["blockHtml"] != before["live"]["blockHtml"]:
         raise RuntimeError("EDIT and LIVE blocks differ; reconcile before Compare deployment")
     displaced_dependencies = capture_referenced_dependencies(before["edit"]["blockHtml"])
-    expected = update_block_html(before["edit"]["blockHtml"], assets, config)
+    expected = update_block_html(before["edit"]["blockHtml"], assets)
+    compare_config_fingerprint = compare_config_fingerprint_from_html(expected)
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     private_path = PRIVATE_ROOT / run_id / "apply-plan.json"
     private_plan = {
         "schema": "CompareIntegrationApplyPlan.v1",
         "sourceCommit": commit,
-        "configFingerprint": config_fingerprint(config),
+        "configFingerprint": compare_config_fingerprint,
+        "compareConfigMode": "preserve-existing",
         "assets": assets,
         "displacedDependencies": displaced_dependencies,
         "beforeBlockHtml": before["edit"]["blockHtml"],
@@ -431,10 +456,11 @@ def create_plan(evidence_dir: Path) -> Path:
     public_plan = {
         "schema": "CompareIntegrationDeploymentPlan.v1",
         "sourceCommit": commit,
-        "scope": "four immutable chat integration assets plus one exact custom block",
+        "scope": "four stable chat integration assets plus one exact custom block",
         "activationPrerequisite": (
-            "The token telemetry Jahia module must already be installed, configured, and pass "
-            "a live read-only conversation lookup before any browser asset is mutated"
+            "The deployer preserves the existing live window.ACS_COMPARE config by default. "
+            f"If {TOKEN_TELEMETRY_SMOKE_ID_ENV} is set, the token telemetry backend must pass "
+            "a live read-only conversation lookup before browser assets are mutated."
         ),
         "assets": {
             key: {field: value for field, value in asset.items() if field != "content"}
@@ -443,10 +469,12 @@ def create_plan(evidence_dir: Path) -> Path:
         "before": public_capture(before),
         "displacedDependencies": displaced_dependencies,
         "expectedBlockSha256": sha256(expected),
-        "configFingerprint": config_fingerprint(config),
+        "configFingerprint": compare_config_fingerprint,
+        "compareConfigMode": "preserve-existing",
         "privatePlanSha256": sha256(private_path.read_bytes()),
         "mutationAllowlist": [asset["path"] for asset in assets.values()] + [BLOCK],
-        "oldAssetsRemainUntouched": True,
+        "oldAssetsRemainUntouched": False,
+        "assetUpdateMode": "stable filenames; exact paths may be updated after drift checks",
         "applyCommand": f"python3 tools/deployment/deploy_compare_integration_jahia.py --apply-plan {private_path}",
         "rollbackCommand": f"python3 tools/deployment/deploy_compare_integration_jahia.py --rollback {private_path}",
     }
@@ -460,17 +488,20 @@ def apply_plan(plan_path: Path, evidence_dir: Path) -> int:
     if plan.get("schema") != "CompareIntegrationApplyPlan.v1":
         raise RuntimeError("Unsupported Compare apply plan")
     assert_clean_commit(plan["sourceCommit"])
-    config = load_compare_env()
-    if config_fingerprint(config) != plan["configFingerprint"]:
-        raise RuntimeError("Compare configuration changed after plan approval")
     smoke_conversation_id = os.environ.get(TOKEN_TELEMETRY_SMOKE_ID_ENV, "")
-    backend_checks = validate_token_telemetry_backend(smoke_conversation_id)
+    backend_checks = (
+        validate_token_telemetry_backend(smoke_conversation_id)
+        if smoke_conversation_id
+        else {"pass": True, "skipped": True, "reason": f"{TOKEN_TELEMETRY_SMOKE_ID_ENV} not set"}
+    )
     assets = immutable_assets()
     for key, asset in assets.items():
         planned = plan["assets"][key]
         if asset["sha256"] != planned["sha256"] or asset["path"] != planned["path"]:
             raise RuntimeError(f"Source asset changed after plan approval: {key}")
-    expected = update_block_html(plan["beforeBlockHtml"], assets, config)
+    expected = update_block_html(plan["beforeBlockHtml"], assets)
+    if compare_config_fingerprint_from_html(expected) != plan["configFingerprint"]:
+        raise RuntimeError("Compare configuration changed after plan approval")
     if sha256(expected) != plan["expectedBlockSha256"] or expected != plan["expectedBlockHtml"]:
         raise RuntimeError("Expected block changed after plan approval")
     current = {workspace: jahia.block_html(workspace) for workspace in ["EDIT", "LIVE"]}

@@ -33,8 +33,9 @@
         "appId": "1QDAWL72TQ",
         "agentId": "ebff018c-66e1-44df-b33a-2a58a0188840",
         "index": "ALGOLIA_WWW_PROD_V2",
-        "searchKeyEnv": "PROD_ASKAI_SEARCH_KEY",
-        "note": "Controlled same-input benchmark. Both agents receive the identical finalized body, including current session and page context. Before deployment, record verification that the browser key is read-only, correctly scoped, monitored, and revocable; no proxy is deployed on Jahia."
+        "apiKeyEnv": "PROD_ASKAI_API_KEY",
+        "legacySearchKeyEnv": "PROD_ASKAI_SEARCH_KEY",
+        "note": "Controlled same-input benchmark. Both agents receive the identical finalized body, including current session and page context. The Jahia deployer preserves the already-working live window.ACS_COMPARE config by default; the API key env is required only when intentionally creating or replacing that config. Before deployment, record verification that the browser key is read-only, correctly scoped, monitored, and revocable; no proxy is deployed on Jahia."
       }
     },
     "tokenTelemetry": {

@@ -605,8 +605,7 @@ function transformBlock(html) {
     'module = importlib.util.module_from_spec(spec)',
     'spec.loader.exec_module(module)',
     'assets = module.immutable_assets()',
-    'config = {"PROD_ASKAI_SEARCH_KEY":"sentinel"}',
-    'print(module.update_block_html(sys.stdin.read(), assets, config), end="")',
+    'print(module.update_block_html(sys.stdin.read(), assets), end="")',
   ].join('; ');
   return execFileSync('python3', ['-c', program, deployScript.pathname], { input: html, encoding: 'utf8' });
 }
@@ -618,6 +617,7 @@ const BLOCK_FIXTURE = [
   '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=x"></script>',
   '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=x"></script>',
   '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=x"></script>',
+  '  <script>window.ACS_COMPARE={"prod":{"appId":"live-app","apiKey":"live-secret-key","agentId":"live-agent"}};</script>',
   '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=x"></script>',
   '</div>',
 ].join('\n');
@@ -627,6 +627,7 @@ test('Jahia transform adds the Compare script and its config exactly once', () =
   const twice = transformBlock(once);
   assert.match(once, /algolia-chat-compare\.js/);
   assert.match(once, /window\.ACS_COMPARE=/);
+  assert.match(once, /live-secret-key/);
   assert.equal((twice.match(/algolia-chat-compare\.js/g) || []).length, 1, 'idempotent');
   assert.equal((twice.match(/window\.ACS_COMPARE=/g) || []).length, 1, 'idempotent');
   assert.equal((twice.match(/token-telemetry\.js/g) || []).length, 1, 'one telemetry observer');
@@ -662,7 +663,8 @@ test('the chat stack manifest requires the Compare marker live', () => {
   assert.ok(manifest.jahia.requiredLiveMarkers.includes('token-telemetry.js'));
   assert.equal(manifest.jahia.requiredLiveMarkers.includes('algolia-context-compiler.js'), false);
   assert.equal(manifest.jahia.requiredLiveMarkers.includes('handoff-to-orchestrator.js'), false);
-  assert.equal(manifest.jahia.compareWithProduction.productionAgent.searchKeyEnv, 'PROD_ASKAI_SEARCH_KEY');
+  assert.equal(manifest.jahia.compareWithProduction.productionAgent.apiKeyEnv, 'PROD_ASKAI_API_KEY');
+  assert.equal(manifest.jahia.compareWithProduction.productionAgent.legacySearchKeyEnv, 'PROD_ASKAI_SEARCH_KEY');
   assert.equal(manifest.jahia.compareWithProduction.deploymentTool, 'tools/deployment/deploy_compare_integration_jahia.py');
   assert.equal(manifest.jahia.tokenTelemetry.script, 'frontend/chat-widget/token-telemetry.js');
 });
