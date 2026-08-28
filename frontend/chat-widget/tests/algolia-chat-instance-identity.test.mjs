@@ -7,6 +7,8 @@ const chatPath = new URL("../algolia-chat.js", import.meta.url);
 const themePath = new URL("../algolia-chat-theme-algolia.js", import.meta.url);
 const trackerPath = new URL("../algolia-engagement-tracker.js", import.meta.url);
 const handoffPath = new URL("../handoff-to-orchestrator.js", import.meta.url);
+const comparePath = new URL("../algolia-chat-compare.js", import.meta.url);
+const telemetryPath = new URL("../token-telemetry.js", import.meta.url);
 const chatWidgetRoot = new URL("../", import.meta.url);
 const stackManifestPath = new URL("../../../config/deployments/algolia-chat-stack.json", import.meta.url);
 
@@ -33,8 +35,9 @@ test("answer harness mirror entry is declared for development parity before runt
   ]);
 });
 
-async function createTwoWidgetPage() {
+async function createTwoWidgetPage({ loadCompare = false, loadTelemetry = false } = {}) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  page.setDefaultTimeout(60000);
   await page.route("**/*", async (route) => {
     const url = new URL(route.request().url());
     if (url.pathname.startsWith("/chat-widget/")) {
@@ -109,6 +112,13 @@ async function createTwoWidgetPage() {
         return { ...existing, context_schema: "AlgoliaTurnContext.v1", current_page: "/identity-test" };
       },
       fetchPrepared(_url, init, runtimeContext) {
+        if (String(_url).includes("home.algoliaTokenTelemetry.do")) {
+          window.__identityFetches.push({ body: init.body, runtimeContext: runtimeContext || null, telemetry: true });
+          return Promise.resolve(new Response(
+            JSON.stringify({ inputTokens: 44414, outputTokens: 819, totalTokens: 45233 }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          ));
+        }
         const record = {
           body: init.body,
           runtimeContext: runtimeContext || null,
@@ -144,6 +154,18 @@ async function createTwoWidgetPage() {
     };
   });
   await page.addScriptTag({ content: fs.readFileSync(handoffPath, "utf8") });
+  if (loadCompare) {
+    await page.evaluate(() => {
+      window.ACS_COMPARE = { prod: { proxyPath: "/__compare/production" }, exposeForTests: true };
+    });
+    await page.addScriptTag({ content: fs.readFileSync(comparePath, "utf8") });
+  }
+  if (loadTelemetry) {
+    await page.evaluate(() => {
+      window.ACS_TOKEN_TELEMETRY = { exposeForTests: true };
+    });
+    await page.addScriptTag({ content: fs.readFileSync(telemetryPath, "utf8") });
+  }
   await page.evaluate(async () => {
     await Promise.all([
       customElements.whenDefined("algolia-instant-search"),
@@ -769,6 +791,115 @@ test("local DOM output matches canonical harness slots for content, sources, and
       "loading",
       "confidence/evidence-lineage parity is intentionally not comparable until judge passage IDs are wired",
     );
+  } finally {
+    await page.close();
+  }
+});
+
+test("post-answer controls wait for completion and mirror telemetry and compare slots", async () => {
+  const page = await createTwoWidgetPage({ loadCompare: true, loadTelemetry: true });
+  try {
+    await page.evaluate(() => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.ask("post-answer controls");
+    });
+    await page.waitForFunction(() => window.__identityStreams?.length === 1);
+
+    const duringStream = await page.evaluate(() => {
+      const root = document.querySelector("algolia-chat").shadowRoot;
+      return {
+        compare: Boolean(root.querySelector("#acs-compare-toggle")),
+        telemetry: Boolean(root.querySelector(".algolia-usage-pill")),
+      };
+    });
+    assert.equal(duringStream.compare, false, "Compare must not appear while the answer is still streaming");
+    assert.equal(duringStream.telemetry, false, "Telemetry must not appear while the answer is still streaming");
+
+    await page.evaluate(() => {
+      const answer = [
+        "A governed answer is like a runway checklist: the useful controls show up only after the plane is actually on the ground.",
+        "",
+        "Short version: sources may be known early, but Compare and token telemetry belong to the completed answer footer.",
+        "",
+        "Details remain in the answer body while post-answer controls settle below it.",
+      ].join("\n");
+      window.__identityStreams[0].write([
+        `data: ${JSON.stringify({
+          type: "tool-output-available",
+          output: {
+            hits: [
+              {
+                objectID: "post-answer-source",
+                title: "Post answer source",
+                url: "https://www.algolia.com/doc/",
+                source: "Documentation",
+              },
+            ],
+          },
+        })}`,
+        "",
+        `data: ${JSON.stringify({ type: "text-delta", delta: answer })}`,
+        "",
+      ].join("\n"));
+      window.__identityStreams[0].close();
+    });
+
+    await page.waitForFunction(() => {
+      const root = document.querySelector("algolia-chat")?.shadowRoot;
+      const footer = root?.querySelector("[data-algolia-answer-footer]");
+      const record = window.algoliaAnswerHarness?.records?.().find((item) =>
+        item.lifecycle === "complete" &&
+        item.slots?.telemetry?.status === "ready" &&
+        item.slots?.compareAction?.status === "ready"
+      );
+      return Boolean(
+        footer &&
+        record &&
+        footer.querySelector(".algolia-usage-pill") &&
+        footer.querySelector("#acs-compare-toggle")
+      );
+    });
+
+    const parity = await page.evaluate(() => {
+      const root = document.querySelector("algolia-chat").shadowRoot;
+      const footer = root.querySelector("[data-algolia-answer-footer]");
+      const sources = root.querySelector(".acs-source-section");
+      const record = window.algoliaAnswerHarness.records().find((item) =>
+        item.lifecycle === "complete" &&
+        item.slots?.telemetry?.status === "ready" &&
+        item.slots?.compareAction?.status === "ready"
+      );
+      const telemetry = footer.querySelector(".algolia-usage-pill");
+      const compare = footer.querySelector("#acs-compare-toggle");
+      return {
+        footerText: footer.textContent.replace(/\s+/g, " ").trim(),
+        sourceText: sources?.textContent.replace(/\s+/g, " ").trim(),
+        telemetryText: telemetry?.textContent.replace(/\s+/g, " ").trim(),
+        compareText: compare?.textContent.replace(/\s+/g, " ").trim(),
+        comparePressed: compare?.getAttribute("aria-pressed"),
+        harnessTelemetry: record.slots.telemetry.value,
+        harnessCompare: record.slots.compareAction.value,
+      };
+    });
+
+    assert.equal(parity.telemetryText, "In 44,414 / 819 Out");
+    assert.deepEqual(parity.harnessTelemetry, {
+      inputTokens: 44414,
+      outputTokens: 819,
+      totalTokens: 45233,
+    });
+    assert.equal(parity.compareText, "Compare with Prod");
+    assert.equal(parity.comparePressed, "false");
+    assert.deepEqual(parity.harnessCompare, {
+      label: "Compare with Prod",
+      pressed: false,
+      available: true,
+    });
+    assert.match(parity.sourceText, /Documentation/i);
+    assert.match(parity.footerText, /In 44,414 \/ 819 Out/);
+    assert.match(parity.footerText, /Compare with Prod/);
   } finally {
     await page.close();
   }
