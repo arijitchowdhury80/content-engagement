@@ -81,6 +81,66 @@ test("heading-first or one-paragraph answers do not force a fake TLDR split", ()
   assert.equal(oneParagraph.details, "Only one paragraph is available.");
 });
 
+test("answer splitting follows the runtime analogy and lead-in contract", () => {
+  const answer = [
+    "I can certainly help you map those out. Since we do not have goals yet, this starts high-level.",
+    "",
+    "Measuring search is a bit like checking the health of a retail store: traffic is only useful when people find and buy.",
+    "",
+    "Depending on what you are trying to solve, focus on revenue, effectiveness, and operational health.",
+    "",
+    "## Details",
+    "Conversion rate and zero-result rate usually tell the clearest story.",
+  ].join("\n");
+
+  const split = splitAnswerContent(answer);
+
+  assert.equal(
+    split.tldrAnalogy,
+    "Measuring search is a bit like checking the health of a retail store: traffic is only useful when people find and buy."
+  );
+  assert.equal(split.tldrShort, null);
+  assert.doesNotMatch(split.details, /I can certainly help/);
+  assert.match(split.details, /Depending on what you are trying to solve/);
+  assert.match(split.details, /Conversion rate and zero-result rate/);
+  assert.doesNotMatch(split.details, /^## Details/);
+});
+
+test("unlabeled direct read stays as the normal short TLDR block only when the analogy starts the answer", () => {
+  const answer = [
+    "Comparing one grocery success story to another is like comparing two high-performing kitchens.",
+    "",
+    "If you liked the H-E-B approach, look for similar operating frictions rather than the same logo.",
+    "",
+    "- Albertsons: agentic shopping experiences.",
+    "- Industry trends: grocery teams are reducing repeat-purchase friction.",
+  ].join("\n");
+
+  const split = splitAnswerContent(answer);
+
+  assert.match(split.tldrAnalogy, /high-performing kitchens/);
+  assert.match(split.tldrShort, /H-E-B approach/);
+  assert.doesNotMatch(split.details, /H-E-B approach/);
+  assert.match(split.details, /Albertsons/);
+});
+
+test("plain prose followed by non-short prose stays flat unless an analogy contract is present", () => {
+  const answer = [
+    "A plain opening paragraph without analogy language should not become TLDR by accident.",
+    "",
+    "A second plain paragraph should remain part of the flat detail body.",
+    "",
+    "The rest of the answer continues normally.",
+  ].join("\n");
+
+  const split = splitAnswerContent(answer);
+
+  assert.equal(split.tldrAnalogy, null);
+  assert.equal(split.tldrShort, null);
+  assert.match(split.details, /plain opening paragraph/);
+  assert.match(split.details, /second plain paragraph/);
+});
+
 test("presentation records missing sources and judge as unavailable instead of invisible", () => {
   const record = createPresentationFromAnswerText({
     identity,
