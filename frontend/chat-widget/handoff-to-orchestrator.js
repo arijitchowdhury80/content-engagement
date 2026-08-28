@@ -167,6 +167,7 @@
         debug("prepared-turn listener failed (contained)", error);
       }
     }
+    notifyAnswerHarness("prepared", detail);
   }
 
   function subscribeCompletedTurn(listener) {
@@ -182,6 +183,21 @@
       } catch (error) {
         debug("completed-turn listener failed (contained)", error);
       }
+    }
+    notifyAnswerHarness("completed", detail);
+  }
+
+  function notifyAnswerHarness(eventName, detail) {
+    const observer = window.algoliaAnswerHarness;
+    const accept = observer?.accept;
+    if (typeof accept !== "function") return;
+    try {
+      accept(Object.freeze({
+        eventName,
+        detail,
+      }));
+    } catch (error) {
+      debug("answer harness observer failed (contained)", error);
     }
   }
 

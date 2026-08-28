@@ -23,7 +23,17 @@ class MemoryStorage {
   }
 }
 
-function createHarness({ proactiveState, compilerPacket, turnContext, primaryAgentId = 'orchestrator_123', initialLocal = {}, search = '', fetchError = null, mergeError = null } = {}) {
+function createHarness({
+  proactiveState,
+  compilerPacket,
+  turnContext,
+  primaryAgentId = 'orchestrator_123',
+  initialLocal = {},
+  search = '',
+  fetchError = null,
+  mergeError = null,
+  answerHarness = null,
+} = {}) {
   const fetchCalls = [];
   const registeredTools = {};
   let registeredTransport = null;
@@ -106,6 +116,7 @@ function createHarness({ proactiveState, compilerPacket, turnContext, primaryAge
       },
     },
   };
+  if (answerHarness) context.algoliaAnswerHarness = answerHarness;
   context.window = context;
   vm.createContext(context);
   vm.runInContext(fs.readFileSync(handoffPath, 'utf8'), context);
@@ -348,6 +359,72 @@ test('publishes a completed turn once the successful primary stream is consumed'
       conversationId: 'alg_cnv_success_1',
     }],
   );
+});
+
+test('mirrors prepared and completed turn lifecycle to the optional answer harness', async () => {
+  const harnessEvents = [];
+  const { context } = createHarness({
+    answerHarness: {
+      accept(event) {
+        harnessEvents.push(event);
+      },
+    },
+  });
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response(
+    'data: {"type":"text-delta","delta":"Hello"}\n\n',
+    { status: 200, headers: { 'X-Conversation-Id': 'alg_cnv_success_1' } },
+  );
+
+  const body = {
+    id: 'conversation-1',
+    messages: [
+      {
+        id: 'message-1',
+        role: 'user',
+        parts: [{ type: 'text', text: 'How should I think about pricing?' }],
+      },
+    ],
+  };
+  const response = await context.invokeTransport('/agent-studio/1/agents/orchestrator/completions', {
+    body: JSON.stringify(body),
+  });
+  await response.text();
+
+  assert.deepEqual(
+    harnessEvents.map((event) => event.eventName),
+    ['prepared', 'completed']
+  );
+  assert.equal(harnessEvents[0].detail.messageId, 'message-1');
+  assert.equal(harnessEvents[0].detail.question, 'How should I think about pricing?');
+  assert.equal(harnessEvents[0].detail.turnKey, 'conversation-1:message-1');
+  assert.equal(harnessEvents[1].detail.conversationId, 'alg_cnv_success_1');
+});
+
+test('answer harness observer errors are contained and never break transport', async () => {
+  const { context } = createHarness({
+    proactiveState: stateWithShownOpportunity(),
+    answerHarness: {
+      accept() {
+        throw new Error('observer exploded');
+      },
+    },
+  });
+
+  const body = {
+    id: 'conversation-1',
+    messages: [
+      {
+        id: 'message-1',
+        role: 'user',
+        parts: [{ type: 'text', text: 'Can this still answer?' }],
+      },
+    ],
+  };
+  const response = await context.invokeTransport('/agent-studio/1/agents/orchestrator/completions', {
+    body: JSON.stringify(body),
+  });
+
+  assert.equal(await response.text(), 'ok');
 });
 
 test('completed-turn observers cannot break responses or hide multiple billable model calls', async () => {
