@@ -145,6 +145,45 @@ def test_displaced_dependency_snapshot_binds_edit_live_and_public_bytes(monkeypa
     assert all(item["sha256"] for item in observed.values())
 
 
+def test_live_validation_treats_public_readback_failure_as_retryable(monkeypatch):
+    assets = {
+        "handoff": {
+            "path": "/sites/www/files/handoff-to-orchestrator-compare-abc123.js",
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator-compare-abc123.js",
+            "sha256": module.sha256("handoff"),
+        },
+        "compare": {
+            "path": "/sites/www/files/algolia-chat-compare-def456.js",
+            "url": "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-compare-def456.js",
+            "sha256": module.sha256("compare"),
+        },
+    }
+    expected = module.update_block_html(block_fixture(), assets, CONFIG)
+    monkeypatch.setattr(module.jahia, "block_html", lambda _workspace: expected)
+    monkeypatch.setattr(
+        module,
+        "compact_node",
+        lambda path, _workspace: {
+            "path": path,
+            "sha256": assets["handoff" if "handoff" in path else "compare"]["sha256"],
+            "length": 10,
+        },
+    )
+    monkeypatch.setattr(
+        module,
+        "fetch_bytes",
+        lambda _url: (_ for _ in ()).throw(module.urllib.error.HTTPError(_url, 404, "Not ready", {}, None)),
+    )
+
+    checks = module.validate_live(assets, expected)
+
+    assert checks["pass"] is False
+    assert checks["public_handoff_hash"] is False
+    assert checks["public_compare_hash"] is False
+    assert "HTTPError" in checks["public_handoff_error"]
+    assert checks["renderedExactReferences"] is False
+
+
 def test_final_dependency_cas_rejects_drift_before_cutover(monkeypatch):
     planned = {
         "context": {"sha256": "a"},

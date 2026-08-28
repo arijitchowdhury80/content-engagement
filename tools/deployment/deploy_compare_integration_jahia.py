@@ -407,6 +407,13 @@ def fetch_bytes(url: str) -> bytes:
     )
 
 
+def public_sha256_or_error(url: str) -> tuple[str | None, str | None]:
+    try:
+        return sha256(fetch_bytes(url)), None
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError) as error:
+        return None, f"{type(error).__name__}: {error}"
+
+
 def validate_live(assets: dict, expected_html: str) -> dict:
     edit, live = jahia.block_html("EDIT"), jahia.block_html("LIVE")
     context_matches = re.findall(script_pattern("context"), live, flags=re.I)
@@ -430,9 +437,16 @@ def validate_live(assets: dict, expected_html: str) -> dict:
             observed = compact_node(asset["path"], workspace)
             checks[f"{workspace.lower()}_{key}_hash"] = observed is not None and observed["sha256"] == asset["sha256"]
     for key, asset in assets.items():
-        checks[f"public_{key}_hash"] = sha256(fetch_bytes(asset["url"])) == asset["sha256"]
-    rendered = fetch_bytes(RENDERED_PAGE).decode("utf-8", errors="replace")
-    checks["renderedExactReferences"] = all(rendered.count(asset["url"]) == 1 for asset in assets.values())
+        public_hash, public_error = public_sha256_or_error(asset["url"])
+        checks[f"public_{key}_hash"] = public_hash == asset["sha256"]
+        if public_error:
+            checks[f"public_{key}_error"] = public_error
+    try:
+        rendered = fetch_bytes(RENDERED_PAGE).decode("utf-8", errors="replace")
+        checks["renderedExactReferences"] = all(rendered.count(asset["url"]) == 1 for asset in assets.values())
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError) as error:
+        checks["renderedExactReferences"] = False
+        checks["renderedExactReferencesError"] = f"{type(error).__name__}: {error}"
     checks["pass"] = all(checks.values())
     return checks
 
