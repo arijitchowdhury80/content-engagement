@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { createOpaqueActionContribution } from '../source/shared/widget/answer-contributors.mjs';
 import { execFileSync } from 'node:child_process';
 
 const comparePath = new URL('../algolia-chat-compare.js', import.meta.url);
@@ -140,6 +141,9 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
       accept(event) {
         answerHarnessEvents.push(JSON.parse(JSON.stringify(event)));
       },
+    },
+    algoliaAnswerContributors: {
+      createOpaqueActionContribution,
     },
     algoliaContextCompiler: {
       fetchPrepared: (...args) => { fetchCalls.push(args); return fetchImpl(...args); },

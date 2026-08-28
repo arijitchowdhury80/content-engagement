@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { createAnswerHarnessObserver } from '../source/shared/widget/answer-harness-observer.mjs';
 
 const handoffPath = new URL('../handoff-to-orchestrator.js', import.meta.url);
 
@@ -306,7 +307,7 @@ test('publishes the exact terminal body once context and handoff preparation are
   assert.match(sent.messages[0].parts[0].text, /PROACTIVE_HANDOFF_CONTEXT/);
 });
 
-test('default answer harness records prepared, streaming, and completed lifecycle in memory', async () => {
+test('handoff does not install a competing default answer harness', async () => {
   const { context } = createHarness();
   context.algoliaContextCompiler.fetchPrepared = async () => new Response(
     'data: {"type":"text-delta","delta":"Hello"}\n\n',
@@ -322,8 +323,32 @@ test('default answer harness records prepared, streaming, and completed lifecycl
   });
   assert.match(await response.text(), /text-delta/);
 
-  const events = context.algoliaAnswerHarness.events();
-  assert.equal(events.map((event) => event.eventName).join(','), 'prepared,streaming,completed');
+  assert.equal(context.algoliaAnswerHarness, undefined);
+});
+
+test('canonical answer harness records prepared, streaming, and completed lifecycle in memory', async () => {
+  const records = [];
+  const canonicalHarness = createAnswerHarnessObserver({
+    onRecord(record, meta) {
+      records.push({ lifecycle: record.lifecycle, meta });
+    },
+  });
+  const { context } = createHarness({ answerHarness: canonicalHarness });
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response(
+    'data: {"type":"text-delta","delta":"Hello"}\n\n',
+    { status: 200, headers: { 'X-Conversation-Id': 'alg_cnv_harness_1' } },
+  );
+
+  const response = await context.invokeTransport('https://primary.example/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'Hello' }] }],
+    }),
+  });
+  assert.match(await response.text(), /text-delta/);
+
+  assert.deepEqual(records.map((entry) => entry.meta.eventName), ['prepared', 'streaming', 'completed']);
   const identity = {
     widgetInstanceId: 'algolia-chat:default',
     conversationId: 'conversation-1',

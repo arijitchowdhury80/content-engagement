@@ -65,9 +65,11 @@ function evidenceEvaluation(item, index) {
 export function createAnswerContentContribution({
   identity,
   text = "",
+  followUp = null,
   lifecycle = ANSWER_LIFECYCLE.STREAMING,
 } = {}) {
   const content = splitAnswerContent(text);
+  const discoveryFollowUp = content.followUp || asText(followUp);
   return createAnswerContributor({
     kind: ANSWER_CONTRIBUTOR_KIND.CONTENT,
     identity,
@@ -82,8 +84,8 @@ export function createAnswerContentContribution({
       details: content.details
         ? { status: ANSWER_SLOT_STATUS.READY, value: content.details }
         : { status: ANSWER_SLOT_STATUS.EMPTY, value: null, message: "No detail body provided." },
-      followUp: content.followUp
-        ? { status: ANSWER_SLOT_STATUS.READY, value: content.followUp }
+      followUp: discoveryFollowUp
+        ? { status: ANSWER_SLOT_STATUS.READY, value: discoveryFollowUp }
         : { status: ANSWER_SLOT_STATUS.EMPTY, value: null, message: "No discovery follow-up provided." },
     },
   });

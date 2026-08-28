@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { createTelemetryContribution } from '../source/shared/widget/answer-contributors.mjs';
 
 const telemetryPath = new URL('../token-telemetry.js', import.meta.url);
 
@@ -191,6 +192,9 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
       accept(event) {
         answerHarnessEvents.push(JSON.parse(JSON.stringify(event)));
       },
+    },
+    algoliaAnswerContributors: {
+      createTelemetryContribution,
     },
     algoliaHandoffToOrchestrator: {
       subscribeCompletedTurn(listener) {

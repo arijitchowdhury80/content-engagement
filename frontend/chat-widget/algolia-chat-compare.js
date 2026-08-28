@@ -308,28 +308,20 @@
   function notifyAnswerHarnessCompareAction() {
     const identity = latestPreparedTurn?.answerIdentity;
     const accept = window.algoliaAnswerHarness?.accept;
-    if (!identity || typeof accept !== "function") return;
+    const createOpaqueActionContribution = window.algoliaAnswerContributors?.createOpaqueActionContribution;
+    if (!identity || typeof accept !== "function" || typeof createOpaqueActionContribution !== "function") return;
     try {
       accept(Object.freeze({
         eventName: "contribution",
         detail: Object.freeze({
           answerIdentity: identity,
-          contribution: Object.freeze({
-            contractVersion: 1,
-            kind: "opaqueAction",
+          contribution: createOpaqueActionContribution({
             identity,
-            lifecycle: null,
-            slots: {
-              compareAction: {
-                status: "ready",
-                value: {
-                  label: "Compare with Prod",
-                  pressed: compareOn,
-                  available: true,
-                },
-              },
+            action: {
+              label: "Compare with Prod",
+              pressed: compareOn,
+              available: true,
             },
-            evidence: null,
           }),
         }),
       }));

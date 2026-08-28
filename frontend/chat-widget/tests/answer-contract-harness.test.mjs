@@ -10,6 +10,7 @@ import {
   isAnswerRecordComplete,
 } from "../source/shared/core/answer-record.mjs";
 import {
+  createAnswerContentContribution,
   createConfidenceContribution,
   createProgressContribution,
   createSourcesContribution,
@@ -75,6 +76,25 @@ test("TLDR splitting preserves analogy, short answer, details, and follow-up sep
   assert.equal(split.followUp, "Are you protecting against bots or normal browsing costs?");
   assert.equal(split.details.includes(split.followUp), false);
 });
+
+test("content contributor accepts an explicitly extracted follow-up fact", () => {
+  const contribution = createAnswerContentContribution({
+    identity,
+    text: [
+      "Answer handling is like a filing cabinet: the useful label belongs outside the folder.",
+      "",
+      "Short version: keep the answer body separate from the next question.",
+      "",
+      "The details should remain flat and readable.",
+    ].join("\n"),
+    followUp: "Which part should we inspect next?",
+  });
+
+  assert.equal(contribution.slots.followUp.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(contribution.slots.followUp.value, "Which part should we inspect next?");
+  assert.equal(contribution.slots.details.value.includes("Which part should we inspect next?"), false);
+});
+
 
 test("heading-first or one-paragraph answers do not force a fake TLDR split", () => {
   const headingFirst = splitAnswerContent("# Quick take\n\nThis should remain detail content.");

@@ -7,6 +7,7 @@ const chatPath = new URL("../algolia-chat.js", import.meta.url);
 const themePath = new URL("../algolia-chat-theme-algolia.js", import.meta.url);
 const trackerPath = new URL("../algolia-engagement-tracker.js", import.meta.url);
 const handoffPath = new URL("../handoff-to-orchestrator.js", import.meta.url);
+const chatWidgetRoot = new URL("../", import.meta.url);
 
 let browser;
 
@@ -21,6 +22,21 @@ after(async () => {
 async function createTwoWidgetPage() {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   await page.route("**/*", async (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname.startsWith("/chat-widget/")) {
+      const relative = url.pathname.replace(/^\/chat-widget\//, "");
+      const file = new URL(relative, chatWidgetRoot);
+      if (!file.pathname.startsWith(chatWidgetRoot.pathname) || !fs.existsSync(file)) {
+        await route.fulfill({ status: 404, body: "Not found" });
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: "application/javascript",
+        body: fs.readFileSync(file, "utf8"),
+      });
+      return;
+    }
     if (route.request().isNavigationRequest()) {
       await route.fulfill({
         status: 200,
@@ -36,17 +52,39 @@ async function createTwoWidgetPage() {
     });
   });
   await page.goto("http://localhost/");
+  await page.addScriptTag({ type: "module", url: "/chat-widget/answer-harness-runtime.mjs" });
+  await page.waitForFunction(() =>
+    typeof window.algoliaAnswerHarness?.accept === "function" &&
+    typeof window.algoliaAnswerContributors?.createAnswerContentContribution === "function"
+  );
+  await page.evaluate(() => {
+    const canonicalHarness = window.algoliaAnswerHarness;
+    window.__identityHarnessEvents = [];
+    window.__identityHarnessRecords = [];
+    window.algoliaAnswerHarness = {
+      ...canonicalHarness,
+      accept(event) {
+        window.__identityHarnessEvents.push(JSON.parse(JSON.stringify(event)));
+        const record = canonicalHarness.accept(event);
+        if (record) window.__identityHarnessRecords.push(JSON.parse(JSON.stringify(record)));
+        return record;
+      },
+      getRecord(identity) {
+        return canonicalHarness.getRecord(identity);
+      },
+      records() {
+        return canonicalHarness.records();
+      },
+      rejections() {
+        return canonicalHarness.rejections();
+      },
+    };
+  });
   await page.addScriptTag({ content: fs.readFileSync(themePath, "utf8") });
   await page.addScriptTag({ content: fs.readFileSync(chatPath, "utf8") });
   await page.addScriptTag({ content: fs.readFileSync(trackerPath, "utf8") });
   await page.evaluate(() => {
     window.__identityFetches = [];
-    window.__identityHarnessEvents = [];
-    window.algoliaAnswerHarness = {
-      accept(event) {
-        window.__identityHarnessEvents.push(JSON.parse(JSON.stringify(event)));
-      },
-    };
     window.algoliaContextCompiler = {
       compileTurnContext() {
         return { context_schema: "AlgoliaTurnContext.v1", current_page: "/identity-test" };
@@ -83,7 +121,7 @@ async function createTwoWidgetPage() {
           ));
         }
         return Promise.resolve(new Response(
-          'data: {"type":"text-delta","delta":"Answer"}\n\n',
+          window.__identityResponseText || 'data: {"type":"text-delta","delta":"Answer"}\n\n',
           { status: 200, headers: { "X-Conversation-Id": `conversation-${window.__identityFetches.length}` } },
         ));
       },
@@ -232,6 +270,51 @@ test("widget answer rendering mirrors content and source slots into the answer h
     assert.equal(state.content.detail.contribution.slots.tldrShort.status, "empty");
     assert.equal(state.content.detail.contribution.slots.followUp.status, "empty");
     assert.equal(state.sources.detail.contribution.slots.sources.status, "unavailable");
+  } finally {
+    await page.close();
+  }
+});
+
+test("widget answer mirror uses canonical TLDR and follow-up splitting", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    await page.evaluate(() => {
+      const answer = [
+        "Running search is like opening a clean notebook before touching the evidence.",
+        "",
+        "Short version: the answer should stay concise and grounded.",
+        "",
+        "Details live here after the short version.",
+      ].join("\n");
+      window.__identityResponseText = [
+        `data: ${JSON.stringify({ type: "text-delta", delta: answer })}`,
+        "",
+        `data: ${JSON.stringify({ type: "data-suggestions", data: { suggestions: ["What part should we inspect next?"] } })}`,
+        "",
+      ].join("\n");
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.ask("mirror canonical tldr");
+    });
+    await page.waitForFunction(() =>
+      window.__identityHarnessRecords.some((record) =>
+        record.slots?.tldrAnalogy?.status === "ready" &&
+        record.slots?.tldrShort?.status === "ready" &&
+        record.slots?.followUp?.status === "ready"
+      )
+    );
+
+    const record = await page.evaluate(() =>
+      window.__identityHarnessRecords.find((item) =>
+        item.slots?.tldrAnalogy?.status === "ready" &&
+        item.slots?.tldrShort?.status === "ready" &&
+        item.slots?.followUp?.status === "ready"
+      )
+    );
+
+    assert.match(record.slots.tldrAnalogy.value, /^Running search is like/);
+    assert.match(record.slots.tldrShort.value, /^Short version:/);
+    assert.equal(record.slots.details.value, "Details live here after the short version.");
+    assert.equal(record.slots.followUp.value, "What part should we inspect next?");
   } finally {
     await page.close();
   }

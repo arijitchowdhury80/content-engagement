@@ -44,24 +44,15 @@
   function notifyAnswerHarnessTelemetry(status) {
     const identity = latestCompletedTurn?.answerIdentity;
     const accept = window.algoliaAnswerHarness?.accept;
-    if (!identity || typeof accept !== "function") return;
-    const ready = status === "ready" && usageState.usage;
-    const slot = ready
-      ? { status: "ready", value: usageState.usage }
-      : { status: "unavailable", value: null, message: "Telemetry unavailable." };
+    const createTelemetryContribution = window.algoliaAnswerContributors?.createTelemetryContribution;
+    if (!identity || typeof accept !== "function" || typeof createTelemetryContribution !== "function") return;
+    const telemetry = status === "ready" && usageState.usage ? usageState.usage : null;
     try {
       accept(Object.freeze({
         eventName: "contribution",
         detail: Object.freeze({
           answerIdentity: identity,
-          contribution: Object.freeze({
-            contractVersion: 1,
-            kind: "telemetry",
-            identity,
-            lifecycle: null,
-            slots: { telemetry: slot },
-            evidence: null,
-          }),
+          contribution: createTelemetryContribution({ identity, telemetry }),
         }),
       }));
     } catch {

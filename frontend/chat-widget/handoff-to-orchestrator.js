@@ -34,7 +34,7 @@
   const activeAttempts = new Map();
   const answerIdentitiesBySegment = new Map();
   const handledResetIds = new Set();
-  let defaultAnswerHarness = null;
+  const MAX_HANDLED_RESET_IDS = 100;
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -177,8 +177,30 @@
     return !key || !turn?.networkAttemptId || activeAttempts.get(key) === turn.networkAttemptId;
   }
 
-  function clearWidgetAttempts(widgetInstanceId) {
+  function notifyClosedWidgetAttempts(widgetInstanceId, eventName) {
     if (!widgetInstanceId) return;
+    const prefix = `${widgetInstanceId}\n`;
+    for (const [key, identity] of answerIdentitiesBySegment.entries()) {
+      if (!key.startsWith(prefix)) continue;
+      notifyAnswerHarness(eventName, Object.freeze({
+        answerIdentity: identity,
+        widgetInstanceId,
+      }));
+    }
+  }
+
+  function notifyClosedAnswerHarnessAttempts(eventName) {
+    for (const identity of answerIdentitiesBySegment.values()) {
+      notifyAnswerHarness(eventName, Object.freeze({
+        answerIdentity: identity,
+        widgetInstanceId: identity.widgetInstanceId,
+      }));
+    }
+  }
+
+  function clearWidgetAttempts(widgetInstanceId, eventName = null) {
+    if (!widgetInstanceId) return;
+    if (eventName) notifyClosedWidgetAttempts(widgetInstanceId, eventName);
     const prefix = `${widgetInstanceId}\n`;
     for (const key of activeAttempts.keys()) {
       if (key.startsWith(prefix)) activeAttempts.delete(key);
@@ -194,7 +216,7 @@
       widgetInstanceId,
       (widgetConversationGenerations.get(widgetInstanceId) || 0) + 1
     );
-    clearWidgetAttempts(widgetInstanceId);
+    clearWidgetAttempts(widgetInstanceId, "reset");
   }
 
   function widgetInstanceIdFromEvent(event) {
@@ -205,6 +227,14 @@
     const path = typeof event?.composedPath === "function" ? event.composedPath() : [];
     const owner = path.find((node) => typeof node?.__algoliaWidgetInstanceId === "string");
     return owner?.__algoliaWidgetInstanceId || null;
+  }
+
+  function rememberHandledResetId(resetId) {
+    if (!resetId) return;
+    handledResetIds.add(resetId);
+    while (handledResetIds.size > MAX_HANDLED_RESET_IDS) {
+      handledResetIds.delete(handledResetIds.values().next().value);
+    }
   }
 
   function logicalTurn(payload, runtimeContext = null) {
@@ -305,115 +335,8 @@
     if (options.harness !== false) notifyAnswerHarness("completed", detail);
   }
 
-  function answerHarnessKey(identity) {
-    if (!identity) return "";
-    return [
-      identity.widgetInstanceId,
-      identity.conversationId,
-      identity.answerSegmentId,
-      identity.networkAttemptId,
-    ].map((part) => String(part || "")).join("::");
-  }
-
-  function mergeAnswerHarnessSlots(target, contribution) {
-    const slots = contribution?.slots;
-    if (!slots || typeof slots !== "object") return;
-    for (const [name, slot] of Object.entries(slots)) {
-      target.slots[name] = Object.freeze({ ...(target.slots[name] || {}), ...(slot || {}) });
-    }
-  }
-
-  function mergeAnswerHarnessEvidence(target, contribution) {
-    const passages = contribution?.evidence?.passages;
-    if (!Array.isArray(passages)) return;
-    const seen = new Set(target.evidence.passages.map((passage) => passage.id));
-    for (const passage of passages) {
-      if (!passage?.id || seen.has(passage.id)) continue;
-      seen.add(passage.id);
-      target.evidence.passages.push(Object.freeze({ ...passage }));
-    }
-  }
-
-  function createDefaultAnswerHarness() {
-    const records = new Map();
-    const events = [];
-    const rejections = [];
-    const readRecord = (identity) => records.get(answerHarnessKey(identity)) || null;
-    const ensureRecord = (identity) => {
-      const key = answerHarnessKey(identity);
-      if (!key) return null;
-      const existing = records.get(key);
-      if (existing) return existing;
-      const record = {
-        contractVersion: 1,
-        identity: Object.freeze({ ...identity }),
-        lifecycle: "searching",
-        slots: {
-          progress: Object.freeze({ status: "ready", value: { percent: 0 } }),
-        },
-        evidence: {
-          passages: [],
-        },
-      };
-      records.set(key, record);
-      return record;
-    };
-    const accept = (event) => {
-      const eventName = event?.eventName;
-      const detail = event?.detail || {};
-      const identity = detail.answerIdentity || detail.contribution?.identity;
-      const key = answerHarnessKey(identity);
-      if (!key) {
-        rejections.push({ eventName, reason: "missing_identity" });
-        return null;
-      }
-      let record = ensureRecord(identity);
-      if (!record) return null;
-      if (eventName === "streaming") record.lifecycle = "streaming";
-      if (eventName === "judging") record.lifecycle = "judging";
-      if (eventName === "failed") record.lifecycle = "failed";
-      if (eventName === "completed") {
-        record.lifecycle = "complete";
-        record.slots.progress = Object.freeze({ status: "ready", value: { percent: 100 } });
-      }
-      if (detail.contribution) {
-        mergeAnswerHarnessSlots(record, detail.contribution);
-        mergeAnswerHarnessEvidence(record, detail.contribution);
-        if (detail.contribution.lifecycle && eventName !== "completed") {
-          record.lifecycle = detail.contribution.lifecycle;
-        }
-      }
-      events.push({ eventName, key });
-      return Object.freeze({
-        ...record,
-        slots: Object.freeze({ ...record.slots }),
-        evidence: Object.freeze({ passages: Object.freeze(record.evidence.passages.slice()) }),
-      });
-    };
-    return Object.freeze({
-      contractVersion: 1,
-      accept,
-      getRecord: readRecord,
-      records: () => Object.freeze([...records.values()].map((record) => Object.freeze({
-        ...record,
-        slots: Object.freeze({ ...record.slots }),
-        evidence: Object.freeze({ passages: Object.freeze(record.evidence.passages.slice()) }),
-      }))),
-      events: () => Object.freeze(events.slice()),
-      rejections: () => Object.freeze(rejections.slice()),
-    });
-  }
-
-  function ensureAnswerHarnessObserver() {
-    if (window.algoliaAnswerHarness?.accept) return window.algoliaAnswerHarness;
-    if (!defaultAnswerHarness) defaultAnswerHarness = createDefaultAnswerHarness();
-    window.algoliaAnswerHarness = defaultAnswerHarness;
-    return defaultAnswerHarness;
-  }
-
   function notifyAnswerHarness(eventName, detail) {
-    const observer = window.algoliaAnswerHarness || ensureAnswerHarnessObserver();
-    const accept = observer?.accept;
+    const accept = window.algoliaAnswerHarness?.accept;
     if (typeof accept !== "function") return;
     try {
       accept(Object.freeze({
@@ -430,9 +353,13 @@
     const question = String(detail?.question || "").replace(/\s+/g, " ").trim();
     const widgetInstanceId = detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || null;
     const widgets = [...document.querySelectorAll("algolia-chat")];
-    const host = widgetInstanceId
-      ? widgets.find((node) => node.__algoliaWidgetInstanceId === widgetInstanceId) || widgets[0]
-      : widgets[0];
+    let host = null;
+    if (widgetInstanceId) {
+      host = widgets.find((node) => node.__algoliaWidgetInstanceId === widgetInstanceId) || null;
+      if (!host && widgets.length === 1 && !widgets[0].__algoliaWidgetInstanceId) host = widgets[0];
+    } else {
+      host = widgets[0] || null;
+    }
     const root = host?.shadowRoot;
     if (!messageId || !question || !root) return null;
 
@@ -746,6 +673,7 @@
     const widgetInstanceId = widgetInstanceIdFromEvent(event);
     if (!widgetInstanceId) return;
     applyScopedReset(widgetInstanceId);
+    rememberHandledResetId(resetId);
     try {
       Object.defineProperty(event, "__algoliaHandoffScopedResetHandled", {
         configurable: true,
@@ -763,11 +691,13 @@
       const resetId = typeof event?.detail?.resetId === "string" ? event.detail.resetId : null;
       if (resetId && handledResetIds.has(resetId)) return;
       applyScopedReset(widgetInstanceId);
-      if (resetId) handledResetIds.add(resetId);
+      rememberHandledResetId(resetId);
       return;
     }
+    notifyClosedAnswerHarnessAttempts("reset");
     fallbackConversationGeneration += 1;
     activeAttempts.clear();
+    answerIdentitiesBySegment.clear();
   });
 
   window.algoliaHandoffToOrchestrator = {

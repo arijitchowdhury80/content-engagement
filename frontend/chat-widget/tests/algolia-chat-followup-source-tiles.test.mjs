@@ -80,6 +80,16 @@ test('assistant answer rendering uses one normalized presentation contract', () 
     /__arrieLayeredAnswer,\{text:[A-Za-z_$][\w$]*\.text,layer:[A-Za-z_$][\w$]*,unsupportedTerms:/,
     'the answer body must render from the same normalized layer used by the label'
   );
+  assert.match(
+    bundle,
+    /window\.algoliaAnswerContributors\?\.createAnswerContentContribution/,
+    'answer harness mirror content must use the canonical shared content contributor'
+  );
+  assert.doesNotMatch(
+    bundle,
+    /function __arrieHarnessContentContribution[\s\S]*?__arrieAnswerLayer[\s\S]*?function __arrieHarnessSourcesContribution/,
+    'answer harness mirror content must not reuse the live renderer TLDR parser'
+  );
 });
 
 test('subsequent turns send the complete prior assistant answer', async () => {
