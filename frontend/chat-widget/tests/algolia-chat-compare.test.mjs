@@ -618,6 +618,8 @@ const BLOCK_FIXTURE = [
   '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=x"></script>',
   '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=x"></script>',
   '  <script>window.ACS_COMPARE={"prod":{"appId":"live-app","apiKey":"live-secret-key","agentId":"live-agent"}};</script>',
+  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-compare.js?compare=x"></script>',
+  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/token-telemetry.js?telemetry=x"></script>',
   '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=x"></script>',
   '</div>',
 ].join('\n');
@@ -625,19 +627,19 @@ const BLOCK_FIXTURE = [
 test('Jahia transform adds the Compare script and its config exactly once', () => {
   const once = transformBlock(BLOCK_FIXTURE);
   const twice = transformBlock(once);
-  assert.match(once, /algolia-chat-compare\.js/);
+  assert.match(once, /algolia-chat-compare-[a-f0-9]{12}\.js/);
   assert.match(once, /window\.ACS_COMPARE=/);
   assert.match(once, /live-secret-key/);
-  assert.equal((twice.match(/algolia-chat-compare\.js/g) || []).length, 1, 'idempotent');
+  assert.equal((twice.match(/algolia-chat-compare-[a-f0-9]{12}\.js/g) || []).length, 1, 'idempotent');
   assert.equal((twice.match(/window\.ACS_COMPARE=/g) || []).length, 1, 'idempotent');
   assert.equal((twice.match(/token-telemetry\.js/g) || []).length, 1, 'one telemetry observer');
 });
 
 test('Compare config is emitted before the Compare module', () => {
   const html = transformBlock(BLOCK_FIXTURE);
-  assert.ok(html.indexOf('window.ACS_COMPARE=') < html.search(/algolia-chat-compare\.js/));
+  assert.ok(html.indexOf('window.ACS_COMPARE=') < html.search(/algolia-chat-compare-[a-f0-9]{12}\.js/));
   assert.ok(
-    html.search(/algolia-chat-compare\.js/) < html.search(/token-telemetry\.js/),
+    html.search(/algolia-chat-compare-[a-f0-9]{12}\.js/) < html.search(/token-telemetry\.js/),
     'telemetry observes the transport after Compare is configured',
   );
 });
@@ -645,7 +647,8 @@ test('Compare config is emitted before the Compare module', () => {
 test('narrow deployment script plans stable integration assets, validates and can roll back', () => {
   const source = fs.readFileSync(deployScript, 'utf8');
   assert.match(source, /CompareIntegrationApplyPlan\.v1/);
-  assert.match(source, /upsert_stable_asset/);
+  assert.match(source, /create_immutable/);
+  assert.match(source, /content-addressed create\/reuse for handoff and compare only/);
   assert.match(source, /validate_live/);
   assert.match(source, /rollback = restore\(plan_path\)/);
   assert.match(source, /--apply-plan/);
@@ -663,6 +666,14 @@ test('the chat stack manifest requires the Compare marker live', () => {
   assert.ok(manifest.jahia.requiredLiveMarkers.includes('token-telemetry.js'));
   assert.equal(manifest.jahia.requiredLiveMarkers.includes('algolia-context-compiler.js'), false);
   assert.equal(manifest.jahia.requiredLiveMarkers.includes('handoff-to-orchestrator.js'), false);
+  assert.deepEqual(manifest.jahia.compareWithProduction.immutableReleaseAssets, [
+    'handoff-to-orchestrator-compare-<content-sha12>.js',
+    'algolia-chat-compare-<content-sha12>.js',
+  ]);
+  assert.deepEqual(manifest.jahia.compareWithProduction.preservedRuntimeAssets, [
+    'algolia-context-compiler.js',
+    'token-telemetry.js',
+  ]);
   assert.equal(manifest.jahia.compareWithProduction.productionAgent.apiKeyEnv, 'PROD_ASKAI_API_KEY');
   assert.equal(manifest.jahia.compareWithProduction.productionAgent.legacySearchKeyEnv, 'PROD_ASKAI_SEARCH_KEY');
   assert.equal(manifest.jahia.compareWithProduction.deploymentTool, 'tools/deployment/deploy_compare_integration_jahia.py');
@@ -691,7 +702,7 @@ test('normal and journey deployments remain compatible with an integrated Compar
     input, encoding: 'utf8',
   });
   assert.match(output, /window\.ACS_COMPARE=/);
-  assert.match(output, /algolia-chat-compare\.js/);
+  assert.match(output, /algolia-chat-compare-[a-f0-9]{12}\.js/);
   assert.equal((output.match(/algolia-context-compiler[^"\n]*\.js/g) || []).length, 1);
   assert.equal((output.match(/handoff-to-orchestrator[^"\n]*\.js/g) || []).length, 1);
 

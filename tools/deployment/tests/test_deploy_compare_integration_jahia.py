@@ -26,27 +26,35 @@ LIVE_COMPARE_CONFIG = (
     '<script>window.ACS_COMPARE={"prod":{"appId":"live-app",'
     '"apiKey":"live-secret-key","agentId":"live-agent"}};</script>'
 )
+OLD_CONTEXT = "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=old"
+OLD_HANDOFF = "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=old"
+OLD_COMPARE = "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-compare.js?compare=old"
+OLD_TELEMETRY = "https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/token-telemetry.js?telemetry=old"
 
 
 def block_fixture() -> str:
     return f"""<div data-protected="unchanged">
-<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=old"></script>
+<script src="{OLD_CONTEXT}"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=old"></script>
-<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=old"></script>
+<script src="{OLD_HANDOFF}"></script>
 {LIVE_COMPARE_CONFIG}
+<script src="{OLD_COMPARE}"></script>
+<script src="{OLD_TELEMETRY}"></script>
 <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=old"></script>
 </div>"""
 
 
-def test_assets_use_stable_filenames_and_hash_validated_content():
+def test_assets_use_content_addressed_filenames_and_hash_validated_content():
     assets = module.immutable_assets()
-    assert set(assets) == {"context", "handoff", "compare", "telemetry"}
+    assert set(assets) == {"handoff", "compare"}
     for key, asset in assets.items():
-        expected = f"{module.STEMS[key]}.js"
-        assert asset["filename"] == expected
-        assert asset["path"].endswith(f"/{expected}")
-        assert asset["url"].endswith(f"/{expected}")
-        assert module.sha256(asset["content"]) == asset["sha256"]
+        digest = module.sha256(asset["content"])
+        assert asset["sha256"] == digest
+        assert asset["filename"].endswith(f"{digest[:12]}.js")
+        assert asset["path"].endswith(f"/{asset['filename']}")
+        assert asset["url"].endswith(f"/{asset['filename']}")
+    assert assets["handoff"]["filename"].startswith("handoff-to-orchestrator-compare-")
+    assert assets["compare"]["filename"].startswith("algolia-chat-compare-")
 
 
 def test_block_transform_is_narrow_ordered_and_idempotent():
@@ -55,16 +63,20 @@ def test_block_transform_is_narrow_ordered_and_idempotent():
     twice = module.update_block_html(once, assets, CONFIG)
     assert once == twice
     assert 'data-protected="unchanged"' in once
-    assert once.index(assets["context"]["url"]) < once.index(assets["handoff"]["url"])
+    assert OLD_CONTEXT in once
+    assert OLD_TELEMETRY in once
+    assert once.index(OLD_CONTEXT) < once.index(assets["handoff"]["url"])
     assert once.index(assets["handoff"]["url"]) < once.index(assets["compare"]["url"])
-    assert once.index(assets["compare"]["url"]) < once.index(assets["telemetry"]["url"])
+    assert once.index(assets["compare"]["url"]) < once.index(OLD_TELEMETRY)
     assert once.index("window.ACS_COMPARE=") < once.index(assets["compare"]["url"])
     assert once.count("window.ACS_COMPARE=") == 1
     assert once.count("live-secret-key") == 1
     assert once.count("sentinel-secret-key") == 0
     assert "live-app" in once
     assert "live-agent" in once
-    assert once.count(assets["telemetry"]["url"]) == 1
+    assert once.count(OLD_COMPARE) == 0
+    assert once.count(OLD_HANDOFF) == 0
+    assert once.count(OLD_TELEMETRY) == 1
 
 
 def test_block_transform_can_generate_compare_config_only_when_absent():
@@ -89,7 +101,7 @@ def test_block_transform_requires_key_only_when_compare_config_is_absent(monkeyp
 def test_block_transform_can_add_missing_handoff_at_the_existing_controller_boundary():
     assets = module.immutable_assets()
     current = block_fixture().replace(
-        '<script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=old"></script>\n',
+        f'<script src="{OLD_HANDOFF}"></script>\n',
         "",
     )
     updated = module.update_block_html(current, assets, CONFIG)
@@ -111,6 +123,8 @@ def test_displaced_dependency_snapshot_binds_edit_live_and_public_bytes(monkeypa
     urls = module.referenced_dependency_urls(block_fixture())
     assert urls["context"].endswith("algolia-context-compiler.js?context=old")
     assert urls["handoff"].endswith("handoff-to-orchestrator.js?handoff=old")
+    assert urls["compare"].endswith("algolia-chat-compare.js?compare=old")
+    assert urls["telemetry"].endswith("token-telemetry.js?telemetry=old")
 
     monkeypatch.setattr(
         module,
@@ -127,13 +141,21 @@ def test_displaced_dependency_snapshot_binds_edit_live_and_public_bytes(monkeypa
         lambda url: f"{module.FILES}/{url.removeprefix(module.PUBLIC + '/').split('?', 1)[0]}:bytes".encode(),
     )
     observed = module.capture_referenced_dependencies(block_fixture())
-    assert set(observed) == {"context", "handoff"}
+    assert set(observed) == {"context", "handoff", "compare", "telemetry"}
     assert all(item["sha256"] for item in observed.values())
 
 
 def test_final_dependency_cas_rejects_drift_before_cutover(monkeypatch):
-    planned = {"context": {"sha256": "a"}, "handoff": {"sha256": "b"}}
-    observations = iter([planned, {"context": {"sha256": "changed"}, "handoff": {"sha256": "b"}}])
+    planned = {
+        "context": {"sha256": "a"},
+        "handoff": {"sha256": "b"},
+        "compare": {"sha256": "c"},
+        "telemetry": {"sha256": "d"},
+    }
+    observations = iter([
+        planned,
+        {**planned, "compare": {"sha256": "changed"}},
+    ])
     monkeypatch.setattr(module, "capture_referenced_dependencies", lambda _html: next(observations))
     plan = {"displacedDependencies": planned}
     module.assert_displaced_dependencies_unchanged(plan, "approved")
@@ -141,7 +163,7 @@ def test_final_dependency_cas_rejects_drift_before_cutover(monkeypatch):
         module.assert_displaced_dependencies_unchanged(plan, "changed during asset creation")
 
     source = (ROOT / "tools/deployment/deploy_compare_integration_jahia.py").read_text(encoding="utf-8")
-    asset_creation = source.index('mutations[f"asset_{key}"] = upsert_stable_asset(asset)')
+    asset_creation = source.index('mutations[f"asset_{key}"] = create_immutable(asset)')
     final_cas = source.index("assert_displaced_dependencies_unchanged", asset_creation)
     cutover = source.index('mutations["setBlockHtml"]', final_cas)
     assert asset_creation < final_cas < cutover
@@ -206,15 +228,15 @@ def test_deployer_has_no_broad_publish_or_stable_asset_overwrite():
     assert 'publish("/sites/www/files"' not in source
     assert 'publish("/sites/www/home/drift"' not in source
     assert "publish(BLOCK, subtree=True)" in source
-    assert 'filename = f"{STEMS[key]}.js"' in source
-    assert "upsert_stable_asset" in source
-    assert "create_immutable" not in source
+    assert "release_filename" in source
+    assert "upsert_stable_asset" not in source
+    assert "create_immutable" in source
     assert "--apply-plan" in source
     assert "Jahia block drifted after plan approval; no mutation made" in source
-    assert "Referenced context or handoff asset drifted after plan approval; no mutation made" in source
+    assert "Referenced runtime asset drifted after plan approval; no mutation made" in source
     assert "displacedDependencies" in source
-    assert '"oldAssetsRemainUntouched": False' in source
-    assert "stable filenames; exact paths may be updated after drift checks" in source
+    assert '"oldAssetsRemainUntouched": True' in source
+    assert "content-addressed create/reuse for handoff and compare only" in source
     assert "PROD_ASKAI_API_KEY" in source
     assert "LEGACY_COMPARE_API_KEY_ENV" in source
     assert "PROD_ASKAI_APP_ID" not in module.COMPARE_ENV_KEYS
@@ -250,7 +272,7 @@ def test_backend_preflight_rejects_bad_id_and_frontend_apply_is_gated_first():
 
     source = (ROOT / "tools/deployment/deploy_compare_integration_jahia.py").read_text(encoding="utf-8")
     preflight = source.index("validate_token_telemetry_backend(smoke_conversation_id)")
-    asset_creation = source.index('mutations[f"asset_{key}"] = upsert_stable_asset(asset)')
+    asset_creation = source.index('mutations[f"asset_{key}"] = create_immutable(asset)')
     cutover = source.index('mutations["setBlockHtml"]')
     assert preflight < asset_creation < cutover
 

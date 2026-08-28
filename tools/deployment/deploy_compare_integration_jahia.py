@@ -46,6 +46,7 @@ SOURCES = {
     "compare": ROOT / "frontend/chat-widget/algolia-chat-compare.js",
     "telemetry": ROOT / "frontend/chat-widget/token-telemetry.js",
 }
+RELEASE_ASSET_KEYS = ("handoff", "compare")
 STEMS = {
     "context": "algolia-context-compiler",
     "handoff": "handoff-to-orchestrator",
@@ -154,14 +155,23 @@ def validate_token_telemetry_backend(conversation_id: str) -> dict[str, bool]:
     return checks
 
 
+def release_filename(key: str, digest: str) -> str:
+    if key == "handoff":
+        return f"{STEMS[key]}-compare-{digest[:12]}.js"
+    if key == "compare":
+        return f"{STEMS[key]}-{digest[:12]}.js"
+    raise KeyError(f"Unsupported immutable release asset: {key}")
+
+
 def immutable_assets() -> dict[str, dict[str, str]]:
     assets = {}
-    for key, source in SOURCES.items():
+    for key in RELEASE_ASSET_KEYS:
+        source = SOURCES[key]
         content = source.read_text(encoding="utf-8")
         if key == "compare":
             judge_release_guard.validate_compare_runtime(content)
         digest = sha256(content)
-        filename = f"{STEMS[key]}.js"
+        filename = release_filename(key, digest)
         assets[key] = {
             "source": str(source.relative_to(ROOT)),
             "content": content,
@@ -210,12 +220,10 @@ def update_block_html(current: str, assets: dict, config: dict[str, str] | None 
     if compare_config is None:
         compare_config = compare_config_tag(config or load_compare_env(required=True))
 
-    next_html = replace_one(
-        script_pattern("context"),
-        f'<script src="{assets["context"]["url"]}"></script>',
-        current,
-        "context compiler script",
-    )
+    context_count = len(re.findall(script_pattern("context"), current, flags=re.I))
+    if context_count != 1:
+        raise RuntimeError(f"Expected exactly one context compiler script; found {context_count}")
+    next_html = current
 
     handoff_pattern = script_pattern("handoff")
     handoff_count = len(re.findall(handoff_pattern, next_html, flags=re.I))
@@ -245,13 +253,10 @@ def update_block_html(current: str, assets: dict, config: dict[str, str] | None 
         + "\n"
         + f'<script src="{assets["compare"]["url"]}"></script>'
     )
-    telemetry_pattern = script_pattern("telemetry")
-    telemetry_count = len(re.findall(telemetry_pattern, next_html, flags=re.I))
+    telemetry_count = len(re.findall(script_pattern("telemetry"), next_html, flags=re.I))
     if telemetry_count > 1:
         raise RuntimeError(f"Expected zero or one telemetry script; found {telemetry_count}")
-    next_html = re.sub(rf"\n?{telemetry_pattern}", "", next_html, count=1, flags=re.I)
-    observer_block = compare_block + "\n" + f'<script src="{assets["telemetry"]["url"]}"></script>'
-    return next_html.replace(handoff_tag, handoff_tag + "\n" + observer_block, 1)
+    return next_html.replace(handoff_tag, handoff_tag + "\n" + compare_block, 1)
 
 
 def compact_node(path: str, workspace: str) -> dict | None:
@@ -294,7 +299,7 @@ def public_capture(snapshot: dict) -> dict:
 
 def referenced_dependency_urls(block_html: str) -> dict[str, str]:
     urls: dict[str, str] = {}
-    for key in ("context", "handoff"):
+    for key in SOURCES:
         matches = re.findall(script_pattern(key), block_html, flags=re.I)
         if len(matches) != 1:
             raise RuntimeError(f"Expected exactly one referenced {key} dependency; found {len(matches)}")
@@ -324,7 +329,7 @@ def capture_referenced_dependencies(block_html: str) -> dict[str, dict]:
 
 def assert_displaced_dependencies_unchanged(plan: dict, block_html: str) -> None:
     if capture_referenced_dependencies(block_html) != plan["displacedDependencies"]:
-        raise RuntimeError("Referenced context or handoff asset drifted after plan approval; no mutation made")
+        raise RuntimeError("Referenced runtime asset drifted after plan approval; no mutation made")
 
 
 def write_private(path: Path, payload: dict) -> None:
@@ -333,13 +338,12 @@ def write_private(path: Path, payload: dict) -> None:
     os.chmod(path, 0o600)
 
 
-def upsert_stable_asset(asset: dict) -> dict:
+def create_immutable(asset: dict) -> dict:
     existing = jahia.node(asset["path"], "EDIT")
     if existing is not None:
         if (jahia.file_content(existing) or "") == asset["content"]:
             return {"operation": "reuse", "path": asset["path"], "sha256": asset["sha256"]}
-        jahia.upsert_file(asset["path"], asset["content"])
-        operation = "update"
+        raise RuntimeError(f"Immutable asset path exists with different content: {asset['path']}")
     else:
         jahia.upsert_file(asset["path"], asset["content"])
         operation = "create"
@@ -349,7 +353,7 @@ def upsert_stable_asset(asset: dict) -> dict:
             return {"operation": operation, "path": asset["path"], "sha256": asset["sha256"]}
         if attempt < 7:
             time.sleep(0.5)
-    raise RuntimeError(f"Stable asset readback failed: {asset['path']}")
+    raise RuntimeError(f"Immutable asset readback failed: {asset['path']}")
 
 
 def restore_block_with_cas(before: str, allowed_hashes: set[str], attempts: int = 5) -> dict:
@@ -405,16 +409,20 @@ def fetch_bytes(url: str) -> bytes:
 
 def validate_live(assets: dict, expected_html: str) -> dict:
     edit, live = jahia.block_html("EDIT"), jahia.block_html("LIVE")
+    context_matches = re.findall(script_pattern("context"), live, flags=re.I)
+    telemetry_matches = re.findall(script_pattern("telemetry"), live, flags=re.I)
     checks = {
         "editBlockMatches": edit == expected_html,
         "liveBlockMatches": live == expected_html,
-        "loadOrder": all(
-            0 <= live.find(assets[left]["url"]) < live.find(assets[right]["url"])
-            for left, right in [
-                ("context", "handoff"),
-                ("handoff", "compare"),
-                ("compare", "telemetry"),
-            ]
+        "contextReferencePreserved": len(context_matches) == 1,
+        "telemetryReferencePreserved": len(telemetry_matches) == 1,
+        "loadOrder": (
+            len(context_matches) == 1
+            and len(telemetry_matches) == 1
+            and 0 <= live.find(context_matches[0])
+            < live.find(assets["handoff"]["url"])
+            < live.find(assets["compare"]["url"])
+            < live.find(telemetry_matches[0])
         ),
     }
     for workspace in ["EDIT", "LIVE"]:
@@ -456,7 +464,7 @@ def create_plan(evidence_dir: Path) -> Path:
     public_plan = {
         "schema": "CompareIntegrationDeploymentPlan.v1",
         "sourceCommit": commit,
-        "scope": "four stable chat integration assets plus one exact custom block",
+        "scope": "two immutable chat integration assets plus one exact custom block",
         "activationPrerequisite": (
             "The deployer preserves the existing live window.ACS_COMPARE config by default. "
             f"If {TOKEN_TELEMETRY_SMOKE_ID_ENV} is set, the token telemetry backend must pass "
@@ -473,8 +481,8 @@ def create_plan(evidence_dir: Path) -> Path:
         "compareConfigMode": "preserve-existing",
         "privatePlanSha256": sha256(private_path.read_bytes()),
         "mutationAllowlist": [asset["path"] for asset in assets.values()] + [BLOCK],
-        "oldAssetsRemainUntouched": False,
-        "assetUpdateMode": "stable filenames; exact paths may be updated after drift checks",
+        "oldAssetsRemainUntouched": True,
+        "assetUpdateMode": "content-addressed create/reuse for handoff and compare only",
         "applyCommand": f"python3 tools/deployment/deploy_compare_integration_jahia.py --apply-plan {private_path}",
         "rollbackCommand": f"python3 tools/deployment/deploy_compare_integration_jahia.py --rollback {private_path}",
     }
@@ -512,7 +520,7 @@ def apply_plan(plan_path: Path, evidence_dir: Path) -> int:
     mutations = {}
     try:
         for key, asset in assets.items():
-            mutations[f"asset_{key}"] = upsert_stable_asset(asset)
+            mutations[f"asset_{key}"] = create_immutable(asset)
         assert_displaced_dependencies_unchanged(plan, jahia.block_html("EDIT"))
         if sha256(jahia.block_html("EDIT")) != plan["beforeBlockSha256"]:
             raise RuntimeError("Jahia block changed immediately before cutover")

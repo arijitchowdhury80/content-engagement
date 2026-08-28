@@ -23,10 +23,12 @@
     "compareWithProduction": {
       "script": "frontend/chat-widget/algolia-chat-compare.js",
       "deploymentTool": "tools/deployment/deploy_compare_integration_jahia.py",
-      "stableAssets": [
+      "immutableReleaseAssets": [
+        "handoff-to-orchestrator-compare-<content-sha12>.js",
+        "algolia-chat-compare-<content-sha12>.js"
+      ],
+      "preservedRuntimeAssets": [
         "algolia-context-compiler.js",
-        "handoff-to-orchestrator.js",
-        "algolia-chat-compare.js",
         "token-telemetry.js"
       ],
       "productionAgent": {
