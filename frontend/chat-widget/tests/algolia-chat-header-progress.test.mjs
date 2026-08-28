@@ -65,8 +65,13 @@ test('processing trace drives the header gradient fill from real progress state'
   );
   assert.match(
     progressEmitter,
-    /querySelectorAll\?\.\("algolia-chat"\)/,
-    'streaming progress must synchronize the live chat host, not only broadcast an event'
+    /matches\?\.\("algolia-chat"\)[\s\S]{0,120}querySelectorAll\?\.\("algolia-chat"\)/,
+    'streaming progress must synchronize the owning live chat host before falling back to document-wide compatibility'
+  );
+  assert.match(
+    progressEmitter,
+    /widgetInstanceId:[A-Za-z_$][\w$]*\?\.__algoliaWidgetInstanceId/,
+    'progress events must carry the owning widget identity so sibling headers can ignore them'
   );
   assert.ok(
     progressEmitter.includes(`${headerProgressSetter[1]}(`),
@@ -114,7 +119,7 @@ test('processing trace drives the header gradient fill from real progress state'
   );
   assert.match(
     bundle,
-    /async function aR\([^)]*\)\{[\s\S]{0,160}__arrieResetHeaderProgress\(\),[A-Za-z_$][\w$]*\(\{status:"loading"/,
+    /async function aR\([^)]*\)\{[\s\S]{0,220}__arrieResetHeaderProgress\([^)]*hostElement[^)]*\),[A-Za-z_$][\w$]*\(\{status:"loading"[\s\S]{0,80}hostElement\)/,
     'a new answer run must reset progress only at the run boundary'
   );
   assert.doesNotMatch(

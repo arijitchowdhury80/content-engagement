@@ -378,6 +378,34 @@ test('payload widget instance metadata isolates two widget requests in one hando
   assert.notEqual(preparedTurns[0].answerIdentity.networkAttemptId, preparedTurns[1].answerIdentity.networkAttemptId);
 });
 
+test('out-of-band runtime context isolates two widget requests without changing request bytes', async () => {
+  const harness = createHarness();
+  const preparedTurns = [];
+  harness.context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+  const body = JSON.stringify({
+    id: 'conversation-1',
+    messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'same question' }] }],
+  });
+  const request = { method: 'POST', body };
+
+  await harness.context.invokeTransport('https://primary.example/completions', request, {
+    widgetInstanceId: 'widget-left',
+    answerSegmentId: 'assistant-left',
+  });
+  await harness.context.invokeTransport('https://primary.example/completions', request, {
+    widgetInstanceId: 'widget-right',
+    answerSegmentId: 'assistant-right',
+  });
+
+  assert.equal(preparedTurns.length, 2);
+  assert.equal(preparedTurns[0].body, body, 'runtime identity context must not change on-wire request bytes');
+  assert.equal(preparedTurns[1].body, body, 'runtime identity context must not change on-wire request bytes');
+  assert.equal(preparedTurns[0].answerIdentity.widgetInstanceId, 'widget-left');
+  assert.equal(preparedTurns[1].answerIdentity.widgetInstanceId, 'widget-right');
+  assert.equal(preparedTurns[0].answerIdentity.answerSegmentId, 'assistant-left');
+  assert.equal(preparedTurns[1].answerIdentity.answerSegmentId, 'assistant-right');
+});
+
 test('answer identity prefers native answer segment metadata over the triggering user message id', async () => {
   const harness = createHarness();
   const preparedTurns = [];
@@ -398,7 +426,7 @@ test('answer identity prefers native answer segment metadata over the triggering
   assert.equal(preparedTurns[0].messageId, 'user-1');
   assert.equal(preparedTurns[0].answerIdentity.widgetInstanceId, 'widget-1');
   assert.equal(preparedTurns[0].answerIdentity.answerSegmentId, 'assistant-segment-1');
-  assert.match(preparedTurns[0].answerIdentity.networkAttemptId, /conversation-1:user-1:attempt-1$/);
+  assert.match(preparedTurns[0].answerIdentity.networkAttemptId, /widget-1:conversation-1:user-1:attempt-1$/);
 });
 
 /*
@@ -439,7 +467,7 @@ test('publishes a completed turn once the successful primary stream is consumed'
         widgetInstanceId: 'algolia-chat:default',
         conversationId: 'conversation-1',
         answerSegmentId: 'user-1',
-        networkAttemptId: 'conversation-1:user-1:attempt-1',
+        networkAttemptId: 'algolia-chat:default:conversation-1:user-1:attempt-1',
       },
     }],
   );
@@ -486,7 +514,7 @@ test('mirrors prepared and completed turn lifecycle to the optional answer harne
     widgetInstanceId: 'algolia-chat:default',
     conversationId: 'conversation-1',
     answerSegmentId: 'message-1',
-    networkAttemptId: 'conversation-1:message-1:attempt-1',
+    networkAttemptId: 'algolia-chat:default:conversation-1:message-1:attempt-1',
   });
   assert.deepEqual(harnessEvents[1].detail.answerIdentity, harnessEvents[0].detail.answerIdentity);
 });

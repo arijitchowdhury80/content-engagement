@@ -138,7 +138,12 @@
     return -1;
   }
 
-  function logicalTurn(payload) {
+  function runtimeContextValue(runtimeContext, key) {
+    const value = runtimeContext?.[key] || runtimeContext?.metadata?.[key];
+    return typeof value === "string" && value.trim() ? value.trim() : null;
+  }
+
+  function logicalTurn(payload, runtimeContext = null) {
     const index = lastUserMessageIndex(payload);
     if (index === -1) return null;
     const message = payload.messages[index] || {};
@@ -149,6 +154,9 @@
     );
     const messageId = String(message.id || message.messageId || `${index}:${text}`);
     const answerSegmentId = String(
+      runtimeContextValue(runtimeContext, "answerSegmentId") ||
+      runtimeContextValue(runtimeContext, "assistantSegmentId") ||
+      runtimeContextValue(runtimeContext, "assistantMessageId") ||
       payload.answerSegmentId ||
       payload.responseId ||
       payload.metadata?.answerSegmentId ||
@@ -165,18 +173,20 @@
       message.messageId ||
       `${index}:${text}`
     );
+    const widgetInstanceId = String(
+      runtimeContextValue(runtimeContext, "widgetInstanceId") ||
+      payload.widgetInstanceId ||
+      payload.metadata?.widgetInstanceId ||
+      message.metadata?.widgetInstanceId ||
+      config.widgetInstanceId ||
+      "algolia-chat:default"
+    );
     return {
       key: `${conversationGeneration ? `${conversationGeneration}:` : ""}${conversationId}:${messageId}`,
       conversationId,
       messageId,
       answerSegmentId,
-      widgetInstanceId: String(
-        payload.widgetInstanceId ||
-        payload.metadata?.widgetInstanceId ||
-        message.metadata?.widgetInstanceId ||
-        config.widgetInstanceId ||
-        "algolia-chat:default"
-      ),
+      widgetInstanceId,
       question: text,
     };
   }
@@ -242,7 +252,12 @@
   function ensureAnswerFooter(detail) {
     const messageId = String(detail?.messageId || "");
     const question = String(detail?.question || "").replace(/\s+/g, " ").trim();
-    const root = document.querySelector("algolia-chat")?.shadowRoot;
+    const widgetInstanceId = detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || null;
+    const widgets = [...document.querySelectorAll("algolia-chat")];
+    const host = widgetInstanceId
+      ? widgets.find((node) => node.__algoliaWidgetInstanceId === widgetInstanceId)
+      : widgets[0];
+    const root = host?.shadowRoot;
     if (!messageId || !question || !root) return null;
 
     const existing = [...root.querySelectorAll("[data-algolia-answer-footer]")]
@@ -424,7 +439,7 @@
     return prepareBody(body).body;
   }
 
-  async function orchestratorTransport(input, init = {}) {
+  async function orchestratorTransport(input, init = {}, runtimeContext = null) {
     const compiler = window.algoliaContextCompiler;
     const sendPrepared =
       typeof compiler?.fetchPrepared === "function"
@@ -443,11 +458,11 @@
       // below remains the exact on-wire body; only the visible label/dedupe key
       // comes from the clean logical turn.
       try {
-        turn = logicalTurn(JSON.parse(contextBody));
+        turn = logicalTurn(JSON.parse(contextBody), runtimeContext);
         if (turn) {
           turn = {
             ...turn,
-            networkAttemptId: `${turn.key}:attempt-${networkAttemptSequence += 1}`,
+            networkAttemptId: `${turn.widgetInstanceId}:${turn.key}:attempt-${networkAttemptSequence += 1}`,
           };
         }
       } catch {}
