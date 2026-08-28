@@ -644,3 +644,132 @@ test("one widget starting work does not reset or advance a sibling widget header
     await page.close();
   }
 });
+
+test("local DOM output matches canonical harness slots for content, sources, and follow-up", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    await page.evaluate(() => {
+      const answer = [
+        "API calls are like door swings in a busy store: one entrance is harmless, but every eager widget can make the doorway blur.",
+        "",
+        "Short version: most interactions that request Algolia data count toward billable search usage.",
+        "",
+        "## Details",
+        "Debounce ordinary typing, avoid duplicate page-load searches, and protect shared backend traffic with server-side throttling.",
+      ].join("\n");
+      window.__identityResponseText = [
+        `data: ${JSON.stringify({
+          type: "tool-output-available",
+          toolCallId: "search-1",
+          output: {
+            hits: [
+              {
+                objectID: "request-usage",
+                title: "Understand search request usage",
+                url: "https://www.algolia.com/doc/guides/scaling/algolia-service-limits/",
+                source: "Documentation",
+                description: "Requests are counted when search traffic reaches Algolia.",
+              },
+            ],
+          },
+        })}`,
+        "",
+        `data: ${JSON.stringify({ type: "text-delta", delta: answer })}`,
+        "",
+        `data: ${JSON.stringify({
+          type: "data-suggestions",
+          data: { suggestions: ["Are you protecting against bots or normal browsing costs?"] },
+        })}`,
+        "",
+      ].join("\n");
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.ask("What counts as an API call?");
+    });
+    await page.waitForFunction(() => {
+      const root = document.querySelector("algolia-chat")?.shadowRoot;
+      const records = window.algoliaAnswerHarness?.records?.() || [];
+      const record = records.find((item) =>
+        item.slots?.tldrAnalogy?.status === "ready" &&
+        item.slots?.tldrShort?.status === "ready" &&
+        item.slots?.details?.status === "ready" &&
+        item.slots?.sources?.status === "ready" &&
+        item.slots?.followUp?.status === "ready"
+      );
+      return Boolean(
+        record &&
+        root?.querySelector(".acs-answer-tldr") &&
+        root?.querySelector(".acs-answer-details") &&
+        root?.querySelector(".acs-source-section") &&
+        root?.querySelector(".acs-followup-card")
+      );
+    });
+
+    const parity = await page.evaluate(() => {
+      const root = document.querySelector("algolia-chat").shadowRoot;
+      const record = window.algoliaAnswerHarness.records().find((item) =>
+        item.slots?.tldrAnalogy?.status === "ready" &&
+        item.slots?.tldrShort?.status === "ready" &&
+        item.slots?.details?.status === "ready" &&
+        item.slots?.sources?.status === "ready" &&
+        item.slots?.followUp?.status === "ready"
+      );
+      const tldr = root.querySelector(".acs-answer-tldr");
+      const analogy = root.querySelector(".acs-answer-analogy");
+      const short = root.querySelector(".acs-answer-short");
+      const details = root.querySelector(".acs-answer-details");
+      const sources = root.querySelector(".acs-source-section");
+      const followUp = root.querySelector(".acs-followup-card");
+      const answerWithoutFollowUp = followUp?.parentElement?.parentElement?.cloneNode(true);
+      answerWithoutFollowUp?.querySelector(".acs-followup-wrap")?.remove();
+
+      return {
+        lifecycle: record.lifecycle,
+        identityKey: record.identityKey,
+        harness: {
+          analogy: record.slots.tldrAnalogy.value,
+          short: record.slots.tldrShort.value,
+          details: record.slots.details.value,
+          sourceCount: record.slots.sources.value.length,
+          sourceLabel: record.slots.sources.value[0]?.source,
+          followUp: record.slots.followUp.value,
+          confidenceStatus: record.slots.confidence.status,
+        },
+        dom: {
+          tldrText: tldr?.textContent.replace(/\s+/g, " ").trim(),
+          analogyText: analogy?.textContent.replace(/\s+/g, " ").trim(),
+          analogyStyle: analogy ? getComputedStyle(analogy).fontStyle : null,
+          shortText: short?.textContent.replace(/\s+/g, " ").trim(),
+          shortStyle: short ? getComputedStyle(short).fontStyle : null,
+          detailsText: details?.textContent.replace(/\s+/g, " ").trim(),
+          sourceText: sources?.textContent.replace(/\s+/g, " ").trim(),
+          followUpText: followUp?.textContent.replace(/\s+/g, " ").trim(),
+          answerWithoutFollowUpText: answerWithoutFollowUp?.textContent.replace(/\s+/g, " ").trim(),
+        },
+      };
+    });
+
+    assert.equal(parity.lifecycle, "complete");
+    assert.match(parity.identityKey, /^algolia-chat%3A/);
+    assert.equal(parity.dom.analogyText, parity.harness.analogy);
+    assert.equal(parity.dom.analogyStyle, "italic");
+    assert.equal(parity.dom.shortText, parity.harness.short);
+    assert.notEqual(parity.dom.shortStyle, "italic");
+    assert.match(parity.dom.tldrText, /door swings in a busy store/);
+    assert.match(parity.dom.tldrText, /Short version:/);
+    assert.doesNotMatch(parity.dom.tldrText, /Debounce ordinary typing/);
+    assert.match(parity.dom.detailsText, /Debounce ordinary typing/);
+    assert.equal(parity.dom.followUpText, parity.harness.followUp);
+    assert.equal(parity.dom.answerWithoutFollowUpText.includes(parity.harness.followUp), false);
+    assert.equal(parity.harness.sourceCount, 1);
+    assert.equal(parity.harness.sourceLabel, "Documentation");
+    assert.match(parity.dom.sourceText, /Documentation/i);
+    assert.equal(parity.dom.sourceText.includes("1"), true);
+    assert.equal(
+      parity.harness.confidenceStatus,
+      "loading",
+      "confidence/evidence-lineage parity is intentionally not comparable until judge passage IDs are wired",
+    );
+  } finally {
+    await page.close();
+  }
+});
