@@ -4,12 +4,35 @@ import {
   ANSWER_SLOT_KEYS,
   ANSWER_SLOT_STATUS,
   assertAnswerRecord,
+  createAnswerEvidenceRecord,
   createAnswerRecord,
   createAnswerSlot,
   isClosedAnswerRecord,
   sameAnswerIdentity,
 } from "../core/answer-record.mjs";
 import { ANSWER_FOOTER_SLOT_ORDER } from "../presentation-contract.mjs";
+
+export const ANSWER_CONTRIBUTOR_KIND = Object.freeze({
+  CONTENT: "content",
+  SOURCES: "sources",
+  TELEMETRY: "telemetry",
+  CONFIDENCE: "confidence",
+  OPAQUE_ACTION: "opaqueAction",
+  PROGRESS: "progress",
+  ERROR_RETRY: "errorRetry",
+  LIFECYCLE: "lifecycle",
+});
+
+const CONTRIBUTOR_KINDS = new Set(Object.values(ANSWER_CONTRIBUTOR_KIND));
+const CONTRIBUTOR_SLOT_ALLOWLIST = Object.freeze({
+  [ANSWER_CONTRIBUTOR_KIND.CONTENT]: new Set(["tldrAnalogy", "tldrShort", "details", "followUp"]),
+  [ANSWER_CONTRIBUTOR_KIND.SOURCES]: new Set(["sources"]),
+  [ANSWER_CONTRIBUTOR_KIND.TELEMETRY]: new Set(["telemetry"]),
+  [ANSWER_CONTRIBUTOR_KIND.CONFIDENCE]: new Set(["confidence"]),
+  [ANSWER_CONTRIBUTOR_KIND.OPAQUE_ACTION]: new Set(["compareAction"]),
+  [ANSWER_CONTRIBUTOR_KIND.PROGRESS]: new Set(["progress"]),
+  [ANSWER_CONTRIBUTOR_KIND.LIFECYCLE]: new Set(),
+});
 
 const HEADING_RE = /^\s{0,3}#{1,6}\s+/;
 const BULLET_RE = /^\s*[-*+]\s+/;
@@ -135,6 +158,59 @@ function evidencePassages(evidence) {
   return passages;
 }
 
+function evidenceEvaluations(evidence) {
+  if (!evidence || typeof evidence !== "object") return [];
+  if (Array.isArray(evidence.evaluations)) return evidence.evaluations;
+  if (Array.isArray(evidence.judgeEvidence)) return evidence.judgeEvidence;
+  return [];
+}
+
+function mergeById(left = [], right = []) {
+  const merged = new Map();
+  for (const item of [...left, ...right]) {
+    if (!item || typeof item !== "object") continue;
+    const id = typeof item.id === "string" && item.id.trim() ? item.id.trim() : JSON.stringify(item);
+    if (!merged.has(id)) merged.set(id, item);
+  }
+  return [...merged.values()];
+}
+
+function mergeEvidenceRecords(left, right, fallbackId) {
+  const current = createAnswerEvidenceRecord(left || { id: fallbackId });
+  const incoming = createAnswerEvidenceRecord(right || {});
+  return {
+    id: current.id || incoming.id || fallbackId,
+    passages: mergeById(current.passages, incoming.passages),
+    evaluations: mergeById(current.evaluations, incoming.evaluations),
+  };
+}
+
+function slotAllowedForContribution(kind, key, slot) {
+  if (kind === ANSWER_CONTRIBUTOR_KIND.ERROR_RETRY) {
+    return key === "errorRetry" ||
+      slot?.status === ANSWER_SLOT_STATUS.FAILED ||
+      slot?.status === ANSWER_SLOT_STATUS.RETRYING;
+  }
+  return Boolean(CONTRIBUTOR_SLOT_ALLOWLIST[kind]?.has(key));
+}
+
+function evidenceAllowedForContribution(kind, evidence) {
+  if (!evidence || typeof evidence !== "object") return null;
+  if (kind === ANSWER_CONTRIBUTOR_KIND.SOURCES) {
+    return {
+      passages: evidencePassages(evidence).filter((passage) => passage?.kind === "source"),
+      evaluations: [],
+    };
+  }
+  if (kind === ANSWER_CONTRIBUTOR_KIND.CONFIDENCE) {
+    return {
+      passages: [],
+      evaluations: evidenceEvaluations(evidence),
+    };
+  }
+  return null;
+}
+
 export function splitAnswerContent(answerText) {
   const extracted = extractFollowUp(answerText);
   const paragraphs = nonEmptyParagraphs(extracted.text);
@@ -201,9 +277,17 @@ export function splitAnswerContent(answerText) {
   });
 }
 
-export function createAnswerContributor({ identity, slots = {}, lifecycle = null, evidence = null } = {}) {
+export function createAnswerContributor({
+  kind = ANSWER_CONTRIBUTOR_KIND.LIFECYCLE,
+  identity,
+  slots = {},
+  lifecycle = null,
+  evidence = null,
+} = {}) {
+  if (!CONTRIBUTOR_KINDS.has(kind)) throw new TypeError(`Unknown answer contributor kind: ${kind}`);
   return deepFreeze({
     contractVersion: ANSWER_CONTRACT_VERSION,
+    kind,
     identity,
     lifecycle,
     slots,
@@ -220,19 +304,18 @@ export function applyAnswerContribution(record, contribution) {
   if (isClosedAnswerRecord(record)) return record;
 
   const nextSlots = { ...record.slots };
+  const kind = CONTRIBUTOR_KINDS.has(contribution.kind)
+    ? contribution.kind
+    : ANSWER_CONTRIBUTOR_KIND.LIFECYCLE;
   for (const [key, slot] of Object.entries(contribution.slots || {})) {
     if (!ANSWER_SLOT_KEYS.includes(key)) continue;
+    if (!slotAllowedForContribution(kind, key, slot)) continue;
     nextSlots[key] = mergeSlot(record.slots[key], { ...slot, key });
   }
 
-  const nextEvidence = contribution.evidence
-    ? {
-        id: record.evidence.id || contribution.evidence.id || record.identityKey,
-        passages: [
-          ...evidencePassages(record.evidence),
-          ...evidencePassages(contribution.evidence),
-        ],
-      }
+  const allowedEvidence = evidenceAllowedForContribution(kind, contribution.evidence);
+  const nextEvidence = allowedEvidence
+    ? mergeEvidenceRecords(record.evidence, allowedEvidence, record.identityKey)
     : record.evidence;
 
   return createAnswerRecord({
@@ -291,6 +374,7 @@ export function createPresentationFromAnswerText({
     evidence: {
       id: identity && Object.values(identity).join(":"),
       passages: sources.map((source) => ({ kind: "source", value: source })),
+      evaluations: [],
     },
     slots,
   });

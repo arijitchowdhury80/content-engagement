@@ -142,3 +142,50 @@ test("shared renderer defers post-answer footer regions while streaming", () => 
   assert.equal(root.querySelectorAllByPart("answer-confidence")[0].getAttribute("data-state"), "loading");
   assert.equal(root.querySelectorAllByPart("answer-follow-up")[0].getAttribute("data-state"), "empty");
 });
+
+test("shared renderer ignores caller-supplied footer order and uses the canonical order", () => {
+  const record = createPresentationFromAnswerText({
+    identity,
+    text: [
+      "Search implementation is like setting up checkout lanes.",
+      "",
+      "Short version: start simple, then scale the controls.",
+      "",
+      "Use the docs to confirm the exact integration path.",
+    ].join("\n"),
+    sources: [{ title: "Docs" }],
+    telemetry: { inputTokens: 1200, outputTokens: 40 },
+    compareAction: { label: "Compare with Prod" },
+    confidence: { score: 8 },
+    lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+  });
+  const presentation = toAnswerPresentation(record);
+  const spoofed = {
+    ...presentation,
+    footer: {
+      ...presentation.footer,
+      order: ["confidence", "followUp", "sources"],
+    },
+  };
+  const container = fakeContainer();
+  const renderedParts = [];
+  const renderer = createAnswerRenderer({
+    renderSlot(element) {
+      renderedParts.push(element.getAttribute("part"));
+    },
+  });
+
+  const root = renderer.render(container, spoofed);
+
+  assert.equal(
+    root.querySelectorAllByPart("answer-footer")[0].getAttribute("data-order"),
+    "sources telemetry compareAction confidence followUp"
+  );
+  assert.deepEqual(renderedParts.slice(3, 8), [
+    "answer-sources",
+    "answer-telemetry",
+    "answer-compare-action",
+    "answer-confidence",
+    "answer-follow-up",
+  ]);
+});

@@ -10,7 +10,12 @@ import {
   isAnswerRecordComplete,
 } from "../source/shared/core/answer-record.mjs";
 import {
+  createProgressContribution,
+  createSourcesContribution,
+} from "../source/shared/widget/answer-contributors.mjs";
+import {
   applyAnswerContribution,
+  ANSWER_CONTRIBUTOR_KIND,
   createAnswerContributor,
   createFailedAnswerPresentation,
   createPostAnswerFooterState,
@@ -165,26 +170,23 @@ test("contributors update data only for the matching exact answer attempt", () =
   const record = createAnswerRecord({ identity });
   const accepted = applyAnswerContribution(
     record,
-    createAnswerContributor({
+    createSourcesContribution({
       identity,
-      slots: {
-        sources: { status: ANSWER_SLOT_STATUS.READY, value: [{ title: "Docs" }] },
-      },
-      evidence: { sources: [{ title: "Docs" }] },
+      sources: [{ title: "Docs" }],
     })
   );
   const rejected = applyAnswerContribution(
     accepted,
-    createAnswerContributor({
+    createSourcesContribution({
       identity: { ...identity, networkAttemptId: "attempt-2" },
-      slots: {
-        sources: { status: ANSWER_SLOT_STATUS.READY, value: [{ title: "Wrong attempt" }] },
-      },
+      sources: [{ title: "Wrong attempt" }],
     })
   );
 
   assert.equal(accepted.slots.sources.value[0].title, "Docs");
+  assert.equal(accepted.slots.sources.value[0].evidencePassageId, "source:retrieval:0:docs");
   assert.equal(accepted.evidence.passages[0].kind, "source");
+  assert.equal(accepted.evidence.passages[0].id, "source:retrieval:0:docs");
   assert.equal(accepted.evidence.passages[0].value.title, "Docs");
   assert.equal(Object.hasOwn(accepted.evidence, "sources"), false);
   assert.equal(Object.hasOwn(accepted.evidence, "judgeEvidence"), false);
@@ -197,6 +199,7 @@ test("closed answer records reject stale late updates after reset or supersessio
   const updated = applyAnswerContribution(
     closed,
     createAnswerContributor({
+      kind: ANSWER_CONTRIBUTOR_KIND.CONTENT,
       identity,
       slots: {
         followUp: { status: ANSWER_SLOT_STATUS.READY, value: "Late stale question?" },
@@ -212,34 +215,88 @@ test("progress contributions cannot regress within the same answer attempt", () 
   const record = createAnswerRecord({ identity });
   const half = applyAnswerContribution(
     record,
-    createAnswerContributor({
+    createProgressContribution({
       identity,
-      slots: {
-        progress: { status: ANSWER_SLOT_STATUS.READY, value: { percent: 50 } },
-      },
+      percent: 50,
     })
   );
   const staleLower = applyAnswerContribution(
     half,
-    createAnswerContributor({
+    createProgressContribution({
       identity,
-      slots: {
-        progress: { status: ANSWER_SLOT_STATUS.READY, value: { percent: 20 } },
-      },
+      percent: 20,
     })
   );
   const higher = applyAnswerContribution(
     staleLower,
-    createAnswerContributor({
+    createProgressContribution({
       identity,
-      slots: {
-        progress: { status: ANSWER_SLOT_STATUS.READY, value: { percent: 100 } },
-      },
+      percent: 100,
     })
   );
 
   assert.equal(staleLower.slots.progress.value.percent, 50);
   assert.equal(higher.slots.progress.value.percent, 100);
+});
+
+test("reducer enforces contributor slot and evidence capabilities", () => {
+  const record = createAnswerRecord({ identity });
+  const rogue = applyAnswerContribution(
+    record,
+    createAnswerContributor({
+      kind: ANSWER_CONTRIBUTOR_KIND.TELEMETRY,
+      identity,
+      slots: {
+        telemetry: { status: ANSWER_SLOT_STATUS.READY, value: { inputTokens: 1000 } },
+        sources: { status: ANSWER_SLOT_STATUS.READY, value: [{ title: "Should not land" }] },
+        followUp: { status: ANSWER_SLOT_STATUS.READY, value: "Should not land?" },
+      },
+      evidence: {
+        passages: [{ kind: "source", value: { title: "Should not land" } }],
+        evaluations: [{ kind: "judge", passageIds: ["source:retrieval:0:docs"] }],
+      },
+    })
+  );
+
+  assert.equal(rogue.slots.telemetry.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(rogue.slots.sources.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(rogue.slots.followUp.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.deepEqual(rogue.evidence.passages, []);
+  assert.deepEqual(rogue.evidence.evaluations, []);
+});
+
+test("canonical evidence dedupes sources and keeps judge evaluations as references", () => {
+  const source = createSourcesContribution({
+    identity,
+    sources: [{ title: "Docs", url: "https://example.com/docs" }],
+  });
+  const duplicateSource = createSourcesContribution({
+    identity,
+    sources: [{ title: "Docs", url: "https://example.com/docs" }],
+  });
+  const judged = createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.CONFIDENCE,
+    identity,
+    slots: {
+      confidence: { status: ANSWER_SLOT_STATUS.READY, value: { score: 8.1 } },
+    },
+    evidence: {
+      evaluations: [{
+        role: "factuality",
+        passageIds: ["source:retrieval:0:https-example-com-docs"],
+      }],
+    },
+  });
+
+  const withSource = applyAnswerContribution(createAnswerRecord({ identity }), source);
+  const withDuplicate = applyAnswerContribution(withSource, duplicateSource);
+  const withJudgment = applyAnswerContribution(withDuplicate, judged);
+
+  assert.equal(withJudgment.evidence.passages.length, 1);
+  assert.equal(withJudgment.evidence.passages[0].id, "source:retrieval:0:https-example-com-docs");
+  assert.equal(withJudgment.evidence.evaluations.length, 1);
+  assert.deepEqual(withJudgment.evidence.evaluations[0].passageIds, ["source:retrieval:0:https-example-com-docs"]);
+  assert.equal(withJudgment.evidence.evaluations[0].kind, "judge");
 });
 
 test("shared harness modules do not touch DOM placement APIs", async () => {

@@ -22,7 +22,9 @@ test("shared renderer owns placement without owning Algolia presentation or tran
   assert.match(source, /replaceChildren/);
   assert.match(source, /createElement/);
   assert.match(source, /ANSWER_FOOTER_SLOT_ORDER/);
+  assert.match(source, /for \(const slotKey of ANSWER_FOOTER_SLOT_ORDER\)/);
   assert.doesNotMatch(source, /const\s+FOOTER_REGIONS/);
+  assert.doesNotMatch(source, /viewModel\.footer\?\.order \|\| ANSWER_FOOTER_SLOT_ORDER/);
   assert.doesNotMatch(source, /fetch|agent-studio|AlgoliaJudgeCore|ACS_COMPARE|sessionStorage|localStorage/);
   assert.doesNotMatch(source, /className|style\.|algolia-usage-pill|acs-compare-toggle|Confidence|Sources/);
 });

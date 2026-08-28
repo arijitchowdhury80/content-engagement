@@ -1,8 +1,10 @@
 import {
   ANSWER_LIFECYCLE,
   ANSWER_SLOT_STATUS,
+  canonicalEvidencePassageId,
 } from "../core/answer-record.mjs";
 import {
+  ANSWER_CONTRIBUTOR_KIND,
   createAnswerContributor,
   splitAnswerContent,
 } from "./answer-presentation.mjs";
@@ -25,6 +27,41 @@ function clampPercent(percent) {
   return Math.max(0, Math.min(100, value));
 }
 
+function sourcePassage(source, index) {
+  const origin = hasObjectValue(source) && typeof source.origin === "string" && source.origin.trim()
+    ? source.origin.trim()
+    : "retrieval";
+  const id = canonicalEvidencePassageId({
+    kind: "source",
+    origin,
+    sequence: index,
+    value: source,
+    id: hasObjectValue(source) ? source.evidencePassageId || source.passageId : null,
+  });
+  return { id, kind: "source", origin, sequence: index, value: source };
+}
+
+function visibleSource(source, passage) {
+  return hasObjectValue(source)
+    ? { ...source, evidencePassageId: passage.id }
+    : { title: asText(source), evidencePassageId: passage.id };
+}
+
+function evidenceEvaluation(item, index) {
+  const value = hasObjectValue(item) ? item : { value: item };
+  const passageIds = asArray(value.passageIds || value.sourcePassageIds || value.referencedPassageIds || value.references)
+    .map(asText)
+    .filter(Boolean);
+  return {
+    ...value,
+    kind: "judge",
+    origin: "confidence",
+    sequence: index,
+    passageIds,
+    value,
+  };
+}
+
 export function createAnswerContentContribution({
   identity,
   text = "",
@@ -32,6 +69,7 @@ export function createAnswerContentContribution({
 } = {}) {
   const content = splitAnswerContent(text);
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.CONTENT,
     identity,
     lifecycle,
     slots: {
@@ -53,19 +91,22 @@ export function createAnswerContentContribution({
 
 export function createSourcesContribution({ identity, sources = [] } = {}) {
   const normalized = asArray(sources);
+  const passages = normalized.map(sourcePassage);
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.SOURCES,
     identity,
     slots: {
       sources: normalized.length
-        ? { status: ANSWER_SLOT_STATUS.READY, value: normalized }
+        ? { status: ANSWER_SLOT_STATUS.READY, value: normalized.map((source, index) => visibleSource(source, passages[index])) }
         : { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: [], message: "Sources unavailable." },
     },
-    evidence: { passages: normalized.map((source) => ({ kind: "source", value: source })) },
+    evidence: { passages },
   });
 }
 
 export function createTelemetryContribution({ identity, telemetry = null } = {}) {
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.TELEMETRY,
     identity,
     slots: {
       telemetry: hasObjectValue(telemetry)
@@ -77,18 +118,20 @@ export function createTelemetryContribution({ identity, telemetry = null } = {})
 
 export function createConfidenceContribution({ identity, confidence = null, judgeEvidence = [] } = {}) {
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.CONFIDENCE,
     identity,
     slots: {
       confidence: hasObjectValue(confidence)
         ? { status: ANSWER_SLOT_STATUS.READY, value: confidence }
         : { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Confidence unavailable." },
     },
-    evidence: { passages: asArray(judgeEvidence).map((item) => ({ kind: "judge", value: item })) },
+    evidence: { evaluations: asArray(judgeEvidence).map(evidenceEvaluation) },
   });
 }
 
 export function createOpaqueActionContribution({ identity, action = null } = {}) {
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.OPAQUE_ACTION,
     identity,
     slots: {
       compareAction: action
@@ -100,6 +143,7 @@ export function createOpaqueActionContribution({ identity, action = null } = {})
 
 export function createProgressContribution({ identity, percent = 0, phase = null, lifecycle = null } = {}) {
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.PROGRESS,
     identity,
     lifecycle,
     slots: {
@@ -119,6 +163,7 @@ export function createErrorRetryContribution({
 } = {}) {
   const status = retrying ? ANSWER_SLOT_STATUS.RETRYING : ANSWER_SLOT_STATUS.FAILED;
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.ERROR_RETRY,
     identity,
     lifecycle: retrying ? ANSWER_LIFECYCLE.RETRYING : ANSWER_LIFECYCLE.FAILED,
     slots: {

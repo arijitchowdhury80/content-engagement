@@ -85,29 +85,140 @@ function cloneValue(value) {
   return Object.fromEntries(Object.entries(value).map(([key, nested]) => [key, cloneValue(nested)]));
 }
 
-function normalizeEvidencePassage(passage) {
+function cleanIdPart(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 72) || "unknown";
+}
+
+function valueIdSeed(value) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value.evidencePassageId ||
+      value.passageId ||
+      value.objectID ||
+      value.objectId ||
+      value.id ||
+      value.url ||
+      value.href ||
+      value.title ||
+      value.label ||
+      JSON.stringify(value).slice(0, 120);
+  }
+  return value;
+}
+
+export function canonicalEvidencePassageId({
+  kind = "source",
+  origin = "retrieval",
+  sequence = 0,
+  value = null,
+  id = null,
+} = {}) {
+  if (typeof id === "string" && id.trim()) return id.trim();
+  const safeKind = cleanIdPart(kind);
+  const safeOrigin = cleanIdPart(origin);
+  const safeSequence = Number.isInteger(sequence) && sequence >= 0 ? sequence : 0;
+  return `${safeKind}:${safeOrigin}:${safeSequence}:${cleanIdPart(valueIdSeed(value))}`;
+}
+
+function canonicalEvidenceEvaluationId({
+  kind = "judge",
+  origin = "confidence",
+  sequence = 0,
+  passageIds = [],
+  id = null,
+} = {}) {
+  if (typeof id === "string" && id.trim()) return id.trim();
+  const safeKind = cleanIdPart(kind);
+  const safeOrigin = cleanIdPart(origin);
+  const safeSequence = Number.isInteger(sequence) && sequence >= 0 ? sequence : 0;
+  const referenced = passageIds.map(cleanIdPart).filter(Boolean).join("+") || "no-passage";
+  return `${safeKind}:${safeOrigin}:${safeSequence}:${referenced}`;
+}
+
+function normalizePassageIds(value) {
+  const source = value && typeof value === "object" && !Array.isArray(value)
+    ? value.passageIds || value.sourcePassageIds || value.referencedPassageIds || value.references
+    : [];
+  return (Array.isArray(source) ? source : [source])
+    .map((item) => typeof item === "string" ? item.trim() : "")
+    .filter(Boolean);
+}
+
+function normalizeEvidencePassage(passage, index = 0) {
   if (!passage || typeof passage !== "object" || Array.isArray(passage)) {
-    return { kind: "unknown", value: cloneValue(passage) };
+    const value = cloneValue(passage);
+    return {
+      id: canonicalEvidencePassageId({ kind: "unknown", origin: "unknown", sequence: index, value }),
+      kind: "unknown",
+      origin: "unknown",
+      sequence: index,
+      value,
+    };
   }
   const kind = typeof passage.kind === "string" && passage.kind.trim()
     ? passage.kind.trim()
     : "unknown";
+  const origin = typeof passage.origin === "string" && passage.origin.trim()
+    ? passage.origin.trim()
+    : kind === "source"
+      ? "retrieval"
+      : "unknown";
+  const sequence = Number.isInteger(passage.sequence) && passage.sequence >= 0 ? passage.sequence : index;
+  const value = cloneValue(passage.value ?? passage);
   return {
     ...cloneValue(passage),
+    id: canonicalEvidencePassageId({ kind, origin, sequence, value, id: passage.id }),
     kind,
-    value: cloneValue(passage.value ?? passage),
+    origin,
+    sequence,
+    value,
   };
 }
 
 function legacyEvidencePassages(evidence) {
   const passages = [];
   if (Array.isArray(evidence.sources)) {
-    for (const source of evidence.sources) passages.push({ kind: "source", value: source });
-  }
-  if (Array.isArray(evidence.judgeEvidence)) {
-    for (const item of evidence.judgeEvidence) passages.push({ kind: "judge", value: item });
+    evidence.sources.forEach((source, index) => {
+      passages.push({ kind: "source", origin: "retrieval", sequence: index, value: source });
+    });
   }
   return passages;
+}
+
+function normalizeEvidenceEvaluation(evaluation, index = 0) {
+  const value = cloneValue(evaluation);
+  const kind = typeof evaluation?.kind === "string" && evaluation.kind.trim()
+    ? evaluation.kind.trim()
+    : "judge";
+  const origin = typeof evaluation?.origin === "string" && evaluation.origin.trim()
+    ? evaluation.origin.trim()
+    : "confidence";
+  const sequence = Number.isInteger(evaluation?.sequence) && evaluation.sequence >= 0 ? evaluation.sequence : index;
+  const passageIds = normalizePassageIds(evaluation);
+  return {
+    ...(value && typeof value === "object" && !Array.isArray(value) ? value : { value }),
+    id: canonicalEvidenceEvaluationId({ kind, origin, sequence, passageIds, id: evaluation?.id }),
+    kind,
+    origin,
+    sequence,
+    passageIds,
+    value,
+  };
+}
+
+function legacyEvidenceEvaluations(evidence) {
+  if (!Array.isArray(evidence.judgeEvidence)) return [];
+  return evidence.judgeEvidence.map((item, index) => ({
+    kind: "judge",
+    origin: "confidence",
+    sequence: index,
+    passageIds: normalizePassageIds(item),
+    value: item,
+  }));
 }
 
 export function createAnswerIdentity(identity) {
@@ -135,9 +246,13 @@ export function createAnswerEvidenceRecord(evidence = {}) {
   const passages = Array.isArray(evidence.passages)
     ? evidence.passages.map(normalizeEvidencePassage)
     : legacyEvidencePassages(evidence).map(normalizeEvidencePassage);
+  const evaluations = Array.isArray(evidence.evaluations)
+    ? evidence.evaluations.map(normalizeEvidenceEvaluation)
+    : legacyEvidenceEvaluations(evidence).map(normalizeEvidenceEvaluation);
   return deepFreeze({
     id: evidence.id || null,
     passages,
+    evaluations,
   });
 }
 

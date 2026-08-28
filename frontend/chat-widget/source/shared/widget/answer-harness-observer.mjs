@@ -8,6 +8,7 @@ import {
 } from "../core/answer-record.mjs";
 import {
   applyAnswerContribution,
+  ANSWER_CONTRIBUTOR_KIND,
   createAnswerContributor,
 } from "./answer-presentation.mjs";
 
@@ -49,6 +50,7 @@ function buildPreparedRecord(identity) {
 
 function buildCompletedContribution(identity) {
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.PROGRESS,
     identity,
     lifecycle: ANSWER_LIFECYCLE.COMPLETE,
     slots: {
@@ -62,6 +64,7 @@ function buildCompletedContribution(identity) {
 
 function buildLifecycleContribution(identity, lifecycle) {
   return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.LIFECYCLE,
     identity,
     lifecycle,
   });
@@ -91,6 +94,10 @@ export function createAnswerHarnessObserver({ onRecord } = {}) {
 
     if (event.eventName === "prepared") {
       const previousKey = state.activeBySegment.get(segmentKey);
+      if (previousKey === key) {
+        const existing = state.records.get(key);
+        if (existing) return existing;
+      }
       if (previousKey && previousKey !== key) {
         const previous = state.records.get(previousKey);
         if (previous) {

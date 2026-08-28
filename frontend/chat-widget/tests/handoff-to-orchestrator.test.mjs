@@ -351,6 +351,33 @@ test('answer identity uses the configured widget instance instead of a hardcoded
   );
 });
 
+test('payload widget instance metadata isolates two widget requests in one handoff runtime', async () => {
+  const harness = createHarness();
+  const preparedTurns = [];
+  harness.context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+
+  await harness.context.invokeTransport('https://primary.example/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      widgetInstanceId: 'widget-left',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'same question' }] }],
+    }),
+  });
+  await harness.context.invokeTransport('https://primary.example/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      metadata: { widgetInstanceId: 'widget-right' },
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'same question' }] }],
+    }),
+  });
+
+  assert.equal(preparedTurns[0].answerIdentity.widgetInstanceId, 'widget-left');
+  assert.equal(preparedTurns[1].answerIdentity.widgetInstanceId, 'widget-right');
+  assert.notEqual(preparedTurns[0].answerIdentity.networkAttemptId, preparedTurns[1].answerIdentity.networkAttemptId);
+});
+
 /*
  * Completed-turn lifecycle scenarios:
  * - A successful, fully consumed SSE response publishes one conversation id.

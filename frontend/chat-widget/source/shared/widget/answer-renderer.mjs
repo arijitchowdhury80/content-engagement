@@ -87,9 +87,8 @@ export function createAnswerRenderer({ renderSlot = null } = {}) {
       footer.setAttribute("part", assertPresentationPart("answer-footer"));
       footer.setAttribute("data-answer-footer", viewModel.identityKey);
       footer.setAttribute("data-post-stream", String(Boolean(viewModel.footer?.postStream)));
-      footer.setAttribute("data-order", (viewModel.footer?.order || []).join(" "));
-      const footerOrder = viewModel.footer?.order || ANSWER_FOOTER_SLOT_ORDER;
-      for (const slotKey of footerOrder) {
+      footer.setAttribute("data-order", ANSWER_FOOTER_SLOT_ORDER.join(" "));
+      for (const slotKey of ANSWER_FOOTER_SLOT_ORDER) {
         const part = FOOTER_PART_BY_SLOT[slotKey];
         if (!part) continue;
         footer.append(region(document, part, viewModel.footer?.[slotKey], renderSlot, viewModel));

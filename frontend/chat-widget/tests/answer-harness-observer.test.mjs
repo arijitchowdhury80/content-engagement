@@ -139,12 +139,39 @@ test("mirror observer merges typed slot contributions into one answer record", (
   assert.equal(record.slots.compareAction.value.label, "Compare with Prod");
   assert.equal(record.slots.confidence.value.score, 8.1);
   assert.equal(record.evidence.passages[0].kind, "source");
+  assert.equal(record.evidence.passages[0].id, "source:retrieval:0:docs");
   assert.equal(record.evidence.passages[0].value.title, "Docs");
-  assert.equal(record.evidence.passages[1].kind, "judge");
-  assert.equal(record.evidence.passages[1].value.judge, "factuality");
+  assert.equal(record.evidence.evaluations[0].kind, "judge");
+  assert.equal(record.evidence.evaluations[0].value.judge, "factuality");
   assert.equal(Object.hasOwn(record.evidence, "sources"), false);
   assert.equal(Object.hasOwn(record.evidence, "judgeEvidence"), false);
   assert.equal(record.slots.progress.value.percent, 100);
+});
+
+test("duplicate prepared replay for the same attempt does not erase later mirror state", () => {
+  const observer = createAnswerHarnessObserver();
+
+  observer.accept(event("prepared"));
+  const progressed = observer.accept(contributionEvent(createProgressContribution({ identity, percent: 60, phase: "streaming" })));
+  const replay = observer.accept(event("prepared"));
+
+  assert.equal(progressed.slots.progress.value.percent, 60);
+  assert.equal(replay.slots.progress.value.percent, 60);
+  assert.equal(observer.records().length, 1);
+  assert.deepEqual(observer.rejections(), []);
+});
+
+test("duplicate prepared replay after terminal completion does not reopen the answer", () => {
+  const observer = createAnswerHarnessObserver();
+
+  observer.accept(event("prepared"));
+  const complete = observer.accept(event("completed"));
+  const replay = observer.accept(event("prepared"));
+
+  assert.equal(complete.lifecycle, ANSWER_LIFECYCLE.COMPLETE);
+  assert.equal(replay.lifecycle, ANSWER_LIFECYCLE.COMPLETE);
+  assert.equal(replay.slots.progress.value.percent, 100);
+  assert.equal(observer.records().length, 1);
 });
 
 test("mirror observer preserves monotonic progress across contribution events", () => {
