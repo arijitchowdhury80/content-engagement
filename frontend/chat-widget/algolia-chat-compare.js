@@ -382,12 +382,13 @@
     // Primary reset signal, dispatched by algolia-engagement-tracker.js.
     document.addEventListener("algolia-visitor-state-reset", () => resetConversation("event"));
 
-    subscribeToPreparedTurns();
-    subscribeToCompletedTurns();
     reconcile();
     log("attached");
     return true;
   }
+
+  subscribeToPreparedTurns();
+  subscribeToCompletedTurns();
 
   (function waitForWidget(tries = 0) {
     if (!ENDPOINT_OK) return log("no production config; compare disabled");
