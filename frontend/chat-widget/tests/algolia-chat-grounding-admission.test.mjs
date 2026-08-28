@@ -39,6 +39,7 @@ function fixture() {
       discoveryTurn: 'This is the grounded answer for the current discovery turn.',
       twoTurnRace: 'InstantSearch is available for React implementations.',
       retry429: 'The rate-limited request recovered safely.',
+      manualRetry429: 'The manually retried rate-limited request recovered safely.',
       retry500: 'The server-error request recovered safely.'
     };
     const stream = (frames) => {
@@ -104,6 +105,9 @@ function fixture() {
           return new Response('rate limited', { status: 429, headers: { 'retry-after': '0' } });
         }
         if (scenario === 'retry429Long') {
+          return new Response('rate limited', { status: 429, headers: { 'retry-after': '60' } });
+        }
+        if (scenario === 'manualRetry429' && window.__agentRequests.length === 1) {
           return new Response('rate limited', { status: 429, headers: { 'retry-after': '60' } });
         }
         if (scenario === 'retry500' && window.__agentRequests.length === 1) {
@@ -350,6 +354,35 @@ test('a Retry-After beyond the turn deadline is honored without an early retry',
     const result = await runtimeState(run.page);
     assert.equal(result.agentRequestCount, 1);
     assert.match(result.text, /rate-limited right now/i);
+  } finally {
+    await closeScenario(run);
+  }
+});
+
+test('manual retry after a visible 429 error sends a fresh request and replaces the failed turn', async () => {
+  const run = await openFailedScenario('manualRetry429');
+  try {
+    let result = await runtimeState(run.page);
+    const firstTurnId = result.persisted.turns[0].id;
+    assert.equal(result.agentRequestCount, 1);
+    assert.match(result.text, /rate-limited right now/i);
+
+    await run.page.evaluate(() => {
+      const root = document.querySelector('algolia-chat').shadowRoot;
+      const retry = [...root.querySelectorAll('button')]
+        .find((button) => /retry/i.test(button.textContent));
+      if (!retry) throw new Error(`Retry button missing: ${root.textContent}`);
+      retry.click();
+    });
+    await run.page.waitForFunction(() => {
+      const raw = sessionStorage.getItem('algolia-chat:conversation');
+      return raw && JSON.parse(raw).turns[0]?.segments[0]?.status === 'success';
+    }, null, { timeout: 10_000 });
+    result = await runtimeState(run.page);
+
+    assert.equal(result.agentRequestCount, 2);
+    assert.notEqual(result.persisted.turns[0].id, firstTurnId);
+    assert.match(result.segment.text, /manually retried rate-limited request recovered safely/);
   } finally {
     await closeScenario(run);
   }
