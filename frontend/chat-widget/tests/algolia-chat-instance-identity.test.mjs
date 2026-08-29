@@ -796,6 +796,66 @@ test("local DOM output matches canonical harness slots for content, sources, and
   }
 });
 
+test("visible content layer prefers the canonical parity splitter when it is loaded", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    await page.evaluate(() => {
+      const originalRuntime = window.algoliaAnswerHarnessRuntime;
+      window.algoliaAnswerHarnessRuntime = {
+        ...originalRuntime,
+        splitAnswerContent() {
+          return {
+            tldrAnalogy: "Canonical parity analogy: this should come from the shared splitter.",
+            tldrShort: "Short version: canonical parity short answer.",
+            details: "Canonical parity details body.",
+            followUp: null,
+          };
+        },
+      };
+      window.__identityResponseText = [
+        `data: ${JSON.stringify({
+          type: "text-delta",
+          delta: [
+            "A flat opening that the legacy splitter should not layer.",
+            "",
+            "A second flat paragraph without a short-answer marker.",
+            "",
+            "A third flat paragraph.",
+          ].join("\n"),
+        })}`,
+        "",
+      ].join("\n");
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.ask("canonical layer bridge");
+    });
+
+    await page.waitForFunction(() => {
+      const root = document.querySelector("algolia-chat")?.shadowRoot;
+      return root?.querySelector(".acs-answer-tldr")?.textContent.includes("Canonical parity analogy") &&
+        root?.querySelector(".acs-answer-details")?.textContent.includes("Canonical parity details body");
+    });
+
+    const state = await page.evaluate(() => {
+      const root = document.querySelector("algolia-chat").shadowRoot;
+      return {
+        tldrText: root.querySelector(".acs-answer-tldr")?.textContent.replace(/\s+/g, " ").trim(),
+        analogyStyle: getComputedStyle(root.querySelector(".acs-answer-analogy")).fontStyle,
+        shortStyle: getComputedStyle(root.querySelector(".acs-answer-short")).fontStyle,
+        detailsText: root.querySelector(".acs-answer-details")?.textContent.replace(/\s+/g, " ").trim(),
+      };
+    });
+
+    assert.match(state.tldrText, /Canonical parity analogy/);
+    assert.match(state.tldrText, /Short version: canonical parity short answer/);
+    assert.equal(state.analogyStyle, "italic");
+    assert.notEqual(state.shortStyle, "italic");
+    assert.match(state.detailsText, /Canonical parity details body/);
+    assert.doesNotMatch(state.detailsText, /flat opening/i);
+  } finally {
+    await page.close();
+  }
+});
+
 test("post-answer controls wait for completion and mirror telemetry and compare slots", async () => {
   const page = await createTwoWidgetPage({ loadCompare: true, loadTelemetry: true });
   try {

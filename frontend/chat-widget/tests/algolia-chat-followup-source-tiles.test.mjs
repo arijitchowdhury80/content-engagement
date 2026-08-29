@@ -85,6 +85,11 @@ test('assistant answer rendering uses one normalized presentation contract', () 
     /window\.algoliaAnswerContributors\?\.createAnswerContentContribution/,
     'answer harness mirror content must use the canonical shared content contributor'
   );
+  assert.match(
+    bundle,
+    /__arrieCanonicalAnswerLayer\([A-Za-z_$][\w$]*\.text\)\?\?__arrieAnswerLayer\([A-Za-z_$][\w$]*\.text\)/,
+    'the visible TLDR/details layer must prefer the canonical harness splitter when the parity runtime is loaded'
+  );
   assert.doesNotMatch(
     bundle,
     /function __arrieHarnessContentContribution[\s\S]*?__arrieAnswerLayer[\s\S]*?function __arrieHarnessSourcesContribution/,
