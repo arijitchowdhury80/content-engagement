@@ -2,6 +2,8 @@ import test, { after, before } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { chromium } from "playwright";
+import { ANSWER_SLOT_STATUS } from "../source/shared/core/answer-record.mjs";
+import { toAnswerPresentation } from "../source/shared/widget/answer-presentation.mjs";
 
 const chatPath = new URL("../algolia-chat.js", import.meta.url);
 const themePath = new URL("../algolia-chat-theme-algolia.js", import.meta.url);
@@ -1059,6 +1061,78 @@ test("post-answer controls wait for completion and mirror telemetry and compare 
     assert.doesNotMatch(parity.footerText, /Documentation/i);
     assert.match(parity.footerText, /In 44,414 \/ 819 Out/);
     assert.match(parity.footerText, /Compare with Prod/);
+  } finally {
+    await page.close();
+  }
+});
+
+test("completed browser answer without optional controls is explicit in canonical presentation", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    await page.evaluate(() => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.ask("no contributor terminal projection");
+    });
+    await page.waitForFunction(() => window.__identityStreams?.length === 1);
+
+    await page.evaluate(() => {
+      const answer = [
+        "A no-source answer is like a receipt printer with no paper trail: the words may exist, but the evidence drawer is empty.",
+        "",
+        "Short version: this terminal answer deliberately has no source, telemetry, Compare, confidence, or discovery follow-up contribution.",
+        "",
+        "Details remain visible while the canonical presentation accounts for every missing post-answer slot.",
+      ].join("\n");
+      window.__identityStreams[0].write([
+        `data: ${JSON.stringify({ type: "text-delta", delta: answer })}`,
+        "",
+      ].join("\n"));
+      window.__identityStreams[0].close();
+    });
+
+    await page.waitForFunction(() =>
+      window.algoliaAnswerHarness?.records?.().some((item) =>
+        item.lifecycle === "complete" &&
+        item.slots?.details?.status === "ready" &&
+        /canonical presentation accounts/.test(item.slots.details.value)
+      )
+    );
+
+    const state = await page.evaluate(() => {
+      const root = document.querySelector("algolia-chat").shadowRoot;
+      const record = window.algoliaAnswerHarness.records().find((item) =>
+        item.lifecycle === "complete" &&
+        item.slots?.details?.status === "ready" &&
+        /canonical presentation accounts/.test(item.slots.details.value)
+      );
+      return {
+        record: JSON.parse(JSON.stringify(record)),
+        legacyHasSources: Boolean(root.querySelector(".acs-source-section")),
+        legacyHasTelemetry: Boolean(root.querySelector(".algolia-usage-pill")),
+        legacyHasCompare: Boolean(root.querySelector("#acs-compare-toggle")),
+        legacyHasFollowUp: Boolean(root.querySelector(".acs-followup-card")),
+      };
+    });
+
+    assert.equal(state.record.slots.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(state.record.slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(state.record.slots.compareAction.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(state.record.slots.confidence.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(state.record.slots.followUp.status, ANSWER_SLOT_STATUS.EMPTY);
+
+    const presentation = toAnswerPresentation(state.record);
+    assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.followUp.status, ANSWER_SLOT_STATUS.EMPTY);
+
+    assert.equal(state.legacyHasSources, false, "legacy DOM currently omits unavailable source sections");
+    assert.equal(state.legacyHasTelemetry, false, "legacy DOM currently omits unavailable telemetry");
+    assert.equal(state.legacyHasCompare, false, "legacy DOM currently omits unavailable Compare");
+    assert.equal(state.legacyHasFollowUp, false, "legacy DOM currently omits empty follow-up cards");
   } finally {
     await page.close();
   }
