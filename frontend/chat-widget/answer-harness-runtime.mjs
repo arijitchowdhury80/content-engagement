@@ -12,14 +12,19 @@ import {
   createAlgoliaAnswerContentContribution,
   normalizeAlgoliaAnswerContent,
 } from "./source/algolia-com/code/answer-content-normalizer.mjs";
+import { createAlgoliaConfidenceContribution } from "./source/algolia-com/code/answer-confidence-normalizer.mjs";
 
 function installAnswerHarnessRuntime(target = globalThis) {
   const existing = target.algoliaAnswerHarness;
   const harness = existing?.accept ? existing : createAnswerHarnessObserver();
+  const createConfidence = (input = {}) => createAlgoliaConfidenceContribution({
+    ...input,
+    existingRecord: input.existingRecord || harness.getRecord(input.identity),
+  });
   target.algoliaAnswerHarness = harness;
   target.algoliaAnswerContributors = Object.freeze({
     createAnswerContentContribution: createAlgoliaAnswerContentContribution,
-    createConfidenceContribution,
+    createConfidenceContribution: createConfidence,
     createErrorRetryContribution,
     createOpaqueActionContribution,
     createProgressContribution,

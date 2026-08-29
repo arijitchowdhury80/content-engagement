@@ -796,6 +796,92 @@ test("local DOM output matches canonical harness slots for content, sources, and
   }
 });
 
+test("runtime confidence mirror references the same canonical source passages", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    await page.evaluate(() => {
+      const answer = [
+        "Evidence checking is like keeping one annotated notebook instead of separate piles of sticky notes.",
+        "",
+        "Short version: judges should point at the same source passages the visitor sees.",
+        "",
+        "Details remain in the answer while confidence records reference the shared evidence lineage.",
+      ].join("\n");
+      window.__identityResponseText = [
+        `data: ${JSON.stringify({
+          type: "tool-output-available",
+          output: {
+            hits: [
+              {
+                objectID: "lineage-doc",
+                title: "Lineage docs",
+                url: "https://www.algolia.com/doc/lineage",
+                source: "Documentation",
+              },
+            ],
+          },
+        })}`,
+        "",
+        `data: ${JSON.stringify({ type: "text-delta", delta: answer })}`,
+        "",
+      ].join("\n");
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.ask("mirror confidence lineage");
+    });
+    await page.waitForFunction(() =>
+      window.algoliaAnswerHarness?.records?.().some((record) =>
+        record.lifecycle === "complete" &&
+        record.slots?.sources?.status === "ready" &&
+        record.evidence?.passages?.some((passage) => passage.kind === "source")
+      )
+    );
+
+    const lineage = await page.evaluate(() => {
+      const record = window.algoliaAnswerHarness.records().find((item) =>
+        item.lifecycle === "complete" &&
+        item.slots?.sources?.status === "ready" &&
+        item.evidence?.passages?.some((passage) => passage.kind === "source")
+      );
+      const contribution = window.algoliaAnswerContributors.createConfidenceContribution({
+        identity: record.identity,
+        confidence: {
+          composite: 8.8,
+          groundingStatus: "supported",
+          perJudge: [
+            { role: "skeptic", summary: "Evidence is present." },
+            { role: "referee", summary: "Sources align." },
+            { role: "advocate", summary: "The answer is useful." },
+          ],
+        },
+      });
+      window.algoliaAnswerHarness.accept({
+        eventName: "contribution",
+        detail: { answerIdentity: record.identity, contribution },
+      });
+      const updated = window.algoliaAnswerHarness.getRecord(record.identity);
+      return {
+        confidenceStatus: updated.slots.confidence.status,
+        sourceIds: updated.evidence.passages
+          .filter((passage) => passage.kind === "source")
+          .map((passage) => passage.id),
+        evaluationPassageIds: updated.evidence.evaluations.map((evaluation) => evaluation.passageIds),
+        evaluationRoles: updated.evidence.evaluations.map((evaluation) => evaluation.role),
+      };
+    });
+
+    assert.equal(lineage.confidenceStatus, "ready");
+    assert.deepEqual(lineage.sourceIds, ["source:retrieval:0:lineage-doc"]);
+    assert.deepEqual(lineage.evaluationPassageIds, [
+      ["source:retrieval:0:lineage-doc"],
+      ["source:retrieval:0:lineage-doc"],
+      ["source:retrieval:0:lineage-doc"],
+    ]);
+    assert.deepEqual(lineage.evaluationRoles, ["skeptic", "referee", "advocate"]);
+  } finally {
+    await page.close();
+  }
+});
+
 test("visible content layer prefers the canonical Algolia normalizer when it is loaded", async () => {
   const page = await createTwoWidgetPage();
   try {

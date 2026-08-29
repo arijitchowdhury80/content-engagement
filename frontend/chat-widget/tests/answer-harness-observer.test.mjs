@@ -6,13 +6,15 @@ import {
 } from "../source/shared/core/answer-record.mjs";
 import {
   createAnswerContentContribution,
-  createConfidenceContribution,
   createOpaqueActionContribution,
   createProgressContribution,
   createSourcesContribution,
   createTelemetryContribution,
 } from "../source/shared/widget/answer-contributors.mjs";
 import { createAnswerHarnessObserver } from "../source/shared/widget/answer-harness-observer.mjs";
+import {
+  createAlgoliaConfidenceContribution,
+} from "../source/algolia-com/code/answer-confidence-normalizer.mjs";
 
 const identity = Object.freeze({
   widgetInstanceId: "widget-1",
@@ -117,10 +119,14 @@ test("mirror observer merges typed slot contributions into one answer record", (
     identity,
     action: { label: "Compare with Prod" },
   })));
-  observer.accept(contributionEvent(createConfidenceContribution({
+  const recordWithSources = observer.getRecord(identity);
+  observer.accept(contributionEvent(createAlgoliaConfidenceContribution({
     identity,
-    confidence: { score: 8.1 },
-    judgeEvidence: [{ judge: "factuality", passageIds: ["source:retrieval:0:docs"] }],
+    confidence: {
+      score: 8.1,
+      perJudge: [{ role: "factuality", summary: "Grounded." }],
+    },
+    existingRecord: recordWithSources,
   })));
   const record = observer.accept(event("completed"));
 
@@ -137,7 +143,8 @@ test("mirror observer merges typed slot contributions into one answer record", (
   assert.equal(record.evidence.passages[0].id, "source:retrieval:0:docs");
   assert.equal(record.evidence.passages[0].value.title, "Docs");
   assert.equal(record.evidence.evaluations[0].kind, "judge");
-  assert.equal(record.evidence.evaluations[0].value.judge, "factuality");
+  assert.equal(record.evidence.evaluations[0].role, "factuality");
+  assert.deepEqual(record.evidence.evaluations[0].passageIds, ["source:retrieval:0:docs"]);
   assert.equal(Object.hasOwn(record.evidence, "sources"), false);
   assert.equal(Object.hasOwn(record.evidence, "judgeEvidence"), false);
   assert.equal(record.slots.progress.value.percent, 100);

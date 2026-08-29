@@ -27,6 +27,9 @@ import {
 import {
   normalizeAlgoliaAnswerContent,
 } from "../source/algolia-com/code/answer-content-normalizer.mjs";
+import {
+  createAlgoliaConfidenceContribution,
+} from "../source/algolia-com/code/answer-confidence-normalizer.mjs";
 
 const identity = Object.freeze({
   widgetInstanceId: "widget-1",
@@ -410,6 +413,46 @@ test("confidence mirror can explicitly mark missing evidence lineage unavailable
   assert.equal(record.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.match(record.slots.confidence.message, /lineage unavailable/i);
   assert.deepEqual(record.evidence.evaluations, []);
+});
+
+test("Algolia confidence contribution references canonical source passages from the same answer record", () => {
+  const withSource = applyAnswerContribution(
+    createAnswerRecord({ identity }),
+    createSourcesContribution({
+      identity,
+      sources: [{ title: "Docs", url: "https://example.com/docs" }],
+    })
+  );
+  const withConfidence = applyAnswerContribution(
+    withSource,
+    createAlgoliaConfidenceContribution({
+      identity,
+      existingRecord: withSource,
+      confidence: {
+        composite: 8.4,
+        groundingStatus: "supported",
+        perJudge: [
+          { role: "skeptic", scores: { grounding: 8 }, summary: "Grounded." },
+          { role: "referee", scores: { grounding: 9 }, summary: "Consistent." },
+        ],
+      },
+    })
+  );
+
+  assert.equal(withConfidence.slots.confidence.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(withConfidence.evidence.passages.length, 1);
+  assert.equal(withConfidence.evidence.evaluations.length, 2);
+  assert.deepEqual(
+    withConfidence.evidence.evaluations.map((evaluation) => evaluation.passageIds),
+    [
+      ["source:retrieval:0:https-example-com-docs"],
+      ["source:retrieval:0:https-example-com-docs"],
+    ]
+  );
+  assert.deepEqual(
+    withConfidence.evidence.evaluations.map((evaluation) => evaluation.role),
+    ["skeptic", "referee"]
+  );
 });
 
 test("reducer enforces contributor slot and evidence capabilities", () => {
