@@ -44,6 +44,17 @@ const POST_STREAM_LIFECYCLES = new Set([
   ANSWER_LIFECYCLE.COMPLETE,
   ANSWER_LIFECYCLE.FAILED,
 ]);
+const TERMINAL_UNAVAILABLE_LIFECYCLES = new Set([
+  ANSWER_LIFECYCLE.COMPLETE,
+  ANSWER_LIFECYCLE.FAILED,
+]);
+const TERMINAL_UNAVAILABLE_MESSAGES = Object.freeze({
+  sources: "Sources unavailable.",
+  telemetry: "Telemetry unavailable.",
+  compareAction: "Compare unavailable.",
+  confidence: "Confidence unavailable.",
+  followUp: "Discovery follow-up unavailable.",
+});
 function deepFreeze(value) {
   if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
   Object.freeze(value);
@@ -301,6 +312,18 @@ function deferredSlot(slot, message) {
   });
 }
 
+function terminalSlot(slot, lifecycle) {
+  if (!slot || slot.status !== ANSWER_SLOT_STATUS.LOADING ||
+      !TERMINAL_UNAVAILABLE_LIFECYCLES.has(lifecycle)) {
+    return slot;
+  }
+  return createAnswerSlot(slot.key, {
+    status: ANSWER_SLOT_STATUS.UNAVAILABLE,
+    value: null,
+    message: TERMINAL_UNAVAILABLE_MESSAGES[slot.key] || "Unavailable.",
+  });
+}
+
 export function createPostAnswerFooterState(record) {
   assertAnswerRecord(record);
   const postStream = POST_STREAM_LIFECYCLES.has(record.lifecycle);
@@ -312,18 +335,18 @@ export function createPostAnswerFooterState(record) {
     postStream,
     order: ANSWER_FOOTER_SLOT_ORDER,
     slots: {
-      sources: slots.sources,
+      sources: terminalSlot(slots.sources, record.lifecycle),
       telemetry: postStream
-        ? slots.telemetry
+        ? terminalSlot(slots.telemetry, record.lifecycle)
         : deferredSlot(slots.telemetry, "Telemetry waits for answer completion."),
       compareAction: postStream
-        ? slots.compareAction
+        ? terminalSlot(slots.compareAction, record.lifecycle)
         : deferredSlot(slots.compareAction, "Compare waits for answer completion."),
       confidence: postStream
-        ? slots.confidence
+        ? terminalSlot(slots.confidence, record.lifecycle)
         : deferredSlot(slots.confidence, "Confidence waits for answer completion."),
       followUp: postStream
-        ? slots.followUp
+        ? terminalSlot(slots.followUp, record.lifecycle)
         : deferredSlot(slots.followUp, "Discovery follow-up waits for answer completion."),
     },
   });

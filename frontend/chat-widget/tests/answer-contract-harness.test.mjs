@@ -1042,11 +1042,30 @@ test("sources stay visible while post-answer controls wait for completion", () =
   assert.equal(completed.footer.compareAction.status, ANSWER_SLOT_STATUS.READY);
 });
 
-test("missing post-answer contributors remain explicit unavailable slots", () => {
+test("terminal answers project never-contributed footer slots as unavailable without mutating the record", () => {
+  for (const lifecycle of [ANSWER_LIFECYCLE.COMPLETE, ANSWER_LIFECYCLE.FAILED]) {
+    const record = createAnswerRecord({ identity, lifecycle });
+    const presentation = toAnswerPresentation(record);
+
+    assert.equal(record.slots.sources.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(record.slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(record.slots.compareAction.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(record.slots.confidence.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(record.slots.followUp.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.followUp.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  }
+});
+
+test("explicit null post-answer contributors remain explicit unavailable slots", () => {
   const unavailable = [
     createSourcesContribution({ identity, sources: [] }),
     createTelemetryContribution({ identity, telemetry: null }),
     createOpaqueActionContribution({ identity, action: null }),
+    createConfidenceContribution({ identity, confidence: null }),
     createProgressContribution({
       identity,
       percent: 100,
@@ -1061,7 +1080,7 @@ test("missing post-answer contributors remain explicit unavailable slots", () =>
   assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
-  assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
 });
 
 test("same-segment retry rejects stale post-answer controls from the old attempt", () => {
