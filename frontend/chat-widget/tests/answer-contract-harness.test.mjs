@@ -13,9 +13,14 @@ import {
 import {
   createAnswerContentContribution,
   createConfidenceContribution,
+  createOpaqueActionContribution,
   createProgressContribution,
   createSourcesContribution,
+  createTelemetryContribution,
 } from "../source/shared/widget/answer-contributors.mjs";
+import {
+  createAnswerHarnessObserver,
+} from "../source/shared/widget/answer-harness-observer.mjs";
 import {
   applyAnswerContribution,
   ANSWER_CONTRIBUTOR_KIND,
@@ -966,4 +971,166 @@ test("answer presentation exposes one ordered footer contract", () => {
   assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(presentation.footer.followUp.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(presentation.details.value.includes("Are you protecting"), false);
+});
+
+test("post-answer footer order is independent of telemetry and Compare arrival order", () => {
+  const applyAll = (contributions) => contributions.reduce(
+    (record, contribution) => applyAnswerContribution(record, contribution),
+    createAnswerRecord({ identity, lifecycle: ANSWER_LIFECYCLE.STREAMING })
+  );
+  const sources = createSourcesContribution({
+    identity,
+    sources: [{ title: "Docs" }],
+  });
+  const telemetry = createTelemetryContribution({
+    identity,
+    telemetry: { inputTokens: 12000, outputTokens: 900 },
+  });
+  const compare = createOpaqueActionContribution({
+    identity,
+    action: { label: "Compare with Prod", available: true },
+  });
+  const complete = createProgressContribution({
+    identity,
+    percent: 100,
+    lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+  });
+
+  const telemetryFirst = toAnswerPresentation(applyAll([telemetry, compare, sources, complete]));
+  const compareFirst = toAnswerPresentation(applyAll([compare, sources, telemetry, complete]));
+
+  assert.deepEqual(telemetryFirst.footer.order, compareFirst.footer.order);
+  assert.deepEqual(telemetryFirst.footer.order, [
+    "sources",
+    "telemetry",
+    "compareAction",
+    "confidence",
+    "followUp",
+  ]);
+  assert.equal(telemetryFirst.footer.sources.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(telemetryFirst.footer.telemetry.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(telemetryFirst.footer.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(compareFirst.footer.telemetry.value.inputTokens, 12000);
+  assert.equal(compareFirst.footer.compareAction.value.label, "Compare with Prod");
+});
+
+test("sources stay visible while post-answer controls wait for completion", () => {
+  const withContributions = [
+    createSourcesContribution({ identity, sources: [{ title: "Docs" }] }),
+    createTelemetryContribution({ identity, telemetry: { inputTokens: 4441, outputTokens: 819 } }),
+    createOpaqueActionContribution({ identity, action: { label: "Compare with Prod" } }),
+  ].reduce(
+    (record, contribution) => applyAnswerContribution(record, contribution),
+    createAnswerRecord({ identity, lifecycle: ANSWER_LIFECYCLE.STREAMING })
+  );
+
+  const streaming = toAnswerPresentation(withContributions);
+  const completed = toAnswerPresentation(applyAnswerContribution(
+    withContributions,
+    createProgressContribution({
+      identity,
+      percent: 100,
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+    })
+  ));
+
+  assert.equal(streaming.footer.sources.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(streaming.footer.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(streaming.footer.compareAction.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(completed.footer.sources.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(completed.footer.telemetry.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(completed.footer.compareAction.status, ANSWER_SLOT_STATUS.READY);
+});
+
+test("missing post-answer contributors remain explicit unavailable slots", () => {
+  const unavailable = [
+    createSourcesContribution({ identity, sources: [] }),
+    createTelemetryContribution({ identity, telemetry: null }),
+    createOpaqueActionContribution({ identity, action: null }),
+    createProgressContribution({
+      identity,
+      percent: 100,
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+    }),
+  ].reduce(
+    (record, contribution) => applyAnswerContribution(record, contribution),
+    createAnswerRecord({ identity })
+  );
+  const presentation = toAnswerPresentation(unavailable);
+
+  assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.LOADING);
+});
+
+test("same-segment retry rejects stale post-answer controls from the old attempt", () => {
+  const observer = createAnswerHarnessObserver();
+  const firstAttempt = { ...identity, networkAttemptId: "attempt-1" };
+  const retryAttempt = { ...identity, networkAttemptId: "attempt-2" };
+
+  observer.accept({ eventName: "prepared", detail: { answerIdentity: firstAttempt } });
+  observer.accept({ eventName: "prepared", detail: { answerIdentity: retryAttempt } });
+  observer.accept({
+    eventName: "contribution",
+    detail: {
+      answerIdentity: firstAttempt,
+      contribution: createTelemetryContribution({
+        identity: firstAttempt,
+        telemetry: { inputTokens: 1, outputTokens: 1 },
+      }),
+    },
+  });
+  observer.accept({
+    eventName: "contribution",
+    detail: {
+      answerIdentity: retryAttempt,
+      contribution: createTelemetryContribution({
+        identity: retryAttempt,
+        telemetry: { inputTokens: 2000, outputTokens: 300 },
+      }),
+    },
+  });
+
+  assert.equal(observer.getRecord(firstAttempt).lifecycle, ANSWER_LIFECYCLE.SUPERSEDED);
+  assert.equal(observer.getRecord(firstAttempt).slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(observer.getRecord(retryAttempt).slots.telemetry.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(observer.getRecord(retryAttempt).slots.telemetry.value.inputTokens, 2000);
+  assert.equal(observer.rejections().at(-1).reason, "stale_answer_attempt");
+});
+
+test("one widget reset does not accept late footer controls or affect a sibling widget", () => {
+  const observer = createAnswerHarnessObserver();
+  const left = { ...identity, widgetInstanceId: "left-widget" };
+  const right = { ...identity, widgetInstanceId: "right-widget" };
+
+  observer.accept({ eventName: "prepared", detail: { answerIdentity: left } });
+  observer.accept({ eventName: "prepared", detail: { answerIdentity: right } });
+  observer.accept({
+    eventName: "contribution",
+    detail: {
+      answerIdentity: right,
+      contribution: createOpaqueActionContribution({
+        identity: right,
+        action: { label: "Compare with Prod" },
+      }),
+    },
+  });
+  observer.accept({ eventName: "reset", detail: { answerIdentity: left } });
+  observer.accept({
+    eventName: "contribution",
+    detail: {
+      answerIdentity: left,
+      contribution: createTelemetryContribution({
+        identity: left,
+        telemetry: { inputTokens: 999, outputTokens: 999 },
+      }),
+    },
+  });
+
+  assert.equal(observer.getRecord(left).lifecycle, ANSWER_LIFECYCLE.RESET);
+  assert.equal(observer.getRecord(left).slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(observer.getRecord(right).lifecycle, ANSWER_LIFECYCLE.SEARCHING);
+  assert.equal(observer.getRecord(right).slots.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(observer.rejections().at(-1).reason, "stale_answer_attempt");
 });
