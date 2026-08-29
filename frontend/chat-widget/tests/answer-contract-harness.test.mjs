@@ -509,7 +509,7 @@ test("Algolia confidence contribution fails closed without sealed judge lineage"
   assert.equal(withConfidence.evidence.evaluations.length, 0);
 });
 
-test("Algolia confidence contribution maps sealed judge passage IDs to canonical source passages", async () => {
+test("Algolia confidence contribution stays unavailable until trusted judge lineage exists", async () => {
   const { evaluationPackage, evidencePassageId, reports, confidence } = await sealedLineageFixture();
   const withSource = applyAnswerContribution(
     createAnswerRecord({ identity }),
@@ -536,21 +536,9 @@ test("Algolia confidence contribution maps sealed judge passage IDs to canonical
     })
   );
 
-  assert.equal(withConfidence.slots.confidence.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(withConfidence.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(withConfidence.evidence.passages.length, 2);
-  assert.equal(withConfidence.evidence.evaluations.length, 3);
-  assert.deepEqual(
-    withConfidence.evidence.evaluations.map((evaluation) => evaluation.passageIds),
-    [
-      ["source:retrieval:0:visual-editor"],
-      ["source:retrieval:0:visual-editor"],
-      ["source:retrieval:0:visual-editor"],
-    ]
-  );
-  assert.deepEqual(
-    withConfidence.evidence.evaluations.map((evaluation) => evaluation.role),
-    ["skeptic", "referee", "advocate"]
-  );
+  assert.equal(withConfidence.evidence.evaluations.length, 0);
 });
 
 test("Algolia confidence contribution rejects hash, identity, failed-role, and mapping mismatches", async () => {
@@ -619,11 +607,8 @@ test("Algolia confidence contribution rejects hash, identity, failed-role, and m
   assert.equal(hashMismatch.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(staleIdentity.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(unrelatedMapping.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
-  assert.equal(withFailedRole.slots.confidence.status, ANSWER_SLOT_STATUS.READY);
-  assert.deepEqual(
-    withFailedRole.evidence.evaluations.map((evaluation) => evaluation.role),
-    ["skeptic", "referee"]
-  );
+  assert.equal(withFailedRole.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.deepEqual(withFailedRole.evidence.evaluations, []);
 });
 
 test("Algolia confidence contribution rejects fabricated judge lineage and missing sealed identity", async () => {
@@ -687,6 +672,56 @@ test("Algolia confidence contribution rejects fabricated judge lineage and missi
   assert.equal(fabricated.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(missingIdentity.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(wrongExistingRecord.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+});
+
+test("Algolia confidence contribution rejects a genuine judge package relabeled to another answer", async () => {
+  const answerA = await judgeCore.createEvaluationPackage({
+    question: "Question A?",
+    answer: "Answer A.",
+    hits: [{ objectID: "visual-editor", title: "Visual Editor", description: "Evidence for answer A only." }],
+  });
+  const answerAPassageId = answerA.evidencePacket.passageIndex.find((passage) =>
+    passage.fieldPath === "/output/hits/0/description"
+  ).evidencePassageId;
+  const reports = [
+    judgeReportFor(answerA, "skeptic", answerAPassageId),
+    judgeReportFor(answerA, "referee", answerAPassageId),
+    judgeReportFor(answerA, "advocate", answerAPassageId),
+  ];
+  const confidence = {
+    ...judgeCore.aggregateJudgeReports(reports),
+    evaluationId: answerA.evaluationId,
+    evidenceHash: answerA.evidenceHash,
+  };
+  const answerBIdentity = {
+    widgetInstanceId: "widget-b",
+    conversationId: "conversation-b",
+    answerSegmentId: "answer-b",
+    networkAttemptId: "attempt-b",
+  };
+  answerA.answerIdentity = answerBIdentity;
+  const answerBRecord = applyAnswerContribution(
+    createAnswerRecord({ identity: answerBIdentity }),
+    createSourcesContribution({
+      identity: answerBIdentity,
+      sources: [{ objectID: "visual-editor", title: "Visual Editor" }],
+    })
+  );
+  const relabeled = applyAnswerContribution(
+    answerBRecord,
+    createAlgoliaConfidenceContribution({
+      identity: answerBIdentity,
+      existingRecord: answerBRecord,
+      confidence,
+      evaluationPackage: answerA,
+      answerIdentity: answerBIdentity,
+      evidencePassageMap: { [answerAPassageId]: "source:retrieval:0:visual-editor" },
+      judgeReports: reports,
+    })
+  );
+
+  assert.equal(relabeled.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.deepEqual(relabeled.evidence.evaluations, []);
 });
 
 test("Algolia confidence contribution rejects role and aggregate inconsistencies", async () => {
