@@ -138,13 +138,11 @@ test("mirror observer merges typed slot contributions into one answer record", (
   assert.equal(record.slots.sources.value[0].title, "Docs");
   assert.equal(record.slots.telemetry.value.inputTokens, 44141);
   assert.equal(record.slots.compareAction.value.label, "Compare with Prod");
-  assert.equal(record.slots.confidence.value.score, 8.1);
+  assert.equal(record.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(record.evidence.passages[0].kind, "source");
   assert.equal(record.evidence.passages[0].id, "source:retrieval:0:docs");
   assert.equal(record.evidence.passages[0].value.title, "Docs");
-  assert.equal(record.evidence.evaluations[0].kind, "judge");
-  assert.equal(record.evidence.evaluations[0].role, "factuality");
-  assert.deepEqual(record.evidence.evaluations[0].passageIds, ["source:retrieval:0:docs"]);
+  assert.deepEqual(record.evidence.evaluations, []);
   assert.equal(Object.hasOwn(record.evidence, "sources"), false);
   assert.equal(Object.hasOwn(record.evidence, "judgeEvidence"), false);
   assert.equal(record.slots.progress.value.percent, 100);

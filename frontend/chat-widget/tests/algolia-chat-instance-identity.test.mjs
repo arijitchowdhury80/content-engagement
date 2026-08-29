@@ -796,7 +796,7 @@ test("local DOM output matches canonical harness slots for content, sources, and
   }
 });
 
-test("runtime confidence mirror references the same canonical source passages", async () => {
+test("runtime confidence mirror stays unavailable without sealed judge passage lineage", async () => {
   const page = await createTwoWidgetPage();
   try {
     await page.evaluate(() => {
@@ -869,14 +869,10 @@ test("runtime confidence mirror references the same canonical source passages", 
       };
     });
 
-    assert.equal(lineage.confidenceStatus, "ready");
+    assert.equal(lineage.confidenceStatus, "unavailable");
     assert.deepEqual(lineage.sourceIds, ["source:retrieval:0:lineage-doc"]);
-    assert.deepEqual(lineage.evaluationPassageIds, [
-      ["source:retrieval:0:lineage-doc"],
-      ["source:retrieval:0:lineage-doc"],
-      ["source:retrieval:0:lineage-doc"],
-    ]);
-    assert.deepEqual(lineage.evaluationRoles, ["skeptic", "referee", "advocate"]);
+    assert.deepEqual(lineage.evaluationPassageIds, []);
+    assert.deepEqual(lineage.evaluationRoles, []);
   } finally {
     await page.close();
   }
