@@ -873,9 +873,19 @@ test("post-answer controls wait for completion and mirror telemetry and compare 
       );
       const telemetry = footer.querySelector(".algolia-usage-pill");
       const compare = footer.querySelector("#acs-compare-toggle");
+      const completed = window.__identityHarnessEvents.find((event) =>
+        event.eventName === "completed" &&
+        event.detail?.answerIdentity?.widgetInstanceId === record.identity.widgetInstanceId &&
+        event.detail?.answerIdentity?.conversationId === record.identity.conversationId &&
+        event.detail?.answerIdentity?.answerSegmentId === record.identity.answerSegmentId &&
+        event.detail?.answerIdentity?.networkAttemptId === record.identity.networkAttemptId
+      );
       return {
+        footerLegacyTurnId: footer.dataset.algoliaAnswerFooter,
+        completedMessageId: completed?.detail?.messageId || null,
         footerText: footer.textContent.replace(/\s+/g, " ").trim(),
         sourceText: sources?.textContent.replace(/\s+/g, " ").trim(),
+        sourceInsideFooter: Boolean(sources && footer.contains(sources)),
         telemetryText: telemetry?.textContent.replace(/\s+/g, " ").trim(),
         compareText: compare?.textContent.replace(/\s+/g, " ").trim(),
         comparePressed: compare?.getAttribute("aria-pressed"),
@@ -884,6 +894,11 @@ test("post-answer controls wait for completion and mirror telemetry and compare 
       };
     });
 
+    assert.equal(
+      parity.footerLegacyTurnId,
+      parity.completedMessageId,
+      "the legacy footer id must belong to the same completed event as the selected canonical record",
+    );
     assert.equal(parity.telemetryText, "In 44,414 / 819 Out");
     assert.deepEqual(parity.harnessTelemetry, {
       inputTokens: 44414,
@@ -897,7 +912,9 @@ test("post-answer controls wait for completion and mirror telemetry and compare 
       pressed: false,
       available: true,
     });
+    assert.equal(parity.sourceInsideFooter, false, "sources must remain structurally separate from the post-answer footer");
     assert.match(parity.sourceText, /Documentation/i);
+    assert.doesNotMatch(parity.footerText, /Documentation/i);
     assert.match(parity.footerText, /In 44,414 \/ 819 Out/);
     assert.match(parity.footerText, /Compare with Prod/);
   } finally {
