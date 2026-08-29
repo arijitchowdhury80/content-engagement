@@ -86,6 +86,7 @@ async function sealedLineageFixture() {
     answer: lineageAnswer,
     hits: lineageHits,
   });
+  evaluationPackage.answerIdentity = identity;
   const evidencePassageId = evaluationPackage.evidencePacket.passageIndex.find((passage) =>
     passage.fieldPath === "/output/hits/0/description"
   ).evidencePassageId;
@@ -527,6 +528,7 @@ test("Algolia confidence contribution maps sealed judge passage IDs to canonical
       existingRecord: withSource,
       confidence,
       evaluationPackage,
+      answerIdentity: identity,
       evidencePassageMap: {
         [evidencePassageId]: "source:retrieval:0:visual-editor",
       },
@@ -564,6 +566,7 @@ test("Algolia confidence contribution rejects hash, identity, failed-role, and m
     identity,
     existingRecord: withSource,
     evaluationPackage,
+    answerIdentity: identity,
     evidencePassageMap: { [evidencePassageId]: "source:retrieval:0:visual-editor" },
   };
   const hashMismatch = applyAnswerContribution(
@@ -583,12 +586,12 @@ test("Algolia confidence contribution rejects hash, identity, failed-role, and m
       judgeReports: [reports.skeptic, reports.referee],
     })
   );
-  const missingMapping = applyAnswerContribution(
+  const unrelatedMapping = applyAnswerContribution(
     withSource,
     createAlgoliaConfidenceContribution({
       ...base,
       confidence,
-      evidencePassageMap: {},
+      evidencePassageMap: { [evidencePassageId]: "source:retrieval:1:extra-source" },
       judgeReports: [reports.skeptic, reports.referee],
     })
   );
@@ -615,12 +618,149 @@ test("Algolia confidence contribution rejects hash, identity, failed-role, and m
 
   assert.equal(hashMismatch.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(staleIdentity.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
-  assert.equal(missingMapping.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(unrelatedMapping.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(withFailedRole.slots.confidence.status, ANSWER_SLOT_STATUS.READY);
   assert.deepEqual(
     withFailedRole.evidence.evaluations.map((evaluation) => evaluation.role),
     ["skeptic", "referee"]
   );
+});
+
+test("Algolia confidence contribution rejects fabricated judge lineage and missing sealed identity", async () => {
+  const { evaluationPackage, evidencePassageId, reports, confidence } = await sealedLineageFixture();
+  const withSource = applyAnswerContribution(
+    createAnswerRecord({ identity }),
+    createSourcesContribution({
+      identity,
+      sources: [{ objectID: "visual-editor", title: "Visual Editor" }],
+    })
+  );
+  const explicitMap = { [evidencePassageId]: "source:retrieval:0:visual-editor" };
+  const fabricatedPackage = JSON.parse(JSON.stringify(evaluationPackage));
+  const withoutSealedIdentity = { ...evaluationPackage };
+  delete withoutSealedIdentity.answerIdentity;
+  const otherIdentity = { ...identity, widgetInstanceId: "widget-2" };
+  const wrongRecord = applyAnswerContribution(
+    createAnswerRecord({ identity: otherIdentity }),
+    createSourcesContribution({
+      identity: otherIdentity,
+      sources: [{ objectID: "visual-editor", title: "Visual Editor" }],
+    })
+  );
+
+  const fabricated = applyAnswerContribution(
+    withSource,
+    createAlgoliaConfidenceContribution({
+      identity,
+      existingRecord: withSource,
+      confidence,
+      evaluationPackage: fabricatedPackage,
+      answerIdentity: identity,
+      evidencePassageMap: explicitMap,
+      judgeReports: [reports.skeptic, reports.referee],
+    })
+  );
+  const missingIdentity = applyAnswerContribution(
+    withSource,
+    createAlgoliaConfidenceContribution({
+      identity,
+      existingRecord: withSource,
+      confidence,
+      evaluationPackage: withoutSealedIdentity,
+      evidencePassageMap: explicitMap,
+      judgeReports: [reports.skeptic, reports.referee],
+    })
+  );
+  const wrongExistingRecord = applyAnswerContribution(
+    withSource,
+    createAlgoliaConfidenceContribution({
+      identity,
+      existingRecord: wrongRecord,
+      confidence,
+      evaluationPackage,
+      answerIdentity: identity,
+      evidencePassageMap: explicitMap,
+      judgeReports: [reports.skeptic, reports.referee],
+    })
+  );
+
+  assert.equal(fabricated.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(missingIdentity.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(wrongExistingRecord.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+});
+
+test("Algolia confidence contribution rejects role and aggregate inconsistencies", async () => {
+  const { evaluationPackage, evidencePassageId, reports, confidence } = await sealedLineageFixture();
+  const withSource = applyAnswerContribution(
+    createAnswerRecord({ identity }),
+    createSourcesContribution({
+      identity,
+      sources: [{ objectID: "visual-editor", title: "Visual Editor" }],
+    })
+  );
+  const base = {
+    identity,
+    existingRecord: withSource,
+    evaluationPackage,
+    answerIdentity: identity,
+    evidencePassageMap: { [evidencePassageId]: "source:retrieval:0:visual-editor" },
+  };
+  const twoReportConfidence = {
+    ...judgeCore.aggregateJudgeReports([reports.skeptic, reports.referee]),
+    evaluationId: evaluationPackage.evaluationId,
+    evidenceHash: evaluationPackage.evidenceHash,
+  };
+  const unknownRole = {
+    ok: true,
+    role: "attacker",
+    errors: [],
+    value: { ...reports.skeptic.value, role: "attacker" },
+  };
+  const cases = [
+    createAlgoliaConfidenceContribution({
+      ...base,
+      confidence: {
+        ...judgeCore.aggregateJudgeReports([reports.skeptic]),
+        evaluationId: evaluationPackage.evaluationId,
+        evidenceHash: evaluationPackage.evidenceHash,
+      },
+      judgeReports: [reports.skeptic],
+    }),
+    createAlgoliaConfidenceContribution({
+      ...base,
+      confidence,
+      judgeReports: [reports.skeptic, reports.skeptic, reports.referee],
+    }),
+    createAlgoliaConfidenceContribution({
+      ...base,
+      confidence: {
+        ...judgeCore.aggregateJudgeReports([unknownRole, reports.referee]),
+        evaluationId: evaluationPackage.evaluationId,
+        evidenceHash: evaluationPackage.evidenceHash,
+      },
+      judgeReports: [unknownRole, reports.referee],
+    }),
+    createAlgoliaConfidenceContribution({
+      ...base,
+      confidence: { ...twoReportConfidence, status: "complete", provisional: false },
+      judgeReports: [reports.skeptic, reports.referee],
+    }),
+    createAlgoliaConfidenceContribution({
+      ...base,
+      confidence: { ...confidence, status: "provisional", provisional: true },
+      judgeReports: [reports.skeptic, reports.referee, reports.advocate],
+    }),
+    createAlgoliaConfidenceContribution({
+      ...base,
+      confidence: { ...twoReportConfidence, composite: twoReportConfidence.composite + 1 },
+      judgeReports: [reports.skeptic, reports.referee],
+    }),
+  ].map((contribution) => applyAnswerContribution(withSource, contribution));
+
+  for (const record of cases) {
+    assert.equal(record.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.deepEqual(record.evidence.evaluations, []);
+  }
 });
 
 test("reducer enforces contributor slot and evidence capabilities", () => {
