@@ -6,7 +6,6 @@ import {
 import {
   ANSWER_CONTRIBUTOR_KIND,
   createAnswerContributor,
-  splitAnswerContent,
 } from "./answer-presentation.mjs";
 
 function asArray(value) {
@@ -64,25 +63,29 @@ function evidenceEvaluation(item, index) {
 
 export function createAnswerContentContribution({
   identity,
-  text = "",
+  tldrAnalogy = null,
+  tldrShort = null,
+  details = "",
   followUp = null,
   lifecycle = ANSWER_LIFECYCLE.STREAMING,
 } = {}) {
-  const content = splitAnswerContent(text);
-  const discoveryFollowUp = content.followUp || asText(followUp);
+  const analogyText = asText(tldrAnalogy);
+  const shortText = asText(tldrShort);
+  const detailsText = asText(details);
+  const discoveryFollowUp = asText(followUp);
   return createAnswerContributor({
     kind: ANSWER_CONTRIBUTOR_KIND.CONTENT,
     identity,
     lifecycle,
     slots: {
-      tldrAnalogy: content.tldrAnalogy
-        ? { status: ANSWER_SLOT_STATUS.READY, value: content.tldrAnalogy }
+      tldrAnalogy: analogyText
+        ? { status: ANSWER_SLOT_STATUS.READY, value: analogyText }
         : { status: ANSWER_SLOT_STATUS.EMPTY, value: null, message: "No analogy canvas provided." },
-      tldrShort: content.tldrShort
-        ? { status: ANSWER_SLOT_STATUS.READY, value: content.tldrShort }
+      tldrShort: shortText
+        ? { status: ANSWER_SLOT_STATUS.READY, value: shortText }
         : { status: ANSWER_SLOT_STATUS.EMPTY, value: null, message: "No short answer provided." },
-      details: content.details
-        ? { status: ANSWER_SLOT_STATUS.READY, value: content.details }
+      details: detailsText
+        ? { status: ANSWER_SLOT_STATUS.READY, value: detailsText }
         : { status: ANSWER_SLOT_STATUS.EMPTY, value: null, message: "No detail body provided." },
       followUp: discoveryFollowUp
         ? { status: ANSWER_SLOT_STATUS.READY, value: discoveryFollowUp }

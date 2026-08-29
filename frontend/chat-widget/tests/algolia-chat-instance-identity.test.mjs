@@ -796,18 +796,18 @@ test("local DOM output matches canonical harness slots for content, sources, and
   }
 });
 
-test("visible content layer prefers the canonical parity splitter when it is loaded", async () => {
+test("visible content layer prefers the canonical Algolia normalizer when it is loaded", async () => {
   const page = await createTwoWidgetPage();
   try {
     await page.evaluate(() => {
       const originalRuntime = window.algoliaAnswerHarnessRuntime;
       window.algoliaAnswerHarnessRuntime = {
         ...originalRuntime,
-        splitAnswerContent() {
+        normalizeAnswerContent() {
           return {
-            tldrAnalogy: "Canonical parity analogy: this should come from the shared splitter.",
+            tldrAnalogy: "Canonical Algolia analogy: this should come from the Algolia normalizer.",
             tldrShort: "Short version: canonical parity short answer.",
-            details: "Canonical parity details body.",
+            details: "Canonical Algolia details body.",
             followUp: null,
           };
         },
@@ -831,8 +831,8 @@ test("visible content layer prefers the canonical parity splitter when it is loa
 
     await page.waitForFunction(() => {
       const root = document.querySelector("algolia-chat")?.shadowRoot;
-      return root?.querySelector(".acs-answer-tldr")?.textContent.includes("Canonical parity analogy") &&
-        root?.querySelector(".acs-answer-details")?.textContent.includes("Canonical parity details body");
+      return root?.querySelector(".acs-answer-tldr")?.textContent.includes("Canonical Algolia analogy") &&
+        root?.querySelector(".acs-answer-details")?.textContent.includes("Canonical Algolia details body");
     });
 
     const state = await page.evaluate(() => {
@@ -845,11 +845,11 @@ test("visible content layer prefers the canonical parity splitter when it is loa
       };
     });
 
-    assert.match(state.tldrText, /Canonical parity analogy/);
+    assert.match(state.tldrText, /Canonical Algolia analogy/);
     assert.match(state.tldrText, /Short version: canonical parity short answer/);
     assert.equal(state.analogyStyle, "italic");
     assert.notEqual(state.shortStyle, "italic");
-    assert.match(state.detailsText, /Canonical parity details body/);
+    assert.match(state.detailsText, /Canonical Algolia details body/);
     assert.doesNotMatch(state.detailsText, /flat opening/i);
   } finally {
     await page.close();

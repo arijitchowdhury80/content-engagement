@@ -14,6 +14,7 @@ test("presentation contract and view-model code remain free of runtime transport
 
   assert.doesNotMatch(source, /\bfetch\b|agent-studio|AlgoliaJudgeCore|ACS_COMPARE|sessionStorage|localStorage/);
   assert.doesNotMatch(source, /\bquerySelector|appendChild|insertBefore|replaceChildren\b/);
+  assert.doesNotMatch(source, /splitAnswerContent|DISCOVERY_MARKER_RE|TRAILING_QUESTION_RE|ANALOGY_RE|SHORT_ANSWER_RE/);
 });
 
 test("shared renderer owns placement without owning Algolia presentation or transport", () => {

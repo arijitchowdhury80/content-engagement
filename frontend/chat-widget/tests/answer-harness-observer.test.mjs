@@ -100,15 +100,10 @@ test("mirror observer merges typed slot contributions into one answer record", (
   observer.accept(event("prepared"));
   observer.accept(contributionEvent(createAnswerContentContribution({
     identity,
-    text: [
-      "API calls are like door swings in a busy store.",
-      "",
-      "Short version: data-requesting interactions usually count.",
-      "",
-      "Debounce typing and protect shared traffic.",
-      "",
-      "Are bots or normal browsers driving the cost?",
-    ].join("\n"),
+    tldrAnalogy: "API calls are like door swings in a busy store.",
+    tldrShort: "Short version: data-requesting interactions usually count.",
+    details: "Debounce typing and protect shared traffic.",
+    followUp: "Are bots or normal browsers driving the cost?",
   })));
   observer.accept(contributionEvent(createSourcesContribution({
     identity,

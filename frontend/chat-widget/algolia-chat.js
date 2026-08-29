@@ -98,7 +98,7 @@ async function oR(e,n){const i=e.beginRun();try{await aR(e,n)}finally{i()}}funct
 
 `),tldrBlocks:n.slice(a,a+s),details:__arrieCleanDetails([...u,...f].join(`
 
-`))}}function __arrieCanonicalAnswerLayer(e){const n=window.algoliaAnswerHarnessRuntime?.splitAnswerContent;if(typeof n!="function")return null;try{const i=n(e);if(!i?.tldrAnalogy)return null;const a=[i.tldrAnalogy,i.tldrShort].filter(Boolean),s=typeof i.details=="string"?i.details:"";return{tldr:a.join(`
+`))}}function __arrieCanonicalAnswerLayer(e){const n=window.algoliaAnswerHarnessRuntime?.normalizeAnswerContent;if(typeof n!="function")return null;try{const i=n(e);if(!i?.tldrAnalogy)return null;const a=[i.tldrAnalogy,i.tldrShort].filter(Boolean),s=typeof i.details=="string"?i.details:"";return{tldr:a.join(`
 
 `),tldrBlocks:a,details:s}}catch{return null}}function __arrieCleanDetails(e){return e.replace(/^\s{0,3}#{1,6}\s*details\s*\n+/i,"").trim()}function __arrieLayeredTldr({layer:e,unsupportedTerms:n=[]}){const i=e.tldrBlocks??OR(e.tldr),a=i[0],s=i.slice(1).join(`
 

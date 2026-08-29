@@ -22,9 +22,11 @@ import {
   createFailedAnswerPresentation,
   createPostAnswerFooterState,
   createPresentationFromAnswerText,
-  splitAnswerContent,
   toAnswerPresentation,
 } from "../source/shared/widget/answer-presentation.mjs";
+import {
+  normalizeAlgoliaAnswerContent,
+} from "../source/algolia-com/code/answer-content-normalizer.mjs";
 
 const identity = Object.freeze({
   widgetInstanceId: "widget-1",
@@ -68,7 +70,7 @@ test("TLDR splitting preserves analogy, short answer, details, and follow-up sep
     "<pivot>Are you protecting against bots or normal browsing costs?</pivot>",
   ].join("\n");
 
-  const split = splitAnswerContent(answer);
+  const split = normalizeAlgoliaAnswerContent(answer);
 
   assert.equal(split.tldrAnalogy, "API calls are like little door swings at a very busy store.");
   assert.equal(split.tldrShort, "Short version: almost every data request counts as a billable search request.");
@@ -80,13 +82,9 @@ test("TLDR splitting preserves analogy, short answer, details, and follow-up sep
 test("content contributor accepts an explicitly extracted follow-up fact", () => {
   const contribution = createAnswerContentContribution({
     identity,
-    text: [
-      "Answer handling is like a filing cabinet: the useful label belongs outside the folder.",
-      "",
-      "Short version: keep the answer body separate from the next question.",
-      "",
-      "The details should remain flat and readable.",
-    ].join("\n"),
+    tldrAnalogy: "Answer handling is like a filing cabinet: the useful label belongs outside the folder.",
+    tldrShort: "Short version: keep the answer body separate from the next question.",
+    details: "The details should remain flat and readable.",
     followUp: "Which part should we inspect next?",
   });
 
@@ -97,12 +95,12 @@ test("content contributor accepts an explicitly extracted follow-up fact", () =>
 
 
 test("heading-first or one-paragraph answers do not force a fake TLDR split", () => {
-  const headingFirst = splitAnswerContent("# Quick take\n\nThis should remain detail content.");
+  const headingFirst = normalizeAlgoliaAnswerContent("# Quick take\n\nThis should remain detail content.");
   assert.equal(headingFirst.tldrAnalogy, null);
   assert.equal(headingFirst.tldrShort, null);
   assert.match(headingFirst.details, /# Quick take/);
 
-  const oneParagraph = splitAnswerContent("Only one paragraph is available.");
+  const oneParagraph = normalizeAlgoliaAnswerContent("Only one paragraph is available.");
   assert.equal(oneParagraph.tldrAnalogy, null);
   assert.equal(oneParagraph.tldrShort, null);
   assert.equal(oneParagraph.details, "Only one paragraph is available.");
@@ -120,7 +118,7 @@ test("answer splitting follows the runtime analogy and lead-in contract", () => 
     "Conversion rate and zero-result rate usually tell the clearest story.",
   ].join("\n");
 
-  const split = splitAnswerContent(answer);
+  const split = normalizeAlgoliaAnswerContent(answer);
 
   assert.equal(
     split.tldrAnalogy,
@@ -143,7 +141,7 @@ test("unlabeled direct read stays as the normal short TLDR block only when the a
     "- Industry trends: grocery teams are reducing repeat-purchase friction.",
   ].join("\n");
 
-  const split = splitAnswerContent(answer);
+  const split = normalizeAlgoliaAnswerContent(answer);
 
   assert.match(split.tldrAnalogy, /high-performing kitchens/);
   assert.match(split.tldrShort, /H-E-B approach/);
@@ -160,7 +158,7 @@ test("plain prose followed by non-short prose stays flat unless an analogy contr
     "The rest of the answer continues normally.",
   ].join("\n");
 
-  const split = splitAnswerContent(answer);
+  const split = normalizeAlgoliaAnswerContent(answer);
 
   assert.equal(split.tldrAnalogy, null);
   assert.equal(split.tldrShort, null);
@@ -172,6 +170,12 @@ test("presentation records missing sources and judge as unavailable instead of i
   const record = createPresentationFromAnswerText({
     identity,
     text: "Analogy canvas.\n\nShort version: answer.\n\nDetails body.",
+    content: {
+      tldrAnalogy: "Analogy canvas.",
+      tldrShort: "Short version: answer.",
+      details: "Details body.",
+      followUp: null,
+    },
     progress: { percent: 100 },
     lifecycle: ANSWER_LIFECYCLE.COMPLETE,
   });
@@ -545,6 +549,15 @@ test("answer presentation exposes one ordered footer contract", () => {
       "",
       "Are you protecting against bots or ordinary browsing traffic?",
     ].join("\n"),
+    content: normalizeAlgoliaAnswerContent([
+      "API calls are like little door swings at a very busy store.",
+      "",
+      "Short version: almost every data request counts.",
+      "",
+      "Debounce typing and cache stable requests.",
+      "",
+      "Are you protecting against bots or ordinary browsing traffic?",
+    ].join("\n")),
     sources: [{ title: "Docs" }],
     telemetry: { inputTokens: 42000, outputTokens: 900 },
     compareAction: { label: "Compare with Prod" },
