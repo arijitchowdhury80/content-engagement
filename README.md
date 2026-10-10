@@ -1,8 +1,9 @@
 # Algolia Content Engagement - White Glove Concierge
 
-This repository is the working home for the Algolia.com discovery concierge: Agent Studio
-configuration and prompts, the Jahia chat widget JavaScript, visitor-intelligence work,
-validation evidence, and project documentation.
+This repository is the canonical source and operational home for the Algolia.com Content
+Engagement concierge. It contains the source-built web component, Agent Studio configuration
+and prompts, Jahia release tooling, visitor intelligence, validation evidence, and project
+documentation.
 
 Start here for the folder map and current runtime boundaries.
 
@@ -22,6 +23,10 @@ The full implementation walkthrough is in
 The current source-reconciliation and design-separation program is in
 [`docs/design/chat-architecture-reconciliation/MASTER-PLAN-2026-08-25.md`](docs/design/chat-architecture-reconciliation/MASTER-PLAN-2026-08-25.md).
 
+The implemented source ownership and dependency boundaries are documented in
+[`docs/architecture.md`](docs/architecture.md). Build, verification, release, and rollback
+procedures are documented in [`docs/release.md`](docs/release.md).
+
 ### Personalized Concierge Engagement
 
 [![How Personalized Concierge Engagement Works](docs/diagrams/how-personalized-concierge-engagement-works.png)](docs/design/content-engagement-architecture.md#personalized-concierge)
@@ -37,7 +42,11 @@ The current source-reconciliation and design-separation program is in
 | `agents/prompts/` | Versioned prompt files and judge prompts that belong in Git. |
 | `agents/admin/` | Agent Studio config builders and patch/provisioning scripts. |
 | `agents/checks/` | Read-only live Agent Studio dump, spot-check, and sweep scripts. |
-| `frontend/chat-widget/` | Current project-owned chat widget JavaScript files. Keep source files flat here; create `dist/` only for generated packages. |
+| `frontend/chat-widget/source/shared/` | Brand-neutral answer identity, evidence, lifecycle, and semantic placement contracts. |
+| `frontend/chat-widget/source/algolia-com/code/` | Algolia runtime behavior, transport, context, proactive engagement, handoff, judges, telemetry, Compare, and persistence. |
+| `frontend/chat-widget/source/algolia-com/presentation/` | Algolia presentation tokens, CSS, labels, motion, and responsive treatment. |
+| `frontend/chat-widget/source/algolia-com/web-component/` | The public `<algolia-chat>` compatibility facade. |
+| `frontend/chat-widget/` | Compatibility inputs, deterministic build configuration, release tests, and generated local `dist/` output. |
 | `backend/jahia-modules/` | Jahia OSGi modules (Maven/Java) providing server-side endpoints for the chat widget, e.g. the token-telemetry API-key proxy. |
 | `testing/` | Project-owned test contracts, journey definitions, manual test plans, automation specifications, and durable test summaries. |
 | `skills/algolia-data-enrichment/` | Project-local enrichment skill, CLI, tests, references, and runbooks. |
@@ -54,13 +63,17 @@ The current source-reconciliation and design-separation program is in
 - `agents/checks/` replaced the old `agents/probes/` idea. These scripts inspect live systems; they are not prompt source.
 - `agents/prompts/` replaced the old `agents/definitions/` naming. Prompts and judges belong here.
 - `skills/algolia-data-enrichment/` is the project-local skill. Do not use a global `.claude/skills/algolia-data-enrichment` copy for this project.
-- Proactive engagement runtime source files live directly in `frontend/chat-widget/`: `algolia-engagement-tracker.js`, `algolia-context-compiler.js`, `algolia-proactive-controller.js`, and `handoff-to-orchestrator.js`.
+- Canonical widget source lives under `frontend/chat-widget/source/`. Flat JavaScript files in `frontend/chat-widget/` remain compatibility and rollback inputs until every host uses the source-built bundle.
 - Generated batches, caches, snapshots, and work queues are intentionally ignored and should not be committed.
 - Start with `docs/design/content-engagement-architecture.md` for the end-to-end concierge and judge architecture.
 
 ## Common Commands
 
 ```bash
+# Install and verify the canonical widget source and deterministic build
+npm ci --prefix frontend/chat-widget
+npm run verify
+
 # Agent Studio inventory
 node agents/admin/build_algolia_com_agents.mjs --list
 

@@ -19,7 +19,7 @@ test("presentation contract names every required answer region", () => {
     "answer-footer",
     "answer-sources",
     "answer-telemetry",
-    "answer-compare-action",
+    "answer-actions",
     "answer-confidence",
     "answer-follow-up",
     "answer-progress",
@@ -31,7 +31,7 @@ test("presentation contract owns footer slot ordering", () => {
   assert.deepEqual(ANSWER_FOOTER_SLOT_ORDER, [
     "sources",
     "telemetry",
-    "compareAction",
+    "actions",
     "confidence",
     "followUp",
   ]);

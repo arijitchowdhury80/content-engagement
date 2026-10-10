@@ -11,7 +11,7 @@ export const ANSWER_SEMANTIC_PARTS = Object.freeze([
   "answer-footer",
   "answer-sources",
   "answer-telemetry",
-  "answer-compare-action",
+  "answer-actions",
   "answer-confidence",
   "answer-follow-up",
   "answer-progress",
@@ -39,7 +39,7 @@ export const ANSWER_SEMANTIC_STATES = Object.freeze([
 export const ANSWER_FOOTER_SLOT_ORDER = Object.freeze([
   "sources",
   "telemetry",
-  "compareAction",
+  "actions",
   "confidence",
   "followUp",
 ]);

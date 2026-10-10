@@ -9,8 +9,8 @@ import { applyPatchWithRecovery } from './safe_agent_patch.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const ENV_FILE = path.join(ROOT, '.env.local');
-const INSTRUCTIONS_FILE = path.join(ROOT, 'agents/prompts/instructions_algolia_orchestrator.md');
-const SYSTEM_FILE = path.join(ROOT, 'agents/prompts/system_algolia_orchestrator.md');
+const INSTRUCTIONS_FILE = path.join(ROOT, 'agents/prompts/orchestrator/instructions_algolia_orchestrator.md');
+const SYSTEM_FILE = path.join(ROOT, 'agents/prompts/orchestrator/system_algolia_orchestrator.md');
 const APP_ID = '0EXRPAXB56';
 const AGENT_ID = 'e2c8596a-4420-41d2-80bb-5cd4aaeffda6';
 const AGENT_NAME = 'www Chat - Orchestrator';

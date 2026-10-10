@@ -19,9 +19,11 @@ const telemetryPath = new URL('../token-telemetry.js', import.meta.url);
 function createHarness({ responses = [], compilerSender = false, confidenceBadgeCount = 0, answerFooter = true } = {}) {
   const fetchCalls = [];
   const answerHarnessEvents = [];
+  const renderCalls = [];
   const windowListeners = {};
   const documentListeners = {};
   const timers = [];
+  let intervalCount = 0;
   let completedListener = null;
   let headerPill = null;
   let pillStyle = null;
@@ -42,6 +44,46 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
       if (footerPill === element) footerPill = null;
     },
   };
+  function formatNumber(value) {
+    return Number(value).toLocaleString('en-US');
+  }
+  function pillPart(className, text) {
+    return { className, textContent: text, parentNode: null, parentElement: null };
+  }
+  function paintTelemetry(state = {}) {
+    if (state.status === 'idle' && !state.usage) {
+      footerPill = null;
+      return true;
+    }
+    if (!answerFooter) return false;
+    if (!footerPill) {
+      footerPill = context.document.createElement('span');
+      footerPill.className = 'algolia-usage-pill';
+      footerPill.parentNode = answerFooterElement;
+      footerPill.parentElement = answerFooterElement;
+    }
+    if (state.status === 'loading') {
+      footerPill.textContent = 'Calculating tokens…';
+      footerPill.title = 'Token usage is being calculated';
+      return true;
+    }
+    if (state.status === 'unavailable' && !state.usage) {
+      footerPill.textContent = 'Tokens unavailable';
+      footerPill.title = 'Token usage could not be loaded; the answer is unaffected';
+      return true;
+    }
+    if (state.usage) {
+      const inputTokens = formatNumber(state.usage.inputTokens);
+      const outputTokens = formatNumber(state.usage.outputTokens);
+      footerPill.replaceChildren(
+        pillPart('algolia-usage-pill__in', `In ${inputTokens}`),
+        pillPart('algolia-usage-pill__divider', ' / '),
+        pillPart('algolia-usage-pill__out', `${outputTokens} Out`),
+      );
+      footerPill.title = `Current response: ${inputTokens} input tokens and ${outputTokens} output tokens`;
+    }
+    return true;
+  }
   const sourceWrap = { parentElement: answerFooterElement };
   const groundedSources = { parentElement: sourceWrap };
   const chatHeader = {
@@ -178,7 +220,7 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
         json: async () => response.data,
       };
     },
-    setInterval(callback) { callback(); return 1; },
+    setInterval() { intervalCount += 1; return intervalCount; },
     clearInterval() {},
     setTimeout(callback) { timers.push(callback); return timers.length; },
     addEventListener(type, listener) {
@@ -203,6 +245,13 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
       },
       ensureAnswerFooter() {
         return answerFooter ? answerFooterElement : null;
+      },
+      renderAnswerFooterTelemetry(detail, state) {
+        renderCalls.push({
+          detail: detail ? JSON.parse(JSON.stringify(detail)) : null,
+          state: JSON.parse(JSON.stringify(state || {})),
+        });
+        return paintTelemetry(state);
       },
     },
   };
@@ -233,11 +282,23 @@ function createHarness({ responses = [], compilerSender = false, confidenceBadge
     headerInsertedBeforeCluster() { return headerInsertedBeforeCluster; },
     badgePill(index) { return badges[index]?.shadowRoot.pill() || null; },
     answerHarnessEvents,
+    renderCalls,
+    intervalCount() { return intervalCount; },
     addBadge,
     reconcile() { mutationCallback?.([]); },
     emitCompleted(detail) { completedListener(detail); },
     reset() {
       (documentListeners['algolia-visitor-state-reset'] || []).forEach((listener) => listener({ detail: {} }));
+    },
+    resetWidget(widgetInstanceId) {
+      (documentListeners['algolia-visitor-state-reset'] || []).forEach((listener) =>
+        listener({ detail: { widgetInstanceId } })
+      );
+    },
+    disconnectWidget(widgetInstanceId) {
+      (documentListeners['algolia-chat-widget-disconnected'] || []).forEach((listener) =>
+        listener({ detail: { widgetInstanceId } })
+      );
     },
     settle,
   };
@@ -248,6 +309,13 @@ test('subscribes to the canonical transport without patching global fetch', () =
 
   assert.equal(h.context.fetch, h.nativeFetch);
   assert.equal(fs.readFileSync(telemetryPath, 'utf8').includes('window.fetch ='), false);
+});
+
+test('does not install a permanent telemetry repaint interval', () => {
+  const h = createHarness();
+
+  assert.equal(h.intervalCount(), 0);
+  assert.equal(fs.readFileSync(telemetryPath, 'utf8').includes('setInterval(renderAllTelemetry'), false);
 });
 
 test('uses the compiler native sender without re-entering the global interceptor', async () => {
@@ -393,7 +461,115 @@ test('overlapping telemetry lookups emit against their exact answer identities',
   );
   assert.equal(telemetryEvents.length, 2, 'same turnKey from different widgets must not suppress telemetry');
   assert.deepEqual(telemetryEvents.map((event) => event.detail.answerIdentity), [secondIdentity, firstIdentity]);
+  assert.deepEqual(
+    h.renderCalls
+      .filter((call) => call.state.status === 'ready')
+      .map((call) => call.detail.answerIdentity),
+    [secondIdentity, firstIdentity],
+    'visible telemetry must paint against each completed answer identity, not only the global latest turn',
+  );
   assert.equal(h.context.__algoliaChatUsage.usage.totalTokens, 42, 'late older lookup cannot repaint latest visible telemetry');
+});
+
+test('scoped reset clears only the originating widget telemetry', async () => {
+  const h = createHarness({
+    responses: [
+      { ok: true, data: { inputTokens: 1000, outputTokens: 200, totalTokens: 1200 } },
+      { ok: true, data: { inputTokens: 3000, outputTokens: 400, totalTokens: 3400 } },
+    ],
+  });
+  const leftIdentity = {
+    widgetInstanceId: 'widget-left',
+    conversationId: 'conversation-left',
+    answerSegmentId: 'answer-left',
+    networkAttemptId: 'attempt-left',
+  };
+  const rightIdentity = {
+    widgetInstanceId: 'widget-right',
+    conversationId: 'conversation-right',
+    answerSegmentId: 'answer-right',
+    networkAttemptId: 'attempt-right',
+  };
+
+  h.emitCompleted({ turnKey: 'left:user-1', conversationId: 'conversation-left', answerIdentity: leftIdentity });
+  await h.settle();
+  h.emitCompleted({ turnKey: 'right:user-1', conversationId: 'conversation-right', answerIdentity: rightIdentity });
+  await h.settle();
+  h.resetWidget('widget-left');
+
+  const scopedRenders = h.renderCalls.filter((call) => call.state.status === 'idle');
+  assert.ok(scopedRenders.some((call) => call.detail?.answerIdentity?.widgetInstanceId === 'widget-left'));
+  assert.equal(
+    scopedRenders.some((call) => call.detail?.answerIdentity?.widgetInstanceId === 'widget-right'),
+    false,
+    'scoped reset must not clear sibling widget telemetry',
+  );
+  assert.equal(h.context.__algoliaChatUsage.usage.totalTokens, 3400, 'latest sibling usage stays visible');
+});
+
+test('stable conversation totals are scoped by widget identity', async () => {
+  const h = createHarness({
+    responses: [
+      { ok: true, data: { inputTokens: 100, outputTokens: 20, totalTokens: 120 } },
+      { ok: true, data: { inputTokens: 1000, outputTokens: 200, totalTokens: 1200 } },
+      { ok: true, data: { inputTokens: 150, outputTokens: 40, totalTokens: 190 } },
+    ],
+  });
+  const leftFirst = {
+    widgetInstanceId: 'widget-left',
+    conversationId: 'shared-conversation',
+    answerSegmentId: 'left-answer-1',
+    networkAttemptId: 'left-attempt-1',
+  };
+  const rightFirst = {
+    widgetInstanceId: 'widget-right',
+    conversationId: 'shared-conversation',
+    answerSegmentId: 'right-answer-1',
+    networkAttemptId: 'right-attempt-1',
+  };
+  const leftSecond = {
+    widgetInstanceId: 'widget-left',
+    conversationId: 'shared-conversation',
+    answerSegmentId: 'left-answer-2',
+    networkAttemptId: 'left-attempt-2',
+  };
+
+  h.emitCompleted({ turnKey: 'left:user-1', conversationId: 'shared-conversation', answerIdentity: leftFirst });
+  await h.settle();
+  h.emitCompleted({ turnKey: 'right:user-1', conversationId: 'shared-conversation', answerIdentity: rightFirst });
+  await h.settle();
+  h.emitCompleted({ turnKey: 'left:user-2', conversationId: 'shared-conversation', answerIdentity: leftSecond });
+  await h.settle();
+
+  const leftSecondReady = h.renderCalls.find((call) =>
+    call.state.status === 'ready' &&
+    call.detail?.answerIdentity?.answerSegmentId === 'left-answer-2'
+  );
+  assert.deepEqual(
+    leftSecondReady.state.usage,
+    { inputTokens: 50, outputTokens: 20, totalTokens: 70 },
+    'widget-left second turn must subtract only widget-left previous totals',
+  );
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.cumulativeUsage)),
+    { inputTokens: 1150, outputTokens: 240, totalTokens: 1390, turns: 3 },
+  );
+
+  h.resetWidget('widget-left');
+
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.cumulativeUsage)),
+    { inputTokens: 1000, outputTokens: 200, totalTokens: 1200, turns: 1 },
+    'scoped reset removes widget-left totals and leaves widget-right totals intact',
+  );
+  assert.equal(
+    h.renderCalls.some((call) =>
+      call.state.status === 'idle' &&
+      call.detail?.answerIdentity?.widgetInstanceId === 'widget-right'
+    ),
+    false,
+    'scoped reset must not clear sibling visible telemetry',
+  );
 });
 
 test('derives the current response by subtracting the prior stable-conversation snapshot', async () => {
@@ -445,6 +621,7 @@ test('an older overlapping lookup cannot regress a newer cumulative total or sta
     responses: [
       first,
       { ok: true, data: { inputTokens: 30, outputTokens: 12, totalTokens: 42 } },
+      { ok: true, data: { inputTokens: 50, outputTokens: 18, totalTokens: 68 } },
     ],
   });
 
@@ -458,6 +635,97 @@ test('an older overlapping lookup cannot regress a newer cumulative total or sta
   await h.settle();
   assert.equal(h.context.__algoliaChatUsage.usage.totalTokens, 42);
   assert.equal(h.context.__algoliaChatUsage.status, 'ready');
+
+  h.emitCompleted({ turnKey: 'conversation:user-3', conversationId: 'alg_cnv_stable' });
+  await h.settle();
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.usage)),
+    { inputTokens: 20, outputTokens: 6, totalTokens: 26 },
+    'turn 3 must subtract from the newer turn 2 baseline, not the late regressed turn 1 snapshot',
+  );
+});
+
+test('disconnect cancels pending telemetry without clearing preserved conversation totals', async () => {
+  let resolveFirst;
+  const first = new Promise((resolve) => { resolveFirst = resolve; });
+  const h = createHarness({
+    responses: [
+      { ok: true, data: { inputTokens: 100, outputTokens: 20, totalTokens: 120 } },
+      first,
+      { ok: true, data: { inputTokens: 150, outputTokens: 30, totalTokens: 180 } },
+    ],
+  });
+  const readyIdentity = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'stable-conversation',
+    answerSegmentId: 'answer-1',
+    networkAttemptId: 'attempt-1',
+  };
+  const pendingIdentity = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'stable-conversation',
+    answerSegmentId: 'answer-2',
+    networkAttemptId: 'attempt-2',
+  };
+  const nextIdentity = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'stable-conversation',
+    answerSegmentId: 'answer-3',
+    networkAttemptId: 'attempt-3',
+  };
+
+  h.emitCompleted({ turnKey: 'conversation:user-1', conversationId: 'stable-conversation', answerIdentity: readyIdentity });
+  await h.settle();
+  h.emitCompleted({ turnKey: 'conversation:user-2', conversationId: 'stable-conversation', answerIdentity: pendingIdentity });
+  await h.settle();
+  h.disconnectWidget('widget-1');
+  resolveFirst({ ok: true, data: { inputTokens: 125, outputTokens: 25, totalTokens: 150 } });
+  await h.settle();
+  assert.equal(
+    h.renderCalls.some((call) =>
+      call.state.status === 'ready' &&
+      call.detail?.answerIdentity?.answerSegmentId === 'answer-2'
+    ),
+    false,
+    'in-flight lookup must not render after disconnect',
+  );
+
+  h.emitCompleted({ turnKey: 'conversation:user-3', conversationId: 'stable-conversation', answerIdentity: nextIdentity });
+  await h.settle();
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(h.context.__algoliaChatUsage.usage)),
+    { inputTokens: 50, outputTokens: 10, totalTokens: 60 },
+    'disconnect/reconnect must preserve the previous cumulative baseline for the conversation',
+  );
+});
+
+test('bounds telemetry diagnostic state in long sessions', async () => {
+  const responses = Array.from({ length: 520 }, (_, index) => ({
+    ok: true,
+    data: { inputTokens: index + 1, outputTokens: index + 2, totalTokens: (index * 2) + 3 },
+  }));
+  const h = createHarness({ responses });
+
+  for (let index = 0; index < 520; index += 1) {
+    h.emitCompleted({
+      turnKey: `conversation-${index}:user-${index}`,
+      conversationId: `conversation-${index}`,
+      answerIdentity: {
+        widgetInstanceId: 'widget-bounded',
+        conversationId: `conversation-${index}`,
+        answerSegmentId: `answer-${index}`,
+        networkAttemptId: `attempt-${index}`,
+      },
+    });
+  }
+  await h.settle();
+
+  const sizes = h.context.__acsTokenTelemetry.trackedSizes();
+  assert.ok(sizes.usageByIdentity <= 500);
+  assert.ok(sizes.completedTurnsByIdentity <= 500);
+  assert.ok(sizes.seenTurnKeys <= 500);
+  assert.ok(sizes.latestRevisionByLookup <= 500);
+  assert.ok(sizes.turnTotals <= 200);
 });
 
 test('a retry queued before reset does not call the backend after reset', async () => {

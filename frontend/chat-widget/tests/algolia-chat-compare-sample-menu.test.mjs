@@ -8,6 +8,11 @@ const themePath = new URL('../algolia-chat-theme-algolia.js', import.meta.url);
 const comparePath = new URL('../algolia-chat-compare.js', import.meta.url);
 const handoffPath = new URL('../handoff-to-orchestrator.js', import.meta.url);
 const telemetryPath = new URL('../token-telemetry.js', import.meta.url);
+const approvedSampleSlotPath = new URL(
+  './fixtures/approved-sample-questions-slot-20260826.html',
+  import.meta.url
+);
+const approvedSampleSlot = fs.readFileSync(approvedSampleSlotPath, 'utf8').trim();
 
 let browser;
 
@@ -233,7 +238,7 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
   ` });
   await page.addScriptTag({ content: fs.readFileSync(comparePath, 'utf8') });
 
-  await page.evaluate(async () => {
+  await page.evaluate(async (sampleQuestionsSlot) => {
     await Promise.all([
       customElements.whenDefined('algolia-instant-search'),
       customElements.whenDefined('algolia-chat'),
@@ -249,24 +254,8 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
     widget.setAttribute('theme', 'algolia');
     widget.setAttribute('default-open-mode', 'normal');
     widget.setAttribute('show-welcome', 'true');
-    widget.setAttribute('sample-questions', JSON.stringify([
-      {
-        section: 'Technical deep-dives',
-        questions: [
-          'What counts as an API call keystrokes, filters applied, or page loads and does that change how I should configure rate limiting to control cost?',
-          'Is Algolia headless and API-first enough to bolt onto my existing ERP/PIM/CMS stack, and how much dev effort should I expect for a full implementation?',
-          'How does the query context go to the engine?',
-        ],
-      },
-      {
-        section: 'Business & solutioning',
-        questions: [
-          "What's the actual cost difference between Grow and Elevate, and are AI features like personalization included or a paid add-on?",
-          'How does Algolia compare to Coveo or Constructor for a mid-market catalog?',
-          'Can a non-technical marketing team run search day-to-day without a developer?',
-        ],
-      },
-    ]));
+    widget.setAttribute('sample-questions-group-cap', '0');
+    widget.insertAdjacentHTML('beforeend', sampleQuestionsSlot);
 
     const agent = document.createElement('algolia-agent');
     agent.setAttribute('role', 'primary');
@@ -276,7 +265,7 @@ async function createComparePage({ responseFrames = compareAnswerFrames } = {}) 
     document.body.append(search);
     await new Promise((resolve) => setTimeout(resolve, 200));
     widget.open();
-  });
+  }, approvedSampleSlot);
 
   await page.waitForFunction(() =>
     document.querySelector('algolia-chat')?.shadowRoot?.querySelector('[part="panel"]')

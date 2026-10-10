@@ -64,8 +64,8 @@
     "greetings": {
       "agentId": "0f290529-629a-48fe-9424-f93e5894d8f3",
       "name": "www Chat - Proactive Concierge",
-      "instructionsPath": "agents/prompts/instructions_algolia_proactive_greeting.md",
-      "systemPromptPath": "agents/prompts/system_algolia_arrie_concierge.md",
+      "instructionsPath": "agents/prompts/orchestrator/instructions_algolia_proactive_greeting.md",
+      "systemPromptPath": "agents/prompts/orchestrator/system_algolia_arrie_concierge.md",
       "configPatch": {
         "temperature": 0.5
       },
@@ -75,8 +75,8 @@
     "orchestrator": {
       "agentId": "e2c8596a-4420-41d2-80bb-5cd4aaeffda6",
       "name": "www Chat - Orchestrator",
-      "instructionsPath": "agents/prompts/instructions_algolia_orchestrator.md",
-      "systemPromptPath": "agents/prompts/system_algolia_orchestrator.md",
+      "instructionsPath": "agents/prompts/orchestrator/instructions_algolia_orchestrator.md",
+      "systemPromptPath": "agents/prompts/orchestrator/system_algolia_orchestrator.md",
       "searchToolPatch": {
         "toolName": "algolia_search_index",
         "indexName": "Algolia_Prod_Copy_Vanilla",
@@ -114,8 +114,8 @@
     "developerSpecialist": {
       "agentId": "cdac8765-5626-451a-87a0-f5a95aad7235",
       "name": "www Chat – Developer Specialist",
-      "instructionsPath": "agents/prompts/instructions_algolia_developer_specialist.md",
-      "systemPromptPath": "agents/prompts/system_algolia_developer_specialist.md",
+      "instructionsPath": "agents/prompts/specialists/instructions_algolia_developer_specialist.md",
+      "systemPromptPath": "agents/prompts/specialists/system_algolia_developer_specialist.md",
       "evidenceRoot": "docs/evidence/agent-studio"
     }
   }

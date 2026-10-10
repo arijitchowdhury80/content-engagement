@@ -12,7 +12,7 @@ const handoffPath = new URL("../handoff-to-orchestrator.js", import.meta.url);
 const comparePath = new URL("../algolia-chat-compare.js", import.meta.url);
 const telemetryPath = new URL("../token-telemetry.js", import.meta.url);
 const chatWidgetRoot = new URL("../", import.meta.url);
-const stackManifestPath = new URL("../../../config/deployments/algolia-chat-stack.json", import.meta.url);
+const mirrorLoadOrderPath = new URL("fixtures/answer-harness-mirror-load-order.json", import.meta.url);
 
 let browser;
 
@@ -24,11 +24,9 @@ after(async () => {
   await browser?.close();
 });
 
-test("answer harness mirror entry is declared for development parity before runtime modules", () => {
-  const manifest = JSON.parse(fs.readFileSync(stackManifestPath, "utf8"));
-  assert.equal(manifest.jahia.answerHarnessMirror.scope, "development-and-parity-only");
-  assert.equal(manifest.jahia.answerHarnessMirror.script, "frontend/chat-widget/answer-harness-runtime.mjs");
-  assert.deepEqual(manifest.jahia.answerHarnessMirror.loadOrder, [
+test("answer harness mirror fixture declares the compatibility load order", () => {
+  const loadOrder = JSON.parse(fs.readFileSync(mirrorLoadOrderPath, "utf8"));
+  assert.deepEqual(loadOrder, [
     "frontend/chat-widget/answer-harness-runtime.mjs",
     "frontend/chat-widget/algolia-chat.js",
     "frontend/chat-widget/handoff-to-orchestrator.js",
@@ -71,8 +69,8 @@ async function createTwoWidgetPage({ loadCompare = false, loadTelemetry = false 
     });
   });
   await page.goto("http://localhost/");
-  const manifest = JSON.parse(fs.readFileSync(stackManifestPath, "utf8"));
-  const mirrorScript = manifest.jahia.answerHarnessMirror.script.replace(/^frontend\/chat-widget\//, "");
+  const [mirrorEntry] = JSON.parse(fs.readFileSync(mirrorLoadOrderPath, "utf8"));
+  const mirrorScript = mirrorEntry.replace(/^frontend\/chat-widget\//, "");
   await page.addScriptTag({ type: "module", url: `/chat-widget/${mirrorScript}` });
   await page.waitForFunction(() =>
     typeof window.algoliaAnswerHarness?.accept === "function" &&
@@ -122,6 +120,7 @@ async function createTwoWidgetPage({ loadCompare = false, loadTelemetry = false 
           ));
         }
         const record = {
+          url: String(_url),
           body: init.body,
           runtimeContext: runtimeContext || null,
         };
@@ -501,6 +500,49 @@ test("retry attempts keep the same answer segment while changing network attempt
   }
 });
 
+test("runtime turn lookup resolves exact assistant segment without single-answer fallback", async () => {
+  const page = await createTwoWidgetPage();
+  try {
+    const state = await page.evaluate(async () => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      const payload = {
+        id: "conversation-runtime-turn",
+        messages: [{ id: "user-runtime-turn", role: "user", parts: [{ type: "text", text: "runtime turn scope" }] }],
+      };
+      await window.__invokeIdentityTransport(payload, {
+        widgetInstanceId: left.__algoliaWidgetInstanceId,
+        answerSegmentId: "assistant-segment-one",
+        turnId: "ui-turn-one",
+      });
+      await window.__invokeIdentityTransport(payload, {
+        widgetInstanceId: left.__algoliaWidgetInstanceId,
+        answerSegmentId: "assistant-segment-two",
+        turnId: "ui-turn-two",
+      });
+      return {
+        turnOne: window.algoliaHandoffToOrchestrator.answerIdentityForRuntimeTurn(
+          left.__algoliaWidgetInstanceId,
+          "ui-turn-one",
+        ),
+        turnTwo: window.algoliaHandoffToOrchestrator.answerIdentityForRuntimeTurn(
+          left.__algoliaWidgetInstanceId,
+          "ui-turn-two",
+        ),
+        wrongSegmentFallback: window.algoliaHandoffToOrchestrator.answerIdentityForSegment(
+          left.__algoliaWidgetInstanceId,
+          "ui-turn-one",
+        ),
+      };
+    });
+
+    assert.equal(state.turnOne.answerSegmentId, "assistant-segment-one");
+    assert.equal(state.turnTwo.answerSegmentId, "assistant-segment-two");
+    assert.equal(state.wrongSegmentFallback, null);
+  } finally {
+    await page.close();
+  }
+});
+
 test("disconnecting and reconnecting a widget keeps that element identity isolated", async () => {
   const page = await createTwoWidgetPage();
   try {
@@ -790,7 +832,7 @@ test("local DOM output matches canonical harness slots for content, sources, and
     assert.equal(parity.dom.sourceText.includes("1"), true);
     assert.equal(
       parity.harness.confidenceStatus,
-      "loading",
+      "unavailable",
       "confidence/evidence-lineage parity is intentionally not comparable until judge passage IDs are wired",
     );
   } finally {
@@ -996,7 +1038,7 @@ test("post-answer controls wait for completion and mirror telemetry and compare 
       const record = window.algoliaAnswerHarness?.records?.().find((item) =>
         item.lifecycle === "complete" &&
         item.slots?.telemetry?.status === "ready" &&
-        item.slots?.compareAction?.status === "ready"
+        item.slots?.actions?.status === "ready"
       );
       return Boolean(
         footer &&
@@ -1013,7 +1055,7 @@ test("post-answer controls wait for completion and mirror telemetry and compare 
       const record = window.algoliaAnswerHarness.records().find((item) =>
         item.lifecycle === "complete" &&
         item.slots?.telemetry?.status === "ready" &&
-        item.slots?.compareAction?.status === "ready"
+        item.slots?.actions?.status === "ready"
       );
       const telemetry = footer.querySelector(".algolia-usage-pill");
       const compare = footer.querySelector("#acs-compare-toggle");
@@ -1034,7 +1076,7 @@ test("post-answer controls wait for completion and mirror telemetry and compare 
         compareText: compare?.textContent.replace(/\s+/g, " ").trim(),
         comparePressed: compare?.getAttribute("aria-pressed"),
         harnessTelemetry: record.slots.telemetry.value,
-        harnessCompare: record.slots.compareAction.value,
+        harnessCompare: record.slots.actions.value,
       };
     });
 
@@ -1061,6 +1103,735 @@ test("post-answer controls wait for completion and mirror telemetry and compare 
     assert.doesNotMatch(parity.footerText, /Documentation/i);
     assert.match(parity.footerText, /In 44,414 \/ 819 Out/);
     assert.match(parity.footerText, /Compare with Prod/);
+  } finally {
+    await page.close();
+  }
+});
+
+test("visible telemetry is scoped per widget and survives sibling reset", async () => {
+  const page = await createTwoWidgetPage({ loadTelemetry: true });
+  try {
+    await page.evaluate(() => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      left.ask("left telemetry question");
+      right.ask("right telemetry question");
+    });
+    await page.waitForFunction(() => window.__identityStreams?.length === 2);
+
+    await page.evaluate(() => {
+      const answer = (side) => [
+        `${side} answer analogy stays visible while telemetry lands after completion.`,
+        "",
+        `Short version: ${side} telemetry belongs only to this widget.`,
+        "",
+        `${side} details stay in the body.`,
+      ].join("\n");
+      window.__identityStreams.forEach((stream, index) => {
+        stream.write([
+          `data: ${JSON.stringify({ type: "text-delta", delta: answer(index === 0 ? "Left" : "Right") })}`,
+          "",
+        ].join("\n"));
+        stream.close();
+      });
+    });
+
+    await page.waitForFunction(() => {
+      const widgets = [...document.querySelectorAll("algolia-chat")];
+      return widgets.length === 2 && widgets.every((widget) =>
+        widget.shadowRoot?.querySelector("[data-algolia-answer-footer] .algolia-usage-pill")
+      );
+    });
+
+    const beforeReset = await page.evaluate(() =>
+      [...document.querySelectorAll("algolia-chat")].map((widget) => ({
+        widgetInstanceId: widget.__algoliaWidgetInstanceId,
+        telemetry: widget.shadowRoot
+          ?.querySelector("[data-algolia-answer-footer] .algolia-usage-pill")
+          ?.textContent
+          ?.replace(/\s+/g, " ")
+          ?.trim(),
+      }))
+    );
+    assert.equal(beforeReset.length, 2);
+    assert.deepEqual(beforeReset.map((entry) => entry.telemetry), [
+      "In 44,414 / 819 Out",
+      "In 44,414 / 819 Out",
+    ]);
+    assert.notEqual(beforeReset[0].widgetInstanceId, beforeReset[1].widgetInstanceId);
+
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      document.dispatchEvent(new CustomEvent("algolia-visitor-state-reset", {
+        detail: { widgetInstanceId: left.__algoliaWidgetInstanceId },
+      }));
+    });
+    await page.waitForFunction(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      return !left.shadowRoot?.querySelector(".algolia-usage-pill") &&
+        right.shadowRoot?.querySelector(".algolia-usage-pill");
+    });
+
+    const afterReset = await page.evaluate(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      return {
+        leftTelemetry: left.shadowRoot?.querySelector(".algolia-usage-pill")?.textContent || null,
+        rightTelemetry: right.shadowRoot?.querySelector(".algolia-usage-pill")?.textContent || null,
+      };
+    });
+    assert.equal(afterReset.leftTelemetry, null);
+    assert.equal(afterReset.rightTelemetry.replace(/\s+/g, " ").trim(), "In 44,414 / 819 Out");
+  } finally {
+    await page.close();
+  }
+});
+
+test("visible Compare actions are scoped per widget and survive sibling reset", async () => {
+  const page = await createTwoWidgetPage({ loadCompare: true, loadTelemetry: true });
+  try {
+    await page.evaluate(() => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      left.ask("left compare question");
+      right.ask("right compare question");
+    });
+    await page.waitForFunction(() => window.__identityStreams?.length === 2);
+
+    await page.evaluate(() => {
+      window.__identityStreams.forEach((stream, index) => {
+        const side = index === 0 ? "left" : "right";
+        const answer = [
+          `${side} Compare answer keeps the action scoped to its own widget.`,
+          "",
+          `Short version: ${side} Compare belongs to this exact completed attempt.`,
+          "",
+          `${side} details stay visible while the footer controls settle.`,
+        ].join("\n");
+        stream.write([
+          `data: ${JSON.stringify({ type: "text-delta", delta: answer })}`,
+          "",
+        ].join("\n"));
+        stream.close();
+      });
+    });
+
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll("algolia-chat")].every((widget) =>
+        widget.shadowRoot?.querySelector("[data-algolia-answer-footer] .algolia-usage-pill") &&
+        widget.shadowRoot?.querySelector("[data-algolia-answer-footer] #acs-compare-toggle")
+      )
+    );
+
+    const beforeReset = await page.evaluate(() =>
+      [...document.querySelectorAll("algolia-chat")].map((widget) => ({
+        widgetInstanceId: widget.__algoliaWidgetInstanceId,
+        compareText: widget.shadowRoot
+          ?.querySelector("[data-algolia-answer-footer] #acs-compare-toggle")
+          ?.textContent
+          ?.replace(/\s+/g, " ")
+          ?.trim(),
+        footerOwner: widget.shadowRoot
+          ?.querySelector("[data-algolia-answer-footer]")
+          ?.dataset
+          ?.algoliaAnswerFooter,
+      }))
+    );
+    assert.equal(beforeReset.length, 2);
+    assert.deepEqual(beforeReset.map((entry) => entry.compareText), ["Compare with Prod", "Compare with Prod"]);
+    assert.notEqual(beforeReset[0].widgetInstanceId, beforeReset[1].widgetInstanceId);
+    assert.notEqual(beforeReset[0].footerOwner, beforeReset[1].footerOwner);
+
+    const fetchesBeforeActiveReset = await page.evaluate(() => window.__identityFetches.length);
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction((count) => window.__identityFetches.length > count, fetchesBeforeActiveReset);
+    await page.waitForFunction(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      const state = window.__acsCompare?.state?.();
+      return state?.compareOn === true &&
+        state.activeWidgetInstanceId === left.__algoliaWidgetInstanceId &&
+        left.shadowRoot.querySelector("#acs-compare-toggle")?.getAttribute("aria-pressed") === "true" &&
+        right.shadowRoot.querySelector("#acs-compare-toggle")?.getAttribute("aria-pressed") === "false";
+    });
+
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      document.dispatchEvent(new CustomEvent("algolia-visitor-state-reset", {
+        detail: { widgetInstanceId: left.__algoliaWidgetInstanceId },
+      }));
+    });
+    await page.waitForFunction(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      const state = window.__acsCompare?.state?.();
+      return state?.compareOn === false &&
+        !state.activeWidgetInstanceId &&
+        !left.shadowRoot?.querySelector("#acs-compare-toggle") &&
+        right.shadowRoot?.querySelector("[data-algolia-answer-footer] #acs-compare-toggle")?.getAttribute("aria-pressed") === "false";
+    });
+
+    const fetchesBeforeClick = await page.evaluate(() => window.__identityFetches.length);
+    await page.evaluate(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      right.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction((count) => window.__identityFetches.length > count, fetchesBeforeClick);
+
+    const state = await page.evaluate(() => {
+      const fetch = window.__identityFetches.at(-1);
+      return {
+        requestBody: fetch?.body || "",
+        harnessCompare: window.algoliaAnswerHarness.records()
+          .filter((record) => record.lifecycle === "complete" && record.slots?.actions?.status === "ready")
+          .map((record) => ({
+            identity: record.identity,
+            actions: record.slots.actions.value,
+          })),
+      };
+    });
+    assert.match(state.requestBody, /right compare question/, "right widget click must replay the right prepared body");
+    assert.doesNotMatch(state.requestBody, /left compare question/, "left reset must not leak into the right replay");
+    assert.equal(state.harnessCompare.length, 1, "only the surviving widget has a ready mirrored Compare action");
+    assert.equal(state.harnessCompare[0].actions.label, "Compare with Prod");
+    assert.equal(state.harnessCompare[0].actions.available, true);
+    assert.equal(state.harnessCompare[0].identity.widgetInstanceId, beforeReset[1].widgetInstanceId);
+
+    await page.evaluate(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      right.remove();
+    });
+    await page.waitForFunction(() => {
+      const compareState = window.__acsCompare?.state?.();
+      return compareState &&
+        compareState.hasPreparedTurn === false &&
+        compareState.activeTurns === 0 &&
+        compareState.completedTurns === 0;
+    });
+  } finally {
+    await page.close();
+  }
+});
+
+test("switching Compare widgets cleans the prior inset and ignores stale production chunks", async () => {
+  const page = await createTwoWidgetPage({ loadCompare: true, loadTelemetry: true });
+  try {
+    await page.evaluate(() => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      left.ask("left streaming compare");
+      right.ask("right streaming compare");
+    });
+    await page.waitForFunction(() => window.__identityStreams?.length === 2);
+
+    await page.evaluate(() => {
+      window.__identityStreams.forEach((stream, index) => {
+        const side = index === 0 ? "left" : "right";
+        const answer = [
+          `${side} answer.`,
+          "",
+          `Short version: ${side} footer is ready.`,
+          "",
+          `${side} details.`,
+        ].join("\n");
+        stream.write(`data: ${JSON.stringify({ type: "text-delta", delta: answer })}\n\n`);
+        stream.close();
+      });
+    });
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll("algolia-chat")].every((widget) =>
+        widget.shadowRoot?.querySelector("[data-algolia-answer-footer] #acs-compare-toggle")
+      )
+    );
+
+    const beforeLeftClick = await page.evaluate(() => window.__identityFetches.length);
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction((count) => window.__identityFetches.length > count, beforeLeftClick);
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      return window.__acsCompare?.state?.().activeWidgetInstanceId === left.__algoliaWidgetInstanceId &&
+        left.shadowRoot.querySelector("#acs-compare-style");
+    });
+
+    await page.evaluate(() => {
+      const productionLeft = window.__identityStreams.at(-1);
+      productionLeft.write(`data: ${JSON.stringify({ type: "text-delta", delta: "LEFT PRODUCTION SHOULD BE REPLACED" })}\n\n`);
+    });
+    await page.waitForFunction(() =>
+      document.querySelector("algolia-chat").shadowRoot.querySelector("#acs-compare-panel")?.textContent?.includes("LEFT PRODUCTION SHOULD BE REPLACED")
+    );
+
+    const beforeRightClick = await page.evaluate(() => window.__identityFetches.length);
+    await page.evaluate(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      right.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction((count) => window.__identityFetches.length > count, beforeRightClick);
+    await page.waitForFunction(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      return window.__acsCompare?.state?.().activeWidgetInstanceId === right.__algoliaWidgetInstanceId &&
+        !left.shadowRoot.querySelector("#acs-compare-style") &&
+        right.shadowRoot.querySelector("#acs-compare-style");
+    });
+
+    await page.evaluate(() => {
+      const productionLeft = window.__identityStreams.at(-2);
+      const productionRight = window.__identityStreams.at(-1);
+      productionLeft.write(`data: ${JSON.stringify({ type: "text-delta", delta: "STALE LEFT MUST NOT LEAK" })}\n\n`);
+      productionLeft.close();
+      productionRight.write(`data: ${JSON.stringify({ type: "text-delta", delta: "RIGHT PRODUCTION WINS" })}\n\n`);
+      productionRight.close();
+    });
+    await page.waitForFunction(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      const panelText = right.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return panelText.includes("RIGHT PRODUCTION WINS");
+    });
+
+    const switched = await page.evaluate(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      const panelText = right.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return {
+        leftHasInset: Boolean(left.shadowRoot.querySelector("#acs-compare-style")),
+        rightHasInset: Boolean(right.shadowRoot.querySelector("#acs-compare-style")),
+        leftPressed: left.shadowRoot.querySelector("#acs-compare-toggle")?.getAttribute("aria-pressed"),
+        rightPressed: right.shadowRoot.querySelector("#acs-compare-toggle")?.getAttribute("aria-pressed"),
+        panelText,
+      };
+    });
+    assert.equal(switched.leftHasInset, false, "switching to B must remove A's comparison inset");
+    assert.equal(switched.rightHasInset, true, "B owns the comparison inset after switch");
+    assert.equal(switched.leftPressed, "false");
+    assert.equal(switched.rightPressed, "true");
+    assert.doesNotMatch(switched.panelText, /STALE LEFT MUST NOT LEAK/);
+    assert.match(switched.panelText, /RIGHT PRODUCTION WINS/);
+
+    const beforeSwitchBack = await page.evaluate(() => window.__identityFetches.length);
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction((count) => window.__identityFetches.length > count, beforeSwitchBack);
+    await page.evaluate(() => {
+      const productionLeft = window.__identityStreams.at(-1);
+      productionLeft.write(`data: ${JSON.stringify({ type: "text-delta", delta: "LEFT REFETCH WINS" })}\n\n`);
+      productionLeft.close();
+    });
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      const panelText = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return window.__acsCompare?.state?.().activeWidgetInstanceId === left.__algoliaWidgetInstanceId &&
+        panelText.includes("LEFT REFETCH WINS");
+    });
+    const switchedBack = await page.evaluate(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      const panelText = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return {
+        leftHasInset: Boolean(left.shadowRoot.querySelector("#acs-compare-style")),
+        rightHasInset: Boolean(right.shadowRoot.querySelector("#acs-compare-style")),
+        leftPressed: left.shadowRoot.querySelector("#acs-compare-toggle")?.getAttribute("aria-pressed"),
+        rightPressed: right.shadowRoot.querySelector("#acs-compare-toggle")?.getAttribute("aria-pressed"),
+        panelText,
+      };
+    });
+    assert.equal(switchedBack.leftHasInset, true, "switching back to A must restore A comparison inset");
+    assert.equal(switchedBack.rightHasInset, false, "switching back to A must remove B comparison inset");
+    assert.equal(switchedBack.leftPressed, "true");
+    assert.equal(switchedBack.rightPressed, "false");
+    assert.match(switchedBack.panelText, /LEFT REFETCH WINS/);
+    assert.doesNotMatch(switchedBack.panelText, /RIGHT PRODUCTION WINS/);
+
+    await page.evaluate(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      right.ask("right latest while left compare active");
+      left.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      const state = window.__acsCompare?.state?.();
+      return state?.compareOn === false &&
+        !right.shadowRoot.querySelector("#acs-compare-style") &&
+        !left.shadowRoot.querySelector("#acs-compare-style");
+    });
+  } finally {
+    await page.close();
+  }
+});
+
+async function writeNextIdentityStream(page, kind, text) {
+  await page.waitForFunction((streamKind) =>
+    window.__identityStreams?.some((stream) => {
+      if (stream.__used) return false;
+      const isProduction = String(stream.record?.url || "").includes("/__compare/production");
+      const isPrimary = !isProduction;
+      return streamKind === "primary" ? isPrimary : !isPrimary;
+    }),
+  kind);
+  await page.evaluate(({ streamKind, value }) => {
+    const stream = window.__identityStreams.find((candidate) => {
+      if (candidate.__used) return false;
+      const isProduction = String(candidate.record?.url || "").includes("/__compare/production");
+      const isPrimary = !isProduction;
+      return streamKind === "primary" ? isPrimary : !isPrimary;
+    });
+    stream.__used = true;
+    stream.write(`data: ${JSON.stringify({ type: "text-delta", delta: value })}\n\n`);
+    stream.close();
+  }, { streamKind: kind, value: text });
+}
+
+async function markNextIdentityStreamUsed(page, kind) {
+  await page.waitForFunction((streamKind) =>
+    window.__identityStreams?.some((stream) => {
+      if (stream.__used) return false;
+      const isProduction = String(stream.record?.url || "").includes("/__compare/production");
+      const isPrimary = !isProduction;
+      return streamKind === "primary" ? isPrimary : isProduction;
+    }),
+  kind);
+  await page.evaluate((streamKind) => {
+    const stream = window.__identityStreams.find((candidate) => {
+      if (candidate.__used) return false;
+      const isProduction = String(candidate.record?.url || "").includes("/__compare/production");
+      const isPrimary = !isProduction;
+      return streamKind === "primary" ? isPrimary : isProduction;
+    });
+    stream.__used = true;
+  }, kind);
+}
+
+test("switching back to a widget restores all completed Compare turns in order", async () => {
+  const page = await createTwoWidgetPage({ loadCompare: true, loadTelemetry: true });
+  try {
+    await page.evaluate(() => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      window.__pendingComparePrimaryTurns = [];
+      window.__publishCompareReadyTurn = (widget, suffix, question, _attemptNumber) => {
+        const widgetId = widget.__algoliaWidgetInstanceId;
+        const messageId = `${widgetId}-${suffix}-message`;
+        const conversationId = `${widgetId}-conversation`;
+        const answerSegmentId = `${widgetId}-${suffix}-assistant`;
+        const footer = document.createElement("div");
+        footer.dataset.algoliaAnswerFooter = messageId;
+        const usage = document.createElement("span");
+        usage.className = "algolia-usage-pill";
+        usage.textContent = "In 1 / 1 Out";
+        footer.append(usage);
+        widget.shadowRoot.querySelector('[part="chat-content"] .overflow-y-auto').append(footer);
+        const payload = {
+          id: conversationId,
+          messages: [{ id: messageId, role: "user", parts: [{ type: "text", text: question }] }],
+        };
+        window.__pendingComparePrimaryTurns.push(
+          window.__invokeIdentityTransport(payload, { widgetInstanceId: widgetId, answerSegmentId })
+            .catch((error) => ({ error: String(error?.message || error) })),
+        );
+      };
+      const [left] = document.querySelectorAll("algolia-chat");
+      window.__publishCompareReadyTurn(left, "a1", "left question one", 1);
+    });
+    await writeNextIdentityStream(page, "primary", "LEFT A1 PRIMARY");
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      return left.shadowRoot.querySelector("[data-algolia-answer-footer] #acs-compare-toggle");
+    });
+
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await writeNextIdentityStream(page, "production", "LEFT A1 PRODUCTION");
+    await page.waitForFunction(() =>
+      document.querySelector("algolia-chat").shadowRoot.querySelector("#acs-compare-panel")?.textContent?.includes("LEFT A1 PRODUCTION")
+    );
+
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      window.__publishCompareReadyTurn(left, "a2", "left question two", 2);
+    });
+    await writeNextIdentityStream(page, "primary", "LEFT A2 PRIMARY");
+    await writeNextIdentityStream(page, "production", "LEFT A2 PRODUCTION");
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      const text = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return text.includes("LEFT A1 PRODUCTION") && text.includes("LEFT A2 PRODUCTION");
+    });
+
+    await page.evaluate(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      window.__publishCompareReadyTurn(right, "b1", "right question one", 1);
+    });
+    await writeNextIdentityStream(page, "primary", "RIGHT B1 PRIMARY");
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll("algolia-chat")][1].shadowRoot.querySelector("[data-algolia-answer-footer] #acs-compare-toggle")
+    );
+    await page.evaluate(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      right.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await writeNextIdentityStream(page, "production", "RIGHT B1 PRODUCTION");
+    await page.waitForFunction(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      return right.shadowRoot.querySelector("#acs-compare-panel")?.textContent?.includes("RIGHT B1 PRODUCTION");
+    });
+
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      const text = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return text.includes("LEFT A1 PRODUCTION") && text.includes("LEFT A2 PRODUCTION");
+    });
+
+    const restored = await page.evaluate(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      const text = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return {
+        leftHasInset: Boolean(left.shadowRoot.querySelector("#acs-compare-style")),
+        rightHasInset: Boolean(right.shadowRoot.querySelector("#acs-compare-style")),
+        text,
+        firstIndex: text.indexOf("LEFT A1 PRODUCTION"),
+        secondIndex: text.indexOf("LEFT A2 PRODUCTION"),
+      };
+    });
+    assert.equal(restored.leftHasInset, true);
+    assert.equal(restored.rightHasInset, false);
+    assert.ok(restored.firstIndex >= 0 && restored.secondIndex > restored.firstIndex, "A1 must render before A2 after A→B→A");
+    assert.doesNotMatch(restored.text, /RIGHT B1 PRODUCTION/);
+  } finally {
+    await page.close();
+  }
+});
+
+test("switching back restores completed Compare history before refetching an incomplete latest turn", async () => {
+  const page = await createTwoWidgetPage({ loadCompare: true, loadTelemetry: true });
+  try {
+    await page.evaluate(() => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      window.__pendingComparePrimaryTurns = [];
+      window.__publishCompareReadyTurn = (widget, suffix, question, _attemptNumber) => {
+        const widgetId = widget.__algoliaWidgetInstanceId;
+        const messageId = `${widgetId}-${suffix}-message`;
+        const conversationId = `${widgetId}-conversation`;
+        const answerSegmentId = `${widgetId}-${suffix}-assistant`;
+        const footer = document.createElement("div");
+        footer.dataset.algoliaAnswerFooter = messageId;
+        const usage = document.createElement("span");
+        usage.className = "algolia-usage-pill";
+        usage.textContent = "In 1 / 1 Out";
+        footer.append(usage);
+        widget.shadowRoot.querySelector('[part="chat-content"] .overflow-y-auto').append(footer);
+        const payload = {
+          id: conversationId,
+          messages: [{ id: messageId, role: "user", parts: [{ type: "text", text: question }] }],
+        };
+        window.__pendingComparePrimaryTurns.push(
+          window.__invokeIdentityTransport(payload, { widgetInstanceId: widgetId, answerSegmentId })
+            .catch((error) => ({ error: String(error?.message || error) })),
+        );
+      };
+      const [left] = document.querySelectorAll("algolia-chat");
+      window.__publishCompareReadyTurn(left, "a1", "left question one", 1);
+    });
+    await writeNextIdentityStream(page, "primary", "LEFT A1 PRIMARY");
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      return left.shadowRoot.querySelector("[data-algolia-answer-footer] #acs-compare-toggle");
+    });
+
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await writeNextIdentityStream(page, "production", "LEFT A1 PRODUCTION");
+    await page.waitForFunction(() =>
+      document.querySelector("algolia-chat").shadowRoot.querySelector("#acs-compare-panel")?.textContent?.includes("LEFT A1 PRODUCTION")
+    );
+
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      window.__publishCompareReadyTurn(left, "a2", "left question two", 2);
+    });
+    await writeNextIdentityStream(page, "primary", "LEFT A2 PRIMARY");
+    await markNextIdentityStreamUsed(page, "production");
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      const text = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return text.includes("LEFT A1 PRODUCTION") && text.includes("Thinking");
+    });
+
+    await page.evaluate(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      window.__publishCompareReadyTurn(right, "b1", "right question one", 1);
+    });
+    await writeNextIdentityStream(page, "primary", "RIGHT B1 PRIMARY");
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll("algolia-chat")][1].shadowRoot.querySelector("[data-algolia-answer-footer] #acs-compare-toggle")
+    );
+    await page.evaluate(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      right.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await writeNextIdentityStream(page, "production", "RIGHT B1 PRODUCTION");
+    await page.waitForFunction(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      return right.shadowRoot.querySelector("#acs-compare-panel")?.textContent?.includes("RIGHT B1 PRODUCTION");
+    });
+
+    await page.evaluate(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      left.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      const text = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return text.includes("LEFT A1 PRODUCTION") && text.includes("Thinking");
+    });
+    await writeNextIdentityStream(page, "production", "LEFT A2 REFETCHED PRODUCTION");
+    await page.waitForFunction(() => {
+      const [left] = document.querySelectorAll("algolia-chat");
+      const text = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return text.includes("LEFT A1 PRODUCTION") && text.includes("LEFT A2 REFETCHED PRODUCTION");
+    });
+
+    const restored = await page.evaluate(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      const text = left.shadowRoot.querySelector("#acs-compare-panel")?.textContent || "";
+      return {
+        leftHasInset: Boolean(left.shadowRoot.querySelector("#acs-compare-style")),
+        rightHasInset: Boolean(right.shadowRoot.querySelector("#acs-compare-style")),
+        text,
+        firstIndex: text.indexOf("LEFT A1 PRODUCTION"),
+        secondIndex: text.indexOf("LEFT A2 REFETCHED PRODUCTION"),
+      };
+    });
+    assert.equal(restored.leftHasInset, true);
+    assert.equal(restored.rightHasInset, false);
+    assert.ok(restored.firstIndex >= 0 && restored.secondIndex > restored.firstIndex, "A1 cache must render before the refetched A2 turn");
+    assert.doesNotMatch(restored.text, /RIGHT B1 PRODUCTION/);
+  } finally {
+    await page.close();
+  }
+});
+
+test("Compare fallback identity keys include top-level widgetInstanceId", async () => {
+  const page = await createTwoWidgetPage({ loadCompare: true, loadTelemetry: true });
+  try {
+    await page.evaluate(() => {
+      window.__identityManualStreams = true;
+      window.__identityStreams = [];
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      left.ask("left fallback visible answer");
+      right.ask("right fallback visible answer");
+    });
+    await page.waitForFunction(() => window.__identityStreams?.length === 2);
+    await page.evaluate(() => {
+      window.__identityStreams.forEach((stream, index) => {
+        const side = index === 0 ? "left" : "right";
+        stream.write(`data: ${JSON.stringify({ type: "text-delta", delta: `${side} answer\n\nShort version: ${side} done.\n\nDetails.` })}\n\n`);
+        stream.close();
+      });
+    });
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll("algolia-chat")].every((widget) =>
+        widget.shadowRoot?.querySelector("[data-algolia-answer-footer] #acs-compare-toggle")
+      )
+    );
+
+    await page.evaluate(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      const leftFooterId = left.shadowRoot.querySelector("[data-algolia-answer-footer]").dataset.algoliaAnswerFooter;
+      const rightFooterId = right.shadowRoot.querySelector("[data-algolia-answer-footer]").dataset.algoliaAnswerFooter;
+      window.__acsCompare.acceptPreparedTurn({
+        turnKey: "same-fallback-turn-key",
+        messageId: leftFooterId,
+        question: "left fallback manual",
+        body: JSON.stringify({ side: "left-fallback-body" }),
+        widgetInstanceId: left.__algoliaWidgetInstanceId,
+      });
+      window.__acsCompare.acceptCompletedTurn({
+        turnKey: "same-fallback-turn-key",
+        messageId: leftFooterId,
+        widgetInstanceId: left.__algoliaWidgetInstanceId,
+      });
+      window.__acsCompare.acceptPreparedTurn({
+        turnKey: "same-fallback-turn-key",
+        messageId: rightFooterId,
+        question: "right fallback manual",
+        body: JSON.stringify({ side: "right-fallback-body" }),
+        widgetInstanceId: right.__algoliaWidgetInstanceId,
+      });
+      window.__acsCompare.acceptCompletedTurn({
+        turnKey: "same-fallback-turn-key",
+        messageId: rightFooterId,
+        widgetInstanceId: right.__algoliaWidgetInstanceId,
+      });
+      window.__acsCompare.acceptPreparedTurn({
+        turnKey: "missing-widget-turn",
+        messageId: rightFooterId,
+        question: "missing widget should not attach",
+        body: JSON.stringify({ side: "missing-widget-body" }),
+        answerIdentity: {
+          widgetInstanceId: "missing-widget",
+          conversationId: "missing-conversation",
+          answerSegmentId: "missing-segment",
+          networkAttemptId: "missing-attempt",
+        },
+      });
+    });
+    await page.waitForFunction(() => {
+      const [left, right] = document.querySelectorAll("algolia-chat");
+      return left.shadowRoot.querySelector("[data-algolia-answer-footer] #acs-compare-toggle") &&
+        right.shadowRoot.querySelector("[data-algolia-answer-footer] #acs-compare-toggle");
+    });
+
+    const beforeClick = await page.evaluate(() => window.__identityFetches.length);
+    await page.evaluate(() => {
+      const [, right] = document.querySelectorAll("algolia-chat");
+      right.shadowRoot.querySelector("#acs-compare-toggle").click();
+    });
+    await page.waitForFunction((count) => window.__identityFetches.length > count, beforeClick);
+
+    const requestBody = await page.evaluate(() => window.__identityFetches.at(-1)?.body || "");
+    assert.match(requestBody, /right-fallback-body/);
+    assert.doesNotMatch(requestBody, /left-fallback-body/);
+    assert.doesNotMatch(requestBody, /missing-widget-body/);
+  } finally {
+    await page.close();
+  }
+});
+
+test("identity-less Compare events fail closed when multiple widgets are mounted", async () => {
+  const page = await createTwoWidgetPage({ loadCompare: true });
+  try {
+    await page.evaluate(() => {
+      window.__acsCompare.acceptPreparedTurn({
+        body: JSON.stringify({ side: "ambiguous" }),
+        turnKey: "ambiguous-conversation:user-1",
+        messageId: "user-1",
+        question: "ambiguous compare",
+      });
+      window.__acsCompare.acceptCompletedTurn({
+        turnKey: "ambiguous-conversation:user-1",
+        messageId: "user-1",
+        question: "ambiguous compare",
+      });
+    });
+    await page.waitForTimeout(50);
+
+    const state = await page.evaluate(() => window.__acsCompare.state());
+    assert.equal(state.hasPreparedTurn, false);
+    assert.equal(state.completedTurns, 0);
   } finally {
     await page.close();
   }
@@ -1117,15 +1888,15 @@ test("completed browser answer without optional controls is explicit in canonica
     });
 
     assert.equal(state.record.slots.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
-    assert.equal(state.record.slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
-    assert.equal(state.record.slots.compareAction.status, ANSWER_SLOT_STATUS.LOADING);
-    assert.equal(state.record.slots.confidence.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(state.record.slots.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(state.record.slots.actions.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(state.record.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
     assert.equal(state.record.slots.followUp.status, ANSWER_SLOT_STATUS.EMPTY);
 
     const presentation = toAnswerPresentation(state.record);
     assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
     assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
-    assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.actions.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
     assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
     assert.equal(presentation.footer.followUp.status, ANSWER_SLOT_STATUS.EMPTY);
 

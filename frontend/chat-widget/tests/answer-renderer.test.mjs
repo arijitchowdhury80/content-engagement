@@ -6,7 +6,15 @@ import {
   createPresentationFromAnswerText,
   toAnswerPresentation,
 } from "../source/shared/widget/answer-presentation.mjs";
-import { createAnswerRenderer } from "../source/shared/widget/answer-renderer.mjs";
+import {
+  createAnswerBodyRenderer,
+  createAnswerRenderer,
+  createAnswerSlotRenderer,
+} from "../source/shared/widget/answer-renderer.mjs";
+import {
+  configureAlgoliaAnswerFooterLayout,
+  createAlgoliaAnswerFooterContainer,
+} from "../source/algolia-com/web-component/answer-slot-view.mjs";
 
 const identity = Object.freeze({
   widgetInstanceId: "widget-1",
@@ -22,6 +30,8 @@ class FakeElement {
     this.attributes = new Map();
     this.children = [];
     this.textContent = "";
+    this.style = {};
+    this.className = "";
   }
 
   setAttribute(name, value) {
@@ -33,10 +43,12 @@ class FakeElement {
   }
 
   append(...children) {
+    for (const child of children) child.parentElement = this;
     this.children.push(...children);
   }
 
   replaceChildren(...children) {
+    for (const child of children) child.parentElement = this;
     this.children = children;
   }
 
@@ -61,6 +73,40 @@ function fakeContainer() {
   return new FakeElement("div", doc);
 }
 
+test("Algolia post-answer controls remain on one row", () => {
+  const document = fakeDocument();
+  const hostFooter = document.createElement("div");
+  const sourceRegion = document.createElement("div");
+  const sourceContainer = document.createElement("div");
+  const confidence = document.createElement("algolia-confidence-badge");
+  const controlsContainer = createAlgoliaAnswerFooterContainer(document);
+  const footer = document.createElement("footer");
+  const telemetry = document.createElement("div");
+  const compare = document.createElement("div");
+  sourceRegion.append(sourceContainer);
+  footer.append(telemetry, compare);
+  controlsContainer.append(footer);
+  hostFooter.append(sourceRegion, confidence, controlsContainer);
+
+  configureAlgoliaAnswerFooterLayout({
+    hostFooter,
+    sourceContainer,
+    controlsContainer,
+    controlsFooter: footer,
+    confidenceControl: confidence,
+  });
+
+  assert.equal(footer.style.display, "flex");
+  assert.equal(footer.style.flexWrap, "nowrap");
+  assert.equal(telemetry.style.flexShrink, "0");
+  assert.equal(compare.style.flexShrink, "0");
+  assert.equal(sourceRegion.style.flex, "1 1 auto");
+  assert.equal(controlsContainer.style.order, "2");
+  assert.equal(confidence.parentElement, hostFooter);
+  assert.equal(confidence.style.order, "3");
+  assert.equal(hostFooter.style.columnGap, "8px");
+});
+
 test("shared renderer owns one semantic placement for every answer slot", () => {
   const record = createPresentationFromAnswerText({
     identity,
@@ -75,7 +121,7 @@ test("shared renderer owns one semantic placement for every answer slot", () => 
     ].join("\n"),
     sources: [{ title: "Docs" }],
     telemetry: { inputTokens: 12345, outputTokens: 678 },
-    compareAction: { label: "Compare with Prod" },
+    actions: { label: "Compare with Prod" },
     confidence: { score: 8.3 },
     lifecycle: ANSWER_LIFECYCLE.COMPLETE,
   });
@@ -100,7 +146,7 @@ test("shared renderer owns one semantic placement for every answer slot", () => 
     "answer-details",
     "answer-sources",
     "answer-telemetry",
-    "answer-compare-action",
+    "answer-actions",
     "answer-confidence",
     "answer-follow-up",
     "answer-progress",
@@ -111,9 +157,75 @@ test("shared renderer owns one semantic placement for every answer slot", () => 
   assert.equal(footers.length, 1);
   assert.equal(
     footers[0].getAttribute("data-order"),
-    "sources telemetry compareAction confidence followUp"
+    "sources telemetry actions confidence followUp"
   );
   assert.equal(footers[0].getAttribute("data-post-stream"), "true");
+});
+
+test("shared body renderer owns TLDR and Details without footer placement", () => {
+  const record = createPresentationFromAnswerText({
+    identity,
+    text: [
+      "API calls are like little door swings at a busy store.",
+      "",
+      "Short version: most data-requesting interactions count.",
+      "",
+      "Debounce typing and protect shared backend traffic.",
+    ].join("\n"),
+    lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+  });
+  const presentation = toAnswerPresentation(record);
+  const container = fakeContainer();
+  const renderedParts = [];
+  const renderer = createAnswerBodyRenderer({
+    renderSlot(element, slot) {
+      renderedParts.push(element.getAttribute("part"));
+      element.textContent = slot.message || (typeof slot.value === "string" ? slot.value : "");
+    },
+  });
+
+  const root = renderer.render(container, presentation);
+
+  assert.equal(root, container);
+  assert.equal(container.getAttribute("part"), "answer");
+  assert.equal(container.getAttribute("data-answer-identity"), presentation.identityKey);
+  assert.deepEqual(renderedParts, ["answer-tldr", "answer-details"]);
+  assert.equal(container.querySelectorAllByPart("answer-footer").length, 0);
+  assert.equal(container.querySelectorAllByPart("answer-progress").length, 0);
+});
+
+test("shared slot renderer can place one footer slot without rendering siblings", () => {
+  const record = createPresentationFromAnswerText({
+    identity,
+    text: [
+      "Search implementation is like setting up checkout lanes.",
+      "",
+      "Short version: start simple, then scale the controls.",
+      "",
+      "Use the docs to confirm the exact integration path.",
+    ].join("\n"),
+    sources: [{ title: "Docs" }],
+    actions: { label: "Compare with Prod" },
+    lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+  });
+  const presentation = toAnswerPresentation(record);
+  const container = fakeContainer();
+  const renderedParts = [];
+  const renderer = createAnswerSlotRenderer({
+    slotKey: "sources",
+    renderSlot(element, slot) {
+      renderedParts.push(element.getAttribute("part"));
+      element.textContent = slot.status;
+    },
+  });
+
+  renderer.render(container, presentation);
+
+  assert.equal(container.getAttribute("data-answer-identity"), presentation.identityKey);
+  assert.deepEqual(renderedParts, ["answer-sources"]);
+  assert.equal(container.querySelectorAllByPart("answer-sources").length, 1);
+  assert.equal(container.querySelectorAllByPart("answer-actions").length, 0);
+  assert.equal(container.querySelectorAllByPart("answer-footer").length, 0);
 });
 
 test("shared renderer defers post-answer footer regions while streaming", () => {
@@ -128,7 +240,7 @@ test("shared renderer defers post-answer footer regions while streaming", () => 
     ].join("\n"),
     sources: [{ title: "Docs" }],
     telemetry: { inputTokens: 1200, outputTokens: 40 },
-    compareAction: { label: "Compare with Prod" },
+    actions: { label: "Compare with Prod" },
     confidence: { score: 8 },
     lifecycle: ANSWER_LIFECYCLE.STREAMING,
   });
@@ -138,7 +250,7 @@ test("shared renderer defers post-answer footer regions while streaming", () => 
 
   assert.equal(root.querySelectorAllByPart("answer-sources")[0].getAttribute("data-state"), "ready");
   assert.equal(root.querySelectorAllByPart("answer-telemetry")[0].getAttribute("data-state"), "loading");
-  assert.equal(root.querySelectorAllByPart("answer-compare-action")[0].getAttribute("data-state"), "loading");
+  assert.equal(root.querySelectorAllByPart("answer-actions")[0].getAttribute("data-state"), "loading");
   assert.equal(root.querySelectorAllByPart("answer-confidence")[0].getAttribute("data-state"), "loading");
   assert.equal(root.querySelectorAllByPart("answer-follow-up")[0].getAttribute("data-state"), "empty");
 });
@@ -155,7 +267,7 @@ test("shared renderer ignores caller-supplied footer order and uses the canonica
     ].join("\n"),
     sources: [{ title: "Docs" }],
     telemetry: { inputTokens: 1200, outputTokens: 40 },
-    compareAction: { label: "Compare with Prod" },
+    actions: { label: "Compare with Prod" },
     confidence: { score: 8 },
     lifecycle: ANSWER_LIFECYCLE.COMPLETE,
   });
@@ -179,12 +291,12 @@ test("shared renderer ignores caller-supplied footer order and uses the canonica
 
   assert.equal(
     root.querySelectorAllByPart("answer-footer")[0].getAttribute("data-order"),
-    "sources telemetry compareAction confidence followUp"
+    "sources telemetry actions confidence followUp"
   );
   assert.deepEqual(renderedParts.slice(3, 8), [
     "answer-sources",
     "answer-telemetry",
-    "answer-compare-action",
+    "answer-actions",
     "answer-confidence",
     "answer-follow-up",
   ]);

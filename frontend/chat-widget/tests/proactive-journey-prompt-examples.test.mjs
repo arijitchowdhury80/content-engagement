@@ -23,7 +23,7 @@ const flows = [
 ];
 
 test('aRRIe concierge system prompt covers the four categories and eight flows', () => {
-  const prompt = readPrompt('system_algolia_arrie_concierge.md');
+  const prompt = readPrompt('orchestrator/system_algolia_arrie_concierge.md');
 
   for (const category of ['Technical', 'Business', 'Commercial', 'Specialist']) {
     assert.match(prompt, new RegExp(`### ${category}`));
@@ -36,7 +36,7 @@ test('aRRIe concierge system prompt covers the four categories and eight flows',
 });
 
 test('Greetings Agent prompt contains one adaptive packet-output example per flow', () => {
-  const prompt = readPrompt('instructions_algolia_proactive_greeting.md');
+  const prompt = readPrompt('orchestrator/instructions_algolia_proactive_greeting.md');
 
   for (const [label, moment, trigger, messageGoal] of flows) {
     assert.match(prompt, new RegExp(`### ${label}`));
@@ -49,8 +49,8 @@ test('Greetings Agent prompt contains one adaptive packet-output example per flo
 });
 
 test('Greetings Agent chips discover unknown visitor facts instead of assuming them', () => {
-  const instructions = readPrompt('instructions_algolia_proactive_greeting.md');
-  const systemPrompt = readPrompt('system_algolia_arrie_concierge.md');
+  const instructions = readPrompt('orchestrator/instructions_algolia_proactive_greeting.md');
+  const systemPrompt = readPrompt('orchestrator/system_algolia_arrie_concierge.md');
 
   for (const prompt of [instructions, systemPrompt]) {
     assert.match(prompt, /submitted verbatim as the visitor's next message/i);
@@ -67,8 +67,8 @@ test('Greetings Agent chips discover unknown visitor facts instead of assuming t
 });
 
 test('proactive greeting examples stay within the popup sentence limit', () => {
-  const instructions = readPrompt('instructions_algolia_proactive_greeting.md');
-  const systemPrompt = readPrompt('system_algolia_arrie_concierge.md');
+  const instructions = readPrompt('orchestrator/instructions_algolia_proactive_greeting.md');
+  const systemPrompt = readPrompt('orchestrator/system_algolia_arrie_concierge.md');
   const segmenter = new Intl.Segmenter('en', { granularity: 'sentence' });
   const sentenceCount = (value) => [...segmenter.segment(value)].filter(({ segment }) => segment.trim()).length;
   const instructionExamples = [...instructions.matchAll(/^\s*"greeting": "(.+)"[,]?$/gm)]
@@ -92,7 +92,7 @@ test('proactive greeting examples stay within the popup sentence limit', () => {
 });
 
 test('Greetings Agent owns one greeting turn and never owns engagement handoff', () => {
-  const prompt = readPrompt('instructions_algolia_proactive_greeting.md');
+  const prompt = readPrompt('orchestrator/instructions_algolia_proactive_greeting.md');
 
   assert.match(prompt, /one phase/i);
   assert.match(prompt, /browser handoff/i);
@@ -101,7 +101,7 @@ test('Greetings Agent owns one greeting turn and never owns engagement handoff',
 });
 
 test('v012 orchestrator prompt contains one adaptive handoff example per flow', () => {
-  const prompt = readPrompt('instructions_algolia_orchestrator.md');
+  const prompt = readPrompt('orchestrator/instructions_algolia_orchestrator.md');
 
   for (const [label, , trigger] of flows) {
     assert.match(prompt, new RegExp(`### ${label}`));
@@ -112,8 +112,8 @@ test('v012 orchestrator prompt contains one adaptive handoff example per flow', 
 });
 
 test('both agents use the canonical journey packet contract', () => {
-  const greeting = readPrompt('instructions_algolia_proactive_greeting.md');
-  const orchestrator = readPrompt('instructions_algolia_orchestrator.md');
+  const greeting = readPrompt('orchestrator/instructions_algolia_proactive_greeting.md');
+  const orchestrator = readPrompt('orchestrator/instructions_algolia_orchestrator.md');
 
   for (const field of [
     'journeyContext.origin',
@@ -133,7 +133,7 @@ test('both agents use the canonical journey packet contract', () => {
 });
 
 test('orchestrator distinguishes visitor intent from prior assistant options', () => {
-  const prompt = readPrompt('instructions_algolia_orchestrator.md');
+  const prompt = readPrompt('orchestrator/instructions_algolia_orchestrator.md');
 
   assert.match(prompt, /`userResponse` is the visitor's primary intent/);
   assert.match(prompt, /`selectedChip` identifies which offered path the visitor chose/);
@@ -143,7 +143,7 @@ test('orchestrator distinguishes visitor intent from prior assistant options', (
 });
 
 test('discovery-only chips collect one missing fact without a fabricated answer', () => {
-  const prompt = readPrompt('instructions_algolia_orchestrator.md');
+  const prompt = readPrompt('orchestrator/instructions_algolia_orchestrator.md');
 
   assert.match(prompt, /### Discovery-Only Handoff Turns/);
   assert.match(prompt, /Help me define my use case/);

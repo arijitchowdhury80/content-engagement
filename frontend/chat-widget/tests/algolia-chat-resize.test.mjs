@@ -197,6 +197,26 @@ async function dragPanelHeader(page, deltaX, deltaY) {
   return { before, after: await panelResizeState(page) };
 }
 
+async function dragHeaderResetControl(page, deltaX, deltaY) {
+  const before = await panelResizeState(page);
+  const center = await page.evaluate(() => {
+    const root = document.querySelector('algolia-chat').shadowRoot;
+    const button = [...root.querySelectorAll('[part="header"] button')].find((candidate) =>
+      /reset conversation/i.test(candidate.getAttribute('aria-label') || '')
+    );
+    if (!button) return null;
+    const rect = button.getBoundingClientRect();
+    return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+  });
+  assert.ok(center, 'expected the header logo/reset control to exist');
+  await page.mouse.move(center.x, center.y);
+  await page.mouse.down();
+  await page.mouse.move(center.x + deltaX, center.y + deltaY, { steps: 12 });
+  await page.mouse.up();
+  await page.waitForTimeout(200);
+  return { before, after: await panelResizeState(page) };
+}
+
 async function dragResizeHandle(page, dir, deltaX, deltaY) {
   const before = await panelResizeState(page);
   const center = await page.evaluate((direction) => {
@@ -415,6 +435,25 @@ test('docked desktop modal becomes fluid when dragged or resized', async () => {
       dragged.after.rect.height > dragged.before.rect.height,
       `expected docked resize to increase height: ${JSON.stringify(dragged)}`
     );
+  } finally {
+    await page.close();
+  }
+});
+
+test('header logo reset control can start a drag without stealing the movement as a click', async () => {
+  const page = await createOpenWidgetPage({ width: 1280, height: 900 }, { openMode: 'docked' });
+  try {
+    const moved = await dragHeaderResetControl(page, -90, -70);
+    assert.ok(
+      moved.after.rect.x < moved.before.rect.x,
+      `expected reset/logo drag to move panel left: ${JSON.stringify(moved)}`
+    );
+    assert.ok(
+      moved.after.rect.y < moved.before.rect.y,
+      `expected reset/logo drag to move panel up: ${JSON.stringify(moved)}`
+    );
+    assert.match(moved.after.inlineStyle, /left: \d+(?:\.\d+)?px/);
+    assert.match(moved.after.inlineStyle, /top: \d+(?:\.\d+)?px/);
   } finally {
     await page.close();
   }

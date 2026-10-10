@@ -46,6 +46,7 @@ function createHarness({
   const localStorage = new MemoryStorage(initialLocal);
   const documentEvents = [];
   const documentListeners = {};
+  const timers = [];
   const context = {
     console: {
       ...console,
@@ -62,8 +63,8 @@ function createHarness({
     localStorage,
     sessionStorage,
     location: {
-      href: `https://tmp-content-eng-algolia.cloud.jahia.com/pricing${search}`,
-      origin: 'https://tmp-content-eng-algolia.cloud.jahia.com',
+      href: `https://widget-test.example/pricing${search}`,
+      origin: 'https://widget-test.example',
       pathname: '/pricing',
       search,
     },
@@ -96,6 +97,14 @@ function createHarness({
       fetchCalls.push({ url: String(url), init });
       if (fetchError) throw fetchError;
       return { ok: true, status: 200, text: async () => 'ok' };
+    },
+    setTimeout(callback, ms) {
+      const timer = { callback, ms, cleared: false };
+      timers.push(timer);
+      return timers.length;
+    },
+    clearTimeout(id) {
+      if (timers[id - 1]) timers[id - 1].cleared = true;
     },
     algoliaChat: {
       registerTool(name, handler) {
@@ -134,6 +143,7 @@ function createHarness({
     getRegisteredTransport: () => registeredTransport,
     sessionStorage,
     documentEvents,
+    timers,
     resetVisitorState() {
       for (const listener of documentListeners['algolia-visitor-state-reset'] || []) {
         listener({ detail: { source: 'test' } });
@@ -208,6 +218,86 @@ function stateWithShownOpportunity() {
   };
 }
 
+function createDomNode(tagName = 'div') {
+  let text = '';
+  const node = {
+    tagName: tagName.toUpperCase(),
+    id: '',
+    className: '',
+    title: '',
+    dataset: {},
+    children: [],
+    parentElement: null,
+    parentNode: null,
+    root: null,
+    attributes: new Map(),
+    get textContent() {
+      return this.children.length ? this.children.map((child) => child.textContent).join('') : text;
+    },
+    set textContent(value) {
+      text = String(value);
+      this.children = [];
+    },
+    setAttribute(name, value) {
+      this.attributes.set(name, String(value));
+      if (name === 'id') this.id = String(value);
+    },
+    appendChild(child) {
+      child.parentElement = this;
+      child.parentNode = this;
+      child.root = this.root;
+      this.children.push(child);
+      return child;
+    },
+    append(...children) {
+      children.forEach((child) => this.appendChild(child));
+    },
+    prepend(child) {
+      child.parentElement = this;
+      child.parentNode = this;
+      child.root = this.root;
+      this.children.unshift(child);
+      return child;
+    },
+    replaceChildren(...children) {
+      text = '';
+      this.children = [];
+      children.forEach((child) => this.appendChild(child));
+    },
+    remove() {
+      const siblings = this.parentElement?.children;
+      if (!siblings) return;
+      const index = siblings.indexOf(this);
+      if (index >= 0) siblings.splice(index, 1);
+      this.parentElement = null;
+      this.parentNode = null;
+    },
+    getRootNode() {
+      return this.root || this;
+    },
+    matches(selector) {
+      if (selector.startsWith('#')) return this.id === selector.slice(1);
+      if (selector.startsWith('.')) return String(this.className).split(/\s+/).includes(selector.slice(1));
+      if (selector === '[data-algolia-answer-footer]') return !!this.dataset.algoliaAnswerFooter;
+      return false;
+    },
+    querySelector(selector) {
+      return this.querySelectorAll(selector)[0] || null;
+    },
+    querySelectorAll(selector) {
+      const out = [];
+      const visit = (candidate) => {
+        if (candidate.matches?.(selector)) out.push(candidate);
+        for (const child of candidate.children || []) visit(child);
+      };
+      for (const child of this.children) visit(child);
+      return out;
+    },
+  };
+  node.root = node;
+  return node;
+}
+
 test('does not register a competing model-callable handoff tool', () => {
   const { registeredTools } = createHarness({ proactiveState: stateWithShownOpportunity() });
 
@@ -240,7 +330,7 @@ test('injects proactive handoff context into the next orchestrator turn', async 
     ],
   };
 
-  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions?compatibilityMode=ai-sdk-5', {
+  await context.invokeTransport('https://TESTAPP123.algolia.net/agent-studio/1/agents/orchestrator_123/completions?compatibilityMode=ai-sdk-5', {
     method: 'POST',
     body: JSON.stringify(body),
   });
@@ -289,7 +379,7 @@ test('publishes the exact terminal body once context and handoff preparation are
     return { ok: true, status: 200, text: async () => 'ok' };
   };
 
-  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+  await context.invokeTransport('https://TESTAPP123.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
     method: 'POST',
     body: JSON.stringify({
       id: 'conversation-1',
@@ -405,6 +495,320 @@ test('answer identity uses the configured widget instance instead of a hardcoded
   );
 });
 
+test('handoff bridge owns footer telemetry rendering and reset cleanup', () => {
+  const h = createHarness();
+  const root = createDomNode('shadow-root');
+  const footer = createDomNode('div');
+  footer.dataset.algoliaAnswerFooter = 'user-1';
+  root.appendChild(footer);
+  const host = {
+    __algoliaWidgetInstanceId: 'widget-1',
+    shadowRoot: root,
+  };
+  h.context.document.querySelectorAll = (selector) => selector === 'algolia-chat' ? [host] : [];
+  h.context.document.createElement = createDomNode;
+
+  const rendered = h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    { messageId: 'user-1', question: 'What changed?', widgetInstanceId: 'widget-1' },
+    { status: 'ready', usage: { inputTokens: 44141, outputTokens: 819, totalTokens: 44960 } },
+  );
+
+  const pill = footer.querySelector('.algolia-usage-pill');
+  assert.equal(rendered, true);
+  assert.equal(root.querySelector('#algolia-usage-pill-style'), null);
+  assert.equal(pill.textContent, 'In 44,141 / 819 Out');
+  assert.equal(pill.title, 'Current response: 44,141 input tokens and 819 output tokens');
+  assert.deepEqual(
+    pill.children.map((child) => child.className),
+    ['algolia-usage-pill__in', 'algolia-usage-pill__divider', 'algolia-usage-pill__out'],
+  );
+
+  h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(null, { status: 'idle', usage: null });
+  assert.ok(footer.querySelector('.algolia-usage-pill'), 'unidentified idle updates cannot globally clear telemetry');
+  h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    { messageId: 'user-1', question: 'What changed?', widgetInstanceId: 'widget-1' },
+    { status: 'idle', usage: null },
+  );
+  assert.equal(footer.querySelector('.algolia-usage-pill'), null);
+});
+
+test('handoff telemetry bridge preserves sibling widgets and retries identity-scoped late footers', () => {
+  const h = createHarness();
+  const observers = [];
+  h.context.MutationObserver = class MutationObserver {
+    constructor(callback) {
+      this.callback = callback;
+      this.disconnected = false;
+      observers.push(this);
+    }
+    observe(root) {
+      this.root = root;
+    }
+    disconnect() {
+      this.disconnected = true;
+    }
+  };
+  h.context.document.createElement = createDomNode;
+
+  const leftRoot = createDomNode('shadow-root');
+  const rightRoot = createDomNode('shadow-root');
+  const leftFooter = createDomNode('div');
+  leftFooter.dataset.algoliaAnswerFooter = 'left-user';
+  leftRoot.appendChild(leftFooter);
+  const leftHost = { __algoliaWidgetInstanceId: 'widget-left', shadowRoot: leftRoot };
+  const rightHost = { __algoliaWidgetInstanceId: 'widget-right', shadowRoot: rightRoot };
+  h.context.document.querySelectorAll = (selector) =>
+    selector === 'algolia-chat' ? [leftHost, rightHost] : [];
+  const leftDetail = {
+    messageId: 'left-user',
+    question: 'Left question',
+    answerIdentity: {
+      widgetInstanceId: 'widget-left',
+      conversationId: 'conversation-left',
+      answerSegmentId: 'left-user',
+      networkAttemptId: 'attempt-left',
+    },
+  };
+  const rightDetail = {
+    messageId: 'right-user',
+    question: 'Right question',
+    answerIdentity: {
+      widgetInstanceId: 'widget-right',
+      conversationId: 'conversation-right',
+      answerSegmentId: 'right-user',
+      networkAttemptId: 'attempt-right',
+    },
+  };
+
+  h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    leftDetail,
+    { status: 'ready', usage: { inputTokens: 1000, outputTokens: 200, totalTokens: 1200 } },
+  );
+  assert.equal(leftFooter.querySelector('.algolia-usage-pill').textContent, 'In 1,000 / 200 Out');
+
+  const rightRenderedEarly = h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    rightDetail,
+    { status: 'ready', usage: { inputTokens: 3000, outputTokens: 400, totalTokens: 3400 } },
+  );
+  assert.equal(rightRenderedEarly, false);
+  assert.equal(observers.length, 1);
+  assert.equal(observers[0].root, rightRoot);
+
+  const rightFooter = createDomNode('div');
+  rightFooter.dataset.algoliaAnswerFooter = 'right-user';
+  rightRoot.appendChild(rightFooter);
+  observers[0].callback();
+  assert.equal(rightFooter.querySelector('.algolia-usage-pill').textContent, 'In 3,000 / 400 Out');
+  assert.equal(leftFooter.querySelector('.algolia-usage-pill').textContent, 'In 1,000 / 200 Out');
+  assert.equal(observers[0].disconnected, true);
+
+  h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    leftDetail,
+    { status: 'idle', usage: null },
+  );
+  assert.equal(leftFooter.querySelector('.algolia-usage-pill'), null);
+  assert.equal(rightFooter.querySelector('.algolia-usage-pill').textContent, 'In 3,000 / 400 Out');
+});
+
+test('handoff telemetry bridge paints latest pending state when footer appears late', () => {
+  const h = createHarness();
+  const observers = [];
+  h.context.MutationObserver = class MutationObserver {
+    constructor(callback) {
+      this.callback = callback;
+      observers.push(this);
+    }
+    observe(root) {
+      this.root = root;
+    }
+    disconnect() {}
+  };
+  h.context.document.createElement = createDomNode;
+
+  const root = createDomNode('shadow-root');
+  const host = { __algoliaWidgetInstanceId: 'widget-late', shadowRoot: root };
+  h.context.document.querySelectorAll = (selector) =>
+    selector === 'algolia-chat' ? [host] : [];
+  const detail = {
+    messageId: 'late-user',
+    question: 'Late footer?',
+    answerIdentity: {
+      widgetInstanceId: 'widget-late',
+      conversationId: 'conversation-late',
+      answerSegmentId: 'late-user',
+      networkAttemptId: 'attempt-late',
+    },
+  };
+
+  const loadingRendered = h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    detail,
+    { status: 'loading', usage: null },
+  );
+  const readyRendered = h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    detail,
+    { status: 'ready', usage: { inputTokens: 3000, outputTokens: 400, totalTokens: 3400 } },
+  );
+  assert.equal(loadingRendered, false);
+  assert.equal(readyRendered, false);
+  assert.equal(observers.length, 1, 'same identity keeps one observer and updates its pending state');
+
+  const footer = createDomNode('div');
+  footer.dataset.algoliaAnswerFooter = 'late-user';
+  root.appendChild(footer);
+  observers[0].callback();
+
+  assert.equal(footer.querySelector('.algolia-usage-pill').textContent, 'In 3,000 / 400 Out');
+  assert.equal(
+    footer.querySelector('.algolia-usage-pill').title,
+    'Current response: 3,000 input tokens and 400 output tokens',
+  );
+  assert.equal(h.timers[0].cleared, true, 'successful late placement clears the bounded observer timer');
+});
+
+test('handoff telemetry bridge refuses stale attempts that target the current answer footer', async () => {
+  const h = createHarness();
+  h.context.document.createElement = createDomNode;
+  const preparedTurns = [];
+  h.context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+  const request = {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-1',
+      messages: [{ id: 'user-1', role: 'user', parts: [{ type: 'text', text: 'same question' }] }],
+    }),
+  };
+
+  await h.context.invokeTransport('https://primary.example/completions', request);
+  await h.context.invokeTransport('https://primary.example/completions', request);
+  assert.equal(preparedTurns.length, 2);
+
+  const root = createDomNode('shadow-root');
+  const footer = createDomNode('div');
+  footer.dataset.algoliaAnswerFooter = 'user-1';
+  root.appendChild(footer);
+  const host = {
+    __algoliaWidgetInstanceId: 'algolia-chat:default',
+    shadowRoot: root,
+  };
+  h.context.document.querySelectorAll = (selector) => selector === 'algolia-chat' ? [host] : [];
+  const oldDetail = {
+    messageId: 'user-1',
+    question: 'same question',
+    answerIdentity: preparedTurns[0].answerIdentity,
+  };
+  const currentDetail = {
+    messageId: 'user-1',
+    question: 'same question',
+    answerIdentity: preparedTurns[1].answerIdentity,
+  };
+
+  const oldRendered = h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    oldDetail,
+    { status: 'ready', usage: { inputTokens: 1, outputTokens: 1, totalTokens: 2 } },
+  );
+  const currentRendered = h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    currentDetail,
+    { status: 'ready', usage: { inputTokens: 10, outputTokens: 5, totalTokens: 15 } },
+  );
+
+  assert.equal(oldRendered, false, 'late old attempt cannot paint over the same message footer');
+  assert.equal(currentRendered, true);
+  assert.equal(footer.querySelector('.algolia-usage-pill').textContent, 'In 10 / 5 Out');
+});
+
+test('handoff telemetry bridge keeps telemetry on older answer footers', () => {
+  const h = createHarness();
+  h.context.document.createElement = createDomNode;
+  const root = createDomNode('shadow-root');
+  const firstFooter = createDomNode('div');
+  const secondFooter = createDomNode('div');
+  firstFooter.dataset.algoliaAnswerFooter = 'user-1';
+  secondFooter.dataset.algoliaAnswerFooter = 'user-2';
+  root.appendChild(firstFooter);
+  root.appendChild(secondFooter);
+  const host = {
+    __algoliaWidgetInstanceId: 'widget-1',
+    shadowRoot: root,
+  };
+  h.context.document.querySelectorAll = (selector) => selector === 'algolia-chat' ? [host] : [];
+
+  h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    {
+      messageId: 'user-1',
+      question: 'first question',
+      answerIdentity: {
+        widgetInstanceId: 'widget-1',
+        conversationId: 'conversation-1',
+        answerSegmentId: 'user-1',
+        networkAttemptId: 'attempt-1',
+      },
+    },
+    { status: 'ready', usage: { inputTokens: 1000, outputTokens: 200, totalTokens: 1200 } },
+  );
+  h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    {
+      messageId: 'user-2',
+      question: 'second question',
+      answerIdentity: {
+        widgetInstanceId: 'widget-1',
+        conversationId: 'conversation-1',
+        answerSegmentId: 'user-2',
+        networkAttemptId: 'attempt-2',
+      },
+    },
+    { status: 'ready', usage: { inputTokens: 3000, outputTokens: 400, totalTokens: 3400 } },
+  );
+
+  assert.equal(firstFooter.querySelector('.algolia-usage-pill').textContent, 'In 1,000 / 200 Out');
+  assert.equal(secondFooter.querySelector('.algolia-usage-pill').textContent, 'In 3,000 / 400 Out');
+});
+
+test('handoff telemetry bridge drops a pending observer after its bounded timeout', () => {
+  const h = createHarness();
+  const observers = [];
+  h.context.MutationObserver = class MutationObserver {
+    constructor(callback) {
+      this.callback = callback;
+      this.disconnected = false;
+      observers.push(this);
+    }
+    observe(root) {
+      this.root = root;
+    }
+    disconnect() {
+      this.disconnected = true;
+    }
+  };
+  h.context.document.createElement = createDomNode;
+  const root = createDomNode('shadow-root');
+  const host = { __algoliaWidgetInstanceId: 'widget-timeout', shadowRoot: root };
+  h.context.document.querySelectorAll = (selector) => selector === 'algolia-chat' ? [host] : [];
+  const detail = {
+    messageId: 'late-user',
+    question: 'Late footer?',
+    answerIdentity: {
+      widgetInstanceId: 'widget-timeout',
+      conversationId: 'conversation-timeout',
+      answerSegmentId: 'late-user',
+      networkAttemptId: 'attempt-timeout',
+    },
+  };
+
+  h.context.algoliaHandoffToOrchestrator.renderAnswerFooterTelemetry(
+    detail,
+    { status: 'ready', usage: { inputTokens: 3000, outputTokens: 400, totalTokens: 3400 } },
+  );
+  assert.equal(h.timers[0].ms, 30000);
+  h.timers[0].callback();
+  assert.equal(observers[0].disconnected, true);
+
+  const footer = createDomNode('div');
+  footer.dataset.algoliaAnswerFooter = 'late-user';
+  root.appendChild(footer);
+  observers[0].callback();
+  assert.equal(footer.querySelector('.algolia-usage-pill'), null);
+});
+
 test('payload widget instance metadata isolates two widget requests in one handoff runtime', async () => {
   const harness = createHarness();
   const preparedTurns = [];
@@ -512,10 +916,12 @@ test('publishes a completed turn once the successful primary stream is consumed'
   assert.match(await response.text(), /text-delta/);
   assert.deepEqual(
     JSON.parse(JSON.stringify(completedTurns)),
-    [{
-      turnKey: 'conversation-1:user-1',
-      messageId: 'user-1',
-      question: 'Hello',
+	    [{
+	      turnKey: 'conversation-1:user-1',
+	      conversationGeneration: 0,
+	      networkAttemptOrdinal: 1,
+	      messageId: 'user-1',
+	      question: 'Hello',
       conversationId: 'alg_cnv_success_1',
       answerIdentity: {
         widgetInstanceId: 'algolia-chat:default',
@@ -634,6 +1040,167 @@ test('completed-turn observers cannot break responses or hide multiple billable 
   );
 });
 
+test('live attempt authority is not evicted by unrelated completed traffic', async () => {
+  const { context } = createHarness();
+  const preparedTurns = [];
+  const completedTurns = [];
+  const encoder = new TextEncoder();
+  let closeLongRunningAnswer;
+  context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+  context.algoliaHandoffToOrchestrator.subscribeCompletedTurn((detail) => completedTurns.push(detail));
+  context.algoliaContextCompiler.fetchPrepared = async () => {
+    if (!closeLongRunningAnswer) {
+      return new Response(new ReadableStream({
+        start(controller) {
+          closeLongRunningAnswer = () => {
+            controller.enqueue(encoder.encode('data: {"type":"text-delta","delta":"A"}\n\n'));
+            controller.close();
+          };
+        },
+      }), { status: 200, headers: { 'X-Conversation-Id': 'alg_cnv_live_a' } });
+    }
+    return new Response('data: {"type":"text-delta","delta":"B"}\n\n', {
+      status: 200,
+      headers: { 'X-Conversation-Id': 'alg_cnv_completed_b' },
+    });
+  };
+
+  const aResponse = await context.invokeTransport('https://primary.example/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-a',
+      messages: [{ id: 'user-a', role: 'user', parts: [{ type: 'text', text: 'long running A' }] }],
+    }),
+  }, {
+    widgetInstanceId: 'widget-a',
+    answerSegmentId: 'assistant-a',
+  });
+  const aPrepared = preparedTurns.at(-1);
+  assert.equal(context.algoliaHandoffToOrchestrator.validateTurnEvent(aPrepared), true);
+
+  for (let index = 0; index < 505; index += 1) {
+    const response = await context.invokeTransport('https://primary.example/completions', {
+      method: 'POST',
+      body: JSON.stringify({
+        id: `conversation-b-${index}`,
+        messages: [{ id: `user-b-${index}`, role: 'user', parts: [{ type: 'text', text: `completed B ${index}` }] }],
+      }),
+    }, {
+      widgetInstanceId: 'widget-b',
+      answerSegmentId: `assistant-b-${index}`,
+    });
+    await response.text();
+  }
+
+  assert.equal(
+    context.algoliaHandoffToOrchestrator.validateTurnEvent(aPrepared),
+    true,
+    'unrelated completed answers must not evict the still-live A authority record',
+  );
+
+  closeLongRunningAnswer();
+  assert.match(await aResponse.text(), /text-delta/);
+  assert.ok(
+    completedTurns.some((detail) => detail.answerIdentity?.widgetInstanceId === 'widget-a'),
+    'the still-live A attempt must be allowed to complete',
+  );
+  assert.equal(
+    context.algoliaHandoffToOrchestrator.validateTurnEvent(aPrepared),
+    false,
+    'successful completion retires A from the live authority table after listeners run',
+  );
+});
+
+test('retry refreshes live authority so a fresh attempt is not FIFO-evicted', async () => {
+  const { context } = createHarness();
+  const preparedTurns = [];
+  context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response(new ReadableStream({ start() {} }), {
+    status: 200,
+    headers: { 'X-Conversation-Id': 'alg_cnv_pending' },
+  });
+  const aRequest = {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-a',
+      messages: [{ id: 'user-a', role: 'user', parts: [{ type: 'text', text: 'retry me' }] }],
+    }),
+  };
+  const aContext = { widgetInstanceId: 'widget-a', answerSegmentId: 'assistant-a' };
+
+  await context.invokeTransport('https://primary.example/completions', aRequest, aContext);
+  const staleA = preparedTurns.at(-1);
+  for (let index = 0; index < 499; index += 1) {
+    await context.invokeTransport('https://primary.example/completions', {
+      method: 'POST',
+      body: JSON.stringify({
+        id: `conversation-b-${index}`,
+        messages: [{ id: `user-b-${index}`, role: 'user', parts: [{ type: 'text', text: `pending B ${index}` }] }],
+      }),
+    }, {
+      widgetInstanceId: 'widget-b',
+      answerSegmentId: `assistant-b-${index}`,
+    });
+  }
+  await context.invokeTransport('https://primary.example/completions', aRequest, aContext);
+  const freshA = preparedTurns.at(-1);
+  await context.invokeTransport('https://primary.example/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-b-final',
+      messages: [{ id: 'user-b-final', role: 'user', parts: [{ type: 'text', text: 'one more B' }] }],
+    }),
+  }, {
+    widgetInstanceId: 'widget-b',
+    answerSegmentId: 'assistant-b-final',
+  });
+
+  assert.equal(
+    context.algoliaHandoffToOrchestrator.validateTurnEvent(staleA),
+    false,
+    'the superseded A attempt is no longer live',
+  );
+  assert.equal(
+    context.algoliaHandoffToOrchestrator.validateTurnEvent(freshA),
+    true,
+    'the fresh A retry remains live after later unrelated work',
+  );
+});
+
+test('terminal failures and cancellations retire live attempt authority', async () => {
+  const { context } = createHarness();
+  const preparedTurns = [];
+  context.algoliaHandoffToOrchestrator.subscribePreparedTurn((detail) => preparedTurns.push(detail));
+  const request = {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 'conversation-terminal',
+      messages: [{ id: 'user-terminal', role: 'user', parts: [{ type: 'text', text: 'terminal cleanup' }] }],
+    }),
+  };
+
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response('no header', { status: 200 });
+  await context.invokeTransport('https://primary.example/completions', request);
+  assert.equal(context.algoliaHandoffToOrchestrator.validateTurnEvent(preparedTurns.at(-1)), false);
+
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response('server failed', { status: 503 });
+  await context.invokeTransport('https://primary.example/completions', request);
+  assert.equal(context.algoliaHandoffToOrchestrator.validateTurnEvent(preparedTurns.at(-1)), false);
+
+  context.algoliaContextCompiler.fetchPrepared = async () => new Response('cancel me', {
+    status: 200,
+    headers: { 'X-Conversation-Id': 'alg_cnv_cancel_cleanup' },
+  });
+  const cancelled = await context.invokeTransport('https://primary.example/completions', request);
+  assert.equal(context.algoliaHandoffToOrchestrator.validateTurnEvent(preparedTurns.at(-1)), true);
+  await cancelled.body.cancel();
+  assert.equal(context.algoliaHandoffToOrchestrator.validateTurnEvent(preparedTurns.at(-1)), false);
+
+  context.algoliaContextCompiler.fetchPrepared = async () => { throw new Error('network failed'); };
+  await assert.rejects(context.invokeTransport('https://primary.example/completions', request), /network failed/);
+  assert.equal(context.algoliaHandoffToOrchestrator.validateTurnEvent(preparedTurns.at(-1)), false);
+});
+
 test('does not publish completed turns for missing headers, guardrails, or cancelled streams', async () => {
   const { context } = createHarness();
   const completedTurns = [];
@@ -704,7 +1271,7 @@ test('removes legacy visitor intelligence before capturing the proactive respons
     primaryAgentId: 'orchestrator_123',
   });
 
-  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+  await context.invokeTransport('https://TESTAPP123.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
     method: 'POST',
     body: JSON.stringify({
       messages: [
@@ -734,13 +1301,13 @@ test('does not inject handoff context into non-orchestrator or already-sent turn
   state.opportunities[0].status = 'handoff_sent';
   const { context, fetchCalls } = createHarness({ proactiveState: state, primaryAgentId: 'orchestrator_123' });
 
-  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+  await context.invokeTransport('https://TESTAPP123.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
     method: 'POST',
     body: JSON.stringify({
       messages: [{ role: 'user', parts: [{ type: 'text', text: 'normal question' }] }],
     }),
   });
-  await context.fetch('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/other_agent/completions', {
+  await context.fetch('https://TESTAPP123.algolia.net/agent-studio/1/agents/other_agent/completions', {
     method: 'POST',
     body: JSON.stringify({
       messages: [{ role: 'user', parts: [{ type: 'text', text: 'normal question' }] }],
@@ -813,7 +1380,7 @@ test('reattaches the original proactive handoff and fresh page context on later 
     primaryAgentId: 'orchestrator_123',
   });
 
-  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+  await context.invokeTransport('https://TESTAPP123.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
     method: 'POST',
     body: JSON.stringify({
       messages: [{ role: 'user', parts: [{ type: 'text', text: 'What drives cost?' }] }],
@@ -826,7 +1393,7 @@ test('reattaches the original proactive handoff and fresh page context on later 
     qualified_journey: 'product:AI Search > pricing:Pricing > documentation:InstantSearch',
   });
 
-  await context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+  await context.invokeTransport('https://TESTAPP123.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
     method: 'POST',
     body: JSON.stringify({
       messages: [{ role: 'user', parts: [{ type: 'text', text: 'How does that change implementation?' }] }],
@@ -852,7 +1419,7 @@ test('a failed orchestrator request restores the shown opportunity for retry', a
   });
 
   await assert.rejects(
-    context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+    context.invokeTransport('https://TESTAPP123.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
       method: 'POST',
       body: JSON.stringify({
         messages: [{ role: 'user', parts: [{ type: 'text', text: 'What drives cost?' }] }],
@@ -879,7 +1446,7 @@ test('an invalid turnContext blocks the orchestrator request without consuming t
   });
 
   await assert.rejects(
-    context.invokeTransport('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
+    context.invokeTransport('https://TESTAPP123.algolia.net/agent-studio/1/agents/orchestrator_123/completions', {
       method: 'POST',
       body: JSON.stringify({
         messages: [{ role: 'user', parts: [{ type: 'text', text: 'What drives cost?' }] }],

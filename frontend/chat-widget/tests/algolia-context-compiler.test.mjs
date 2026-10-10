@@ -449,7 +449,7 @@ test('injects turnContext into Agent Studio AI SDK v5 user message metadata', as
 
   context.algoliaContextCompiler.installFetchInterceptor();
 
-  await context.fetch('https://0EXRPAXB56.algolia.net/agent-studio/1/agents/agent/completions?compatibilityMode=ai-sdk-5', {
+  await context.fetch('https://TESTAPP123.algolia.net/agent-studio/1/agents/agent/completions?compatibilityMode=ai-sdk-5', {
     method: 'POST',
     body: JSON.stringify({
       messages: [
@@ -473,7 +473,7 @@ test('prepared completion bodies bypass the interceptor without a second mutatio
 
   const prepared = compiler.prepareCompletionBody(input);
   const response = await compiler.fetchPrepared(
-    'https://0EXRPAXB56.algolia.net/agent-studio/1/agents/agent/completions',
+    'https://TESTAPP123.algolia.net/agent-studio/1/agents/agent/completions',
     { method: 'POST', body: prepared },
   );
 

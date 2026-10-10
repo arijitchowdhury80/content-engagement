@@ -16,7 +16,7 @@ export const ANSWER_SLOT_KEYS = Object.freeze([
   "followUp",
   "confidence",
   "telemetry",
-  "compareAction",
+  "actions",
   "progress",
   "errorRetry",
 ]);

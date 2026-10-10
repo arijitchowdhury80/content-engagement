@@ -1,0 +1,7 @@
+[
+  "frontend/chat-widget/answer-harness-runtime.mjs",
+  "frontend/chat-widget/algolia-chat.js",
+  "frontend/chat-widget/handoff-to-orchestrator.js",
+  "frontend/chat-widget/algolia-chat-compare.js",
+  "frontend/chat-widget/token-telemetry.js"
+]

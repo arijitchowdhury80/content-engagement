@@ -1,0 +1,13 @@
+Content Engagement 2.0
+
+The readable widget source incorporates and modifies work from the Algolia
+Central Chat Widget source history authored by Sajid Momin. The preserved donor
+baseline is commit e06c6b5ff20c8576bec01fdf000981cd8873cc06.
+
+The widget uses InstantSearch.js, React, React DOM, and Algolia API clients.
+Their own copyright notices and license terms continue to apply.
+
+No excluded third-party brand implementation, assets, design tokens,
+configuration, screenshots, or generated release code are included in the
+canonical source or customer artifact. Temporary legacy Algolia compatibility
+files are retained only as rollback inputs until the host migration is accepted.

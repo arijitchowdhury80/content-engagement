@@ -60,7 +60,7 @@ function createHarness({ anchors = [] } = {}) {
     location: {
       search: '?minPages=99&minEvents=99&delayMs=999999',
       pathname: '/pricing',
-      origin: 'https://tmp-content-eng-algolia.cloud.jahia.com',
+      origin: 'https://widget-test.example',
     },
     setTimeout(fn, delay) {
       timers.push({ fn, delay });
@@ -110,7 +110,7 @@ test('repairs malformed same-origin Jahia documentation hrefs using their final 
   const anchor = {
     dataset: {
       finalurl:
-        'https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home/doc/guides/example.html',
+        'https://widget-test.example/cms/render/live/en/sites/www/home/doc/guides/example.html',
     },
     attributes: new Map([['href', '/sites/www/doc/guides/example']]),
     getAttribute(name) {
@@ -125,7 +125,7 @@ test('repairs malformed same-origin Jahia documentation hrefs using their final 
 
   assert.equal(
     anchor.getAttribute('href'),
-    'https://tmp-content-eng-algolia.cloud.jahia.com/cms/render/live/en/sites/www/home/doc/guides/example.html',
+    'https://widget-test.example/cms/render/live/en/sites/www/home/doc/guides/example.html',
   );
 });
 

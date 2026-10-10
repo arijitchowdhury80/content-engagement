@@ -36,11 +36,14 @@
  *   negative < 5    → color.negative / color.negativeBg
  *   These three token pairs are now visible product surface on every answer.
  *
- * Logo assets:
- *   /Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG/
+ * Logo assets are embedded as immutable data URLs.
  */
 (() => {
   const algoliaMarkWhite = 'url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20500%20500.34%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3A%23fff%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cpath%20class%3D%22cls-1%22%20d%3D%22M250%2C0C113.38%2C0%2C2%2C110.16%2C.03%2C246.32c-2%2C138.29%2C110.19%2C252.87%2C248.49%2C253.67%2C42.71%2C.25%2C83.85-10.2%2C120.38-30.05%2C3.56-1.93%2C4.11-6.83%2C1.08-9.52l-23.39-20.74c-4.75-4.22-11.52-5.41-17.37-2.92-25.5%2C10.85-53.21%2C16.39-81.76%2C16.04-111.75-1.37-202.04-94.35-200.26-206.1%2C1.76-110.33%2C92.06-199.55%2C202.8-199.55h202.83V407.68l-115.08-102.25c-3.72-3.31-9.43-2.66-12.43%2C1.31-18.47%2C24.46-48.56%2C39.67-81.98%2C37.36-46.36-3.2-83.92-40.52-87.4-86.86-4.15-55.28%2C39.65-101.58%2C94.07-101.58%2C49.21%2C0%2C89.74%2C37.88%2C93.97%2C86.01%2C.38%2C4.28%2C2.31%2C8.28%2C5.53%2C11.13l29.97%2C26.57c3.4%2C3.01%2C8.8%2C1.17%2C9.63-3.3%2C2.16-11.55%2C2.92-23.6%2C2.07-35.95-4.83-70.39-61.84-127.01-132.26-131.35-80.73-4.98-148.23%2C58.18-150.37%2C137.35-2.09%2C77.15%2C61.12%2C143.66%2C138.28%2C145.36%2C32.21%2C.71%2C62.07-9.42%2C86.2-26.97l150.36%2C133.29c6.45%2C5.71%2C16.62%2C1.14%2C16.62-7.48V9.49C500%2C4.25%2C495.75%2C0%2C490.51%2C0H250Z%22%2F%3E%3C%2Fsvg%3E")';
+
+  const algoliaMarkBlueSrc = algoliaMarkWhite
+    .slice(5, -2)
+    .replace('%23fff', '%23003dff');
 
   const theme = {
     colorScheme: 'light',
@@ -203,7 +206,7 @@
       '[part="composer-input"] { display: flex; align-items: center; min-height: 38px; line-height: 38px; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; font-size: var(--algolia-fs-base); box-shadow: none !important; }',
       '[part="composer-input"]::placeholder { line-height: 38px; }',
       '[part="composer-send"] { position: relative; width: 40px; min-width: 40px; height: 40px; min-height: 40px; padding: 0 !important; border: 0; border-radius: var(--algolia-radius-full); background: #050505; color: transparent; font-size: 0; box-shadow: none; }',
-      '/* Generated from local Algolia logo pack: /Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG/Algolia-mark-white.svg */',
+      '/* Embedded Algolia mark used by the composer send control. */',
       `[part="composer-send"]::before { content: ""; position: absolute; inset: 10px; background-image: ${algoliaMarkWhite}; background-repeat: no-repeat; background-position: center; background-size: contain; }`,
       '[part="composer-send"]:hover { background: #1b1b1b; }',
       '[part="message-user-bubble"] { padding: 10px 18px !important; border: 1px solid color-mix(in srgb, var(--algolia-accent) 72%, #ffffff); box-shadow: 0 14px 34px -24px rgba(0,61,255,0.9); font-size: var(--algolia-fs-base); }',
@@ -234,6 +237,10 @@
       '.acs-step--active .acs-step__label { color: var(--algolia-text-secondary) !important; }',
       '.acs-step--active .acs-step__detail { color: var(--algolia-text-muted) !important; }',
       '.acs-progress { display: none !important; }',
+      '.algolia-usage-pill { display: inline-flex; align-items: center; width: fit-content; margin-right: 6px; border-radius: var(--algolia-radius-full); border: 1px solid color-mix(in srgb, var(--algolia-border) 86%, #ffffff); background: linear-gradient(135deg, rgba(255,255,255,0.92), rgba(242,244,255,0.96)); color: var(--algolia-text-muted); padding: 4px 12px; font-size: var(--algolia-fs-xs); font-weight: var(--algolia-fw-medium); font-family: var(--algolia-font-sans); line-height: 1.4; white-space: nowrap; box-sizing: border-box; box-shadow: 0 12px 26px -20px rgba(0,61,255,0.45), 0 1px 0 rgba(255,255,255,0.95) inset; }',
+      '.algolia-usage-pill__in { color: color-mix(in srgb, var(--algolia-accent) 58%, var(--algolia-text-muted)); font-weight: var(--algolia-fw-bold); }',
+      '.algolia-usage-pill__divider { color: var(--algolia-text-muted); opacity: 0.65; padding: 0 4px; }',
+      '.algolia-usage-pill__out { color: color-mix(in srgb, var(--algolia-text-secondary) 70%, var(--algolia-text-muted)); font-weight: var(--algolia-fw-bold); }',
       // On mobile viewports the normal-mode panel would be too narrow.
       // Override to near-full-width below 640px.
       '@media (max-width: 640px) { :host { --algolia-panel-w: 95vw; --algolia-panel-h: 90vh; } [part="panel"]:not([style*="bottom:"]):not([style*="width: 100vw"]), [part="panel"] { resize: none !important; min-width: 0; min-height: 0; max-width: 95vw; max-height: 90vh; } .acs-resize-handles { display: none !important; } [part="header"] { gap: 10px; padding-left: 14px !important; padding-right: 10px !important; } [part="header"] h1 { font-size: 15px; line-height: 1.1; } [part="header"] > div { gap: 8px !important; } [part="header"] > div button { width: 28px !important; min-width: 28px !important; height: 28px !important; min-height: 28px !important; } [part="composer"] { margin: 8px 14px 12px !important; } [part="composer-input"] { font-size: var(--algolia-fs-sm); } }',
@@ -250,6 +257,7 @@
   };
 
   const api = (window.algoliaChat = window.algoliaChat || {});
+  api.defaultLogo = api.defaultLogo || algoliaMarkBlueSrc;
 
   if (typeof api.registerTheme === 'function') {
     api.registerTheme('algolia', theme);

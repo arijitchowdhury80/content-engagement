@@ -1,0 +1,153 @@
+/**
+ * Algolia-Central token contract — the `--algolia-*` vocabulary.
+ *
+ * This file is the FROZEN API. Structure components (src/components/*) consume
+ * ONLY these custom properties (via Tailwind theme.extend in tailwind.config.ts,
+ * or `var(--algolia-*)` directly for dynamic cases) — never a raw hex value, never a
+ * skin-specific variable name. Grep proof: `grep -rE '#[0-9a-fA-F]{3,6}' src/components`
+ * must return nothing.
+ *
+ * The values below are NEUTRAL DEFAULTS ONLY — a look-less gray scaffold so the
+ * app is never unstyled if no theme is configured. The actual brand look comes
+ * from a host-supplied theme registered via registerTheme() (or a JSON slot),
+ * which re-declares these same custom properties with real values. Themes MUST
+ * cover every token declared here — see THEMING.md for the authoring contract.
+ */
+
+:root {
+  /* ============================== COLOR ============================== */
+  --algolia-bg: #f5f5f5;
+  --algolia-surface: #ffffff;
+  --algolia-surface-2: #f0f0f0;
+  --algolia-surface-hover: #eaeaea;
+  --algolia-border: #e0e0e0;
+  --algolia-border-strong: #b0b0b0;
+
+  --algolia-text: #1a1a1a;
+  --algolia-text-secondary: #4d4d4d;
+  --algolia-text-muted: #757575;
+  --algolia-text-on-accent: #ffffff;
+
+  --algolia-accent: #3a3a3a;
+  --algolia-accent-hover: #2c2c2c;
+  --algolia-accent-down: #1f1f1f;
+  --algolia-accent-tint: #ececec;
+
+  --algolia-link: #3a3a3a;
+  --algolia-focus: #3a3a3a;
+
+  --algolia-positive: #2e7d46;
+  --algolia-positive-bg: #e6f4ea;
+  --algolia-notice: #a15c00;
+  --algolia-notice-bg: #fbeedd;
+  --algolia-negative: #b3261e;
+  --algolia-negative-bg: #fbe9e7;
+  --algolia-informative: #3a3a3a;
+  --algolia-informative-bg: #ececec;
+
+  --algolia-agent-primary: #5c5c5c;
+  --algolia-agent-specialist: #707070;
+  --algolia-agent-specialist-product: #626262;
+  --algolia-agent-specialist-tech: #707070;
+  --algolia-agent-specialist-sales: #7e7e7e;
+  --algolia-agent-specialist-evidence: #8c8c8c;
+
+  /* ============================== TYPE ================================ */
+  --algolia-font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --algolia-font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --algolia-fs-2xs: 10px;
+  --algolia-fs-xs: 12px;
+  --algolia-fs-sm: 14px;
+  --algolia-fs-base: 16px;
+  --algolia-fs-lg: 18px;
+  --algolia-fs-xl: 22px;
+  --algolia-fs-2xl: 28px;
+  --algolia-fs-hero: clamp(26px, 4vw, 40px);
+
+  /* Letter-spacing for all-caps labels */
+  --algolia-tracking-caps: 0.12em;
+
+  --algolia-fw-regular: 400;
+  --algolia-fw-medium: 500;
+  --algolia-fw-bold: 700;
+
+  --algolia-lh-body: 1.5;
+  --algolia-lh-heading: 1.2;
+
+  /* ============================== SPACE ================================ */
+  /* Minimum interactive control heights (touch targets) */
+  --algolia-control-min: 44px;
+  --algolia-control-sm: 36px;
+
+  /* Max widths for specific repeated elements */
+  --algolia-source-name-max-w: 200px;
+  --algolia-msg-max-w: 80%;
+  --algolia-thinking-bar-max-w: 220px;
+
+  --algolia-space-1: 4px;
+  --algolia-space-2: 8px;
+  --algolia-space-3: 12px;
+  --algolia-space-4: 16px;
+  --algolia-space-5: 20px;
+  --algolia-space-6: 24px;
+  --algolia-space-7: 32px;
+  --algolia-space-8: 40px;
+  --algolia-space-9: 48px;
+  --algolia-space-10: 64px;
+
+  --algolia-gutter: 24px;
+  --algolia-measure: 72ch;
+  --algolia-maxw: 1120px;
+
+  /* ============================== SHAPE ================================ */
+  --algolia-radius-sm: 4px;
+  --algolia-radius-md: 8px;
+  --algolia-radius-lg: 12px;
+  --algolia-radius-xl: 16px;
+  --algolia-radius-full: 9999px;
+
+  /* ============================= ELEVATION ============================= */
+  --algolia-shadow-1: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --algolia-shadow-2: 0 3px 12px rgba(0, 0, 0, 0.1);
+  --algolia-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --algolia-shadow-glass: 0 20px 40px -8px rgba(0, 0, 0, 0.18), 0 8px 16px -4px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+  --algolia-shadow-focus: 0 0 0 2px #ffffff, 0 0 0 4px #3a3a3a;
+
+  /* =============================== MOTION =============================== */
+  --algolia-dur-fast: 120ms;
+  --algolia-dur-base: 190ms;
+  --algolia-dur-slow: 320ms;
+  --algolia-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* =============================== LAYOUT ================================ */
+  --algolia-header-h: 64px;
+
+  /* Modal panel (normal mode) */
+  --algolia-panel-w: 85vw;
+  --algolia-panel-h: 85vh;
+
+  /* Docked panel. The min floors keep the panel usable on small viewports; the
+     margins reserve room for the launcher and the viewport edge. */
+  --algolia-docked-w: 420px;
+  --algolia-docked-h: 640px;
+  --algolia-docked-min-w: 320px;
+  --algolia-docked-min-h: 480px;
+  --algolia-docked-offset-bottom: 88px;
+  --algolia-docked-offset-right: 16px;
+  --algolia-docked-margin-x: 32px;
+  --algolia-docked-margin-y: 104px;
+
+  /* Launcher FAB */
+  --algolia-launcher-size: 56px;
+  --algolia-launcher-offset-bottom: 24px;
+  --algolia-launcher-offset-right: 24px;
+
+  /* Stacking context */
+  --algolia-z-launcher: 40;
+  --algolia-z-panel: 50;
+
+  /* Backdrop behind the modal-mode panel */
+  --algolia-backdrop: rgba(0, 0, 0, 0.55);
+  --algolia-backdrop-blur: 4px;
+}

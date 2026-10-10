@@ -203,7 +203,7 @@ function createHarness({
           if (!instantSearch) return null;
           return {
             getAttribute(name) {
-              if (name === 'app-id') return '0EXRPAXB56';
+              if (name === 'app-id') return 'TESTAPP123';
               if (name === 'api-key') return 'search_key';
               return null;
             },
@@ -1184,7 +1184,7 @@ test('the newest visible opportunity blocks replacement when an older greeting i
   const { context, sessionStorage, chatEngagements } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/doc/guides/ai-recommendations/getting-started/',
@@ -1273,7 +1273,7 @@ test('a closed unengaged greeting is superseded in stored state by a stronger tr
   const { sessionStorage, chatEngagements } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/doc/guides/ai-recommendations/getting-started/',
@@ -1355,7 +1355,7 @@ test('an open unanswered solution greeting is replaced by the immediate customer
   const { sessionStorage, chatEngagements } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/customers/h-e-b-mexico',
@@ -1594,7 +1594,7 @@ test('uses the canonical qualified to pending to shown lifecycle', async () => {
   const { context, sessionStorage } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
       cooldownMs: 0,
     },
@@ -1756,7 +1756,7 @@ test('dismissed source greetings suppress same-page duplicates without blocking 
       pages: [item.source],
       proactiveConfig: {
         greetingsAgentId: 'greeting_agent_123',
-        appId: '0EXRPAXB56',
+        appId: 'TESTAPP123',
         apiKey: 'search_key',
         cooldownMs: 0,
       },
@@ -1877,7 +1877,7 @@ test('retries the same qualified page moment after a greeting request fails', as
   const { context, sessionStorage, chatEngagements } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
       cooldownMs: 0,
     },
@@ -1944,7 +1944,7 @@ test('retries the same opportunity when the chat widget becomes ready after qual
     chatAvailable: () => widgetReady,
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
       cooldownMs: 0,
     },
@@ -2417,7 +2417,7 @@ test('configured controller posts a proactive greeting request and renders valid
   const { context, chatEngagements, sessionStorage } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/pricing',
@@ -2469,7 +2469,7 @@ test('configured controller posts a proactive greeting request and renders valid
   await flushAsyncControllerWork();
 
   assert.equal(fetchCalls.length, 1);
-  assert.match(fetchCalls[0].url, /0EXRPAXB56\.algolia\.net\/agent-studio\/1\/agents\/greeting_agent_123\/completions/);
+  assert.match(fetchCalls[0].url, /TESTAPP123\.algolia\.net\/agent-studio\/1\/agents\/greeting_agent_123\/completions/);
   const body = JSON.parse(fetchCalls[0].init.body);
   const text = body.messages[0].parts[0].text;
   assert.match(text, /^PROACTIVE_GREETING_REQUEST\n/);
@@ -2495,7 +2495,7 @@ test('visitor reset prevents a pre-reset greeting response from rendering', asyn
   const { context, chatEngagements } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/products/ai-search',
@@ -2547,7 +2547,7 @@ test('controller accepts white-glove concierge greetings that are specific and o
   const { context, chatEngagements, sessionStorage } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/pricing',
@@ -2636,7 +2636,7 @@ test('controller compacts greetings longer than the two-sentence popup contract'
   const { chatEngagements, sessionStorage } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/pricing',
@@ -2782,7 +2782,7 @@ test('controller can use algolia-chat credentials when instant search is absent'
   const { chatEngagements } = createHarness({
     instantSearch: false,
     chatAttrs: {
-      'app-id': '0EXRPAXB56',
+      'app-id': 'TESTAPP123',
       'search-api-key': 'chat_search_key',
     },
     engageAttrs: {
@@ -2896,7 +2896,7 @@ test('debug status keeps a rendered greeting recognizable when later signals see
     ],
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
       cooldownMs: 0,
     },
@@ -2944,7 +2944,7 @@ test('controller evaluates once on install so initial page-view journey triggers
   const { chatEngagements } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
       cooldownMs: 0,
     },
@@ -3004,7 +3004,7 @@ test('controller refuses invalid greeting responses and does not open the widget
   const { context, chatEngagements, sessionStorage } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/pricing',
@@ -3046,7 +3046,7 @@ test('controller rejects greeting JSON wrapped in model prose', async () => {
   const { context, chatEngagements, sessionStorage } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/pricing',
@@ -3084,7 +3084,7 @@ test('controller accepts one validated greeting object wrapped in a JSON code fe
   const { context, chatEngagements } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/pricing',
@@ -3121,7 +3121,7 @@ test('controller parses streamed text deltas from the greetings agent', async ()
   const { context, chatEngagements } = createHarness({
     proactiveConfig: {
       greetingsAgentId: 'greeting_agent_123',
-      appId: '0EXRPAXB56',
+      appId: 'TESTAPP123',
       apiKey: 'search_key',
     },
     locationPath: '/pricing',

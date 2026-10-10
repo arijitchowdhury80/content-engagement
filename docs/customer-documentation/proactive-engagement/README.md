@@ -13,9 +13,9 @@ The browser controls timing. Agent Studio controls language and conversation qua
 | Collector | `frontend/chat-widget/algolia-engagement-tracker.js` | Captures browser behavior and writes structured profile, session, event, and product-focus state. |
 | Compiler | `frontend/chat-widget/algolia-context-compiler.js` | Builds the rich browser packet and a bounded `AlgoliaTurnContext.v1` for Agent Studio. The turn context contains qualified journey summaries, not the raw event stream. |
 | Controller | `frontend/chat-widget/algolia-proactive-controller.js` | Evaluates journey triggers, reserves an opportunity, adds contextual focus for personalization, calls the Greetings Agent, and asks the chat widget to render the returned greeting. |
-| Greetings Agent | `www Chat - Proactive Concierge`; prompt in `agents/prompts/instructions_algolia_proactive_greeting.md` | Creates one greeting and up to three chips from the proactive packet. It does not continue the full answer conversation. |
+| Greetings Agent | `www Chat - Proactive Concierge`; prompt in `agents/prompts/orchestrator/instructions_algolia_proactive_greeting.md` | Creates one greeting and up to three chips from the proactive packet. It does not continue the full answer conversation. |
 | Handoff tool | `frontend/chat-widget/handoff-to-orchestrator.js` | Registers `handoff_to_orchestrator`, captures the selected chip or typed response, and attaches the proactive handoff context to the next orchestrator turn. |
-| Main Orchestrator | `www Chat - Orchestrator`; prompt in `agents/prompts/instructions_algolia_orchestrator.md` | Answers the visitor using the normal grounded answer flow, now aware of the proactive moment that started the conversation. |
+| Main Orchestrator | `www Chat - Orchestrator`; prompt in `agents/prompts/orchestrator/instructions_algolia_orchestrator.md` | Answers the visitor using the normal grounded answer flow, now aware of the proactive moment that started the conversation. |
 
 ## Storage Contract
 

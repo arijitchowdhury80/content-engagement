@@ -8,7 +8,7 @@ test('every successful answer exposes exactly one discovery question', async () 
   const bundle = await readFile(bundleUrl, 'utf8');
 
   assert.match(bundle, /function __arrieOneDiscoveryQuestion\(/);
-  assert.match(bundle, /const s=yg\(e\.content,n,"specialist"\),u=__arrieOneDiscoveryQuestion\(t,e\.suggestions\[0\]\)/);
+  assert.match(bundle, /yg\(e\.content,n,"specialist"\),[a-z]=__arrieOneDiscoveryQuestion\(t,e\.suggestions\[0\]\)/);
   assert.match(
     bundle,
     /const s=a\.active\?__arrieOneDiscoveryQuestion\(n\.query,a\.followUp,i\.suggestions\[0\]\):\[a\.followUp,\.\.\.i\.suggestions\]\.map\([^)]*=>[^)]*\.trim\(\)\)\.filter\(Boolean\)\.slice\(0,1\)/,
@@ -63,6 +63,49 @@ test('confidence judges retry only the role whose response failed', async () => 
   assert.match(bundle, /phase:"retrying",role:i,attempt:w/);
   assert.match(bundle, /Judge failed validation twice/);
   assert.match(bundle, /s\.ROLES\.map\(g=>__arrieRunRoleJudge/);
+});
+
+test('specialist progress emissions carry widget and attempt context', async () => {
+  const bundle = await readFile(bundleUrl, 'utf8');
+  const specialistStart = bundle.indexOf('function q1(');
+  const specialistEnd = bundle.indexOf('function __arrieFallbackDiscoveryQuestion', specialistStart);
+  const specialistRunner = bundle.slice(specialistStart, specialistEnd);
+  const specialistToolStart = bundle.indexOf('function V1(');
+  const specialistToolEnd = bundle.indexOf('function Q1(', specialistToolStart);
+  const specialistTool = bundle.slice(specialistToolStart, specialistToolEnd);
+  const registryStart = bundle.indexOf('function tR(');
+  const registryEnd = bundle.indexOf('function rR(', registryStart);
+  const registry = bundle.slice(registryStart, registryEnd);
+  const thinkingStart = bundle.indexOf('function lE(');
+  const thinkingEnd = bundle.indexOf('function uE(', thinkingStart);
+  const thinkingIndicator = bundle.slice(thinkingStart, thinkingEnd);
+
+  assert.ok(specialistStart >= 0 && specialistEnd > specialistStart, 'specialist runner must exist');
+  assert.match(
+    registry,
+    /hostElement:e\.hostElement/,
+    'specialist tool registry must pass the owning widget host into specialist execution',
+  );
+  assert.match(
+    specialistTool,
+    /progressContext:\{widgetInstanceId:e\.hostElement\?\.__algoliaWidgetInstanceId,turnId:n\}/,
+    'specialist execution must bind progress to the originating widget and turn',
+  );
+  assert.doesNotMatch(
+    specialistRunner,
+    /mt\(\{status:"(?:success|streaming|loading|error)"[^)]*\}\)(?!,)/,
+    'specialist progress must never use the document-wide progress fallback',
+  );
+  assert.match(
+    specialistRunner,
+    /mt\(\{status:"success",searchCount:0,hasText:!0\},void 0,[a-z]\.hostElement\?\?null,[a-z]\.progressContext\?\?null\)/,
+    'specialist failure fallback must complete only the owning widget progress',
+  );
+  assert.match(
+    thinkingIndicator,
+    /mt\(\{status:[a-z],searchCount:[a-z]\?\?0,hasText:!![a-z]\.trim\(\),textLength:[a-z]\.length\},void 0,[a-z],[a-z]\)/,
+    'rendered reasoning progress must carry host/context and avoid sibling cross-talk',
+  );
 });
 
 test('qualified specialist journeys use the existing human-gated specialist handler deterministically', async () => {

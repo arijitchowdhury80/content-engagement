@@ -12,8 +12,8 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 test('local orchestrator prompts satisfy the conversation-led discovery contract', () => {
-  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/instructions_algolia_orchestrator.md'), 'utf8');
-  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/system_algolia_orchestrator.md'), 'utf8');
+  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/orchestrator/instructions_algolia_orchestrator.md'), 'utf8');
+  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/orchestrator/system_algolia_orchestrator.md'), 'utf8');
   assert.deepEqual(validateDiscoveryPrompts(instructions, systemPrompt), { pass: true, missing: [], conflicts: [] });
 });
 
@@ -25,8 +25,8 @@ test('contract rejects the former unconditional discovery rule', () => {
 });
 
 test('discovery contract requires ordered slots and a literal final question', () => {
-  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/instructions_algolia_orchestrator.md'), 'utf8');
-  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/system_algolia_orchestrator.md'), 'utf8');
+  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/orchestrator/instructions_algolia_orchestrator.md'), 'utf8');
+  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/orchestrator/system_algolia_orchestrator.md'), 'utf8');
   assert.throws(
     () => validateDiscoveryPrompts(
       instructions.replace('A missing-item explanation is not a discovery question.', 'Describe the missing item.'),
@@ -44,8 +44,8 @@ test('discovery contract requires ordered slots and a literal final question', (
 });
 
 test('local orchestrator prompts satisfy coverage and complete-answer contracts', () => {
-  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/instructions_algolia_orchestrator.md'), 'utf8');
-  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/system_algolia_orchestrator.md'), 'utf8');
+  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/orchestrator/instructions_algolia_orchestrator.md'), 'utf8');
+  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/orchestrator/system_algolia_orchestrator.md'), 'utf8');
   assert.deepEqual(validateAnswerQualityPrompts(instructions, systemPrompt), {
     pass: true,
     missing: [],
@@ -55,8 +55,8 @@ test('local orchestrator prompts satisfy coverage and complete-answer contracts'
 });
 
 test('KPI measurement is not allowed as a no-retrieval discovery-only answer path', () => {
-  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/instructions_algolia_orchestrator.md'), 'utf8');
-  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/system_algolia_orchestrator.md'), 'utf8');
+  const instructions = fs.readFileSync(path.join(ROOT, 'agents/prompts/orchestrator/instructions_algolia_orchestrator.md'), 'utf8');
+  const systemPrompt = fs.readFileSync(path.join(ROOT, 'agents/prompts/orchestrator/system_algolia_orchestrator.md'), 'utf8');
 
   assert.doesNotMatch(
     instructions,

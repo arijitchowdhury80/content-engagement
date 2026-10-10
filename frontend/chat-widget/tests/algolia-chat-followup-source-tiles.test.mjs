@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { chromium } from 'playwright';
+import { sourcePresentationSignature } from '../source/algolia-com/code/answer-source-presentation-model.mjs';
 
 const chatPath = process.env.ALGOLIA_CHAT_BUNDLE_UNDER_TEST
   ? pathToFileURL(process.env.ALGOLIA_CHAT_BUNDLE_UNDER_TEST)
@@ -95,6 +96,114 @@ test('assistant answer rendering uses one normalized presentation contract', () 
     /function __arrieHarnessContentContribution[\s\S]*?__arrieAnswerLayer[\s\S]*?function __arrieHarnessSourcesContribution/,
     'answer harness mirror content must not reuse the live renderer TLDR parser'
   );
+});
+
+test('harness source and follow-up contributions are driven by semantic signatures', () => {
+  const bundle = fs.readFileSync(chatPath, 'utf8');
+  const rendererStart = bundle.indexOf('function y_(');
+  const rendererEnd = bundle.indexOf('function w_(', rendererStart);
+  const renderer = bundle.slice(rendererStart, rendererEnd);
+
+  assert.match(
+    bundle,
+    /function __arrieStableSourceSignature\(/,
+    'source contributions must be keyed by source content, not only array length'
+  );
+  assert.match(
+    bundle,
+    /function __arrieStableFollowUpSignature\(/,
+    'follow-up contributions must be keyed by the actual follow-up strings'
+  );
+  assert.match(
+    renderer,
+    /__arrieStableSourceSignature\([A-Za-z_$][\w$]*\.sources\)/,
+    'the assistant renderer must compute a stable source signature from the current segment sources'
+  );
+  assert.match(
+    renderer,
+    /__arrieStableFollowUpSignature\([A-Za-z_$][\w$]*\)/,
+    'the assistant renderer must compute a stable follow-up signature from the current follow-up list'
+  );
+  assert.match(
+    renderer,
+    /\[[^\]]*ee[^\]]*te[^\]]*re[^\]]*k\.label[^\]]*\]/,
+    'the harness contribution effect must depend on source and follow-up signatures'
+  );
+  assert.match(
+    bundle,
+    /sourcePresentationSignature/,
+    'source signatures must prefer the presentation-owned semantic source signature'
+  );
+  assert.match(
+    bundle,
+    /const n=window\.algoliaAnswerContributors\?\.sourcePresentationSignature;if\(typeof n=="function"\)return n\(e\);return JSON\.stringify/,
+    'the bundled source signature must use its local fallback only when the canonical presentation signature is unavailable'
+  );
+  assert.match(
+    bundle,
+    /source\?\?i\?\.type\?\?i\?\.category/,
+    'the compatibility signature must include source label aliases'
+  );
+  assert.match(
+    bundle,
+    /title\?\?i\?\.name\?\?i\?\.url/,
+    'the compatibility signature must include source title aliases'
+  );
+  assert.match(
+    bundle,
+    /url\?\?i\?\.href\?\?i\?\.link/,
+    'the compatibility signature must include source URL aliases'
+  );
+  assert.doesNotMatch(
+    renderer,
+    /sources\?\.length/,
+    'same-count source replacement must not be invisible to the contribution effect'
+  );
+});
+
+test('source identity dedupe preserves case-sensitive object IDs and URL paths', () => {
+  const bundle = fs.readFileSync(chatPath, 'utf8');
+  const start = bundle.indexOf('function __arrieSourceIdentityKey');
+  const end = bundle.indexOf('function xg(', start);
+  assert.ok(start > -1 && end > start, 'source identity helper should be present in the bundle');
+  const sourceIdentityRegion = bundle.slice(start, end);
+  const runtimeDedupeStart = bundle.indexOf('function kb(');
+  const runtimeDedupeEnd = bundle.indexOf('function Wp(', runtimeDedupeStart);
+  assert.ok(runtimeDedupeStart > -1 && runtimeDedupeEnd > runtimeDedupeStart, 'runtime source dedupe helper must exist');
+  const runtimeDedupeRegion = bundle.slice(runtimeDedupeStart, runtimeDedupeEnd);
+
+  assert.doesNotMatch(
+    sourceIdentityRegion,
+    /toLowerCase\(\)/,
+    'source identity must not collapse case-sensitive objectIDs or URL paths',
+  );
+  assert.doesNotMatch(
+    runtimeDedupeRegion,
+    /toLowerCase\(\)/,
+    'runtime source grouping must preserve case-sensitive URL paths and titles end to end',
+  );
+  assert.match(
+    runtimeDedupeRegion,
+    /function kb\(e\)\{return e\.url\?\?e\.title\}/,
+    'runtime source grouping must dedupe by the exact rendered URL/title identity',
+  );
+});
+
+test('source presentation signature changes for renderer-supported alias fields', () => {
+  const oldSignature = sourcePresentationSignature([
+    { name: 'Old alias title', href: 'https://old.example/docs', type: 'Docs' },
+  ]);
+  const newSignature = sourcePresentationSignature([
+    { name: 'New alias title', href: 'https://new.example/blog', type: 'Blog' },
+  ]);
+
+  assert.notEqual(oldSignature, newSignature);
+  assert.match(oldSignature, /Old alias title/);
+  assert.match(oldSignature, /Docs/);
+  assert.match(oldSignature, /https:\/\/old\.example\/docs/);
+  assert.match(newSignature, /New alias title/);
+  assert.match(newSignature, /Blog/);
+  assert.match(newSignature, /https:\/\/new\.example\/blog/);
 });
 
 test('subsequent turns send the complete prior assistant answer', async () => {

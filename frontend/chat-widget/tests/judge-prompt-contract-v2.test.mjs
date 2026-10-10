@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const promptRoot = resolve('agents/prompts/judge');
+const promptRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../../../agents/prompts/judge');
 const roles = ['skeptic', 'referee', 'advocate'];
 const shared = readFileSync(resolve(promptRoot, '_shared_judge_rubric_v2.md'), 'utf8');
 
