@@ -52,15 +52,45 @@
   const ENDPOINT_OK = !!prodEndpoint();
 
   // ------------------------------------------------------- widget accessors ---
-  const host = () => document.querySelector("algolia-chat");
-  const sroot = () => host()?.shadowRoot || null;
-  const q = (sel) => sroot()?.querySelector(sel) || null;
+  function hosts() {
+    if (typeof document.querySelectorAll === "function") {
+      return [...document.querySelectorAll("algolia-chat")];
+    }
+    const single = typeof document.querySelector === "function"
+      ? document.querySelector("algolia-chat")
+      : null;
+    return single ? [single] : [];
+  }
+  function widgetIdForHost(widget) {
+    return String(widget?.__algoliaWidgetInstanceId || widget?.getAttribute?.("data-algolia-widget-instance-id") || "").trim();
+  }
+  function hostForWidgetId(widgetInstanceId, options = {}) {
+    const id = String(widgetInstanceId || "").trim();
+    const allowUnidentifiedFallback = options.allowUnidentifiedFallback === true;
+    const mounted = hosts();
+    if (!id) return mounted.length === 1 ? mounted[0] : null;
+    const match = mounted.find((widget) => widgetIdForHost(widget) === id) || null;
+    if (match) return match;
+    if (id === "algolia-chat:default" && mounted.length === 1 && !widgetIdForHost(mounted[0])) return mounted[0];
+    return allowUnidentifiedFallback && mounted.length === 1 && !widgetIdForHost(mounted[0]) ? mounted[0] : null;
+  }
+  function hostForTurn(turn) {
+    const widgetInstanceId = turn?.answerIdentity?.widgetInstanceId || turn?.widgetInstanceId || "";
+    const hasExplicitWidget = Boolean(turn?.answerIdentity?.widgetInstanceId || turn?.widgetInstanceId);
+    return hostForWidgetId(widgetInstanceId, { allowUnidentifiedFallback: !hasExplicitWidget });
+  }
+  function srootForHost(widget) {
+    return widget?.shadowRoot || null;
+  }
+  function q(widget, sel) {
+    return srootForHost(widget)?.querySelector(sel) || null;
+  }
 
   // "Expanded" = the panel fills most of the viewport. The widget has three size
   // modes (docked / normal / maximized) and the expand control goes docked→normal,
   // a large CENTERED card — so a strict "maximized" check would miss it.
-  function isExpanded() {
-    const p = q('[part="panel"]');
+  function isExpanded(widget) {
+    const p = q(widget, '[part="panel"]');
     if (!p) return false;
     // The widget's normal centered panel is capped at 1080px. Comparing only
     // against a viewport percentage therefore misclassifies it as collapsed on
@@ -73,15 +103,45 @@
 
   // ------------------------------------------------------------ turn state ---
   let compareOn = false;
-  const seenTurnKeys = new Set();
-  const mirroredTurnKeys = new Set();
+  const acceptedAttemptsByWidget = new Map();
+  const retiredAttemptsByWidget = new Map();
+  const latestAttemptOrdinalByWidget = new Map();
+  const resetGenerationFloorByWidget = new Map();
+  const resetAttemptOrdinalFloorByWidget = new Map();
+  const legacyAcceptedTurnKeysByWidget = new Map();
+  const legacyRetiredTurnKeysByWidget = new Map();
+  const legacyResetGenerationFloorByWidget = new Map();
+  const legacyResetAttemptOrdinalFloorByWidget = new Map();
+  const latestLegacyAttemptOrdinalByWidget = new Map();
+  const mirroredTurnDiagnostics = new Set();
+  const productionTurnResultsByWidget = new Map();
+  const preparedTurnHistoryByWidget = new Map();
   let latestPreparedTurn = null;
-  let generation = 0;          // bumped on reset; older generations are discarded
+  const latestPreparedTurnByWidget = new Map();
+  let generation = 0;          // bumped on global reset; older generations are discarded
+  let latestRuntimeAttemptOrdinal = 0;
+  let latestLegacyAttemptOrdinal = 0;
+  const generationByWidget = new Map();
   const activeControllers = new Map();
-  const completedTurnKeys = new Set();
+  const completedTurnKeysByWidget = new Map();
+  const MAX_WIDGET_STATE = 1000;
+  const MAX_TURN_STATE = 500;
   let mirroredTurns = 0;
   let unsubscribePreparedTurns = null;
   let unsubscribeCompletedTurns = null;
+  let subscribedHandoffApi = null;
+  let subscribedValidateTurnEvent = null;
+  const attachedRoots = new WeakSet();
+  let attachedResetListener = false;
+  let attachedDisconnectListener = false;
+  let attachedDocumentObserver = false;
+  let attachedResizeListener = false;
+  const SPLIT = 0.5;              // even 50/50 of the conversation area
+  const STACK_BELOW = 720;        // px of chat width below which we stack
+  let panel = null;
+  let activePanelHost = null;
+  let activeCompareIdentityKey = "";
+  let panelWidgetKey = "";
 
   function answerIdentityKey(identity) {
     if (!identity || typeof identity !== "object") return "";
@@ -94,17 +154,683 @@
     return parts.every(Boolean) ? parts.join("\n") : "";
   }
 
-  function turnIdentityKey(detail) {
-    const identityKey = answerIdentityKey(detail?.answerIdentity);
-    if (identityKey) return identityKey;
-    const widgetInstanceId = String(detail?.widgetInstanceId || "legacy").trim();
-    const turnKey = String(detail?.turnKey || "").trim();
-    if (turnKey && latestPreparedTurn?.turnKey === turnKey) return latestPreparedTurn.identityKey;
-    return turnKey ? `${widgetInstanceId}\n${turnKey}` : "";
+  function widgetKeyForIdentity(identity) {
+    return String(identity?.widgetInstanceId || "legacy").trim() || "legacy";
   }
 
-  function resetConversation(reason) {
+  function widgetKeyForDetail(detail) {
+    return String(detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || "legacy").trim() || "legacy";
+  }
+
+  function widgetKeyForTurn(turn) {
+    return String(turn?.answerIdentity?.widgetInstanceId || turn?.widgetInstanceId || "legacy").trim() || "legacy";
+  }
+
+  function segmentKeyForIdentity(identity) {
+    if (!identity || typeof identity !== "object") return "";
+    const parts = [
+      identity.widgetInstanceId,
+      identity.conversationId,
+      identity.answerSegmentId,
+    ].map((value) => String(value || "").trim());
+    return parts.every(Boolean) ? parts.join("\n") : "";
+  }
+
+  function numericDetailValue(value) {
+    const number = Number(value);
+    return Number.isSafeInteger(number) && number >= 0 ? number : null;
+  }
+
+  function attemptOrdinalForDetail(detail, identity) {
+    return numericDetailValue(detail?.networkAttemptOrdinal ?? detail?.attemptOrdinal);
+  }
+
+  function legacyAttemptOrdinalForDetail(detail) {
+    return numericDetailValue(detail?.networkAttemptOrdinal ?? detail?.attemptOrdinal);
+  }
+
+  function generationForDetail(detail) {
+    const explicit = numericDetailValue(detail?.conversationGeneration);
+    if (explicit !== null) return explicit;
+    const turnKey = String(detail?.turnKey || "");
+    const match = turnKey.match(/^(\d+):/);
+    return match ? numericDetailValue(match[1]) ?? 0 : 0;
+  }
+
+  function generationForWidget(widgetKey) {
+    return generation + (generationByWidget.get(widgetKey || "legacy") || 0);
+  }
+
+  function hasCanonicalMetadata(detail) {
+    return numericDetailValue(detail?.conversationGeneration) !== null &&
+      numericDetailValue(detail?.networkAttemptOrdinal ?? detail?.attemptOrdinal) !== null;
+  }
+
+  function validateCanonicalTurnEvent(detail, identityKey) {
+    if (!identityKey || !hasCanonicalMetadata(detail)) return false;
+    const generation = numericDetailValue(detail?.conversationGeneration);
+    const turnKey = String(detail?.turnKey || "");
+    if (generation > 0 && !turnKey.startsWith(`${generation}:`)) return false;
+    if (!subscribedValidateTurnEvent) captureHandoffApi();
+    const validator = subscribedValidateTurnEvent;
+    if (typeof validator !== "function") return false;
+    try {
+      return validator(detail) === true;
+    } catch {
+      return false;
+    }
+  }
+
+  function captureHandoffApi() {
+    if (subscribedHandoffApi) return subscribedHandoffApi;
+    const api = window.algoliaHandoffToOrchestrator;
+    if (!api || typeof api !== "object") return null;
+    subscribedHandoffApi = api;
+    subscribedValidateTurnEvent = typeof api.validateTurnEvent === "function"
+      ? api.validateTurnEvent.bind(api)
+      : null;
+    return subscribedHandoffApi;
+  }
+
+  function trimMap(map, limit = MAX_WIDGET_STATE) {
+    while (map.size > limit) map.delete(map.keys().next().value);
+  }
+
+  function trimSet(set, limit = MAX_TURN_STATE) {
+    while (set.size > limit) set.delete(set.values().next().value);
+  }
+
+  function mountedWidgetKeys() {
+    return new Set(hosts().map(widgetIdForHost).filter(Boolean));
+  }
+
+  function trimOuterWidgetMap(map, limit = MAX_WIDGET_STATE) {
+    if (map.size <= limit) return;
+    const mounted = mountedWidgetKeys();
+    for (const key of [...map.keys()]) {
+      if (map.size <= limit) return;
+      if (!mounted.has(key)) map.delete(key);
+    }
+    while (map.size > limit) map.delete(map.keys().next().value);
+  }
+
+  function widgetSet(store, widgetKey) {
+    const key = widgetKey || "legacy";
+    let set = store.get(key);
+    if (!set) {
+      set = new Set();
+      store.set(key, set);
+      trimOuterWidgetMap(store);
+    }
+    return set;
+  }
+
+  function widgetMap(store, widgetKey) {
+    const key = widgetKey || "legacy";
+    let map = store.get(key);
+    if (!map) {
+      map = new Map();
+      store.set(key, map);
+      trimOuterWidgetMap(store);
+    }
+    return map;
+  }
+
+  function widgetSetCount(store) {
+    let count = 0;
+    for (const set of store.values()) count += set.size;
+    return count;
+  }
+
+  function widgetMapCount(store) {
+    let count = 0;
+    for (const map of store.values()) count += map.size;
+    return count;
+  }
+
+  function trimWidgetSet(store, widgetKey, limit = MAX_TURN_STATE) {
+    const key = widgetKey || "legacy";
+    const set = store.get(key);
+    if (!set) return;
+    trimSet(set, limit);
+    if (!set.size) store.delete(key);
+    trimOuterWidgetMap(store);
+  }
+
+  function trimWidgetMap(store, widgetKey, limit = MAX_TURN_STATE) {
+    const key = widgetKey || "legacy";
+    const map = store.get(key);
+    if (!map) return;
+    trimMap(map, limit);
+    if (!map.size) store.delete(key);
+    trimOuterWidgetMap(store);
+  }
+
+  function legacyWidgetKeyForIdentityKey(identityKey) {
+    return String(identityKey || "").split("\n")[0] || "legacy";
+  }
+
+  function acceptedAttemptsForWidget(widgetKey) {
+    const key = widgetKey || "legacy";
+    let map = acceptedAttemptsByWidget.get(key);
+    if (!map) {
+      map = new Map();
+      acceptedAttemptsByWidget.set(key, map);
+      trimAcceptedAttemptsOuter();
+    }
+    return map;
+  }
+
+  function acceptedAttemptCount() {
+    return widgetMapCount(acceptedAttemptsByWidget);
+  }
+
+  function trimAcceptedAttemptsForWidget(widgetKey) {
+    const key = widgetKey || "legacy";
+    const map = acceptedAttemptsByWidget.get(key);
+    if (!map) return;
+    while (map.size > MAX_TURN_STATE) {
+      const segmentKey = map.keys().next().value;
+      const value = map.get(segmentKey);
+      rememberRetiredAttempt(key, segmentKey, value);
+      map.delete(segmentKey);
+    }
+    if (!map.size) acceptedAttemptsByWidget.delete(key);
+    trimAcceptedAttemptsOuter();
+  }
+
+  function retiredAttemptsForWidget(widgetKey) {
+    return widgetMap(retiredAttemptsByWidget, widgetKey);
+  }
+
+  function retiredAttemptCount() {
+    return widgetMapCount(retiredAttemptsByWidget);
+  }
+
+  function trimRetiredAttemptsForWidget(widgetKey) {
+    trimWidgetMap(retiredAttemptsByWidget, widgetKey);
+  }
+
+  function rememberRetiredLegacy(identityKey) {
+    if (!identityKey) return;
+    const widgetKey = legacyWidgetKeyForIdentityKey(identityKey);
+    const retired = widgetSet(legacyRetiredTurnKeysByWidget, widgetKey);
+    retired.add(identityKey);
+    trimWidgetSet(legacyRetiredTurnKeysByWidget, widgetKey);
+  }
+
+  function rememberRetiredAttempt(widgetKey, segmentKey, value) {
+    if (!segmentKey || !value?.identityKey) return;
+    const attempts = retiredAttemptsForWidget(widgetKey);
+    attempts.set(value.identityKey, {
+      segmentKey,
+      attemptOrdinal: value.attemptOrdinal ?? null,
+    });
+    trimRetiredAttemptsForWidget(widgetKey);
+  }
+
+  function retireAcceptedAttemptMap(widgetKey, attempts) {
+    if (!attempts) return;
+    for (const [segmentKey, value] of attempts.entries()) {
+      rememberRetiredAttempt(widgetKey, segmentKey, value);
+    }
+  }
+
+  function trimAcceptedAttemptsOuter(limit = MAX_WIDGET_STATE) {
+    if (acceptedAttemptsByWidget.size <= limit) return;
+    const mounted = mountedWidgetKeys();
+    for (const key of [...acceptedAttemptsByWidget.keys()]) {
+      if (acceptedAttemptsByWidget.size <= limit) return;
+      if (mounted.has(key)) continue;
+      retireAcceptedAttemptMap(key, acceptedAttemptsByWidget.get(key));
+      acceptedAttemptsByWidget.delete(key);
+    }
+    while (acceptedAttemptsByWidget.size > limit) {
+      const key = acceptedAttemptsByWidget.keys().next().value;
+      retireAcceptedAttemptMap(key, acceptedAttemptsByWidget.get(key));
+      acceptedAttemptsByWidget.delete(key);
+    }
+  }
+
+  function retireAcceptedAttemptsForWidget(widgetKey) {
+    const attempts = acceptedAttemptsByWidget.get(widgetKey);
+    if (!attempts) return;
+    retireAcceptedAttemptMap(widgetKey, attempts);
+    acceptedAttemptsByWidget.delete(widgetKey);
+  }
+
+  function retireAllAcceptedAttempts() {
+    for (const widgetKey of [...acceptedAttemptsByWidget.keys()]) {
+      retireAcceptedAttemptsForWidget(widgetKey);
+    }
+  }
+
+  function rememberResetGuards(widgetKey, { generationFloor = true } = {}) {
+    const key = widgetKey || "legacy";
+    if (!hasWidgetTurnState(key)) return;
+    if (generationFloor) {
+      resetGenerationFloorByWidget.set(key, generationForWidget(key));
+      legacyResetGenerationFloorByWidget.set(key, generationForWidget(key));
+    }
+    const latestAttemptOrdinal = latestAttemptOrdinalByWidget.get(key);
+    if (latestAttemptOrdinal !== undefined) resetAttemptOrdinalFloorByWidget.set(key, latestAttemptOrdinal);
+    const latestLegacyAttemptOrdinal = latestLegacyAttemptOrdinalByWidget.get(key);
+    if (latestLegacyAttemptOrdinal !== undefined) legacyResetAttemptOrdinalFloorByWidget.set(key, latestLegacyAttemptOrdinal);
+    trimMap(resetGenerationFloorByWidget);
+    trimMap(legacyResetGenerationFloorByWidget);
+    trimMap(resetAttemptOrdinalFloorByWidget);
+    trimMap(legacyResetAttemptOrdinalFloorByWidget);
+  }
+
+  function hasWidgetTurnState(widgetKey) {
+    const key = widgetKey || "legacy";
+    if (acceptedAttemptsByWidget.get(key)?.size) return true;
+    if (retiredAttemptsByWidget.get(key)?.size) return true;
+    if (legacyAcceptedTurnKeysByWidget.get(key)?.size) return true;
+    if (legacyRetiredTurnKeysByWidget.get(key)?.size) return true;
+    if (latestPreparedTurnByWidget.has(key)) return true;
+    if (preparedTurnHistoryByWidget.get(key)?.length) return true;
+    if (completedTurnKeysByWidget.get(key)?.size) return true;
+    if (productionTurnResultsByWidget.get(key)?.size) return true;
+    for (const identityKey of activeControllers.keys()) {
+      if (identityKey.startsWith(`${key}\n`)) return true;
+    }
+    return false;
+  }
+
+  function isGenerationStale(detail, store, widgetKey) {
+    const floor = store.get(widgetKey || "legacy");
+    return floor !== undefined && generationForDetail(detail) < floor;
+  }
+
+  function isAttemptOrdinalStale(detail, store, widgetKey, ordinal) {
+    const floor = store.get(widgetKey || "legacy");
+    return ordinal !== null && floor !== undefined && ordinal <= floor;
+  }
+
+  function hasFreshAttemptAfterFloor(store, widgetKey, ordinal) {
+    const floor = store.get(widgetKey || "legacy");
+    return ordinal !== null && floor !== undefined && ordinal > floor;
+  }
+
+  function acceptLegacyTurnIdentity(identityKey, detail = {}) {
+    const widgetKey = legacyWidgetKeyForIdentityKey(identityKey);
+    const attemptOrdinal = legacyAttemptOrdinalForDetail(detail);
+    if (legacyResetGenerationFloorByWidget.has(widgetKey) && attemptOrdinal === null) return false;
+    if (
+      isGenerationStale(detail, legacyResetGenerationFloorByWidget, widgetKey) &&
+      !hasFreshAttemptAfterFloor(legacyResetAttemptOrdinalFloorByWidget, widgetKey, attemptOrdinal)
+    ) {
+      return false;
+    }
+    if (isAttemptOrdinalStale(detail, legacyResetAttemptOrdinalFloorByWidget, widgetKey, attemptOrdinal)) return false;
+    const retired = legacyRetiredTurnKeysByWidget.get(widgetKey);
+    if (retired?.has(identityKey)) return false;
+    const accepted = legacyAcceptedTurnsForWidget(widgetKey);
+    if (accepted.has(identityKey)) return false;
+    const latestOrdinal = latestLegacyAttemptOrdinalByWidget.get(widgetKey);
+    if (attemptOrdinal !== null && latestOrdinal !== undefined && attemptOrdinal <= latestOrdinal - MAX_TURN_STATE) {
+      return false;
+    }
+    if (attemptOrdinal !== null && attemptOrdinal <= latestLegacyAttemptOrdinal - MAX_TURN_STATE) {
+      return false;
+    }
+    if (attemptOrdinal !== null && (latestOrdinal === undefined || attemptOrdinal > latestOrdinal)) {
+      latestLegacyAttemptOrdinalByWidget.set(widgetKey, attemptOrdinal);
+      trimMap(latestLegacyAttemptOrdinalByWidget);
+    }
+    if (attemptOrdinal !== null && attemptOrdinal > latestLegacyAttemptOrdinal) {
+      latestLegacyAttemptOrdinal = attemptOrdinal;
+    }
+    accepted.add(identityKey);
+    while (accepted.size > MAX_TURN_STATE) {
+      const oldest = accepted.values().next().value;
+      rememberRetiredLegacy(oldest);
+      accepted.delete(oldest);
+    }
+    trimLegacyAcceptedOuter();
+    return true;
+  }
+
+  function legacyAcceptedTurnsForWidget(widgetKey) {
+    const key = widgetKey || "legacy";
+    let accepted = legacyAcceptedTurnKeysByWidget.get(key);
+    if (!accepted) {
+      accepted = new Set();
+      legacyAcceptedTurnKeysByWidget.set(key, accepted);
+      trimLegacyAcceptedOuter();
+    }
+    return accepted;
+  }
+
+  function retireLegacyAcceptedSet(accepted) {
+    if (!accepted) return;
+    for (const identityKey of accepted) rememberRetiredLegacy(identityKey);
+  }
+
+  function trimLegacyAcceptedOuter(limit = MAX_WIDGET_STATE) {
+    if (legacyAcceptedTurnKeysByWidget.size <= limit) return;
+    const mounted = mountedWidgetKeys();
+    for (const key of [...legacyAcceptedTurnKeysByWidget.keys()]) {
+      if (legacyAcceptedTurnKeysByWidget.size <= limit) return;
+      if (mounted.has(key)) continue;
+      retireLegacyAcceptedSet(legacyAcceptedTurnKeysByWidget.get(key));
+      legacyAcceptedTurnKeysByWidget.delete(key);
+    }
+    while (legacyAcceptedTurnKeysByWidget.size > limit) {
+      const key = legacyAcceptedTurnKeysByWidget.keys().next().value;
+      retireLegacyAcceptedSet(legacyAcceptedTurnKeysByWidget.get(key));
+      legacyAcceptedTurnKeysByWidget.delete(key);
+    }
+  }
+
+  function retireLegacyTurnsForWidget(widgetKey) {
+    const accepted = legacyAcceptedTurnKeysByWidget.get(widgetKey);
+    if (!accepted) return;
+    for (const identityKey of accepted) {
+      rememberRetiredLegacy(identityKey);
+    }
+    legacyAcceptedTurnKeysByWidget.delete(widgetKey);
+  }
+
+  function retireAllLegacyTurns() {
+    for (const widgetKey of [...legacyAcceptedTurnKeysByWidget.keys()]) {
+      retireLegacyTurnsForWidget(widgetKey);
+    }
+  }
+
+  function completedTurnsForWidget(widgetKey) {
+    return widgetSet(completedTurnKeysByWidget, widgetKey);
+  }
+
+  function completedTurnCount() {
+    return widgetSetCount(completedTurnKeysByWidget);
+  }
+
+  function rememberCompletedTurn(identityKey) {
+    const widgetKey = legacyWidgetKeyForIdentityKey(identityKey);
+    const completed = completedTurnsForWidget(widgetKey);
+    completed.add(identityKey);
+    trimWidgetSet(completedTurnKeysByWidget, widgetKey);
+  }
+
+  function isTurnComplete(turn) {
+    return Boolean(turn?.identityKey && completedTurnKeysByWidget.get(widgetKeyForTurn(turn))?.has(turn.identityKey));
+  }
+
+  function resultsForWidget(widgetKey) {
+    return widgetMap(productionTurnResultsByWidget, widgetKey);
+  }
+
+  function resultForTurn(turn) {
+    return turn?.identityKey ? productionTurnResultsByWidget.get(widgetKeyForTurn(turn))?.get(turn.identityKey) || null : null;
+  }
+
+  function rememberProductionTurnResult(turn, state) {
+    if (!turn?.identityKey) return;
+    const results = resultsForWidget(widgetKeyForTurn(turn));
+    results.set(turn.identityKey, state);
+    trimWidgetMap(productionTurnResultsByWidget, widgetKeyForTurn(turn));
+  }
+
+  function productionTurnResultCount() {
+    return widgetMapCount(productionTurnResultsByWidget);
+  }
+
+  function knownWidgetKeys() {
+    const keys = new Set(["legacy"]);
+    for (const key of mountedWidgetKeys()) keys.add(key);
+    for (const store of [
+      acceptedAttemptsByWidget,
+      retiredAttemptsByWidget,
+      latestAttemptOrdinalByWidget,
+      resetGenerationFloorByWidget,
+      resetAttemptOrdinalFloorByWidget,
+      legacyAcceptedTurnKeysByWidget,
+      legacyRetiredTurnKeysByWidget,
+      legacyResetGenerationFloorByWidget,
+      legacyResetAttemptOrdinalFloorByWidget,
+      latestLegacyAttemptOrdinalByWidget,
+      latestPreparedTurnByWidget,
+      preparedTurnHistoryByWidget,
+      productionTurnResultsByWidget,
+      completedTurnKeysByWidget,
+    ]) {
+      for (const key of store.keys()) keys.add(key);
+    }
+    return keys;
+  }
+
+  function deleteWidgetRuntimeState(widgetKey, { retireAttempts = true, retireLegacy = true } = {}) {
+    if (retireAttempts) retireAcceptedAttemptsForWidget(widgetKey);
+    else acceptedAttemptsByWidget.delete(widgetKey);
+    if (retireLegacy) retireLegacyTurnsForWidget(widgetKey);
+    else legacyAcceptedTurnKeysByWidget.delete(widgetKey);
+    latestPreparedTurnByWidget.delete(widgetKey);
+    preparedTurnHistoryByWidget.delete(widgetKey);
+    completedTurnKeysByWidget.delete(widgetKey);
+    productionTurnResultsByWidget.delete(widgetKey);
+    for (const key of [...mirroredTurnDiagnostics]) {
+      if (key.startsWith(`${widgetKey}\n`)) mirroredTurnDiagnostics.delete(key);
+    }
+  }
+
+  function turnIdentityKey(detail) {
+    const identityKey = answerIdentityKey(detail?.answerIdentity);
+    if (Object.prototype.hasOwnProperty.call(detail || {}, "answerIdentity") && !identityKey) return "";
+    if (identityKey) {
+      return hostForWidgetId(detail.answerIdentity.widgetInstanceId) ? identityKey : "";
+    }
+    const hasTopLevelWidget = typeof detail?.widgetInstanceId === "string" && detail.widgetInstanceId.trim();
+    const widgetInstanceId = String(detail?.widgetInstanceId || "").trim();
+    if (hasTopLevelWidget && !hostForWidgetId(widgetInstanceId)) return "";
+    const turnKey = String(detail?.turnKey || "").trim();
+    if (turnKey && latestPreparedTurn?.turnKey === turnKey) {
+      if (!detail?.answerIdentity && !detail?.widgetInstanceId && hosts().length === 1) return latestPreparedTurn.identityKey;
+      if (widgetKeyForTurn(latestPreparedTurn) === widgetInstanceId) return latestPreparedTurn.identityKey;
+    }
+    if (!hasTopLevelWidget && hosts().length !== 1) return "";
+    return turnKey ? `${widgetInstanceId || "legacy"}\n${turnKey}` : "";
+  }
+
+  function resolveIdentityForAcceptedTurn(identityKey, detail) {
+    if (answerIdentityKey(detail?.answerIdentity) === identityKey) return detail.answerIdentity;
+    if (latestPreparedTurn?.identityKey === identityKey && answerIdentityKey(latestPreparedTurn.answerIdentity) === identityKey) {
+      return latestPreparedTurn.answerIdentity;
+    }
+    for (const turn of latestPreparedTurnByWidget.values()) {
+      if (turn?.identityKey === identityKey && answerIdentityKey(turn.answerIdentity) === identityKey) {
+        return turn.answerIdentity;
+      }
+    }
+    return null;
+  }
+
+  function acceptTurnIdentity(identityKey, detail) {
+    const identity = resolveIdentityForAcceptedTurn(identityKey, detail);
+    if (!identity) {
+      return acceptLegacyTurnIdentity(identityKey, detail);
+    }
+    if (!validateCanonicalTurnEvent(detail, identityKey)) return false;
+    const segmentKey = segmentKeyForIdentity(identity);
+    if (!segmentKey) return false;
+    const widgetKey = widgetKeyForIdentity(identity);
+    const attemptOrdinal = attemptOrdinalForDetail(detail, identity);
+    if (
+      isGenerationStale(detail, resetGenerationFloorByWidget, widgetKey) &&
+      !hasFreshAttemptAfterFloor(resetAttemptOrdinalFloorByWidget, widgetKey, attemptOrdinal)
+    ) {
+      return false;
+    }
+    if (isAttemptOrdinalStale(detail, resetAttemptOrdinalFloorByWidget, widgetKey, attemptOrdinal)) return false;
+    if (retiredAttemptsByWidget.get(widgetKey)?.has(identityKey)) return false;
+    const latestOrdinal = latestAttemptOrdinalByWidget.get(widgetKey);
+    if (attemptOrdinal !== null && latestOrdinal !== undefined && attemptOrdinal <= latestOrdinal - MAX_TURN_STATE) {
+      return false;
+    }
+    if (attemptOrdinal !== null && attemptOrdinal <= latestRuntimeAttemptOrdinal - MAX_TURN_STATE) {
+      return false;
+    }
+    const attempts = acceptedAttemptsForWidget(widgetKey);
+    const previous = attempts.get(segmentKey);
+    if (previous) {
+      if (attemptOrdinal !== null && previous.attemptOrdinal !== null) {
+        if (attemptOrdinal <= previous.attemptOrdinal) return false;
+      } else if (previous.identityKey === identityKey) {
+        return false;
+      }
+      rememberRetiredAttempt(widgetKey, segmentKey, previous);
+    }
+    if (attemptOrdinal !== null && (latestOrdinal === undefined || attemptOrdinal > latestOrdinal)) {
+      latestAttemptOrdinalByWidget.set(widgetKey, attemptOrdinal);
+      trimMap(latestAttemptOrdinalByWidget);
+    }
+    if (attemptOrdinal !== null && attemptOrdinal > latestRuntimeAttemptOrdinal) {
+      latestRuntimeAttemptOrdinal = attemptOrdinal;
+    }
+    attempts.set(segmentKey, {
+      identityKey,
+      attemptOrdinal,
+      conversationGeneration: generationForDetail(detail),
+      turnKey: String(detail?.turnKey || ""),
+      messageId: String(detail?.messageId || ""),
+    });
+    trimAcceptedAttemptsForWidget(widgetKey);
+    return true;
+  }
+
+  function acceptedPreparedRecordForTurn(turn) {
+    if (!turn?.answerIdentity || !turn?.identityKey) return null;
+    const segmentKey = segmentKeyForIdentity(turn.answerIdentity);
+    if (!segmentKey) return null;
+    const record = acceptedAttemptsByWidget.get(widgetKeyForTurn(turn))?.get(segmentKey) || null;
+    return record?.identityKey === turn.identityKey ? record : null;
+  }
+
+  function findPreparedTurn(identityKey) {
+    if (latestPreparedTurn?.identityKey === identityKey) return latestPreparedTurn;
+    for (const turn of latestPreparedTurnByWidget.values()) {
+      if (turn?.identityKey === identityKey) return turn;
+    }
+    for (const history of preparedTurnHistoryByWidget.values()) {
+      const found = history.find((turn) => turn?.identityKey === identityKey);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  function completedMatchesPreparedRecord(detail, identityKey) {
+    const turn = findPreparedTurn(identityKey);
+    if (!turn) return false;
+    const detailGeneration = numericDetailValue(detail?.conversationGeneration);
+    const detailOrdinal = numericDetailValue(detail?.networkAttemptOrdinal ?? detail?.attemptOrdinal);
+    if (turn.answerIdentity) {
+      const record = acceptedPreparedRecordForTurn(turn);
+      if (!record) return false;
+      if (!validateCanonicalTurnEvent(detail, identityKey)) return false;
+      if (detailGeneration !== record.conversationGeneration) return false;
+      if (detailOrdinal !== record.attemptOrdinal) return false;
+    } else {
+      const accepted = legacyAcceptedTurnKeysByWidget.get(widgetKeyForTurn(turn));
+      if (!accepted?.has(identityKey)) return false;
+      if (legacyResetGenerationFloorByWidget.has(widgetKeyForTurn(turn)) && detailOrdinal === null) return false;
+      if (detailOrdinal !== null && turn.networkAttemptOrdinal !== null && detailOrdinal !== turn.networkAttemptOrdinal) return false;
+      if (detailGeneration !== null && turn.conversationGeneration !== null && detailGeneration !== turn.conversationGeneration) return false;
+    }
+    if (String(detail?.turnKey || "") !== turn.turnKey) return false;
+    if (String(detail?.messageId || "") !== turn.messageId) return false;
+    return true;
+  }
+
+  function rememberPreparedTurn(turn) {
+    const widgetKey = widgetKeyForTurn(turn);
+    const history = preparedTurnHistoryByWidget.get(widgetKey) || [];
+    const existingIndex = history.findIndex((item) => item.identityKey === turn.identityKey);
+    if (existingIndex >= 0) history[existingIndex] = turn;
+    else history.push(turn);
+    while (history.length > MAX_TURN_STATE) history.shift();
+    preparedTurnHistoryByWidget.set(widgetKey, history);
+    trimMap(preparedTurnHistoryByWidget);
+  }
+
+  function renderCachedWidgetResults(widgetKey) {
+    const history = preparedTurnHistoryByWidget.get(widgetKey) || [];
+    const cachedTurns = history
+      .map((turn) => ({ turn, cached: resultForTurn(turn) }))
+      .filter((entry) => entry.cached);
+    if (!cachedTurns.length) return false;
+    clearLog();
+    for (const { turn, cached } of cachedTurns) {
+      const row = appendTurn(cached.question || turn.question || "Question");
+      renderTurn(row, cached);
+    }
+    return true;
+  }
+
+  function clearWidgetInset(widget) {
+    setContentInset(false, false, 0, widget);
+  }
+
+  function retireActiveCompare(reason, { abort = true, clear = false } = {}) {
+    const previousHost = activePanelHost;
+    const previousIdentityKey = activeCompareIdentityKey;
+    if (abort && previousIdentityKey) {
+      const controller = activeControllers.get(previousIdentityKey);
+      if (controller) {
+        try { controller.abort(); } catch { /* already settled */ }
+        activeControllers.delete(previousIdentityKey);
+      }
+    }
+    if (previousHost) clearWidgetInset(previousHost);
+    compareOn = false;
+    activeCompareIdentityKey = "";
+    activePanelHost = null;
+    if (panel) {
+      panel.style.display = "none";
+      if (clear) clearLog();
+    }
+    log("compare retired:", reason);
+  }
+
+  function isActiveTurn(turn) {
+    return !!turn?.identityKey && compareOn && turn.identityKey === activeCompareIdentityKey;
+  }
+
+  function isActiveProductionTurn(turn) {
+    return isActiveTurn(turn) && hostForTurn(turn) === activePanelHost;
+  }
+
+  function resetConversation(reason, widgetInstanceId = "") {
+    const scopedWidgetKey = String(widgetInstanceId || "").trim();
+    if (scopedWidgetKey) {
+      const scopedHost = hostForWidgetId(scopedWidgetKey);
+      if (activePanelHost && widgetIdForHost(activePanelHost) === scopedWidgetKey) {
+        retireActiveCompare(reason, { abort: true, clear: true });
+      }
+      generationByWidget.set(scopedWidgetKey, (generationByWidget.get(scopedWidgetKey) || 0) + 1);
+      trimMap(generationByWidget);
+      rememberResetGuards(scopedWidgetKey);
+      for (const [identityKey, controller] of activeControllers.entries()) {
+        if (!identityKey.startsWith(`${scopedWidgetKey}\n`)) continue;
+        try { controller.abort(); } catch { /* already settled */ }
+        activeControllers.delete(identityKey);
+      }
+      latestPreparedTurnByWidget.delete(scopedWidgetKey);
+      preparedTurnHistoryByWidget.delete(scopedWidgetKey);
+      if (widgetKeyForTurn(latestPreparedTurn) === scopedWidgetKey) {
+        latestPreparedTurn = [...latestPreparedTurnByWidget.values()].at(-1) || null;
+      }
+      q(scopedHost, `#${TOGGLE_ID}`)?.remove();
+      deleteWidgetRuntimeState(scopedWidgetKey, { retireAttempts: true, retireLegacy: true });
+      reconcile();
+      log("scoped reset:", reason, scopedWidgetKey, "gen", generationForWidget(scopedWidgetKey));
+      return;
+    }
+    const resetWidgetKeys = knownWidgetKeys();
     generation += 1;
+    generationByWidget.clear();
+    for (const widgetKey of resetWidgetKeys) rememberResetGuards(widgetKey);
+    retireActiveCompare(reason, { abort: true, clear: true });
     for (const controller of activeControllers.values()) {
       try { controller.abort(); } catch { /* already settled */ }
     }
@@ -112,8 +838,13 @@
     mirroredTurns = 0;
     compareOn = false;
     latestPreparedTurn = null;
-    mirroredTurnKeys.clear();
-    completedTurnKeys.clear();
+    latestPreparedTurnByWidget.clear();
+    retireAllAcceptedAttempts();
+    retireAllLegacyTurns();
+    mirroredTurnDiagnostics.clear();
+    productionTurnResultsByWidget.clear();
+    preparedTurnHistoryByWidget.clear();
+    completedTurnKeysByWidget.clear();
     clearLog();
     // A reset removes the answer-scoped control immediately; a later completed
     // answer will cause reconcile() to create the next one.
@@ -170,22 +901,28 @@
     const dec = new TextDecoder();
     let buf = "", out = "";
     const sources = [];
+    const consumeLine = (rawLine) => {
+      const line = rawLine.trim();
+      if (!line.startsWith("data:")) return;
+      let o;
+      try { o = JSON.parse(line.slice(5).trim()); } catch { return; }
+      if (o.type === "text-delta") out += (o.delta ?? o.text ?? "");
+      else if (o.type === "tool-output-available" || o.type === "data-tool-output-metadata") harvestSources(o, sources);
+      onUpdate(out, sources);
+    };
     for (;;) {
       const { value, done } = await reader.read();
       if (done) break;
       buf += dec.decode(value, { stream: true });
       let nl;
       while ((nl = buf.indexOf("\n")) >= 0) {
-        const line = buf.slice(0, nl).trim();
+        const line = buf.slice(0, nl);
         buf = buf.slice(nl + 1);
-        if (!line.startsWith("data:")) continue;
-        let o;
-        try { o = JSON.parse(line.slice(5).trim()); } catch { continue; } // tolerate partial frames
-        if (o.type === "text-delta") out += (o.delta ?? o.text ?? "");
-        else if (o.type === "tool-output-available" || o.type === "data-tool-output-metadata") harvestSources(o, sources);
-        onUpdate(out, sources);
+        consumeLine(line);
       }
     }
+    buf += dec.decode();
+    if (buf.trim()) consumeLine(buf);
     return { text: out, sources };
   }
 
@@ -194,60 +931,96 @@
     const turnKey = String(detail?.turnKey || "");
     const identityKey = turnIdentityKey(detail);
     const body = typeof detail?.body === "string" ? detail.body : "";
-    if (!turnKey || !identityKey || !body || seenTurnKeys.has(identityKey)) return;
-    // Keep the key across resets so a late retry from the old generation can
-    // never be mistaken for the first turn of the new conversation.
-    seenTurnKeys.add(identityKey);
-    if (seenTurnKeys.size > 500) seenTurnKeys.delete(seenTurnKeys.values().next().value);
+    if (!turnKey || !identityKey || !body || !acceptTurnIdentity(identityKey, detail)) return false;
     latestPreparedTurn = {
       identityKey,
       body,
       turnKey,
+      conversationGeneration: generationForDetail(detail),
+      networkAttemptOrdinal: legacyAttemptOrdinalForDetail(detail),
       messageId: String(detail?.messageId || ""),
       question: String(detail?.question || ""),
       answerIdentity: detail?.answerIdentity || null,
+      widgetInstanceId: detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || "",
     };
-    const toggle = sroot()?.querySelector(`#${TOGGLE_ID}`);
-    if (toggle) paintToggle(toggle);
-    if (!compareOn || !ENDPOINT_OK) return;
-    const gen = generation;
+    latestPreparedTurnByWidget.set(widgetKeyForDetail(detail), latestPreparedTurn);
+    trimMap(latestPreparedTurnByWidget);
+    rememberPreparedTurn(latestPreparedTurn);
+    const widget = hostForTurn(latestPreparedTurn);
+    const toggle = q(widget, `#${TOGGLE_ID}`);
+    if (toggle) paintToggle(toggle, latestPreparedTurn);
+    if (!compareOn || !ENDPOINT_OK) return true;
+    if (activePanelHost && widget !== activePanelHost) return true;
+    if (!activePanelHost && widget) activePanelHost = widget;
+    panelWidgetKey = widgetKeyForDetail(detail);
+    if (activeCompareIdentityKey && activeCompareIdentityKey !== identityKey) {
+      const controller = activeControllers.get(activeCompareIdentityKey);
+      if (controller) {
+        try { controller.abort(); } catch { /* already settled */ }
+        activeControllers.delete(activeCompareIdentityKey);
+      }
+    }
+    activeCompareIdentityKey = identityKey;
+    const gen = generationForWidget(widgetKeyForDetail(detail));
     mirrorPreparedTurn(latestPreparedTurn, gen)
       .catch((error) => log("production turn failed (contained)", error));
+    return true;
   }
 
   function acceptCompletedTurn(detail) {
     const turnKey = String(detail?.turnKey || "");
     const identityKey = turnIdentityKey(detail);
-    if (!turnKey || !identityKey) return;
-    completedTurnKeys.add(identityKey);
-    if (completedTurnKeys.size > 500) completedTurnKeys.delete(completedTurnKeys.values().next().value);
+    if (!turnKey || !identityKey || !completedMatchesPreparedRecord(detail, identityKey)) return false;
+    rememberCompletedTurn(identityKey);
     reconcile();
+    return true;
   }
 
   function mirrorPreparedTurn(detail, gen) {
-    if (!detail || mirroredTurnKeys.has(detail.identityKey)) return Promise.resolve();
-    mirroredTurnKeys.add(detail.identityKey);
+    if (!detail) return Promise.resolve();
+    const widgetKey = widgetKeyForTurn(detail);
+    const cached = resultForTurn(detail);
+    if (cached) {
+      renderCachedWidgetResults(widgetKey);
+      return Promise.resolve();
+    }
+    if (activeControllers.has(detail.identityKey)) return Promise.resolve();
+    renderCachedWidgetResults(widgetKey);
+    mirroredTurnDiagnostics.add(detail.identityKey);
+    trimSet(mirroredTurnDiagnostics);
     return runPreparedTurn(detail, gen);
   }
 
   async function runPreparedTurn(detail, gen) {
-    if (gen !== generation) return;
+    const widgetKey = widgetKeyForTurn(detail);
+    if (gen !== generationForWidget(widgetKey)) return;
+    if (!isActiveProductionTurn(detail)) return;
     const turn = appendTurn(detail.question || "Question");
     renderTurn(turn, { status: "thinking" });
     const controller = new AbortController();
     activeControllers.set(detail.identityKey, controller);
     try {
       const r = await askProd(detail.body, controller.signal, (t, s) => {
-        if (gen !== generation) return;
+        if (gen !== generationForWidget(widgetKey)) return;
+        if (!isActiveProductionTurn(detail)) return;
         renderTurn(turn, { status: "streaming", text: t, sources: s });
       });
-      if (gen !== generation) return;
+      if (gen !== generationForWidget(widgetKey)) return;
+      if (!isActiveProductionTurn(detail)) return;
       mirroredTurns += 1;
-      renderTurn(turn, { status: "done", text: r.text, sources: r.sources });
+      const doneState = { status: "done", text: r.text, sources: r.sources, question: detail.question || "Question" };
+      rememberProductionTurnResult(detail, doneState);
+      renderTurn(turn, doneState);
     } catch (e) {
-      if (gen !== generation || e?.name === "AbortError") return;
+      if (gen !== generationForWidget(widgetKey) || e?.name === "AbortError") return;
       // Contained: production failed, the concierge column is unaffected.
-      renderTurn(turn, { status: "error", text: e?.message || "Production request failed." });
+      const errorState = {
+        status: "error",
+        text: e?.message || "Production request failed.",
+        question: detail.question || "Question",
+      };
+      rememberProductionTurnResult(detail, errorState);
+      renderTurn(turn, errorState);
     } finally {
       if (activeControllers.get(detail.identityKey) === controller) activeControllers.delete(detail.identityKey);
     }
@@ -255,9 +1028,10 @@
 
   function subscribeToPreparedTurns(attempt = 0) {
     if (unsubscribePreparedTurns) return true;
-    const subscribe = window.algoliaHandoffToOrchestrator?.subscribePreparedTurn;
+    const api = captureHandoffApi();
+    const subscribe = api?.subscribePreparedTurn;
     if (typeof subscribe === "function") {
-      unsubscribePreparedTurns = subscribe(acceptPreparedTurn);
+      unsubscribePreparedTurns = subscribe.call(api, acceptPreparedTurn);
       return true;
     }
     if (attempt < 100) setTimeout(() => subscribeToPreparedTurns(attempt + 1), 50);
@@ -266,9 +1040,10 @@
 
   function subscribeToCompletedTurns(attempt = 0) {
     if (unsubscribeCompletedTurns) return true;
-    const subscribe = window.algoliaHandoffToOrchestrator?.subscribeCompletedTurn;
+    const api = captureHandoffApi();
+    const subscribe = api?.subscribeCompletedTurn;
     if (typeof subscribe === "function") {
-      unsubscribeCompletedTurns = subscribe(acceptCompletedTurn);
+      unsubscribeCompletedTurns = subscribe.call(api, acceptCompletedTurn);
       return true;
     }
     if (attempt < 100) setTimeout(() => subscribeToCompletedTurns(attempt + 1), 50);
@@ -304,8 +1079,7 @@
 #${TOGGLE_ID}[aria-disabled="true"]{ opacity: .55; cursor: default; }
 @media (prefers-reduced-motion: reduce){ #${TOGGLE_ID}{ transition: none; } }`;
 
-  function ensureToggleStyle() {
-    const root = sroot();
+  function ensureToggleStyle(root) {
     if (!root || root.querySelector("#acs-compare-toggle-style")) return;
     const st = document.createElement("style");
     st.id = "acs-compare-toggle-style";
@@ -313,26 +1087,41 @@
     root.appendChild(st);
   }
 
-  function paintToggle(t) {
+  function paintToggle(t, turn = latestPreparedTurn) {
+    const active = turnHostIsActive(turn);
     t.textContent = "Compare with Prod";
-    t.setAttribute("aria-pressed", compareOn ? "true" : "false");
+    t.setAttribute("aria-pressed", active ? "true" : "false");
     t.removeAttribute("aria-disabled");
     t.setAttribute(
       "aria-label",
-      compareOn
+      active
         ? "Stop comparing answer with production"
         : "Compare answer with production"
     );
-    t.title = latestPreparedTurn && !compareOn
+    t.title = turn && !active
       ? "Send the latest answer's exact finalized request to live algolia.com Ask AI"
       : "Send the same finalized request, including current session and page context, to the live algolia.com Ask AI";
   }
 
-  function notifyAnswerHarnessCompareAction() {
-    const identity = latestPreparedTurn?.answerIdentity;
+  function notifyAnswerHarnessCompareAction(turn = latestPreparedTurn) {
+    const identity = turn?.answerIdentity;
     const accept = window.algoliaAnswerHarness?.accept;
     const createOpaqueActionContribution = window.algoliaAnswerContributors?.createOpaqueActionContribution;
     if (!identity || typeof accept !== "function" || typeof createOpaqueActionContribution !== "function") return;
+    const action = {
+      label: "Compare with Prod",
+      pressed: turnHostIsActive(turn),
+      available: true,
+    };
+    const current = window.algoliaAnswerHarness?.getRecord?.(identity)?.slots?.actions;
+    if (
+      current?.status === "ready" &&
+      current.value?.label === action.label &&
+      current.value?.pressed === action.pressed &&
+      current.value?.available === action.available
+    ) {
+      return;
+    }
     try {
       accept(Object.freeze({
         eventName: "contribution",
@@ -340,11 +1129,7 @@
           answerIdentity: identity,
           contribution: createOpaqueActionContribution({
             identity,
-            action: {
-              label: "Compare with Prod",
-              pressed: compareOn,
-              available: true,
-            },
+            action,
           }),
         }),
       }));
@@ -360,22 +1145,46 @@
     return false;
   }
 
-  function ensureToggle() {
+  function turnHostIsActive(turn) {
+    return isActiveProductionTurn(turn);
+  }
+
+  function ensureToggleForTurn(turn) {
     if (!ENDPOINT_OK) return;                             // unconfigured → no UI
-    let toggle = sroot()?.querySelector(`#${TOGGLE_ID}`) || null;
-    const turnComplete = latestPreparedTurn && completedTurnKeys.has(latestPreparedTurn.identityKey);
+    const widget = hostForTurn(turn);
+    const root = srootForHost(widget);
+    if (!root) return;
+    let toggle = root.querySelector(`#${TOGGLE_ID}`) || null;
+    const turnComplete = isTurnComplete(turn);
     const candidateFooter = turnComplete
-      ? window.algoliaHandoffToOrchestrator?.ensureAnswerFooter?.(latestPreparedTurn) || null
+      ? window.algoliaHandoffToOrchestrator?.ensureAnswerFooter?.(turn) || null
       : null;
-    const answerFooter = footerIsPostAnswerReady(candidateFooter) ? candidateFooter : null;
+    const migratedFooter = window.algoliaAnswerFooterRenderer;
+    if (turnComplete && migratedFooter?.isEnabled?.()) {
+      notifyAnswerHarnessCompareAction(turn);
+    }
+    const answerFooter = migratedFooter?.isEnabled?.()
+      ? candidateFooter
+      : footerIsPostAnswerReady(candidateFooter) ? candidateFooter : null;
+    if (answerFooter && migratedFooter?.isEnabled?.()) {
+      ensureToggleStyle(root);
+      if (migratedFooter.registerPlacement?.(turn)) {
+        const current = root.querySelector(`#${TOGGLE_ID}`);
+        if (current) {
+          paintToggle(current, turn);
+          log("toggle mounted by answer renderer");
+        }
+        return;
+      }
+    }
     if (answerFooter && !toggle) {
-      ensureToggleStyle();
+      ensureToggleStyle(root);
       toggle = document.createElement("button");
       toggle.id = TOGGLE_ID;
       toggle.type = "button";
-      paintToggle(toggle);
+      paintToggle(toggle, turn);
       answerFooter.appendChild(toggle);
-      notifyAnswerHarnessCompareAction();
+      notifyAnswerHarnessCompareAction(turn);
       log("toggle mounted");
     } else if (!answerFooter && toggle) {
       toggle.remove();
@@ -383,9 +1192,17 @@
       if (toggle.parentElement !== answerFooter) {
         answerFooter.appendChild(toggle);
       }
-      paintToggle(toggle);
-      notifyAnswerHarnessCompareAction();
+      paintToggle(toggle, turn);
+      notifyAnswerHarnessCompareAction(turn);
     }
+  }
+
+  function ensureToggle() {
+    if (latestPreparedTurnByWidget.size) {
+      for (const turn of latestPreparedTurnByWidget.values()) ensureToggleForTurn(turn);
+      return;
+    }
+    ensureToggleForTurn(latestPreparedTurn);
   }
 
   // ------------------------------------------------------------- reconcile ---
@@ -398,9 +1215,10 @@
     requestAnimationFrame(() => {
       pending = false;
       try {
-        const expanded = isExpanded();
+        const panelHost = activePanelHost || hostForTurn(latestPreparedTurn);
+        const expanded = isExpanded(panelHost);
         ensureToggle();
-        updatePanelVisibility(compareOn && expanded);
+        updatePanelVisibility(compareOn && expanded, panelHost);
       } catch (e) {
         log("reconcile error (contained)", e);            // never break the widget
       }
@@ -408,34 +1226,79 @@
   }
 
   function attach() {
-    const root = sroot();
-    if (!root) return false;
+    let foundRoot = false;
+    for (const widget of hosts()) {
+      const root = srootForHost(widget);
+      if (!root) continue;
+      foundRoot = true;
+      if (attachedRoots.has(root)) continue;
+      attachedRoots.add(root);
 
-    // Delegated: React re-renders the header and clones our button, which drops
-    // per-node listeners and leaves a dead toggle behind.
-    root.addEventListener("click", (e) => {
-      const path = e.composedPath ? e.composedPath() : [];
-      if (!path.some((n) => n && n.id === TOGGLE_ID)) return;
-      compareOn = !compareOn;
-      if (compareOn && latestPreparedTurn) {
-        mirrorPreparedTurn(latestPreparedTurn, generation)
-          .catch((error) => log("production replay failed (contained)", error));
-      }
-      reconcile();
-    });
+      // Delegated: React re-renders the header and clones our button, which drops
+      // per-node listeners and leaves a dead toggle behind.
+      root.addEventListener("click", (e) => {
+        const path = e.composedPath ? e.composedPath() : [];
+        if (!path.some((n) => n && n.id === TOGGLE_ID)) return;
+        const widgetKey = widgetKeyForIdentity({ widgetInstanceId: widgetIdForHost(widget) });
+        const turn = latestPreparedTurnByWidget.get(widgetKey) || latestPreparedTurn;
+        const wasActive = turnHostIsActive(turn);
+        if (wasActive) {
+          retireActiveCompare("toggle-off", { abort: true, clear: false });
+          reconcile();
+          return;
+        }
+        if (activePanelHost && activePanelHost !== widget) {
+          retireActiveCompare("switch-widget", { abort: true, clear: true });
+        } else {
+          clearWidgetInset(widget);
+        }
+        compareOn = true;
+        activePanelHost = widget;
+        activeCompareIdentityKey = turn?.identityKey || "";
+        if (panelWidgetKey && panelWidgetKey !== widgetKey && panel) clearLog();
+        panelWidgetKey = widgetKey;
+        if (turn) {
+          mirrorPreparedTurn(turn, generationForWidget(widgetKey))
+            .catch((error) => log("production replay failed (contained)", error));
+        }
+        reconcile();
+      });
 
-    new MutationObserver(reconcile).observe(root, {
-      childList: true, subtree: true, attributes: true,
-      attributeFilter: ["style", "class", "part"],
-    });
-    window.addEventListener("resize", reconcile);
+      new MutationObserver(reconcile).observe(root, {
+        childList: true, subtree: true, attributes: true,
+        attributeFilter: ["style", "class", "part"],
+      });
+    }
+    if (!attachedResizeListener) {
+      attachedResizeListener = true;
+      window.addEventListener("resize", reconcile);
+    }
+    const documentRoot = document.documentElement || document.body || null;
+    if (!attachedDocumentObserver && documentRoot) {
+      attachedDocumentObserver = true;
+      new MutationObserver(() => {
+        attach();
+        reconcile();
+      }).observe(documentRoot, { childList: true, subtree: true });
+    }
 
     // Primary reset signal, dispatched by algolia-engagement-tracker.js.
-    document.addEventListener("algolia-visitor-state-reset", () => resetConversation("event"));
+    if (!attachedResetListener) {
+      attachedResetListener = true;
+      document.addEventListener("algolia-visitor-state-reset", (event) =>
+        resetConversation("event", event?.detail?.widgetInstanceId || "")
+      );
+    }
+    if (!attachedDisconnectListener) {
+      attachedDisconnectListener = true;
+      document.addEventListener("algolia-chat-widget-disconnected", (event) =>
+        resetConversation("disconnected", event?.detail?.widgetInstanceId || "")
+      );
+    }
 
     reconcile();
     log("attached");
-    return true;
+    return foundRoot;
   }
 
   subscribeToPreparedTurns();
@@ -449,10 +1312,6 @@
   })();
 
   // ------------------------------------------------------- production panel ---
-  const SPLIT = 0.5;              // even 50/50 of the conversation area
-  const STACK_BELOW = 720;        // px of chat width below which we stack
-  let panel = null;
-
   function mount() {
     if (panel) return panel;
     panel = document.createElement("div");
@@ -507,7 +1366,8 @@
   // anchor here. Re-parent if the host node is swapped.
   function ensureMounted() {
     const p = mount();
-    const cc = q('[part="chat-content"]');
+    const widget = activePanelHost || hostForTurn(latestPreparedTurn) || hosts()[0] || null;
+    const cc = q(widget, '[part="chat-content"]');
     if (cc && p.parentElement !== cc) cc.appendChild(p);
     return !!cc;
   }
@@ -515,9 +1375,10 @@
   function positionPanel() {
     if (!ensureMounted()) return;
     const p = mount();
-    const cc = q('[part="chat-content"]');
-    const header = q('[part="header"]');
-    const composer = q('[part="composer"]');
+    const widget = activePanelHost || hostForTurn(latestPreparedTurn) || hosts()[0] || null;
+    const cc = q(widget, '[part="chat-content"]');
+    const header = q(widget, '[part="header"]');
+    const composer = q(widget, '[part="composer"]');
     const ccr = cc.getBoundingClientRect();
     const top = header ? Math.round(header.getBoundingClientRect().bottom - ccr.top) : 60;
     const bottomInset = composer
@@ -547,8 +1408,8 @@
 
   // Inset ONLY the messages scroller. Padding [part="chat-content"] would shrink
   // the header and the composer too, since it is the column that contains them.
-  function setContentInset(active, stacked, stackedInset = 0) {
-    const root = sroot();
+  function setContentInset(active, stacked, stackedInset = 0, widget = activePanelHost || hostForTurn(latestPreparedTurn) || hosts()[0] || null) {
+    const root = srootForHost(widget);
     if (!root) return;
     let style = root.querySelector("#acs-compare-style");
     if (!active) { style?.remove(); return; }
@@ -560,13 +1421,20 @@
     const pct = Math.round(SPLIT * 100);
     style.textContent = stacked
       ? `[part="chat-content"] .overflow-y-auto{ padding-bottom: ${stackedInset + 20}px !important; }`
-      : `[part="chat-content"] .overflow-y-auto{ padding-right: calc(${pct}% + 20px) !important; }`;
+      : `[part="chat-content"] .overflow-y-auto{ padding-right: calc(${pct}% + 20px) !important; }
+         [data-algolia-answer-footer]{ flex-wrap: wrap !important; }
+         [data-algolia-answer-footer] > .min-w-0.flex-1{ flex: 1 1 100% !important; }
+         [data-algolia-rendered-answer-footer]{ margin-left: 0 !important; }
+         [data-algolia-rendered-answer-footer] .algolia-usage-pill{ padding-left: 7px !important; padding-right: 7px !important; font-size: 10px !important; }
+         [data-algolia-rendered-answer-footer] #acs-compare-toggle{ padding: 6px 9px !important; font-size: 10px !important; }`;
   }
 
-  function updatePanelVisibility(show) {
+  function updatePanelVisibility(show, widget = hostForTurn(latestPreparedTurn)) {
+    const targetWidget = widget || activePanelHost;
+    if (show && targetWidget) activePanelHost = targetWidget;
     mount().style.display = show ? "block" : "none";
     if (show) positionPanel();
-    else setContentInset(false, false);
+    else setContentInset(false, false, 0, targetWidget);
   }
 
   // ------------------------------------------------------------- rendering ---
@@ -668,12 +1536,33 @@
         hasPreparedTurn: !!latestPreparedTurn,
         generation,
         mirroredTurns,
+        activeCompareIdentityKey,
+        activeWidgetInstanceId: widgetIdForHost(activePanelHost),
         activeTurns: activeControllers.size,
-        completedTurns: completedTurnKeys.size,
+        latestRuntimeAttemptOrdinal,
+        latestLegacyAttemptOrdinal,
+        completedTurns: completedTurnCount(),
+        acceptedTurns: acceptedAttemptCount() + widgetSetCount(legacyAcceptedTurnKeysByWidget),
+        acceptedAttemptSegments: acceptedAttemptCount(),
+        acceptedAttemptWidgets: acceptedAttemptsByWidget.size,
+        retiredAttemptSegments: retiredAttemptCount(),
+        retiredAttemptWidgets: retiredAttemptsByWidget.size,
+        latestAttemptOrdinals: latestAttemptOrdinalByWidget.size,
+        resetGenerationFloors: resetGenerationFloorByWidget.size,
+        resetAttemptOrdinalFloors: resetAttemptOrdinalFloorByWidget.size,
+        legacyAcceptedTurns: widgetSetCount(legacyAcceptedTurnKeysByWidget),
+        legacyRetiredTurns: widgetSetCount(legacyRetiredTurnKeysByWidget),
+        legacyResetGenerationFloors: legacyResetGenerationFloorByWidget.size,
+        legacyResetAttemptOrdinalFloors: legacyResetAttemptOrdinalFloorByWidget.size,
+        mirroredTurnDiagnostics: mirroredTurnDiagnostics.size,
+        productionTurnResults: productionTurnResultCount(),
+        preparedTurnHistory: [...preparedTurnHistoryByWidget.values()].reduce((sum, history) => sum + history.length, 0),
       }),
       reset: resetConversation,
       acceptPreparedTurn,
       acceptCompletedTurn,
+      askProdForTest: askProd,
+      rememberProductionTurnResultForTest: rememberProductionTurnResult,
     };
   }
 })();

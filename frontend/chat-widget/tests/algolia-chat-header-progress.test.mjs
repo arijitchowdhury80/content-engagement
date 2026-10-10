@@ -94,8 +94,8 @@ test('processing trace drives the header gradient fill from real progress state'
   );
   assert.match(
     thinkingIndicator,
-    /useEffect\(\(\)=>\{[A-Za-z_$][\w$]*\(\{status:[A-Za-z_$][\w$]*,searchCount:[A-Za-z_$][\w$]*\?\?0,hasText:!![A-Za-z_$][\w$]*\.trim\(\),textLength:[A-Za-z_$][\w$]*\.length\}\)\},\[[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*\]\)/,
-    'rendered streaming/thinking state must also synchronize header progress from visible props'
+    /useEffect\(\(\)=>\{[A-Za-z_$][\w$]*\(\{status:[A-Za-z_$][\w$]*,searchCount:[A-Za-z_$][\w$]*\?\?0,hasText:!![A-Za-z_$][\w$]*\.trim\(\),textLength:[A-Za-z_$][\w$]*\.length\},void 0,[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*\)\},\[[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*,[A-Za-z_$][\w$]*\]\)/,
+    'rendered streaming/thinking state must synchronize progress with the owning widget and attempt context'
   );
   assert.match(
     header,
@@ -119,7 +119,7 @@ test('processing trace drives the header gradient fill from real progress state'
   );
   assert.match(
     bundle,
-    /async function aR\([^)]*\)\{[\s\S]{0,220}__arrieResetHeaderProgress\([^)]*hostElement[^)]*\),[A-Za-z_$][\w$]*\(\{status:"loading"[\s\S]{0,80}hostElement\)/,
+    /async function aR\([^)]*\)\{[\s\S]{0,220}__arrieResetHeaderProgress\([^)]*hostElement[^)]*\),[A-Za-z_$][\w$]*\(\{status:"loading"[\s\S]{0,80}hostElement(?:,[^)]+)?\)/,
     'a new answer run must reset progress only at the run boundary'
   );
   assert.doesNotMatch(

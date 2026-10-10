@@ -29,7 +29,7 @@ const CONTRIBUTOR_SLOT_ALLOWLIST = Object.freeze({
   [ANSWER_CONTRIBUTOR_KIND.SOURCES]: new Set(["sources"]),
   [ANSWER_CONTRIBUTOR_KIND.TELEMETRY]: new Set(["telemetry"]),
   [ANSWER_CONTRIBUTOR_KIND.CONFIDENCE]: new Set(["confidence"]),
-  [ANSWER_CONTRIBUTOR_KIND.OPAQUE_ACTION]: new Set(["compareAction"]),
+  [ANSWER_CONTRIBUTOR_KIND.OPAQUE_ACTION]: new Set(["actions"]),
   [ANSWER_CONTRIBUTOR_KIND.PROGRESS]: new Set(["progress"]),
   [ANSWER_CONTRIBUTOR_KIND.LIFECYCLE]: new Set(),
 });
@@ -38,6 +38,54 @@ const CONTRIBUTOR_LIFECYCLE_ALLOWLIST = new Set([
   ANSWER_CONTRIBUTOR_KIND.ERROR_RETRY,
   ANSWER_CONTRIBUTOR_KIND.LIFECYCLE,
 ]);
+const TERMINAL_ATTEMPT_LIFECYCLES = new Set([
+  ANSWER_LIFECYCLE.COMPLETE,
+  ANSWER_LIFECYCLE.FAILED,
+]);
+const CLOSED_ATTEMPT_LIFECYCLES = new Set([
+  ANSWER_LIFECYCLE.SUPERSEDED,
+  ANSWER_LIFECYCLE.RESET,
+  ANSWER_LIFECYCLE.DISCONNECTED,
+]);
+const ALLOWED_LIFECYCLE_TRANSITIONS = Object.freeze({
+  [ANSWER_LIFECYCLE.SEARCHING]: new Set([
+    ANSWER_LIFECYCLE.READING,
+    ANSWER_LIFECYCLE.SYNTHESIZING,
+    ANSWER_LIFECYCLE.STREAMING,
+    ANSWER_LIFECYCLE.JUDGING,
+    ANSWER_LIFECYCLE.COMPLETE,
+    ANSWER_LIFECYCLE.FAILED,
+    ANSWER_LIFECYCLE.RETRYING,
+  ]),
+  [ANSWER_LIFECYCLE.READING]: new Set([
+    ANSWER_LIFECYCLE.SYNTHESIZING,
+    ANSWER_LIFECYCLE.STREAMING,
+    ANSWER_LIFECYCLE.JUDGING,
+    ANSWER_LIFECYCLE.COMPLETE,
+    ANSWER_LIFECYCLE.FAILED,
+    ANSWER_LIFECYCLE.RETRYING,
+  ]),
+  [ANSWER_LIFECYCLE.SYNTHESIZING]: new Set([
+    ANSWER_LIFECYCLE.STREAMING,
+    ANSWER_LIFECYCLE.JUDGING,
+    ANSWER_LIFECYCLE.COMPLETE,
+    ANSWER_LIFECYCLE.FAILED,
+    ANSWER_LIFECYCLE.RETRYING,
+  ]),
+  [ANSWER_LIFECYCLE.STREAMING]: new Set([
+    ANSWER_LIFECYCLE.JUDGING,
+    ANSWER_LIFECYCLE.COMPLETE,
+    ANSWER_LIFECYCLE.FAILED,
+    ANSWER_LIFECYCLE.RETRYING,
+  ]),
+  [ANSWER_LIFECYCLE.JUDGING]: new Set([
+    ANSWER_LIFECYCLE.COMPLETE,
+    ANSWER_LIFECYCLE.FAILED,
+  ]),
+  [ANSWER_LIFECYCLE.RETRYING]: new Set([
+    ANSWER_LIFECYCLE.FAILED,
+  ]),
+});
 
 const POST_STREAM_LIFECYCLES = new Set([
   ANSWER_LIFECYCLE.JUDGING,
@@ -51,7 +99,7 @@ const TERMINAL_UNAVAILABLE_LIFECYCLES = new Set([
 const TERMINAL_UNAVAILABLE_MESSAGES = Object.freeze({
   sources: "Sources unavailable.",
   telemetry: "Telemetry unavailable.",
-  compareAction: "Compare unavailable.",
+  actions: "Action unavailable.",
   confidence: "Confidence unavailable.",
   followUp: "Discovery follow-up unavailable.",
 });
@@ -78,6 +126,37 @@ function mergeSlot(existing, incoming) {
     ...next,
     value: { ...next.value, percent: currentPercent },
   });
+}
+
+function hasAnsweredContent(record) {
+  return ["tldrAnalogy", "tldrShort", "details"].some((key) =>
+    record.slots[key]?.status === ANSWER_SLOT_STATUS.READY &&
+      typeof record.slots[key]?.value === "string" &&
+      record.slots[key].value.trim()
+  );
+}
+
+function shouldIgnoreAttemptTerminalSlotUpdate(record, key, kind, slot) {
+  if (!TERMINAL_ATTEMPT_LIFECYCLES.has(record.lifecycle)) return false;
+  if (key === "progress") {
+    if (record.lifecycle === ANSWER_LIFECYCLE.FAILED) return true;
+    if (hasAnsweredContent(record)) return true;
+    return slot?.value?.phase !== "error";
+  }
+  return kind === ANSWER_CONTRIBUTOR_KIND.ERROR_RETRY && hasAnsweredContent(record);
+}
+
+function lifecycleFromContribution(record, contribution, kind) {
+  if (!lifecycleAllowedForContribution(kind) || !contribution.lifecycle) return record.lifecycle;
+  if (
+    kind === ANSWER_CONTRIBUTOR_KIND.ERROR_RETRY &&
+    TERMINAL_ATTEMPT_LIFECYCLES.has(record.lifecycle) &&
+    !hasAnsweredContent(record) &&
+    contribution.lifecycle === ANSWER_LIFECYCLE.FAILED
+  ) {
+    return ANSWER_LIFECYCLE.FAILED;
+  }
+  return mergeLifecycle(record.lifecycle, contribution.lifecycle);
 }
 
 function evidencePassages(evidence) {
@@ -168,6 +247,13 @@ function lifecycleAllowedForContribution(kind) {
   return CONTRIBUTOR_LIFECYCLE_ALLOWLIST.has(kind);
 }
 
+function mergeLifecycle(current, incoming) {
+  if (!incoming) return current;
+  if (current === incoming) return current;
+  if (TERMINAL_ATTEMPT_LIFECYCLES.has(current) || CLOSED_ATTEMPT_LIFECYCLES.has(current)) return current;
+  return ALLOWED_LIFECYCLE_TRANSITIONS[current]?.has(incoming) ? incoming : current;
+}
+
 export function createAnswerContributor({
   kind = ANSWER_CONTRIBUTOR_KIND.LIFECYCLE,
   identity,
@@ -201,6 +287,7 @@ export function applyAnswerContribution(record, contribution) {
   for (const [key, slot] of Object.entries(contribution.slots || {})) {
     if (!ANSWER_SLOT_KEYS.includes(key)) continue;
     if (!slotAllowedForContribution(kind, key, slot)) continue;
+    if (shouldIgnoreAttemptTerminalSlotUpdate(record, key, kind, slot)) continue;
     nextSlots[key] = mergeSlot(record.slots[key], { ...slot, key });
   }
 
@@ -211,9 +298,7 @@ export function applyAnswerContribution(record, contribution) {
 
   return createAnswerRecord({
     identity: record.identity,
-    lifecycle: lifecycleAllowedForContribution(kind) && contribution.lifecycle
-      ? contribution.lifecycle
-      : record.lifecycle,
+    lifecycle: lifecycleFromContribution(record, contribution, kind),
     evidence: nextEvidence,
     slots: nextSlots,
   });
@@ -226,7 +311,7 @@ export function createPresentationFromAnswerText({
   sources = [],
   confidence = null,
   telemetry = null,
-  compareAction = null,
+  actions = null,
   progress = null,
   lifecycle = ANSWER_LIFECYCLE.STREAMING,
 } = {}) {
@@ -255,9 +340,9 @@ export function createPresentationFromAnswerText({
     telemetry: telemetry
       ? { status: ANSWER_SLOT_STATUS.READY, value: telemetry }
       : { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Telemetry unavailable." },
-    compareAction: compareAction
-      ? { status: ANSWER_SLOT_STATUS.READY, value: compareAction }
-      : { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Compare unavailable." },
+    actions: actions
+      ? { status: ANSWER_SLOT_STATUS.READY, value: actions }
+      : { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Action unavailable." },
     progress: progress
       ? { status: ANSWER_SLOT_STATUS.READY, value: progress }
       : { status: ANSWER_SLOT_STATUS.LOADING, value: { percent: 0 } },
@@ -339,9 +424,9 @@ export function createPostAnswerFooterState(record) {
       telemetry: postStream
         ? terminalSlot(slots.telemetry, record.lifecycle)
         : deferredSlot(slots.telemetry, "Telemetry waits for answer completion."),
-      compareAction: postStream
-        ? terminalSlot(slots.compareAction, record.lifecycle)
-        : deferredSlot(slots.compareAction, "Compare waits for answer completion."),
+      actions: postStream
+        ? terminalSlot(slots.actions, record.lifecycle)
+        : deferredSlot(slots.actions, "Actions wait for answer completion."),
       confidence: postStream
         ? terminalSlot(slots.confidence, record.lifecycle)
         : deferredSlot(slots.confidence, "Confidence waits for answer completion."),
@@ -371,7 +456,7 @@ export function toAnswerPresentation(record) {
       followUp: footer.slots.followUp,
       confidence: footer.slots.confidence,
       telemetry: footer.slots.telemetry,
-      compareAction: footer.slots.compareAction,
+      actions: footer.slots.actions,
       order: footer.order,
       postStream: footer.postStream,
     },

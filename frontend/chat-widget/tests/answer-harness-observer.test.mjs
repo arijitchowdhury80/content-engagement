@@ -51,7 +51,7 @@ test("mirror observer creates one answer record from prepared runtime events", (
   assert.deepEqual(observer.rejections(), []);
 });
 
-test("mirror observer marks the matching answer attempt complete without changing other slots", () => {
+test("mirror observer marks the matching answer attempt complete and accounts for untouched slots", () => {
   const observer = createAnswerHarnessObserver();
 
   observer.accept(event("prepared"));
@@ -60,7 +60,12 @@ test("mirror observer marks the matching answer attempt complete without changin
   assert.equal(record.lifecycle, ANSWER_LIFECYCLE.COMPLETE);
   assert.equal(record.slots.progress.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(record.slots.progress.value.percent, 100);
-  assert.equal(record.slots.tldrAnalogy.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(record.slots.tldrAnalogy.status, ANSWER_SLOT_STATUS.EMPTY);
+  assert.equal(record.slots.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(record.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(record.slots.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(record.slots.actions.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(record.slots.errorRetry.status, ANSWER_SLOT_STATUS.EMPTY);
   assert.deepEqual(observer.rejections(), []);
 });
 
@@ -137,7 +142,7 @@ test("mirror observer merges typed slot contributions into one answer record", (
   assert.equal(record.slots.followUp.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(record.slots.sources.value[0].title, "Docs");
   assert.equal(record.slots.telemetry.value.inputTokens, 44141);
-  assert.equal(record.slots.compareAction.value.label, "Compare with Prod");
+  assert.equal(record.slots.actions.value.label, "Compare with Prod");
   assert.equal(record.slots.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(record.evidence.passages[0].kind, "source");
   assert.equal(record.evidence.passages[0].id, "source:retrieval:0:docs");

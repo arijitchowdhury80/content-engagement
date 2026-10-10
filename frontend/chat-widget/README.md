@@ -1,94 +1,51 @@
-# Chat Widget
+# Content Engagement chat widget
 
-This directory is the project home for Algolia.com chat widget JavaScript.
+This directory owns the readable source, compatibility tests, and generated local release for `<algolia-chat>`.
 
-## Current State
+## Ownership
 
-These are the project-owned JavaScript files for the current Jahia chat widget work. Keep the
-editable files directly in this folder so they are easy to find and review.
+- `source/shared/core/` owns immutable answer/evidence identity and lifecycle contracts.
+- `source/shared/widget/` owns normalized presentation state and renderer-owned DOM placement.
+- `source/algolia-com/code/runtime/` is the recovered readable Agent Studio runtime and semantic widget implementation. It is Algolia-owned because it includes transport, judging, visitor intelligence, and proactive policy.
+- `source/algolia-com/code/` owns Algolia journeys, context, transport policy, judges, telemetry, Compare, persistence, forms, and handoff behavior.
+- `source/algolia-com/presentation/` owns the theme compiler, token CSS, Algolia visual rules, and assets only.
+- `source/algolia-com/web-component/` owns the Algolia web-component facade, compatibility surface, and Algolia-specific semantic view adapters. Shared renderers still own region placement; these adapters may render visual descendants but cannot perform transport, storage, judging, tracking, or conversation mutation.
+- `source/algolia-com/entry.ts` is the complete and explicit customer bundle entry.
+- `tests/` is a development safety harness and is never loaded by customers.
+- `dist/` is generated, ignored, and never edited as source.
 
-Use `dist/` only for generated packages, zips, or dated release bundles. Do not put the editable
-source under a dated `dist/<date>/local-reference/` tree again.
+Shared code cannot import Algolia-owned code. Presentation cannot perform transport, storage, judging, telemetry retrieval, routing, consent decisions, or conversation mutation.
 
-## Current Files
+The current flat JavaScript files remain temporary compatibility and rollback inputs until every host has migrated to the verified source-built artifact. They are not canonical editable 2.0 source.
 
-- `algolia-chat.js` — chat custom element bundle.
-- `algolia-chat-engage.js` — proactive engagement script.
-- `algolia-engagement-tracker.js` — engagement tracker for profile, session, and event signals.
-- `algolia-context-compiler.js` — compiles tracker state into Agent Studio per-turn context.
-- `algolia-proactive-controller.js` — evaluates journey triggers, stores opportunity packets, calls the Agent Studio Greetings Agent, and asks the chat widget to render the returned greeting.
-- `handoff-to-orchestrator.js` — decorates the first engaged response with a compact proactive handoff, persists that origin context, and combines it with freshly compiled page context on later orchestrator turns.
-- `algolia-chat-form-tool.js` — lead form client tool.
-- `algolia-chat-theme-algolia.js` — Algolia brand theme.
-- `algolia-confidence-badge.js` — confidence badge bundle.
+## Compatibility files
 
-## Local Parity Harness
+The flat files remain rollback-compatible outputs while their readable canonical homes are:
 
-Use localhost as the integration lab before touching Jahia:
+| Current compatibility file | Canonical editable source |
+|---|---|
+| `algolia-chat.js` | `source/algolia-com/code/runtime/` plus `source/algolia-com/web-component/` |
+| `algolia-chat-engage.js` | `source/algolia-com/code/chat-engage.js` |
+| `algolia-engagement-tracker.js` | `source/algolia-com/code/engagement-tracker.js` |
+| `algolia-context-compiler.js` | `source/algolia-com/code/context-compiler.js` |
+| `algolia-proactive-controller.js` | `source/algolia-com/code/proactive-controller.js` |
+| `handoff-to-orchestrator.js` | `source/algolia-com/code/handoff-to-orchestrator.js` |
+| `algolia-chat-form-tool.js` | `source/algolia-com/code/chat-form-tool.js` |
+| `algolia-judge-core.js` | `source/algolia-com/code/judge-core.js` and `source/algolia-com/code/runtime/judge/` |
+| `token-telemetry.js` | `source/algolia-com/code/token-telemetry.js` |
+| `algolia-chat-compare.js` | `source/algolia-com/code/chat-compare.js` |
+| `algolia-chat-theme-algolia.js` | `source/algolia-com/presentation/theme-algolia.js` and `source/algolia-com/presentation/widget/` |
+| `algolia-confidence-badge.js` | `source/algolia-com/presentation/confidence-badge.js` |
+| `answer-harness-runtime.mjs` | compatibility loader for `source/algolia-com/web-component/answer-runtime-bridge.mjs` |
 
-```bash
-npm run local:chat
-```
+New behavior is changed in canonical source first. Compatibility outputs are retained only until every host consumes the source-built release.
 
-Open `http://127.0.0.1:5177/products/ai-recommendations?algoliaChatDebug=1&algoliaProactiveDebug=1`.
-
-The local harness hosts representative website routes from
-`local-sites/algolia-com-parity/index.html` and loads Scout-captured Algolia.com page content from
-`local-sites/algolia-com-parity/scout-captures/routes.json`. The editable chat widget files still
-come from this directory through `/chat/<file>.js`.
-
-Refresh the representative local site pages with Scout:
-
-```bash
-npm run scout:local-pages
-```
-
-This fetches only the selected personalization-test routes: home, product pages, solution pages,
-developers/docs, pricing, customers, and one customer story. It does not fetch or mirror the full
-website.
-
-The local harness mocks only the Agent Studio Greetings Agent response; tracker storage, context
-compilation, proactive controller decisions, and widget rendering use the real project-owned
-scripts.
-
-Automated smoke validation:
+## Local verification
 
 ```bash
-npm run test:local-chat-parity
+npm run typecheck
+npm run test:source
+npm run build:verify
 ```
 
-This proves the local page writes `algolia_profile`, `algolia_session`, and `algolia_events`,
-compiles an `AlgoliaContextPacket.v1`, sends one Greetings Agent completion request, and renders
-a proactive greeting without mutating Jahia.
-
-## Debugging Without URL Flags
-
-For manual testing, turn on the full chat/proactive/context/handoff debug pipeline once per browser:
-
-```js
-localStorage.setItem("algoliaDebug", "1");
-location.reload();
-```
-
-To turn it off:
-
-```js
-localStorage.removeItem("algoliaDebug");
-location.reload();
-```
-
-The master `algoliaDebug=1` storage flag enables the same debug behavior as the individual URL
-flags. Narrow flags still work when you only want one layer:
-
-- `algoliaChatDebug`
-- `algoliaEngagementDebug`
-- `algoliaProactiveDebug`
-- `algoliaContextDebug`
-- `algoliaHandoffDebug`
-
-Example:
-
-```js
-localStorage.setItem("algoliaHandoffDebug", "1");
-location.reload();
-```
+The canonical browser tests create their own approved host fixture and exercise the generated one-file bundle. They do not use a parallel widget implementation or require Jahia.

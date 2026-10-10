@@ -16,8 +16,12 @@
   const ACTION_PATH = "/sites/algolia-assets/home.algoliaTokenTelemetry.do";
   const MAX_ATTEMPTS = 3;
   const RETRY_DELAY_MS = 2000;
+  const MAX_TRACKED_IDENTITIES = 500;
+  const MAX_TRACKED_CONVERSATIONS = 200;
   const fallbackTelemetryFetch = window.fetch.bind(window);
   const usageState = (window.__algoliaChatUsage = window.__algoliaChatUsage || {});
+  const usageByIdentity = new Map();
+  const completedTurnsByIdentity = new Map();
   const turnTotals = new Map();
   const seenTurnKeys = new Set();
   const latestRevisionByLookup = new Map();
@@ -44,6 +48,16 @@
     return turnKey ? `${widgetInstanceId}\n${turnKey}` : "";
   }
 
+  function conversationTotalsKey(completedTurn, conversationId) {
+    const widgetInstanceId = String(
+      completedTurn?.answerIdentity?.widgetInstanceId ||
+      completedTurn?.widgetInstanceId ||
+      "legacy"
+    ).trim() || "legacy";
+    const stableConversationId = String(conversationId || completedTurn?.conversationId || "").trim();
+    return stableConversationId ? `${widgetInstanceId}\n${stableConversationId}` : "";
+  }
+
   function actionUrl() {
     return `${window.__ALGOLIA_TOKEN_TELEMETRY_BASE__ || ""}${ACTION_PATH}`;
   }
@@ -55,9 +69,34 @@
       : fallbackTelemetryFetch(input, init);
   }
 
-  function publishUsageState(status) {
+  function updateLegacyUsageState(status, completedTurn = latestCompletedTurn, telemetry = null) {
     usageState.status = status;
-    window.dispatchEvent(new CustomEvent("algolia-usage-updated", { detail: usageState }));
+    if (completedTurn?.conversationId) usageState.conversationId = completedTurn.conversationId;
+    if (status === "ready") usageState.usage = telemetry;
+    if (status === "loading" || status === "idle" || status === "unavailable") usageState.usage = null;
+  }
+
+  function publishUsageState(status, completedTurn = latestCompletedTurn, telemetry = null) {
+    if (completedTurn?.identityKey) {
+      usageByIdentity.set(completedTurn.identityKey, {
+        status,
+        usage: status === "ready" ? telemetry : null,
+        completedTurn,
+      });
+    }
+    if (!completedTurn || latestCompletedTurn?.identityKey === completedTurn.identityKey) {
+      updateLegacyUsageState(status, completedTurn, telemetry);
+    }
+    const detail = {
+      ...usageState,
+      status,
+      usage: status === "ready" ? telemetry : null,
+      completedTurn: completedTurn || null,
+      answerIdentity: completedTurn?.answerIdentity || null,
+      widgetInstanceId: completedTurn?.answerIdentity?.widgetInstanceId || completedTurn?.widgetInstanceId || null,
+    };
+    window.dispatchEvent(new CustomEvent("algolia-usage-updated", { detail }));
+    renderTelemetryForTurn(completedTurn, detail);
   }
 
   function notifyAnswerHarnessTelemetry(status, completedTurn = latestCompletedTurn, telemetryOverride = null) {
@@ -65,7 +104,7 @@
     const accept = window.algoliaAnswerHarness?.accept;
     const createTelemetryContribution = window.algoliaAnswerContributors?.createTelemetryContribution;
     if (!identity || typeof accept !== "function" || typeof createTelemetryContribution !== "function") return;
-    const telemetry = status === "ready" ? (telemetryOverride || usageState.usage || null) : null;
+    const telemetry = status === "ready" ? (telemetryOverride || usageByIdentity.get(completedTurn.identityKey)?.usage || null) : null;
     try {
       accept(Object.freeze({
         eventName: "contribution",
@@ -107,16 +146,132 @@
       left.totalTokens === right.totalTokens;
   }
 
+  function totalsWentBackwards(previous, current) {
+    return !!previous && (
+      current.inputTokens < previous.inputTokens ||
+      current.outputTokens < previous.outputTokens ||
+      current.totalTokens < previous.totalTokens
+    );
+  }
+
+  function forgetIdentityKey(key, options = {}) {
+    if (!key) return null;
+    const completedTurn = completedTurnsByIdentity.get(key) || usageByIdentity.get(key)?.completedTurn || null;
+    usageByIdentity.delete(key);
+    completedTurnsByIdentity.delete(key);
+    seenTurnKeys.delete(key);
+    latestRevisionByLookup.delete(key);
+    if (options.clearVisible && completedTurn) {
+      renderTelemetryForTurn(completedTurn, { status: "idle", usage: null, completedTurn });
+    }
+    return completedTurn;
+  }
+
+  function pruneIdentityState() {
+    while (seenTurnKeys.size > MAX_TRACKED_IDENTITIES) {
+      forgetIdentityKey(seenTurnKeys.values().next().value);
+    }
+    while (usageByIdentity.size > MAX_TRACKED_IDENTITIES) {
+      forgetIdentityKey(usageByIdentity.keys().next().value);
+    }
+    while (completedTurnsByIdentity.size > MAX_TRACKED_IDENTITIES) {
+      forgetIdentityKey(completedTurnsByIdentity.keys().next().value);
+    }
+    while (latestRevisionByLookup.size > MAX_TRACKED_IDENTITIES) {
+      forgetIdentityKey(latestRevisionByLookup.keys().next().value);
+    }
+  }
+
+  function pruneTurnTotals() {
+    while (turnTotals.size > MAX_TRACKED_CONVERSATIONS) {
+      turnTotals.delete(turnTotals.keys().next().value);
+    }
+  }
+
   function resetUsage() {
+    for (const entry of usageByIdentity.values()) {
+      renderTelemetryForTurn(entry.completedTurn, { status: "idle", usage: null, completedTurn: entry.completedTurn });
+    }
     generation += 1;
     turnTotals.clear();
     seenTurnKeys.clear();
     latestRevisionByLookup.clear();
+    usageByIdentity.clear();
+    completedTurnsByIdentity.clear();
     usageState.usage = null;
     usageState.cumulativeUsage = null;
     usageState.conversationId = null;
     latestCompletedTurn = null;
     publishUsageState("idle");
+  }
+
+  function widgetInstanceIdFromEvent(event) {
+    const detailId = event?.detail?.widgetInstanceId;
+    if (typeof detailId === "string" && detailId.trim()) return detailId.trim();
+    const targetId = event?.target?.__algoliaWidgetInstanceId;
+    if (typeof targetId === "string" && targetId.trim()) return targetId.trim();
+    const path = typeof event?.composedPath === "function" ? event.composedPath() : [];
+    const owner = path.find((node) => typeof node?.__algoliaWidgetInstanceId === "string");
+    return owner?.__algoliaWidgetInstanceId || null;
+  }
+
+  function resetScopedUsage(widgetInstanceId) {
+    if (!widgetInstanceId) return false;
+    const prefix = `${widgetInstanceId}\n`;
+    for (const key of [...usageByIdentity.keys()]) {
+      if (!key.startsWith(prefix)) continue;
+      forgetIdentityKey(key, { clearVisible: true });
+    }
+    for (const key of [...turnTotals.keys()]) {
+      if (key.startsWith(prefix)) turnTotals.delete(key);
+    }
+    recomputeCumulative();
+    if (latestCompletedTurn?.identityKey?.startsWith(prefix)) {
+      const remaining = [...usageByIdentity.values()].at(-1) || null;
+      latestCompletedTurn = remaining?.completedTurn || null;
+      if (remaining) {
+        updateLegacyUsageState(remaining.status, remaining.completedTurn, remaining.usage);
+      } else {
+        usageState.usage = null;
+        usageState.conversationId = null;
+        usageState.status = "idle";
+      }
+    }
+    window.dispatchEvent(new CustomEvent("algolia-usage-updated", {
+      detail: {
+        ...usageState,
+        status: "idle",
+        usage: null,
+        widgetInstanceId,
+        scoped: true,
+      },
+    }));
+    return true;
+  }
+
+  function disconnectScopedUsage(widgetInstanceId) {
+    if (!widgetInstanceId) return false;
+    const prefix = `${widgetInstanceId}\n`;
+    for (const key of [...latestRevisionByLookup.keys()]) {
+      if (key.startsWith(prefix)) latestRevisionByLookup.delete(key);
+    }
+    for (const [key, entry] of [...usageByIdentity.entries()]) {
+      if (!key.startsWith(prefix) || entry.status === "ready") continue;
+      forgetIdentityKey(key);
+    }
+    if (latestCompletedTurn?.identityKey?.startsWith(prefix) && !usageByIdentity.has(latestCompletedTurn.identityKey)) {
+      const remaining = [...usageByIdentity.values()].at(-1) || null;
+      latestCompletedTurn = remaining?.completedTurn || null;
+      if (remaining) {
+        updateLegacyUsageState(remaining.status, remaining.completedTurn, remaining.usage);
+      } else {
+        usageState.usage = null;
+        usageState.conversationId = null;
+        usageState.status = "idle";
+      }
+    }
+    recomputeCumulative();
+    return true;
   }
 
   function tokenCount(value) {
@@ -145,7 +300,7 @@
   function scheduleRetry(completedTurn, conversationId, revision, attempt, expectedGeneration) {
     if (!isCurrentLookup(completedTurn, revision, expectedGeneration)) return;
     if (attempt + 1 >= MAX_ATTEMPTS) {
-      if (latestCompletedTurn?.identityKey === completedTurn.identityKey) publishUsageState("unavailable");
+      publishUsageState("unavailable", completedTurn);
       notifyAnswerHarnessTelemetry("unavailable", completedTurn);
       return;
     }
@@ -177,7 +332,8 @@
         scheduleRetry(completedTurn, conversationId, revision, attempt, expectedGeneration);
         return;
       }
-      const previous = turnTotals.get(conversationId) || null;
+      const totalsKey = conversationTotalsKey(completedTurn, conversationId);
+      const previous = totalsKey ? turnTotals.get(totalsKey) || null : null;
       // The conversation endpoint is eventually consistent. On later turns an
       // unchanged snapshot is stale, even though its totals are non-zero.
       if (totalsMatch(previous, totals)) {
@@ -185,16 +341,17 @@
         return;
       }
       // Agent Studio returns cumulative totals for one stable conversation ID.
-      // Replace that conversation's snapshot after every distinct completed
-      // turn; summing snapshots would double-count prior turns.
-      turnTotals.set(conversationId, totals);
-      const turnUsage = currentTurnUsage(previous, totals);
-      if (latestCompletedTurn?.identityKey === completedTurn.identityKey) {
-        usageState.conversationId = conversationId;
-        usageState.usage = turnUsage;
+      // Replace that widget+conversation snapshot after every distinct
+      // completed turn; summing snapshots would double-count prior turns and
+      // sharing by conversation alone would corrupt two embedded widgets.
+      const regressedTotals = totalsWentBackwards(previous, totals);
+      if (totalsKey && !regressedTotals) {
+        turnTotals.set(totalsKey, totals);
+        pruneTurnTotals();
       }
+      const turnUsage = currentTurnUsage(previous, totals);
       recomputeCumulative();
-      if (latestCompletedTurn?.identityKey === completedTurn.identityKey) publishUsageState("ready");
+      publishUsageState("ready", completedTurn, turnUsage);
       notifyAnswerHarnessTelemetry("ready", completedTurn, turnUsage);
     } catch (error) {
       console.warn("[token-usage] lookup failed", error);
@@ -215,12 +372,15 @@
       turnKey,
       messageId: String(detail?.messageId || ""),
       question: String(detail?.question || ""),
+      conversationId,
+      widgetInstanceId: detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || null,
       answerIdentity: detail?.answerIdentity || null,
     };
+    completedTurnsByIdentity.set(identityKey, latestCompletedTurn);
     const revision = (latestRevisionByLookup.get(identityKey) || 0) + 1;
     latestRevisionByLookup.set(identityKey, revision);
-    usageState.usage = null;
-    publishUsageState("loading");
+    pruneIdentityState();
+    publishUsageState("loading", latestCompletedTurn);
     fetchUsage(latestCompletedTurn, conversationId, revision, 0, generation);
   }
 
@@ -235,124 +395,44 @@
     return false;
   }
 
-  const PILL_CLASS = "algolia-usage-pill";
-  const PILL_STYLE_ID = "algolia-usage-pill-style";
-  const PILL_CSS = `.${PILL_CLASS}{display:inline-flex;align-items:center;width:fit-content;margin-right:6px;border-radius:var(--algolia-radius-full,9999px);border:1px solid var(--algolia-border,#e0e0e0);background:var(--algolia-surface-2,#f0f0f0);color:var(--algolia-text-muted,#5f6368);padding:4px 12px;font-size:var(--algolia-fs-xs,12px);font-weight:var(--algolia-fw-medium,500);font-family:var(--algolia-font-sans,system-ui,sans-serif);line-height:1.4;white-space:nowrap;box-sizing:border-box}.${PILL_CLASS}__in{color:#5f6fb8;font-weight:700}.${PILL_CLASS}__divider{color:var(--algolia-text-muted,#7a7f9a);opacity:.65;padding:0 4px}.${PILL_CLASS}__out{color:#6b7895;font-weight:700}`;
-
-  function formatTokenNumber(value) {
-    const n = Number(value);
-    return Number.isFinite(n) ? n.toLocaleString("en-US") : String(value ?? "");
-  }
-
-  function updatePill(pill, text, title) {
-    // Rewriting identical text would retrigger the chat MutationObserver
-    // forever, so DOM writes must be idempotent.
-    pill.dataset.usageText = "";
-    if (pill.textContent !== text) pill.textContent = text;
-    if (pill.title !== title) pill.title = title;
-  }
-
-  function pillPart(className, text) {
-    const span = document.createElement("span");
-    span.className = className;
-    span.textContent = text;
-    return span;
-  }
-
-  function updateUsagePill(pill, totals) {
-    const inputTokens = formatTokenNumber(totals.inputTokens);
-    const outputTokens = formatTokenNumber(totals.outputTokens);
-    const text = `In ${inputTokens} / ${outputTokens} Out`;
-    const title = `Current response: ${inputTokens} input tokens and ${outputTokens} output tokens`;
-    if (pill.dataset.usageText !== text) {
-      pill.replaceChildren(
-        pillPart(`${PILL_CLASS}__in`, `In ${inputTokens}`),
-        pillPart(`${PILL_CLASS}__divider`, " / "),
-        pillPart(`${PILL_CLASS}__out`, `${outputTokens} Out`),
-      );
-      pill.dataset.usageText = text;
-    }
-    if (pill.title !== title) pill.title = title;
-  }
-
-  function renderPill(root, container, anchor = null, extraClass = "") {
-    if (!root || !container) return;
-    let pill = container.querySelector(`.${PILL_CLASS}`);
-    if (usageState.status === "idle" && !usageState.usage) {
-      pill?.remove();
-      return;
-    }
-    if (!root.querySelector(`#${PILL_STYLE_ID}`)) {
-      const style = document.createElement("style");
-      style.id = PILL_STYLE_ID;
-      style.textContent = PILL_CSS;
-      root.prepend(style);
-    }
-    if (!pill) {
-      pill = document.createElement("span");
-      pill.className = `${PILL_CLASS}${extraClass ? ` ${extraClass}` : ""}`;
-      pill.setAttribute("aria-live", "polite");
-      anchor ? container.insertBefore(pill, anchor) : container.appendChild(pill);
-    }
-    if (usageState.status === "loading") {
-      updatePill(pill, "Calculating tokens…", "Token usage is being calculated");
-      return;
-    }
-    if (usageState.status === "unavailable" && !usageState.usage) {
-      updatePill(
-        pill,
-        "Tokens unavailable",
-        "Token usage could not be loaded; the answer is unaffected",
-      );
-      return;
-    }
-    const totals = usageState.usage;
-    if (!totals) return;
-    updateUsagePill(pill, totals);
-  }
-
-  function renderLatestPill(shadowRoot) {
-    const stalePills = [...shadowRoot.querySelectorAll(`.${PILL_CLASS}`)];
-    const footer = latestCompletedTurn
-      ? window.algoliaHandoffToOrchestrator?.ensureAnswerFooter?.(latestCompletedTurn) || null
-      : null;
-    if (usageState.status === "idle" && !usageState.usage) {
-      for (const pill of stalePills) pill.remove();
-      return;
-    }
-    for (const pill of stalePills) {
-      if (pill.parentElement !== footer) pill.remove();
-    }
-    if (footer) renderPill(shadowRoot, footer);
-  }
-
-  function whenChatShadowReady(callback) {
-    const tryNow = () => {
-      const shadowRoot = document.querySelector("algolia-chat")?.shadowRoot;
-      if (!shadowRoot) return false;
-      callback(shadowRoot);
-      return true;
-    };
-    if (tryNow()) return;
-    const intervalId = setInterval(() => tryNow() && clearInterval(intervalId), 300);
-  }
-
-  document.addEventListener("algolia-visitor-state-reset", resetUsage);
-  window.addEventListener("algolia-usage-updated", () => {
-    const shadowRoot = document.querySelector("algolia-chat")?.shadowRoot;
-    if (shadowRoot) renderLatestPill(shadowRoot);
-  });
-  whenChatShadowReady((shadowRoot) => {
-    new MutationObserver(() => renderLatestPill(shadowRoot)).observe(shadowRoot, {
-      childList: true,
-      subtree: true,
+  function renderTelemetryForTurn(completedTurn, state = {}) {
+    const renderTelemetry = window.algoliaHandoffToOrchestrator?.renderAnswerFooterTelemetry;
+    if (typeof renderTelemetry !== "function" || !completedTurn) return false;
+    const cached = usageByIdentity.get(completedTurn.identityKey);
+    const hasUsage = Object.prototype.hasOwnProperty.call(state, "usage");
+    return renderTelemetry(completedTurn, {
+      status: state.status || cached?.status || usageState.status,
+      usage: hasUsage ? state.usage : cached?.usage || null,
     });
-    renderLatestPill(shadowRoot);
+  }
+
+  document.addEventListener("algolia-visitor-state-reset", (event) => {
+    const widgetInstanceId = widgetInstanceIdFromEvent(event);
+    if (widgetInstanceId && resetScopedUsage(widgetInstanceId)) return;
+    resetUsage();
+  });
+  document.addEventListener("algolia-chat-widget-disconnected", (event) => {
+    disconnectScopedUsage(widgetInstanceIdFromEvent(event));
   });
   subscribeToCompletedTurns();
   publishUsageState("idle");
 
   if (CFG.exposeForTests) {
-    window.__acsTokenTelemetry = { acceptCompletedTurn, parseUsage, resetUsage };
+    window.__acsTokenTelemetry = {
+      acceptCompletedTurn,
+      parseUsage,
+      resetUsage,
+      resetScopedUsage,
+      disconnectScopedUsage,
+      trackedSizes() {
+        return {
+          usageByIdentity: usageByIdentity.size,
+          completedTurnsByIdentity: completedTurnsByIdentity.size,
+          turnTotals: turnTotals.size,
+          seenTurnKeys: seenTurnKeys.size,
+          latestRevisionByLookup: latestRevisionByLookup.size,
+        };
+      },
+    };
   }
 })();

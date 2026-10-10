@@ -3,12 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import { createOpaqueActionContribution } from '../source/shared/widget/answer-contributors.mjs';
-import { execFileSync } from 'node:child_process';
 
 const comparePath = new URL('../algolia-chat-compare.js', import.meta.url);
-const deployScript = new URL('../../../tools/deployment/deploy_compare_integration_jahia.py', import.meta.url);
-const generalDeployScript = new URL('../../../tools/deployment/deploy_jahia_engagement_tracker.py', import.meta.url);
-const parityServer = new URL('../../../tools/local_chat_parity_server.py', import.meta.url);
 
 /* ------------------------------------------------------------------ fake DOM */
 
@@ -53,7 +49,7 @@ class El {
   addEventListener(t, fn) { (this.listeners[t] ||= []).push(fn); }
   dispatch(t, ev) { (this.listeners[t] || []).forEach((fn) => fn(ev)); }
   set textContent(v) { this._text = String(v); this.children = []; }
-  get textContent() { return this.children.length ? this.children.map((c) => c.textContent).join('') : this._text; }
+  get textContent() { return this.children.length ? this.children.map((c) => c.textContent).join('') : (this._text || this._html.replace(/<[^>]+>/g, '')); }
   set innerHTML(v) { this._html = String(v); }
   get innerHTML() { return this._html; }
   matches(sel) {
@@ -81,7 +77,18 @@ function sse(frames) {
   });
 }
 
-function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, viewportWidth = 1200 } = {}) {
+function answerIdentityKey(identity) {
+  if (!identity || typeof identity !== 'object') return '';
+  const parts = [
+    identity.widgetInstanceId,
+    identity.conversationId,
+    identity.answerSegmentId,
+    identity.networkAttemptId,
+  ].map((value) => String(value || '').trim());
+  return parts.every(Boolean) ? parts.join('\n') : '';
+}
+
+function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, viewportWidth = 1200, widgetInstanceId = 'widget-1', extraWidgetInstanceIds = [] } = {}) {
   const frames = [];                // queued rAF callbacks
   const observers = [];             // MutationObserver callbacks
   const fetchCalls = [];
@@ -90,6 +97,8 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   const answerHarnessEvents = [];
   const footersByMessageId = new Map();
   const identitiesByTurnKey = new Map();
+  const trustedActiveTurns = new Map();
+  const trustedGenerations = new Map();
   let preparedListener = null;
   let completedListener = null;
   let turnSequence = 0;
@@ -114,8 +123,28 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
 
   const chatHost = new El('algolia-chat');
   chatHost.shadowRoot = shadowRoot;
+  if (widgetInstanceId) chatHost.__algoliaWidgetInstanceId = widgetInstanceId;
   const confidence = new El('algolia-chat-confidence');
   chatHost.appendChild(confidence);
+  const extraHosts = extraWidgetInstanceIds.map((id) => {
+    const host = new El('algolia-chat');
+    host.__algoliaWidgetInstanceId = id;
+    host.shadowRoot = new El('div');
+    return host;
+  });
+  const addExtraHost = (id) => {
+    const host = new El('algolia-chat');
+    host.__algoliaWidgetInstanceId = id;
+    host.shadowRoot = new El('div');
+    extraHosts.push(host);
+    observers.forEach((cb) => cb([{ type: 'childList' }]));
+    return host;
+  };
+  const removeExtraHost = (id) => {
+    const index = extraHosts.findIndex((host) => host.__algoliaWidgetInstanceId === id);
+    if (index >= 0) extraHosts.splice(index, 1);
+    observers.forEach((cb) => cb([{ type: 'childList' }]));
+  };
 
   const documentListeners = {};
   const context = {
@@ -134,6 +163,7 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
     },
     document: {
       querySelector: (sel) => (sel === 'algolia-chat' ? chatHost : shadowRoot.querySelector(sel)),
+      querySelectorAll: (sel) => (sel === 'algolia-chat' ? [chatHost, ...extraHosts] : shadowRoot.querySelectorAll(sel)),
       createElement: (tag) => new El(tag),
       addEventListener: (t, fn) => { (documentListeners[t] ||= []).push(fn); },
     },
@@ -161,6 +191,17 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
       ensureAnswerFooter(detail) {
         return footersByMessageId.get(String(detail?.messageId || '')) || null;
       },
+      validateTurnEvent(detail) {
+        const key = answerIdentityKey(detail?.answerIdentity);
+        const trusted = key ? trustedActiveTurns.get(key) : null;
+        return Boolean(
+          trusted &&
+          trusted.turnKey === String(detail?.turnKey || '') &&
+          trusted.messageId === String(detail?.messageId || '') &&
+          trusted.conversationGeneration === Number(detail?.conversationGeneration) &&
+          trusted.networkAttemptOrdinal === Number(detail?.networkAttemptOrdinal),
+        );
+      },
     },
   };
   context.window = context;
@@ -172,6 +213,44 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   vm.runInContext(fs.readFileSync(comparePath, 'utf8'), context);
 
   const flush = () => { while (frames.length) frames.shift()(); };
+  const trustPreparedTurn = (detail) => {
+    const key = answerIdentityKey(detail?.answerIdentity);
+    if (!key) return detail;
+    trustedActiveTurns.set(key, {
+      turnKey: String(detail?.turnKey || ''),
+      messageId: String(detail?.messageId || ''),
+      conversationGeneration: Number(detail?.conversationGeneration),
+      networkAttemptOrdinal: Number(detail?.networkAttemptOrdinal),
+    });
+    return detail;
+  };
+  const resetTrustedTurns = (widgetId = '') => {
+    const widgetKey = String(widgetId || '').trim();
+    if (widgetKey) {
+      trustedGenerations.set(widgetKey, (trustedGenerations.get(widgetKey) || 0) + 1);
+      for (const key of [...trustedActiveTurns.keys()]) {
+        if (key.startsWith(`${widgetKey}\n`)) trustedActiveTurns.delete(key);
+      }
+      return;
+    }
+    trustedGenerations.clear();
+    trustedActiveTurns.clear();
+  };
+  const preparedDetail = (detail, { trust = true } = {}) => {
+    const next = { ...detail };
+    if (next.answerIdentity) {
+      const widgetKey = next.answerIdentity.widgetInstanceId;
+      if (next.conversationGeneration === undefined) {
+        next.conversationGeneration = trustedGenerations.get(widgetKey) || 0;
+      }
+      if (next.networkAttemptOrdinal === undefined) {
+        const match = String(next.answerIdentity.networkAttemptId || '').match(/(?:^|[^0-9])(\d+)(?:[^0-9]|$)/);
+        next.networkAttemptOrdinal = match ? Number(match[1]) : 1;
+      }
+    }
+    if (trust) trustPreparedTurn(next);
+    return next;
+  };
   const addBubble = (text, { sources: hasSources = true } = {}) => {
     const b = new El('div');
     b.setAttribute('part', 'message-user-bubble');
@@ -189,14 +268,17 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
       answerSegmentId: `primary-assistant-${turnSequence}`,
       networkAttemptId: `attempt-${turnSequence}`,
     };
-    identitiesByTurnKey.set(`primary-conversation:${user.id}`, answerIdentity);
-    preparedListener?.({
+    const turnDetail = preparedDetail({
       body,
       turnKey: `primary-conversation:${user.id}`,
+      conversationGeneration: 0,
+      networkAttemptOrdinal: turnSequence,
       messageId: user.id,
       question: text,
       answerIdentity,
     });
+    identitiesByTurnKey.set(`primary-conversation:${user.id}`, answerIdentity);
+    preparedListener?.(turnDetail);
     primaryMessages.push({
       id: `primary-assistant-${turnSequence}`,
       role: 'assistant',
@@ -236,6 +318,8 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
     const messageId = turnKey.split(':').at(-1);
     completedListener?.({
       turnKey,
+      conversationGeneration: 0,
+      networkAttemptOrdinal: Number((identitiesByTurnKey.get(turnKey)?.networkAttemptId || '').match(/attempt-(\d+)/)?.[1] || 0),
       messageId,
       question: primaryMessages.find((message) => message.id === messageId)?.parts?.[0]?.text || '',
       conversationId: 'primary-conversation',
@@ -259,9 +343,28 @@ function createHarness({ proxyPath = '/__compare/production', chatWidth = 1000, 
   flush(); // initial reconcile mounts the toggle
   return {
     context, flush, addBubble, addPostAnswerControl, completeTurn, toggle, clickToggle, setExpanded, shadowRoot, chatContent, documentListeners,
+    addExtraHost, removeExtraHost,
     fetchCalls, preparedBodies, answerHarnessEvents,
     setFetch: (fn) => { fetchImpl = fn; },
-    api: () => context.window.__acsCompare,
+    api: () => ({
+      ...context.window.__acsCompare,
+      acceptPreparedTurn(detail) {
+        return context.window.__acsCompare.acceptPreparedTurn(preparedDetail(detail));
+      },
+      acceptCompletedTurn(detail) {
+        return context.window.__acsCompare.acceptCompletedTurn(detail);
+      },
+      reset(reason, widgetInstanceId = '') {
+        resetTrustedTurns(widgetInstanceId);
+        return context.window.__acsCompare.reset(reason, widgetInstanceId);
+      },
+      acceptUntrustedPreparedTurn(detail) {
+        return context.window.__acsCompare.acceptPreparedTurn(preparedDetail(detail, { trust: false }));
+      },
+      acceptRawPreparedTurn(detail) {
+        return context.window.__acsCompare.acceptPreparedTurn(detail);
+      },
+    }),
     settle: async () => {
       for (let i = 0; i < 25; i += 1) {
         flush();
@@ -306,19 +409,19 @@ test('Compare mirrors only an opaque post-answer action slot into the answer har
 
   h.completeTurn();
   await h.settle();
-  const compareAction = h.answerHarnessEvents.find((event) =>
+  const actionContribution = h.answerHarnessEvents.find((event) =>
     event.eventName === 'contribution' &&
     event.detail?.contribution?.kind === 'opaqueAction'
   );
 
-  assert.ok(compareAction);
+  assert.ok(actionContribution);
   assert.deepEqual(
-    compareAction.detail.contribution.slots.compareAction,
+    actionContribution.detail.contribution.slots.actions,
     { status: 'ready', value: { label: 'Compare with Prod', pressed: false, available: true } },
   );
   assert.deepEqual(
-    Object.keys(compareAction.detail.contribution.slots),
-    ['compareAction'],
+    Object.keys(actionContribution.detail.contribution.slots),
+    ['actions'],
     'Compare cannot contribute sources, judge, telemetry, or footer lifecycle',
   );
 });
@@ -644,6 +747,74 @@ test('production receives the exact prepared primary body bytes and retries are 
   assert.equal(h.fetchCalls.length, 1, 'a primary retry/tool continuation cannot mirror twice');
 });
 
+test('explicit unmatched canonical widget identity fails closed on an unidentified host', async () => {
+  const h = createHarness({ widgetInstanceId: '' });
+  h.api().acceptPreparedTurn({
+    body: JSON.stringify({ question: 'must not attach' }),
+    turnKey: 'unmatched-conversation:user-1',
+    messageId: 'user-1',
+    question: 'must not attach',
+    answerIdentity: {
+      widgetInstanceId: 'missing-widget',
+      conversationId: 'unmatched-conversation',
+      answerSegmentId: 'assistant-1',
+      networkAttemptId: 'attempt-1',
+    },
+  });
+  await h.settle();
+
+  assert.equal(h.api().state().hasPreparedTurn, false);
+  assert.equal(h.fetchCalls.length, 0);
+});
+
+test('incomplete nested answer identity fails closed instead of using legacy fallback', async () => {
+  const h = createHarness({ widgetInstanceId: '' });
+  h.api().acceptPreparedTurn({
+    body: JSON.stringify({ question: 'must not degrade to legacy' }),
+    turnKey: 'incomplete-conversation:user-1',
+    messageId: 'user-1',
+    question: 'must not degrade to legacy',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'incomplete-conversation',
+      answerSegmentId: 'assistant-1',
+    },
+  });
+  h.api().acceptCompletedTurn({
+    turnKey: 'incomplete-conversation:user-1',
+    messageId: 'user-1',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'incomplete-conversation',
+      answerSegmentId: 'assistant-1',
+    },
+  });
+  await h.settle();
+
+  assert.equal(h.api().state().hasPreparedTurn, false);
+  assert.equal(h.api().state().completedTurns, 0);
+  assert.equal(h.fetchCalls.length, 0);
+});
+
+test('identity-less completion works only through the one-host legacy fallback', async () => {
+  const h = createHarness({ widgetInstanceId: '' });
+  h.api().acceptPreparedTurn({
+    body: JSON.stringify({ question: 'legacy single host' }),
+    turnKey: 'legacy-conversation:user-1',
+    messageId: 'user-1',
+    question: 'legacy single host',
+  });
+  h.api().acceptCompletedTurn({
+    turnKey: 'legacy-conversation:user-1',
+    messageId: 'user-1',
+    question: 'legacy single host',
+  });
+  await h.settle();
+
+  assert.equal(h.api().state().hasPreparedTurn, true);
+  assert.equal(h.api().state().completedTurns, 1);
+});
+
 test('Compare dedupe is scoped by answer identity, not bare turnKey', async () => {
   const h = createHarness();
   h.addBubble('prime comparison');
@@ -657,10 +828,12 @@ test('Compare dedupe is scoped by answer identity, not bare turnKey', async () =
   h.api().acceptPreparedTurn({
     body,
     turnKey: 'same-conversation:same-user-message',
+    conversationGeneration: 0,
+    networkAttemptOrdinal: 2,
     messageId: 'left-message',
     question: 'left',
     answerIdentity: {
-      widgetInstanceId: 'widget-left',
+      widgetInstanceId: 'widget-1',
       conversationId: 'same-conversation',
       answerSegmentId: 'same-segment',
       networkAttemptId: 'attempt-left',
@@ -669,10 +842,12 @@ test('Compare dedupe is scoped by answer identity, not bare turnKey', async () =
   h.api().acceptPreparedTurn({
     body,
     turnKey: 'same-conversation:same-user-message',
+    conversationGeneration: 0,
+    networkAttemptOrdinal: 3,
     messageId: 'right-message',
     question: 'right',
     answerIdentity: {
-      widgetInstanceId: 'widget-right',
+      widgetInstanceId: 'widget-1',
       conversationId: 'same-conversation',
       answerSegmentId: 'same-segment',
       networkAttemptId: 'attempt-right',
@@ -680,214 +855,849 @@ test('Compare dedupe is scoped by answer identity, not bare turnKey', async () =
   });
   await h.settle();
 
-  assert.equal(h.fetchCalls.length, 3, 'distinct widgets with the same turnKey must both be eligible for Compare');
+  assert.equal(h.fetchCalls.length, 3, 'distinct answer identities with the same turnKey must both be eligible for Compare');
   assert.equal(h.fetchCalls[1][1].body, body);
   assert.equal(h.fetchCalls[2][1].body, body);
 });
 
-/* --------------------------------------------------- Jahia deployment wiring */
+test('Compare accepted-attempt state is bounded without reopening stale turns', async () => {
+  const h = createHarness();
+  h.setFetch(async () => ({
+    ok: true,
+    status: 200,
+    body: sse([{ type: 'text-delta', delta: 'bounded' }]),
+  }));
+  h.addBubble('seed comparison');
+  await h.settle();
+  h.completeTurn();
+  await h.settle();
+  h.clickToggle();
+  await h.settle();
+  const fetchesAfterOriginal = h.fetchCalls.length;
 
-function transformBlock(html) {
-  const program = [
-    'import importlib.util, pathlib, sys',
-    'path = pathlib.Path(sys.argv[1])',
-    'sys.path.insert(0, str(path.parent))',
-    "spec = importlib.util.spec_from_file_location('deploy', path)",
-    'module = importlib.util.module_from_spec(spec)',
-    'spec.loader.exec_module(module)',
-    'assets = module.immutable_assets()',
-    'print(module.update_block_html(sys.stdin.read(), assets), end="")',
-  ].join('; ');
-  return execFileSync('python3', ['-c', program, deployScript.pathname], { input: html, encoding: 'utf8' });
-}
+  for (let i = 0; i < 620; i += 1) {
+    const attemptNumber = i + 2;
+    const answerIdentity = {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'bounded-conversation',
+      answerSegmentId: `bounded-segment-${i}`,
+      networkAttemptId: `bounded-attempt-${attemptNumber}`,
+    };
+	    h.api().acceptPreparedTurn({
+	      body: JSON.stringify({ question: `bounded ${i}` }),
+	      turnKey: `bounded-conversation:user-${i}`,
+	      messageId: `bounded-user-${i}`,
+	      question: `bounded ${i}`,
+	      answerIdentity,
+	      networkAttemptOrdinal: attemptNumber,
+	    });
+	  }
+  await h.settle();
 
-const BLOCK_FIXTURE = [
-  '<div class="algolia-chat-embed" data-release="test">',
-  '  <algolia-chat theme="algolia"><algolia-agent role="primary"></algolia-agent></algolia-chat>',
-  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-engagement-tracker.js?tracker=x"></script>',
-  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-context-compiler.js?context=x"></script>',
-  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-proactive-controller.js?proactive=x"></script>',
-  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/handoff-to-orchestrator.js?handoff=x"></script>',
-  '  <script>window.ACS_COMPARE={"prod":{"appId":"live-app","apiKey":"live-secret-key","agentId":"live-agent"}};</script>',
-  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-compare.js?compare=x"></script>',
-  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/token-telemetry.js?telemetry=x"></script>',
-  '  <script src="https://tmp-content-eng-algolia.cloud.jahia.com/files/live/sites/www/files/algolia-chat-engage.js?engage=x"></script>',
-  '</div>',
-].join('\n');
-
-test('Jahia transform adds the Compare script and its config exactly once', () => {
-  const once = transformBlock(BLOCK_FIXTURE);
-  const twice = transformBlock(once);
-  assert.match(once, /algolia-chat-compare-[a-f0-9]{12}\.js/);
-  assert.match(once, /window\.ACS_COMPARE=/);
-  assert.match(once, /live-secret-key/);
-  assert.equal((twice.match(/algolia-chat-compare-[a-f0-9]{12}\.js/g) || []).length, 1, 'idempotent');
-  assert.equal((twice.match(/window\.ACS_COMPARE=/g) || []).length, 1, 'idempotent');
-  assert.equal((twice.match(/token-telemetry\.js/g) || []).length, 1, 'one telemetry observer');
-});
-
-test('Compare config is emitted before the Compare module', () => {
-  const html = transformBlock(BLOCK_FIXTURE);
-  assert.ok(html.indexOf('window.ACS_COMPARE=') < html.search(/algolia-chat-compare-[a-f0-9]{12}\.js/));
   assert.ok(
-    html.search(/algolia-chat-compare-[a-f0-9]{12}\.js/) < html.search(/token-telemetry\.js/),
-    'telemetry observes the transport after Compare is configured',
+    h.api().state().mirroredTurnDiagnostics <= 500,
+    `mirrored turn diagnostics should be bounded, got ${h.api().state().mirroredTurnDiagnostics}`,
   );
-});
-
-test('narrow deployment script plans stable integration assets, validates and can roll back', () => {
-  const source = fs.readFileSync(deployScript, 'utf8');
-  assert.match(source, /CompareIntegrationApplyPlan\.v1/);
-  assert.match(source, /create_immutable/);
-  assert.match(source, /content-addressed create\/reuse for handoff and compare only/);
-  assert.match(source, /validate_live/);
-  assert.match(source, /rollback = restore\(plan_path\)/);
-  assert.match(source, /--apply-plan/);
-  assert.equal(source.includes('publish("/sites/www/files"'), false, 'must not publish the files subtree');
-  assert.equal(source.includes('20ab8adc'), false, 'production key must come from env, not source');
-});
-
-test('the chat stack manifest requires the Compare marker live', () => {
-  const manifest = JSON.parse(
-    fs.readFileSync(new URL('../../../config/deployments/algolia-chat-stack.json', import.meta.url), 'utf8'),
+  assert.ok(
+    h.api().state().acceptedAttemptSegments <= 500,
+    `accepted attempt state should be bounded, got ${h.api().state().acceptedAttemptSegments}`,
   );
-  assert.ok(manifest.jahia.requiredLiveMarkers.includes('algolia-chat-compare.js'));
-  assert.ok(manifest.jahia.requiredLiveMarkers.includes('algolia-context-compiler'));
-  assert.ok(manifest.jahia.requiredLiveMarkers.includes('handoff-to-orchestrator'));
-  assert.ok(manifest.jahia.requiredLiveMarkers.includes('token-telemetry.js'));
-  assert.equal(manifest.jahia.requiredLiveMarkers.includes('algolia-context-compiler.js'), false);
-  assert.equal(manifest.jahia.requiredLiveMarkers.includes('handoff-to-orchestrator.js'), false);
-  assert.deepEqual(manifest.jahia.compareWithProduction.immutableReleaseAssets, [
-    'handoff-to-orchestrator-compare-<content-sha12>.js',
-    'algolia-chat-compare-<content-sha12>.js',
-  ]);
-  assert.deepEqual(manifest.jahia.compareWithProduction.preservedRuntimeAssets, [
-    'algolia-context-compiler.js',
-    'token-telemetry.js',
-  ]);
-  assert.equal(manifest.jahia.compareWithProduction.productionAgent.apiKeyEnv, 'PROD_ASKAI_API_KEY');
-  assert.equal(manifest.jahia.compareWithProduction.productionAgent.legacySearchKeyEnv, 'PROD_ASKAI_SEARCH_KEY');
-  assert.equal(manifest.jahia.compareWithProduction.deploymentTool, 'tools/deployment/deploy_compare_integration_jahia.py');
-  assert.equal(manifest.jahia.tokenTelemetry.script, 'frontend/chat-widget/token-telemetry.js');
-});
+  h.api().acceptPreparedTurn({
+    body: h.preparedBodies[0],
+    turnKey: 'primary-conversation:user-1',
+    question: 'seed comparison',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'primary-conversation',
+	      answerSegmentId: 'primary-assistant-1',
+	      networkAttemptId: 'attempt-1',
+	    },
+	    networkAttemptOrdinal: 1,
+	  });
+	  await h.settle();
+  assert.equal(
+    h.fetchCalls.length,
+    fetchesAfterOriginal + 620,
+	    'an evicted diagnostic key must not make an old prepared turn replayable',
+	  );
+	  assert.equal(h.api().acceptPreparedTurn({
+	    body: JSON.stringify({ question: 'fresh retry after bounded eviction' }),
+	    turnKey: 'primary-conversation:user-1',
+	    question: 'fresh retry after bounded eviction',
+	    answerIdentity: {
+	      widgetInstanceId: 'widget-1',
+	      conversationId: 'primary-conversation',
+	      answerSegmentId: 'primary-assistant-1',
+	      networkAttemptId: 'fresh-after-eviction',
+	    },
+	    networkAttemptOrdinal: 623,
+	  }), true, 'a fresh higher-ordinal attempt on the evicted segment must still be accepted');
+	});
 
-test('the general deployer remains free of Compare cutover behavior', () => {
-  const general = fs.readFileSync(generalDeployScript, 'utf8');
-  assert.equal(general.includes('COMPARE_PROD_SEARCH_KEY_ENV'), false);
-  assert.equal(general.includes('upsertCompare'), false);
-  assert.equal(general.includes('algolia-chat-compare.js'), false);
-});
+test('Compare rejects exact canonical prepared replay after scoped reset', async () => {
+  const h = createHarness();
+  h.addBubble('seed scoped reset comparison');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 1);
 
-test('normal and journey deployments remain compatible with an integrated Compare block', () => {
-  const input = transformBlock(BLOCK_FIXTURE);
-  const program = [
-    'import importlib.util, pathlib, sys',
-    'path = pathlib.Path(sys.argv[1])',
-    'sys.path.insert(0, str(path.parent))',
-    "spec = importlib.util.spec_from_file_location('deploy', path)",
-    'module = importlib.util.module_from_spec(spec)',
-    'spec.loader.exec_module(module)',
-    'print(module.update_block_html(sys.stdin.read()), end="")',
-  ].join('; ');
-  const output = execFileSync('python3', ['-c', program, generalDeployScript.pathname], {
-    input, encoding: 'utf8',
+  h.api().reset('scoped-reset-test', 'widget-1');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 0);
+  assert.equal(h.api().state().retiredAttemptSegments, 1);
+
+  h.api().acceptPreparedTurn({
+    body: h.preparedBodies[0],
+    turnKey: 'primary-conversation:user-1',
+    messageId: 'user-1',
+    question: 'seed scoped reset comparison',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'primary-conversation',
+      answerSegmentId: 'primary-assistant-1',
+      networkAttemptId: 'attempt-1',
+    },
   });
-  assert.match(output, /window\.ACS_COMPARE=/);
-  assert.match(output, /algolia-chat-compare-[a-f0-9]{12}\.js/);
-  assert.equal((output.match(/algolia-context-compiler[^"\n]*\.js/g) || []).length, 1);
-  assert.equal((output.match(/handoff-to-orchestrator[^"\n]*\.js/g) || []).length, 1);
+  await h.settle();
 
-  const journeyProgram = program.replace(
-    'module.update_block_html(sys.stdin.read())',
-    'module.update_journey_runtime_block_html(sys.stdin.read())'
-  );
-  const journeyOutput = execFileSync('python3', ['-c', journeyProgram, generalDeployScript.pathname], {
-    input, encoding: 'utf8',
+  assert.equal(h.api().state().acceptedTurns, 0, 'scoped reset must not reopen the exact old prepared identity');
+  assert.equal(h.api().state().hasPreparedTurn, false);
+});
+
+test('Compare rejects exact opaque canonical prepared replay after scoped reset', async () => {
+  const h = createHarness();
+  const opaqueIdentity = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'opaque-conversation',
+    answerSegmentId: 'opaque-assistant',
+    networkAttemptId: 'request-left',
+  };
+  h.api().acceptPreparedTurn({
+    body: JSON.stringify({ question: 'opaque scoped reset comparison' }),
+    turnKey: 'opaque-conversation:user-1',
+    messageId: 'user-1',
+    question: 'opaque scoped reset comparison',
+    answerIdentity: opaqueIdentity,
   });
-  assert.match(journeyOutput, /algolia-context-compiler\.js\?context=/);
-  assert.equal(journeyOutput.includes('algolia-context-compiler-compare-'), false);
-  assert.equal((journeyOutput.match(/algolia-context-compiler[^"\n]*\.js/g) || []).length, 1);
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 1);
+
+  h.api().reset('scoped-reset-test', 'widget-1');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 0);
+  assert.equal(h.api().state().retiredAttemptSegments, 1);
+
+  h.api().acceptPreparedTurn({
+    body: JSON.stringify({ question: 'opaque scoped reset comparison' }),
+    turnKey: 'opaque-conversation:user-1',
+    messageId: 'user-1',
+    question: 'opaque scoped reset comparison',
+    answerIdentity: opaqueIdentity,
+  });
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0, 'scoped reset must retire exact opaque attempt IDs');
+  assert.equal(h.api().state().hasPreparedTurn, false);
 });
 
-test('apply consumes an approved plan and revalidates config and block drift', () => {
-  const source = fs.readFileSync(deployScript, 'utf8');
-  assert.match(source, /assert_clean_commit\(plan\["sourceCommit"\]\)/);
-  assert.match(source, /Compare configuration changed after plan approval/);
-  assert.match(source, /Jahia block drifted after plan approval; no mutation made/);
-  assert.match(source, /privatePlanSha256/);
+test('Compare rejects old opaque attempts after reset but accepts a new same-segment retry', async () => {
+  const h = createHarness();
+  const attemptA = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'opaque-retry-conversation',
+    answerSegmentId: 'opaque-retry-assistant',
+    networkAttemptId: 'request-left',
+  };
+	  const attemptB = {
+	    ...attemptA,
+	    networkAttemptId: 'request-right',
+	  };
+	  const attemptC = {
+	    ...attemptA,
+	    networkAttemptId: 'request-after-reset',
+	  };
+  const baseTurn = {
+    body: JSON.stringify({ question: 'opaque retry comparison' }),
+    turnKey: 'opaque-retry-conversation:user-1',
+    messageId: 'user-1',
+    question: 'opaque retry comparison',
+  };
+
+	  h.api().acceptPreparedTurn({ ...baseTurn, answerIdentity: attemptA, networkAttemptOrdinal: 1 });
+	  h.api().acceptPreparedTurn({ ...baseTurn, answerIdentity: attemptB, networkAttemptOrdinal: 2 });
+	  await h.settle();
+	  assert.equal(h.api().state().acceptedTurns, 1, 'same segment keeps only the latest live attempt');
+
+  h.api().reset('scoped-reset-test', 'widget-1');
+  await h.settle();
+
+	  assert.equal(h.api().acceptPreparedTurn({ ...baseTurn, answerIdentity: attemptA, networkAttemptOrdinal: 1 }), false);
+	  assert.equal(h.api().acceptPreparedTurn({
+	    ...baseTurn,
+	    turnKey: '1:opaque-retry-conversation:user-1',
+	    conversationGeneration: 1,
+	    answerIdentity: attemptC,
+	    networkAttemptOrdinal: 3,
+	  }), true);
+	  await h.settle();
+
+	  assert.equal(h.api().state().acceptedTurns, 1, 'reset must allow a legitimate new same-segment retry');
+	  assert.equal(h.api().state().hasPreparedTurn, true);
+	});
+
+test('Compare rejects exact canonical prepared replay after global reset', async () => {
+  const h = createHarness();
+  h.addBubble('seed global reset comparison');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 1);
+
+  h.api().reset('global-reset-test');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 0);
+  assert.equal(h.api().state().retiredAttemptSegments, 1);
+
+  h.api().acceptPreparedTurn({
+    body: h.preparedBodies[0],
+    turnKey: 'primary-conversation:user-1',
+    messageId: 'user-1',
+    question: 'seed global reset comparison',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'primary-conversation',
+      answerSegmentId: 'primary-assistant-1',
+      networkAttemptId: 'attempt-1',
+    },
+  });
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0, 'global reset must not reopen the exact old prepared identity');
+  assert.equal(h.api().state().hasPreparedTurn, false);
 });
 
-test('the local production proxy binds loopback only', () => {
-  const program = [
-    'import importlib.util, pathlib, sys',
-    'path = pathlib.Path(sys.argv[1])',
-    "spec = importlib.util.spec_from_file_location('parity', path)",
-    'm = importlib.util.module_from_spec(spec)',
-    'spec.loader.exec_module(m)',
-    'print("HOST", m.HOST)',
-    'print("ACCEPT_V4", m.assert_loopback("127.0.0.1") == "127.0.0.1")',
-    'print("ACCEPT_V6", m.assert_loopback("::1") == "::1")',
-    'ok = True',
-    'for bad in ("0.0.0.0", "192.168.1.10", "10.0.0.5", "::"):',
-    '    try:',
-    '        m.assert_loopback(bad); ok = False',
-    '    except SystemExit: pass',
-    'print("REJECTS_NON_LOOPBACK", ok)',
-  ].join('\n');
-  const out = execFileSync('python3', ['-c', program, parityServer.pathname], { encoding: 'utf8' });
-  assert.match(out, /HOST 127\.0\.0\.1/);
-  assert.match(out, /ACCEPT_V4 True/);
-  assert.match(out, /ACCEPT_V6 True/);
-  assert.match(out, /REJECTS_NON_LOOPBACK True/, '0.0.0.0 and LAN addresses must be refused');
+test('Compare rejects exact opaque canonical prepared replay after global reset', async () => {
+  const h = createHarness();
+  const opaqueIdentity = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'opaque-global-conversation',
+    answerSegmentId: 'opaque-global-assistant',
+    networkAttemptId: 'prod-request-alpha',
+  };
+  h.api().acceptPreparedTurn({
+    body: JSON.stringify({ question: 'opaque global reset comparison' }),
+    turnKey: 'opaque-global-conversation:user-1',
+    messageId: 'user-1',
+    question: 'opaque global reset comparison',
+    answerIdentity: opaqueIdentity,
+  });
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 1);
 
-  // the bind address must not be reachable through the CLI at all
-  const source = fs.readFileSync(parityServer, 'utf8');
-  assert.equal(source.includes('"--host"'), false, '--host must be removed');
-  assert.equal(source.includes('args.host'), false, 'nothing may read a host argument');
-  assert.match(source, /assert_loopback\(HOST\)/, 'the bind must be validated');
-  assert.match(source, /ThreadingTCPServer/, 'a slow production stream must not block local assets');
-  assert.equal(source.includes('_create_unverified_context'), false, 'TLS verification cannot be disabled');
+  h.api().reset('global-reset-test');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 0);
+  assert.equal(h.api().state().retiredAttemptSegments, 1);
+
+  h.api().acceptPreparedTurn({
+    body: JSON.stringify({ question: 'opaque global reset comparison' }),
+    turnKey: 'opaque-global-conversation:user-1',
+    messageId: 'user-1',
+    question: 'opaque global reset comparison',
+    answerIdentity: opaqueIdentity,
+  });
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0, 'global reset must retire exact opaque attempt IDs');
+  assert.equal(h.api().state().hasPreparedTurn, false);
 });
 
-test('the local proxy accepts only the exact same-origin browser boundary and a Compare-only env', () => {
-  const program = [
-    'import importlib.util, pathlib, sys, tempfile, types',
-    'path = pathlib.Path(sys.argv[1])',
-    "spec = importlib.util.spec_from_file_location('parity', path)",
-    'm = importlib.util.module_from_spec(spec)',
-    'spec.loader.exec_module(m)',
-    'h = object.__new__(m.LocalParityHandler)',
-    'h.server = types.SimpleNamespace(server_address=(m.HOST, 5177))',
-    'def valid(headers):',
-    '    h.headers = headers',
-    '    return h._valid_compare_browser_boundary()',
-    'good = {"Host":"127.0.0.1:5177","Origin":"http://127.0.0.1:5177","Sec-Fetch-Site":"same-origin"}',
-    'print("GOOD", valid(good))',
-    'print("BAD_HOST", valid({**good, "Host":"attacker.example"}))',
-    'print("BAD_ORIGIN", valid({**good, "Origin":"http://attacker.example"}))',
-    'print("MISSING_ORIGIN", valid({k:v for k,v in good.items() if k != "Origin"}))',
-    'print("CROSS_SITE", valid({**good, "Sec-Fetch-Site":"cross-site"}))',
-    'with tempfile.TemporaryDirectory() as d:',
-    '    p = pathlib.Path(d) / ".env.compare.local"',
-    '    p.write_text("PROD_ASKAI_APP_ID=attacker.example/steal\\nALGOLIA_ADMIN_API_KEY=secret\\nPROD_ASKAI_SEARCH_KEY=key\\nPROD_ASKAI_AGENT_ID=attacker-agent\\n")',
-    '    env = m.load_env(p)',
-    '    print("ENV_KEYS", sorted(env))',
-    'print("PINNED_HOST", m.urllib.parse.urlsplit(m.completions_url()).hostname)',
-  ].join('\n');
-  const out = execFileSync('python3', ['-c', program, parityServer.pathname], { encoding: 'utf8' });
-  assert.match(out, /GOOD True/);
-  assert.match(out, /BAD_HOST False/);
-  assert.match(out, /BAD_ORIGIN False/);
-  assert.match(out, /MISSING_ORIGIN False/);
-  assert.match(out, /CROSS_SITE False/);
-  assert.match(out, /ENV_KEYS \['PROD_ASKAI_SEARCH_KEY'\]/);
-  assert.match(out, /PINNED_HOST 1qdawl72tq\.algolia\.net/);
-  assert.equal(out.includes('ALGOLIA_ADMIN_API_KEY'), false);
+test('Compare rejects exact opaque canonical prepared replay after disconnect and reconnect', async () => {
+  const h = createHarness();
+  const opaqueIdentity = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'opaque-disconnect-conversation',
+    answerSegmentId: 'opaque-disconnect-assistant',
+    networkAttemptId: 'live-request-token',
+  };
+  const turn = {
+    body: JSON.stringify({ question: 'opaque disconnect comparison' }),
+    turnKey: 'opaque-disconnect-conversation:user-1',
+    messageId: 'user-1',
+    question: 'opaque disconnect comparison',
+    answerIdentity: opaqueIdentity,
+  };
+  h.api().acceptPreparedTurn(turn);
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 1);
+
+  h.api().reset('disconnected', 'widget-1');
+  await h.settle();
+  h.api().acceptPreparedTurn(turn);
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0, 'disconnect/reconnect must not reopen an exact opaque prepared identity');
+  assert.equal(h.api().state().hasPreparedTurn, false);
 });
 
-test('the parity site loads Compare and routes production through the parity server', () => {
-  const html = fs.readFileSync(new URL('../../../local-sites/algolia-com-parity/index.html', import.meta.url), 'utf8');
-  assert.match(html, /\/chat\/algolia-chat-compare\.js/);
-  assert.match(html, /proxyPath: "\/__compare\/production"/);
-  assert.equal(html.includes('proxyPath: "/agent-studio'), false, 'must not collide with the local agent mock');
+test('Compare rejects exact legacy prepared replay after scoped reset', async () => {
+  const h = createHarness();
+  const turn = {
+    body: JSON.stringify({ question: 'legacy scoped reset comparison' }),
+    turnKey: 'legacy-scoped-conversation:user-1',
+    messageId: 'user-1',
+    widgetInstanceId: 'widget-1',
+    question: 'legacy scoped reset comparison',
+  };
+  h.api().acceptPreparedTurn(turn);
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 1);
+
+  h.api().reset('scoped-reset-test', 'widget-1');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 0);
+  assert.equal(h.api().state().legacyRetiredTurns, 1);
+
+  h.api().acceptPreparedTurn(turn);
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0, 'scoped reset must retire exact legacy turn keys');
+  assert.equal(h.api().state().hasPreparedTurn, false);
+});
+
+test('Compare rejects exact legacy prepared replay after global reset', async () => {
+  const h = createHarness();
+  const turn = {
+    body: JSON.stringify({ question: 'legacy global reset comparison' }),
+    turnKey: 'legacy-global-conversation:user-1',
+    messageId: 'user-1',
+    widgetInstanceId: 'widget-1',
+    question: 'legacy global reset comparison',
+  };
+  h.api().acceptPreparedTurn(turn);
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 1);
+
+  h.api().reset('global-reset-test');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 0);
+  assert.equal(h.api().state().legacyRetiredTurns, 1);
+
+  h.api().acceptPreparedTurn(turn);
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0, 'global reset must retire exact legacy turn keys');
+  assert.equal(h.api().state().hasPreparedTurn, false);
+});
+
+test('Compare rejects legacy prepared replay after accepted legacy keys exceed the retention window', async () => {
+  const h = createHarness();
+  const firstTurn = {
+    body: JSON.stringify({ question: 'legacy bounded 0' }),
+    turnKey: 'legacy-bounded-conversation:user-0',
+    messageId: 'legacy-user-0',
+    widgetInstanceId: 'widget-1',
+    question: 'legacy bounded 0',
+  };
+
+  h.api().acceptPreparedTurn(firstTurn);
+  for (let i = 1; i < 506; i += 1) {
+    h.api().acceptPreparedTurn({
+      body: JSON.stringify({ question: `legacy bounded ${i}` }),
+      turnKey: `legacy-bounded-conversation:user-${i}`,
+      messageId: `legacy-user-${i}`,
+      widgetInstanceId: 'widget-1',
+      question: `legacy bounded ${i}`,
+    });
+  }
+  await h.settle();
+  assert.ok(h.api().state().legacyAcceptedTurns <= 500, 'live legacy acceptance state should remain bounded');
+
+  h.api().reset('scoped-reset-test', 'widget-1');
+  await h.settle();
+  h.api().acceptPreparedTurn(firstTurn);
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0, 'legacy keys evicted from live retention must still be retired after reset');
+  assert.equal(h.api().state().hasPreparedTurn, false);
+});
+
+test('Compare accepted-attempt guard is bounded per widget and not evicted by sibling traffic', async () => {
+  const h = createHarness({ extraWidgetInstanceIds: ['widget-b'] });
+  h.addBubble('widget A original');
+  await h.settle();
+  assert.equal(h.api().state().acceptedTurns, 1);
+
+  for (let i = 0; i < 620; i += 1) {
+    h.api().acceptPreparedTurn({
+      body: JSON.stringify({ question: `widget b ${i}` }),
+      turnKey: `widget-b-conversation:user-${i}`,
+      messageId: `widget-b-user-${i}`,
+      question: `widget b ${i}`,
+      answerIdentity: {
+        widgetInstanceId: 'widget-b',
+        conversationId: 'widget-b-conversation',
+        answerSegmentId: `widget-b-segment-${i}`,
+        networkAttemptId: `widget-b-attempt-${i + 1}`,
+      },
+    });
+  }
+  await h.settle();
+  const beforeReplay = h.api().state();
+
+  h.api().acceptPreparedTurn({
+    body: h.preparedBodies[0],
+    turnKey: 'primary-conversation:user-1',
+    messageId: 'user-1',
+    question: 'widget A original',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'primary-conversation',
+      answerSegmentId: 'primary-assistant-1',
+      networkAttemptId: 'attempt-1',
+    },
+  });
+  await h.settle();
+  const afterReplay = h.api().state();
+
+  assert.equal(beforeReplay.acceptedAttemptWidgets, 2, 'sibling traffic should not delete widget A attempt state');
+  assert.equal(afterReplay.acceptedTurns, beforeReplay.acceptedTurns, 'widget B traffic must not make widget A stale turn replayable');
+  assert.ok(afterReplay.acceptedAttemptSegments <= 501, 'each widget bounds its own accepted segment history');
+});
+
+test('Compare keeps widget A completion and cached history after 500+ widget B completions', async () => {
+  const h = createHarness({ extraWidgetInstanceIds: ['widget-b'] });
+  const a1 = h.addBubble('widget A one');
+  h.completeTurn(a1.turnKey);
+  const a1Turn = {
+    identityKey: 'widget-1\nprimary-conversation\nprimary-assistant-1\nattempt-1',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'primary-conversation',
+      answerSegmentId: 'primary-assistant-1',
+      networkAttemptId: 'attempt-1',
+    },
+    question: 'widget A one',
+  };
+  h.api().rememberProductionTurnResultForTest(a1Turn, { status: 'done', text: 'A1 cached production', sources: [], question: 'widget A one' });
+
+  const a2 = h.addBubble('widget A two');
+  h.completeTurn(a2.turnKey);
+  const a2Turn = {
+    identityKey: 'widget-1\nprimary-conversation\nprimary-assistant-2\nattempt-2',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'primary-conversation',
+      answerSegmentId: 'primary-assistant-2',
+      networkAttemptId: 'attempt-2',
+    },
+    question: 'widget A two',
+  };
+  h.api().rememberProductionTurnResultForTest(a2Turn, { status: 'done', text: 'A2 cached production', sources: [], question: 'widget A two' });
+
+  for (let i = 0; i < 620; i += 1) {
+    const identityKey = `widget-b\nwidget-b-conversation\nwidget-b-segment-${i}\nwidget-b-attempt-${i + 1}`;
+    const answerIdentity = {
+      widgetInstanceId: 'widget-b',
+      conversationId: 'widget-b-conversation',
+      answerSegmentId: `widget-b-segment-${i}`,
+      networkAttemptId: `widget-b-attempt-${i + 1}`,
+    };
+    h.api().acceptPreparedTurn({
+      body: JSON.stringify({ question: `widget b ${i}` }),
+      turnKey: `widget-b-conversation:user-${i}`,
+      messageId: `widget-b-user-${i}`,
+      question: `widget b ${i}`,
+      answerIdentity,
+    });
+    h.api().acceptCompletedTurn({
+      turnKey: `widget-b-conversation:user-${i}`,
+      messageId: `widget-b-user-${i}`,
+      question: `widget b ${i}`,
+      answerIdentity,
+    });
+    h.api().rememberProductionTurnResultForTest(
+      { identityKey, answerIdentity, question: `widget b ${i}` },
+      { status: 'done', text: `B${i} cached production`, sources: [], question: `widget b ${i}` },
+    );
+  }
+  await h.settle();
+
+  h.clickToggle();
+  await h.settle();
+  const panelText = h.shadowRoot.querySelector('#acs-compare-panel')?.textContent || '';
+  assert.match(panelText, /A1 cached production/);
+  assert.match(panelText, /A2 cached production/);
+  assert.doesNotMatch(panelText, /B619 cached production/);
+  assert.equal(h.toggle()?.textContent, 'Compare with Prod', 'widget A completion should still keep its Compare toggle eligible');
+});
+
+test('Compare retired attempt state is bounded across repeated fresh widget disconnects', async () => {
+  const h = createHarness();
+  const firstIdentity = {
+    widgetInstanceId: 'temp-widget-0',
+    conversationId: 'temp-conversation',
+    answerSegmentId: 'temp-assistant-0',
+    networkAttemptId: 'request-left',
+  };
+  for (let i = 0; i < 160; i += 1) {
+    const widgetId = `temp-widget-${i}`;
+    h.addExtraHost(widgetId);
+    const answerIdentity = i === 0 ? firstIdentity : {
+      widgetInstanceId: widgetId,
+      conversationId: 'temp-conversation',
+      answerSegmentId: `temp-assistant-${i}`,
+      networkAttemptId: `opaque-request-${i}`,
+    };
+	    h.api().acceptPreparedTurn({
+	      body: JSON.stringify({ question: `temp ${i}` }),
+	      turnKey: `temp-conversation:user-${i}`,
+	      messageId: `temp-user-${i}`,
+	      question: `temp ${i}`,
+	      answerIdentity,
+	      networkAttemptOrdinal: i + 1,
+	    });
+    h.removeExtraHost(widgetId);
+    h.api().reset('disconnected', widgetId);
+  }
+  await h.settle();
+  const bounded = h.api().state();
+	  assert.ok(bounded.retiredAttemptWidgets <= 1000, `outer retired widget state should be bounded, got ${bounded.retiredAttemptWidgets}`);
+
+  h.addExtraHost('temp-widget-0');
+  h.api().acceptPreparedTurn({
+    body: JSON.stringify({ question: 'temp 0' }),
+    turnKey: 'temp-conversation:user-0',
+    messageId: 'temp-user-0',
+    question: 'temp 0',
+	    answerIdentity: firstIdentity,
+	    networkAttemptOrdinal: 1,
+	  });
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0, 'a stale disconnected widget identity must still fail closed after outer pruning');
+});
+
+test('Compare same-segment opaque retry/reset state remains bounded', async () => {
+  const h = createHarness();
+  const baseTurn = {
+    body: JSON.stringify({ question: 'same segment opaque churn' }),
+    turnKey: 'same-segment-conversation:user-1',
+    messageId: 'same-segment-user-1',
+    question: 'same segment opaque churn',
+  };
+  for (let i = 0; i < 700; i += 1) {
+    h.api().acceptPreparedTurn({
+      ...baseTurn,
+      answerIdentity: {
+        widgetInstanceId: 'widget-1',
+        conversationId: 'same-segment-conversation',
+	        answerSegmentId: 'same-segment-assistant',
+	        networkAttemptId: `opaque-request-${i}`,
+	      },
+	      networkAttemptOrdinal: i + 1,
+	    });
+	  }
+  await h.settle();
+  assert.equal(h.api().state().acceptedAttemptSegments, 1, 'live retry state is one segment, not one opaque id per retry');
+
+  h.api().reset('scoped-reset-test', 'widget-1');
+  await h.settle();
+
+  assert.equal(h.api().state().acceptedTurns, 0);
+	  assert.ok(h.api().state().retiredAttemptSegments <= 500, 'retired exact retry state is bounded');
+	  assert.equal(h.api().acceptPreparedTurn({
+	    ...baseTurn,
+	    turnKey: '1:same-segment-conversation:user-1',
+	    conversationGeneration: 1,
+	    answerIdentity: {
+	      widgetInstanceId: 'widget-1',
+	      conversationId: 'same-segment-conversation',
+	      answerSegmentId: 'same-segment-assistant',
+	      networkAttemptId: 'opaque-request-after-reset',
+	    },
+	    networkAttemptOrdinal: 701,
+	  }), true, 'a valid new retry on the same segment must not be blocked by bounded stale guards');
+	});
+
+	test('Compare accepts valid same-segment attempts after disconnect while rejecting the old attempt', async () => {
+	  const h = createHarness();
+	  const attemptA = {
+	    widgetInstanceId: 'widget-1',
+	    conversationId: 'disconnect-retry-conversation',
+	    answerSegmentId: 'disconnect-retry-assistant',
+	    networkAttemptId: 'opaque-before-disconnect',
+	  };
+	  const attemptB = {
+	    ...attemptA,
+	    networkAttemptId: 'opaque-after-disconnect',
+	  };
+	  const baseTurn = {
+	    body: JSON.stringify({ question: 'disconnect retry comparison' }),
+	    turnKey: 'disconnect-retry-conversation:user-1',
+	    messageId: 'user-1',
+	    question: 'disconnect retry comparison',
+	  };
+
+	  assert.equal(h.api().acceptPreparedTurn({ ...baseTurn, answerIdentity: attemptA, networkAttemptOrdinal: 1 }), true);
+	  h.api().reset('disconnected', 'widget-1');
+	  await h.settle();
+
+	  assert.equal(h.api().acceptPreparedTurn({ ...baseTurn, answerIdentity: attemptA, networkAttemptOrdinal: 1 }), false);
+  assert.equal(h.api().acceptPreparedTurn({
+    ...baseTurn,
+    turnKey: '1:disconnect-retry-conversation:user-1',
+    conversationGeneration: 1,
+    answerIdentity: attemptB,
+    networkAttemptOrdinal: 2,
+  }), true);
+	});
+
+test('Compare stale guards do not falsely reject fresh identities after heavy sibling retirement', async () => {
+  const h = createHarness({ extraWidgetInstanceIds: ['widget-b'] });
+  for (let i = 0; i < 2000; i += 1) {
+	    const widgetId = 'widget-b';
+	    h.api().acceptPreparedTurn({
+	      body: JSON.stringify({ question: `retired sibling ${i}` }),
+	      turnKey: `sibling-retirement:user-${i}`,
+	      messageId: `sibling-user-${i}`,
+	      question: `retired sibling ${i}`,
+	      answerIdentity: {
+	        widgetInstanceId: widgetId,
+	        conversationId: 'sibling-retirement',
+	        answerSegmentId: `sibling-segment-${i}`,
+	        networkAttemptId: `sibling-attempt-${i + 1}`,
+	      },
+	      networkAttemptOrdinal: i + 1,
+	    });
+	    if (i % 50 === 0) h.api().reset('disconnected', widgetId);
+	  }
+
+	  for (let i = 0; i < 200; i += 1) {
+	    assert.equal(h.api().acceptPreparedTurn({
+	      body: JSON.stringify({ question: `fresh widget a ${i}` }),
+	      turnKey: `fresh-widget-a:user-${i}`,
+	      messageId: `fresh-a-user-${i}`,
+	      question: `fresh widget a ${i}`,
+	      answerIdentity: {
+	        widgetInstanceId: 'widget-1',
+	        conversationId: 'fresh-widget-a',
+	        answerSegmentId: `fresh-a-segment-${i}`,
+	        networkAttemptId: `fresh-a-attempt-${2001 + i}`,
+	      },
+	      networkAttemptOrdinal: 2001 + i,
+    }), true, `fresh widget A identity ${i} should not be polluted by widget B retirement`);
+  }
+});
+
+test('Compare fails closed for metadata-less opaque canonical events after outer eviction', async () => {
+  const h = createHarness();
+  const firstIdentity = {
+    widgetInstanceId: 'temp-widget-0',
+    conversationId: 'metadata-less-conversation',
+    answerSegmentId: 'metadata-less-segment',
+    networkAttemptId: 'opaque-request-0',
+  };
+
+  for (let i = 0; i < 1005; i += 1) {
+    const widgetId = `temp-widget-${i}`;
+    h.addExtraHost(widgetId);
+    h.api().acceptPreparedTurn({
+      body: JSON.stringify({ question: `temp ${i}` }),
+      turnKey: `temp-conversation:user-${i}`,
+      messageId: `temp-user-${i}`,
+      question: `temp ${i}`,
+      answerIdentity: i === 0 ? firstIdentity : {
+        widgetInstanceId: widgetId,
+        conversationId: 'metadata-less-conversation',
+        answerSegmentId: `metadata-less-segment-${i}`,
+        networkAttemptId: `opaque-request-${i}`,
+      },
+      networkAttemptOrdinal: i + 1,
+    });
+    h.removeExtraHost(widgetId);
+    h.api().reset('disconnected', widgetId);
+  }
+
+  h.addExtraHost('temp-widget-0');
+  assert.equal(h.api().acceptRawPreparedTurn({
+    body: JSON.stringify({ question: 'metadata-less stale event' }),
+    turnKey: 'metadata-less-conversation:user-0',
+    messageId: 'temp-user-0',
+    question: 'metadata-less stale event',
+    answerIdentity: firstIdentity,
+  }), false, 'canonical stale protection must not depend on evicted exact tombstones');
+});
+
+test('Compare rejects forged ordinal poisoning and then accepts the legitimate retry', async () => {
+  const h = createHarness();
+  const baseTurn = {
+    body: JSON.stringify({ question: 'ordinal poisoning comparison' }),
+    turnKey: 'ordinal-poison-conversation:user-1',
+    messageId: 'ordinal-user-1',
+    question: 'ordinal poisoning comparison',
+  };
+
+  for (let i = 0; i < 700; i += 1) {
+    h.api().acceptPreparedTurn({
+      ...baseTurn,
+      answerIdentity: {
+        widgetInstanceId: 'widget-1',
+        conversationId: 'ordinal-poison-conversation',
+        answerSegmentId: 'ordinal-poison-segment',
+        networkAttemptId: `opaque-attempt-${i + 1}`,
+      },
+      networkAttemptOrdinal: i + 1,
+    });
+  }
+  h.api().reset('scoped-reset-test', 'widget-1');
+  await h.settle();
+
+  const forged = h.api().acceptUntrustedPreparedTurn({
+    ...baseTurn,
+    turnKey: '1:ordinal-poison-conversation:user-1',
+    conversationGeneration: 1,
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'ordinal-poison-conversation',
+      answerSegmentId: 'ordinal-poison-segment',
+      networkAttemptId: 'opaque-attempt-1',
+    },
+    networkAttemptOrdinal: 1_000_000,
+  });
+  assert.equal(forged, false, 'caller-supplied ordinal must not be trusted without handoff validation');
+
+  const legitimate = h.api().acceptPreparedTurn({
+    ...baseTurn,
+    turnKey: '1:ordinal-poison-conversation:user-1',
+    conversationGeneration: 1,
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'ordinal-poison-conversation',
+      answerSegmentId: 'ordinal-poison-segment',
+      networkAttemptId: 'opaque-attempt-701',
+    },
+    networkAttemptOrdinal: 701,
+  });
+  assert.equal(legitimate, true, 'forged ordinal rejection must not poison the legitimate next attempt');
+});
+
+test('Compare validates canonical events with the subscribed handoff bridge, not a replaced global', async () => {
+  const h = createHarness();
+  const trustedTurn = {
+    body: JSON.stringify({ question: 'stable validator comparison' }),
+    turnKey: 'stable-validator-conversation:user-1',
+    messageId: 'stable-validator-user-1',
+    question: 'stable validator comparison',
+    answerIdentity: {
+      widgetInstanceId: 'widget-1',
+      conversationId: 'stable-validator-conversation',
+      answerSegmentId: 'stable-validator-segment',
+      networkAttemptId: 'attempt-1',
+    },
+    conversationGeneration: 0,
+    networkAttemptOrdinal: 1,
+  };
+
+  h.context.window.algoliaHandoffToOrchestrator = {
+    validateTurnEvent() {
+      return false;
+    },
+  };
+  assert.equal(
+    h.api().acceptPreparedTurn(trustedTurn),
+    true,
+    'a later deny-all global replacement must not break the subscribed validator',
+  );
+
+  h.context.window.algoliaHandoffToOrchestrator = {
+    validateTurnEvent() {
+      return true;
+    },
+  };
+  assert.equal(
+    h.api().acceptUntrustedPreparedTurn({
+      ...trustedTurn,
+      answerIdentity: {
+        ...trustedTurn.answerIdentity,
+        networkAttemptId: 'attempt-untrusted',
+      },
+      networkAttemptOrdinal: 2,
+    }),
+    false,
+    'a later allow-all global replacement must not bypass the subscribed validator',
+  );
+});
+
+test('Compare rejects delayed canonical and identity-less completions after reset', async () => {
+  const h = createHarness();
+  const baseTurn = {
+    body: JSON.stringify({ question: 'delayed completion comparison' }),
+    turnKey: 'completion-race-conversation:user-1',
+    messageId: 'completion-user-1',
+    question: 'delayed completion comparison',
+  };
+  const attemptA = {
+    widgetInstanceId: 'widget-1',
+    conversationId: 'completion-race-conversation',
+    answerSegmentId: 'completion-race-segment',
+    networkAttemptId: 'opaque-before-reset',
+  };
+  const attemptB = {
+    ...attemptA,
+    networkAttemptId: 'opaque-after-reset',
+  };
+
+  assert.equal(h.api().acceptPreparedTurn({ ...baseTurn, answerIdentity: attemptA, networkAttemptOrdinal: 1 }), true);
+  h.api().reset('scoped-reset-test', 'widget-1');
+  await h.settle();
+  assert.equal(h.api().acceptPreparedTurn({
+    ...baseTurn,
+    turnKey: '1:completion-race-conversation:user-1',
+    conversationGeneration: 1,
+    answerIdentity: attemptB,
+    networkAttemptOrdinal: 2,
+  }), true);
+
+  assert.equal(h.api().acceptCompletedTurn({
+    ...baseTurn,
+    answerIdentity: attemptA,
+    conversationGeneration: 0,
+    networkAttemptOrdinal: 1,
+  }), false, 'stale canonical completion must not mark the new attempt complete');
+  assert.equal(h.api().acceptCompletedTurn({
+    ...baseTurn,
+    conversationGeneration: 0,
+    networkAttemptOrdinal: 1,
+  }), false, 'stale identity-less completion must not map onto the new attempt');
+  assert.equal(h.api().state().completedTurns, 0);
+
+  assert.equal(h.api().acceptCompletedTurn({
+    ...baseTurn,
+    turnKey: '1:completion-race-conversation:user-1',
+    conversationGeneration: 1,
+    answerIdentity: attemptB,
+    networkAttemptOrdinal: 2,
+  }), true, 'the matching fresh completion is still accepted');
+  assert.equal(h.api().state().completedTurns, 1);
+});
+
+test('Compare flushes TextDecoder and consumes a final valid SSE frame without a trailing newline', async () => {
+  const h = createHarness();
+  const payload = `data: ${JSON.stringify({ type: 'text-delta', delta: 'final frame retained' })}`;
+  h.setFetch(async () => ({
+    ok: true,
+    status: 200,
+    body: new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode(payload));
+        controller.close();
+      },
+    }),
+  }));
+  const updates = [];
+  const result = await h.api().askProdForTest(
+    JSON.stringify({ messages: [] }),
+    new AbortController().signal,
+    (text) => updates.push(text),
+  );
+  assert.equal(result.text, 'final frame retained');
+  assert.deepEqual(updates, ['final frame retained']);
 });

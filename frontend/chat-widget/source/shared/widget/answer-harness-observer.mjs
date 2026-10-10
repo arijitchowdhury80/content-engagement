@@ -5,6 +5,7 @@ import {
   answerIdentityKey,
   closeAnswerRecord,
   createAnswerRecord,
+  createAnswerSlot,
 } from "../core/answer-record.mjs";
 import {
   applyAnswerContribution,
@@ -63,11 +64,59 @@ function buildCompletedContribution(identity) {
   });
 }
 
+function buildNoErrorContribution(identity) {
+  return createAnswerContributor({
+    kind: ANSWER_CONTRIBUTOR_KIND.ERROR_RETRY,
+    identity,
+    slots: {
+      errorRetry: {
+        status: ANSWER_SLOT_STATUS.EMPTY,
+        value: null,
+        message: "No retry needed.",
+      },
+    },
+  });
+}
+
 function buildLifecycleContribution(identity, lifecycle) {
   return createAnswerContributor({
     kind: ANSWER_CONTRIBUTOR_KIND.LIFECYCLE,
     identity,
     lifecycle,
+  });
+}
+
+function completedFallbackForSlot(key) {
+  if (key === "sources") {
+    return { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: [], message: "Sources unavailable." };
+  }
+  if (key === "confidence") {
+    return { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Confidence unavailable." };
+  }
+  if (key === "telemetry") {
+    return { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Telemetry unavailable." };
+  }
+  if (key === "actions") {
+    return { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Action unavailable." };
+  }
+  if (key === "errorRetry") {
+    return { status: ANSWER_SLOT_STATUS.EMPTY, value: null, message: "No retry needed." };
+  }
+  return { status: ANSWER_SLOT_STATUS.EMPTY, value: null, message: "No content provided." };
+}
+
+function finalizeCompletedRecord(record) {
+  const slots = {};
+  for (const [key, slot] of Object.entries(record.slots)) {
+    slots[key] = slot.status === ANSWER_SLOT_STATUS.LOADING
+      ? createAnswerSlot(key, completedFallbackForSlot(key))
+      : slot;
+  }
+  return createAnswerRecord({
+    identity: record.identity,
+    lifecycle: record.lifecycle,
+    evidence: record.evidence,
+    slots,
   });
 }
 
@@ -133,12 +182,16 @@ export function createAnswerHarnessObserver({ onRecord } = {}) {
 
     if (event.eventName === "completed") {
       const record = state.records.get(key) || buildPreparedRecord(identity);
-      const completed = applyAnswerContribution(record, buildCompletedContribution(identity));
+      const settled = record.slots.errorRetry?.status === ANSWER_SLOT_STATUS.LOADING
+        ? applyAnswerContribution(record, buildNoErrorContribution(identity))
+        : record;
+      const completed = applyAnswerContribution(settled, buildCompletedContribution(identity));
       const next = detail.contribution
         ? applyAnswerContribution(completed, detail.contribution)
         : completed;
-      writeRecord(key, next);
-      return notify(onRecord, next, event.eventName);
+      const finalized = finalizeCompletedRecord(next);
+      writeRecord(key, finalized);
+      return notify(onRecord, finalized, event.eventName);
     }
 
     if (event.eventName === "contribution") {

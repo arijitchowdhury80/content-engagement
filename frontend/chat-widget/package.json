@@ -1,0 +1,33 @@
+{
+  "name": "@algolia/content-engagement-widget",
+  "version": "2.0.0-alpha.1",
+  "private": false,
+  "type": "commonjs",
+  "description": "Canonical source and deterministic one-file build for the Algolia Content Engagement web component.",
+  "scripts": {
+    "build": "vite build",
+    "build:verify": "node build/verify-reproducible-build.mjs",
+    "typecheck": "tsc -b",
+    "test": "node --test tests/*.test.mjs",
+    "test:journeys": "npm run build && node tests/local-15-journey-acceptance.mjs",
+    "test:source": "npm run build && node --test tests/canonical-source-boundaries.test.mjs tests/canonical-bundle-smoke.test.mjs tests/canonical-bundle-parity.test.mjs"
+  },
+  "dependencies": {
+    "algoliasearch": "^5.55.2",
+    "instantsearch.js": "^4.106.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "playwright": "^1.62.1",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^6.0.3",
+    "vite": "^7.0.0"
+  }
+}

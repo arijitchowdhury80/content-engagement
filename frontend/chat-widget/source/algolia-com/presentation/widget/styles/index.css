@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Token-driven accent-glow utility ──────────────────────────────────────── */
+/* Applied to accent-filled interactive surfaces (send button, user bubble, etc.)
+   to add a soft lift effect using the configured accent colour. Defined here
+   rather than inside a theme preset so it works with any theme, not just algolia. */
+.algolia-glow-accent {
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--algolia-accent) 18%, transparent);
+}
+
+/* Answer evidence and discovery share one quiet, raised visual language. */
+.acs-source-section {
+  width: 100%;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--algolia-accent) 18%, var(--algolia-border));
+  box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.acs-source-group-pill {
+  background: linear-gradient(135deg, #ffffff, #edf5ff);
+  box-shadow:
+    0 8px 18px rgba(46, 61, 120, 0.14),
+    0 1px 2px rgba(46, 61, 120, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 74, 255, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.acs-source-group-pill:hover,
+.acs-source-pill:hover {
+  transform: translateY(-1px);
+}
+
+.acs-source-group-pill:hover {
+  box-shadow:
+    0 11px 22px rgba(46, 61, 120, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.acs-source-group-count {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    0 3px 7px rgba(0, 74, 255, 0.14);
+}
+
+.acs-source-pill {
+  background: linear-gradient(135deg, #ffffffcc, #edf5ffcc);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 6px 14px rgba(46, 61, 120, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.acs-source-pill:hover {
+  box-shadow:
+    0 9px 18px rgba(46, 61, 120, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.acs-followup-wrap {
+  width: 100%;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid color-mix(in srgb, var(--algolia-accent) 18%, var(--algolia-border));
+  box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.acs-followup-card {
+  position: relative;
+  border: 0;
+  background: linear-gradient(
+    135deg,
+    #ffffff,
+    #edf5ff 62%,
+    color-mix(in srgb, var(--algolia-accent-tint) 42%, #ffffff)
+  );
+  backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 26px rgba(20, 33, 76, 0.13),
+    0 2px 7px rgba(20, 33, 76, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94),
+    inset 0 -1px 0 rgba(0, 74, 255, 0.07);
+  transform: translateZ(0);
+}
+
+.acs-followup-card::before {
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(var(--algolia-radius-lg) - 1px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 46%);
+  content: '';
+  pointer-events: none;
+}
+
+.acs-followup-card:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 16px 32px rgba(20, 33, 76, 0.16),
+    0 5px 13px rgba(20, 33, 76, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.acs-followup-card:focus-visible {
+  outline: 2px solid var(--algolia-accent);
+  outline-offset: 3px;
+}
+
+/* Base element styles — consume `--algolia-*` tokens only, never redeclare them. */
+:host,
+.algolia-chat-root {
+  height: 100%;
+}
+
+:host {
+  font-family: var(--algolia-font-sans);
+}
+
+.algolia-chat-root {
+  margin: 0;
+  background: var(--algolia-bg);
+  color: var(--algolia-text);
+  font-family: inherit;
+  font-size: var(--algolia-fs-sm);
+  line-height: var(--algolia-lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--algolia-focus);
+  outline-offset: 2px;
+  border-radius: var(--algolia-radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

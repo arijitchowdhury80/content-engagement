@@ -1,23 +1,29 @@
 {
-  "name": "algolia-com",
-  "version": "1.0.0",
-  "description": "This repository is the working home for the Algolia.com discovery concierge: Agent Studio configuration and prompts, the Jahia chat widget JavaScript, visitor-intelligence work, corpus enrichment tooling, validation evidence, and project documentation.",
+  "name": "@algolia/content-engagement",
+  "version": "2.0.0-alpha.1",
+  "private": false,
+  "description": "Canonical source and operational home for the Algolia Content Engagement web component.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
+    "build": "npm run build --prefix frontend/chat-widget",
+    "build:verify": "npm run build:verify --prefix frontend/chat-widget",
     "build:team-uat": "node testing/team-uat/build-standalone.mjs",
     "local:chat": "python3 tools/local_chat_parity_server.py",
     "scout:local-pages": "node tools/inspection/fetch_local_parity_pages_with_scout.mjs",
-    "test:chat-widget": "node --test frontend/chat-widget/tests/*.test.mjs",
+    "typecheck": "npm run typecheck --prefix frontend/chat-widget",
+    "test:source": "npm run test:source --prefix frontend/chat-widget",
+    "test:chat-widget": "npm run build --prefix frontend/chat-widget && node --test frontend/chat-widget/tests/*.test.mjs",
     "test:compare-integration": "python3 -m pytest -q tools/deployment/tests/test_deploy_compare_integration_jahia.py",
     "test:judge-refactor": "node --test agents/admin/deploy_judge_prompt_ab_candidates.test.mjs production_comparison/*.test.mjs && python3 -m pytest -q tools/deployment/tests/test_deploy_judge_v2_jahia.py",
     "test:local-chat-parity": "node tools/inspection/validate_local_chat_parity.mjs && node tools/inspection/validate_local_proactive_journeys.mjs",
     "test:stability": "node --test testing/stability/tests/*.test.mjs",
     "stability": "node testing/stability/cli.mjs",
     "test:team-uat": "node --test testing/team-uat/*.test.mjs",
-    "test": "npm run test:chat-widget && npm run test:compare-integration && npm run test:judge-refactor && npm run test:local-chat-parity && npm run test:team-uat"
+    "test": "npm run typecheck && npm run test:chat-widget && npm run test:compare-integration && npm run test:judge-refactor && npm run test:local-chat-parity && npm run test:team-uat",
+    "verify": "npm test && npm run build:verify"
   },
   "repository": {
     "type": "git",
@@ -25,7 +31,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/arijitchowdhury80/content-engagement/issues"

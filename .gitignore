@@ -9,6 +9,8 @@
 **/__pycache__/
 **/.pytest_cache/
 node_modules/
+frontend/chat-widget/dist/
+frontend/chat-widget/tsconfig.tsbuildinfo
 .playwright-mcp/
 testing/team-uat/.artifacts/
 testing/stability/.runtime/

@@ -1,0 +1,46 @@
+{
+  "schema": "ContentEngagementSourceProvenance.v1",
+  "rollback": {
+    "originMainBaseline": "41d7700cba69753a1fe38ca94ea832e466bd489c",
+    "uiCompatibilityCheckpoint": "dc6cbf9b59d0d5a5a3e785ca2f11f91f0f4a7dd2"
+  },
+  "imports": [
+    {
+      "target": "algolia-com/code/runtime/**",
+      "sourceRepository": "algolia-central-chat-widget",
+      "sourceCommit": "ce77d2e8a473cb110102520b846475226d831129",
+      "sourcePath": "chat-central/src/**",
+      "pristineAncestor": "e06c6b5ff20c8576bec01fdf000981cd8873cc06",
+      "disposition": "readable donor runtime owned by the Algolia implementation because it includes Agent Studio, judging, visitor intelligence, proactive policy and semantic UI; excluded third-party brand material removed"
+    },
+    {
+      "target": "algolia-com/web-component/**",
+      "sourceRepository": "algolia-central-chat-widget",
+      "sourceCommit": "ce77d2e8a473cb110102520b846475226d831129",
+      "sourcePath": "algolia-chat/src/**",
+      "pristineAncestor": "e06c6b5ff20c8576bec01fdf000981cd8873cc06",
+      "disposition": "readable Algolia web-component facade; excluded third-party brand examples removed"
+    },
+    {
+      "target": "algolia-com/code/*.js",
+      "sourceRepository": "content-engagement",
+      "sourceCommit": "dc6cbf9b59d0d5a5a3e785ca2f11f91f0f4a7dd2",
+      "sourcePath": "frontend/chat-widget/*.js",
+      "disposition": "byte-preserved compatibility source relocated under Algolia behavior ownership pending module-level extraction"
+    },
+    {
+      "target": "algolia-com/web-component/answer-runtime-bridge.mjs",
+      "sourceRepository": "content-engagement",
+      "sourceCommit": "dc6cbf9b59d0d5a5a3e785ca2f11f91f0f4a7dd2",
+      "sourcePath": "frontend/chat-widget/answer-harness-runtime.mjs",
+      "disposition": "canonical compatibility bridge between the existing host DOM and the shared renderer during the one-bundle cutover"
+    },
+    {
+      "target": "algolia-com/presentation/*.js",
+      "sourceRepository": "content-engagement",
+      "sourceCommit": "dc6cbf9b59d0d5a5a3e785ca2f11f91f0f4a7dd2",
+      "sourcePath": "frontend/chat-widget/algolia-chat-theme-algolia.js and algolia-confidence-badge.js",
+      "disposition": "byte-preserved approved Algolia presentation relocated under presentation ownership"
+    }
+  ]
+}

@@ -32,10 +32,13 @@
   let networkAttemptSequence = 0;
   const widgetConversationGenerations = new Map();
   const activeAttempts = new Map();
+  const activeAttemptMetadataByIdentity = new Map();
   const answerIdentitiesBySegment = new Map();
+  const answerIdentitiesByRuntimeTurn = new Map();
+  const pendingTelemetryPlacements = new Map();
   const handledResetIds = new Set();
   const MAX_HANDLED_RESET_IDS = 100;
-  const MAX_ROUTED_ATTEMPTS = 500;
+  const TELEMETRY_PLACEMENT_TIMEOUT_MS = 30000;
   let config = {
     enabled: true,
     primaryAgentId: null,
@@ -161,25 +164,125 @@
     return `${turn.widgetInstanceId}\n${turn.conversationId}\n${turn.answerSegmentId}`;
   }
 
+  function answerIdentityKey(identity) {
+    if (!identity || typeof identity !== "object") return "";
+    const parts = [
+      identity.widgetInstanceId,
+      identity.conversationId,
+      identity.answerSegmentId,
+      identity.networkAttemptId,
+    ].map((value) => String(value || "").trim());
+    return parts.every(Boolean) ? parts.join("\n") : "";
+  }
+
   function segmentIdentityKey(widgetInstanceId, answerSegmentId) {
     if (!widgetInstanceId || !answerSegmentId) return null;
     return `${widgetInstanceId}\n${answerSegmentId}`;
   }
 
+  function runtimeTurnIdentityKey(widgetInstanceId, runtimeTurnId) {
+    if (!widgetInstanceId || !runtimeTurnId) return null;
+    return `${widgetInstanceId}\n${runtimeTurnId}`;
+  }
+
   function rememberActiveAttempt(turn) {
     const key = attemptKey(turn);
-    if (key && turn.networkAttemptId) activeAttempts.set(key, turn.networkAttemptId);
+    const identityKey = answerIdentityKey(answerIdentityForTurn(turn));
     const segmentKey = segmentIdentityKey(turn?.widgetInstanceId, turn?.answerSegmentId);
-    if (segmentKey) answerIdentitiesBySegment.set(segmentKey, answerIdentityForTurn(turn));
-    while (activeAttempts.size > MAX_ROUTED_ATTEMPTS) activeAttempts.delete(activeAttempts.keys().next().value);
-    while (answerIdentitiesBySegment.size > MAX_ROUTED_ATTEMPTS) {
-      answerIdentitiesBySegment.delete(answerIdentitiesBySegment.keys().next().value);
+    const runtimeTurnKey = runtimeTurnIdentityKey(turn?.widgetInstanceId, turn?.runtimeTurnId);
+    if (key && turn.networkAttemptId) {
+      activeAttempts.delete(key);
+      activeAttempts.set(key, turn.networkAttemptId);
+    }
+    if (segmentKey) {
+      const previousIdentityKey = answerIdentityKey(answerIdentitiesBySegment.get(segmentKey));
+      if (previousIdentityKey && previousIdentityKey !== identityKey) {
+        activeAttemptMetadataByIdentity.delete(previousIdentityKey);
+      }
+      answerIdentitiesBySegment.delete(segmentKey);
+      answerIdentitiesBySegment.set(segmentKey, answerIdentityForTurn(turn));
+    }
+    if (runtimeTurnKey) {
+      answerIdentitiesByRuntimeTurn.delete(runtimeTurnKey);
+      answerIdentitiesByRuntimeTurn.set(runtimeTurnKey, answerIdentityForTurn(turn));
+    }
+    if (identityKey) {
+      activeAttemptMetadataByIdentity.delete(identityKey);
+      activeAttemptMetadataByIdentity.set(identityKey, {
+        turnKey: turn.key,
+        conversationGeneration: turn.conversationGeneration,
+        networkAttemptOrdinal: turn.networkAttemptOrdinal,
+        messageId: turn.messageId,
+      });
+    }
+  }
+
+  function retireActiveAttempt(turnOrDetail, eventName = null) {
+    const identity = turnOrDetail?.answerIdentity || answerIdentityForTurn(turnOrDetail);
+    const identityKey = answerIdentityKey(identity);
+    const key = activeAttemptKeyFromIdentity(identity);
+    const networkAttemptId = String(identity?.networkAttemptId || "").trim();
+    const segmentKey = segmentIdentityKey(identity?.widgetInstanceId, identity?.answerSegmentId);
+    if (eventName && identityKey) {
+      notifyAnswerHarness(eventName, Object.freeze({
+        answerIdentity: identity,
+        widgetInstanceId: identity.widgetInstanceId,
+      }));
+    }
+    if (identityKey) activeAttemptMetadataByIdentity.delete(identityKey);
+    if (key && networkAttemptId && activeAttempts.get(key) === networkAttemptId) {
+      activeAttempts.delete(key);
     }
   }
 
   function isActiveAttempt(turn) {
     const key = attemptKey(turn);
     return !key || !turn?.networkAttemptId || activeAttempts.get(key) === turn.networkAttemptId;
+  }
+
+  function numericMetadata(value) {
+    const number = Number(value);
+    return Number.isSafeInteger(number) && number >= 0 ? number : null;
+  }
+
+  function validateTurnEvent(detail) {
+    const identity = detail?.answerIdentity;
+    const identityKey = answerIdentityKey(identity);
+    if (!identityKey) return false;
+    const record = activeAttemptMetadataByIdentity.get(identityKey);
+    if (!record) return false;
+    const key = activeAttemptKeyFromIdentity(identity);
+    if (!key || activeAttempts.get(key) !== String(identity.networkAttemptId || "").trim()) return false;
+    const generation = numericMetadata(detail?.conversationGeneration);
+    const ordinal = numericMetadata(detail?.networkAttemptOrdinal);
+    if (generation === null || ordinal === null) return false;
+    if (generation !== record.conversationGeneration) return false;
+    if (ordinal !== record.networkAttemptOrdinal) return false;
+    if (String(detail?.turnKey || "") !== record.turnKey) return false;
+    if (String(detail?.messageId || "") !== record.messageId) return false;
+    return true;
+  }
+
+  function activeAttemptKeyFromIdentity(identity) {
+    if (!identity) return null;
+    const parts = [
+      identity.widgetInstanceId,
+      identity.conversationId,
+      identity.answerSegmentId,
+    ].map((value) => String(value || "").trim());
+    return parts.every(Boolean) ? parts.join("\n") : null;
+  }
+
+  function isActiveTelemetryDetail(detail) {
+    const identity = detail?.answerIdentity;
+    const key = activeAttemptKeyFromIdentity(identity);
+    const networkAttemptId = String(identity?.networkAttemptId || "").trim();
+    const segmentKey = segmentIdentityKey(identity?.widgetInstanceId, identity?.answerSegmentId);
+    const latestIdentityKey = answerIdentityKey(answerIdentitiesBySegment.get(segmentKey));
+    const currentIdentityKey = answerIdentityKey(identity);
+    if (latestIdentityKey && currentIdentityKey && latestIdentityKey !== currentIdentityKey) return false;
+    if (!key || !networkAttemptId) return true;
+    return !activeAttempts.has(key) || activeAttempts.get(key) === networkAttemptId;
   }
 
   function notifyClosedWidgetAttempts(widgetInstanceId, eventName) {
@@ -210,9 +313,16 @@
     for (const key of activeAttempts.keys()) {
       if (key.startsWith(prefix)) activeAttempts.delete(key);
     }
+    for (const key of activeAttemptMetadataByIdentity.keys()) {
+      if (key.startsWith(prefix)) activeAttemptMetadataByIdentity.delete(key);
+    }
     for (const key of answerIdentitiesBySegment.keys()) {
       if (key.startsWith(prefix)) answerIdentitiesBySegment.delete(key);
     }
+    for (const key of answerIdentitiesByRuntimeTurn.keys()) {
+      if (key.startsWith(prefix)) answerIdentitiesByRuntimeTurn.delete(key);
+    }
+    clearPendingTelemetryPlacements(widgetInstanceId);
   }
 
   function applyScopedReset(widgetInstanceId) {
@@ -249,6 +359,7 @@
     const text = userTextFromPayload(payload);
     const persistedConversation = readJson(sessionStorage, "algolia-chat:conversation", null);
     const conversationId = String(
+      runtimeContextValue(runtimeContext, "conversationId") ||
       payload.id || payload.conversationId || persistedConversation?.conversationId || "conversation"
     );
     const messageId = String(message.id || message.messageId || `${index}:${text}`);
@@ -284,8 +395,10 @@
     return {
       key: `${conversationGeneration ? `${conversationGeneration}:` : ""}${conversationId}:${messageId}`,
       conversationId,
+      conversationGeneration,
       messageId,
       answerSegmentId,
+      runtimeTurnId: runtimeContextValue(runtimeContext, "turnId"),
       widgetInstanceId,
       question: text,
     };
@@ -303,7 +416,18 @@
 
   function answerIdentityForSegment(widgetInstanceId, answerSegmentId) {
     const key = segmentIdentityKey(widgetInstanceId, answerSegmentId);
-    return key ? answerIdentitiesBySegment.get(key) || null : null;
+    if (key) return answerIdentitiesBySegment.get(key) || null;
+    if (!widgetInstanceId) return null;
+    const matches = [];
+    for (const [segmentKey, identity] of answerIdentitiesBySegment.entries()) {
+      if (segmentKey.startsWith(`${widgetInstanceId}\n`)) matches.push(identity);
+    }
+    return matches.length === 1 ? matches[0] : null;
+  }
+
+  function answerIdentityForRuntimeTurn(widgetInstanceId, runtimeTurnId) {
+    const key = runtimeTurnIdentityKey(widgetInstanceId, runtimeTurnId);
+    return key ? answerIdentitiesByRuntimeTurn.get(key) || null : null;
   }
 
   function subscribePreparedTurn(listener) {
@@ -355,6 +479,7 @@
 
   function ensureAnswerFooter(detail) {
     const messageId = String(detail?.messageId || "");
+    const runtimeTurnId = String(detail?.runtimeTurnId || "").trim();
     const question = String(detail?.question || "").replace(/\s+/g, " ").trim();
     const widgetInstanceId = detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || null;
     const widgets = [...document.querySelectorAll("algolia-chat")];
@@ -368,28 +493,56 @@
     const root = host?.shadowRoot;
     if (!messageId || !question || !root) return null;
 
-    const existing = [...root.querySelectorAll("[data-algolia-answer-footer]")]
-      .find((node) => node.dataset.algoliaAnswerFooter === messageId);
-    if (existing) return existing;
+    const tagFooterTurn = (footer) => {
+      if (!footer) return null;
+      const answerCard = footer.parentElement;
+      const answerLane = answerCard?.parentElement;
+      const turn = answerLane?.parentElement;
+      if (runtimeTurnId && turn) turn.dataset.algoliaRuntimeTurnId = runtimeTurnId;
+      footer.dataset.algoliaAnswerFooter = messageId;
+      footer.dataset.algoliaAnswerAgent = "primary";
+      return footer;
+    };
+
+    const runtimeTurn = runtimeTurnId
+      ? [...root.querySelectorAll("[data-algolia-runtime-turn-id]")]
+        .find((node) => node.dataset.algoliaRuntimeTurnId === runtimeTurnId) || null
+      : null;
+    const existingFooters = [...root.querySelectorAll("[data-algolia-answer-footer]")]
+      .filter((node) =>
+        node.dataset.algoliaAnswerFooter === messageId ||
+        (runtimeTurn && runtimeTurn.contains(node))
+      );
+    const existingReadyFooter = existingFooters.find((node) =>
+      node.querySelector?.(".acs-source-section, algolia-confidence-badge")
+    );
+    if (existingReadyFooter) return tagFooterTurn(existingReadyFooter);
+    if (existingFooters.length === 1) return tagFooterTurn(existingFooters[0]);
 
     const bubbles = [...root.querySelectorAll('[part="message-user-bubble"]')].reverse();
-    const bubble = bubbles.find((node) =>
-      node.textContent.replace(/\s+/g, " ").trim() === question &&
-      (!node.parentElement?.parentElement?.dataset.algoliaUserMessageId ||
-        node.parentElement.parentElement.dataset.algoliaUserMessageId === messageId)
+    const questionMatches = runtimeTurn ? [] : bubbles.filter((node) =>
+      node.textContent.replace(/\s+/g, " ").trim() === question
     );
-    const turn = bubble?.parentElement?.parentElement;
+    const bubble = runtimeTurn ? null : questionMatches.find((node) =>
+      !node.parentElement?.parentElement?.dataset.algoliaUserMessageId ||
+      node.parentElement.parentElement.dataset.algoliaUserMessageId === messageId
+    ) || (questionMatches.length === 1 ? questionMatches[0] : null);
+    const turn = runtimeTurn || bubble?.parentElement?.parentElement;
     const answerLane = [...(turn?.children || [])]
       .find((node) => node.getAttribute?.("aria-live") === "polite");
     const answerCard = answerLane?.querySelector('div[aria-busy]');
     if (!turn || !answerCard) return null;
 
     turn.dataset.algoliaUserMessageId = messageId;
-    let footer = [...answerCard.children].find((node) => {
+    if (runtimeTurnId) turn.dataset.algoliaRuntimeTurnId = runtimeTurnId;
+    const footerCandidates = [...answerCard.children].filter((node) => {
       const classes = new Set(String(node.className || "").split(/\s+/));
       return classes.has("flex") && classes.has("items-end") &&
         classes.has("justify-between") && classes.has("gap-4");
-    }) || null;
+    });
+    let footer = footerCandidates.find((node) =>
+      node.querySelector?.(".acs-source-section, algolia-confidence-badge")
+    ) || footerCandidates.at(-1) || null;
     if (!footer) {
       footer = document.createElement("div");
       footer.className = "flex items-end justify-between gap-4";
@@ -398,14 +551,187 @@
       footer.appendChild(sourceSlot);
       answerCard.appendChild(footer);
     }
-    footer.dataset.algoliaAnswerFooter = messageId;
-    footer.dataset.algoliaAnswerAgent = "primary";
-    return footer;
+    return tagFooterTurn(footer);
+  }
+
+  const TELEMETRY_PILL_CLASS = "algolia-usage-pill";
+
+  function formatTokenNumber(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n.toLocaleString("en-US") : String(value ?? "");
+  }
+
+  function telemetryPillPart(className, text) {
+    const span = document.createElement("span");
+    span.className = className;
+    span.textContent = text;
+    return span;
+  }
+
+  function updateTelemetryPillText(pill, text, title) {
+    pill.dataset.usageText = "";
+    if (pill.textContent !== text) pill.textContent = text;
+    if (pill.title !== title) pill.title = title;
+  }
+
+  function updateTelemetryPillUsage(pill, totals) {
+    const inputTokens = formatTokenNumber(totals.inputTokens);
+    const outputTokens = formatTokenNumber(totals.outputTokens);
+    const text = `In ${inputTokens} / ${outputTokens} Out`;
+    const title = `Current response: ${inputTokens} input tokens and ${outputTokens} output tokens`;
+    if (pill.dataset.usageText !== text) {
+      pill.replaceChildren(
+        telemetryPillPart(`${TELEMETRY_PILL_CLASS}__in`, `In ${inputTokens}`),
+        telemetryPillPart(`${TELEMETRY_PILL_CLASS}__divider`, " / "),
+        telemetryPillPart(`${TELEMETRY_PILL_CLASS}__out`, `${outputTokens} Out`),
+      );
+      pill.dataset.usageText = text;
+    }
+    if (pill.title !== title) pill.title = title;
+  }
+
+  function renderTelemetryPill(root, container, state = {}, key = "") {
+    if (!root || !container) return false;
+    let pill = container.querySelector(`.${TELEMETRY_PILL_CLASS}`);
+    if (state.status === "idle" && !state.usage) {
+      pill?.remove();
+      return true;
+    }
+    if (!pill) {
+      pill = document.createElement("span");
+      pill.className = TELEMETRY_PILL_CLASS;
+      pill.setAttribute("aria-live", "polite");
+      container.appendChild(pill);
+    }
+    if (key) pill.dataset.algoliaTelemetryKey = key;
+    if (state.status === "loading") {
+      updateTelemetryPillText(pill, "Calculating tokens…", "Token usage is being calculated");
+      return true;
+    }
+    if (state.status === "unavailable" && !state.usage) {
+      updateTelemetryPillText(
+        pill,
+        "Tokens unavailable",
+        "Token usage could not be loaded; the answer is unaffected",
+      );
+      return true;
+    }
+    if (state.usage) updateTelemetryPillUsage(pill, state.usage);
+    return true;
+  }
+
+  function removeDuplicateTelemetryPills(root, footer, key) {
+    if (!key || !root?.querySelectorAll || !footer) return;
+    for (const pill of root.querySelectorAll(`.${TELEMETRY_PILL_CLASS}`)) {
+      if (pill.parentElement !== footer && pill.dataset?.algoliaTelemetryKey === key) pill.remove();
+    }
+  }
+
+  function telemetryPlacementKey(detail) {
+    const identity = detail?.answerIdentity || {};
+    const parts = [
+      identity.widgetInstanceId || detail?.widgetInstanceId,
+      identity.conversationId || detail?.conversationId,
+      identity.answerSegmentId || detail?.messageId,
+      identity.networkAttemptId || detail?.turnKey,
+    ].map((value) => String(value || "").trim());
+    return parts.every(Boolean) ? parts.join("\n") : "";
+  }
+
+  function widgetHostForTelemetry(detail) {
+    const widgets = [...document.querySelectorAll?.("algolia-chat") || []];
+    const widgetInstanceId = detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || null;
+    if (widgetInstanceId) {
+      const exact = widgets.find((node) => node.__algoliaWidgetInstanceId === widgetInstanceId) || null;
+      if (exact) return exact;
+      if (widgets.length === 1 && !widgets[0].__algoliaWidgetInstanceId) return widgets[0];
+      return null;
+    }
+    return widgets[0] || null;
+  }
+
+  function cancelPendingTelemetryPlacement(key) {
+    const pending = pendingTelemetryPlacements.get(key);
+    pending?.observer?.disconnect?.();
+    if (pending?.timeoutId && typeof clearTimeout === "function") clearTimeout(pending.timeoutId);
+    if (key) pendingTelemetryPlacements.delete(key);
+  }
+
+  function clearPendingTelemetryPlacements(widgetInstanceId) {
+    if (!widgetInstanceId) return;
+    for (const [key, pending] of pendingTelemetryPlacements.entries()) {
+      if (pending.widgetInstanceId !== widgetInstanceId) continue;
+      pending.observer?.disconnect?.();
+      if (pending.timeoutId && typeof clearTimeout === "function") clearTimeout(pending.timeoutId);
+      pendingTelemetryPlacements.delete(key);
+    }
+  }
+
+  function observeTelemetryPlacement(detail, state) {
+    const key = telemetryPlacementKey(detail);
+    const host = widgetHostForTelemetry(detail);
+    const root = host?.shadowRoot;
+    if (!key || !root || typeof MutationObserver !== "function" || !isActiveTelemetryDetail(detail)) return false;
+    const existing = pendingTelemetryPlacements.get(key);
+    if (existing) {
+      existing.state = { ...(state || {}) };
+      return false;
+    }
+    const widgetInstanceId = detail?.answerIdentity?.widgetInstanceId || detail?.widgetInstanceId || null;
+    const observer = new MutationObserver(() => {
+      if (!isActiveTelemetryDetail(detail)) {
+        cancelPendingTelemetryPlacement(key);
+        return;
+      }
+      const footer = ensureAnswerFooter(detail);
+      const footerRoot = footer?.getRootNode?.() || null;
+      if (!footer || !footerRoot?.querySelectorAll) return;
+      const pending = pendingTelemetryPlacements.get(key);
+      if (!pending) return;
+      const latest = pending.state || state;
+      cancelPendingTelemetryPlacement(key);
+      renderTelemetryPill(footerRoot, footer, latest, key);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    const timeoutId = typeof setTimeout === "function"
+      ? setTimeout(() => cancelPendingTelemetryPlacement(key), TELEMETRY_PLACEMENT_TIMEOUT_MS)
+      : null;
+    pendingTelemetryPlacements.set(key, { observer, widgetInstanceId, state: { ...(state || {}) }, timeoutId });
+    return false;
+  }
+
+  function renderAnswerFooterTelemetry(detail, state = {}) {
+    const key = telemetryPlacementKey(detail);
+    if (key && !isActiveTelemetryDetail(detail)) {
+      cancelPendingTelemetryPlacement(key);
+      return false;
+    }
+    const migratedFooter = window.algoliaAnswerFooterRenderer;
+    if (migratedFooter?.isEnabled?.() && detail && state.status !== "idle") {
+      const registered = migratedFooter.registerPlacement?.(detail);
+      if (registered) return true;
+    }
+    const footer = detail ? ensureAnswerFooter(detail) : null;
+    const root = footer?.getRootNode?.() || null;
+
+    if (state.status === "idle" && !state.usage) {
+      cancelPendingTelemetryPlacement(key);
+      if (!footer || !root?.querySelectorAll) return false;
+      return renderTelemetryPill(root, footer, state, key);
+    }
+    if (!footer || !root?.querySelectorAll) return observeTelemetryPlacement(detail, state);
+    cancelPendingTelemetryPlacement(key);
+    removeDuplicateTelemetryPills(root, footer, key);
+    return renderTelemetryPill(root, footer, state, key);
   }
 
   function observePrimaryCompletion(response, turn) {
     const conversationId = response?.headers?.get?.("X-Conversation-Id");
-    if (!turn || response?.ok === false || !conversationId || !response?.body?.getReader) return response;
+    if (!turn) return response;
+    if (response?.ok === false || !conversationId || !response?.body?.getReader) {
+      retireActiveAttempt(turn, response?.ok === false ? "failed" : null);
+      return response;
+    }
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let diagnosticTail = "";
@@ -416,14 +742,21 @@
         try {
           const chunk = await reader.read();
           if (chunk.done) {
-            if (!guardrailViolation) {
-              notifyCompletedTurn(Object.freeze({
-                turnKey: turn.key,
-                messageId: turn.messageId,
-                question: turn.question,
-                conversationId,
-                answerIdentity: answerIdentityForTurn(turn),
-              }), { harness: isActiveAttempt(turn) });
+            try {
+              if (!guardrailViolation) {
+                notifyCompletedTurn(Object.freeze({
+                  turnKey: turn.key,
+                  conversationGeneration: turn.conversationGeneration,
+                  networkAttemptOrdinal: turn.networkAttemptOrdinal,
+                  ...(turn.runtimeTurnId ? { runtimeTurnId: turn.runtimeTurnId } : {}),
+                  messageId: turn.messageId,
+                  question: turn.question,
+                  conversationId,
+                  answerIdentity: answerIdentityForTurn(turn),
+                }), { harness: isActiveAttempt(turn) });
+              }
+            } finally {
+              retireActiveAttempt(turn, guardrailViolation ? "failed" : null);
             }
             controller.close();
             return;
@@ -432,6 +765,8 @@
             streamingNotified = true;
             notifyAnswerHarness("streaming", Object.freeze({
               turnKey: turn.key,
+              conversationGeneration: turn.conversationGeneration,
+              networkAttemptOrdinal: turn.networkAttemptOrdinal,
               messageId: turn.messageId,
               question: turn.question,
               conversationId,
@@ -445,6 +780,7 @@
           diagnosticTail = diagnosticTail.slice(-4096);
           controller.enqueue(chunk.value);
         } catch (error) {
+          retireActiveAttempt(turn, "failed");
           controller.error(error);
         }
       },
@@ -453,6 +789,8 @@
           await reader.cancel(reason);
         } catch (error) {
           debug("primary stream cancellation failed (contained)", error);
+        } finally {
+          retireActiveAttempt(turn, "aborted");
         }
       },
     });
@@ -579,9 +917,11 @@
       try {
         turn = logicalTurn(JSON.parse(contextBody), runtimeContext);
         if (turn) {
+          const networkAttemptOrdinal = networkAttemptSequence += 1;
           turn = {
             ...turn,
-            networkAttemptId: `${turn.widgetInstanceId}:${turn.key}:attempt-${networkAttemptSequence += 1}`,
+            networkAttemptOrdinal,
+            networkAttemptId: `${turn.widgetInstanceId}:${turn.key}:attempt-${networkAttemptOrdinal}`,
           };
         }
       } catch {}
@@ -607,6 +947,9 @@
       notifyPreparedTurn(Object.freeze({
         body: prepared.body,
         turnKey: turn.key,
+        conversationGeneration: turn.conversationGeneration,
+        networkAttemptOrdinal: turn.networkAttemptOrdinal,
+        runtimeTurnId: turn.runtimeTurnId,
         messageId: turn.messageId,
         question: turn.question,
         answerIdentity: answerIdentityForTurn(turn),
@@ -645,6 +988,7 @@
           handoffFailure: "network_error",
         });
       }
+      if (turn) retireActiveAttempt(turn, "failed");
       throw error;
     }
   }
@@ -702,7 +1046,9 @@
     notifyClosedAnswerHarnessAttempts("reset");
     fallbackConversationGeneration += 1;
     activeAttempts.clear();
+    activeAttemptMetadataByIdentity.clear();
     answerIdentitiesBySegment.clear();
+    answerIdentitiesByRuntimeTurn.clear();
   });
 
   document.addEventListener?.("algolia-chat-widget-disconnected", (event) => {
@@ -719,6 +1065,9 @@
     subscribePreparedTurn,
     subscribeCompletedTurn,
     answerIdentityForSegment,
+    answerIdentityForRuntimeTurn,
+    validateTurnEvent,
     ensureAnswerFooter,
+    renderAnswerFooterTelemetry,
   };
 })();

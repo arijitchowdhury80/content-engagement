@@ -14,8 +14,10 @@ const FOOTER_DOM_PATTERNS = [
 
 const COMPATIBILITY_OWNERS = new Set([
   "handoff-to-orchestrator.js",
-  "token-telemetry.js",
   "algolia-chat-compare.js",
+]);
+const PRESENTATION_CLASS_OWNERS = new Set([
+  "algolia-chat-theme-algolia.js",
 ]);
 
 function walkFiles(dir) {
@@ -23,7 +25,13 @@ function walkFiles(dir) {
   return entries.flatMap((entry) => {
     const absolute = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      if (entry.name === "tests" || entry.name === "source" || entry.name === "patches") return [];
+      if (
+        entry.name === "tests" ||
+        entry.name === "source" ||
+        entry.name === "patches" ||
+        entry.name === "dist" ||
+        entry.name === "node_modules"
+      ) return [];
       return walkFiles(absolute);
     }
     return entry.isFile() && entry.name.endsWith(".js") ? [absolute] : [];
@@ -44,8 +52,17 @@ test("footer DOM ownership is limited to the known compatibility bridge during m
     });
   }
 
+  const domOwners = matches
+    .filter((match) => !(
+      PRESENTATION_CLASS_OWNERS.has(match.file) &&
+      match.matchedPatterns.length === 1 &&
+      match.matchedPatterns[0] === "algolia-usage-pill"
+    ))
+    .map((match) => match.file)
+    .sort();
+
   assert.deepEqual(
-    matches.map((match) => match.file).sort(),
+    domOwners,
     [...COMPATIBILITY_OWNERS].sort(),
     `Only the temporary compatibility bridge may touch answer footer DOM: ${JSON.stringify(matches)}`
   );
@@ -62,4 +79,16 @@ test("shared answer harness remains DOM-free", () => {
   assert.doesNotMatch(source, /\b(document|window)\b/);
   assert.doesNotMatch(source, /\b(querySelector|appendChild|insertBefore|replaceChildren)\b/);
   assert.doesNotMatch(source, /data-algolia-answer-footer|algolia-usage-pill|acs-compare-toggle/);
+});
+
+test("telemetry pill presentation stays in the Algolia theme, not the handoff bridge", () => {
+  const handoffSource = fs.readFileSync(new URL("../handoff-to-orchestrator.js", import.meta.url), "utf8");
+  const themeSource = fs.readFileSync(new URL("../algolia-chat-theme-algolia.js", import.meta.url), "utf8");
+
+  assert.match(handoffSource, /algolia-usage-pill/);
+  assert.doesNotMatch(handoffSource, /TELEMETRY_PILL_CSS|algolia-usage-pill-style/);
+  assert.doesNotMatch(handoffSource, /box-shadow:\s*0 12px|linear-gradient\(135deg|font-family:\s*var\(--algolia-font-sans\)/);
+  assert.match(themeSource, /\.algolia-usage-pill \{/);
+  assert.match(themeSource, /\.algolia-usage-pill__in/);
+  assert.match(themeSource, /\.algolia-usage-pill__out/);
 });

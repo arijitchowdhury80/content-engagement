@@ -4,15 +4,8 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const themePath = new URL('../algolia-chat-theme-algolia.js', import.meta.url);
-const logoPackRoot = '/Users/arijitchowdhury/Dropbox/AI-Development/algolia-logo-pack/SVG';
-const logoPackMarkWhitePath = `${logoPackRoot}/Algolia-mark-white.svg`;
-const logoPackMarkBluePath = `${logoPackRoot}/Algolia-mark-blue.svg`;
 const legacyHeaderProgressVar = ['--a', 'cs-header-progress'].join('');
 const legacyWorkingAttr = ['data-a', 'cs-working'].join('');
-
-function cssSvgUrlFromFile(url) {
-  return `url("data:image/svg+xml,${encodeURIComponent(fs.readFileSync(url, 'utf8'))}")`;
-}
 
 function literal(value) {
   return new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
@@ -50,8 +43,6 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.equal(theme.layout.dockedHeight, '500px');
   assert.equal(theme.space.maxWidth, '100%');
   assert.equal(theme.space.msgMaxW, 'min(920px, calc(100% - 56px))');
-  assert.ok(fs.existsSync(logoPackMarkWhitePath), 'canonical white mark exists in local logo pack');
-  assert.ok(fs.existsSync(logoPackMarkBluePath), 'canonical blue mark exists in local logo pack');
 
   const css = theme.css;
   assert.match(css, /\[part="launcher"\][^{]+{[^}]*cursor: grab/);
@@ -155,8 +146,7 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.match(css, /\[part="composer-send"\][^{]+{[^}]*background: #050505/);
   assert.match(css, /data:image\/svg\+xml/);
   assert.match(css, /M250%2C0/);
-  assert.match(css, /Generated from local Algolia logo pack/);
-  assert.match(css, new RegExp(cssSvgUrlFromFile(logoPackMarkWhitePath).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(css, /Embedded Algolia mark used by the composer send control/);
   assert.match(css, /\[part="composer-send"\]::before/);
   assert.doesNotMatch(css, /\[part="composer-send"\]::after/);
   assert.doesNotMatch(css, /border-right-color: transparent/);
@@ -164,10 +154,15 @@ test('Algolia theme keeps the chat panel compact and source-grounded in the head
   assert.doesNotMatch(css, /10rem/);
   assert.doesNotMatch(css, /\[role="dialog"\]\.absolute/);
   assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*--algolia-sample-dialog-w: min\(calc\(100vw - 6rem\), calc\(var\(--algolia-panel-w\) - 4rem\), 52rem\)/);
+  assert.doesNotMatch(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*left: auto !important/);
+  assert.doesNotMatch(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*right: 0 !important/);
+  assert.doesNotMatch(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*transform: none !important/);
   assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*width: var\(--algolia-sample-dialog-w\) !important/);
   assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute[^{]+{[^}]*max-height: calc\(var\(--algolia-panel-h\) - var\(--algolia-header-h\) - 8rem\)/);
   assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid[^{]+{[^}]*width: calc\(var\(--algolia-sample-dialog-w\) - 2\.625rem\) !important/);
   assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid[^{]+{[^}]*min-width: calc\(var\(--algolia-sample-dialog-w\) - 2\.625rem\)/);
   assert.match(css, /\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid[^{]+{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\) !important/);
+  assert.doesNotMatch(css, /:host\(\[default-open-mode="docked"\]\) \[role="dialog"\]\[aria-label="Sample questions"\]\.absolute/);
+  assert.doesNotMatch(css, /:host\(\[default-open-mode="docked"\]\) \[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid/);
   assert.match(css, /@media \(max-width: 640px\)[\s\S]*\[role="dialog"\]\[aria-label="Sample questions"\]\.absolute > \.grid[^{]+{[^}]*grid-template-columns: 1fr !important/);
 });

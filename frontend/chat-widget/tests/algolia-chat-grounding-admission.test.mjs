@@ -2,13 +2,11 @@ import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { extname, join, normalize } from 'node:path';
+import { dirname, extname, join, normalize, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
-const root = process.cwd();
-const chatDir = join(root, 'frontend', 'chat-widget');
-const siteDir = join(root, 'local-sites', 'algolia-com-parity');
-const fixturePath = join(siteDir, 'index.html');
+const chatDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 let browser;
 
 function fixture() {
@@ -163,7 +161,7 @@ function fixture() {
       return new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } });
     };
   </script><script src="/chat/algolia-confidence-badge.js"></script><script src="/chat/algolia-judge-core.js"></script><script src="/chat/algolia-chat.js"></script></head><body>
-    <algolia-chat app-id="0EXRPAXB56" search-api-key="local" index-name="local">
+    <algolia-chat app-id="TESTAPP123" search-api-key="local" index-name="local">
       <algolia-agent role="primary" agent-id="local_primary_agent" label="aRRIe"></algolia-agent>
       <algolia-chat-confidence>
         <algolia-agent role="skeptic" agent-id="local_skeptic"></algolia-agent>
@@ -185,8 +183,7 @@ after(async () => {
 function localPath(urlPath) {
   const path = urlPath.split('?')[0].split('#')[0];
   if (path.startsWith('/chat/')) return join(chatDir, path.replace('/chat/', ''));
-  if (path === '/' || !extname(path)) return fixturePath;
-  return join(siteDir, path.replace(/^\//, ''));
+  return join(chatDir, '__not-a-public-fixture__');
 }
 
 function startServer() {

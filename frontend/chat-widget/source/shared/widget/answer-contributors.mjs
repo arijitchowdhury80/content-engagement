@@ -148,7 +148,7 @@ export function createOpaqueActionContribution({ identity, action = null } = {})
     kind: ANSWER_CONTRIBUTOR_KIND.OPAQUE_ACTION,
     identity,
     slots: {
-      compareAction: action
+      actions: action
         ? { status: ANSWER_SLOT_STATUS.READY, value: action }
         : { status: ANSWER_SLOT_STATUS.UNAVAILABLE, value: null, message: "Action unavailable." },
     },

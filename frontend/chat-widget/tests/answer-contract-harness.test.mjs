@@ -13,6 +13,7 @@ import {
 import {
   createAnswerContentContribution,
   createConfidenceContribution,
+  createErrorRetryContribution,
   createOpaqueActionContribution,
   createProgressContribution,
   createSourcesContribution,
@@ -258,7 +259,7 @@ test("presentation records missing sources and judge as unavailable instead of i
   assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
-  assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(presentation.footer.actions.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(isAnswerRecordComplete(record), true);
 });
 
@@ -335,6 +336,153 @@ test("progress contributions cannot regress within the same answer attempt", () 
   assert.equal(higher.slots.progress.value.percent, 100);
 });
 
+test("progress lifecycle cannot regress after completion", () => {
+  let record = createAnswerRecord({ identity });
+  record = applyAnswerContribution(
+    record,
+    createAnswerContentContribution({
+      identity,
+      details: "A completed answer body is already visible.",
+    })
+  );
+  record = applyAnswerContribution(
+    record,
+    createProgressContribution({
+      identity,
+      percent: 100,
+      phase: "completed",
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+    })
+  );
+  record = applyAnswerContribution(
+    record,
+    createProgressContribution({
+      identity,
+      percent: 100,
+      phase: "loading",
+      lifecycle: ANSWER_LIFECYCLE.STREAMING,
+    })
+  );
+
+  assert.equal(record.lifecycle, ANSWER_LIFECYCLE.COMPLETE);
+  assert.equal(record.slots.progress.value.percent, 100);
+  assert.equal(record.slots.progress.value.phase, "completed");
+});
+
+test("successful completed attempts account for the raw error retry slot", () => {
+  const observer = createAnswerHarnessObserver();
+  observer.accept({ eventName: "prepared", detail: { answerIdentity: identity } });
+  observer.accept({
+    eventName: "contribution",
+    detail: {
+      answerIdentity: identity,
+      contribution: createAnswerContentContribution({
+        identity,
+        details: "A successful answer body is visible.",
+      }),
+    },
+  });
+  observer.accept({ eventName: "completed", detail: { answerIdentity: identity } });
+
+  const record = observer.getRecord(identity);
+  assert.equal(record.lifecycle, ANSWER_LIFECYCLE.COMPLETE);
+  assert.equal(record.slots.errorRetry.status, ANSWER_SLOT_STATUS.EMPTY);
+  assert.equal(isAnswerRecordComplete(record), true);
+});
+
+test("terminal answer attempts ignore late progress and error phase corruption", () => {
+  let record = createAnswerRecord({ identity });
+  record = applyAnswerContribution(
+    record,
+    createAnswerContentContribution({
+      identity,
+      details: "A completed answer body is already visible.",
+    })
+  );
+  record = applyAnswerContribution(
+    record,
+    createProgressContribution({
+      identity,
+      percent: 100,
+      phase: "completed",
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+    })
+  );
+
+  const lateLoading = applyAnswerContribution(
+    record,
+    createProgressContribution({
+      identity,
+      percent: 100,
+      phase: "loading",
+      lifecycle: ANSWER_LIFECYCLE.STREAMING,
+    })
+  );
+  const lateError = applyAnswerContribution(
+    lateLoading,
+    createErrorRetryContribution({
+      identity,
+      failedSlot: "details",
+      message: "Late transport error after completion.",
+    })
+  );
+
+  assert.equal(lateError.lifecycle, ANSWER_LIFECYCLE.COMPLETE);
+  assert.equal(lateError.slots.progress.value.percent, 100);
+  assert.equal(lateError.slots.progress.value.phase, "completed");
+  assert.equal(lateError.slots.errorRetry.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(lateError.slots.details.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(lateError.slots.details.value, "A completed answer body is already visible.");
+});
+
+test("retry completion is represented by a new attempt identity, not by reopening a failed attempt", () => {
+  const failedRecord = applyAnswerContribution(
+    createAnswerRecord({ identity }),
+    createErrorRetryContribution({
+      identity,
+      failedSlot: "details",
+      message: "Same attempt failed.",
+    })
+  );
+  const sameAttemptCompleted = applyAnswerContribution(
+    failedRecord,
+    createProgressContribution({
+      identity,
+      percent: 100,
+      phase: "completed",
+      lifecycle: ANSWER_LIFECYCLE.COMPLETE,
+    })
+  );
+
+  assert.equal(sameAttemptCompleted.lifecycle, ANSWER_LIFECYCLE.FAILED);
+  assert.equal(sameAttemptCompleted.slots.progress.status, ANSWER_SLOT_STATUS.LOADING);
+
+  const observer = createAnswerHarnessObserver();
+  const firstAttempt = { ...identity, networkAttemptId: "attempt-1" };
+  const retryAttempt = { ...identity, networkAttemptId: "attempt-2" };
+
+  observer.accept({ eventName: "prepared", detail: { answerIdentity: firstAttempt } });
+  observer.accept({
+    eventName: "contribution",
+    detail: {
+      answerIdentity: firstAttempt,
+      contribution: createErrorRetryContribution({
+        identity: firstAttempt,
+        failedSlot: "details",
+        message: "First attempt failed.",
+      }),
+    },
+  });
+  observer.accept({ eventName: "completed", detail: { answerIdentity: firstAttempt } });
+  observer.accept({ eventName: "prepared", detail: { answerIdentity: retryAttempt } });
+  observer.accept({ eventName: "completed", detail: { answerIdentity: retryAttempt } });
+
+  assert.equal(observer.getRecord(firstAttempt).lifecycle, ANSWER_LIFECYCLE.SUPERSEDED);
+  assert.equal(observer.getRecord(firstAttempt).slots.errorRetry.status, ANSWER_SLOT_STATUS.FAILED);
+  assert.equal(observer.getRecord(retryAttempt).lifecycle, ANSWER_LIFECYCLE.COMPLETE);
+  assert.equal(observer.getRecord(retryAttempt).slots.progress.value.phase, "completed");
+});
+
 test("only lifecycle-owning contributors can change answer lifecycle", () => {
   const record = createAnswerRecord({ identity });
   const contentLifecycleAttempt = applyAnswerContribution(
@@ -388,7 +536,7 @@ test("only lifecycle-owning contributors can change answer lifecycle", () => {
       identity,
       lifecycle: ANSWER_LIFECYCLE.COMPLETE,
       slots: {
-        compareAction: { status: ANSWER_SLOT_STATUS.READY, value: { label: "Compare with Prod" } },
+        actions: { status: ANSWER_SLOT_STATUS.READY, value: { label: "Compare with Prod" } },
       },
     })
   );
@@ -901,7 +1049,7 @@ test("footer state allows sources early but defers post-answer actions until str
     slots: {
       sources: { status: ANSWER_SLOT_STATUS.READY, value: [{ title: "Docs" }] },
       telemetry: { status: ANSWER_SLOT_STATUS.READY, value: { inputTokens: 1234, outputTokens: 56 } },
-      compareAction: { status: ANSWER_SLOT_STATUS.READY, value: { enabled: true } },
+      actions: { status: ANSWER_SLOT_STATUS.READY, value: { enabled: true } },
       confidence: { status: ANSWER_SLOT_STATUS.READY, value: { score: 8.2 } },
       followUp: { status: ANSWER_SLOT_STATUS.READY, value: "Which system are you replacing?" },
     },
@@ -917,13 +1065,13 @@ test("footer state allows sources early but defers post-answer actions until str
 
   assert.equal(streamingFooter.slots.sources.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(streamingFooter.slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
-  assert.equal(streamingFooter.slots.compareAction.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(streamingFooter.slots.actions.status, ANSWER_SLOT_STATUS.LOADING);
   assert.equal(streamingFooter.slots.confidence.status, ANSWER_SLOT_STATUS.LOADING);
   assert.equal(streamingFooter.slots.followUp.status, ANSWER_SLOT_STATUS.LOADING);
 
   assert.equal(completeFooter.slots.sources.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(completeFooter.slots.telemetry.status, ANSWER_SLOT_STATUS.READY);
-  assert.equal(completeFooter.slots.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(completeFooter.slots.actions.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(completeFooter.slots.confidence.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(completeFooter.slots.followUp.status, ANSWER_SLOT_STATUS.READY);
 });
@@ -951,7 +1099,7 @@ test("answer presentation exposes one ordered footer contract", () => {
     ].join("\n")),
     sources: [{ title: "Docs" }],
     telemetry: { inputTokens: 42000, outputTokens: 900 },
-    compareAction: { label: "Compare with Prod" },
+    actions: { label: "Compare with Prod" },
     confidence: { score: 8.1 },
     lifecycle: ANSWER_LIFECYCLE.COMPLETE,
   });
@@ -960,14 +1108,14 @@ test("answer presentation exposes one ordered footer contract", () => {
   assert.deepEqual(presentation.footer.order, [
     "sources",
     "telemetry",
-    "compareAction",
+    "actions",
     "confidence",
     "followUp",
   ]);
   assert.equal(presentation.footer.postStream, true);
   assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.READY);
-  assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(presentation.footer.actions.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(presentation.footer.followUp.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(presentation.details.value.includes("Are you protecting"), false);
@@ -1003,15 +1151,15 @@ test("post-answer footer order is independent of telemetry and Compare arrival o
   assert.deepEqual(telemetryFirst.footer.order, [
     "sources",
     "telemetry",
-    "compareAction",
+    "actions",
     "confidence",
     "followUp",
   ]);
   assert.equal(telemetryFirst.footer.sources.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(telemetryFirst.footer.telemetry.status, ANSWER_SLOT_STATUS.READY);
-  assert.equal(telemetryFirst.footer.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(telemetryFirst.footer.actions.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(compareFirst.footer.telemetry.value.inputTokens, 12000);
-  assert.equal(compareFirst.footer.compareAction.value.label, "Compare with Prod");
+  assert.equal(compareFirst.footer.actions.value.label, "Compare with Prod");
 });
 
 test("sources stay visible while post-answer controls wait for completion", () => {
@@ -1036,10 +1184,10 @@ test("sources stay visible while post-answer controls wait for completion", () =
 
   assert.equal(streaming.footer.sources.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(streaming.footer.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
-  assert.equal(streaming.footer.compareAction.status, ANSWER_SLOT_STATUS.LOADING);
+  assert.equal(streaming.footer.actions.status, ANSWER_SLOT_STATUS.LOADING);
   assert.equal(completed.footer.sources.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(completed.footer.telemetry.status, ANSWER_SLOT_STATUS.READY);
-  assert.equal(completed.footer.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(completed.footer.actions.status, ANSWER_SLOT_STATUS.READY);
 });
 
 test("terminal answers project never-contributed footer slots as unavailable without mutating the record", () => {
@@ -1049,12 +1197,12 @@ test("terminal answers project never-contributed footer slots as unavailable wit
 
     assert.equal(record.slots.sources.status, ANSWER_SLOT_STATUS.LOADING);
     assert.equal(record.slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
-    assert.equal(record.slots.compareAction.status, ANSWER_SLOT_STATUS.LOADING);
+    assert.equal(record.slots.actions.status, ANSWER_SLOT_STATUS.LOADING);
     assert.equal(record.slots.confidence.status, ANSWER_SLOT_STATUS.LOADING);
     assert.equal(record.slots.followUp.status, ANSWER_SLOT_STATUS.LOADING);
     assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
     assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
-    assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+    assert.equal(presentation.footer.actions.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
     assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
     assert.equal(presentation.footer.followUp.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   }
@@ -1079,7 +1227,7 @@ test("explicit null post-answer contributors remain explicit unavailable slots",
 
   assert.equal(presentation.footer.sources.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(presentation.footer.telemetry.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
-  assert.equal(presentation.footer.compareAction.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
+  assert.equal(presentation.footer.actions.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
   assert.equal(presentation.footer.confidence.status, ANSWER_SLOT_STATUS.UNAVAILABLE);
 });
 
@@ -1150,6 +1298,6 @@ test("one widget reset does not accept late footer controls or affect a sibling 
   assert.equal(observer.getRecord(left).lifecycle, ANSWER_LIFECYCLE.RESET);
   assert.equal(observer.getRecord(left).slots.telemetry.status, ANSWER_SLOT_STATUS.LOADING);
   assert.equal(observer.getRecord(right).lifecycle, ANSWER_LIFECYCLE.SEARCHING);
-  assert.equal(observer.getRecord(right).slots.compareAction.status, ANSWER_SLOT_STATUS.READY);
+  assert.equal(observer.getRecord(right).slots.actions.status, ANSWER_SLOT_STATUS.READY);
   assert.equal(observer.rejections().at(-1).reason, "stale_answer_attempt");
 });

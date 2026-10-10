@@ -32,7 +32,7 @@ Patch payload:
 - Keep provider unchanged: `0c6a0843-caf0-4246-b2a1-7cc08d06a7db`
 - Keep model unchanged: `medium`
 - Replace instructions with:
-  `agents/prompts/instructions_algolia_proactive_greeting.md`
+  `agents/prompts/orchestrator/instructions_algolia_proactive_greeting.md`
 - Intended instructions length: `8431` characters
 - Intended instructions SHA-256: `79e7c2ca46824b5a4c1b4efb22566d015ee69134330d14aae9103715660068e6`
 - Remove all tools: `tools: []`
